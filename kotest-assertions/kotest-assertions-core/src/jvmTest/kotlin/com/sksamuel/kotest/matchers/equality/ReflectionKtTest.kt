@@ -7,6 +7,7 @@ import io.kotest.matchers.equality.*
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import io.mockk.mockk
 import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 import kotlin.reflect.KVisibility
@@ -136,6 +137,19 @@ class ReflectionKtTest : FunSpec() {
          val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
 
          city.shouldBeEqualToComparingFields(city2)
+      }
+
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively using default shouldBe for given types") {
+         val doctor = mockk<Doctor>()
+         val city = City("test", Hospital("test-hospital", doctor))
+         val city2 = City("test", Hospital("test-hospital", doctor))
+
+         city.shouldBeEqualToComparingFields(
+            city2,
+            FieldsEqualityCheckConfig(
+               useDefaultShouldBeForFields = listOf("com.sksamuel.kotest.matchers.equality.ReflectionKtTest.Doctor")
+            )
+         )
       }
 
       test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively handling nullable fields") {

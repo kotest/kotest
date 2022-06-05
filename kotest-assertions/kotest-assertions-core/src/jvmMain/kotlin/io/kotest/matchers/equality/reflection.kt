@@ -312,14 +312,34 @@ fun <T : Any> beEqualToIgnoringFields(
  * @param other the other class to which equality need to be checked.
  * @param ignorePrivateFields specify whether private fields should be ignored in equality check or not, default value is true
  * @param ignoreComputedFields specify whether computed fields should be ignored in equality check or not, default value is true
+ * @param useDefaultShouldBeForFields fully qualified name of data type for which we need to use default shouldBe, default empty.
  *
  * */
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldBeEqualToComparingFields(
    other: T,
    ignorePrivateFields: Boolean = true,
-   ignoreComputedFields: Boolean = true
+   ignoreComputedFields: Boolean = true,
+   useDefaultShouldBeForFields: List<String> = emptyList(),
 ) {
-   this should beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
+   shouldBeEqualToComparingFields(
+      other, FieldsEqualityCheckConfig(
+         ignorePrivateFields = ignorePrivateFields,
+         ignoreComputedFields = ignoreComputedFields,
+         propertiesToExclude = emptyList(),
+         useDefaultShouldBeForFields = useDefaultShouldBeForFields
+      )
+   )
+}
+
+fun <T : Any> T.shouldBeEqualToComparingFields(
+   other: T,
+   fieldsEqualityCheckConfig: FieldsEqualityCheckConfig = FieldsEqualityCheckConfig()
+) {
+   this should beEqualComparingFields(other, fieldsEqualityCheckConfig)
 }
 
 /**
@@ -337,6 +357,10 @@ fun <T : Any> T.shouldBeEqualToComparingFields(
  * @param ignoreProperty fields which should be ignored during equality check
  * @param ignoreProperties fields which should be ignored during equality check
  * */
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
@@ -344,14 +368,20 @@ fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    vararg ignoreProperties: KProperty<*>,
    ignoreComputedFields: Boolean = true
 ) {
-   this should beEqualComparingFields(
+   shouldBeEqualToComparingFields(
       other,
-      ignorePrivateFields,
-      listOf(ignoreProperty) + ignoreProperties,
-      ignoreComputedFields
+      FieldsEqualityCheckConfig(
+         ignorePrivateFields = ignorePrivateFields,
+         ignoreComputedFields = ignoreComputedFields,
+         propertiesToExclude = listOf(ignoreProperty) + ignoreProperties,
+      )
    )
 }
 
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
@@ -359,44 +389,76 @@ fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    vararg ignoreProperties: KProperty<*>,
    includeComputedProperties: Boolean = false
 ) {
-   this shouldNot beEqualComparingFields(
+   shouldNotBeEqualToComparingFields(
       other,
-      ignorePrivateFields,
-      listOf(ignoreProperty) + ignoreProperties,
-      includeComputedProperties
+      FieldsEqualityCheckConfig(
+         ignorePrivateFields = ignorePrivateFields,
+         ignoreComputedFields = !includeComputedProperties,
+         propertiesToExclude = listOf(ignoreProperty) + ignoreProperties
+      )
    )
 }
 
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties, true)
+   shouldBeEqualToComparingFields(
+      other,
+      FieldsEqualityCheckConfig(propertiesToExclude = listOf(ignoreProperty) + ignoreProperties)
+   )
 }
 
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties, true)
+   shouldNotBeEqualToComparingFields(
+      other,
+      FieldsEqualityCheckConfig(propertiesToExclude = listOf(ignoreProperty) + ignoreProperties)
+   )
 }
 
 infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
-   this.shouldBeEqualToComparingFields(other, true)
+   shouldBeEqualToComparingFields(other, FieldsEqualityCheckConfig())
 }
 
 infix fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T) {
-   this shouldNot beEqualComparingFields(other, true, emptyList(), true)
+   this shouldNot beEqualComparingFields(other, FieldsEqualityCheckConfig())
 }
 
+fun <T : Any> T.shouldNotBeEqualToComparingFields(
+   other: T,
+   fieldsEqualityCheckConfig: FieldsEqualityCheckConfig
+) {
+   this shouldNot beEqualComparingFields(other, fieldsEqualityCheckConfig)
+}
+
+@Deprecated(
+   message = "This will be removed in Kotest 7.0",
+   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> T.shouldNotBeEqualToComparingFields(
    other: T,
    ignorePrivateFields: Boolean = true,
    ignoreComputedFields: Boolean = true
 ) {
-   this shouldNot beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
+   shouldNotBeEqualToComparingFields(
+      other, FieldsEqualityCheckConfig(
+         ignorePrivateFields = ignorePrivateFields,
+         ignoreComputedFields = ignoreComputedFields
+      )
+   )
 }
 
 private typealias PropertyPredicate = (KProperty<*>) -> Boolean
@@ -408,36 +470,53 @@ private val nonPrivate: PropertyPredicate = { it.visibility != KVisibility.PRIVA
 private infix fun PropertyPredicate.and(other: PropertyPredicate) =
    { property: KProperty<*> -> this(property) && other(property) }
 
+@Deprecated(
+   message = "This will be removed in Kotest 6.0",
+   replaceWith = ReplaceWith("beEqualComparingFields(other, fieldEqualityCheckConfig)")
+)
 fun <T : Any> beEqualComparingFields(
    other: T,
    ignorePrivateFields: Boolean,
    propertiesToExclude: List<KProperty<*>>,
    ignoreComputedFields: Boolean,
-) = object : Matcher<T> {
-   override fun test(value: T): MatcherResult {
-      val (failed, fieldsToCompare) = checkEqualityOfFieldsRecursively(
-         value,
-         other,
-         ignorePrivateFields,
-         ignoreComputedFields,
-         propertiesToExclude
-      )
+   useDefaultShouldBeForFields: List<String> = emptyList(),
+) = beEqualComparingFields(
+   other, FieldsEqualityCheckConfig(
+      ignorePrivateFields = ignorePrivateFields,
+      ignoreComputedFields = ignoreComputedFields,
+      propertiesToExclude = propertiesToExclude,
+      useDefaultShouldBeForFields = useDefaultShouldBeForFields,
+   )
+)
 
-      return MatcherResult(
-         failed.isEmpty(),
-         {
-            """Expected ${value.print().value} to equal ${other.print().value}
+fun <T : Any> beEqualComparingFields(
+   other: T,
+   fieldsEqualityCheckConfig: FieldsEqualityCheckConfig
+): Matcher<T> {
+   return object : Matcher<T> {
+      override fun test(value: T): MatcherResult {
+         val (failed, fieldsToCompare) = checkEqualityOfFieldsRecursively(
+            value,
+            other,
+            fieldsEqualityCheckConfig,
+         )
+
+         return MatcherResult(
+            failed.isEmpty(),
+            {
+               """Expected ${value.print().value} to equal ${other.print().value}
             | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
             | Value differ at:
             | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
          """.trimMargin()
-         },
-         {
-            """Expected ${value.print().value} to not equal ${other.print().value}
+            },
+            {
+               """Expected ${value.print().value} to not equal ${other.print().value}
             | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
          """.trimMargin()
-         }
-      )
+            }
+         )
+      }
    }
 }
 
@@ -455,15 +534,13 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
 private fun <T> checkEqualityOfFieldsRecursively(
    value: T,
    other: T,
-   ignorePrivateFields: Boolean,
-   ignoreComputedFields: Boolean,
-   propertiesToExclude: List<KProperty<*>>,
+   config: FieldsEqualityCheckConfig,
    level: Int = 1
 ): Pair<List<String>, List<KProperty1<out T, *>>> {
    val predicates = listOfNotNull(
-      if (ignorePrivateFields) nonPrivate else null,
-      if (ignoreComputedFields) nonComputed else null,
-      { it !in propertiesToExclude }
+      if (config.ignorePrivateFields) nonPrivate else null,
+      if (config.ignoreComputedFields) nonComputed else null,
+      { it !in config.propertiesToExclude }
    ).reduce { a, b -> a and b }
 
    val fields = value!!::class.memberProperties
@@ -476,10 +553,10 @@ private fun <T> checkEqualityOfFieldsRecursively(
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
-      val typeName = it.returnType.toString()
+      val typeName = it.returnType.toString().replace("?", "")
       val heading = "${it.name}:"
 
-      if (actual == null || expected == null || typeName.startsWith("kotlin") || typeName.startsWith("java") ) {
+      if (requiresUseOfDefaultEq(actual, expected, typeName, config.useDefaultShouldBeForFields)) {
          val throwable = eq(actual, expected)
          if (throwable != null) {
             "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
@@ -490,9 +567,7 @@ private fun <T> checkEqualityOfFieldsRecursively(
          val (errorMessage, _) = checkEqualityOfFieldsRecursively(
             actual,
             expected,
-            ignorePrivateFields,
-            ignoreComputedFields,
-            propertiesToExclude,
+            config,
             level + 1
          )
          if (errorMessage.isEmpty()) {
@@ -504,4 +579,23 @@ private fun <T> checkEqualityOfFieldsRecursively(
       }
    } to fields
 }
+
+private fun requiresUseOfDefaultEq(
+   actual: Any?,
+   expected: Any?,
+   typeName: String,
+   useDefaultEqualForFields: List<String>
+): Boolean {
+   val expectedOrActualIsNull = actual == null || expected == null
+   val typeIsJavaOrKotlinBuiltIn by lazy { typeName.startsWith("kotlin") || typeName.startsWith("java") }
+   return expectedOrActualIsNull || typeIsJavaOrKotlinBuiltIn || useDefaultEqualForFields.contains(typeName)
+}
+
+data class FieldsEqualityCheckConfig(
+   val ignorePrivateFields: Boolean = true,
+   val ignoreComputedFields: Boolean = true,
+   val propertiesToExclude: List<KProperty<*>> = emptyList(),
+   val useDefaultShouldBeForFields: List<String> = emptyList()
+)
+
 
