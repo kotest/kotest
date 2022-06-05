@@ -171,7 +171,7 @@ class ReflectionKtTest : FunSpec() {
          person.setAddress("new address")
 
          val errorMessage = shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFields(Person("foo"), ignorePrivateFields = false)
+            person.shouldBeEqualToComparingFields(Person("foo"), FieldsEqualityCheckConfig(ignorePrivateFields = false))
          }.message
 
          errorMessage shouldContain "Using fields: address, isExhausted, name"
@@ -185,14 +185,16 @@ class ReflectionKtTest : FunSpec() {
          person.isExhausted = true
          person.setAddress("new address")
 
-         person.shouldBeEqualToComparingFieldsExcept(
+         person.shouldBeEqualToComparingFields(
             Person("foo"),
-            Person::isExhausted
+            FieldsEqualityCheckConfig(propertiesToExclude = listOf(Person::isExhausted))
          )
-         person.shouldBeEqualToComparingFieldsExcept(
+         person.shouldBeEqualToComparingFields(
             Person("foo"),
-            true,
-            Person::isExhausted
+            FieldsEqualityCheckConfig(
+               ignorePrivateFields = true,
+               propertiesToExclude = listOf(Person::isExhausted)
+            )
          )
       }
 
@@ -202,10 +204,12 @@ class ReflectionKtTest : FunSpec() {
          person.setAddress("new address")
 
          val message = shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFieldsExcept(
+            person.shouldBeEqualToComparingFields(
                Person("foo"),
-               false,
-               Person::isExhausted
+               FieldsEqualityCheckConfig(
+                  ignorePrivateFields = false,
+                  propertiesToExclude = listOf(Person::isExhausted)
+               )
             )
          }.message
          message shouldContain "Using fields: address, name"
@@ -230,7 +234,10 @@ class ReflectionKtTest : FunSpec() {
 
       test("shouldNotBeEqualToComparingFields should consider private fields") {
          shouldThrow<AssertionError> {
-            Person("foo").shouldNotBeEqualToComparingFields(Person("foo"), false)
+            Person("foo").shouldNotBeEqualToComparingFields(
+               Person("foo"),
+               FieldsEqualityCheckConfig(ignorePrivateFields = false)
+            )
          }.message shouldContain "Using fields: address, isExhausted, name"
       }
 
@@ -241,7 +248,10 @@ class ReflectionKtTest : FunSpec() {
 
       test("shouldBeEqualToComparingFields can include computed field") {
          shouldFail {
-            HasComputedField("foo").shouldBeEqualToComparingFields(HasComputedField("foo"), ignoreComputedFields = false)
+            HasComputedField("foo").shouldBeEqualToComparingFields(
+               HasComputedField("foo"),
+               FieldsEqualityCheckConfig(ignoreComputedFields = false)
+            )
          }.message shouldContain "Using fields: name, random"
       }
 
