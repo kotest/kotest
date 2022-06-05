@@ -130,7 +130,7 @@ intellij {
 }
 
 dependencies {
-   implementation("javax.xml.bind:jaxb-api:2.3.0")
+   implementation("javax.xml.bind:jaxb-api:2.3.1")
    implementation("javax.activation:activation:1.1.1")
 
    // we bundle this for 4.1 support
@@ -142,8 +142,8 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:4.6.3")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
+   testImplementation("io.kotest:kotest-framework-api:5.3.0")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:5.3.0")
 }
 
 sourceSets {
