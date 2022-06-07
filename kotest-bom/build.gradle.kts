@@ -46,12 +46,6 @@ val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
-fun Project.publishing(action: PublishingExtension.() -> Unit) =
-   configure(action)
-
-fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
-   configure(configure)
-
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
 signing {
