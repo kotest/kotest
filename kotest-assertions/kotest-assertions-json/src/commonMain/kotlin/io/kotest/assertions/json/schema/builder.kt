@@ -1,10 +1,10 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.assertions.json.JsonNode
+import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
+import io.kotest.matchers.sequences.beUnique
 import kotlinx.serialization.Serializable
 
 @DslMarker
@@ -51,8 +51,12 @@ data class JsonSchema(
    object Builder
    internal interface JsonNumber
 
-   @Serializable
-   data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
+   data class JsonArray(
+      val minItems: Int = 0,
+      val maxItems: Int = Int.MAX_VALUE,
+      val matcher: Matcher<Sequence<JsonNode>>? = null,
+      val elementType: JsonSchemaElement,
+   ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
 
@@ -254,10 +258,20 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
 
 /**
  * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
+ * The length of the array can be specified using the [minItems] and [maxItems] keywords. Schema can ensure
+ * that each of item in an array is unique specified by [uniqueItems] keyword.
+ *
+ * @param minItems - minimum array length, default value is 0
+ * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
+ * @param uniqueItems - item uniqueness, default value is false
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
-   JsonSchema.JsonArray(typeBuilder())
+fun JsonSchema.Builder.array(
+   minItems: Int = 0, maxItems: Int = Int.MAX_VALUE, uniqueItems: Boolean = false, typeBuilder: () -> JsonSchemaElement
+): JsonSchema.JsonArray {
+   val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, typeBuilder())
+}
 
 @ExperimentalKotest
 fun jsonSchema(

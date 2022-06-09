@@ -1,7 +1,5 @@
 plugins {
-   id("java")
-   kotlin("multiplatform")
-   id("java-library")
+   id("kotlin-conventions")
 }
 
 kotlin {
@@ -11,21 +9,11 @@ kotlin {
    }
 
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
-         }
-      }
-
       val jvmTest by getting {
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")
