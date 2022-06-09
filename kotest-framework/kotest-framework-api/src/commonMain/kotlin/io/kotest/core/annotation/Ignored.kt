@@ -6,4 +6,4 @@ package io.kotest.core.annotation
 // @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Ignored
+annotation class Ignored(val reason: String = "")
