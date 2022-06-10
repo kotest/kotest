@@ -4,6 +4,7 @@ plugins {
    signing
 }
 
+group = "io.kotest"
 version = Ci.publishVersion
 
 val bomProject = project
@@ -29,35 +30,10 @@ dependencies {
    }
 }
 
-publishing {
-   publications {
-      create<MavenPublication>("KotestBom") {
-         from(components["javaPlatform"])
-      }
-   }
-}
-
-repositories {
-   mavenCentral()
-}
-
 val ossrhUsername: String by project
 val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
-
-val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
-
-signing {
-   useGpgCmd()
-   if (signingKey != null && signingPassword != null) {
-      @Suppress("UnstableApiUsage")
-      useInMemoryPgpKeys(signingKey, signingPassword)
-   }
-   if (Ci.isRelease) {
-      sign(publications)
-   }
-}
 
 publishing {
    repositories {
@@ -73,9 +49,9 @@ publishing {
       }
    }
 
-   publications.withType<MavenPublication>().forEach {
-      it.apply {
-         //if (Ci.isRelease)
+   publications {
+      create<MavenPublication>("KotestBom") {
+         from(components["javaPlatform"])
          pom {
             name.set("Kotest")
             description.set("Kotlin Test Framework")
@@ -103,5 +79,19 @@ publishing {
             }
          }
       }
+   }
+}
+
+signing {
+   val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
+   useGpgCmd()
+
+   if (signingKey != null && signingPassword != null) {
+      @Suppress("UnstableApiUsage")
+      useInMemoryPgpKeys(signingKey, signingPassword)
+   }
+
+   if (Ci.isRelease) {
+      sign(publications)
    }
 }
