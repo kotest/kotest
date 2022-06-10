@@ -42,7 +42,9 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
+            implementation(kotlin("stdlib"))
             implementation(project(Projects.Assertions.Core))
+            implementation(project(Projects.Framework.datatest))
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
          }
