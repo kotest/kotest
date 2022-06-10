@@ -303,16 +303,17 @@ fun <T : Any> beEqualToIgnoringFields(
 /**
  * Matcher that compares values without using field by field comparison.
  *
- * This matcher should be used to check equality of two class for which you want to consider there fields for equality
- * instead of its equals method.
+ * This matcher should be used to check equality of two class for which you want to consider their fields for equality
+ * instead of its `equals` method.
  *
- * This matcher recursively check equality of given values till we get a java or kotlin class. Once we get a java or kotlin
- * class the equality of that fields will be same as that we get with shouldBe matcher.
+ * This matcher recursively check equality of given values till we get a java class, kotlin class or fields for which we have
+ * specified to use default shouldBe. Once we get a java class, kotlin class or specified field the equality of that fields
+ * will be same as that we get with shouldBe matcher.
  *
  * @param other the other class to which equality need to be checked.
  * @param ignorePrivateFields specify whether private fields should be ignored in equality check or not, default value is true
  * @param ignoreComputedFields specify whether computed fields should be ignored in equality check or not, default value is true
- * @param useDefaultShouldBeForFields fully qualified name of data type for which we need to use default shouldBe, default empty.
+ * @param useDefaultShouldBeForFields fully qualified names of data type for which we need to use default shouldBe, default empty list.
  *
  * */
 @Deprecated(
@@ -335,6 +336,43 @@ fun <T : Any> T.shouldBeEqualToComparingFields(
    )
 }
 
+/**
+ *  Matcher that compares values without using field by field comparison.
+ *
+ * This matcher should be used to check equality of two class for which you want to consider their fields for equality
+ * instead of its `equals` method.
+ *
+ * This matcher recursively check equality of given values till we get a java class, kotlin class or fields for which we have
+ * specified to use default shouldBe. Once we get a java class, kotlin class or specified field the equality of that fields
+ * will be same as that we get with shouldBe matcher.
+ *
+ * @param other the other class to which equality need to be checked.
+ * @param fieldsEqualityCheckConfig the config to control the field by field comparison.
+ *
+ * @see FieldsEqualityCheckConfig
+ *
+ * Example:
+ *  ```
+ *  package org.foo.bar.domain
+ *
+ *  class ANestedClass(val name: String, val nestedField: AnotherNestedClass) {
+ *    private val id = UUID.randomUUID()
+ *  }
+ *  class AnotherNestedClass(val buffer: Buffer) {
+ *    val aComputedField: Int
+ *      get() = Random.nextInt()
+ *  }
+ *  class SomeClass(val name: String, val randomId: UUID ,val nestedField: ANestedClass)
+ *
+ *
+ *  someClass.shouldBeEqualToComparingFields(anotherInstanceOfSomeClass, FieldsEqualityCheckConfig(
+ *    ignorePrivateFields = true,
+ *    ignoreComputedFields = true,
+ *    propertiesToExclude = listOf(SomeClass::randomId),
+ *    useDefaultShouldBeForFields = listOf("org.foo.bar.domain.AnotherNestedClass")
+ *  ))
+ *  ```
+ * */
 fun <T : Any> T.shouldBeEqualToComparingFields(
    other: T,
    fieldsEqualityCheckConfig: FieldsEqualityCheckConfig = FieldsEqualityCheckConfig()
@@ -591,6 +629,15 @@ private fun requiresUseOfDefaultEq(
    return expectedOrActualIsNull || typeIsJavaOrKotlinBuiltIn || useDefaultEqualForFields.contains(typeName)
 }
 
+/**
+ * A config for controlling the way shouldBeEqualToComparingFields compare fields.
+ *
+ * @property ignorePrivateFields specify whether to exclude private fields in comparison. Default true.
+ * @property ignoreComputedFields specify whether to exclude computed fields in comparison. Default true.
+ * @property propertiesToExclude specify which field to exclude in comparison. Default emptyList.
+ * @property useDefaultShouldBeForFields fully qualified name of data type for which we need to use default shouldBe
+ *                                       matcher instead of recursive field by field comparison.
+ * */
 data class FieldsEqualityCheckConfig(
    val ignorePrivateFields: Boolean = true,
    val ignoreComputedFields: Boolean = true,
