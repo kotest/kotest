@@ -22,8 +22,14 @@ actual fun readSeed(path: TestPath): Long? {
 fun seedDirectory(): Path = Paths.get(System.getProperty("user.home")).resolve(".kotest").resolve("seeds")
 
 fun seedPath(path: TestPath): Path {
-   return seedDirectory().resolve(path.value)
+   return seedDirectory().resolve(escape(path.value))
 }
+
+fun escape(path: String) = path
+   .replace('/', '_')
+   .replace('\\', '_')
+   .replace('<', '_')
+   .replace('>', '_')
 
 actual fun writeSeed(path: TestPath, seed: Long) {
    val f = seedPath(path)
