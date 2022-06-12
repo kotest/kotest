@@ -25,7 +25,7 @@ fun seedPath(path: TestPath): Path {
    return seedDirectory().resolve(escape(path.value))
 }
 
-fun escape(path: String) = path
+private fun escape(path: String) = path
    .replace('/', '_')
    .replace('\\', '_')
    .replace('<', '_')
