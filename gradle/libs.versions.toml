@@ -1,24 +1,36 @@
 [versions]
-kotlin = "1.6.21"
+kotlin = "1.7.0"
 kotlinx-coroutines = "1.6.1"
 kotlinx-serialization = "1.3.3"
 ktor = "1.6.8"
 junit-platform = "1.7.2"
 junit-jupiter = "5.7.2"
+classgraph = "4.8.147"
+json-path = "2.7.0"
+jdom2 = "2.0.6.1"
+mockk = "1.12.4"
+mordant = "1.2.1"
+opentest4j = "1.2.0"
+rgxgen = "1.3"
+commons-lang3 = "3.12.0"
+commons-io = "2.11.0"
+gradle-test-logger-plugin = "3.2.0"
+mockserver-netty = "5.13.2"
+plugin-publish = "0.21.0"
 
 [libraries]
-apache-commons-io = { module = "commons-io:commons-io", version = "2.11.0" }
-apache-commons-lang = { module = "org.apache.commons:commons-lang3", version = "3.12.0" }
-classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.147" }
+apache-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
-jayway-json-path = { module = "com.jayway.jsonpath:json-path", version = "2.7.0" }
-jdom2 = { module = "org.jdom:jdom2", version = "2.0.6.1" }
+jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
+jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
-mockk = { module = "io.mockk:mockk", version = "1.12.4" }
-mockserver-netty = { module = "org.mock-server:mockserver-netty", version = "5.13.2" }
-mordant = { module = "com.github.ajalt:mordant", version = "1.2.1" }
-opentest4j = { module = "org.opentest4j:opentest4j", version = "1.2.0" }
-rgxgen = { module = "com.github.curious-odd-man:rgxgen", version = "1.3" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver-netty" }
+mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
+opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
+rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
@@ -47,13 +59,13 @@ kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-em
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version = "3.2.0"}
+testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin"}
 
 [bundles]
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 
 [plugins]
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
