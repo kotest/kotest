@@ -17,8 +17,8 @@ actual fun readSeed(path: TestPath): Long? {
       }
    } catch (e: Exception) {
       println("Error reading seed")
-       e.print()
-       null
+      e.print()
+      null
    }
 
 fun seedDirectory(): Path = Paths.get(System.getProperty("user.home")).resolve(".kotest").resolve("seeds")
