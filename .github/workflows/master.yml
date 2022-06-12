@@ -26,7 +26,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'zulu'
+               distribution: 'temurin'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
@@ -52,6 +52,7 @@ jobs:
       if: github.repository == 'kotest/kotest'
       runs-on: macos-11
       strategy:
+         fail-fast: false
          matrix:
             target:
                - macosX64Test publishMacosX64PublicationToDeployRepository
@@ -76,7 +77,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'zulu'
+               distribution: 'temurin'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2

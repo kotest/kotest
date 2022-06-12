@@ -19,7 +19,7 @@ These annotations are only available for the JVM target.
 
 ### @Ignored
 
-If we with to simply disable a spec completely, then we can use the `@Ignored` annotation.
+If we wish to simply disable a spec completely, then we can use the `@Ignored` annotation.
 
 ```kotlin
 @Ignored

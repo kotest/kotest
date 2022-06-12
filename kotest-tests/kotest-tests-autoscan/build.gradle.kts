@@ -1,39 +1,21 @@
 plugins {
-   id("java")
-   kotlin("multiplatform")
-   id("java-library")
-
+   id("kotlin-conventions")
 }
 
 kotlin {
-
    targets {
       jvm()
    }
 
    sourceSets {
 
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
-         }
-      }
-
       val jvmTest by getting {
          dependencies {
+            implementation(kotlin("reflect"))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
          }
       }
 
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
-
-apply(from = "../../nopublish.gradle")

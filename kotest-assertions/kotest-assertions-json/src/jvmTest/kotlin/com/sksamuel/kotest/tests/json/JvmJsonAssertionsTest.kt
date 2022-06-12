@@ -3,11 +3,9 @@ package com.sksamuel.kotest.tests.json
 import io.kotest.assertions.asClue
 import io.kotest.assertions.json.shouldContainJsonKey
 import io.kotest.assertions.json.shouldContainJsonKeyValue
-import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.assertions.json.shouldMatchJsonResource
 import io.kotest.assertions.json.shouldNotContainJsonKey
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
-import io.kotest.assertions.json.shouldNotMatchJson
 import io.kotest.assertions.json.shouldNotMatchJsonResource
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -37,23 +35,7 @@ const val json = """{
     }
 }"""
 
-class JsonAssertionsTest : StringSpec({
-
-   val json1 = """ { "name" : "sam", "location" : "london" } """
-   val json2 = """ { "location": "london", "name" : "sam" } """
-   val json3 = """ { "location": "chicago", "name" : "sam" } """
-
-   "should return correct error message on failure" {
-      shouldThrow<AssertionError> {
-         json1 shouldMatchJson json3
-      }.message shouldBe """expected json to match, but they differed
-         |
-         |expected:<{"location":"chicago","name":"sam"}> but was:<{"name":"sam","location":"london"}>""".trimMargin()
-
-      shouldThrow<AssertionError> {
-         json1 shouldNotMatchJson json2
-      }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
-   }
+class JvmJsonAssertionsTest : StringSpec({
 
    "test json path" {
       json.shouldContainJsonKey("$.store.bicycle")

@@ -1,21 +1,13 @@
 plugins {
-   id("java")
-   kotlin("multiplatform")
-   id("java-library")
-
+   id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
-
    sourceSets {
 
       val jvmMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
 //            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
@@ -25,15 +17,8 @@ kotlin {
             compileOnly(project(Projects.Framework.api))
 
             // needed to scan the classpath for classes
-            implementation(Libs.Classgraph.classgraph)
+            implementation(libs.classgraph)
          }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")
