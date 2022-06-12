@@ -19,7 +19,10 @@ actual fun readSeed(path: TestPath): Long? {
    }
 }
 
-fun seedDirectory(): Path = Paths.get(System.getProperty("user.home")).resolve(".kotest").resolve("seeds")
+fun xdgConfigHomeOrNull(): String? = System.getenv("XDG_CONFIG_HOME")?.takeIf { it.isNotBlank() }
+fun userHome(): String = System.getProperty("user.home")
+fun configDirectory(): String = xdgConfigHomeOrNull() ?: userHome()
+fun seedDirectory(): Path = Paths.get(configDirectory()).resolve(".kotest").resolve("seeds")
 
 fun seedPath(path: TestPath): Path {
    return seedDirectory().resolve(path.value)
