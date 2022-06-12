@@ -16,6 +16,7 @@ commons-lang3 = "3.12.0"
 commons-io = "2.11.0"
 gradle-test-logger-plugin = "3.2.0"
 mockserver-netty = "5.13.2"
+plugin-publish = "0.21.0"
 
 [libraries]
 apache-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
@@ -64,7 +65,7 @@ testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", v
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 
 [plugins]
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
