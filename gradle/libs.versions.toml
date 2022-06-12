@@ -24,7 +24,7 @@ apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
-jdom2 = { module = "org.jdom:jdom2", version = "jdom2" }
+jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver-netty" }
