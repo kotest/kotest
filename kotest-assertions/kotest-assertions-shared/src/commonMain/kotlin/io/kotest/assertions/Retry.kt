@@ -4,7 +4,7 @@ import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.TimeSource
+import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
 
 /**
@@ -56,7 +56,7 @@ suspend fun <T, E : Throwable> retry(
    exceptionClass: KClass<E>,
    f: suspend () -> T
 ): T {
-   val mark = TimeSource.Monotonic.markNow() // TODO #3052
+   val mark = MonotonicTimeSourceCompat.markNow() // TODO #3052
    val end = mark.plus(timeout)
    var retrySoFar = 0
    var nextAwaitDuration = delay.inWholeMilliseconds

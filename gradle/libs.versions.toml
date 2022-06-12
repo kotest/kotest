@@ -68,4 +68,3 @@ junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-

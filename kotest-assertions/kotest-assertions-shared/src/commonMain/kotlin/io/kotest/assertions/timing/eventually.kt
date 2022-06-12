@@ -5,12 +5,12 @@ import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
-import kotlinx.coroutines.delay
+import io.kotest.common.MonotonicTimeSourceCompat
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
+import kotlinx.coroutines.delay
 
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
@@ -78,7 +78,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T {
 
-   val start = TimeSource.Monotonic.markNow() // TODO #3052
+   val start = MonotonicTimeSourceCompat.markNow() // TODO #3052
    val end = start.plus(config.duration)
    var times = 0
    var firstError: Throwable? = null
@@ -120,7 +120,7 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      val delayMark = TimeSource.Monotonic.markNow() // TODO #3052
+      val delayMark = MonotonicTimeSourceCompat.markNow() // TODO #3052
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
    }

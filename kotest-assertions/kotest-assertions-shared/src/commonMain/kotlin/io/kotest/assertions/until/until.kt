@@ -2,7 +2,7 @@ package io.kotest.assertions.until
 
 import io.kotest.assertions.failure
 import kotlin.time.Duration
-import kotlin.time.TimeSource
+import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
 
 fun interface UntilListener<in T> {
@@ -114,7 +114,7 @@ suspend fun <T> until(
    f: suspend () -> T
 ): T {
 
-   val start = TimeSource.Monotonic.markNow() // TODO #3052
+   val start = MonotonicTimeSourceCompat.markNow() // TODO #3052
    val end = start.plus(duration)
    var times = 0
 
