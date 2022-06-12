@@ -8,16 +8,18 @@ import java.nio.file.Paths
 import kotlin.io.path.notExists
 
 actual fun readSeed(path: TestPath): Long? {
-   val p = seedPath(path)
-   if (p.notExists()) return null
    return try {
-      Files.readAllLines(p).firstOrNull()?.trim()?.toLongOrNull()
+      val p = seedPath(path)
+      if (p.notExists()) {
+         null
+      } else {
+         Files.readAllLines(p).firstOrNull()?.trim()?.toLongOrNull()
+      }
    } catch (e: Exception) {
       println("Error reading seed")
-      e.print()
-      null
+       e.print()
+       null
    }
-}
 
 fun seedDirectory(): Path = Paths.get(System.getProperty("user.home")).resolve(".kotest").resolve("seeds")
 
@@ -26,9 +28,9 @@ fun seedPath(path: TestPath): Path {
 }
 
 actual fun writeSeed(path: TestPath, seed: Long) {
-   val f = seedPath(path)
-   f.parent.toFile().mkdirs()
    try {
+      val f = seedPath(path)
+      f.parent.toFile().mkdirs()
       Files.write(f, seed.toString().encodeToByteArray())
    } catch (e: Exception) {
       println("Error writing seed")
@@ -37,8 +39,8 @@ actual fun writeSeed(path: TestPath, seed: Long) {
 }
 
 actual fun clearSeed(path: TestPath) {
-   val f = seedPath(path)
    try {
+      val f = seedPath(path)
       f.toFile().deleteRecursively()
    } catch (e: Exception) {
       println("Error clearing seed")
