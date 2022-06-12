@@ -20,6 +20,7 @@ actual fun readSeed(path: TestPath): Long? {
       e.print()
       null
    }
+}
 
 fun seedDirectory(): Path = Paths.get(System.getProperty("user.home")).resolve(".kotest").resolve("seeds")
 
