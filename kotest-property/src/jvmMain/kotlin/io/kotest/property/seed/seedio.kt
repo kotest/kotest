@@ -19,10 +19,10 @@ actual fun readSeed(path: TestPath): Long? {
    }
 }
 
-fun xdgCacheHomeOrNull(): String? = System.getenv("XDG_CACHE_HOME")?.takeIf { it.isNotBlank() }
-fun userHome(): String = System.getProperty("user.home")
-fun configDirectory(): String = xdgCacheHomeOrNull() ?: userHome()
-fun seedDirectory(): Path = Paths.get(configDirectory()).resolve(".kotest").resolve("seeds")
+internal fun xdgCacheHomeOrNull(): String? = System.getenv("XDG_CACHE_HOME")?.takeIf { it.isNotBlank() }
+internal fun userHome(): String = System.getProperty("user.home")
+internal fun configDirectory(): String = xdgCacheHomeOrNull() ?: userHome()
+internal fun seedDirectory(): Path = Paths.get(configDirectory()).resolve(".kotest").resolve("seeds")
 
 fun seedPath(path: TestPath): Path {
    return seedDirectory().resolve(path.value)
