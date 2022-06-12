@@ -9,7 +9,7 @@ import io.kotest.property.PropertyContext
  *
  * For example, to check that at least 25% of the iterations where classified as 'even':
  *
- *       checkCoverage("even", 25.0) {
+ *       withCoveragePercentage("even", 25.0) {
  *          forAll(Arb.int()) { a ->
  *             classify(a % 2 == 0, "even")
  *             a + a == 2 * a
@@ -35,11 +35,11 @@ suspend fun withCoveragePercentage(
 
 
 /**
- * Asserts that the given [classification] was applied to at least [percentage] number of tests.
+ * Asserts that the given [classification] was applied to at least [count] number of tests.
  *
- * For example, to check that at least 25% of the iterations where classified as 'even':
+ * For example, to check that at least 150 of the iterations where classified as 'even':
  *
- *       checkCoverage("even", 25.0) {
+ *       withCoverageCount("even", 150) {
  *          forAll(Arb.int()) { a ->
  *             classify(a % 2 == 0, "even")
  *             a + a == 2 * a
