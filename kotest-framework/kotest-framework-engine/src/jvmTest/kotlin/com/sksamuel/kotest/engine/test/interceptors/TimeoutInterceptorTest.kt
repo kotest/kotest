@@ -28,7 +28,7 @@ class TimeoutInterceptorTest : FunSpec() {
             TestType.Test,
          )
 
-         TimeoutInterceptor(TimeSource.Monotonic.markNow()).intercept(
+         TimeoutInterceptor(TimeSource.Monotonic.markNow()).intercept( // TODO #3052
             tc.copy(config = tc.config.copy(timeout = 1.milliseconds)),
             NoopTestScope(tc, coroutineContext)
          ) { _, _ ->

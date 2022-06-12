@@ -26,7 +26,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow()) // TODO #3052
          .intercept(tc, context) { _, _ -> throw AssertionError("boom") }
          .isFailure.shouldBeTrue()
 
@@ -44,7 +44,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow()) // TODO #3052
          .intercept(tc, context) { _, _ -> error("boom") }
          .isError.shouldBeTrue()
 

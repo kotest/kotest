@@ -25,7 +25,7 @@ data class Continually<T> (
    val listener: ContinuallyListener<T> = ContinuallyListener.noop,
    ) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
-      val start = TimeSource.Monotonic.markNow()
+      val start = TimeSource.Monotonic.markNow() // TODO #3052
       val end = start.plus(duration)
       var times = 0
       var result: T? = null

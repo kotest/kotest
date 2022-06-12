@@ -78,7 +78,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T {
 
-   val start = TimeSource.Monotonic.markNow()
+   val start = TimeSource.Monotonic.markNow() // TODO #3052
    val end = start.plus(config.duration)
    var times = 0
    var firstError: Throwable? = null
@@ -120,7 +120,7 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      val delayMark = TimeSource.Monotonic.markNow()
+      val delayMark = TimeSource.Monotonic.markNow() // TODO #3052
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
    }

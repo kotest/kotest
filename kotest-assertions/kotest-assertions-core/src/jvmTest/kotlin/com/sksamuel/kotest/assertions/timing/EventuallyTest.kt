@@ -171,7 +171,7 @@ class EventuallyTest : WordSpec() {
             counter.get().shouldBe(2)
          }
          "handle shouldNotBeNull" {
-            val mark = TimeSource.Monotonic.markNow()
+            val mark = TimeSource.Monotonic.markNow() // TODO #3052
             shouldThrow<java.lang.AssertionError> {
                 eventually(50.milliseconds) {
                     val str: String? = null

@@ -64,7 +64,7 @@ class UntilTest : FunSpec({
    }
 
    test("until with predicate and interval") {
-      val start = TimeSource.Monotonic.markNow()
+      val start = TimeSource.Monotonic.markNow() // TODO #3052
       var attempts = 0
       var t = ""
        until(1.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
@@ -96,7 +96,7 @@ class UntilTest : FunSpec({
    }
 
    test("until should support fibonacci intervals") {
-      val start = TimeSource.Monotonic.markNow()
+      val start = TimeSource.Monotonic.markNow() // TODO #3052
       var t = ""
       var attempts = 0
       val result = until(10.seconds, 10.milliseconds.fibonacci(), { t == "xxxxxx" }) {

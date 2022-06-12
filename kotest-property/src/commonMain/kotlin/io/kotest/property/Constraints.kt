@@ -28,7 +28,7 @@ fun interface Constraints {
        * Returns a [Constraints] that executes the property test for a certain duration.
        */
       fun duration(duration: Duration) = object : Constraints {
-         val mark = TimeSource.Monotonic.markNow().plus(duration)
+         val mark = TimeSource.Monotonic.markNow().plus(duration) // TODO #3052
          override fun evaluate(): Boolean {
             return mark.hasNotPassedNow()
          }
@@ -39,7 +39,3 @@ fun interface Constraints {
 fun Constraints.and(other: Constraints) = Constraints { this@and.evaluate() && other.evaluate() }
 
 fun Constraints.or(other: Constraints) = Constraints { this@or.evaluate() || other.evaluate() }
-
-
-
-

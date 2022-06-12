@@ -49,7 +49,7 @@ class TestCaseExecutor(
    private val logger = Logger(TestCaseExecutor::class)
 
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
-      val timeMark = TimeSource.Monotonic.markNow()
+      val timeMark = TimeSource.Monotonic.markNow() // TODO #3052
 
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
