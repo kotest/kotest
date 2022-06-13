@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
+import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -10,7 +11,6 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.common.MonotonicTimeSourceCompat
 
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
