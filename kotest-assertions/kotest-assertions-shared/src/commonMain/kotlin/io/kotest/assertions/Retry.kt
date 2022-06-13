@@ -56,7 +56,7 @@ suspend fun <T, E : Throwable> retry(
    exceptionClass: KClass<E>,
    f: suspend () -> T
 ): T {
-   val mark = MonotonicTimeSourceCompat.markNow() // TODO #3052
+   val mark = MonotonicTimeSourceCompat.markNow()
    val end = mark.plus(timeout)
    var retrySoFar = 0
    var nextAwaitDuration = delay.inWholeMilliseconds

@@ -5,8 +5,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import io.kotest.common.MonotonicTimeSourceCompat
 
-val start by lazy { MonotonicTimeSourceCompat.markNow() } // TODO #3052
-val startMillis by lazy { timeInMillis() } // TODO #3052
+val start by lazy { MonotonicTimeSourceCompat.markNow() }
 
 @PublishedApi
 internal fun isLoggingEnabled() =

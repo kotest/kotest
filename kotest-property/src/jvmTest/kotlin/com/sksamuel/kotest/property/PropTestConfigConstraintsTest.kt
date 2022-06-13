@@ -276,7 +276,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
 
       test("PropTestConfig constraints should support durations") {
          val config = PropTestConfig(constraints = Constraints.duration(200.milliseconds))
-         val start = MonotonicTimeSourceCompat.markNow() // TODO #3052
+         val start = MonotonicTimeSourceCompat.markNow()
          checkAll(config, Arb.string()) { _ -> }
          // we should have exited around 200 millis
          start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)

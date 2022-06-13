@@ -16,6 +16,10 @@ class PersistSeedsTest : FunSpec({
       seedDirectory().toFile().listFiles().forEach { it.delete() }
    }
 
+   afterTest {
+      PropertyTesting.writeFailedSeed = true
+   }
+
    test("failed tests should persist seeds") {
       shouldThrowAny {
          checkAll<Int, Int>(PropTestConfig(seed = 2344324)) { a, b ->

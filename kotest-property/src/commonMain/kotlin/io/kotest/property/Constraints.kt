@@ -28,7 +28,7 @@ fun interface Constraints {
        * Returns a [Constraints] that executes the property test for a certain duration.
        */
       fun duration(duration: Duration) = object : Constraints {
-         val mark = MonotonicTimeSourceCompat.markNow() + duration // TODO #3052
+         val mark = MonotonicTimeSourceCompat.markNow() + duration
          override fun evaluate(): Boolean {
             return mark.hasNotPassedNow()
          }
