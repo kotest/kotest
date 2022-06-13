@@ -27,6 +27,16 @@ forAll<String, String>(555) { a,b -> a + b == "$a$b" }
 forAll<String, String> { a,b -> a + b == "$a$b" }
 ```
 
+If you are using Kotest framework, then you can perform this action before any tests by using project config. For example:
+
+```kotlin
+class KotestConfig : AbstractProjectConfig() {
+   override suspend fun beforeProject() {
+      PropertyTesting.defaultIterationCount = 123
+   }
+}
+```
+
 ### Printing Shrink Steps
 
 By default, when using shrinking, each shrinking step will not be logged, but only the final shrunk value.

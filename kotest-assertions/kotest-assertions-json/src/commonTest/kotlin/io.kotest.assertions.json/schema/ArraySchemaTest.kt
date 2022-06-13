@@ -1,17 +1,19 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.shouldFail
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@OptIn(ExperimentalKotest::class)
 class ArraySchemaTest : FunSpec(
    {
       val numberArray = jsonSchema { array { number() } }
 
       val person = jsonSchema {
          obj {
-            withProperty("name", required = true) { string() }
-            withProperty("age", required = true) { number() }
+            withProperty("name") { string() }
+            withProperty("age") { number() }
          }
       }
 
@@ -40,7 +42,7 @@ class ArraySchemaTest : FunSpec(
                { "name": "bob", "age": 3 },
                { "name": "bob" }
             ]
-         """.trimIndent()
+            """.trimIndent()
 
          missingAge shouldNotMatchSchema personArray
 

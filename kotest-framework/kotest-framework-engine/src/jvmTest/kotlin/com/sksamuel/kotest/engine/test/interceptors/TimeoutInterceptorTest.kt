@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
+import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -13,7 +14,6 @@ import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
 
 class TimeoutInterceptorTest : FunSpec() {
    init {
@@ -28,7 +28,7 @@ class TimeoutInterceptorTest : FunSpec() {
             TestType.Test,
          )
 
-         TimeoutInterceptor(TimeSource.Monotonic.markNow()).intercept(
+         TimeoutInterceptor(MonotonicTimeSourceCompat.markNow()).intercept(
             tc.copy(config = tc.config.copy(timeout = 1.milliseconds)),
             NoopTestScope(tc, coroutineContext)
          ) { _, _ ->

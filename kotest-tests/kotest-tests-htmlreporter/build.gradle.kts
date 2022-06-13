@@ -1,12 +1,8 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
 
    sourceSets {
       val jvmTest by getting {
@@ -21,5 +17,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")

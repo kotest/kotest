@@ -1,22 +1,32 @@
-apply(plugin = "maven-publish")
-apply(plugin = "signing")
+plugins {
+   signing
+   `java-library`
+   `maven-publish`
+}
 
-repositories {
-   mavenCentral()
+val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
+
+val javadoc = tasks.named("javadoc")
+
+val javadocJar by tasks.creating(Jar::class) {
+   group = JavaBasePlugin.DOCUMENTATION_GROUP
+   description = "Assembles java doc to jar"
+   archiveClassifier.set("javadoc")
+   from(javadoc)
+}
+
+publishing {
+   publications.withType<MavenPublication>().forEach {
+      it.apply {
+         artifact(javadocJar)
+      }
+   }
 }
 
 val ossrhUsername: String by project
 val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
-
-fun Project.publishing(action: PublishingExtension.() -> Unit) =
-   configure(action)
-
-fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
-   configure(configure)
-
-val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
 signing {
    useGpgCmd()
@@ -37,8 +47,8 @@ publishing {
          name = "deploy"
          url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
          credentials {
-            username = java.lang.System.getenv("OSSRH_USERNAME") ?: ossrhUsername
-            password = java.lang.System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
+            username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
+            password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
          }
       }
    }

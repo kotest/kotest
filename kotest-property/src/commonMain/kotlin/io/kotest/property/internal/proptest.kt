@@ -9,6 +9,7 @@ import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
+import io.kotest.property.statistics.outputStatistics
 
 suspend fun <A> proptest(
    genA: Gen<A>,
@@ -63,6 +64,7 @@ suspend fun <A> proptest(
       }
    }
 
+   outputStatistics(context, 1, true)
    context.outputClassifications(1, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -122,6 +124,7 @@ suspend fun <A, B> proptest(
          }
    }
 
+   outputStatistics(context, 2, true)
    context.outputClassifications(2, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -186,6 +189,7 @@ suspend fun <A, B, C> proptest(
          }
    }
 
+   outputStatistics(context, 3, true)
    context.outputClassifications(3, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -250,6 +254,7 @@ suspend fun <A, B, C, D> proptest(
          }
    }
 
+   outputStatistics(context, 4, true)
    context.outputClassifications(4, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -336,6 +341,7 @@ suspend fun <A, B, C, D, E> proptest(
          }
    }
 
+   outputStatistics(context, 5, true)
    context.outputClassifications(5, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -395,6 +401,7 @@ suspend fun <A, B, C, D, E, F> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 6, true)
    context.outputClassifications(6, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -458,6 +465,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 7, true)
    context.outputClassifications(7, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -525,6 +533,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 8, true)
    context.outputClassifications(8, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -596,6 +605,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 9, true)
    context.outputClassifications(9, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -671,6 +681,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 10, true)
    context.outputClassifications(10, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -762,6 +773,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 11, true)
    context.outputClassifications(11, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -871,6 +883,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
          config.listeners.forEach { it.afterTest() }
       }
 
+   outputStatistics(context, 12, true)
    context.outputClassifications(12, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
