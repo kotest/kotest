@@ -50,28 +50,25 @@ fun <A> Arb.Companion.set(gen: Gen<A>, size: Int, slippage: Int = 10): Arb<Set<A
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100, slippage: Int = 10): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
-   return arbitrary {
-      shrinker = SetShrinker(range),
-      fn = {
-         val genIter = gen.generate(it).iterator()
-         val targetSize = it.random.nextInt(range)
-         val set = mutableSetOf<A>()
-         var iterations = 0
-         val maxMisses = targetSize * slippage
-         // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
-         // to satisfy our range, so we can try for a while, but must not try forever.
-         // The slippage factor controls how many times we will accept a non unique element before giving up,
-         // which is the number of elements in the target set * slippage
-         while (iterations < maxMisses && set.size < targetSize && genIter.hasNext()) {
-            val size = set.size
-            set.add(genIter.next().value)
-            if (set.size == size) iterations++
-         }
-         check(set.size == targetSize) {
-            "the target size requirement of $targetSize could not be satisfied after $iterations consecutive samples"
-         }
-         set
+   return arbitrary(SetShrinker(range)) {
+      val genIter = gen.generate(it).iterator()
+      val targetSize = it.random.nextInt(range)
+      val set = mutableSetOf<A>()
+      var iterations = 0
+      val maxMisses = targetSize * slippage
+      // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
+      // to satisfy our range, so we can try for a while, but must not try forever.
+      // The slippage factor controls how many times we will accept a non unique element before giving up,
+      // which is the number of elements in the target set * slippage
+      while (iterations < maxMisses && set.size < targetSize && genIter.hasNext()) {
+         val size = set.size
+         set.add(genIter.next().value)
+         if (set.size == size) iterations++
       }
+      check(set.size == targetSize) {
+         "the target size requirement of $targetSize could not be satisfied after $iterations consecutive samples"
+      }
+      set
    }
 }
 
@@ -140,7 +137,7 @@ fun <A> Arb<A>.chunked(minSize: Int, maxSize: Int): Arb<List<A>> = Arb.list(this
 /**
  * A Shrinker for sets, utilizing the ListShrinker.
  */
-class SetShrinker<A>(private val range: IntRange) : Shrinker<List<A>> {
+class SetShrinker<A>(private val range: IntRange) : Shrinker<Set<A>> {
    val listShrinker = ListShrinker<A>(range)
 
    override fun shrink(value: Set<A>): List<Set<A>> =
