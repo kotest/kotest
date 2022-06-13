@@ -1,12 +1,8 @@
 package io.kotest.common
 
 import io.kotest.mpp.timeInMillis
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
-
 
 /**
  * Executes the given [block] and returns elapsed time in milliseconds.
@@ -14,9 +10,6 @@ import kotlin.time.TimeSource
 @KotestInternal
 @SoftDeprecated("temp fix for breaking change in Kotlin 1.6 -> 1.7")
 inline fun measureTimeMillisCompat(block: () -> Unit): Long {
-   contract {
-      callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-   }
    val start = timeInMillis()
    block()
    return timeInMillis() - start
