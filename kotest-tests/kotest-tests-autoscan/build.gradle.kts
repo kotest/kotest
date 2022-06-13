@@ -1,11 +1,8 @@
 plugins {
-   id("kotlin-conventions")
+   id("kotest-jvm-conventions")
 }
 
 kotlin {
-   targets {
-      jvm()
-   }
 
    sourceSets {
 
