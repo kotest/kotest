@@ -1,6 +1,6 @@
 package io.kotest.assertions.json.schema
 
-import ContainsSpec
+import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.common.ExperimentalKotest
@@ -86,10 +86,16 @@ private fun validate(
    } ?: emptyList()
 
    fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
-      val foundElements = tree.elements.mapIndexed { i, node ->
-         validate("$currentPath.contains[$i]", node, schema).isEmpty()
-      }.count { it }
-      return violationIf(foundElements == 0, "Expected any item of type ${schema.typeName()}")
+      val schemaViolations = tree.elements.mapIndexed { i, node ->
+         validate("$currentPath.contains[$i]", node, schema)
+      }
+      val foundElements = schemaViolations.count { it.isEmpty() }
+      return when {
+         foundElements != 0 -> emptyList()
+         foundElements == 0 -> violation("Expected any item of type ${schema.typeName()}") + schemaViolations.flatten()
+         schemaViolations.isNotEmpty() -> schemaViolations.flatten()
+         else -> emptyList()
+      }
    }
 
    fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
@@ -105,10 +111,9 @@ private fun validate(
                "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
             )
             val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
-            matcherViolation + sizeViolation +
-               (expected.elementType?.violation(tree)
-                  ?: expected.contains?.violation(tree)
-                  ?: emptyList())
+            val containsViolation = expected.contains?.violation(tree) ?: emptyList()
+            val elementTypeViolation = expected.elementType?.violation(tree) ?: emptyList()
+            matcherViolation + sizeViolation + containsViolation + elementTypeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {

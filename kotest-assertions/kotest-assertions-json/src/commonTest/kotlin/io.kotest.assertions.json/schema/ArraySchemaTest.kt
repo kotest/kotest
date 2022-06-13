@@ -109,6 +109,8 @@ class ArraySchemaTest : FunSpec(
          "[\"bob\"]" shouldMatchSchema  containsStringArray
          shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
             $ => Expected any item of type string
+            $.contains[0] => Expected string, but was number
+            $.contains[1] => Expected string, but was number
          """.trimIndent()
       }
 
@@ -120,6 +122,7 @@ class ArraySchemaTest : FunSpec(
          )
          shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
             $ => Expected any item of type number
+            $.contains[0] => Expected number, but was string
          """.trimIndent()
       }
 
@@ -131,6 +134,7 @@ class ArraySchemaTest : FunSpec(
          )
          shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
             $ => Expected any item of type object
+            $.contains[0] => Expected object, but was string
          """.trimIndent()
          "[\"life\", \"universe\", \"everything\", {\"name\": \"bob\"}]" shouldMatchSchema schema
       }
@@ -141,6 +145,29 @@ class ArraySchemaTest : FunSpec(
             array(contains = containsSpec { number() })
          }
          array shouldMatchSchema containsStringArray
+      }
+
+      test("Array not contains person") {
+         val array = "[\"life\", 42]"
+         val containsPersonArray = jsonSchema {
+            array(contains = containsSpec { person() })
+         }
+         shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
+            $ => Expected any item of type object
+            $.contains[0] => Expected object, but was string
+            $.contains[1] => Expected object, but was number
+         """.trimIndent()
+      }
+
+      test("Array contains person with wrong age type") {
+         val array = "[{\"name\": \"bob\", \"age\": \"wrong\"}]"
+         val containsPersonArray = jsonSchema {
+            array(contains = containsSpec { person() })
+         }
+         shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
+            $ => Expected any item of type object
+            $.contains[0].age => Expected number, but was string
+         """.trimIndent()
       }
 
       test("Array without contains and elementType") {
