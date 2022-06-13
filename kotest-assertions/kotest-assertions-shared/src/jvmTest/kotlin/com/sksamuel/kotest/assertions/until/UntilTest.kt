@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
+import io.kotest.common.MonotonicTimeSourceCompat
 
 class UntilTest : FunSpec({
 
@@ -64,7 +64,7 @@ class UntilTest : FunSpec({
    }
 
    test("until with predicate and interval") {
-      val start = TimeSource.Monotonic.markNow()
+      val start = MonotonicTimeSourceCompat.markNow() // TODO #3052
       var attempts = 0
       var t = ""
        until(1.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
@@ -96,7 +96,7 @@ class UntilTest : FunSpec({
    }
 
    test("until should support fibonacci intervals") {
-      val start = TimeSource.Monotonic.markNow()
+      val start = MonotonicTimeSourceCompat.markNow() // TODO #3052
       var t = ""
       var attempts = 0
       val result = until(10.seconds, 10.milliseconds.fibonacci(), { t == "xxxxxx" }) {

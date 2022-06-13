@@ -10,7 +10,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
-import kotlin.time.TimeSource
+import io.kotest.common.MonotonicTimeSourceCompat
 
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
@@ -26,7 +26,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(MonotonicTimeSourceCompat.markNow()) // TODO #3052
          .intercept(tc, context) { _, _ -> throw AssertionError("boom") }
          .isFailure.shouldBeTrue()
 
@@ -44,7 +44,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(MonotonicTimeSourceCompat.markNow()) // TODO #3052
          .intercept(tc, context) { _, _ -> error("boom") }
          .isError.shouldBeTrue()
 

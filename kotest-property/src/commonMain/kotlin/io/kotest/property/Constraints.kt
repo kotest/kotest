@@ -1,7 +1,7 @@
 package io.kotest.property
 
 import kotlin.time.Duration
-import kotlin.time.TimeSource
+import io.kotest.common.MonotonicTimeSourceCompat
 
 /**
  * Controls iterations of a property test.
@@ -28,7 +28,7 @@ fun interface Constraints {
        * Returns a [Constraints] that executes the property test for a certain duration.
        */
       fun duration(duration: Duration) = object : Constraints {
-         val mark = TimeSource.Monotonic.markNow().plus(duration)
+         val mark = MonotonicTimeSourceCompat.markNow() + duration // TODO #3052
          override fun evaluate(): Boolean {
             return mark.hasNotPassedNow()
          }
@@ -39,7 +39,3 @@ fun interface Constraints {
 fun Constraints.and(other: Constraints) = Constraints { this@and.evaluate() && other.evaluate() }
 
 fun Constraints.or(other: Constraints) = Constraints { this@or.evaluate() || other.evaluate() }
-
-
-
-
