@@ -1,12 +1,14 @@
 package io.kotest.property
 
 import kotlin.math.roundToInt
+import io.kotest.property.statistics.Label
 
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
 class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
+
 
    private var successes = 0
    private var failures = 0
@@ -19,6 +21,8 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
    fun start() {
       attempts++
    }
+
+   private val statistics = mutableMapOf<Label?, MutableMap<Any?, Int>>()
 
    fun markSuccess() {
       successes++
@@ -87,5 +91,29 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
          val current = classifications.getOrElse(falseLabel) { 0 }
          classifications[falseLabel] = current + 1
       }
+   }
+
+   /**
+    * Returns all labels used in this property test run.
+    */
+   fun labels(): Set<Label> = statistics.keys.toSet().filterNotNull().toSet()
+
+   /**
+    * Returns the statistics.
+    */
+   fun statistics(): Map<Label?, Map<Any?, Int>> = statistics.toMap()
+
+   fun collect(classification: Any?) {
+      collect(null, classification)
+   }
+
+   fun collect(label: String, classification: Any?) {
+      collect(Label(label), classification)
+   }
+
+   private fun collect(label: Label?, classification: Any?) {
+      val stats = statistics.getOrPut(label) { mutableMapOf() }
+      val count = stats.getOrElse(classification) { 0 }
+      stats[classification] = count + 1
    }
 }

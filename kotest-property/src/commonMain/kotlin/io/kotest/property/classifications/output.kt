@@ -3,7 +3,6 @@ package io.kotest.property.classifications
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyResult
-import io.kotest.property.PropertyTesting
 
 fun PropertyContext.outputClassifications(inputs: Int, config: PropTestConfig, seed: Long) {
    val result =

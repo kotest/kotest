@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,7 +13,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import kotlin.time.TimeMark
 
 // this scheduler is used to issue the interrupts after timeouts
 // we only need one in the JVM
@@ -25,11 +25,11 @@ private val scheduler =
  */
 internal actual fun blockedThreadTimeoutInterceptor(
    configuration: ProjectConfiguration,
-   start: TimeMark,
+   start: TimeMarkCompat,
 ): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor(start)
 
 internal class BlockedThreadTimeoutInterceptor(
-   private val start: TimeMark,
+   private val start: TimeMarkCompat,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(this::class)

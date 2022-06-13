@@ -1,11 +1,11 @@
 package io.kotest.mpp
 
+import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.TimeMarkCompat
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
-val start by lazy { TimeSource.Monotonic.markNow() }
+val start by lazy { MonotonicTimeSourceCompat.markNow() }
 
 @PublishedApi
 internal fun isLoggingEnabled() =
@@ -38,4 +38,4 @@ fun log(t: Throwable?, f: () -> String) {
 }
 
 @ExperimentalTime
-expect fun writeLog(start: TimeMark, t: Throwable?, f: () -> String)
+expect fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String)
