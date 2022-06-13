@@ -11,9 +11,9 @@ class ObjectSchemaTest : FunSpec(
    {
       val personSchemaAllowingExtraProperties = jsonSchema {
          obj {
-            withProperty("name", required = true) { string() }
-            withProperty("initials", required = false) { string() }
-            withProperty("age", required = true) { number() }
+            withProperty("name") { string() }
+            withProperty("initials", optional = true) { string() }
+            withProperty("age") { number() }
          }
       }
 

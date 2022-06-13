@@ -26,10 +26,10 @@ class ObjectSchemaBuilderTest : StringSpec(
                withProperty(e) { `null`() }
                withProperty(f) {
                   obj {
-                     withProperty(g) { number() }
+                     withProperty(g, optional = true) { number() }
                      withProperty(h) {
                         obj {
-                           withProperty(i, required = true) { string() }
+                           withProperty(i) { string() }
                            additionalProperties = false
                         }
                      }
@@ -44,9 +44,9 @@ class ObjectSchemaBuilderTest : StringSpec(
                array(d) { integer() }
                `null`(e)
                obj(f) {
-                  number(g)
+                  number(g, optional = true)
                   obj(h) {
-                     string(i, required = true)
+                     string(i)
                      additionalProperties = false
                   }
                }
