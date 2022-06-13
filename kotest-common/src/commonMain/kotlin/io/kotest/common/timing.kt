@@ -5,7 +5,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 
@@ -26,27 +25,27 @@ inline fun measureTimeMillisCompat(block: () -> Unit): Long {
 
 @KotestInternal
 @SoftDeprecated("temp fix for breaking change in Kotlin 1.6 -> 1.7")
-class TimeMarkCompat internal constructor(internal val startMillis: Long) : TimeMark {
+class TimeMarkCompat internal constructor(internal val startMillis: Long) {
 
-   override fun elapsedNow(): Duration = MonotonicTimeSourceCompat.elapsedFrom(this)
+   fun elapsedNow(): Duration = MonotonicTimeSourceCompat.elapsedFrom(this)
 
-   override operator fun plus(duration: Duration): TimeMarkCompat =
+   operator fun plus(duration: Duration): TimeMarkCompat =
       MonotonicTimeSourceCompat.adjustReading(this, duration)
 
-   override operator fun minus(duration: Duration): TimeMarkCompat =
+   operator fun minus(duration: Duration): TimeMarkCompat =
       MonotonicTimeSourceCompat.adjustReading(this, -duration)
 
-   override fun hasPassedNow(): Boolean = !elapsedNow().isNegative()
+   fun hasPassedNow(): Boolean = !elapsedNow().isNegative()
 
-   override fun hasNotPassedNow(): Boolean = elapsedNow().isNegative()
+   fun hasNotPassedNow(): Boolean = elapsedNow().isNegative()
 }
 
 
 @KotestInternal
 @SoftDeprecated("temp fix for breaking change in Kotlin 1.6 -> 1.7")
-object MonotonicTimeSourceCompat : TimeSource {
+object MonotonicTimeSourceCompat {
 
-   override fun markNow(): TimeMarkCompat = TimeMarkCompat(timeInMillis())
+   fun markNow(): TimeMarkCompat = TimeMarkCompat(timeInMillis())
 
    fun elapsedFrom(timeMark: TimeMarkCompat): Duration =
       (timeInMillis() - timeMark.startMillis).milliseconds

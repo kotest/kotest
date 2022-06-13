@@ -33,7 +33,6 @@ import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.mpp.Logger
 import kotlin.time.Duration
-import kotlin.time.TimeMark
 
 /**
  * Executes a single [TestCase].
@@ -52,7 +51,7 @@ class TestCaseExecutor(
 
    @OptIn(ExperimentalStdlibApi::class)
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
-      val timeMark: TimeMark = MonotonicTimeSourceCompat.markNow()
+      val timeMark = MonotonicTimeSourceCompat.markNow()
 
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,

@@ -6,11 +6,11 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.TimeMarkCompat
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeMark
-import kotlinx.coroutines.delay
 
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
@@ -162,8 +162,8 @@ data class EventuallyConfig(
 
 data class EventuallyState<T>(
    val result: T?,
-   val start: TimeMark,
-   val end: TimeMark,
+   val start: TimeMarkCompat,
+   val end: TimeMarkCompat,
    val iteration: Int,
    val firstError: Throwable?,
    val thisError: Throwable?,

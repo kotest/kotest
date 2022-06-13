@@ -4,13 +4,15 @@ import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
+import io.kotest.common.KotestInternal
 import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.TimeMarkCompat
+import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeMark
-import kotlinx.coroutines.delay
 
-data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
+@KotestInternal
+data class ContinuallyState(val start: TimeMarkCompat, val end: TimeMarkCompat, val times: Int)
 
 fun interface ContinuallyListener<in T> {
    fun onEval(t: T, state: ContinuallyState)
