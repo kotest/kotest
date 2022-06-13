@@ -25,6 +25,7 @@ import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
+import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TestPathContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
@@ -55,6 +56,7 @@ class TestCaseExecutor(
 
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
+         TestNameContextInterceptor,
          TestFinishedInterceptor(listener),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,

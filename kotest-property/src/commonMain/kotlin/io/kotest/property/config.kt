@@ -5,6 +5,9 @@ import io.kotest.mpp.atomics.AtomicProperty
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardLabelsReporter
+import io.kotest.property.statistics.DefaultStatisticsReporter
+import io.kotest.property.statistics.StatisticsReportMode
+import io.kotest.property.statistics.StatisticsReporter
 
 /**
  * Global object containing settings for property testing.
@@ -51,6 +54,16 @@ object PropertyTesting {
    }
    var writeFailedSeed: Boolean by AtomicProperty {
       sysprop("kotest.proptest.seed.write-failed", true)
+   }
+
+   @ExperimentalKotest
+   var statisticsReporter: StatisticsReporter by AtomicProperty {
+      DefaultStatisticsReporter
+   }
+
+   @ExperimentalKotest
+   var statisticsReportMode: StatisticsReportMode by AtomicProperty {
+      StatisticsReportMode.ON
    }
 }
 
