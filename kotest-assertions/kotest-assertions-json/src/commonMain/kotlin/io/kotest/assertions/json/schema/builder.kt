@@ -1,6 +1,6 @@
 package io.kotest.assertions.json.schema
 
-import ContainsSpec
+import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest

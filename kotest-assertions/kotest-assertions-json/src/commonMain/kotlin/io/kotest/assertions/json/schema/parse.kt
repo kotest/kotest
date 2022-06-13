@@ -1,6 +1,6 @@
 package io.kotest.assertions.json.schema
 
-import ContainsSpecSerializer
+import io.kotest.assertions.json.ContainsSpecSerializer
 import io.kotest.assertions.json.JsonNode
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
@@ -71,11 +71,11 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Sequence<JsonNode>>? = null
          val minItems = runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
-         val maxItems = kotlin.runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
+         val maxItems = runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
          val elementType =
-            kotlin.runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer) }.getOrNull()
+            runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer) }.getOrNull()
          val containsSpec =
-            kotlin.runCatching { decodeSerializableElement(descriptor, 5, ContainsSpecSerializer) }.getOrNull()
+            runCatching { decodeSerializableElement(descriptor, 5, ContainsSpecSerializer) }.getOrNull()
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
                3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher and beUnique() else matcher
