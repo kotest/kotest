@@ -7,6 +7,7 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
@@ -25,7 +26,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.system.measureTimeMillis
 
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
@@ -189,7 +189,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually handles shouldNotBeNull") {
-      measureTimeMillis {
+      measureTimeMillisCompat {
          shouldThrow<java.lang.AssertionError> {
             eventually(50.milliseconds()) {
                val str: String? = null
