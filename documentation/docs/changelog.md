@@ -4,6 +4,11 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.3.1 June 2022
+
+### Fixes
+
+* Support for Kotlin 1.7
 
 
 ## 5.3.0 May 2022
