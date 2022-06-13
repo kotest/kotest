@@ -70,7 +70,7 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonArray =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Sequence<JsonNode>>? = null
-         val minItems = kotlin.runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
+         val minItems = runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
          val maxItems = kotlin.runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
          val elementType =
             kotlin.runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer) }.getOrNull()
