@@ -31,11 +31,8 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: Run tests
-            run: ./gradlew check --scan
-
-         -  name: publish snapshots
-            run: ./gradlew publish
+         -  name: Run tests and publish snapshot
+            run: ./gradlew check publish --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -82,7 +79,7 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: Run tests
+         -  name: Run tests and publish snapshot
             run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
@@ -107,11 +104,8 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: Run tests
-            run: ./gradlew mingwX64Test --scan
-
-         -  name: publish mingw64 and mingw86 snapshot
-            run: ./gradlew publishMingwX64PublicationToDeployRepository
+         -  name: Run tests and publish snapshot
+            run: ./gradlew mingwX64Test publishMingwX64PublicationToDeployRepository --scan
 
          -  name: Bundle the build report
             if: failure()
