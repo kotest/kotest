@@ -1,10 +1,12 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.shouldFail
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
+@OptIn(ExperimentalKotest::class)
 class PrimitiveMatchSchemaTest : FunSpec(
    {
       test("invalid json") {

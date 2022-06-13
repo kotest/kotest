@@ -1,3 +1,5 @@
+@file:Suppress("unused") // We use unused receivers to scope DSL functions
+
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.json.JsonNode
@@ -77,19 +79,65 @@ data class JsonSchema(
        */
       fun withProperty(
          name: String,
-         required: Boolean = false,
-         elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement
+         optional: Boolean = false,
+         elementBuilder: Builder.() -> JsonSchemaElement
       ) {
-         properties[name] = JsonSchema.Builder.elementBuilder()
-         if (required) requiredProperties.add(name)
+         properties[name] = Builder.elementBuilder()
+         if (!optional) requiredProperties.add(name)
       }
+
+      fun string(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<String>? = { null }
+      ) = withProperty(name, optional) { string(matcherBuilder) }
+
+      fun integer(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Long>? = { null }
+      ) = withProperty(name, optional) { integer(matcherBuilder) }
+
+      fun decimal(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, optional) { decimal(matcherBuilder) }
+
+      fun number(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, optional) { number(matcherBuilder) }
+
+      fun array(
+         name: String,
+         optional: Boolean = false,
+         typeBuilder: () -> JsonSchemaElement
+      ) = withProperty(name, optional) { array(typeBuilder = typeBuilder) }
+
+      fun obj(
+         name: String,
+         optional: Boolean = false,
+         dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}
+      ) = withProperty(name, optional) { obj(dsl) }
+
+      fun boolean(
+         name: String,
+         optional: Boolean = false,
+      ) = withProperty(name, optional) { boolean() }
+
+      fun `null`(
+         name: String,
+         optional: Boolean = false,
+      ) = withProperty(name, optional) { `null`() }
 
       fun build() = JsonObject(
          additionalProperties = additionalProperties,
          minProperties = minProperties,
          maxProperties = maxProperties,
          properties = properties,
-         requiredProperties = requiredProperties.toTypedArray()
+         requiredProperties = requiredProperties
       )
    }
 
@@ -109,7 +157,7 @@ data class JsonSchema(
       /**
        * https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
        */
-      val requiredProperties: Array<String> = emptyArray(),
+      val requiredProperties: List<String> = emptyList(),
    ) : JsonSchemaElement {
       operator fun get(name: String) = properties.get(name)
       override fun typeName() = "object"
@@ -141,7 +189,6 @@ data class JsonSchema(
       override fun typeName() = "null"
    }
 }
-
 
 /**
  * Creates a [JsonSchema.JsonString] node, which is a leaf node that will hold a [String] value.
