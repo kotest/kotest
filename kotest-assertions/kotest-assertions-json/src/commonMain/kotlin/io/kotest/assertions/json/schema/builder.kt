@@ -106,13 +106,13 @@ data class JsonSchema(
          name: String,
          required: Boolean = false,
          matcherBuilder: () -> Matcher<Double>? = { null }
-      ) = withProperty(name, required) { number(matcherBuilder)}
+      ) = withProperty(name, required) { number(matcherBuilder) }
 
       fun array(
          name: String,
          required: Boolean = false,
          typeBuilder: () -> JsonSchemaElement
-      ) = withProperty(name, required) { array(typeBuilder) }
+      ) = withProperty(name, required) { array(typeBuilder = typeBuilder) }
 
       fun obj(
          name: String,
@@ -187,7 +187,6 @@ data class JsonSchema(
       override fun typeName() = "null"
    }
 }
-
 
 /**
  * Creates a [JsonSchema.JsonString] node, which is a leaf node that will hold a [String] value.
