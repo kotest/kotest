@@ -50,16 +50,16 @@ fun <A> Arb.Companion.set(gen: Gen<A>, size: Int, slippage: Int = 10): Arb<Set<A
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100, slippage: Int = 10): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
-   // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
-   // to satisfy our range, so we can try for a while, but must not try forever.
-   // The slippage factor controls how many times we will accept a non unique element before giving up,
-   // which is the number of elements in the target set * slippage
-   return arbitrary {
+   return arbitrary(SetShrinker(range)) {
       val genIter = gen.generate(it).iterator()
       val targetSize = it.random.nextInt(range)
-      val maxMisses = targetSize * slippage
       val set = mutableSetOf<A>()
       var iterations = 0
+      val maxMisses = targetSize * slippage
+      // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
+      // to satisfy our range, so we can try for a while, but must not try forever.
+      // The slippage factor controls how many times we will accept a non unique element before giving up,
+      // which is the number of elements in the target set * slippage
       while (iterations < maxMisses && set.size < targetSize && genIter.hasNext()) {
          val size = set.size
          set.add(genIter.next().value)
@@ -133,6 +133,17 @@ fun <A> Arb<A>.chunked(size: IntRange): Arb<List<A>> = Arb.list(this, size)
  * @param maxSize maximum number of items in the lists produced by the returned [Arb]
  */
 fun <A> Arb<A>.chunked(minSize: Int, maxSize: Int): Arb<List<A>> = Arb.list(this, minSize..maxSize)
+
+/**
+ * A Shrinker for sets, utilizing the ListShrinker.
+ */
+class SetShrinker<A>(private val range: IntRange) : Shrinker<Set<A>> {
+   val listShrinker = ListShrinker<A>(range)
+
+   override fun shrink(value: Set<A>): List<Set<A>> =
+      listShrinker.shrink(value.toList())
+         .map { it.toSet() }
+}
 
 /**
  * A Shrinker for lists. The candidates at each step include:
