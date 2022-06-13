@@ -93,7 +93,7 @@ class EventuallyTest : WordSpec() {
          }
          "handle kotlin assertion errors" {
             var thrown = false
-            eventually(25.milliseconds) {
+            eventually(100.milliseconds) {
                if (!thrown) {
                   thrown = true
                   throw AssertionError("boom")
@@ -102,7 +102,7 @@ class EventuallyTest : WordSpec() {
          }
          "handle java assertion errors" {
             var thrown = false
-            eventually(25.milliseconds) {
+            eventually(100.milliseconds) {
                if (!thrown) {
                   thrown = true
                   throw java.lang.AssertionError("boom")
