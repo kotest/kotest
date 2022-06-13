@@ -1,3 +1,5 @@
+package io.kotest.assertions.json
+
 import io.kotest.assertions.json.schema.JsonSchemaElement
 import io.kotest.assertions.json.schema.SchemaDeserializer
 import io.kotest.common.ExperimentalKotest
