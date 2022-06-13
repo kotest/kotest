@@ -17,6 +17,13 @@ jobs:
    linux:
       if: github.repository == 'kotest/kotest'
       runs-on: ubuntu-latest
+      strategy:
+         fail-fast: false
+         matrix:
+            target:
+               - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
+               - jsIrTest publishJsPublicationToDeployRepository
+               - linuxX64Test publishLinuxX64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -26,13 +33,13 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'temurin'
+               distribution: 'adopt'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests and publish snapshot
-            run: ./gradlew check publish --scan
+            run: ./gradlew ${{ matrix.target }} publish --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -74,7 +81,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'temurin'
+               distribution: 'adopt'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
@@ -102,6 +109,12 @@ jobs:
             with:
                fetch-depth: 0
 
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'adopt'
+               java-version: '8'
+
          -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests and publish snapshot
@@ -117,7 +130,6 @@ jobs:
             with:
                name: error-report
                path: build-reports.zip
-
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
