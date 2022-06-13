@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -9,11 +10,10 @@ import io.kotest.mpp.Logger
 import io.kotest.mpp.replay
 import kotlinx.coroutines.coroutineScope
 import kotlin.time.Duration
-import kotlin.time.TimeMark
 
 class TestInvocationInterceptor(
    registry: ExtensionRegistry,
-   private val timeMark: TimeMark,
+   private val timeMark: TimeMarkCompat,
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)
