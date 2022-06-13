@@ -16,16 +16,14 @@ env:
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
-  contents: read
+   contents: read
 
 jobs:
    publish_base:
       runs-on: ubuntu-latest
-      if: github.repository == 'kotest/kotest'
-
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -36,7 +34,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'temurin'
+               distribution: 'zulu'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
@@ -55,8 +53,6 @@ jobs:
 
    publish_linux:
       runs-on: ubuntu-latest
-      if: github.repository == 'kotest/kotest'
-
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -67,7 +63,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'temurin'
+               distribution: 'adopt'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
@@ -75,10 +71,26 @@ jobs:
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
 
-   publish_macos:
+   publish_mac:
       runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
+      strategy:
+         max-parallel: 1
+         matrix:
+            target:
+               - publishMacosX64PublicationToDeployRepository
+               - publishMacosArm64PublicationToDeployRepository
+               - publishIosX64PublicationToDeployRepository
+               - publishIosSimulatorArm64PublicationToDeployRepository
+               - publishIosArm64PublicationToDeployRepository
+               - publishIosArm32PublicationToDeployRepository
+               - publishTvosX64PublicationToDeployRepository
+               - publishTvosArm64PublicationToDeployRepository
+               - publishWatchosArm32PublicationToDeployRepository
+               - publishWatchosArm64PublicationToDeployRepository
+               - publishWatchosX86PublicationToDeployRepository
+               - publishWatchosX64PublicationToDeployRepository
+               - publishWatchosSimulatorArm64PublicationToDeployRepository
+               - publishTvosSimulatorArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -89,114 +101,16 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
+               distribution: 'adopt'
                java-version: '8'
-               distribution: 'temurin'
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: publish macosx64 release
-            run: ./gradlew publishMacosX64PublicationToDeployRepository
-
-         -  name: publish macosArm64 release
-            run: ./gradlew publishMacosArm64PublicationToDeployRepository
-
-   publish_watchos:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               java-version: '8'
-               distribution: 'temurin'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: publish watchosX64 release
-            run: ./gradlew publishWatchosX64PublicationToDeployRepository
-
-         -  name: publish watchosX86 release
-            run: ./gradlew publishWatchosX86PublicationToDeployRepository
-
-         -  name: publish watchosArm32 release
-            run: ./gradlew publishWatchosArm32PublicationToDeployRepository
-
-         -  name: publish watchosArm64 release
-            run: ./gradlew publishWatchosArm64PublicationToDeployRepository
-
-         -  name: publish watchosSimulatorArm64 release
-            run: ./gradlew publishWatchosSimulatorArm64PublicationToDeployRepository
-
-   publish_ios:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               java-version: '8'
-               distribution: 'temurin'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: publish iosX64 release
-            run: ./gradlew publishIosX64PublicationToDeployRepository
-
-         -  name: publish iosArm64 release
-            run: ./gradlew publishIosArm64PublicationToDeployRepository
-
-         -  name: publish iosArm32 release
-            run: ./gradlew publishIosArm32PublicationToDeployRepository
-
-         -  name: publish iosSimulatorArm64 release
-            run: ./gradlew publishIosSimulatorArm64PublicationToDeployRepository
-
-   publish_tvos:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               java-version: '8'
-               distribution: 'temurin'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: publish tvosX64 release
-            run: ./gradlew publishTvosX64PublicationToDeployRepository
-
-         -  name: publish tvosArm64 release
-            run: ./gradlew publishTvosArm64PublicationToDeployRepository
-
-         -  name: publish tvosSimulatorArm64 release
-            run: ./gradlew publishTvosSimulatorArm64PublicationToDeployRepository
+         -  name: publish
+            run: ./gradlew ${{ matrix.target }}
 
    publish_windows:
       runs-on: windows-latest
-      if: github.repository == 'kotest/kotest'
-
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -207,8 +121,8 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
+               distribution: 'adopt'
                java-version: '8'
-               distribution: 'temurin'
 
          -  uses: gradle/gradle-build-action@v2
 
