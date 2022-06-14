@@ -1,0 +1,14 @@
+[versions]
+# We separate these from the actual runtime dependencies
+kotest-testing = "4.6.3"
+
+[libraries]
+kotest-framework-launcher = { module = "io.kotest:kotest-framework-launcher", version = "4.2.0" }
+
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-testing" }
+kotest-framework-api = { module = "io.kotest:kotest-framework-api", version.ref = "kotest-testing" }
+
+kotest-legacy-launcher = { module = "io.kotest:kotest-launcher", version = "1.0.10" }
+
+jaxb-api = { module = "javax.xml.bind:jaxb-api", version = "2.3.0" }
+javax-activation = { module = "javax.activation:activation", version = "1.1.1" }

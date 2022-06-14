@@ -34,3 +34,5 @@ plugins/
 plugins-test/
 system-test/
 /system/
+
+.DS_Store
