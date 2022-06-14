@@ -4,6 +4,20 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.4.0
+
+### Fixes
+
+### Features
+
+* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality, over regular `equals`
+
+### Experimental features and changes
+
+* JSON schema arrays now supports `minItems`, `maxItems` and `uniqueItems`
+* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed to `optional`, with false as default.
+
+
 ## 5.3.1 June 2022
 
 ### Fixes
