@@ -142,7 +142,7 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:5.3.0")
+   testImplementation("io.kotest:kotest-framework-api:5.3.1")
    testImplementation("io.kotest:kotest-assertions-core-jvm:5.3.1")
 }
 
