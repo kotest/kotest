@@ -412,5 +412,42 @@ expected:<{
 }>"""
          }
       }
+
+
+      "matchAll" should {
+         "empty" {
+            emptyMap<String, String>() should matchAll()
+         }
+
+         "empty negated" {
+            emptyMap<String, String>() shouldNot matchAll("key" to { it shouldBe "value" })
+         }
+
+         "can match value" {
+            mapOf("key" to "value") should matchAll("key" to { it shouldBe "value" })
+         }
+
+         "match negated" {
+            mapOf("key" to "value") shouldNot matchAll("otherKey" to { it shouldBe "value" })
+            mapOf("key" to "value") shouldNot matchAll("key" to { it shouldBe "otherValue" })
+         }
+
+         "fail if key is not present" {
+            shouldThrow<AssertionError> {
+               mapOf("otherKey" to "value") should matchAll("key" to { it shouldBe "value" })
+            }.also {
+               println(it.message)
+            }
+         }
+
+         "fail if value is not matched" {
+            shouldThrow<AssertionError> {
+               kotlin.collections.mapOf("key" to "otherValue") should matchAll("key" to { it shouldBe "value" })
+            }.also {
+               kotlin.io.println(it.message)
+            }
+         }
+      }
    }
+
 }
