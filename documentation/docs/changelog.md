@@ -17,6 +17,9 @@ slug: changelog.html
 * JSON schema arrays now supports `minItems`, `maxItems` and `uniqueItems`
 * (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed to `optional`, with false as default.
 
+### Deprecation
+* Deprecated existing shouldBeEqualToComparingFields in favor of a new shouldBeEqualToComparingFields matcher which let you configure behaviour its using a FieldsEqualityCheckConfig class.(#3034)
+
 
 ## 5.3.1 June 2022
 
