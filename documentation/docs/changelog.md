@@ -4,7 +4,7 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.4.0 (Unreleased)
+## 5.4.0
 
 ### Fixes
 
