@@ -47,27 +47,6 @@ data class PluginDescriptor(
 
 val plugins = listOf(
    PluginDescriptor(
-      since = "193.4099.13",
-      until = "193.*",
-      sdkVersion = "IC-2019.3",
-      sourceFolder = "IC-193",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
-   ),
-   PluginDescriptor(
-      since = "201.6487",
-      until = "201.*",
-      sdkVersion = "IC-2020.1",
-      sourceFolder = "IC-201",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
-   ),
-   PluginDescriptor(
-      since = "202.1",
-      until = "202.*",
-      sdkVersion = "IC-2020.2",
-      sourceFolder = "IC-202",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
-   ),
-   PluginDescriptor(
       since = "203.5981.155", // this version is 2020.3.1 final
       until = "203.*",
       sdkVersion = "IC-2020.3",
@@ -111,12 +90,12 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-203"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-221"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
 
-version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
+version = "1.2." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
    sandboxDir.set(project.property("sandbox").toString())
