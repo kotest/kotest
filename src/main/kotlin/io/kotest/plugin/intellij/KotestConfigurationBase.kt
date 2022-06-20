@@ -8,13 +8,11 @@ import com.intellij.execution.Location
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.JavaRunConfigurationModule
-import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMExternalizerUtil
 import com.intellij.psi.PsiClass
@@ -28,7 +26,7 @@ import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
+abstract class KotestConfigurationBase(name: String, factory: ConfigurationFactory, project: Project) :
    JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory) {
 
    private var alternativeJrePath: String? = ""
@@ -62,15 +60,12 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
 
    // used by AbstractJavaTestConfigurationProducer which we don't use as that class is basically
    // around helpers for classes/methods based testing
-   // but we implement it nicely anyway
    override fun getTestType(): String = when {
       testPath != null -> "test"
       specName != null -> "spec"
       packageName != null -> "package"
       else -> "source"
    }
-
-   override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = SettingsEditorPanel(project)
 
    override fun suggestedName(): String? = RunData(specName, testPath, packageName).suggestedName()
 
@@ -108,8 +103,9 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
    }
 
    override fun getTestSearchScope(): TestSearchScope = this.searchScope.scope
+
    override fun setSearchScope(searchScope: TestSearchScope?) {
-      if (searchScope == null) this.searchScope.scope = searchScope
+      if (searchScope != null) this.searchScope.scope = searchScope
    }
 
    override fun bePatternConfiguration(classes: MutableList<PsiClass>?, method: PsiMethod?) {}
