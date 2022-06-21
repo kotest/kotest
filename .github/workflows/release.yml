@@ -8,7 +8,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-203", "IC-211", "IC-212", "IC-213", "IC-221", "IC-222" ]
+            product: [ "IC-211", "IC-212", "IC-213", "IC-221", "IC-222" ]
          max-parallel: 1
 
       runs-on: ubuntu-latest

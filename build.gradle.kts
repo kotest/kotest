@@ -47,13 +47,6 @@ data class PluginDescriptor(
 
 val plugins = listOf(
    PluginDescriptor(
-      since = "203.5981.155", // this version is 2020.3.1 final
-      until = "203.*",
-      sdkVersion = "IC-2020.3",
-      sourceFolder = "IC-203",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
-   ),
-   PluginDescriptor(
       since = "211.6693.111", // this version is 2021.1
       until = "211.*",
       sdkVersion = "IC-2021.1",
@@ -90,7 +83,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-221"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-203"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
