@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.matchers.maps
 
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.and
@@ -7,6 +9,7 @@ import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldHaveLength
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {
@@ -114,7 +117,7 @@ class MapMatchersTest : WordSpec() {
       }
 
       "containAnyKeys" should {
-         "test that a map contains any of the given keys"{
+         "test that a map contains any of the given keys" {
             val map = mapOf("a" to 1, "b" to 2, "c" to 3)
             map should containAnyKeys("a", "x", "y")
             map should containAnyKeys("a", "b", "c")
@@ -133,7 +136,7 @@ class MapMatchersTest : WordSpec() {
       }
 
       "containAnyValues" should {
-         "test that a map contains any of the given values"{
+         "test that a map contains any of the given values" {
             val map = mapOf("a" to 1, "b" to 2, "c" to 3)
             map should containAnyValues(1, 23, 24)
             map should containAnyValues(1, 2, 3)
@@ -146,7 +149,7 @@ class MapMatchersTest : WordSpec() {
                map.shouldContainAnyValuesOf(4, 5)
             }
             shouldThrow<AssertionError> {
-               map.shouldNotContainAnyValuesOf(1,5)
+               map.shouldNotContainAnyValuesOf(1, 5)
             }
          }
       }
@@ -176,11 +179,12 @@ class MapMatchersTest : WordSpec() {
           |  missing keys:
           |    "\${'$'}a"
           |
-        """.trimMargin()
+            """.trimMargin()
          }
          "test when map contains extra entries" {
             mapOf("a" to 1, "b" to 2) should (
-               containAll(mapOf("a" to 1)) and containAll(mapOf("b" to 2)))
+               containAll(mapOf("a" to 1)) and containAll(mapOf("b" to 2))
+               )
          }
          "test assertion when map contains different value type" {
             val e = shouldThrow<AssertionError> {
@@ -200,7 +204,7 @@ class MapMatchersTest : WordSpec() {
           |      but was:
           |        1
           |
-        """.trimMargin()
+            """.trimMargin()
          }
          "test that a map with nested map contains all entries from the given map" {
             val map = mapOf("a" to mapOf("b" to 2))
@@ -224,7 +228,7 @@ class MapMatchersTest : WordSpec() {
           |          but was:
           |            2
           |
-        """.trimMargin()
+            """.trimMargin()
          }
          "test shouldNot assertion" {
             val e = shouldThrow<AssertionError> {
@@ -238,7 +242,7 @@ class MapMatchersTest : WordSpec() {
           |  mapOf("a" to 1)
           |but contains
           |
-        """.trimMargin()
+            """.trimMargin()
          }
       }
 
@@ -261,7 +265,7 @@ class MapMatchersTest : WordSpec() {
           |  extra keys:
           |    "a"
           |
-        """.trimMargin()
+            """.trimMargin()
          }
          "test shouldNot assertion" {
             val e = shouldThrow<AssertionError> {
@@ -279,7 +283,7 @@ class MapMatchersTest : WordSpec() {
           |  mapOf("a" to listOf(1))
           |but equals
           |
-        """.trimMargin()
+            """.trimMargin()
          }
       }
       "be empty" should {
@@ -380,7 +384,8 @@ to be equal to
   "Key10" = "Val101",
 ...
 }
-Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, ...""".trimMargin()
+Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, ...
+            """.trimMargin()
 
             val assertionError = shouldThrow<AssertionError> { map1 shouldBe map2 }
 
@@ -413,7 +418,6 @@ expected:<{
          }
       }
 
-
       "matchAll" should {
          "empty map is matched by empty matchers" {
             emptyMap<String, String>() should matchAll()
@@ -423,6 +427,16 @@ expected:<{
             shouldThrow<AssertionError> {
                emptyMap<String, String>() shouldNot matchAll()
             }
+         }
+
+         "works correctly within assertSoftly" {
+            shouldFail {
+               assertSoftly {
+                  mapOf("key" to "hi") should matchAll("key" to { it shouldHaveLength 4 })
+               }
+            }.message shouldBe """
+               Expected map to match all assertions. Missing keys were=[key], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)].
+            """.trimIndent()
          }
 
          "empty map is not matched by matcher" {
@@ -455,5 +469,4 @@ expected:<{
          }
       }
    }
-
 }
