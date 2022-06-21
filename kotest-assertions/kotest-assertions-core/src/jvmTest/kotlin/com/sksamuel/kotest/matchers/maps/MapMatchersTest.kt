@@ -434,9 +434,9 @@ expected:<{
                assertSoftly {
                   mapOf("key" to "hi") should matchAll("key" to { it shouldHaveLength 4 })
                }
-            }.message shouldBe """
-               Expected map to match all assertions. Missing keys were=[key], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)].
-            """.trimIndent()
+            }.also {
+               it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)]."""
+            }
          }
 
          "empty map is not matched by matcher" {
