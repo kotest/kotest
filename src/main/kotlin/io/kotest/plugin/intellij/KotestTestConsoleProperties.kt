@@ -8,7 +8,7 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.psi.search.GlobalSearchScope
 
 class KotestTestConsoleProperties(
-   config: KotestConfigurationBase,
+   config: KotestConfiguration,
    executor: Executor
 ) : JavaAwareTestConsoleProperties<KotestConfiguration>(Constants.FrameworkName, config, executor) {
    init {
