@@ -415,11 +415,17 @@ expected:<{
 
 
       "matchAll" should {
-         "empty" {
+         "empty map is matched by empty matchers" {
             emptyMap<String, String>() should matchAll()
          }
 
-         "empty negated" {
+         "empty map is matched by empty matchers - negated" {
+            shouldThrow<AssertionError> {
+               emptyMap<String, String>() shouldNot matchAll()
+            }
+         }
+
+         "empty map is not matched by matcher" {
             emptyMap<String, String>() shouldNot matchAll("key" to { it shouldBe "value" })
          }
 
@@ -436,15 +442,15 @@ expected:<{
             shouldThrow<AssertionError> {
                mapOf("otherKey" to "value") should matchAll("key" to { it shouldBe "value" })
             }.also {
-               println(it.message)
+               it.message shouldBe "Expected map to match all assertions. Missing keys were=[key], Mismatched values were=[]."
             }
          }
 
          "fail if value is not matched" {
             shouldThrow<AssertionError> {
-               kotlin.collections.mapOf("key" to "otherValue") should matchAll("key" to { it shouldBe "value" })
+               mapOf("key" to "otherValue") should matchAll("key" to { it shouldBe "value" })
             }.also {
-               kotlin.io.println(it.message)
+               it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, expected:<"value"> but was:<"otherValue">)]."""
             }
          }
       }

@@ -163,8 +163,8 @@ fun <K, V> matchAll(vararg expected: Pair<K, (V) -> Unit>): Matcher<Map<K, V>> =
 
          return MatcherResult(
             missingKeys.isEmpty() && mismatches.isEmpty(),
-            { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches }}" },
-            { "Expected map to not match all assertions.}}" },
+            { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches." },
+            { "Expected map to not match all assertions." },
          )
       }
    }
