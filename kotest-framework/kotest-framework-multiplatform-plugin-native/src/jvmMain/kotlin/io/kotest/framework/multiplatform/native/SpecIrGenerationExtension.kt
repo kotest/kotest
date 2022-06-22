@@ -20,12 +20,12 @@ import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
 class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
@@ -124,3 +124,11 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
       }, null)
    }
 }
+
+// These extension properties are available in org.jetbrains.kotlin.ir.declarations, but were moved from one file to
+// another in Kotlin 1.7. This breaks backwards compatibility with earlier versions of Kotlin.
+// So instead of using the provided implementations, we've copied them here, so we can work with both Kotlin 1.7+ and earlier
+// versions without issue.
+// See https://github.com/kotest/kotest/issues/3060 and https://youtrack.jetbrains.com/issue/KT-52888 for more information.
+private val IrFile.path: String get() = fileEntry.name
+private val IrFile.name: String get() = File(path).name
