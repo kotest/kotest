@@ -13,7 +13,6 @@ import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.superclasses
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
@@ -51,11 +50,10 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       type == typeOf<Period>() -> Arb.period()
       type == typeOf<BigDecimal>() -> Arb.bigDecimal()
       type == typeOf<BigInteger>() -> Arb.bigInt(maxNumBits = 256)
-      clazz?.isData == true -> {
+      else -> {
          val k = clazz as KClass<Any>
-         Arb.bind(providedArbs, k)
+         Arb.forClassUsingConstructor(providedArbs, k)
       }
-      else -> null
    }
 }
 
