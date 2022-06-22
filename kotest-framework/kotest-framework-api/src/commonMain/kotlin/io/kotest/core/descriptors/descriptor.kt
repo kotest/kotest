@@ -141,16 +141,21 @@ sealed interface Descriptor {
    }
 }
 
-data class DescriptorId(val value: String)
+fun descriptorId(name: String, parentDescriptor: Descriptor? = null) =
+   DescriptorId(name + parentDescriptor?.hashCode())
+
+data class DescriptorId(
+   val value: String,
+)
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
-   TestDescriptor(this, DescriptorId(name.testName))
+   TestDescriptor(this, descriptorId(name.testName, this))
 
 fun TestDescriptor.append(name: TestName): TestDescriptor =
    this.append(name.testName)
 
 fun Descriptor.append(name: String): TestDescriptor =
-   TestDescriptor(this, DescriptorId(name))
+   TestDescriptor(this, descriptorId(name, this))
 
 /**
  * Returns the [TestDescriptor] that is the root for this [TestDescriptor].

@@ -97,7 +97,7 @@ internal class InstancePerLeafSpecRunner(
 
       val root = materializer.materialize(spec)
          .firstOrNull { it.descriptor == test.descriptor.root() }
-         ?: throw error("Unable to locate root test ${test.descriptor.path()}")
+         ?: error("Unable to locate root test ${test.descriptor.path()}")
 
       logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
       extensions.beforeSpec(spec).getOrThrow()
