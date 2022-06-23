@@ -13,7 +13,7 @@ internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode)
    private val names = mutableSetOf<String>()
 
    private fun message(name: String): String =
-      "Duplicated test name ${name}. To disable this message, set DuplicateTestNameMode to None."
+      "Duplicated test name ${name}. To disable this message, set DuplicateTestNameMode to Silent."
 
    /**
     * Returns a unique name or null if the name is already unique.

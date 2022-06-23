@@ -28,6 +28,12 @@ withEnvironment("FooKey", "BarValue") {
 }
 ```
 
+:::info
+To use `withEnvironment` with JDK17 you need to add `--add-opens=java.base/java.util=ALL-UNNAMED` to the arguments for the JVM that runs the tests.
+
+If you run tests with gradle, you can add `org.gradle.jvmargs=--add-opens=java.base/java.util=ALL-UNNAMED` in `gradle.properties`
+:::
+
 You can also use multiple values in this extension, through a map or list of pairs.
 
 ```kotlin
