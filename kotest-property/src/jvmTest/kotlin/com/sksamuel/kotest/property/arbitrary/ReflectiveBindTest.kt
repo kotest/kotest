@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
@@ -130,7 +129,7 @@ class ReflectiveBindTest : StringSpec(
          )
       }
 
-      "Can bind to all types that can be used as parameters"{
+      "Can bind to all types that can be used as parameters" {
          val enumArb = Arb.bind<Shape>()
          enumArb.next().shouldBeInstanceOf<Shape>()
 
@@ -141,12 +140,35 @@ class ReflectiveBindTest : StringSpec(
          bigDecimalArb.next().shouldBeInstanceOf<BigDecimal>()
       }
 
-      "Can bind to no-arg constructor classes"{
+      "Can bind to no-arg constructor classes" {
          val noArgArb = Arb.bind<NoArgConstructor>()
          noArgArb.next().shouldBeInstanceOf<NoArgConstructor>()
       }
 
-      "Fails to bind for non default type when class or primary constructor is private"{
+      "Can bind to sealed classes" {
+         val shape3dArb = Arb.bind<Shape3d>()
+         shape3dArb.next().shouldBeInstanceOf<Shape3d>()
+
+         val shapes3d = shape3dArb.take(100).toList()
+
+         shapes3d
+            .forAtLeastOne { it.shouldBeInstanceOf<Sphere>() }
+            .forAtLeastOne { it.shouldBeInstanceOf<Cube>() }
+
+
+         val shape4dArb = Arb.bind<Shape4d>()
+         shape4dArb.next().shouldBeInstanceOf<Shape4d>()
+
+         val shapes4d = shape4dArb.take(100).toList()
+
+         shapes4d
+            .forAtLeastOne { it.shouldBeInstanceOf<Tesseract>() }
+            .forAtLeastOne { it.shouldBeInstanceOf<Hypersphere>() }
+      }
+
+      "Fails to bind for non default type when class or primary constructor is private" {
+         expectValidSampling(Shape3d::class)
+         expectValidSampling(Shape4d::class)
          expectValidSampling(InternalClass::class)
          expectValidSampling(PublicClassInternalConstructor::class)
 
@@ -165,7 +187,15 @@ class ReflectiveBindTest : StringSpec(
          Diamond
       }
 
-      class NoArgConstructor()
+      sealed interface Shape3d
+      class Sphere : Shape3d
+      class Cube : Shape3d
+
+      sealed class Shape4d
+      class Tesseract : Shape4d()
+      class Hypersphere : Shape4d()
+
+      class NoArgConstructor
 
       internal class InternalClass(name: String)
       class PublicClassInternalConstructor internal constructor(name: String)
@@ -175,8 +205,8 @@ class ReflectiveBindTest : StringSpec(
 
       inline fun <reified T : Any> expectConstructorVisibilityException(kclass: KClass<T>) {
          val exception = shouldThrow<IllegalStateException> {
-               Arb.bind<T>()
-            }
+            Arb.bind<T>()
+         }
          exception.message shouldContain kclass.simpleName!!
          exception.message shouldContain "must be public"
       }

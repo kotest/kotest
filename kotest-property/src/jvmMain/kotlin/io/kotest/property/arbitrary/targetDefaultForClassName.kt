@@ -43,6 +43,9 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       clazz?.isSubclassOf(Enum::class) == true -> {
          Arb.of(Class.forName(clazz.java.name).enumConstants.map { it as Enum<*> })
       }
+      clazz?.isSealed == true -> {
+         Arb.merge(clazz.sealedSubclasses.map { Arb.forClassUsingConstructor(providedArbs, it) })
+      }
       type == typeOf<Instant>() -> Arb.instant()
       type == typeOf<LocalDate>() -> Arb.localDate()
       type == typeOf<LocalDateTime>() -> Arb.localDateTime()
