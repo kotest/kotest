@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    kotlin("jvm")
@@ -22,6 +25,24 @@ repositories {
 dependencies {
    compileOnly(gradleApi())
    compileOnly(libs.kotlin.gradle.plugin)
+
+   testImplementation(project(Projects.Assertions.Core))
+   testImplementation(project(Projects.Framework.api))
+   testImplementation(project(Projects.Framework.engine))
+   testImplementation(project(Projects.JunitRunner))
+}
+
+tasks.withType<Test>() {
+   useJUnitPlatform()
+
+   systemProperty("kotestVersion", Ci.publishVersion)
+
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
+      exceptionFormat = TestExceptionFormat.FULL
+   }
 }
 
 tasks {
