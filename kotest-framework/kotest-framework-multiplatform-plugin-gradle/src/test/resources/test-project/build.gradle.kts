@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
@@ -11,6 +12,7 @@ repositories {
 }
 
 val kotestVersion: String by project
+val useNewNativeMemoryModel: String by project
 
 kotlin {
    jvm()
@@ -53,5 +55,13 @@ tasks.withType<AbstractTestTask>().configureEach {
       showStandardStreams = true
       events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
+   }
+}
+
+if (useNewNativeMemoryModel.toBoolean()) {
+   kotlin.targets.withType(KotlinNativeTarget::class.java) {
+      binaries.all {
+         binaryOptions["memoryModel"] = "experimental"
+      }
    }
 }
