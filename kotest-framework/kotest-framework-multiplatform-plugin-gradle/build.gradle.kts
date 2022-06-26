@@ -32,7 +32,34 @@ dependencies {
    testImplementation(project(Projects.JunitRunner))
 }
 
-tasks.withType<Test>() {
+tasks.withType<Test> {
+   // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
+   setOf(
+      Projects.Assertions.Core,
+      Projects.Framework.api,
+      Projects.Framework.engine
+   ).forEach { project ->
+      setOf(
+         "jvmJar",
+         "compileKotlinLinuxX64",
+         "compileKotlinMacosX64",
+         "compileKotlinMacosArm64",
+         "compileKotlinMingwX64",
+      ).forEach { task ->
+         dependsOn("$project:$task")
+      }
+   }
+
+   setOf(
+      Projects.JunitRunner,
+      ":kotest-framework:kotest-framework-multiplatform-plugin-js",
+      ":kotest-framework:kotest-framework-multiplatform-plugin-native"
+   ).forEach { project ->
+      dependsOn("$project:jvmJar")
+   }
+
+   dependsOn("jar")
+
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
