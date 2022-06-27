@@ -25,6 +25,7 @@ import kotlin.reflect.KClass
 
 class ReflectiveBindTest : StringSpec(
    {
+      val randomSource = RandomSource.seeded(11L)
 
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
       class WobbleWobble(val a: Wobble)
@@ -33,7 +34,7 @@ class ReflectiveBindTest : StringSpec(
       "binds enum parameters" {
          data class Hobble(val shape: Shape)
 
-         val items = Arb.bind<Hobble>().take(100).toList()
+         val items = Arb.bind<Hobble>().take(100, randomSource).toList()
 
          items
             .forAtLeastOne { it.shape shouldBe Shape.Diamond }
@@ -149,7 +150,7 @@ class ReflectiveBindTest : StringSpec(
          val shape3dArb = Arb.bind<Shape3d>()
          shape3dArb.next().shouldBeInstanceOf<Shape3d>()
 
-         val shapes3d = shape3dArb.take(100).toList()
+         val shapes3d = shape3dArb.take(100, randomSource).toList()
 
          shapes3d
             .forAtLeastOne { it.shouldBeInstanceOf<Sphere>() }
@@ -159,7 +160,7 @@ class ReflectiveBindTest : StringSpec(
          val shape4dArb = Arb.bind<Shape4d>()
          shape4dArb.next().shouldBeInstanceOf<Shape4d>()
 
-         val shapes4d = shape4dArb.take(100).toList()
+         val shapes4d = shape4dArb.take(100, randomSource).toList()
 
          shapes4d
             .forAtLeastOne { it.shouldBeInstanceOf<Tesseract>() }

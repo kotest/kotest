@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.primaryConstructor
@@ -87,12 +88,22 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
    }
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
-      val arb = Arb.forType(providedArbs, param.type)
-         ?: error("Could not locate generator for parameter $className.${param.name}, consider providing an Arb for it.")
+      val arb = arbForParameter(providedArbs, className, param)
       if (param.type.isMarkedNullable) arb.orNull() else arb
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
+}
+
+private fun arbForParameter(providedArbs: Map<KClass<*>, Arb<*>>, className: String?, param: KParameter): Arb<*> {
+   val errorMsg = "Could not locate generator for parameter $className.${param.name}, consider providing an Arb for it."
+   val arb =
+      try {
+         Arb.forType(providedArbs, param.type)
+      } catch (e: IllegalStateException) {
+         throw IllegalStateException(errorMsg, e)
+      }
+   return arb ?: error(errorMsg)
 }
 
 internal fun Arb.Companion.forType(providedArbs: Map<KClass<*>, Arb<*>>, type: KType): Arb<*>? {

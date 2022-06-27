@@ -40,7 +40,7 @@ class ArbDefaultsTest : WordSpec({
       "throw on complex data class" {
          shouldThrow<IllegalStateException> {
             checkAll<Bar> { it.shouldNotBeNull() }
-         }.shouldHaveMessage("Could not locate generator for parameter com.sksamuel.kotest.property.Bar.t")
+         }.shouldHaveMessage("Could not locate generator for parameter com.sksamuel.kotest.property.Bar.t, consider providing an Arb for it.")
       }
    }
 })

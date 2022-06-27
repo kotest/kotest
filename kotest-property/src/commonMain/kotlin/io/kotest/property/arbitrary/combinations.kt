@@ -138,6 +138,7 @@ fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
  * [Arb]s edge cases
  */
 fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
+   require(arbs.isNotEmpty()) { "List of arbs provided to Arb.choice must not be empty" }
    return arbitrary(
       edgecaseFn = { arbs.edgecase(it) },
       sampleFn = { arbs.random(it.random).next(it) }
