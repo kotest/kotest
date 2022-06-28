@@ -111,7 +111,7 @@ sealed interface Descriptor {
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
-      is TestDescriptor -> this.id == descriptor.parent.id || isAncestorOf(descriptor.parent)
+      is TestDescriptor -> descriptor.path().value.startsWith(this.path().value)
    }
 
    /**
@@ -141,21 +141,18 @@ sealed interface Descriptor {
    }
 }
 
-fun descriptorId(name: String, parentDescriptor: Descriptor? = null) =
-   DescriptorId(name + parentDescriptor?.hashCode())
-
 data class DescriptorId(
    val value: String,
 )
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
-   TestDescriptor(this, descriptorId(name.testName, this))
+   TestDescriptor(this, DescriptorId(name.testName))
 
 fun TestDescriptor.append(name: TestName): TestDescriptor =
    this.append(name.testName)
 
 fun Descriptor.append(name: String): TestDescriptor =
-   TestDescriptor(this, descriptorId(name, this))
+   TestDescriptor(this, DescriptorId(name))
 
 /**
  * Returns the [TestDescriptor] that is the root for this [TestDescriptor].
