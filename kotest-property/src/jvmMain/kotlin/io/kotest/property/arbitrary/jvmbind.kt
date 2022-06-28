@@ -79,7 +79,7 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
    kclass: KClass<T>
 ): Arb<T> {
    val className = kclass.qualifiedName ?: kclass.simpleName
-   val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
+   val constructor = kclass.primaryConstructor ?: error("Could not locate a primary constructor for $className")
    check(kclass.visibility != KVisibility.PRIVATE) { "The class $className must be public." }
    check(constructor.visibility != KVisibility.PRIVATE) { "The primary constructor of $className must be public." }
 
@@ -96,14 +96,13 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
 }
 
 private fun arbForParameter(providedArbs: Map<KClass<*>, Arb<*>>, className: String?, param: KParameter): Arb<*> {
-   val errorMsg = "Could not locate generator for parameter $className.${param.name}, consider providing an Arb for it."
    val arb =
       try {
          Arb.forType(providedArbs, param.type)
       } catch (e: IllegalStateException) {
-         throw IllegalStateException(errorMsg, e)
+         throw IllegalStateException("Failed to create generator for parameter $className.${param.name}", e)
       }
-   return arb ?: error(errorMsg)
+   return arb ?: error("Could not locate generator for parameter $className.${param.name}")
 }
 
 internal fun Arb.Companion.forType(providedArbs: Map<KClass<*>, Arb<*>>, type: KType): Arb<*>? {
