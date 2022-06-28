@@ -1,5 +1,8 @@
 package io.kotest.matchers.maps
 
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
+import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.string.Diff
@@ -137,3 +140,36 @@ class MapContainsMatcher<K, V>(
          })
    }
 }
+
+
+fun <K, V> matchAll(vararg expected: Pair<K, (V) -> Unit>): Matcher<Map<K, V>> =
+   object : Matcher<Map<K, V>> {
+
+      override fun test(value: Map<K, V>): MatcherResult {
+
+         val missingKeys = mutableListOf<K>()
+         val mismatches = mutableListOf<Pair<K, String?>>()
+
+         errorCollector.runWithMode(ErrorCollectionMode.Hard) {
+            expected.forEach { (k, matcher) ->
+               val v = value[k]
+
+               if (v == null) {
+                  missingKeys.add(k)
+               } else {
+                  try {
+                     matcher(v)
+                  } catch (e: AssertionError) {
+                     mismatches.add(Pair(k, e.message))
+                  }
+               }
+            }
+         }
+
+         return MatcherResult(
+            missingKeys.isEmpty() && mismatches.isEmpty(),
+            { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches." },
+            { "Expected map to not match all assertions." },
+         )
+      }
+   }
