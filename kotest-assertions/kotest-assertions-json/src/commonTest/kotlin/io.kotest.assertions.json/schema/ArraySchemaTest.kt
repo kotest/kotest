@@ -110,9 +110,9 @@ class ArraySchemaTest : FunSpec(
          }
          "[\"bob\"]" shouldMatchSchema  containsStringArray
          shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
-            $ => Expected any item of type string
-            $.contains[0] => Expected string, but was number
-            $.contains[1] => Expected string, but was number
+            $ => Expected some item to match contains-specification:
+                $[0] => Expected string, but was number
+                $[1] => Expected string, but was number
          """.trimIndent()
       }
 
