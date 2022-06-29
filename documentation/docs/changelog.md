@@ -4,6 +4,33 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.4.0
+
+### Fixes
+
+### Features
+
+* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality, over regular `equals`
+
+### Experimental features and changes
+
+* JSON schema arrays now supports `minItems`, `maxItems` and `uniqueItems`
+* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed to `optional`, with false as default.
+
+### Deprecation
+* Deprecated existing shouldBeEqualToComparingFields in favor of a new shouldBeEqualToComparingFields matcher which let you configure behaviour its using a FieldsEqualityCheckConfig class.(#3034)
+
+## 5.3.2 June 2022
+
+### Fixes
+
+* Fixes compiler plugin issue with Kotlin/Native using Kotlin 1.7, issue [#3060](https://github.com/kotest/kotest/issues/3060)
+
+## 5.3.1 June 2022
+
+### Fixes
+
+* Support for Kotlin 1.7
 
 
 ## 5.3.0 May 2022

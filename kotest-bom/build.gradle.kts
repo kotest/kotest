@@ -35,19 +35,6 @@ val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
-val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
-
-signing {
-   useGpgCmd()
-   if (signingKey != null && signingPassword != null) {
-      @Suppress("UnstableApiUsage")
-      useInMemoryPgpKeys(signingKey, signingPassword)
-   }
-   if (Ci.isRelease) {
-      sign(publications)
-   }
-}
-
 publishing {
    repositories {
       maven {
