@@ -1,7 +1,6 @@
 package io.kotest.assertions.json
 
 import io.kotest.assertions.json.schema.JsonSchemaElement
-import io.kotest.assertions.json.schema.SchemaDeserializer
 import io.kotest.common.ExperimentalKotest
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -18,14 +17,11 @@ class ContainsSpec(val schema: JsonSchemaElement)
 object ContainsSpecSerializer : KSerializer<ContainsSpec> {
    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ContainsSpec") {
       element<String>("type")
-      element<String>("elementType")
    }
-
 
    override fun deserialize(decoder: Decoder): ContainsSpec =
       decoder.decodeStructure(descriptor) {
-         val elementType = decodeSerializableElement(descriptor, 1, SchemaDeserializer)
-         ContainsSpec(elementType)
+         ContainsSpec(JsonSchemaElement.serializer().deserialize(decoder))
       }
 
 

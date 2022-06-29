@@ -87,15 +87,12 @@ private fun validate(
 
    fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
       val schemaViolations = tree.elements.mapIndexed { i, node ->
-         validate("$currentPath.contains[$i]", node, schema)
+         validate("$currentPath[$i]", node, schema)
       }
       val foundElements = schemaViolations.count { it.isEmpty() }
-      return when {
-         foundElements != 0 -> emptyList()
-         foundElements == 0 -> violation("Expected any item of type ${schema.typeName()}") + schemaViolations.flatten()
-         schemaViolations.isNotEmpty() -> schemaViolations.flatten()
-         else -> emptyList()
-      }
+      return if (foundElements == 0)
+         violation("Expected some item to match contains-specification:") + schemaViolations.flatten()
+      else emptyList()
    }
 
    fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
