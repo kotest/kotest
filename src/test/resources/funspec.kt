@@ -76,4 +76,7 @@ class FunSpecExampleTest : FunSpec({
       test("a test inside an xcontext with config") {
       }
    }
+
+   test("name containing \"escaped quotes\"") {
+   }
 })

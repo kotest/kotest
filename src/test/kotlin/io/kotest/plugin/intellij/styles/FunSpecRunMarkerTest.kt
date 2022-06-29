@@ -73,6 +73,10 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run context with config a test inside a context with config", 1314),
          Gutter("Disabled - xcontext with config", 1365, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - xcontext with config a test inside an xcontext with config", 1443, AllIcons.RunConfigurations.TestIgnored),
+
+         // Previously the PSI text was fetched which contains the raw text entered, not parsed string, which means it would include the backslashes as well.
+         // See https://github.com/kotest/kotest/issues/3078
+         Gutter("""Run name containing "escaped quotes"""", 1505),
       )
 
       gutters.size shouldBe expected.size
