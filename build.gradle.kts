@@ -6,10 +6,11 @@ buildscript {
    }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    java
-   kotlin("jvm").version("1.6.21")
-   id("org.jetbrains.intellij") version "1.6.0"
+   alias(libs.plugins.kotlin.jvm)
+   alias(libs.plugins.intellij)
 }
 
 repositories {
@@ -102,20 +103,20 @@ intellij {
 }
 
 dependencies {
-   implementation("javax.xml.bind:jaxb-api:2.3.1")
-   implementation("javax.activation:activation:1.1.1")
+   implementation(libs.jaxb.api)
+   implementation(libs.javax.activation)
 
    // we bundle this for 4.1 support
    // in kotest 4.2.0 the launcher has moved to a stand alone module
-   implementation("io.kotest:kotest-launcher:1.0.10")
+   implementation(libs.runtime.kotest.legacy.launcher)
 
    // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
    // into the engine dep which should already be on the classpath
-   implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
+   implementation(libs.runtime.kotest.framework.launcher)
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:5.3.1")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:5.3.1")
+   testImplementation(libs.test.kotest.framework.api)
+   testImplementation(libs.test.kotest.assertions.core)
 }
 
 sourceSets {
