@@ -20,6 +20,7 @@ import kotlin.reflect.typeOf
  * - Pair, where 1st and 2nd fall into this category
  * - Primitives
  * - Enums
+ * - Sealed classes
  * - LocalDate, LocalDateTime, LocalTime, Period
  * - BigDecimal
  * - Collections (Set, List, Map) of types that fall into this category
@@ -42,6 +43,7 @@ inline fun <reified T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb
  * - Pair, where 1st and 2nd fall into this category
  * - Primitives
  * - Enums
+ * - Sealed classes
  * - LocalDate, LocalDateTime, LocalTime, Period
  * - BigDecimal
  * - Collections (Set, List, Map) of types that fall into this category
