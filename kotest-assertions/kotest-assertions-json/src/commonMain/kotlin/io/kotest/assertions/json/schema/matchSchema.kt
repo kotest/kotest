@@ -87,7 +87,7 @@ private fun validate(
 
    fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
       val schemaViolations = tree.elements.mapIndexed { i, node ->
-         validate("$currentPath[$i]", node, schema)
+         validate("\t$currentPath[$i]", node, schema)
       }
       val foundElements = schemaViolations.count { it.isEmpty() }
       return if (foundElements == 0)

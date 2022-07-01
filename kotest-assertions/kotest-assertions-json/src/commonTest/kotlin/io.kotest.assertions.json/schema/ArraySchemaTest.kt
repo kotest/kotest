@@ -111,9 +111,9 @@ class ArraySchemaTest : FunSpec(
          "[\"bob\"]" shouldMatchSchema containsStringArray
          shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0] => Expected string, but was number
-            $[1] => Expected string, but was number
-         """.trimIndent()
+            	$[0] => Expected string, but was number
+            	$[1] => Expected string, but was number
+            """.trimIndent()
       }
 
       test("Should parse schema with contains") {
@@ -124,7 +124,7 @@ class ArraySchemaTest : FunSpec(
          )
          shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0] => Expected number, but was string
+            	$[0] => Expected number, but was string
          """.trimIndent()
       }
 
@@ -136,12 +136,12 @@ class ArraySchemaTest : FunSpec(
          )
          shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0] => Expected object, but was string
+            	$[0] => Expected object, but was string
          """.trimIndent()
          shouldFail { "[\"life\", {\"name\": 1}]" shouldMatchSchema schema }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0] => Expected object, but was string
-            $[1].name => Expected string, but was number
+            	$[0] => Expected object, but was string
+            	$[1].name => Expected string, but was number
          """.trimIndent()
          "[\"life\", \"universe\", \"everything\", {\"name\": \"bob\"}]" shouldMatchSchema schema
       }
@@ -161,8 +161,8 @@ class ArraySchemaTest : FunSpec(
          }
          shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0] => Expected object, but was string
-            $[1] => Expected object, but was number
+            	$[0] => Expected object, but was string
+            	$[1] => Expected object, but was number
          """.trimIndent()
       }
 
@@ -173,7 +173,7 @@ class ArraySchemaTest : FunSpec(
          }
          shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
             $ => Expected some item to match contains-specification:
-            $[0].age => Expected number, but was string
+            	$[0].age => Expected number, but was string
          """.trimIndent()
       }
 
