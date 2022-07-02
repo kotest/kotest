@@ -111,7 +111,7 @@ sealed interface Descriptor {
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
-      is TestDescriptor -> this == descriptor.parent || isAncestorOf(descriptor.parent)
+      is TestDescriptor -> isParentOf(descriptor) || isAncestorOf(descriptor.parent)
    }
 
    /**
