@@ -51,9 +51,10 @@ tasks.named<Test>("test") {
 
 ### Parameters
 
-The reporter has two parameters:
+The reporter has three parameters:
 
 * `includeContainers` when true, all intermediate tests are included in the report as tests in their own right. Defaults
   to false.
 * `useTestPathAsName` when true, the full test path will be used as the name. In other words the name will include the
   name of any parent tests as a single string.
+* `outputDir` when set, the reports are generated in that folder, default value is: test-results/test
