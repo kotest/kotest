@@ -111,12 +111,7 @@ sealed interface Descriptor {
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
-      is TestDescriptor -> {
-         if (depth() > descriptor.depth()) false // A deeper node cannot be ancestor to a more shallow one
-         else tokenizedPath()
-            .zip(descriptor.tokenizedPath())
-            .all { (a, b) -> a == b } // All segments of the path to the descriptor should match
-      }
+      is TestDescriptor -> this == descriptor.parent || isAncestorOf(descriptor.parent)
    }
 
    /**
