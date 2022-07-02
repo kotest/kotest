@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.common.ExperimentalKotest
@@ -9,7 +10,6 @@ import io.kotest.matchers.and
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 
 @ExperimentalKotest
@@ -22,6 +22,7 @@ infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+
 @ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
@@ -84,6 +85,21 @@ private fun validate(
       violationIf(!matcherResult.passed(), matcherResult.failureMessage())
    } ?: emptyList()
 
+   fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
+      val schemaViolations = tree.elements.mapIndexed { i, node ->
+         validate("\t$currentPath[$i]", node, schema)
+      }
+      val foundElements = schemaViolations.count { it.isEmpty() }
+      return if (foundElements == 0)
+         violation("Expected some item to match contains-specification:") + schemaViolations.flatten()
+      else emptyList()
+   }
+
+   fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
+      tree.elements.flatMapIndexed { i, node ->
+         validate("$currentPath[$i]", node, this)
+      }
+
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
@@ -92,9 +108,9 @@ private fun validate(
                "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
             )
             val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
-            matcherViolation + sizeViolation + tree.elements.flatMapIndexed { i, node ->
-               validate("$currentPath[$i]", node, expected.elementType)
-            }
+            val containsViolation = expected.contains?.violation(tree) ?: emptyList()
+            val elementTypeViolation = expected.elementType?.violation(tree) ?: emptyList()
+            matcherViolation + sizeViolation + containsViolation + elementTypeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
