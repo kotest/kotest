@@ -20,6 +20,11 @@ slug: changelog.html
 ### Deprecation
 * Deprecated existing shouldBeEqualToComparingFields in favor of a new shouldBeEqualToComparingFields matcher which let you configure behaviour its using a FieldsEqualityCheckConfig class.(#3034)
 
+## 5.3.2 June 2022
+
+### Fixes
+
+* Fixes compiler plugin issue with Kotlin/Native using Kotlin 1.7, issue [#3060](https://github.com/kotest/kotest/issues/3060)
 
 ## 5.3.1 June 2022
 
