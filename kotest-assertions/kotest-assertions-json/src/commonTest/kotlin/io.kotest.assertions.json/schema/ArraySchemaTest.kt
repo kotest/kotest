@@ -102,5 +102,86 @@ class ArraySchemaTest : FunSpec(
             $ => Sequence should be Unique
          """.trimIndent()
       }
+
+      test("Array not contains string") {
+         val array = "[1,1]"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { string() })
+         }
+         "[\"bob\"]" shouldMatchSchema containsStringArray
+         shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0] => Expected string, but was number
+            	$[1] => Expected string, but was number
+            """.trimIndent()
+      }
+
+      test("Should parse schema with contains") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "contains": {"type": "number"} }
+            """.trimIndent()
+         )
+         shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0] => Expected number, but was string
+         """.trimIndent()
+      }
+
+      test("Should parse schema with non primitive contains") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "contains": {"type": "object", "properties": { "name": { "type": "string" }}}}
+            """.trimIndent()
+         )
+         shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0] => Expected object, but was string
+         """.trimIndent()
+         shouldFail { "[\"life\", {\"name\": 1}]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0] => Expected object, but was string
+            	$[1].name => Expected string, but was number
+         """.trimIndent()
+         "[\"life\", \"universe\", \"everything\", {\"name\": \"bob\"}]" shouldMatchSchema schema
+      }
+
+      test("Array contains strings and numbers") {
+         val array = "[\"life\", \"universe\", \"everything\", 42]"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { number() })
+         }
+         array shouldMatchSchema containsStringArray
+      }
+
+      test("Array not contains person") {
+         val array = "[\"life\", 42]"
+         val containsPersonArray = jsonSchema {
+            array(contains = containsSpec { person() })
+         }
+         shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0] => Expected object, but was string
+            	$[1] => Expected object, but was number
+         """.trimIndent()
+      }
+
+      test("Array contains person with wrong age type") {
+         val array = "[{\"name\": \"bob\", \"age\": \"wrong\"}]"
+         val containsPersonArray = jsonSchema {
+            array(contains = containsSpec { person() })
+         }
+         shouldFail { array shouldMatchSchema containsPersonArray }.message shouldBe """
+            $ => Expected some item to match contains-specification:
+            	$[0].age => Expected number, but was string
+         """.trimIndent()
+      }
+
+      test("Array without contains and elementType") {
+         val array = jsonSchema {
+            array()
+         }
+         "[1, \"bob\"]" shouldMatchSchema array
+      }
    }
 )
