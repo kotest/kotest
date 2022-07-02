@@ -103,7 +103,7 @@ sealed interface Descriptor {
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be the parent of a spec
-      is TestDescriptor -> this.id == descriptor.parent.id
+      is TestDescriptor -> this == descriptor.parent
    }
 
    /**
@@ -111,7 +111,12 @@ sealed interface Descriptor {
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
-      is TestDescriptor -> descriptor.path().value.startsWith(this.path().value)
+      is TestDescriptor -> {
+         if (depth() > descriptor.depth()) false // A deeper node cannot be ancestor to a more shallow one
+         else tokenizedPath()
+            .zip(descriptor.tokenizedPath())
+            .all { (a, b) -> a == b } // All segments of the path to the descriptor should match
+      }
    }
 
    /**
@@ -128,8 +133,8 @@ sealed interface Descriptor {
     * Returns true if this instance is on the path to the given description. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
     */
-   fun isOnPath(description: Descriptor): Boolean =
-      this.path() == description.path() || this.isAncestorOf(description)
+   fun isOnPath(descriptor: Descriptor): Boolean =
+      this == descriptor || this.isAncestorOf(descriptor)
 
    /**
     * Returns the [SpecDescriptor] parent for this [Descriptor].
