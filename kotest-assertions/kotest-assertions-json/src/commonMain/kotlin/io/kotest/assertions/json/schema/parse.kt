@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.assertions.json.ContainsSpecSerializer
 import io.kotest.assertions.json.JsonNode
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
@@ -20,8 +21,6 @@ import io.kotest.matchers.string.haveMinLength
 import io.kotest.matchers.string.match
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.CompositeDecoder
@@ -31,8 +30,6 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -73,18 +70,19 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonArray =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Sequence<JsonNode>>? = null
-         var minItems = 1
-         var maxItems = Int.MAX_VALUE
-         val elementType = decodeSerializableElement(descriptor, 4, SchemaDeserializer, null)
+         val minItems = runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
+         val maxItems = runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
+         val elementType =
+            runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer) }.getOrNull()
+         val containsSpec =
+            runCatching { decodeSerializableElement(descriptor, 5, ContainsSpecSerializer) }.getOrNull()
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               1 -> minItems = kotlin.runCatching { decodeIntElement(descriptor, index) }.getOrDefault(minItems)
-               2 -> maxItems = kotlin.runCatching { decodeIntElement(descriptor, index) }.getOrDefault(maxItems)
                3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher and beUnique() else matcher
                CompositeDecoder.DECODE_DONE -> break
             }
          }
-         JsonSchema.JsonArray(minItems, maxItems, matcher, elementType)
+         JsonSchema.JsonArray(minItems, maxItems, matcher, containsSpec, elementType)
       }
 
    override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonArray") {
@@ -92,7 +90,8 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
       element<Int>("minItems", isOptional = true)
       element<Int>("maxItems", isOptional = true)
       element<Boolean>("uniqueItems", isOptional = true)
-      element<String>("elementType")
+      element<String>("elementType", isOptional = true)
+      element<String>("contains", isOptional = true)
    }
 
    override fun serialize(encoder: Encoder, value: JsonSchema.JsonArray) {
