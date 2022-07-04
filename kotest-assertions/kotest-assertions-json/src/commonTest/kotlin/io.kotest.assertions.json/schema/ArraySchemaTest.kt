@@ -177,6 +177,37 @@ class ArraySchemaTest : FunSpec(
          """.trimIndent()
       }
 
+      test("Should parse schema with max and min contains ") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "contains": {"type": "number", "minContains": 1, "maxContains": 2} }
+            """.trimIndent()
+         )
+         shouldFail { "[1,2,3]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected items of type number between 1 and 2, but found 3
+         """.trimIndent()
+      }
+
+      test("Array contains exceed maxContains") {
+         val array = "[1,1,1,3,1,5]"
+         val maxContains = jsonSchema {
+            array(contains = containsSpec(maxContains = 4) { number() })
+         }
+         shouldFail { array shouldMatchSchema maxContains }.message shouldBe """
+            $ => Expected items of type number between 0 and 4, but found 6
+            """.trimIndent()
+      }
+
+      test("Array contains does not exceeds minContains") {
+         val array = "[1,1]"
+         val minContains = jsonSchema {
+            array(contains = containsSpec(minContains = 4) { number() })
+         }
+         shouldFail { array shouldMatchSchema minContains }.message shouldBe """
+            $ => Expected items of type number between 4 and 2147483647, but found 2
+            """.trimIndent()
+      }
+
       test("Array without contains and elementType") {
          val array = jsonSchema {
             array()

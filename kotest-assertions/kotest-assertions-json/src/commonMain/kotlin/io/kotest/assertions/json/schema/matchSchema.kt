@@ -89,10 +89,12 @@ private fun validate(
       val schemaViolations = tree.elements.mapIndexed { i, node ->
          validate("\t$currentPath[$i]", node, schema)
       }
-      val foundElements = schemaViolations.count { it.isEmpty() }
-      return if (foundElements == 0)
-         violation("Expected some item to match contains-specification:") + schemaViolations.flatten()
-      else emptyList()
+      return when (val foundElements = schemaViolations.count { it.isEmpty() }) {
+         0 -> violation("Expected some item to match contains-specification:") + schemaViolations.flatten()
+         !in minContains..maxContains -> violation("Expected items of type ${schema.typeName()} between $minContains and $maxContains, but found $foundElements")
+         else -> emptyList()
+      }
+
    }
 
    fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
