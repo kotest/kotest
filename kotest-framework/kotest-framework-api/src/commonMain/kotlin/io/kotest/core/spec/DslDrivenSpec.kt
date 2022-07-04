@@ -3,6 +3,7 @@ package io.kotest.core.spec
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.InstallableExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
@@ -66,6 +67,14 @@ abstract class DslDrivenSpec : Spec(), RootScope {
          test.copy(name = name)
       }
       include(factory.copy(tests = renamed))
+   }
+
+   suspend fun <CONFIG, MATERIALIZED> install(
+      ext: InstallableExtension<CONFIG, MATERIALIZED>,
+      configure: suspend CONFIG.() -> Unit = {},
+   ): MATERIALIZED {
+      extensions(ext)
+      return ext.mount(configure)
    }
 
    /**

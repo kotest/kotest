@@ -35,3 +35,31 @@ fun <CONFIG, MATERIALIZED> Spec.install(
    extensions(mountable)
    return mountable.mount(configure)
 }
+
+/**
+ * An [InstallableExtension] is an [Extension] that can return a materialized value to the
+ * user and allows a user defined configuration block.
+ *
+ * This allows extensions to return 'control' objects which differ from the extension itself.
+ *
+ * For example:
+ *
+ * class MyTest : FunSpec() {
+ *  init {
+ *   val ds = install(PostgresContainer) {
+ *     user = "root"
+ *     password = "letmein"
+ *   }
+ *  }
+ * }
+ *
+ * Here `ds` is the materialized value. In this case it could be a DataSource that was
+ * initialized from the extension.
+ *
+ * [InstallableExtension]s are suspendable so can only be installed inside a coroutine,
+ * such as a test or callback. They cannot be invoked from the constructor aka class body.
+ *
+ */
+interface InstallableExtension<CONFIG, MATERIALIZED> : Extension {
+   suspend fun mount(configure: suspend CONFIG.() -> Unit): MATERIALIZED
+}
