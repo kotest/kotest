@@ -16,6 +16,10 @@ import kotlin.time.Duration
  * Note: This function will have no effect on non-JVM targets.
  */
 internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {
+
+   // before applying system props, we should detect the kotest.properties file and apply defaults from that
+   KotestPropertiesLoader.loadAndApplySystemProps()
+
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
    parallelism()?.let { configuration.parallelism = it }

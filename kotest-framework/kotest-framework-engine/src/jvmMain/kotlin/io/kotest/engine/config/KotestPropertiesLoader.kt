@@ -1,9 +1,9 @@
-package io.kotest.engine.interceptors
+package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.engine.EngineResult
 import io.kotest.mpp.log
+import io.kotest.mpp.syspropOrEnv
 import java.util.Properties
 
 /**
@@ -11,10 +11,10 @@ import java.util.Properties
  * the intellij plugin, you can place them into a file `kotest.properties` that is located
  * on the classpath (say src/test/resources) and kotest will load those properties and apply them.
  *
- * This is a JVM only extension.
+ * This is a JVM only feature.
  */
 @JVMOnly
-internal object KotestPropertiesInterceptor : EngineInterceptor {
+internal object KotestPropertiesLoader {
 
    private const val DefaultKotestPropertiesFilename = "/kotest.properties"
 
@@ -23,7 +23,7 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
     * to be overriden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
-      System.getProperty(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
+      syspropOrEnv(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
 
    /**
     * Loads system props from the given [filename].
@@ -35,20 +35,12 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
       return props
    }
 
-   private fun loadAndApplySystemProps() {
+   fun loadAndApplySystemProps() {
       val filename = systemPropsFilename()
       log { "Loading kotest properties from $filename" }
       loadSystemProps(filename).forEach { (key, value) ->
          if (key != null && value != null)
             System.setProperty(key.toString(), value.toString())
       }
-   }
-
-   override suspend fun intercept(
-      context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
-   ): EngineResult {
-      loadAndApplySystemProps()
-      return execute(context)
    }
 }
