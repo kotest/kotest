@@ -27,6 +27,9 @@ fun File.shouldHaveSameContentAs(other: File, charset: Charset = Charset.forName
             index++
          }
 
+         lines1.close()
+         lines2.close()
+
          val diff = when {
             a == null -> "File $other has additional lines, starting at line $index: $b"
             b == null -> "File $value has additional lines, starting at line $index: $a"
@@ -40,4 +43,3 @@ fun File.shouldHaveSameContentAs(other: File, charset: Charset = Charset.forName
          )
       }
    }
-
