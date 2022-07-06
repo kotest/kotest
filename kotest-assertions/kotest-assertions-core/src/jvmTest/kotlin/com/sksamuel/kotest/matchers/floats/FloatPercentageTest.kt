@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.shouldBeWithinPercentageOf
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.float
@@ -14,7 +15,7 @@ class FloatPercentageTest : FunSpec() {
          test("Match equal numbers") {
             Arb.bind(Arb.float(), Arb.double(0.0, 5.0)) { value, percentage ->
                value.shouldBeWithinPercentageOf(value, percentage)
-            }
+            }.sample(RandomSource.default())
          }
 
          test("Refuse negative percentage") {
@@ -25,9 +26,10 @@ class FloatPercentageTest : FunSpec() {
 
          test("Match close enough numbers") {
             Arb.bind(Arb.float(), Arb.double(0.0, 5.0)) { value, percentage ->
-               value.shouldBeWithinPercentageOf((value - value.times(percentage / 100).toFloat()), percentage)
-               value.shouldBeWithinPercentageOf((value + value.times(percentage / 100)).toFloat(), percentage)
-            }
+               val delta = (percentage / 100).times(value).toFloat()
+               (value + delta).shouldBeWithinPercentageOf(value, percentage)
+               (value - delta).shouldBeWithinPercentageOf(value, percentage)
+            }.sample(RandomSource.default())
          }
       }
    }
