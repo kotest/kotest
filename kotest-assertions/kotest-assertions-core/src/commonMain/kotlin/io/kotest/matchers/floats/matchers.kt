@@ -99,7 +99,7 @@ fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
 }
 
 fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
-   private val tolerance = other.times(percentage / 100).absoluteValue
+   private val tolerance = other.times(percentage / 100).absoluteValue.toFloat()
    private val range = (other - tolerance)..(other + tolerance)
 
    override fun test(value: Float) = MatcherResult(
