@@ -8,6 +8,12 @@
             "org.junit"
          ],
          "dependencyDashboardApproval": true
+      },
+      {
+         "matchPackagePrefixes": [
+            "org.jetbrains.kotlin"
+         ],
+         "allowedVersions": "<1.7"
       }
    ]
 }
