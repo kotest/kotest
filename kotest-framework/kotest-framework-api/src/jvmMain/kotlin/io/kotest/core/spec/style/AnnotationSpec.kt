@@ -61,28 +61,21 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun KFunction<*>.deriveRootTest(disabled: Boolean): RootTest {
-      return if (this.isExpectingException()) {
+      val testInvocation = if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         RootTest(
-            name = TestName(name),
-            test = callExpectingException(expected),
-            source = sourceRef(),
-            type = TestType.Test,
-            config = null,
-            disabled = disabled,
-            factoryId = null,
-         )
+         callExpectingException(expected)
       } else {
-         RootTest(
-            name = TestName(name),
-            test = callNotExpectingException(),
-            source = sourceRef(),
-            type = TestType.Test,
-            config = null,
-            disabled = disabled,
-            factoryId = null,
-         )
+         callNotExpectingException()
       }
+      return RootTest(
+         name = TestName(name),
+         test = testInvocation,
+         source = sourceRef(),
+         type = TestType.Test,
+         config = null,
+         disabled = disabled,
+         factoryId = null,
+      )
    }
 
    override fun rootTests(): List<RootTest> {
@@ -116,7 +109,7 @@ abstract class AnnotationSpec : Spec() {
 
    private fun KClass<out AnnotationSpec>.findNestedTests(): List<RootTest> {
       return nestedClasses
-         .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
+         .filter { kclass -> kclass.annotations.any { it.annotationClass == Nested::class } }
          .flatMap { it.findRootTests() }
    }
 
@@ -261,6 +254,23 @@ abstract class AnnotationSpec : Spec() {
     */
    annotation class Ignore
 
+   /**
+    * Tests can be nested.
+    *
+    * ```
+    * class AnnotationSpecWithNested : AnnotationSpec() {
+    *
+    *    @Test
+    *    fun foo() { }
+    *
+    *    @Nested
+    *    class MyNested : AnnotationSpec() {
+    *       @Test
+    *       fun bar() { }
+    *   }
+    * }
+    * ```
+    */
    annotation class Nested
 
 }
