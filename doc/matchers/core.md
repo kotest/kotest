@@ -47,6 +47,8 @@ Matchers provided by the `kotest-assertions-core` module.
 | `map.shouldContainValue(value)` | Asserts that the map contains at least one mapping where the value is `value`. |
 | `map.shouldContainValues(values)` | Asserts that the map contains all the given values. |
 | `map.shouldBeEmpty()` | Asserts that this map is empty. |
+| `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`|  Asserts that all the entries in the map can be matched with the provided matchers, and no extra. |
+
 
 | Strings ||
 | -------- | ---- |

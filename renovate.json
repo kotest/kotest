@@ -1,6 +1,6 @@
 {
    "extends": [
-      "config:base", "github>kotest/renovate-config:automerge"
+      "config:base", "github>kotest/renovate-config"
    ],
    "packageRules": [
       {

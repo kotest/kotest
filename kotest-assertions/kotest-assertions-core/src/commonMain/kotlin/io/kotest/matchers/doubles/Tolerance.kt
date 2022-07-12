@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 /**
  * Creates a matcher for the interval [[this] - [tolerance] , [this] + [tolerance]]
@@ -38,7 +39,7 @@ data class Percentage(val value: Double)
  * ```
  */
 infix fun Double.plusOrMinus(tolerance: Percentage): ToleranceMatcher {
-   val realValue = this * tolerance.value / 100
+   val realValue = (this * tolerance.value / 100).absoluteValue
    return ToleranceMatcher(this, realValue)
 }
 
@@ -107,7 +108,7 @@ fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double) {
 }
 
 fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<Double> {
-   private val tolerance = other.times(percentage / 100)
+   private val tolerance = other.times(percentage / 100).absoluteValue
    private val range = (other - tolerance)..(other + tolerance)
 
    override fun test(value: Double) = MatcherResult(
