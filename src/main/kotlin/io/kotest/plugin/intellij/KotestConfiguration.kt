@@ -2,9 +2,11 @@
 
 package io.kotest.plugin.intellij
 
+import com.intellij.execution.AlternativeJrePathConverter
 import com.intellij.execution.Executor
 import com.intellij.execution.JavaTestConfigurationBase
 import com.intellij.execution.Location
+import com.intellij.execution.application.ApplicationConfiguration
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.JavaRunConfigurationModule
@@ -72,13 +74,18 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
 
    override fun getConfigurationEditor() = KotestSettingsEditor(this)
 
-   override fun getAlternativeJrePath() = alternativeJrePath
+   override fun getAlternativeJrePath() = alternativeJrePath?.let { AlternativeJrePathConverter().fromString(it) }
    override fun setAlternativeJrePath(path: String?) {
-      alternativeJrePath = path
+      val collapsedPath = path?.let { AlternativeJrePathConverter().toString(it) }
+      val changed = alternativeJrePath != collapsedPath
+      alternativeJrePath = collapsedPath
+      ApplicationConfiguration.onAlternativeJreChanged(changed, project)
    }
 
    override fun setAlternativeJrePathEnabled(enabled: Boolean) {
+      val changed = enabled != alternativeJrePathEnabled
       alternativeJrePathEnabled = enabled
+      ApplicationConfiguration.onAlternativeJreChanged(changed, project)
    }
 
    override fun getValidModules(): MutableCollection<Module> {
@@ -166,6 +173,8 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
 
    override fun writeExternal(element: Element) {
       super.writeExternal(element)
+      JDOMExternalizerUtil.writeField(element, AlternativeJrePathField, alternativeJrePath)
+      JDOMExternalizerUtil.writeField(element, AlternativeJrePathEnabledField, alternativeJrePathEnabled.toString())
       JDOMExternalizerUtil.writeField(element, PassParentEnvsField, passParentEnvs.toString())
       JDOMExternalizerUtil.writeField(element, WorkingDirField, workingDirectory)
       JDOMExternalizerUtil.writeField(element, ProgramParamsField, programParameters)
@@ -179,6 +188,8 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
 
    override fun readExternal(element: Element) {
       super.readExternal(element)
+      alternativeJrePath = JDOMExternalizerUtil.readField(element, AlternativeJrePathField)
+      alternativeJrePathEnabled = JDOMExternalizerUtil.readField(element, AlternativeJrePathEnabledField, "false").toBoolean()
       passParentEnvs = JDOMExternalizerUtil.readField(element, PassParentEnvsField, "false").toBoolean()
       workingDirectory = JDOMExternalizerUtil.readField(element, WorkingDirField)
       programParameters = JDOMExternalizerUtil.readField(element, ProgramParamsField)
@@ -202,5 +213,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       const val VmParamsField = "vmparams"
       const val TestPathField = "testPath"
       const val SpecNameField = "specName"
+      const val AlternativeJrePathField = "jrePath"
+      const val AlternativeJrePathEnabledField = "jrePathEnabled"
    }
 }
