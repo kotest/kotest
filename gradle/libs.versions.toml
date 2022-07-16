@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.6.21"
-kotlinx-coroutines = "1.6.3"
+kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.3.3"
 ktor = "1.6.8"
 junit-platform = "1.7.2"
