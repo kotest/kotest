@@ -5,9 +5,13 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.Period
 import java.time.Year.isLeap
 import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
@@ -219,3 +223,27 @@ fun Arb.Companion.instant(
    minValue: Instant = Instant.MIN,
    maxValue: Instant = Instant.MAX
 ) = instant(minValue..maxValue)
+
+/**
+ * Arberates a stream of random [OffsetDateTime]
+ */
+fun Arb.Companion.offsetDateTime(
+   minValue: LocalDateTime = LocalDateTime.MIN,
+   maxValue: LocalDateTime = LocalDateTime.MAX,
+   zoneOffset: Arb<ZoneOffset> = zoneOffset()
+): Arb<OffsetDateTime> = Arb.bind(
+   localDateTime(minValue, maxValue),
+   zoneOffset
+) { time, offset -> time.atOffset(offset) }
+
+/**
+ * Arberates a stream of random [ZonedDateTime]
+ */
+fun Arb.Companion.zonedDateTime(
+   minValue: LocalDateTime = LocalDateTime.MIN,
+   maxValue: LocalDateTime = LocalDateTime.MAX,
+   zoneId: Arb<ZoneId> = zoneId()
+): Arb<ZonedDateTime> = Arb.bind(
+   localDateTime(minValue, maxValue),
+   zoneId
+) { time, zone -> time.atZone(zone) }
