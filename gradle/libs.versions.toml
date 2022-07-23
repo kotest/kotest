@@ -22,7 +22,7 @@ plugin-publish = "1.0.0"
 apache-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
-diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
+diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.12" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
