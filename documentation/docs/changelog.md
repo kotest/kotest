@@ -8,24 +8,34 @@ slug: changelog.html
 
 ### Fixes
 
-* Multiplatform support for 1.7 has been updated.
 * Fix problem with isolation mode when duplicate names occur (#3071)
 * Allow `Arb.bind` to directly bind to sealed, enum and private types (#3072)
-* Fix kotest.properties to apply before tests #3087
+* Fix `kotest.properties` to apply before tests #3087
 * Fix `shouldHaveSameContentAs` doesn't close the readers (#3091
 * Fix tolerance matchers for negative values. (#3096)
+* Adjust warning message to match enum value (#3067)
+* Fix compilation failures for Kotlin/Native projects that use Kotlin 1.7 and the Kotest Gradle plugin. (#3073)
+* Fix description of harryPotterCharacter arb (#2963)
 
 ### Features
 
-* [Assumptions](https://kotest.io/docs/next/proptest/property-test-assumptions.html)) have been added to property testing.
-* [Statistics](https://kotest.io/docs/next/proptest/property-test-statistics.html) generation has been added to property testing.
+* Support persisting and reusing seeds for property tests #2967
 * `shouldMatchAll` has been added to Maps where each value is a function containing assertions. #3065
 * `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality,
   over regular `equals`
 * Add arbs for `ZoneId`, `ZonedDateTime`, and `OffsetDateTime` (#3113)
+* `YearMonth` Arbitrary implementation (#2928)
+* Make `arb.orNull` provide a shrink to null (#2975)
+* Enable building native targets for kotest-assertions-json. (#3021)
+* Json Array size validation (#2974)
+* Add optional reason to `@Ignored` (#3030)
+* Set runtime retention on dsl marker (#3038)
+* Add shrinker for Sets (#3045)
 
 ### Experimental features and changes
 
+* [Assumptions](https://kotest.io/docs/next/proptest/property-test-assumptions.html)) have been added to property testing.
+* [Statistics](https://kotest.io/docs/next/proptest/property-test-statistics.html) generation has been added to property testing.
 * JSON schema array assertions now support `minItems`, `maxItems` and `uniqueItems` #3026
 * (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed
   to `optional`, with false as default.
