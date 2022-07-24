@@ -1,4 +1,4 @@
-___---
+---
 id: propteststatistics
 title: Statistics
 sidebar_label: Statistics
@@ -18,8 +18,8 @@ invoke `checkAll` as normal, passing the rounding mode to the collect function.
 
 ```kotlin
 checkAll(Arb.enum<RoundingMode>(), Arb.bigDecimal()) { mode, decimal ->
-   collect(mode)
-   // test here
+  collect(mode)
+  // test here
 }
 ```
 
@@ -43,11 +43,11 @@ control. For example:
 
 ```kotlin
 checkAll(Arb.int()) { k ->
-   when {
-     k % 2 == 0 -> collect("EVEN")
-     else -> collect("ODD")
-   }
-   // test here
+  when {
+    k % 2 == 0 -> collect("EVEN")
+    else -> collect("ODD")
+  }
+  // test here
 }
 ```
 
@@ -59,13 +59,13 @@ are negative. One way would be to have EVEN_POS, EVEN_NEG, ODD_POS, ODD_NEG:
 
 ```kotlin
 checkAll(Arb.int()) { k ->
-   when {
-     k > 0 && k % 2 == 0 -> collect("EVEN_POS")
-     k % 2 == 0 -> collect ("EVEN_NEG")
-     k > 0 -> collect("ODD_POS")
-     else -> collect("ODD_NEG")
-   }
-   // test here
+  when {
+    k > 0 && k % 2 == 0 -> collect("EVEN_POS")
+    k % 2 == 0 -> collect("EVEN_NEG")
+    k > 0 -> collect("ODD_POS")
+    else -> collect("ODD_NEG")
+  }
+  // test here
 }
 ```
 
@@ -94,7 +94,6 @@ checkAll(Arb.int()) { k ->
   // test here
 }
 ```
-
 
 Now, Kotest will output multiple sets of statistics, with the label name in the title:
 
