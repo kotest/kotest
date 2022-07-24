@@ -21,6 +21,8 @@ echo $VERSIONS | jq > versions.json
 cp -r docs $CUT_DOCS_DIR
 
 # save versioned sidebar
-SIDEBAR=$(cat sidebars.js)
-echo ${SIDEBAR#"module.exports = "} | jq > versioned_sidebars/version-$VERSION-sidebars.json
+SIDEBAR=$(cat sidebars.js) # load contents of the current sidebars
+SIDEBAR1=${SIDEBAR#"module.exports = "} # json doesn't like a prefix
+SIDEBAR2=${SIDEBAR1%";"} # json doesn't like the ; suffix
+echo $SIDEBAR2 | jq > versioned_sidebars/version-$VERSION-sidebars.json
 
