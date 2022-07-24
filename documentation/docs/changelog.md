@@ -17,8 +17,8 @@ slug: changelog.html
 
 ### Features
 
-* Assumptions have been added to property testing.
-* Statistics generation has been added to property testing.
+* [Assumptions](https://kotest.io/docs/next/proptest/property-test-assumptions.html)) have been added to property testing.
+* [Statistics](https://kotest.io/docs/next/proptest/property-test-statistics.html) generation has been added to property testing.
 * `shouldMatchAll` has been added to Maps where each value is a function containing assertions. #3065
 * `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality,
   over regular `equals`
