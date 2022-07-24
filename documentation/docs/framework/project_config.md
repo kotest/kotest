@@ -28,9 +28,9 @@ one value will be arbitrarily picked, so it is not recommended adding competing 
 
 If you have a large project, then you may wish to disable the auto scanning for these config classes if it is incurring
 a significant startup cost. You can do this by
-setting a system property or environment variable `kotest.framework.classpath.scanning.config.disable` to `true.
+setting a system property or environment variable `kotest.framework.classpath.scanning.config.disable` to `true`.
 
-Once auto scanning is disable, if you wish to still use project config, can you specify a well known class name which
+Once auto scanning is disabled, if you wish to still use project config, you an specify a well known class name which
 Kotest will reflectively instantiate. The system property or environment variable to use
 is `kotest.framework.config.fqn`.
 
@@ -164,11 +164,11 @@ values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful
 
 Another using test name option is `testNameAppendTags` which, when set to true, will include any applicable tags in the
 test name.
-For example, if a test "foo" was defined in a spec with the tags `linux` and `spark` then the test name would be
+For example, if a test `foo` was defined in a spec with the tags `linux` and `spark` then the test name would be
 adjusted
 to be `foo [linux, spark]`
 
-This setting can also be set using a system property or environment variable `kotest.framework.testname.append.tags.
+This setting can also be set using a system property or environment variable `kotest.framework.testname.append.tags` to `true`.
 
 
 ### Test name whitespace
