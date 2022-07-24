@@ -40,7 +40,15 @@ class ArbDefaultsTest : WordSpec({
       "throw on complex data class" {
          shouldThrow<IllegalStateException> {
             checkAll<Bar> { it.shouldNotBeNull() }
-         }.shouldHaveMessage("Could not locate generator for parameter com.sksamuel.kotest.property.Bar.t")
+         }.shouldHaveMessage("Failed to create generator for parameter com.sksamuel.kotest.property.Bar.t")
+      }
+
+      "throw for nested parameters" {
+         var e = shouldThrow<IllegalStateException> {
+            checkAll<Ear> { it.shouldNotBeNull() }
+         }
+         e.shouldHaveMessage("Failed to create generator for parameter com.sksamuel.kotest.property.Ear.d")
+         e.cause!!.cause!!.cause!!.shouldHaveMessage("Failed to create generator for parameter com.sksamuel.kotest.property.Bar.t")
       }
    }
 })
@@ -48,3 +56,6 @@ class ArbDefaultsTest : WordSpec({
 data class Foo(val s: String, val b: Boolean, val i: Int, val d: Double, val f: Float, val l: Long)
 
 data class Bar(val s: String, val t: Thread)
+data class Car(val b: Bar)
+data class Dar(val c: Car)
+data class Ear(val d: Dar)

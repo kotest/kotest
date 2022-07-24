@@ -6,6 +6,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
+import kotlin.math.absoluteValue
 
 fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
    override fun test(value: Float) =
@@ -98,7 +99,7 @@ fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
 }
 
 fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
-   private val tolerance = other.times(percentage / 100)
+   private val tolerance = other.times(percentage / 100).absoluteValue.toFloat()
    private val range = (other - tolerance)..(other + tolerance)
 
    override fun test(value: Float) = MatcherResult(

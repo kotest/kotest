@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import kotlin.math.absoluteValue
 
 /**
  * Verifies that the given integer is between a and b inclusive.
@@ -117,13 +118,12 @@ fun Int.shouldNotBeWithinPercentageOf(other: Int, percentage: Double) {
 }
 
 fun beWithinPercentageOf(other: Int, percentage: Double) = object : Matcher<Int> {
-   private val tolerance = other.times(percentage / 100)
+   private val tolerance = other.times(percentage / 100).absoluteValue
    private val range = (other - tolerance)..(other + tolerance)
 
    override fun test(value: Int) = MatcherResult(
       value.toDouble() in range,
       { "$value should be in $range" },
-      {
-         "$value should not be in $range"
-      })
+      { "$value should not be in $range" },
+   )
 }

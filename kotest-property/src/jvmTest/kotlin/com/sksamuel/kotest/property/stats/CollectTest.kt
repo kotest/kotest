@@ -13,7 +13,9 @@ import io.kotest.property.arbitrary.enum
 import io.kotest.property.checkAll
 import io.kotest.property.statistics.StatisticsReportMode
 import io.kotest.property.statistics.withCoverageCount
+import io.kotest.property.statistics.withCoverageCounts
 import io.kotest.property.statistics.withCoveragePercentage
+import io.kotest.property.statistics.withCoveragePercentages
 import java.math.RoundingMode
 
 class CollectTest : FunSpec() {
@@ -122,6 +124,16 @@ DOWN                                                          107 (11%)
          }.message.shouldContain("Required coverage of 30.0% for [HALF_UP] but was [12%]")
       }
 
+      test("withCoveragePercentages should fail if coverage % is not sufficient") {
+         shouldThrowAny {
+            withCoveragePercentages(mapOf(RoundingMode.HALF_UP to 2.0, RoundingMode.FLOOR to 30.0)) {
+               checkAll(PropTestConfig(seed = 1), Arb.enum<RoundingMode>()) {
+                  collect(it)
+               }
+            }
+         }.message.shouldContain("Required coverage of 30.0% for [FLOOR] but was [13%]")
+      }
+
       test("withCoverageCount should fail if coverage number is not sufficient") {
          shouldThrowAny {
             withCoverageCount(RoundingMode.HALF_UP, 200) {
@@ -130,6 +142,24 @@ DOWN                                                          107 (11%)
                }
             }
          }.message.shouldContain("Required coverage of 200 for [HALF_UP] but was [125]")
+      }
+
+      test("withCoverageCounts should fail if coverage number is not sufficient") {
+         shouldThrowAny {
+            withCoverageCounts(mapOf(RoundingMode.HALF_UP to 44, RoundingMode.FLOOR to 200)) {
+               checkAll(PropTestConfig(seed = 1), Arb.enum<RoundingMode>()) {
+                  collect(it)
+               }
+            }
+         }.message.shouldContain("Required coverage of 200 for [FLOOR] but was [137]")
+      }
+
+      test("withCoverageCounts should pass for sufficient coverage number") {
+         withCoverageCounts(mapOf(RoundingMode.HALF_UP to 75, RoundingMode.FLOOR to 75)) {
+            checkAll(PropTestConfig(seed = 1), Arb.enum<RoundingMode>()) {
+               collect(it)
+            }
+         }
       }
    }
 }
