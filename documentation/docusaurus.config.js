@@ -113,6 +113,23 @@ module.exports = {
                   },
                ],
             },
+            {
+               title: 'Updates',
+               items: [
+                  {
+                     label: 'Changelog',
+                     href: 'https://kotest.io/docs/next/changelog.html',
+                  },
+                  {
+                     label: 'Releases',
+                     href: 'https://github.com/kotest/kotest/releases',
+                  },
+                  {
+                     label: 'Blogs and articles',
+                     href: 'https://kotest.io/docs/next/blogs',
+                  },
+               ],
+            },
          ],
          copyright: `Copyright © ${new Date().getFullYear()} Kotest Team. Built with Docusaurus.`,
       },
