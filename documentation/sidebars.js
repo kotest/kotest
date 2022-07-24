@@ -10,6 +10,7 @@ module.exports = {
       "proptest/gens",
       "proptest/genslist",
       "proptest/genops",
+      "proptest/assumptions",
       "proptest/seeds",
       "proptest/proptestconfig",
       "proptest/customgens",

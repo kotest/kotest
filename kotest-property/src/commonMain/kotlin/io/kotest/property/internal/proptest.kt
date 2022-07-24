@@ -7,6 +7,7 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
+import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
 import io.kotest.property.statistics.outputStatistics
@@ -23,13 +24,13 @@ suspend fun <A> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    when (genA) {
       is Arb -> {
          genA.generate(random, config.edgeConfig)
-            .takeWhile { constraints.evaluate() }
+            .takeWhile { constraints.evaluate(context) }
             .forEach { a ->
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
                config.listeners.forEach { it.beforeTest() }
@@ -83,7 +84,7 @@ suspend fun <A, B> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive) {
@@ -106,7 +107,7 @@ suspend fun <A, B> proptest(
    } else {
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (a, b) ->
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
@@ -127,6 +128,7 @@ suspend fun <A, B> proptest(
    outputStatistics(context, 2, true)
    context.outputClassifications(2, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -144,7 +146,7 @@ suspend fun <A, B, C> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
@@ -170,7 +172,7 @@ suspend fun <A, B, C> proptest(
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (ab, c) ->
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
@@ -192,6 +194,7 @@ suspend fun <A, B, C> proptest(
    outputStatistics(context, 3, true)
    context.outputClassifications(3, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -210,7 +213,7 @@ suspend fun <A, B, C, D> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
@@ -236,7 +239,7 @@ suspend fun <A, B, C, D> proptest(
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (abc, d) ->
             val (ab, c) = abc
             val (a, b) = ab
@@ -257,6 +260,7 @@ suspend fun <A, B, C, D> proptest(
    outputStatistics(context, 4, true)
    context.outputClassifications(4, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -276,7 +280,7 @@ suspend fun <A, B, C, D, E> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
@@ -314,7 +318,7 @@ suspend fun <A, B, C, D, E> proptest(
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
          .zip(genE.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (abcd, e) ->
             val (abc, d) = abcd
             val (ab, c) = abc
@@ -344,6 +348,7 @@ suspend fun <A, B, C, D, E> proptest(
    outputStatistics(context, 5, true)
    context.outputClassifications(5, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -364,7 +369,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -373,7 +378,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       .zip(genD.generate(random, config.edgeConfig))
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcde, f) ->
          val (abcd, e) = abcde
          val (abc, d) = abcd
@@ -404,6 +409,7 @@ suspend fun <A, B, C, D, E, F> proptest(
    outputStatistics(context, 6, true)
    context.outputClassifications(6, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -425,7 +431,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -435,7 +441,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdef, g) ->
          val (abcde, f) = abcdef
          val (abcd, e) = abcde
@@ -468,6 +474,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    outputStatistics(context, 7, true)
    context.outputClassifications(7, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -490,7 +497,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -501,7 +508,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefg, h) ->
          val (abcdef, g) = abcdefg
          val (abcde, f) = abcdef
@@ -536,6 +543,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    outputStatistics(context, 8, true)
    context.outputClassifications(8, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -559,7 +567,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -571,7 +579,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefgh, i) ->
          val (abcdefg, h) = abcdefgh
          val (abcdef, g) = abcdefg
@@ -608,6 +616,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    outputStatistics(context, 9, true)
    context.outputClassifications(9, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -632,7 +641,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -645,7 +654,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghi, j) ->
          val (abcdefgh, i) = abcdefghi
          val (abcdefg, h) = abcdefgh
@@ -684,6 +693,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    outputStatistics(context, 10, true)
    context.outputClassifications(10, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -709,7 +719,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -723,7 +733,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghij, k) ->
          val (abcdefghi, j) = abcdefghij
          val (abcdefgh, i) = abcdefghi
@@ -776,6 +786,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    outputStatistics(context, 11, true)
    context.outputClassifications(11, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -802,7 +813,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
@@ -817,7 +828,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
       .zip(genL.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghijk, l) ->
          val (abcdefghij, k) = abcdefghijk
          val (abcdefghi, j) = abcdefghij
@@ -886,5 +897,6 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    outputStatistics(context, 12, true)
    context.outputClassifications(12, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
