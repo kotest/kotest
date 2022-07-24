@@ -3,6 +3,7 @@ package io.kotest.property.internal
 import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
 import io.kotest.property.AfterPropertyContextElement
+import io.kotest.property.AssumptionFailedException
 import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
@@ -26,10 +27,10 @@ internal suspend fun test(
    inputs: List<Any?>,
    classifiers: List<Classifier<out Any?>?>,
    seed: Long,
-   fn: suspend () -> Any
+   testFn: suspend () -> Any
 ) {
    require(inputs.size == classifiers.size)
-   context.start()
+   context.markEvaluation()
 
    try {
 
@@ -43,10 +44,12 @@ internal suspend fun test(
       }
 
       coroutineContext[BeforePropertyContextElement]?.before?.invoke()
-      fn()
+      testFn()
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
       clearFailedSeed()
+      // a failed assumption does not contribute towards the counts
+   } catch (e: AssumptionFailedException) {
    } catch (e: Throwable) {  // we track any throwables and try to shrink them
       context.markFailure()
       outputStatistics(context, inputs.size, false)

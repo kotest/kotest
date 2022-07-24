@@ -2,27 +2,28 @@ package io.kotest.property
 
 import io.kotest.matchers.shouldBe
 
-fun interface Assume {
-   operator fun invoke()
-}
-
-suspend fun PropertyContext.withAssumptions(
+suspend fun withAssumptions(
    predicate: Boolean,
    test: suspend () -> Unit,
-): Unit = withAssumptions(assumptions = arrayOf(Assume { predicate shouldBe true }), test)
+): Unit = withAssumptions(assumptions = { predicate shouldBe true }, test)
 
-suspend fun PropertyContext.withAssumptions(
-   vararg assumptions: Assume,
+fun assume(predicate: Boolean) {
+   if (!predicate) throw AssumptionFailedException
+}
+
+suspend fun withAssumptions(
+   assumptions: () -> Unit,
    test: suspend () -> Unit,
 ) {
+   assume(assumptions)
+   test()
+}
+
+fun assume(assumptions: () -> Unit) {
    try {
-      assumptions.forEach {
-         it.invoke()
-      }
-      assumptionPredicateTrue()
-      test()
+      assumptions()
    } catch (e: AssertionError) {
-      assumptionPredicateFalse()
+      throw AssumptionFailedException
    }
 }
 
@@ -31,6 +32,8 @@ internal fun PropertyContext.checkMaxDiscards() {
       throw MaxDiscardPercentageException(discardPercentage(), config.maxDiscardPercentage)
    }
 }
+
+object AssumptionFailedException : Exception()
 
 class MaxDiscardPercentageException(discardPercentage: Int, maxDiscardPercentage: Int) :
    Exception("Percentage of discarded inputs ($discardPercentage%) exceeds max ($maxDiscardPercentage%). Adjust your generators to increase the probability of an acceptable value, or increase the max discard percentage in property test config.")

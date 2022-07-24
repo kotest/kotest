@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.assumptions
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -14,14 +15,16 @@ import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string
+import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.withAssumptions
 
 class AssumptionsTest : FunSpec() {
    init {
-      test("assumptions should filter failing inputs") {
 
-         // this will throw because for 10000 combinations some 2 letter string should match
+      test("withAssumptions(predicate) should filter failing inputs") {
+
+         // this will throw because for 10000 combinations at least one 2 letter string will match
          shouldThrowAny {
             checkAll(10000, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
                a.compareTo(b) shouldNotBe 0
@@ -33,17 +36,66 @@ class AssumptionsTest : FunSpec() {
             withAssumptions(a != b) {
                a.compareTo(b) shouldNotBe 0
             }
+         }.attempts() shouldBe 10000
+      }
+
+      test("withAssumptions(predicate) that fail should not count towards iterations") {
+         var count = 0
+         val context = checkAll(23423, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
+            withAssumptions(a != b) {
+               count++
+            }
+         }
+         context.evals().shouldBeGreaterThan(23423) // at least one will have been thrown away
+         context.attempts().shouldBe(23423)
+         count.shouldBe(23423)
+      }
+
+      test("assume(predicate) should filter failing inputs") {
+
+         // this will throw because for 10000 combinations at least one 2 letter string will match
+         shouldThrowAny {
+            checkAll(10000, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
+               a.compareTo(b) shouldNotBe 0
+            }
+         }
+
+         // this will now pass because the assumption will filter out equal strings
+         checkAll(10000, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
+            assume(a != b)
+            a.compareTo(b) shouldNotBe 0
+         }.attempts() shouldBe 10000
+      }
+
+      test("assume(predicate) that fail should not count towards iterations") {
+         var count = 0
+         val context = checkAll(34123, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
+            assume(a != b)
+            count++
+         }
+         context.evals().shouldBeGreaterThan(34123) // at least one will have been thrown away
+         context.attempts().shouldBe(34123)
+         count.shouldBe(34123)
+      }
+
+      test("withAssumptions(fn) should support assertions") {
+         checkAll(Arb.string(3, Codepoint.az()), Arb.string(3, Codepoint.az())) { a, b ->
+            withAssumptions({
+               a shouldNotBe b
+               a shouldHaveLength (b.length)
+            }) {
+               a.compareTo(b) shouldNotBe 0
+            }
          }
       }
 
-      test("assumptions should support assertions") {
+      test("assume(fn) should support assertions") {
          checkAll(Arb.string(3, Codepoint.az()), Arb.string(3, Codepoint.az())) { a, b ->
-            withAssumptions(
-               { a shouldNotBe b },
-               { a shouldHaveLength (b.length) },
-            ) {
-               a.compareTo(b) shouldNotBe 0
+            assume {
+               a shouldNotBe b
+               a shouldHaveLength (b.length)
             }
+            a.compareTo(b) shouldNotBe 0
          }
       }
 
@@ -66,12 +118,6 @@ class AssumptionsTest : FunSpec() {
       }
 
       test("discard percentage calcuation") {
-
-         val c1 = checkAll(PropTestConfig(maxDiscardPercentage = 100), Arb.constant("a"), Arb.constant("a")) { a, b ->
-            withAssumptions(a != b) {
-            }
-         }
-         c1.discardPercentage().shouldBe(100)
 
          val c2 = checkAll(PropTestConfig(maxDiscardPercentage = 1), Arb.constant("a"), Arb.constant("b")) { a, b ->
             withAssumptions(a != b) {

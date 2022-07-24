@@ -7,7 +7,6 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
-import io.kotest.property.RandomSource
 import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
@@ -31,7 +30,7 @@ suspend fun <A> proptest(
    when (genA) {
       is Arb -> {
          genA.generate(random, config.edgeConfig)
-            .takeWhile { constraints.evaluate() }
+            .takeWhile { constraints.evaluate(context) }
             .forEach { a ->
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
                config.listeners.forEach { it.beforeTest() }
@@ -108,7 +107,7 @@ suspend fun <A, B> proptest(
    } else {
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (a, b) ->
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
@@ -173,7 +172,7 @@ suspend fun <A, B, C> proptest(
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (ab, c) ->
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
@@ -240,7 +239,7 @@ suspend fun <A, B, C, D> proptest(
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (abc, d) ->
             val (ab, c) = abc
             val (a, b) = ab
@@ -319,7 +318,7 @@ suspend fun <A, B, C, D, E> proptest(
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
          .zip(genE.generate(random, config.edgeConfig))
-         .takeWhile { constraints.evaluate() }
+         .takeWhile { constraints.evaluate(context) }
          .forEach { (abcd, e) ->
             val (abc, d) = abcd
             val (ab, c) = abc
@@ -379,7 +378,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       .zip(genD.generate(random, config.edgeConfig))
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcde, f) ->
          val (abcd, e) = abcde
          val (abc, d) = abcd
@@ -442,7 +441,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdef, g) ->
          val (abcde, f) = abcdef
          val (abcd, e) = abcde
@@ -509,7 +508,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefg, h) ->
          val (abcdef, g) = abcdefg
          val (abcde, f) = abcdef
@@ -580,7 +579,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefgh, i) ->
          val (abcdefg, h) = abcdefgh
          val (abcdef, g) = abcdefg
@@ -655,7 +654,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghi, j) ->
          val (abcdefgh, i) = abcdefghi
          val (abcdefg, h) = abcdefgh
@@ -734,7 +733,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghij, k) ->
          val (abcdefghi, j) = abcdefghij
          val (abcdefgh, i) = abcdefghi
@@ -829,7 +828,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
       .zip(genL.generate(random, config.edgeConfig))
-      .takeWhile { constraints.evaluate() }
+      .takeWhile { constraints.evaluate(context) }
       .forEach { (abcdefghijk, l) ->
          val (abcdefghij, k) = abcdefghijk
          val (abcdefghi, j) = abcdefghij
