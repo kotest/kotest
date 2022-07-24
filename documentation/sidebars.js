@@ -15,6 +15,7 @@ module.exports = {
       "proptest/proptestconfig",
       "proptest/customgens",
       "proptest/shrinking",
+      "proptest/statistics",
       "proptest/globalconfig",
       "proptest/arrow",
       "proptest/date_gens",
