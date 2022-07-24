@@ -35,7 +35,28 @@ slug: changelog.html
 * Deprecated existing `shouldBeEqualToComparingFields` in favor of a new `shouldBeEqualToComparingFields` matcher which
   lets you configure the behaviour using a `FieldsEqualityCheckConfig` class. (#3034)
 
+Thanks to all contributors since the 5.3.0 release:
 
+* Alphonse Bendt
+* Andrey Bozhko
+* aSemy
+* Ashish Kumar Joy
+* blzsaa
+* Charles Korn
+* Cory Thomas
+* Emil Kantis
+* Erik Price
+* Francesco Feltrinelli
+* Javier Segovia Córdoba
+* Jim Schneidereit
+* Jordi
+* Norbert Nowak
+* Roland Müller
+* Shervinox
+* sksamuel
+* Tim van Heugten
+* YongJoon Kim
+* Zvika
 
 
 
@@ -71,7 +92,7 @@ slug: changelog.html
 * Make it easier to configure options through environment variables by also supporting variable names with underscores instead of dots. (#2925)
 * EndsWith and startsWith matcher support regex for (#2892)
 
-Thanks to all the contributors:
+Thanks to all the contributors since the 5.2.0 release:
 
 * Ashish Kumar Joy
 * Charles Korn
