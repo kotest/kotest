@@ -1,5 +1,5 @@
 ---
-id: propteststatistics
+id: statistics
 title: Statistics
 sidebar_label: Statistics
 slug: property-test-statistics.html
