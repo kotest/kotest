@@ -22,8 +22,7 @@ checkAll<String, String> { a, b ->
 ```
 
 This will periodically fail - whenever two equal strings are generated. One approach would be to just wrap the tests in
-an
-if/else block and avoid those undesired inputs.
+an if/else block and avoid those undesired inputs.
 
 ```kotlin
 checkAll<String, String> { a, b ->
@@ -48,25 +47,46 @@ checkAll<String, String> { a, b ->
 }
 ```
 
+Alternatively, you can use inline syntax:
+
+```kotlin
+checkAll<String, String> { a, b ->
+  assume(a != b)
+  levenshtein(a, b) shouldBeGreaterThan 0
+}
+```
+
 ### Assertions
 
-Kotest expands on basic boolean assumptions by allowing you to specify any assertion in the assumption predicate, in
-addition to supporting an arbitrary number of assumptions.
+Kotest expands on basic boolean assumptions by allowing you to specify assertions in an assumption function.
 
 For example, building on the previous example:
 
 ```kotlin
 checkAll(Arb.string(3..4, Codepoint.az()), Arb.string(3..4, Codepoint.az())) { a, b ->
-  withAssumptions(
-     { a shouldNotBe b },
-     { a shouldHaveLength (b.length) },
-  ) {
+  withAssumptions({
+    a shouldNotBe b
+    a shouldHaveLength (b.length)
+  }) {
      a.compareTo(b) shouldNotBe 0
   }
 }
 ```
 
-Here we are ensuring that all inputs are not equal, and that the inputs have the same length. Any assertion that throws `AssertionError` can be used here, including all the assertions provided by Kotest.
+Here we are ensuring that all inputs are not equal, and that the inputs have the same length. Any assertion that
+throws `AssertionError` can be used here, including all the assertions provided by Kotest.
+
+This also supports inline syntax:
+
+```kotlin
+checkAll<String, String> { a, b ->
+  assume {
+    a shouldNotBe b
+    a shouldHaveLength (b.length)
+  }
+  levenshtein(a, b) shouldBeGreaterThan 0
+}
+```
 
 ### Max Discard Percentage
 
