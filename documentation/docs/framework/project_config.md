@@ -107,6 +107,15 @@ object KotestProjectConfig : AbstractProjectConfig() {
 
 
 
+## Duplicate Test Name Handling
+
+By default, Kotest will rename a test if it has the same name as another test in the same scope. It will append _1, _2
+and so on to the test name. This is useful for automatically generated tests.
+
+You can change this behavior globally by setting `duplicateTestNameMode` to either `DuplicateTestNameMode.Error` or `DuplicateTestNameMode.Warn`.
+
+`Error` will fail the test suite on a repeated name, and warn will rename but output a warning.
+
 
 ## Fail On Ignored Tests
 
@@ -120,39 +129,49 @@ object KotestProjectConfig : AbstractProjectConfig() {
 ```
 
 
+## Ordering
 
+Kotest supports ordering both specs and tests independently.
 
-## Test Ordering
+### Test Ordering
 
 When running multiple tests from a Spec, there's a certain order on how to execute them.
 
 By default, a sequential order is used (the order that tests are defined in the spec), but this can be changed. For available options see [test ordering](test_ordering.md).
 
+### Spec Ordering
+
+By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we
+need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).
 
 
+## Test Naming
 
-## Spec Ordering
+Test names can be adjusted in several ways.
 
+### Test Case
 
-By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).
+Test names case can be controlled by changing the value of `testNameCase`.
 
-
-
-
-## Test name case
-
-The case of the test names can be controlled by changing the value of `testNameCase`.
 By default, the value is `TestNameCase.AsIs` which makes no change.
 
 By setting the value to `TestNameCase.Lowercase` a test's name will be lowercase in output.
 
-If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
+If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the
+values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
+
+### Test Name Tags
+
+Another using test name option is `testNameAppendTags` which, when set to true, will include any applicable tags in the
+test name.
+For example, if a test "foo" was defined in a spec with the tags `linux` and `spark` then the test name would be
+adjusted
+to be `foo [linux, spark]`
+
+This setting can also be set using a system property or environment variable `kotest.framework.testname.append.tags.
 
 
-
-
-
-## Test name whitespace
+### Test name whitespace
 
 If you define test names over several lines then `removeTestNameWhitespace` can be useful. Take this example:
 
