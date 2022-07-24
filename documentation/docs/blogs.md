@@ -28,6 +28,8 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [Backend testing taxonomy - Scopes and Techniques (2021)](https://www.47deg.com/blog/backend-testing-taxonomy-scopes-and-techniques/#backend-testing-taxonomy-scopes-and-techniques-0)
 * [What If Kotest Had HTML Reports? (2021)](https://hugomartins.io/essays/2021/03/what-if-kotest-had-html-reports/)
 * [From TDD to PBT via Kotest](https://garthgilmour.medium.com/from-tdd-to-pbt-via-kotest-621957e58764)
-
+* [Kotlin Multiplatform library with Kotest and Gradle Version Catalog](https://blog.devgenius.io/kotlin-multiplatform-library-with-kotest-and-gradle-version-catalog-23861a6f1bb1)
+* [Kotlin Assertion Libraries - Kotest](https://www.novatec-gmbh.de/blog/kotlin-assertion-libraries-kotest-assertions/)
+* [Introduction to Kotest at Baeldung](https://www.baeldung.com/kotlin/kotest)
 
 Please open a PR to add your blog or article here.
