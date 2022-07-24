@@ -10,10 +10,10 @@ slug: changelog.html
 
 * Multiplatform support for 1.7 has been updated.
 * Fix problem with isolation mode when duplicate names occur (#3071)
-* Allow Arb.bind<T>() to directly bind to sealed, enum and private types (#3072)
+* Allow `Arb.bind` to directly bind to sealed, enum and private types (#3072)
 * Fix kotest.properties to apply before tests #3087
 * Fix `shouldHaveSameContentAs` doesn't close the readers (#3091
-* Fix tolerance matchers for negative values. (#3096) Erik Price* 07 Jul 2022, 20:08 4af10c62
+* Fix tolerance matchers for negative values. (#3096)
 
 ### Features
 
