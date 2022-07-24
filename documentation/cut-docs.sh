@@ -1,5 +1,9 @@
 #!/bin/bash
 
+###
+### After running this script, update the current version to the next value in docusaurus.config.js
+###
+
 VERSION=$1
 CUT_DOCS_DIR=versioned_docs/version-$VERSION
 
