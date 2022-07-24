@@ -7,25 +7,42 @@ slug: project-config.html
 
 
 Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, or how
-test classes are created. Sometimes you may want to set this at a global level and for that you need to use project-level-config.
+test classes are created. Sometimes you may want to set this at a global level and for that you need to use
+project-level-config.
 
-Project level configuration can be used by creating an object or class that extends from `AbstractProjectConfig`. At runtime,
-Kotest will scan for classes that extend this abstract class and instantiate them, reading any configuration defined there.
-
-You can create more than one config class in different modules, and any on the current classpath will be detected and configs merged.
-This is effective for allowing common config to be placed into a root module. In the case of clashes, one value will be arbitrarily picked, so it is not recommended adding competing settings to different configs.
-
-:::note
-If your project specifies more than one project config, they will be merged, but the resolution of conflicting values is unspecified. It is advised that separate configs do not specify the same settings
-:::
+Project level configuration can be used by creating an object or class that extends from `AbstractProjectConfig`.
 
 Any configuration set at the Spec level or directly on a test will override the config specified at the project level.
 
-Some configuration options available in `KotestProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
+Some configuration options available in `KotestProjectConfig` include parallelism of tests, failing specs with ignored
+tests, global `AssertSoftly`, and reusable listeners or extensions.
 
+## Runtime Detection
 
+At runtime, Kotest will scan for classes that extend `AbstractProjectConfig` and instantiate them, using any
+configuration values defined in those classes.
 
+You can create more than one config class in different modules, and any on the current classpath will be detected and
+configs merged. This is effective for allowing common config to be placed into a root module. In the case of clashes,
+one value will be arbitrarily picked, so it is not recommended adding competing settings to different configs.
 
+If you have a large project, then you may wish to disable the auto scanning for these config classes if it is incurring
+a significant startup cost. You can do this by
+setting a system property or environment variable `kotest.framework.classpath.scanning.config.disable` to `true.
+
+Once auto scanning is disable, if you wish to still use project config, can you specify a well known class name which
+Kotest will reflectively instantiate. The system property or environment variable to use
+is `kotest.framework.config.fqn`.
+
+For example, setting:
+
+```
+kotest.framework.classpath.scanning.config.disable=true
+kotest.framework.config.fqn=com.wibble.KotestConfig
+```
+
+Will disable runtime scanning, and look for a class `com.wibble.KotestConfig`. The class must still
+inherit `AbstractProjectConfig`.
 
 ## Parallelism
 
