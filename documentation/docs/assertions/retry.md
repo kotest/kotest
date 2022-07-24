@@ -5,8 +5,6 @@ slug: retry.html
 ---
 
 
-## Retry <a name="retry"></a>
-
 Retry is similar to eventually, but rather than attempt a block of code for a period of time, it attempts a block of code a maximum number of times.
 We still provide a timeout period to avoid the loop running for ever.
 

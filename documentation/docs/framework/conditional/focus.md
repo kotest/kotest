@@ -1,12 +1,12 @@
 ---
 id: focus_and_bang
-title: Conditional tests with focus and bang
+title: Focus and Bang
 slug: conditional-tests-with-focus-and-bang.html
 sidebar_label: Focus and Bang
 ---
 
 
-### Focus
+## Focus
 
 Kotest supports isolating a single **top level** test by preceding the test name with `f:`.
 
@@ -62,7 +62,7 @@ The focus flag **does not** work if placed on nested tests due to the fact that 
 :::
 
 
-### Bang
+## Bang
 
 The opposite of focus is to prefix a test with an exclamation mark `!` and then that test (and any subtests defined inside that scope) will be skipped.
 In the next example we’ve disabled only the first test by adding the “!” prefix.
