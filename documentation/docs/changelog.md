@@ -4,27 +4,68 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.4.0
+## 5.4.0 July 2022
 
 ### Fixes
 
+* Multiplatform support for 1.7 has been updated.
+* Fix problem with isolation mode when duplicate names occur (#3071)
+* Allow Arb.bind<T>() to directly bind to sealed, enum and private types (#3072)
+* Fix kotest.properties to apply before tests #3087
+* Fix `shouldHaveSameContentAs` doesn't close the readers (#3091
+* Fix tolerance matchers for negative values. (#3096) Erik Price* 07 Jul 2022, 20:08 4af10c62
+
 ### Features
 
-* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality, over regular `equals`
+* Assumptions have been added to property testing.
+* Statistics generation has been added to property testing.
+* `shouldMatchAll` has been added to Maps where each value is a function containing assertions. #3065
+* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality,
+  over regular `equals`
+* Add arbs for `ZoneId`, `ZonedDateTime`, and `OffsetDateTime` (#3113)
 
 ### Experimental features and changes
 
-* JSON schema arrays now supports `minItems`, `maxItems` and `uniqueItems`
-* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed to `optional`, with false as default.
+* JSON schema array assertions now support `minItems`, `maxItems` and `uniqueItems` #3026
+* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed
+  to `optional`, with false as default.
 
 ### Deprecation
-* Deprecated existing shouldBeEqualToComparingFields in favor of a new shouldBeEqualToComparingFields matcher which let you configure behaviour its using a FieldsEqualityCheckConfig class.(#3034)
+
+* Deprecated existing `shouldBeEqualToComparingFields` in favor of a new `shouldBeEqualToComparingFields` matcher which
+  lets you configure the behaviour using a `FieldsEqualityCheckConfig` class. (#3034)
+
+Thanks to all contributors since the 5.3.0 release:
+
+* Alphonse Bendt
+* Andrey Bozhko
+* aSemy
+* Ashish Kumar Joy
+* blzsaa
+* Charles Korn
+* Cory Thomas
+* Emil Kantis
+* Erik Price
+* Francesco Feltrinelli
+* Javier Segovia Córdoba
+* Jim Schneidereit
+* Jordi
+* Norbert Nowak
+* Roland Müller
+* Shervinox
+* sksamuel
+* Tim van Heugten
+* YongJoon Kim
+* Zvika
+
+
 
 ## 5.3.2 June 2022
 
 ### Fixes
 
 * Fixes compiler plugin issue with Kotlin/Native using Kotlin 1.7, issue [#3060](https://github.com/kotest/kotest/issues/3060)
+
 
 ## 5.3.1 June 2022
 
@@ -51,7 +92,7 @@ slug: changelog.html
 * Make it easier to configure options through environment variables by also supporting variable names with underscores instead of dots. (#2925)
 * EndsWith and startsWith matcher support regex for (#2892)
 
-Thanks to all the contributors:
+Thanks to all the contributors since the 5.2.0 release:
 
 * Ashish Kumar Joy
 * Charles Korn
