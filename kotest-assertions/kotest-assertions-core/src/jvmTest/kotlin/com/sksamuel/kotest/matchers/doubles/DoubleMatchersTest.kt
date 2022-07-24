@@ -413,7 +413,7 @@ class DoubleMatchersTest : FreeSpec() {
       }
 
       "The non-numeric double" - {
-        "NaN" {
+        "NaN" - {
           "Should not be less than or equal" - {
             "Any numeric double" {
               checkAll(100, nonMinNorMaxValueDoubles) {

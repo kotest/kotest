@@ -64,3 +64,9 @@ fun beEmpty() = object : Matcher<Map<*, *>> {
       )
    }
 }
+
+
+
+fun <K, V> Map<K, V>.shouldMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this should matchAll(*matchers)
+fun <K, V> Map<K, V>.shouldNotMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this shouldNot matchAll(*matchers)
+

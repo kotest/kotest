@@ -1,15 +1,20 @@
 package io.kotest.property
 
+import io.kotest.property.statistics.Label
+
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
 class PropertyContext {
 
+
    private var successes = 0
    private var failures = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
+
+   private val statistics = mutableMapOf<Label?, MutableMap<Any?, Int>>()
 
    fun markSuccess() {
       successes++
@@ -61,5 +66,29 @@ class PropertyContext {
          val current = classifications.getOrElse(falseLabel) { 0 }
          classifications[falseLabel] = current + 1
       }
+   }
+
+   /**
+    * Returns all labels used in this property test run.
+    */
+   fun labels(): Set<Label> = statistics.keys.toSet().filterNotNull().toSet()
+
+   /**
+    * Returns the statistics.
+    */
+   fun statistics(): Map<Label?, Map<Any?, Int>> = statistics.toMap()
+
+   fun collect(classification: Any?) {
+      collect(null, classification)
+   }
+
+   fun collect(label: String, classification: Any?) {
+      collect(Label(label), classification)
+   }
+
+   private fun collect(label: Label?, classification: Any?) {
+      val stats = statistics.getOrPut(label) { mutableMapOf() }
+      val count = stats.getOrElse(classification) { 0 }
+      stats[classification] = count + 1
    }
 }

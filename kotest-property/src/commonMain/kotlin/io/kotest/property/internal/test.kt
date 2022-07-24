@@ -9,6 +9,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.seed.clearFailedSeed
 import io.kotest.property.seed.writeFailedSeedIfEnabled
+import io.kotest.property.statistics.outputStatistics
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -43,11 +44,12 @@ internal suspend fun test(
       fn()
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
+      clearFailedSeed()
    } catch (e: Throwable) {  // we track any throwables and try to shrink them
       context.markFailure()
+      outputStatistics(context, inputs.size, false)
       handleException(context, shrinkfn, inputs, seed, e, config)
    }
-   clearFailedSeed()
 }
 
 internal suspend fun handleException(

@@ -1,33 +1,40 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.bind
+import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import kotlin.reflect.KClass
 
 class ReflectiveBindTest : StringSpec(
    {
+      val randomSource = RandomSource.seeded(11L)
 
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
-      data class WobbleWobble(val a: Wobble)
+      class WobbleWobble(val a: Wobble)
       data class BubbleBobble(val a: String?, val b: Boolean?)
 
-      "binds enums" {
+      "binds enum parameters" {
          data class Hobble(val shape: Shape)
 
-         val items = Arb.bind<Hobble>().take(100).toList()
+         val items = Arb.bind<Hobble>().take(100, randomSource).toList()
 
          items
             .forAtLeastOne { it.shape shouldBe Shape.Diamond }
@@ -123,6 +130,55 @@ class ReflectiveBindTest : StringSpec(
          )
       }
 
+      "Can bind to all types that can be used as parameters" {
+         val enumArb = Arb.bind<Shape>()
+         enumArb.next().shouldBeInstanceOf<Shape>()
+
+         val listArb = Arb.bind<List<Int>>()
+         listArb.next().shouldBeInstanceOf<List<Int>>()
+
+         val bigDecimalArb = Arb.bind<BigDecimal>()
+         bigDecimalArb.next().shouldBeInstanceOf<BigDecimal>()
+      }
+
+      "Can bind to no-arg constructor classes" {
+         val noArgArb = Arb.bind<NoArgConstructor>()
+         noArgArb.next().shouldBeInstanceOf<NoArgConstructor>()
+      }
+
+      "Can bind to sealed classes" {
+         val shape3dArb = Arb.bind<Shape3d>()
+         shape3dArb.next().shouldBeInstanceOf<Shape3d>()
+
+         val shapes3d = shape3dArb.take(100, randomSource).toList()
+
+         shapes3d
+            .forAtLeastOne { it.shouldBeInstanceOf<Sphere>() }
+            .forAtLeastOne { it.shouldBeInstanceOf<Cube>() }
+
+
+         val shape4dArb = Arb.bind<Shape4d>()
+         shape4dArb.next().shouldBeInstanceOf<Shape4d>()
+
+         val shapes4d = shape4dArb.take(100, randomSource).toList()
+
+         shapes4d
+            .forAtLeastOne { it.shouldBeInstanceOf<Tesseract>() }
+            .forAtLeastOne { it.shouldBeInstanceOf<Hypersphere>() }
+      }
+
+      "Fails to bind for non default type when class or primary constructor is private" {
+         expectValidSampling(Shape3d::class)
+         expectValidSampling(Shape4d::class)
+         expectValidSampling(InternalClass::class)
+         expectValidSampling(PublicClassInternalConstructor::class)
+
+         expectConstructorVisibilityException(PublicClassPrivateConstructor::class)
+         expectConstructorVisibilityException(PrivateClassPublicConstructor::class)
+         expectConstructorVisibilityException(PrivateDataClass::class)
+
+      }
+
    }
 ) {
    companion object {
@@ -131,5 +187,35 @@ class ReflectiveBindTest : StringSpec(
          Triangle,
          Diamond
       }
+
+      sealed interface Shape3d
+      class Sphere : Shape3d
+      class Cube : Shape3d
+
+      sealed class Shape4d
+      class Tesseract : Shape4d()
+      class Hypersphere : Shape4d()
+
+      class NoArgConstructor
+
+      internal class InternalClass(name: String)
+      class PublicClassInternalConstructor internal constructor(name: String)
+      class PublicClassPrivateConstructor private constructor(name: String)
+      private class PrivateClassPublicConstructor(name: String)
+      private data class PrivateDataClass(val name: String)
+
+      inline fun <reified T : Any> expectConstructorVisibilityException(kclass: KClass<T>) {
+         val exception = shouldThrow<IllegalStateException> {
+            Arb.bind<T>()
+         }
+         exception.message shouldContain kclass.simpleName!!
+         exception.message shouldContain "must be public"
+      }
+
+      inline fun <reified T : Any> expectValidSampling(kclass: KClass<T>) {
+         val arb = Arb.bind<T>()
+         arb.next().shouldBeInstanceOf<T>()
+      }
+
    }
 }

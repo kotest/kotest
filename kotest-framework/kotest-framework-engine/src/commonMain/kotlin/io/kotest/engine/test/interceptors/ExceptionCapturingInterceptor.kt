@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -12,7 +13,7 @@ import kotlin.time.TimeMark
  * Any [TestExecutionInterceptor]s that can throw (eg by using withConetxt) should
  * appear after this interceptor.
  */
-internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : TestExecutionInterceptor {
+internal class ExceptionCapturingInterceptor(private val timeMark: TimeMarkCompat) : TestExecutionInterceptor {
 
    private val logger = Logger(ExceptionCapturingInterceptor::class)
 

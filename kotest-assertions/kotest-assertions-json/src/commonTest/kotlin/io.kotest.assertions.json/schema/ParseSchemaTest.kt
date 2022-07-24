@@ -1,15 +1,12 @@
 package io.kotest.assertions.json.schema
 
-import io.kotest.datatest.withData
-import io.kotest.matchers.and
 import io.kotest.assertions.shouldFail
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.data.row
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.haveMaxLength
-import io.kotest.matchers.string.haveMinLength
-import io.kotest.matchers.string.match
 
+@OptIn(ExperimentalKotest::class)
 class ParseSchemaTest : FunSpec(
    {
 
@@ -65,7 +62,7 @@ class ParseSchemaTest : FunSpec(
                       "country": "United States"
                     }
                   }
-               """.trimIndent() shouldMatchSchema schema
+                  """.trimIndent() shouldMatchSchema schema
                }.message shouldBe """
                   $.first_name => $expectedMessage
                """.trimIndent()
@@ -96,7 +93,7 @@ class ParseSchemaTest : FunSpec(
                  "birthday": "February 22, 1732",
                  "address": "Mount Vernon, Virginia, United States"
                }
-            """.trimIndent()
+               """.trimIndent()
 
             mismatchingSample shouldNotMatchSchema schema
 
