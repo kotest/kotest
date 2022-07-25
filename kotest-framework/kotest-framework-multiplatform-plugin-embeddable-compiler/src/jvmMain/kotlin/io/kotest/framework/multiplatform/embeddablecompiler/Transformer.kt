@@ -6,11 +6,17 @@ import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.IrStatement
+import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
+import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.expressions.IrCall
+import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
@@ -60,6 +66,35 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
    }
 
    abstract fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration
+
+   protected fun IrBuilderWithScope.callLauncher(
+      launchFunction: IrSimpleFunctionSymbol,
+      specs: Iterable<IrClass>,
+      configs: Iterable<IrClass>,
+      constructorGenerator: IrBuilderWithScope.() -> IrExpression
+   ): IrCall {
+      return irCall(launchFunction).also { promise: IrCall ->
+         promise.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
+            withSpecs.putValueArgument(
+               0,
+               irVararg(
+                  pluginContext.irBuiltIns.stringType,
+                  specs.map { irCall(it.constructors.first()) }
+               )
+            )
+            withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+               withConfig.putValueArgument(
+                  0,
+                  irVararg(
+                     pluginContext.irBuiltIns.stringType,
+                     configs.map { irCall(it.constructors.first()) }
+                  )
+               )
+               withConfig.dispatchReceiver = constructorGenerator()
+            }
+         }
+      }
+   }
 
    protected val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
       ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")

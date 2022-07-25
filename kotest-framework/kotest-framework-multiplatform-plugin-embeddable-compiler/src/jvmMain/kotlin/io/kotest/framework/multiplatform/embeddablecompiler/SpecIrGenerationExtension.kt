@@ -12,8 +12,6 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
       val platform = pluginContext.platform
 
-      // FIXME: Now that both JS and Native use the same compiler plugin (as of Kotlin 1.7),
-      // we should be able to merge these two transformers.
       val transformer = when {
          platform.isJs() -> JsTransformer(messageCollector, pluginContext)
          platform.isNative() -> NativeTransformer(messageCollector, pluginContext)
