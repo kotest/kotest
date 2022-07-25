@@ -23,27 +23,6 @@ import org.jetbrains.kotlin.name.Name
 
 class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
    override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
-      val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
-         ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
-
-      val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
-
-      val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
-         ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
-
-      val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
-
-      val withTeamCityListenerMethodNameFn =
-         launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
-            ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
-
-      val eagerAnnotationName = FqName("kotlin.native.EagerInitialization")
-      val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
-         ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
-
-      val eagerAnnotationConstructor = eagerAnnotation.constructors.single()
-
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
       }.apply {
@@ -93,4 +72,17 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
 
       return launcher
    }
+
+   private val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
+      ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
+
+   private val withTeamCityListenerMethodNameFn =
+      launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
+         ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
+
+   private val eagerAnnotationName = FqName("kotlin.native.EagerInitialization")
+   private val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
+      ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
+
+   private val eagerAnnotationConstructor = eagerAnnotation.constructors.single()
 }

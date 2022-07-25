@@ -11,7 +11,10 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
+import org.jetbrains.kotlin.name.FqName
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class Transformer(protected val messageCollector: MessageCollector, protected val pluginContext: IrPluginContext) : IrElementTransformerVoidWithContext() {
@@ -57,4 +60,15 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
    }
 
    abstract fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration
+
+   protected val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
+      ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
+
+   protected val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
+
+   protected val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+      ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+
+   protected val withConfigFn = launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
+      ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
 }

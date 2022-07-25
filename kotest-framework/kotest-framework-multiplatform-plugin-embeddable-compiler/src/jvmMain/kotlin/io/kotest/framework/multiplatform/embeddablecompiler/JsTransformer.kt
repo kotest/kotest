@@ -19,20 +19,6 @@ import org.jetbrains.kotlin.name.Name
 
 class JsTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
    override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
-      val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
-         ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
-
-      val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
-
-      val promiseFn = launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
-         ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
-
-      val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
-
-      val withConfigFn = launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
-
       val main = pluginContext.irFactory.buildFun {
          name = Name.identifier("main")
          returnType = pluginContext.irBuiltIns.unitType
@@ -64,4 +50,7 @@ class JsTransformer(messageCollector: MessageCollector, pluginContext: IrPluginC
 
       return main
    }
+
+   private val promiseFn = launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
+      ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
 }
