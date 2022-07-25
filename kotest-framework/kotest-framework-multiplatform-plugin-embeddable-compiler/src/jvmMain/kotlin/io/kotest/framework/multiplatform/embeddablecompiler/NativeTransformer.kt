@@ -1,11 +1,8 @@
 package io.kotest.framework.multiplatform.embeddablecompiler
 
-import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.IrSingleStatementBuilder
 import org.jetbrains.kotlin.ir.builders.Scope
@@ -17,29 +14,15 @@ import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
-import org.jetbrains.kotlin.ir.declarations.IrFile
-import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrDeclaration
+import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
-import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import java.util.concurrent.CopyOnWriteArrayList
 
-class NativeTransformer(private val messageCollector: MessageCollector, private val pluginContext: IrPluginContext) : IrElementTransformerVoidWithContext() {
-
-   private val specs = CopyOnWriteArrayList<IrClass>()
-
-   override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
-      val fragment = super.visitModuleFragment(declaration)
-      messageCollector.toLogger().log("Detected ${specs.size} native specs:")
-      specs.forEach {
-         messageCollector.toLogger().log(it.kotlinFqName.asString())
-      }
-      if (specs.isEmpty()) return fragment
-
-      val file = declaration.files.first()
-
+class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+   override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
       val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
          ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
 
@@ -64,8 +47,13 @@ class NativeTransformer(private val messageCollector: MessageCollector, private 
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
       }.apply {
-         parent = file
-         annotations += IrSingleStatementBuilder(pluginContext, Scope(this.symbol), UNDEFINED_OFFSET, UNDEFINED_OFFSET).build { irCall(eagerAnnotationConstructor) }
+         parent = declarationParent
+         annotations += IrSingleStatementBuilder(
+            pluginContext,
+            Scope(this.symbol),
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET
+         ).build { irCall(eagerAnnotationConstructor) }
 
          backingField = pluginContext.irFactory.buildField {
             type = pluginContext.irBuiltIns.unitType
@@ -103,16 +91,6 @@ class NativeTransformer(private val messageCollector: MessageCollector, private 
          }
       }
 
-      file.addChild(launcher)
-      return fragment
+      return launcher
    }
-
-   override fun visitFileNew(declaration: IrFile): IrFile {
-      super.visitFileNew(declaration)
-      val specs = declaration.specs()
-      messageCollector.toLogger().log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
-      this.specs.addAll(specs)
-      return declaration
-   }
-
 }

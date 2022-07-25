@@ -27,7 +27,7 @@ val abstractProjectConfigFqName = FqName("io.kotest.core.config.AbstractProjectC
 fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
 
 /**
- * Returns true fi this IrClass is a project config
+ * Returns true if this IrClass is a project config
  */
 fun IrClass.isProjectConfig() = superTypes().any { it.classFqName == abstractProjectConfigFqName }
 
