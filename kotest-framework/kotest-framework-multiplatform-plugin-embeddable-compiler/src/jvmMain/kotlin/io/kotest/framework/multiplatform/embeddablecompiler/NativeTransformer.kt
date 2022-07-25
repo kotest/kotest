@@ -47,7 +47,6 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
                   +irCall(launchFn).also { launch ->
                      launch.dispatchReceiver = irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
                         withTeamCity.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
-                           withSpecs.dispatchReceiver = irCall(launcherConstructor)
                            withSpecs.putValueArgument(
                               0,
                               irVararg(
@@ -55,6 +54,16 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
                                  specs.map { irCall(it.constructors.first()) }
                               )
                            )
+                           withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                              withConfig.putValueArgument(
+                                 0,
+                                 irVararg(
+                                    pluginContext.irBuiltIns.stringType,
+                                    configs.map { irCall(it.constructors.first()) }
+                                 )
+                              )
+                              withConfig.dispatchReceiver = irCall(launcherConstructor)
+                           }
                         }
                      }
                   }
