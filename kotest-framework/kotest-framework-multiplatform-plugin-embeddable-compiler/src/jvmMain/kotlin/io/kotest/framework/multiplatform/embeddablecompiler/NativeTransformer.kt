@@ -45,24 +45,24 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
             field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                   +irCall(launchFn).also { launch ->
-                     launch.dispatchReceiver = irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
-                        withTeamCity.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
-                           withSpecs.putValueArgument(
+                     launch.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
+                        withSpecs.putValueArgument(
+                           0,
+                           irVararg(
+                              pluginContext.irBuiltIns.stringType,
+                              specs.map { irCall(it.constructors.first()) }
+                           )
+                        )
+                        withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                           withConfig.putValueArgument(
                               0,
                               irVararg(
                                  pluginContext.irBuiltIns.stringType,
-                                 specs.map { irCall(it.constructors.first()) }
+                                 configs.map { irCall(it.constructors.first()) }
                               )
                            )
-                           withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
-                              withConfig.putValueArgument(
-                                 0,
-                                 irVararg(
-                                    pluginContext.irBuiltIns.stringType,
-                                    configs.map { irCall(it.constructors.first()) }
-                                 )
-                              )
-                              withConfig.dispatchReceiver = irCall(launcherConstructor)
+                           withConfig.dispatchReceiver = irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
+                              withTeamCity.dispatchReceiver = irCall(launcherConstructor)
                            }
                         }
                      }
