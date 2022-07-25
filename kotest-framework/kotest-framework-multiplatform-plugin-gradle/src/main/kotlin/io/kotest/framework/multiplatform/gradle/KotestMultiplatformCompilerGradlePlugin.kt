@@ -19,7 +19,7 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
       const val compilerPluginId = "io.kotest.multiplatform"
       const val KotestGroupId = "io.kotest"
       const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
-      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-native"
+      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
       const val missingProjectValError = "Project is not initialized"
       const val engineDepPrefix = "kotest-framework-engine"
    }
@@ -70,6 +70,7 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
    override fun getPluginArtifact(): SubpluginArtifact =
       SubpluginArtifact(KotestGroupId, KotestEmbeddableCompilerArtifactId, version)
 
+   // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
       SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, version)
 
