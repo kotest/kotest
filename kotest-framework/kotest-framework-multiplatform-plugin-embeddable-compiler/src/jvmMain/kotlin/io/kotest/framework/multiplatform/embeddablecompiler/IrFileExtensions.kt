@@ -1,4 +1,4 @@
-package io.kotest.framework.multiplatform.js
+package io.kotest.framework.multiplatform.embeddablecompiler
 
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import java.io.File

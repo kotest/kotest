@@ -1,4 +1,4 @@
-package io.kotest.framework.multiplatform.js
+package io.kotest.framework.multiplatform.embeddablecompiler
 
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext

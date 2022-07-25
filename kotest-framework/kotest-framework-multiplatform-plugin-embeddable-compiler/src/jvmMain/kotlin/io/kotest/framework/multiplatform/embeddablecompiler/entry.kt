@@ -1,4 +1,4 @@
-package io.kotest.framework.multiplatform.js
+package io.kotest.framework.multiplatform.embeddablecompiler
 
 object EntryPoint {
    // we use a public val to register each spec
