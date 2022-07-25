@@ -52,7 +52,7 @@ tasks.withType<Test> {
 
    setOf(
       Projects.JunitRunner,
-      ":kotest-framework:kotest-framework-multiplatform-plugin-js",
+      ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
       ":kotest-framework:kotest-framework-multiplatform-plugin-native"
    ).forEach { project ->
       dependsOn("$project:jvmJar")
