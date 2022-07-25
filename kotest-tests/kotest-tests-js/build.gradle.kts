@@ -1,7 +1,7 @@
 plugins {
    id("kotest-js-conventions")
    // must be a published version and not one in the current build
-   id("io.kotest.multiplatform").version("5.0.3")
+   id("io.kotest.multiplatform").version("5.3.0")
 }
 
 kotlin {
@@ -18,5 +18,5 @@ kotlin {
 
 // must be a published version and not one in the current build
 configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
-   compilerPluginVersion.set("5.0.3")
+   compilerPluginVersion.set("5.3.0")
 }
