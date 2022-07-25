@@ -37,19 +37,19 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
    return result
 }
 
-class CollapseAction(private val tree: TestFileTree) : AnAction("Collapse all", null, AllIcons.Actions.Collapseall) {
+class CollapseAction(private val tree: TestFileTree) : AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
    override fun actionPerformed(e: AnActionEvent) {
       tree.collapseTopLevelNodes()
    }
 }
 
-class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand all", null, AllIcons.Actions.Expandall) {
+class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand All", null, AllIcons.Actions.Expandall) {
    override fun actionPerformed(e: AnActionEvent) {
       tree.expandAllNodes()
    }
 }
 
-class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter callbacks", null, AllIcons.Nodes.Controller) {
+class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter Vallbacks", null, AllIcons.Nodes.Controller) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showCallbacks
@@ -61,7 +61,7 @@ class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filt
    }
 }
 
-class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter modules", null, AllIcons.Nodes.ModuleGroup) {
+class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showModules
@@ -73,7 +73,7 @@ class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter
    }
 }
 
-class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter includes", null, AllIcons.Nodes.Tag) {
+class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter Includes", null, AllIcons.Nodes.Tag) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showIncludes
@@ -86,7 +86,7 @@ class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filte
 }
 
 class NavigateToNodeAction : ToggleAction(
-   "Autoscroll to source",
+   "Autoscroll To Source",
    null,
    AllIcons.General.AutoscrollToSource) {
 
