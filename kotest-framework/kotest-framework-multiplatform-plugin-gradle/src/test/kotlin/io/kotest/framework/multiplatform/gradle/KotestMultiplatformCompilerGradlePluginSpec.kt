@@ -50,7 +50,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                   "-PkotlinVersion=$kotlinVersion",
                   "-PkotestVersion=$kotestVersion",
                   "jvmTest",
-                  "jsBrowserTest",
+                  // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
+                  // "jsBrowserTest",
                   "jsNodeTest",
                   "macosArm64Test",
                   "macosX64Test",
@@ -62,7 +63,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             invocation.run()
 
             shouldHavePassingTestResultsFor("jvmTest")
-            shouldHavePassingTestResultsFor("jsBrowserTest")
+            // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
+            // shouldHavePassingTestResultsFor("jsBrowserTest")
             shouldHavePassingTestResultsFor("jsNodeTest")
 
             setOf(
