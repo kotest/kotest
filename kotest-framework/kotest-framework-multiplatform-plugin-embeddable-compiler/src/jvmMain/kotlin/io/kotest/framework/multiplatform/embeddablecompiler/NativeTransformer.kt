@@ -63,16 +63,22 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
       return launcher
    }
 
-   private val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
-      ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
+   private val launchFn by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
+         ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
+   }
 
-   private val withTeamCityListenerMethodNameFn =
+   private val withTeamCityListenerMethodNameFn by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
          ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
+   }
 
-   private val eagerAnnotationName = FqName("kotlin.native.EagerInitialization")
-   private val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
-      ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
+   private val eagerAnnotationConstructor by lazy {
+      val annotationName = FqName("kotlin.native.EagerInitialization")
 
-   private val eagerAnnotationConstructor = eagerAnnotation.constructors.single()
+      val annotation = pluginContext.referenceClass(annotationName)
+         ?: error("Cannot find eager initialisation annotation class $annotationName")
+
+      annotation.constructors.single()
+   }
 }

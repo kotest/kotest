@@ -96,14 +96,20 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
       }
    }
 
-   protected val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
-      ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
+   protected val launcherClass by lazy {
+      pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
+         ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
+   }
 
-   protected val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
+   protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
 
-   protected val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
-      ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+   protected val withSpecsFn by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+         ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+   }
 
-   protected val withConfigFn = launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
-      ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
+   protected val withConfigFn by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
+         ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
+   }
 }

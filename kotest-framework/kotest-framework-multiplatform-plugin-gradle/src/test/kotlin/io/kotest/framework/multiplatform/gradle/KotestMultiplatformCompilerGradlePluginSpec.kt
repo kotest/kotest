@@ -39,7 +39,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
             testReportContents shouldStartWith """
                <?xml version="1.0" encoding="UTF-8"?>
-               <testsuite name="TestSpec" tests="1" skipped="0" failures="0" errors="0"
+               <testsuite name="TestSpec" tests="2" skipped="0" failures="0" errors="0"
             """.trimIndent()
          }
 

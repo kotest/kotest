@@ -29,6 +29,8 @@ class JsTransformer(messageCollector: MessageCollector, pluginContext: IrPluginC
       return main
    }
 
-   private val promiseFn = launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
-      ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
+   private val promiseFn by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
+         ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
+   }
 }
