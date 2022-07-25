@@ -59,6 +59,7 @@ tasks.withType<Test> {
    }
 
    dependsOn("jar")
+   dependsOn(":kotlinNpmInstall")
 
    useJUnitPlatform()
 

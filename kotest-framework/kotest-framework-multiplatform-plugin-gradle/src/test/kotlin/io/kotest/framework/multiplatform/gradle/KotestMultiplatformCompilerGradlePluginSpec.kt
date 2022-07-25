@@ -111,7 +111,7 @@ data class GradleInvocation(
    private val wrapperScriptPath: Path = Paths.get("..", "..", "gradlew")
 
    fun run() {
-      val command = listOf(wrapperScriptPath.toAbsolutePath().toString(), "--console=plain") + arguments
+      val command = listOf(wrapperScriptPath.toAbsolutePath().toString(), "--console=plain", "--no-daemon") + arguments
 
       val process = ProcessBuilder(command)
          .directory(projectPath.toFile())
@@ -124,7 +124,7 @@ data class GradleInvocation(
       val exitCode = process.waitFor()
 
       if (exitCode != 0) {
-         throw RuntimeException("Gradle process exited with code $exitCode and output:\n$output")
+         throw RuntimeException("Gradle process $command exited with code $exitCode and output:\n$output")
       }
    }
 }
