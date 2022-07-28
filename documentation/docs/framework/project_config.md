@@ -44,6 +44,9 @@ kotest.framework.config.fqn=com.wibble.KotestConfig
 Will disable runtime scanning, and look for a class `com.wibble.KotestConfig`. The class must still
 inherit `AbstractProjectConfig`.
 
+Note that another similar setting is `kotest.framework.classpath.scanning.autoscan.disable` which can also be set to false for speed.
+This setting stops Kotest from looking for `@AutoScan` annotated extensions.
+
 ## Parallelism
 
 You can ask Kotest to run specs in parallel to take advantage of modern cpus with several cores by setting the parallelism level (default is 1). Tests inside a spec are always executed sequentially.
