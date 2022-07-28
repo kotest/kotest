@@ -10,7 +10,7 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(project(Projects.Assertions.Shared))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Common))
+            api(project(Projects.Common)) // needs to be API so the domain objects are open
          }
       }
 
