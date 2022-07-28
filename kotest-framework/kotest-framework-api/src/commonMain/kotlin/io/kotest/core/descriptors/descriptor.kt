@@ -128,8 +128,8 @@ sealed interface Descriptor {
     * Returns true if this instance is on the path to the given description. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
     */
-   fun isOnPath(descriptor: Descriptor): Boolean =
-      this == descriptor || this.isAncestorOf(descriptor)
+   fun isOnPath(description: Descriptor): Boolean =
+      this == description || this.isAncestorOf(description)
 
    /**
     * Returns the [SpecDescriptor] parent for this [Descriptor].
