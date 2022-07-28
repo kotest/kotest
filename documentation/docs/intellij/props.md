@@ -14,7 +14,7 @@ a `kotest.properties` file located on the classpath.
 Any key value pairs located in this file will be set as a system property before any tests execute.
 
 :::tip
-Any propertise specified in the `kotest.properties` file work for both command line via Gradle, and tests executed via the Intellij plugin.
+Any properties specified in the `kotest.properties` file work for both command line via Gradle, and tests executed via the Intellij plugin.
 :::
 
 For example, after adding this file to your classpath as `kotest.properties`:
