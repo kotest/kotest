@@ -49,6 +49,14 @@ Another related setting is `kotest.framework.classpath.scanning.autoscan.disable
 With auto scan disabled, Kotest will not scan the classpath looking for for `@AutoScan` annotated extensions.
 :::
 
+:::caution
+System properties set in your gradle file won't be picked up by the intellij plugin if you have that installed.
+Instead, look to specify the properties inside a `kotest.properties` file. Full details [here](../intellij/props.md).
+:::
+
+
+
+
 ## Parallelism
 
 You can ask Kotest to run specs in parallel to take advantage of modern cpus with several cores by setting the parallelism level (default is 1). Tests inside a spec are always executed sequentially.

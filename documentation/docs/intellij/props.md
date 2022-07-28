@@ -6,10 +6,13 @@ slug: intellij-properties.html
 
 
 
-When running tests via the intellij runner, properties set using `gradle.properties` or in a gradle build file won't be picked up of course.
+When running tests via the intellij runner, properties set using `gradle.properties` or in a gradle build file won't be
+picked up because the runner is not set to use Gradle.
 
-To support runtime System properties, the Kotest framework will always look for key value pairs inside a `kotest.properties` file located on the classpath.
-Any key value pairs located in this file will be set as a system property before any tests execute.
+To support runtime system properties, the Kotest framework will always look for key value pairs inside
+a `kotest.properties` file located on the classpath.
+Any key value pairs located in this file will be set as a system property before any tests execute. This holds true
+whether the test suite was started via intellij, or from the command line.
 
 For example, after adding this file to your classpath as `kotest.properties`:
 
@@ -31,6 +34,16 @@ class FooTest : DescribeSpec() {
 }
 ```
 
+
+### Common use case
+
+It is common to disable the classpath scanning capabilities of Kotest to save some startup time, if those features are not used.
+To do this place, the following lines into the `kotest.properties` file:
+
+```
+kotest.framework.classpath.scanning.config.disable=true
+kotest.framework.classpath.scanning.autoscan.disable=true
+```
 
 ### Specifying the properties filename
 
