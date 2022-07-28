@@ -44,8 +44,10 @@ kotest.framework.config.fqn=com.wibble.KotestConfig
 Will disable runtime scanning, and look for a class `com.wibble.KotestConfig`. The class must still
 inherit `AbstractProjectConfig`.
 
-Note that another similar setting is `kotest.framework.classpath.scanning.autoscan.disable` which can also be set to false for speed.
-This setting stops Kotest from looking for `@AutoScan` annotated extensions.
+:::tip
+Another related setting is `kotest.framework.classpath.scanning.autoscan.disable` which can also be set to false for speed.
+With auto scan disabled, Kotest will not scan the classpath looking for for `@AutoScan` annotated extensions.
+:::
 
 ## Parallelism
 
