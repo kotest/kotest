@@ -116,4 +116,10 @@ class JvmJsonAssertionsTest : StringSpec({
          use(nullableJson)
       }
    }
+
+   "test key with null value" {
+      val testJson1 = """ { "nullable" : null } """
+      testJson1.shouldContainJsonKey("$.nullable")
+      testJson1.shouldContainJsonKeyValue("$.nullable", null as Any?)
+   }
 })

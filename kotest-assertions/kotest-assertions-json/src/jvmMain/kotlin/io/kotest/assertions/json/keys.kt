@@ -25,8 +25,9 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
          else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
       }
 
-      val passed = try {
-         value != null && JsonPath.read<String>(value, path) != null
+      val passed = value != null && try {
+         JsonPath.read<String>(value, path)
+         true
       } catch (t: PathNotFoundException) {
          false
       }
