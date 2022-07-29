@@ -4,6 +4,12 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.4.1 July 2022
+
+### Fixes
+
+* Fix regression which causes `NoSuchMethodError` when using the Kotest Spring extension
+
 ## 5.4.0 July 2022
 
 ### Fixes

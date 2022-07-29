@@ -74,7 +74,7 @@ jobs:
    publish_mac:
       runs-on: macos-11
       strategy:
-         max-parallel: 1
+         max-parallel: 6
          matrix:
             target:
                - publishMacosX64PublicationToDeployRepository
