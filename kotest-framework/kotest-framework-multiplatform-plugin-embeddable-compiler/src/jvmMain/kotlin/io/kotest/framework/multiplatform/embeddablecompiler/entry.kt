@@ -1,9 +1,11 @@
-package io.kotest.framework.multiplatform.js
+package io.kotest.framework.multiplatform.embeddablecompiler
 
 object EntryPoint {
-
    // we use a public val to register each spec
-   //   const val LauncherValName = "kotest_launcher"
+   const val LauncherValName = "launcher"
+
+   // the method invoked to start the tests, must exist on TestEngineLauncher
+   const val LaunchMethodName = "launch"
 
    // the method invoked on TestEngineLauncher to start the tests
    // in JS we use promise() which ultimately calls into GlobalScope.promise on JS platforms
@@ -17,4 +19,7 @@ object EntryPoint {
 
    // the method invoked to add configs on the launcher, must exist on TestEngineLauncher
    const val WithConfigMethodName = "withProjectConfig"
+
+   // the method invoked to set the team city listener, must exist on TestEngineLauncher
+   const val WithTeamCityListenerMethodName = "withTeamCityListener"
 }
