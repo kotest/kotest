@@ -127,7 +127,7 @@ class SpecExecutor(
       ref.instance(context.configuration.registry)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
-         .onSuccess { if (it is DslDrivenSpec) {it.seal() }
+         .onSuccess { if (it is DslDrivenSpec) it.seal() }
 }
 
 interface SpecExecutorDelegate {
