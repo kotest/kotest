@@ -20,8 +20,8 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 
 class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecRootScope
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecRootScope {
+abstract class FunSpec(body: suspend FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecRootScope {
    init {
-      body()
+      initBody = { this.body() }
    }
 }

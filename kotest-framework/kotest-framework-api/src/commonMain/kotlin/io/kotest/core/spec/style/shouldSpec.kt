@@ -22,10 +22,10 @@ fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactor
 
 class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecRootScope
 
-abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecRootScope {
+abstract class ShouldSpec(body: suspend ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecRootScope {
 
    init {
-      body()
+      initBody = { this.body() }
    }
 
    // need to overload this so that when doing "string" should <matcher> in a should spec, we don't

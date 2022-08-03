@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style
 
+import io.kotest.common.runBlocking
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
@@ -20,8 +21,4 @@ fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactor
 
 class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecRootScope
 
-abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecRootScope {
-   init {
-      body()
-   }
-}
+abstract class ExpectSpec(body: suspend ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecRootScope

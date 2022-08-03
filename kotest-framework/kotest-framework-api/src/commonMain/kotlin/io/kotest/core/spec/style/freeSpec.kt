@@ -20,8 +20,8 @@ fun freeSpec(block: FreeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 
 class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecRootScope
 
-abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : DslDrivenSpec(), FreeSpecRootScope {
+abstract class FreeSpec(body: suspend FreeSpec.() -> Unit = {}) : DslDrivenSpec(), FreeSpecRootScope {
    init {
-      body()
+      initBody = { this.body() }
    }
 }

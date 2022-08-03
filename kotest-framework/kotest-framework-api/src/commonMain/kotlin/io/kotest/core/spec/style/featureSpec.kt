@@ -20,8 +20,8 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
 
 class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootScope
 
-abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootScope {
+abstract class FeatureSpec(body: suspend FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootScope {
    init {
-      body()
+      initBody = { this.body() }
    }
 }

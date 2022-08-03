@@ -23,8 +23,8 @@ fun stringSpec(block: StringSpecTestFactoryConfiguration.() -> Unit): TestFactor
  */
 class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecRootScope
 
-abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootScope {
+abstract class StringSpec(body: suspend StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootScope {
    init {
-      body()
+      initBody = { this.body() }
    }
 }

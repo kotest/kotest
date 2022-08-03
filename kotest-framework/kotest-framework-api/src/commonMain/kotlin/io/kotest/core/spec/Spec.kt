@@ -85,7 +85,7 @@ abstract class Spec : TestConfiguration() {
     * If you wish to register a listener for all specs
     * then use [ProjectConfiguration.registerListener].
     */
-   @SoftDeprecated("Override extensions rather than listeners. Listeners are just a type of extension. Deprecated since 5.0")
+   @SoftDeprecated("Override extensions rather than listeners. Listeners are just another name for extensions. Deprecated since 5.0")
    open fun listeners(): List<TestListener> = emptyList()
 
    /**

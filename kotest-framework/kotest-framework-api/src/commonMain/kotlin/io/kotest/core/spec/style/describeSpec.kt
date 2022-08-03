@@ -20,8 +20,8 @@ fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFa
 
 class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecRootScope
 
-abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecRootScope {
+abstract class DescribeSpec(body: suspend DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecRootScope {
    init {
-      body()
+      initBody = { this.body() }
    }
 }

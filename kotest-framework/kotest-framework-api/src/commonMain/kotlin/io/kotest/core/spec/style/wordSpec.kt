@@ -23,10 +23,10 @@ fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
  */
 class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecRootScope
 
-abstract class WordSpec(body: WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootScope {
+abstract class WordSpec(body: suspend WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootScope {
 
    init {
-      body()
+      initBody = { this.body() }
    }
 
    // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't

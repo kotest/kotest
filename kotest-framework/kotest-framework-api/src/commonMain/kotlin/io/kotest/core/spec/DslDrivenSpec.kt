@@ -2,8 +2,9 @@ package io.kotest.core.spec
 
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.extensions.InstallableExtension
+import io.kotest.core.extensions.SuspendableMountableExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
@@ -26,11 +27,14 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    private val globalExtensions = mutableListOf<Extension>()
 
+   protected var initBody: suspend () -> Unit = {}
+
    /**
     * Marks that this spec has been instantiated and all root tests have been registered.
     * After this point, no further root tests are allowed to be defined.
     */
-   fun seal() {
+   suspend fun seal() {
+      initBody()
       sealed = true
    }
 
@@ -69,8 +73,18 @@ abstract class DslDrivenSpec : Spec(), RootScope {
       include(factory.copy(tests = renamed))
    }
 
+   // cannot be suspending as it is used in constructors
+   fun <CONFIG, MATERIALIZED> install(
+      mountable: MountableExtension<CONFIG, MATERIALIZED>,
+      configure: CONFIG.() -> Unit = {}
+   ): MATERIALIZED {
+      extensions(mountable)
+      return mountable.mount(configure)
+   }
+
+   // suspendable version that can only be called in inline style
    suspend fun <CONFIG, MATERIALIZED> install(
-      ext: InstallableExtension<CONFIG, MATERIALIZED>,
+      ext: SuspendableMountableExtension<CONFIG, MATERIALIZED>,
       configure: suspend CONFIG.() -> Unit = {},
    ): MATERIALIZED {
       extensions(ext)
