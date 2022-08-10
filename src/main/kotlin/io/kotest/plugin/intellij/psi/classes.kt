@@ -47,12 +47,16 @@ fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
    return superTypeListEntries
       .mapNotNull { it.typeReference }
       .mapNotNull {
-         val bindingContext = it.analyze()
-         bindingContext.get(BindingContext.TYPE, it)
+         runCatching {
+            val bindingContext = it.analyze()
+            bindingContext.get(BindingContext.TYPE, it)
+         }.getOrNull()
       }.flatMap {
          it.supertypes() + it
       }.mapNotNull {
-         it.constructor.declarationDescriptor.classId
+         runCatching {
+            it.constructor.declarationDescriptor.classId
+         }.getOrNull()
       }.map {
          val packageName = it.packageFqName
          val simpleName = it.relativeClassName
