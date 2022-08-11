@@ -1,5 +1,6 @@
 package io.kotest.assertions.json
 
+import com.jayway.jsonpath.InvalidPathException
 import com.jayway.jsonpath.JsonPath
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -25,11 +26,18 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
          else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
       }
 
+      val passed = value != null && try {
+         JsonPath.parse(value).read(path, T::class.java) == t
+      } catch (e: InvalidPathException) {
+         throw AssertionError("$path is not a valid JSON path")
+      }
+
       return MatcherResult(
-         value != null && JsonPath.parse(value).read(path, T::class.java) == t,
+         passed,
          { "$sub should contain the element $path = $t" },
          {
             "$sub should not contain the element $path = $t"
-         })
+         }
+      )
    }
 }

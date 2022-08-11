@@ -136,6 +136,16 @@ class JvmJsonAssertionsTest : StringSpec({
       """.trimIndent()
    }
 
+   "invalid json path" {
+      val testJson1 = """ { "nullable" : null } """
+
+      shouldFail { testJson1 shouldContainJsonKey "@@" }
+         .message shouldBe "@@ is not a valid JSON path"
+
+      shouldFail { testJson1.shouldContainJsonKeyValue("@@", null as Any?) }
+         .message shouldBe "@@ is not a valid JSON path"
+   }
+
    "test key with null value" {
       val testJson1 = """ { "nullable" : null } """
       testJson1.shouldContainJsonKey("$.nullable")
