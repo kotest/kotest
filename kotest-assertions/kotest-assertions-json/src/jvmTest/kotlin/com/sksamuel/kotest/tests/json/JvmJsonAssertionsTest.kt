@@ -75,6 +75,13 @@ class JvmJsonAssertionsTest : StringSpec({
 
       json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
+      shouldFail { json.shouldContainJsonKeyValue("$.store.bicycle.wheels", 2) }
+         .message shouldBe """{
+    "store": {
+        "book": [
+            {... should contain the element ${'$'}.store.bicycle.wheels = 2
+      """.trimIndent()
+
       shouldThrow<AssertionError> {
          json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
       }.message shouldBe """{
