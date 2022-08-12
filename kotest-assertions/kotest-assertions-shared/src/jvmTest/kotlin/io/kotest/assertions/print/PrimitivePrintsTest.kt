@@ -67,9 +67,3 @@ class PrimitivePrintsTest : FunSpec() {
 
    }
 }
-
-data class WibbleWobble(val a: String, val b: Int)
-
-class WibbleWobblePrint : Print<WibbleWobble> {
-   override fun print(a: WibbleWobble): Printed = "wibble ${a.a} wobble ${a.b}".printed()
-}
