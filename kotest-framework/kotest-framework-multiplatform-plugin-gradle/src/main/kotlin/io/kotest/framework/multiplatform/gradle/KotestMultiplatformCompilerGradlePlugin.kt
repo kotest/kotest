@@ -35,7 +35,6 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
       const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
       const val engineDepPrefix = "kotest-framework-engine"
-      const val defaultTestConfigurationName = "commonTest"
    }
 
    /**
@@ -48,8 +47,6 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private var kotestExtension: KotestPluginExtension? = null
 
    override fun apply(target: Project) {
-
-
       kotestExtension = target.createKotestExtension()
    }
 
@@ -59,11 +56,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       }
 
    private fun Project.engineVersionConvention(): Provider<String> {
-
-
-//      val testConfig =  configurations.named(defaultTestConfigurationName)
-
-//      return if (!testConfig.isPresent) {
+      // collect dependencies from configurations into a DomainObjectSet, then fetch the first match.
 
       val kotestDeps = objects.domainObjectSet(Dependency::class)
 
@@ -80,21 +73,6 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       return providers.provider {
          kotestDeps.firstOrNull { it.version != null }?.version
       }
-//
-//      } else {
-//
-//         return configurations.named(defaultTestConfigurationName).mapNotNull { testConf ->
-//            val engineDep = testConf.incoming.dependencies.matching { dep ->
-//               dep.group == KotestGroupId && dep.name.startsWith(engineDepPrefix)
-//            }.singleOrNull()
-//
-//            if (engineDep == null) {
-//               logger.warn("Warning: Kotest plugin could not find $engineDepPrefix in ${testConf.name}")
-//            }
-//
-//            engineDep?.version
-//         }
-//      }
    }
 
    override fun getCompilerPluginId() = compilerPluginId

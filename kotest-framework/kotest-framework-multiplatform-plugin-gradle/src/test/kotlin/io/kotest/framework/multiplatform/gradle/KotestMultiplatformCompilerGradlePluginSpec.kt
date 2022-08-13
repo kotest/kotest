@@ -24,7 +24,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
    beforeAny {
       // Build the test project ahead of time so that it doesn't try to build the Kotest libraries during
-      // the tests. (if it tries to build them while we are as well, this can lead to conflicts).
+      // the tests. (if it tries to build them during the tests this can lead to conflicts).
       kotlinVersions.forEach { kotlinVersion ->
          GradleInvocation(
             "-PkotlinVersion=$kotlinVersion",
@@ -46,7 +46,6 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
    kotlinVersions.forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
-
 
          fun shouldHavePassingTestResultsFor(taskName: String) {
             val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
@@ -137,7 +136,6 @@ data class GradleInvocation(
          wrapperScriptPath.toAbsolutePath().toString(),
          "--console=plain",
          "--no-daemon",
-         "--info",
          "--stacktrace",
       ) + arguments
 
