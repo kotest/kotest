@@ -58,7 +58,7 @@ class PrimitivePrintsTest : FunSpec() {
          charArrayOf('a', 'g').print().value shouldBe "['a', 'g']"
       }
 
-      test("detect show for Unsigned integer types") {
+      test("detect show for unsigned integer types") {
          42.toUByte().print().value shouldBe "42 (UByte)"
          42.toUShort().print().value shouldBe "42 (UShort)"
          42.toUInt().print().value shouldBe "42 (UInt)"
