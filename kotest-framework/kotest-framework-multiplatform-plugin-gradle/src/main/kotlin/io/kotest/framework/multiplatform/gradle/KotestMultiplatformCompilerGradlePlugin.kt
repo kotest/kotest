@@ -3,6 +3,7 @@ package io.kotest.framework.multiplatform.gradle
 import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.initialization.dsl.ScriptHandler
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.model.ObjectFactory
@@ -70,9 +71,21 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
          )
       }
 
-      return providers.provider {
+      val versionFromDependencies: Provider<String> = providers.provider {
          kotestDeps.firstOrNull { it.version != null }?.version
       }
+
+      // fetch the Kotest plugin version from the buildscript classpath
+      val kotestPluginVersion: Provider<String> = buildscript.configurations
+         .named(ScriptHandler.CLASSPATH_CONFIGURATION)
+         .mapNotNull { buildscriptConf ->
+            buildscriptConf.incoming
+               .dependencies
+               .matching { dep -> dep.group == KotestGroupId }
+               .firstOrNull { it.version != null }?.version
+         }
+
+      return versionFromDependencies.orElse(kotestPluginVersion)
    }
 
    override fun getCompilerPluginId() = compilerPluginId
