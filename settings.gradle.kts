@@ -96,7 +96,7 @@ include("kotest-tests:kotest-tests-config-classname")
 include("kotest-bom")
 
 plugins {
-   id("com.gradle.enterprise") version "3.10.3"
+   id("com.gradle.enterprise") version "3.11.1"
 }
 
 gradleEnterprise {
