@@ -43,6 +43,22 @@ object BytePrint : Print<Byte> {
    override fun print(a: Byte): Printed = a.toString().printed()
 }
 
+object UBytePrint: Print<UByte> {
+   override fun print(a: UByte): Printed = "${a} (UByte)".printed()
+}
+
+object UShortPrint: Print<UShort> {
+   override fun print(a: UShort): Printed = "${a} (UShort)".printed()
+}
+
+object UIntPrint: Print<UInt> {
+   override fun print(a: UInt): Printed = "${a} (UInt)".printed()
+}
+
+object ULongPrint: Print<ULong> {
+   override fun print(a: ULong): Printed = "${a} (ULong)".printed()
+}
+
 /**
  * A [Print] typeclass that uses the object's toString() method
  * to object a [Printed] result.
