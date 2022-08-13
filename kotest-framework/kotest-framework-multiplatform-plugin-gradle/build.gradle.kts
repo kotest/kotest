@@ -6,6 +6,7 @@ plugins {
    kotlin("jvm")
    `maven-publish`
    `java-gradle-plugin`
+   `kotlin-dsl`
    alias(libs.plugins.gradle.plugin.publish)
 }
 
@@ -32,38 +33,19 @@ dependencies {
    testImplementation(project(Projects.JunitRunner))
 }
 
-tasks.withType<Test> {
-   // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
-   setOf(
-      Projects.Assertions.Core,
-      Projects.Framework.api,
-      Projects.Framework.engine
-   ).forEach { project ->
-      setOf(
-         "jvmJar",
-         "compileKotlinLinuxX64",
-         "compileKotlinMacosX64",
-         "compileKotlinMacosArm64",
-         "compileKotlinMingwX64",
-      ).forEach { task ->
-         dependsOn("$project:$task")
-      }
-   }
-
-   setOf(
-      Projects.JunitRunner,
-      ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
-      ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native"
-   ).forEach { project ->
-      dependsOn("$project:jvmJar")
-   }
-
-   dependsOn("jar")
-   dependsOn(":kotlinNpmInstall")
-
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
+   val gradleWrapper = if ("windows" in System.getProperty("os.name").toLowerCase()) {
+      "gradlew.bat"
+   } else {
+      "gradlew"
+   }
+   systemProperty(
+      "gradleWrapper",
+      rootProject.layout.projectDirectory.file(gradleWrapper).asFile.canonicalPath
+   )
 
    testLogging {
       showExceptions = true
