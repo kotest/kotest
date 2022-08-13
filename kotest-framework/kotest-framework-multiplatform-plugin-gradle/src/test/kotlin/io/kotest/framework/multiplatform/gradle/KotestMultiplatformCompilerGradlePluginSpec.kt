@@ -1,6 +1,7 @@
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePluginSpec.Companion.gradleWrapperPath
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePluginSpec.Companion.testProjectPath
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.file.shouldBeAFile
@@ -51,7 +52,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
             testReportFile.toFile().shouldBeAFile()
 
-            val testReportContents: String = Files.readAllBytes(testReportFile).decodeToString().normalizeLineEndings()
+            val testReportContents: String = Files.readAllBytes(testReportFile).decodeToString()
 
             testReportContents.shouldContainInOrder(
                """  <?xml version="1.0" encoding="UTF-8"?>                                    """.trim(),
@@ -114,10 +115,10 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    }
 }) {
    companion object {
-      fun String.normalizeLineEndings(): String = lines().joinToString("\n")
-
       val testProjectPath: Path = Paths.get("test-project").toAbsolutePath()
       val testReportsDirectory: Path = testProjectPath.resolve("build").resolve("test-results")
+      // set in build.gradle.kts
+      val gradleWrapperPath: String = System.getProperty("gradleWrapper")
    }
 }
 
@@ -152,10 +153,5 @@ data class GradleInvocation(
       if (exitCode != 0) {
          throw RuntimeException("Gradle process $command exited with code $exitCode and output:\n$output")
       }
-   }
-
-   companion object {
-      // set in build.gradle.kts
-      val gradleWrapperPath: String = System.getProperty("gradleWrapper")
    }
 }
