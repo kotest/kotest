@@ -1,0 +1,3 @@
+
+# lock files are not important in a test project
+yarn.lock
