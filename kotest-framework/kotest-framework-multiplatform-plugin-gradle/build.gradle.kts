@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -71,4 +72,40 @@ tasks {
          }
       }
    }
+}
+
+
+val updateKotestPluginConstants by tasks.registering {
+   val kotestConstantsFileContent: String = """
+            |// Do not edit manually. This file was created by ${this.path}
+            |
+            |package io.kotest.framework.multiplatform.gradle
+            |
+            |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+            |
+         """.trimMargin()
+   inputs.property("kotestConstantsFileContent", kotestConstantsFileContent)
+
+   val kotestConstantsOutputFile = project.layout.projectDirectory.file(
+      "src/main/kotlin/io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt"
+   )
+   outputs.file(kotestConstantsOutputFile)
+
+   doLast {
+      logger.lifecycle("Updating Kotest Gradle plugin constants\n${kotestConstantsFileContent.indexOf("  > ")}\n")
+      kotestConstantsOutputFile.asFile.writeText(
+         kotestConstantsFileContent.lines().joinToString("\n")
+      )
+   }
+}
+
+
+tasks.withType<KotlinCompile>().configureEach {
+   dependsOn(updateKotestPluginConstants)
+}
+
+
+tasks.clean {
+   delete("$projectDir/test-project/build/")
+   delete("$projectDir/test-project/.gradle/")
 }

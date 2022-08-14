@@ -2,16 +2,12 @@ package io.kotest.framework.multiplatform.gradle
 
 import javax.inject.Inject
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.initialization.dsl.ScriptHandler
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.domainObjectSet
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -40,7 +36,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    /**
     * For use in [getPluginArtifact] and [getPluginArtifactForNative], as an instance of the targeted Gradle [Project]
-    * is not available.
+    * is not available there.
     *
     * In [isApplicable] a [Project] instance is available, so fetch the extension 'normally'. This helps ensure the
     * Gradle API is used correctly.
@@ -51,41 +47,10 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       kotestExtension = target.createKotestExtension()
    }
 
-   private fun Project.createKotestExtension(): KotestPluginExtension =
-      extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
-         kotestCompilerVersion.convention(engineVersionConvention())
+   private fun Project.createKotestExtension(): KotestPluginExtension {
+      return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
+         kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
       }
-
-   private fun Project.engineVersionConvention(): Provider<String> {
-      // collect dependencies from configurations into a DomainObjectSet, then fetch the first match.
-
-      val kotestDeps = objects.domainObjectSet(Dependency::class)
-
-      configurations.configureEach {
-         kotestDeps.addAllLater(
-            providers.provider {
-               incoming.dependencies.matching { dep ->
-                  dep.group == KotestGroupId && dep.name.startsWith(engineDepPrefix)
-               }
-            }
-         )
-      }
-
-      val versionFromDependencies: Provider<String> = providers.provider {
-         kotestDeps.firstOrNull { it.version != null }?.version
-      }
-
-      // fetch the Kotest plugin version from the buildscript classpath
-      val kotestPluginVersion: Provider<String> = buildscript.configurations
-         .named(ScriptHandler.CLASSPATH_CONFIGURATION)
-         .mapNotNull { buildscriptConf ->
-            buildscriptConf.incoming
-               .dependencies
-               .matching { dep -> dep.group == KotestGroupId }
-               .firstOrNull { it.version != null }?.version
-         }
-
-      return versionFromDependencies.orElse(kotestPluginVersion)
    }
 
    override fun getCompilerPluginId() = compilerPluginId
@@ -94,49 +59,35 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestEmbeddableCompilerArtifactId,
-         kotestExtension?.kotestCompilerVersion?.orNull
+         kotestExtension?.kotestCompilerPluginVersion?.orNull
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
-      SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, kotestExtension?.kotestCompilerVersion?.orNull)
+      SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, kotestExtension?.kotestCompilerPluginVersion?.orNull)
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       val project = kotlinCompilation.target.project
       val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
 
       return when {
-         kotestExtension == null                              -> {
+         kotestExtension == null                                -> {
             // this shouldn't happen
             logger.warn("Warning: could not find Kotest extension in $project. Kotest will not be enabled.")
             false
          }
 
-         !kotestExtension.kotestCompilerVersion.isPresent     -> {
+         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
             logger.warn("Warning: Kotest plugin has been added to $project, but could not determine Kotest engine version. Kotest will not be enabled.")
             false
          }
 
-         kotlinCompilation is KotlinJsCompilation             -> true
-         kotlinCompilation is AbstractKotlinNativeCompilation -> true
-         else                                                 -> false
+         kotlinCompilation is KotlinJsCompilation               -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
+         else                                                   -> false
       }
    }
 
-   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
-      return providers.provider { emptyList() }
-   }
-
-   /** workaround https://github.com/gradle/gradle/issues/12388 */
-   private fun <T, R> Provider<T>.mapNotNull(transform: (T) -> R?): Provider<R> =
-      flatMap { providers.provider { transform(it) } }
-}
-
-abstract class KotestPluginExtension {
-   /**
-    * The version to use for the Kotest compiler plugins.
-    *
-    * Defaults to using the same version as the Kotest engine dependency that is defined in `commonTest`.
-    */
-   abstract val kotestCompilerVersion: Property<String>
+   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> =
+      providers.provider { emptyList() }
 }
