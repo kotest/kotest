@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-   compileOnly(gradleApi())
-   compileOnly(libs.kotlin.gradle.plugin)
+   implementation(libs.kotlin.gradle.plugin)
 
+   testImplementation(gradleTestKit())
    testImplementation(project(Projects.Assertions.Core))
    testImplementation(project(Projects.Framework.api))
    testImplementation(project(Projects.Framework.engine))
