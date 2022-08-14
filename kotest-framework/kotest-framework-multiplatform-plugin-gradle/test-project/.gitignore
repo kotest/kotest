@@ -1,3 +1,9 @@
 
 # lock files are not important in a test project
 yarn.lock
+
+# when this project is opened in another IntelliJ window, these files are auto-downloaded, but they're not necessary
+# for testing (the tests re-use the base project's wrapper), so exclude them.
+gradlew
+gradlew.bat
+gradle/wrapper/
