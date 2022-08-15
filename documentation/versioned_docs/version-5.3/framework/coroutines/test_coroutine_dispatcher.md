@@ -72,6 +72,6 @@ Finally, you can enable test dispatchers for all tests in a module by using [Pro
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
-  override var coroutineTestScope = true
+  override var testCoroutineDispatcher = true
 }
 ```
