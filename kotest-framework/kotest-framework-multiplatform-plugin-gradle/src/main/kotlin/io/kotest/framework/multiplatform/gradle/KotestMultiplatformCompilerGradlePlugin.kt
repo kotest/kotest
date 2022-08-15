@@ -17,9 +17,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
 
-@Suppress("unused")
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
-   private val objects: ObjectFactory,
    private val providers: ProviderFactory,
 ) : KotlinCompilerPluginSupportPlugin {
 

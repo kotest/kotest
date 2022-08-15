@@ -32,6 +32,8 @@ dependencies {
    testImplementation(project(Projects.Framework.api))
    testImplementation(project(Projects.Framework.engine))
    testImplementation(project(Projects.JunitRunner))
+
+   testImplementation(libs.mockk)
 }
 
 tasks.withType<Test>().configureEach {
