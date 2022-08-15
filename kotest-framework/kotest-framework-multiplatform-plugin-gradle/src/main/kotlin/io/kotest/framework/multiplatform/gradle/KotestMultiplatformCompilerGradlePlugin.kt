@@ -31,7 +31,6 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       const val KotestGroupId = "io.kotest"
       const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
       const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
-      const val engineDepPrefix = "kotest-framework-engine"
    }
 
    /**
@@ -59,12 +58,16 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestEmbeddableCompilerArtifactId,
-         kotestExtension?.kotestCompilerPluginVersion?.orNull
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
-      SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, kotestExtension?.kotestCompilerPluginVersion?.orNull)
+      SubpluginArtifact(
+         KotestGroupId,
+         KotestNativeArtifactId,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
+      )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       val project = kotlinCompilation.target.project
