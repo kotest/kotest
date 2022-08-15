@@ -36,6 +36,13 @@ dependencies {
    testImplementation(libs.mockk)
 }
 
+val kotlinGeneratedSrcDir: DirectoryProperty = objects.directoryProperty()
+   .convention(layout.buildDirectory.dir("generated/src/main/kotlin/"))
+
+sourceSets.main {
+   java.srcDir(kotlinGeneratedSrcDir)
+}
+
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
@@ -88,21 +95,21 @@ val updateKotestPluginConstants by tasks.registering {
          """.trimMargin()
    inputs.property("kotestConstantsFileContent", kotestConstantsFileContent)
 
-   val kotestConstantsOutputFile = project.layout.projectDirectory.file(
-      "src/main/kotlin/io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt"
+   val kotestConstantsOutputFile = kotlinGeneratedSrcDir.file(
+      "io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt"
    )
    outputs.file(kotestConstantsOutputFile)
 
    doLast {
-      logger.lifecycle("Updating Kotest Gradle plugin constants\n${kotestConstantsFileContent.indexOf("  > ")}\n")
-      kotestConstantsOutputFile.asFile.writeText(
+      logger.lifecycle("Updating Kotest Gradle plugin constants\n\n${kotestConstantsFileContent.prependIndent("  > ")}\n")
+      kotestConstantsOutputFile.get().asFile.writeText(
          kotestConstantsFileContent.lines().joinToString("\n")
       )
    }
 }
 
 
-tasks.withType<KotlinCompile>().configureEach {
+tasks.assemble {
    dependsOn(updateKotestPluginConstants)
 }
 
