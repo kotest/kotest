@@ -18,12 +18,12 @@ A _TestDispatcher_ supports the following operations:
   * `advanceTimeBy(timeDelta)` runs the enqueued tasks until the current virtual time advances by timeDelta.
 
 
-To use a _TestDispatcher_ for a test, you can enable `testCoroutineDispatcher` in test config:
+To use a _TestDispatcher_ for a test, you can enable `coroutineTestScope` in test config:
 
 ```kotlin
 class TestDispatcherTest : FunSpec() {
    init {
-      test("foo").config(testCoroutineDispatcher = true) {
+      test("foo").config(coroutineTestScope = true) {
          // this test will run with a test dispatcher
       }
    }
@@ -38,7 +38,7 @@ import io.kotest.core.test.testCoroutineScheduler
 
 class TestDispatcherTest : FunSpec() {
    init {
-      test("advance time").config(testCoroutineDispatcher = true) {
+      test("advance time").config(coroutineTestScope = true) {
         val duration = 1.days
         // launch a coroutine that would normally sleep for 1 day
         launch {
@@ -52,13 +52,13 @@ class TestDispatcherTest : FunSpec() {
 }
 ```
 
-You can enable a test dispatcher for all tests in a spec by setting `testCoroutineDispatcher` to true at the spec level:
+You can enable a test dispatcher for all tests in a spec by setting `coroutineTestScope` to true at the spec level:
 
 
 ```kotlin
 class TestDispatcherTest : FunSpec() {
    init {
-      testCoroutineDispatcher = true
+      coroutineTestScope = true
       test("this test uses a test dispatcher") {
       }
       test("and so does this test!") {
