@@ -45,7 +45,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    private fun Project.createKotestExtension(): KotestPluginExtension {
       return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
-         kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
+         kotestEmbeddableCompilerVersion.convention(KOTEST_EMBEDDABLE_COMPILER_VERSION)
       }
    }
 
@@ -55,7 +55,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestEmbeddableCompilerArtifactId,
-         kotestExtension?.kotestCompilerPluginVersion?.orNull,
+         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
@@ -63,16 +63,16 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestNativeArtifactId,
-         kotestExtension?.kotestCompilerPluginVersion?.orNull,
+         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
       )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       val project = kotlinCompilation.target.project
       val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
-         ?: error("Could not find Kotest extension in $project. Kotest will not be enabled.")
+         ?: error("Could not find Kotest extension in $project")
 
       return when {
-         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
+         !kotestExtension.kotestEmbeddableCompilerVersion.isPresent -> {
             logger.warn("Warning: Kotest plugin has been added to $project, but could not determine Kotest engine version. Kotest will not be enabled.")
             false
          }
