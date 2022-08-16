@@ -1,30 +1,18 @@
 plugins {
    signing
-   `java-library`
    `maven-publish`
 }
 
 val javadocJar by tasks.registering(Jar::class) {
    group = JavaBasePlugin.DOCUMENTATION_GROUP
-   description = "Assembles java doc to jar"
+   description = "Empty Javadoc Jar (required by Maven Central)"
    archiveClassifier.set("javadoc")
-   from(tasks.javadoc)
 }
 
 val ossrhUsername: String by project
 val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
-
-signing {
-   useGpgCmd()
-   if (signingKey != null && signingPassword != null) {
-      useInMemoryPgpKeys(signingKey, signingPassword)
-   }
-   if (Ci.isRelease) {
-      sign(publishing.publications)
-   }
-}
 
 publishing {
    repositories {
@@ -69,5 +57,15 @@ publishing {
             }
          }
       }
+   }
+}
+
+signing {
+   useGpgCmd()
+   if (signingKey != null && signingPassword != null) {
+      useInMemoryPgpKeys(signingKey, signingPassword)
+   }
+   if (Ci.isRelease) {
+      sign(publishing.publications)
    }
 }
