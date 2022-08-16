@@ -7,6 +7,7 @@ import io.kotest.assertions.json.shouldMatchJsonResource
 import io.kotest.assertions.json.shouldNotContainJsonKey
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotMatchJsonResource
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -104,7 +105,8 @@ class JvmJsonAssertionsTest : StringSpec({
          testJson2.shouldMatchJsonResource("/json1.json")
       }.message shouldBe """expected json to match, but they differed
          |
-         |expected:<{"name":"sam","location":"chicago"}> but was:<{"name":"sam","location":"london"}>""".trimMargin()
+         |expected:<{"name":"sam","location":"chicago"}> but was:<{"name":"sam","location":"london"}>
+      """.trimMargin()
 
       shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
 
@@ -115,6 +117,23 @@ class JvmJsonAssertionsTest : StringSpec({
          nullableJson.shouldMatchJsonResource("/json1.json")
          use(nullableJson)
       }
+   }
+
+   "matchJsonResource - property order does not matter" {
+      val testJson1 = """ { "location" : "chicago", "name" : "sam" } """
+      testJson1.shouldMatchJsonResource("/json1.json")
+   }
+
+   "matchJsonResource - array order matters" {
+      "[1,2]" shouldMatchJsonResource "/array.json"
+
+      shouldFail {
+         "[2,1]" shouldMatchJsonResource "/array.json"
+      }.message shouldBe """
+         expected json to match, but they differed
+
+         expected:<[1,2]> but was:<[2,1]>
+      """.trimIndent()
    }
 
    "test key with null value" {
