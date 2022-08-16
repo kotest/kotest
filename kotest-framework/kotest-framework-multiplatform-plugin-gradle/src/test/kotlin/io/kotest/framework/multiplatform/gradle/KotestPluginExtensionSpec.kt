@@ -26,7 +26,7 @@ plugins {
 }
 
 kotest {
-  kotestCompilerPluginVersion.set("1.2.3")
+  kotestEmbeddableCompilerVersion.set("1.2.3")
 }
 
 kotlin {
@@ -42,10 +42,10 @@ kotlin {
   }
 }
 
-val printKotestCompilerPluginVersion by tasks.registering {
-  val kotestCompilerPluginVersion = kotest.kotestCompilerPluginVersion
+val printKotestEmbeddableCompilerVersion by tasks.registering {
+  val kotestEmbeddableCompilerVersion = kotest.kotestEmbeddableCompilerVersion
   doLast {
-    logger.lifecycle("Kotest Compiler version: " + kotestCompilerPluginVersion.orNull)
+    logger.lifecycle("printKotestEmbeddableCompilerVersion: " + kotestEmbeddableCompilerVersion.orNull)
   }
 }
 """.trimIndent()
@@ -64,18 +64,18 @@ plugins {
 }
 
 kotest {
-  kotestCompilerPluginVersion = "1.2.3"
+  kotestEmbeddableCompilerVersion = "1.2.3"
 }
 
 kotlin {
   jvm()
 }
 
-tasks.register('printKotestCompilerPluginVersion') {
-  Provider<String> kcVersionProvider = kotest.kotestCompilerPluginVersion
+tasks.register('printKotestEmbeddableCompilerVersion') {
+  Provider<String> kecVersionProvider = kotest.kotestEmbeddableCompilerVersion
   doLast {
-    String kcVersion = kcVersionProvider.getOrNull()
-    logger.lifecycle("Kotest Compiler version: " + kcVersion)
+    String kecVersion = kecVersionProvider.getOrNull()
+    logger.lifecycle("printKotestEmbeddableCompilerVersion: " + kecVersion)
   }
 }
 """.trimIndent()
@@ -98,7 +98,7 @@ plugins {
 }
 
 kotest {
-  // do not manually set kotestCompilerPluginVersion
+  // do not manually set kotestEmbeddableCompilerVersion
 }
 
 kotlin {
@@ -114,17 +114,17 @@ kotlin {
   }
 }
 
-val printKotestCompilerPluginVersion by tasks.registering {
-  val kotestCompilerPluginVersion = kotest.kotestCompilerPluginVersion
+val printKotestEmbeddableCompilerVersion by tasks.registering {
+  val kotestEmbeddableCompilerVersion = kotest.kotestEmbeddableCompilerVersion
   doLast {
-    logger.lifecycle("Kotest Compiler version: " + kotestCompilerPluginVersion.orNull)
+    logger.lifecycle("printKotestEmbeddableCompilerVersion: " + kotestEmbeddableCompilerVersion.orNull)
   }
 }
 """.trimIndent()
          }
 
          `verify Gradle can configure the project`(gradleTest)
-         `verify Kotest compiler version is set`(gradleTest, KOTEST_COMPILER_PLUGIN_VERSION)
+         `verify Kotest compiler version is set`(gradleTest, KOTEST_EMBEDDABLE_COMPILER_VERSION)
          `verify Kotest plugin warnings`(gradleTest)
       }
    }
@@ -174,21 +174,21 @@ val printKotestCompilerPluginVersion by tasks.registering {
       ) {
          context("verify Kotest compiler version is set") {
             val result = gradleProjectTest.runner
-               .withArguments(":printKotestCompilerPluginVersion", "--info", "--stacktrace")
+               .withArguments(":printKotestEmbeddableCompilerVersion", "--info", "--stacktrace")
                .withPluginClasspath()
                .build()
 
             result.output.asClue {
-               test("expect task :printKotestCompilerPluginVersion is successful") {
+               test("expect task :printKotestEmbeddableCompilerVersion is successful") {
                   result.output shouldContain "BUILD SUCCESSFUL"
-                  result.task(":printKotestCompilerPluginVersion")?.outcome shouldBe TaskOutcome.SUCCESS
+                  result.task(":printKotestEmbeddableCompilerVersion")?.outcome shouldBe TaskOutcome.SUCCESS
                }
             }
-            val testLines = result.output.lines().filter { it.startsWith("Kotest Compiler version") }
+            val testLines = result.output.lines().filter { it.startsWith("printKotestEmbeddableCompilerVersion") }
             testLines.asClue {
-               test("expect :printKotestCompilerPluginVersion prints $expectedVersion") {
+               test("expect :printKotestEmbeddableCompilerVersion prints $expectedVersion") {
                   testLines.forOne { line ->
-                     line shouldContain "Kotest Compiler version: $expectedVersion"
+                     line shouldContain "printKotestEmbeddableCompilerVersion: $expectedVersion"
                   }
                }
             }
