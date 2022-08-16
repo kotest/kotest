@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    kotlin("jvm")
@@ -45,13 +43,6 @@ dependencies {
    mavenInternal(project(Projects.JunitRunner))
 }
 
-val kotlinGeneratedSrcDir: DirectoryProperty = objects.directoryProperty()
-   .convention(layout.buildDirectory.dir("generated/src/main/kotlin/"))
-
-sourceSets.main {
-   java.srcDir(kotlinGeneratedSrcDir)
-}
-
 
 pluginBundle {
    website = "https://kotest.io"
@@ -72,37 +63,38 @@ gradlePlugin {
 }
 
 
-val updateKotestPluginConstants by tasks.registering {
-   val kotestConstantsFileContent: String = """
-            |// Do not edit manually. This file was created by ${this.path}
-            |
-            |package io.kotest.framework.multiplatform.gradle
-            |
-            |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
-            |
-         """.trimMargin()
-   inputs.property("kotestConstantsFileContent", kotestConstantsFileContent)
+val kotestPluginConstantsFileContents = resources.text.fromString(
+   """
+      |// Generated file, do not edit manually
+      |
+      |package io.kotest.framework.multiplatform.gradle
+      |
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+      |
+   """.trimMargin()
+)
 
-   val kotestConstantsOutputFile = kotlinGeneratedSrcDir.file(
-      "io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt"
-   )
-   outputs.file(kotestConstantsOutputFile)
+val updateKotestPluginConstants by tasks.registering(Sync::class) {
 
-   doLast {
-      logger.lifecycle("Updating Kotest Gradle plugin constants\n\n${kotestConstantsFileContent.prependIndent("  > ")}\n")
-      kotestConstantsOutputFile.get().asFile.writeText(
-         kotestConstantsFileContent.lines().joinToString("\n")
+   from(kotestPluginConstantsFileContents) {
+      rename { "kotestPluginConstants.kt" }
+      into("io/kotest/framework/multiplatform/gradle/")
+   }
+   into(layout.buildDirectory.dir("generated/src/main/kotlin/"))
+
+   doFirst {
+      logger.debug(
+         """
+            Updating Kotest Gradle plugin constants
+            ${kotestPluginConstantsFileContents.asString().prependIndent("  > ")}
+         """.trimIndent()
       )
    }
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-   dependsOn(updateKotestPluginConstants)
-}
 
-
-tasks.assemble {
-   dependsOn(updateKotestPluginConstants)
+sourceSets.main {
+   java.srcDir(updateKotestPluginConstants.map { it.destinationDir })
 }
 
 

@@ -4,7 +4,6 @@ import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.create
@@ -70,14 +69,9 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       val project = kotlinCompilation.target.project
       val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
+         ?: error("Could not find Kotest extension in $project. Kotest will not be enabled.")
 
       return when {
-         kotestExtension == null                                -> {
-            // this shouldn't happen
-            logger.warn("Warning: could not find Kotest extension in $project. Kotest will not be enabled.")
-            false
-         }
-
          !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
             logger.warn("Warning: Kotest plugin has been added to $project, but could not determine Kotest engine version. Kotest will not be enabled.")
             false
