@@ -17,6 +17,7 @@ abstract class GradleProjectTest {
 
    fun createFile(filename: String, contents: String): File =
       projectDir.resolve(filename).apply {
+         parentFile.mkdirs()
          createNewFile()
          writeText(contents)
       }
@@ -29,13 +30,12 @@ class GradleKtsProjectTest(
 ) : GradleProjectTest() {
    override val runner: GradleRunner = GradleRunner.create().withProjectDir(projectDir)
 
-   // wrap with `fun main() {}` so IntelliJ language injection works better
-   @Language("kts", prefix = "fun main() {", suffix = "}")
+   @Language("kts")
    var settingsGradleKts: String = """
          rootProject.name = "kotest-plugin-test"
       """.trimIndent()
 
-   @Language("kts", prefix = "fun main() {", suffix = "}")
+   @Language("kts")
    var buildGradleKts: String = ""
 
    @Language("properties")

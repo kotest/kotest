@@ -131,7 +131,7 @@ val printKotestCompilerPluginVersion by tasks.registering {
 
 }) {
    companion object {
-      suspend fun FunSpecContainerScope.`verify Gradle can configure the project`(
+      private suspend fun FunSpecContainerScope.`verify Gradle can configure the project`(
          gradleProjectTest: GradleProjectTest
       ) {
          context("verify Gradle can configure the project") {
@@ -149,7 +149,7 @@ val printKotestCompilerPluginVersion by tasks.registering {
          }
       }
 
-      suspend fun FunSpecContainerScope.`verify Kotest plugin warnings`(
+      private suspend fun FunSpecContainerScope.`verify Kotest plugin warnings`(
          gradleProjectTest: GradleProjectTest
       ) {
          context("verify Kotest plugin warnings") {
@@ -168,7 +168,7 @@ val printKotestCompilerPluginVersion by tasks.registering {
          }
       }
 
-      suspend fun FunSpecContainerScope.`verify Kotest compiler version is set`(
+      private suspend fun FunSpecContainerScope.`verify Kotest compiler version is set`(
          gradleProjectTest: GradleProjectTest,
          expectedVersion: String,
       ) {

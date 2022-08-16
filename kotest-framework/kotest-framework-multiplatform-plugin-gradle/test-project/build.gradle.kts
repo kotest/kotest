@@ -59,7 +59,7 @@ tasks.withType<AbstractTestTask>().configureEach {
 }
 
 if (useNewNativeMemoryModel.toBoolean()) {
-   kotlin.targets.withType(KotlinNativeTarget::class.java) {
+   kotlin.targets.withType<KotlinNativeTarget>().configureEach {
       binaries.all {
          binaryOptions["memoryModel"] = "experimental"
       }
