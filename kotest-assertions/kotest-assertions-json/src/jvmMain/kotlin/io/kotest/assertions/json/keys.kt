@@ -1,5 +1,6 @@
 package io.kotest.assertions.json
 
+import com.jayway.jsonpath.InvalidPathException
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.PathNotFoundException
 import io.kotest.matchers.Matcher
@@ -30,6 +31,8 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
          true
       } catch (t: PathNotFoundException) {
          false
+      } catch (t: InvalidPathException) {
+         throw AssertionError("$path is not a valid JSON path")
       }
 
       return MatcherResult(
