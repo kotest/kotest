@@ -7,11 +7,11 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            api(project(Projects.Common))
-            api(project(Projects.Framework.api))
-            api(project(Projects.Assertions.Shared))
-            api(project(Projects.Framework.engine))
-            api(project(Projects.Extensions))
+            api(projects.kotestCommon)
+            api(projects.kotestFramework.kotestFrameworkApi)
+            api(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestFramework.kotestFrameworkEngine)
+            api(projects.kotestFramework.kotestFrameworkDiscovery)
             api(libs.junit4)
             api(libs.kotlinx.coroutines.core)
          }
@@ -19,7 +19,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform.testkit)
          }
       }

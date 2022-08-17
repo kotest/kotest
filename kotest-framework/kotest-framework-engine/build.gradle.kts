@@ -7,13 +7,13 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            api(project(Projects.Assertions.Shared))
+            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(kotlin("reflect"))
-            api(project(Projects.Common)) // needs to be API so the domain objects are open
+            api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well
-            api(project(Projects.Framework.api))
+            api(projects.kotestFramework.kotestFrameworkApi)
 
             // used to install the debug probes for coroutines
             implementation(libs.kotlinx.coroutines.debug)
@@ -30,7 +30,7 @@ kotlin {
             api(libs.classgraph)
 
             // needed to scan for spec classes
-            api(project(Projects.Discovery))
+            api(projects.kotestFramework.kotestFrameworkDiscovery)
 
             // we use AssertionFailedError from opentest4j
             implementation(libs.opentest4j)
@@ -43,8 +43,8 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("stdlib"))
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.Framework.datatest))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestFramework.kotestFrameworkDatatest)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
          }

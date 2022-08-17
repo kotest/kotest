@@ -8,9 +8,9 @@ kotlin {
       val commonMain by getting {
          dependencies {
             api(libs.kotlinx.coroutines.core)
-            api(project(Projects.Assertions.Shared))
+            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(kotlin("reflect"))
-            api(project(Projects.Common)) // needs to be API so the domain objects are open
+            api(projects.kotestCommon) // needs to be API so the domain objects are open
          }
       }
 
@@ -23,8 +23,8 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
             implementation(libs.junit.platform.engine)
