@@ -17,22 +17,29 @@ class KotestPluginSpec : FunSpec({
    context("verify Kotest plugin can be applied") {
 
       listOf(
-         true,
-         false,
-      ).forEach { useNewNativeMemoryModel ->
+         "macosArm64Test",
+         "macosX64Test",
+         "mingwX64Test",
+         "linuxX64Test",
+      ).forEach { nativeTargetTest ->
 
          listOf(
-            "1.6.21",
-            "1.7.0",
-            "1.7.10",
-         ).forEach { kotlinVersion ->
+            true,
+            false,
+         ).forEach { useNewNativeMemoryModel ->
 
-            context("kotlin $kotlinVersion, useNewNativeMemoryModel=$useNewNativeMemoryModel") {
-               val kotestVersion = KOTEST_COMPILER_PLUGIN_VERSION
+            listOf(
+               "1.6.21",
+               "1.7.0",
+               "1.7.10",
+            ).forEach { kotlinVersion ->
+
+               context("kotlin $kotlinVersion, useNewNativeMemoryModel=$useNewNativeMemoryModel") {
+                  val kotestVersion = KOTEST_EMBEDDABLE_COMPILER_VERSION
 //            val useNewNativeMemoryModel = true
 
-               val gradleTest = gradleKtsProjectTest {
-                  buildGradleKts = """
+                  val gradleTest = gradleKtsProjectTest {
+                     buildGradleKts = """
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -100,15 +107,15 @@ if ($useNewNativeMemoryModel) {
 }
 """.trimIndent()
 
-                  createFile(
-                     "src/commonMain/kotlin/TestStrings.kt", /* language=Kotlin */ """
+                     createFile(
+                        "src/commonMain/kotlin/TestStrings.kt", /* language=Kotlin */ """
 object TestStrings {
-val helloWorld = "Hello world!"
+   val helloWorld = "Hello world!"
 }
 """.trimIndent()
-                  )
-                  createFile(
-                     "src/commonTest/kotlin/TestSpec.kt", /* language=Kotlin */ """
+                     )
+                     createFile(
+                        "src/commonTest/kotlin/TestSpec.kt", /* language=Kotlin */ """
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
@@ -122,11 +129,12 @@ class TestSpec : ShouldSpec({
    }
 })
 """.trimIndent()
-                  )
+                     )
+                  }
+                  `verify Gradle can configure the project`(gradleTest)
+                  `verify Kotest plugin warnings`(gradleTest)
+                  `run test task`(gradleTest, ":jvmTest")
                }
-               `verify Gradle can configure the project`(gradleTest)
-               `verify Kotest plugin warnings`(gradleTest)
-               `run test task`(gradleTest, ":jvmTest")
             }
          }
       }
