@@ -124,7 +124,7 @@ val printKotestEmbeddableCompilerVersion by tasks.registering {
          }
 
          `verify Gradle can configure the project`(gradleTest)
-         `verify Kotest compiler version is set`(gradleTest, KOTEST_EMBEDDABLE_COMPILER_VERSION)
+         `verify Kotest compiler version is set`(gradleTest, KOTEST_COMPILER_PLUGIN_VERSION)
          `verify Kotest plugin warnings`(gradleTest)
       }
    }

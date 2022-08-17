@@ -6,8 +6,6 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
@@ -45,7 +43,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    private fun Project.createKotestExtension(): KotestPluginExtension {
       return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
-         kotestEmbeddableCompilerVersion.convention(KOTEST_EMBEDDABLE_COMPILER_VERSION)
+         kotestEmbeddableCompilerVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
       }
    }
 
@@ -55,7 +53,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestEmbeddableCompilerArtifactId,
-         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
@@ -63,7 +61,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestNativeArtifactId,
-         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
