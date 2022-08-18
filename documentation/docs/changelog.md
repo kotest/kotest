@@ -4,6 +4,22 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.4.3 - Still Unreleased
+
+### Improvements
+
+-  Support printing unsigned integers clearly (#3149) 
+-  ♻️ Refactors Success Matchers to its own file (#3119) 
+
+### Dependency upgrades
+
+- Update plugin com.gradle.enterprise to v3.11.1 (#3151)
+- Update dependency gradle to v7.5.1 (#3139)
+- Update dependency com.github.curious-odd-man:rgxgen to v1.4 (#3150) 
+- Update docusaurus monorepo to v2.0.1 (#3140) 
+
+## 5.4.2
+
 ## 5.4.1 July 2022
 
 ### Fixes

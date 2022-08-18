@@ -35,9 +35,23 @@ dependencies {
    testImplementation(libs.mockk)
 }
 
-
 tasks.withType<Test>().configureEach {
-   useJUnitPlatform()
+   // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
+   setOf(
+      Projects.Assertions.Core,
+      Projects.Framework.api,
+      Projects.Framework.engine
+   ).forEach { project ->
+      setOf(
+         "jvmJar",
+         "compileKotlinLinuxX64",
+         "compileKotlinMacosX64",
+         "compileKotlinMacosArm64",
+         "compileKotlinMingwX64",
+      ).forEach { task ->
+         dependsOn("$project:$task")
+      }
+   }
 
    systemProperty("kotestVersion", Ci.publishVersion)
    val gradleWrapper = if ("windows" in System.getProperty("os.name").toLowerCase()) {
@@ -81,6 +95,7 @@ gradlePlugin {
 val kotestPluginConstantsFileContents = resources.text.fromString(
    """
       |// Generated file, do not edit manually
+      |@file:org.gradle.api.Generated
       |
       |package io.kotest.framework.multiplatform.gradle
       |
