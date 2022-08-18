@@ -66,10 +66,11 @@ gradlePlugin {
 val kotestPluginConstantsFileContents = resources.text.fromString(
    """
       |// Generated file, do not edit manually
+      |@file:org.gradle.api.Generated
       |
       |package io.kotest.framework.multiplatform.gradle
       |
-      |const val KOTEST_EMBEDDABLE_COMPILER_VERSION: String = "${Ci.gradleVersion}"
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
       |
    """.trimMargin()
 )
@@ -136,7 +137,10 @@ testing.suites {
          testTask.configure {
             shouldRunAfter(test)
             dependsOn(installMavenInternal)
-            systemProperty("mavenInternalDir", file(mavenInternalDir).canonicalPath)
+            systemProperties(
+               "mavenInternalDir" to file(mavenInternalDir).canonicalPath,
+               "kotestVersion" to Ci.publishVersion,
+            )
          }
       }
 

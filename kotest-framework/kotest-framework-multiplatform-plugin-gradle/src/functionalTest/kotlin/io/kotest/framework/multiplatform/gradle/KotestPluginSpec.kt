@@ -35,7 +35,7 @@ class KotestPluginSpec : FunSpec({
             ).forEach { kotlinVersion ->
 
                context("kotlin $kotlinVersion, useNewNativeMemoryModel=$useNewNativeMemoryModel") {
-                  val kotestVersion = KOTEST_EMBEDDABLE_COMPILER_VERSION
+                  val kotestVersion = KOTEST_COMPILER_PLUGIN_VERSION
 //            val useNewNativeMemoryModel = true
 
                   val gradleTest = gradleKtsProjectTest {
@@ -115,7 +115,7 @@ object TestStrings {
 """.trimIndent()
                      )
                      createFile(
-                        "src/commonTest/kotlin/TestSpec.kt", /* language=Kotlin */ """
+                        "src/commonTest/kotlin/TestSpec.kt",/* language=Kotlin */ """
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 

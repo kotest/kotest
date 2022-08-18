@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
-
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
 ) : KotlinCompilerPluginSupportPlugin {
@@ -45,7 +44,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    private fun Project.createKotestExtension(): KotestPluginExtension {
       return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
-         kotestEmbeddableCompilerVersion.convention(KOTEST_EMBEDDABLE_COMPILER_VERSION)
+         kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
       }
    }
 
@@ -55,7 +54,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestEmbeddableCompilerArtifactId,
-         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
@@ -63,7 +62,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       SubpluginArtifact(
          KotestGroupId,
          KotestNativeArtifactId,
-         kotestExtension?.kotestEmbeddableCompilerVersion?.orNull,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
@@ -72,8 +71,8 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
          ?: error("Could not find Kotest extension in $project")
 
       return when {
-         !kotestExtension.kotestEmbeddableCompilerVersion.isPresent -> {
-            logger.warn("Warning: Kotest plugin has been added to $project, but could not determine Kotest engine version. Kotest will not be enabled.")
+         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
+            logger.warn("Warning: the Kotest plugin has been added to $project, but kotestCompilerPluginVersion has been set to null. Kotest will not be enabled.")
             false
          }
 

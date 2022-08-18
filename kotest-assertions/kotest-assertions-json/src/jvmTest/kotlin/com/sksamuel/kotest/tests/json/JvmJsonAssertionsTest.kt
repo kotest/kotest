@@ -75,6 +75,13 @@ class JvmJsonAssertionsTest : StringSpec({
 
       json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
+      shouldFail { json.shouldContainJsonKeyValue("$.store.bicycle.wheels", 2) }
+         .message shouldBe """{
+    "store": {
+        "book": [
+            {... should contain the element ${'$'}.store.bicycle.wheels = 2
+      """.trimIndent()
+
       shouldThrow<AssertionError> {
          json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
       }.message shouldBe """{
@@ -134,6 +141,16 @@ class JvmJsonAssertionsTest : StringSpec({
 
          expected:<[1,2]> but was:<[2,1]>
       """.trimIndent()
+   }
+
+   "invalid json path" {
+      val testJson1 = """ { "nullable" : null } """
+
+      shouldFail { testJson1 shouldContainJsonKey "@@" }
+         .message shouldBe "@@ is not a valid JSON path"
+
+      shouldFail { testJson1.shouldContainJsonKeyValue("@@", null as Any?) }
+         .message shouldBe "@@ is not a valid JSON path"
    }
 
    "test key with null value" {
