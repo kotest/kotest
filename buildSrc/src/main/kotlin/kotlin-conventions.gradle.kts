@@ -5,9 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-group = "io.kotest"
-version = Ci.publishVersion
-
 repositories {
    mavenCentral()
    mavenLocal()
