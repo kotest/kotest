@@ -6,4 +6,4 @@ pluginManagement {
    }
 }
 
-includeBuild("../../../../../../")
+includeBuild("../../../")
