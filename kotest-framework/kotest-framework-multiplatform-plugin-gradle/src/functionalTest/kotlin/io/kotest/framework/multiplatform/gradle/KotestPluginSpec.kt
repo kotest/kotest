@@ -1,8 +1,10 @@
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.assertions.asClue
+import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
+import io.kotest.framework.multiplatform.gradle.util.GradleKtsProjectTest
 import io.kotest.framework.multiplatform.gradle.util.GradleKtsProjectTest.Companion.gradleKtsProjectTest
 import io.kotest.framework.multiplatform.gradle.util.GradleProjectTest
 import io.kotest.matchers.shouldBe
@@ -17,29 +19,54 @@ class KotestPluginSpec : FunSpec({
    context("verify Kotest plugin can be applied") {
 
       listOf(
-         "macosArm64Test",
-         "macosX64Test",
-         "mingwX64Test",
-         "linuxX64Test",
+         ":jvmTest",
+         ":macosArm64Test",
+         ":macosX64Test",
+         ":mingwX64Test",
+         ":linuxX64Test",
       ).forEach { nativeTargetTest ->
 
          listOf(
-            true,
-            false,
-         ).forEach { useNewNativeMemoryModel ->
+            null,
+            "experimental",
+         ).forEach { nativeMemoryModel ->
 
             listOf(
                "1.6.21",
-               "1.7.0",
                "1.7.10",
             ).forEach { kotlinVersion ->
 
-               context("kotlin $kotlinVersion, useNewNativeMemoryModel=$useNewNativeMemoryModel") {
+               context("kotlin $kotlinVersion, nativeMemoryModel=$nativeMemoryModel, nativeTargetTest=$nativeTargetTest") {
                   val kotestVersion = KOTEST_COMPILER_PLUGIN_VERSION
+
+
+                  val gradleTestProject = kotestNativeGradleProject(
+                     kotlinVersion = kotlinVersion,
+                     kotestVersion = kotestVersion,
+                     mavenInternalDir = mavenInternalDir,
+                     nativeMemoryModel = nativeMemoryModel
+                  )
 //            val useNewNativeMemoryModel = true
 
-                  val gradleTest = gradleKtsProjectTest {
-                     buildGradleKts = """
+                  `verify Gradle can configure the project`(gradleTestProject)
+                  `verify Kotest plugin warnings`(gradleTestProject)
+                  `run test task`(gradleTestProject, nativeTargetTest)
+               }
+            }
+         }
+      }
+   }
+
+}) {
+   companion object {
+
+      private fun TestConfiguration.kotestNativeGradleProject(
+         kotlinVersion: String,
+         kotestVersion: String,
+         mavenInternalDir: String,
+         nativeMemoryModel: String?,
+      ): GradleKtsProjectTest = gradleKtsProjectTest {
+         buildGradleKts = """
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -86,36 +113,43 @@ kotlin {
 }
 
 tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 tasks.withType<AbstractTestTask>().configureEach {
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
-      exceptionFormat = TestExceptionFormat.FULL
-   }
+  testLogging {
+     showExceptions = true
+     showStandardStreams = true
+     events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
+     exceptionFormat = TestExceptionFormat.FULL
+  }
 }
-
-if ($useNewNativeMemoryModel) {
-   kotlin.targets.withType(KotlinNativeTarget::class.java) {
-      binaries.all {
-         binaryOptions["memoryModel"] = "experimental"
-      }
-   }
+${
+            if (nativeMemoryModel != null) {
+               """
+kotlin.targets.withType<KotlinNativeTarget>().configureEach {
+  binaries.all {
+    binaryOptions["memoryModel"] = "$nativeMemoryModel"
+  }
 }
 """.trimIndent()
+            } else {
+               ""
+            }
+         }
 
-                     createFile(
-                        "src/commonMain/kotlin/TestStrings.kt", /* language=Kotlin */ """
+
+""".trimIndent()
+
+         createFile(
+            "src/commonMain/kotlin/TestStrings.kt", /* language=Kotlin */ """
 object TestStrings {
    val helloWorld = "Hello world!"
 }
 """.trimIndent()
-                     )
-                     createFile(
-                        "src/commonTest/kotlin/TestSpec.kt",/* language=Kotlin */ """
+         )
+         createFile(
+            "src/commonTest/kotlin/TestSpec.kt",/* language=Kotlin */ """
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
@@ -129,19 +163,9 @@ class TestSpec : ShouldSpec({
    }
 })
 """.trimIndent()
-                     )
-                  }
-                  `verify Gradle can configure the project`(gradleTest)
-                  `verify Kotest plugin warnings`(gradleTest)
-                  `run test task`(gradleTest, ":jvmTest")
-               }
-            }
-         }
+         )
       }
-   }
 
-}) {
-   companion object {
       private suspend fun FunSpecContainerScope.`verify Gradle can configure the project`(
          gradleProjectTest: GradleProjectTest
       ) {
