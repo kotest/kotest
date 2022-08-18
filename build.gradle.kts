@@ -1,3 +1,5 @@
+import Ci.publishVersion
+
 plugins {
    `version-catalog`
    `maven-publish`
@@ -18,6 +20,8 @@ catalog {
    val groupId = project.group.toString()
    val extensionsGroupId = "$groupId.extensions"
 
+   println("using groupId: $groupId and version: $publishVersion for version catalog")
+
    versionCatalog {
       listOf(
          "assertions-api",
@@ -34,9 +38,9 @@ catalog {
          "runner-junit4",
          "runner-junit5",
          "extensions-htmlreporter", // Extension built and released with main kotest project
-         "extensions-junitxml", // Extension built and released with main kotest project
+         "extensions-junitxml" // Extension built and released with main kotest project
       ).forEach { alias ->
-         library(alias, groupId, "kotest-$alias:${Ci.publishVersion}")
+         library(alias, groupId, "kotest-$alias").version(publishVersion)
       }
 
       // Extensions
@@ -47,17 +51,17 @@ catalog {
          "wiremock" to "1.0.3",
          "mockserver" to "1.2.1",
          "robolectric" to "0.5.0",
-         "allure" to "1.2.0",
+         "allure" to "1.2.0"
       ).forEach { (extension, version) ->
-         library("extensions-$extension", extensionsGroupId, "kotest-extensions-$extension:$version")
+         library("extensions-$extension", extensionsGroupId, "kotest-extensions-$extension").version(version)
       }
 
       // Assertion extensions
       listOf(
          "arrow" to "1.2.5",
-         "ktor" to "1.0.3",
+         "ktor" to "1.0.3"
       ).forEach { (extension, version) ->
-         library("assertions-$extension", extensionsGroupId, "kotest-assertions-$extension:$version")
+         library("assertions-$extension", extensionsGroupId, "kotest-assertions-$extension").version(version)
       }
    }
 }
