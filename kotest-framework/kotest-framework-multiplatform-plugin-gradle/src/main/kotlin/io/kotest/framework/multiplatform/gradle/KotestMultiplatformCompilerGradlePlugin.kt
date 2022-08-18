@@ -72,7 +72,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
       return when {
          !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
-            logger.warn("Warning: Kotest plugin has been added to $project, but could not determine Kotest engine version. Kotest will not be enabled.")
+            logger.warn("Warning: the Kotest plugin has been added to $project, but kotestCompilerPluginVersion has been set to null. Kotest will not be enabled.")
             false
          }
 
