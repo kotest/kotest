@@ -37,8 +37,8 @@ catalog {
          "property",
          "runner-junit4",
          "runner-junit5",
-         "extensions-htmlreporter", // Extension built and released with main kotest project
-         "extensions-junitxml" // Extension built and released with main kotest project
+         "ext-htmlreporter", // Extension built and released with main kotest project
+         "ext-junitxml" // Extension built and released with main kotest project
       ).forEach { alias ->
          library(alias, groupId, "kotest-$alias").version(publishVersion)
       }
@@ -53,7 +53,7 @@ catalog {
          "robolectric" to "0.5.0",
          "allure" to "1.2.0"
       ).forEach { (extension, version) ->
-         library("extensions-$extension", extensionsGroupId, "kotest-extensions-$extension").version(version)
+         library("ext-$extension", extensionsGroupId, "kotest-extensions-$extension").version(version)
       }
 
       // Assertion extensions
