@@ -43,9 +43,24 @@ class ModulesNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(p
    override fun getElement(): Any = this
 }
 
-class TestFileNodeDescriptor(file: VirtualFile,
-                             project: Project,
-                             parent: NodeDescriptor<Any>) : PresentableNodeDescriptor<Any>(project, parent) {
+class TagsNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+   init {
+      templatePresentation.presentableText = "Tags"
+      templatePresentation.setIcon(AllIcons.Nodes.Tag)
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
+class TestFileNodeDescriptor(
+   file: VirtualFile,
+   project: Project,
+   parent: NodeDescriptor<Any>
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = file.name
@@ -59,12 +74,14 @@ class TestFileNodeDescriptor(file: VirtualFile,
    override fun getElement(): Any = this
 }
 
-class SpecNodeDescriptor(project: Project,
-                         val parent: NodeDescriptor<Any>,
-                         val psi: KtClassOrObject,
-                         val fqn: FqName,
-                         val style: SpecStyle,
-                         val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
+class SpecNodeDescriptor(
+   project: Project,
+   val parent: NodeDescriptor<Any>,
+   val psi: KtClassOrObject,
+   val fqn: FqName,
+   val style: SpecStyle,
+   val module: Module
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = fqn.asString()
@@ -79,13 +96,15 @@ class SpecNodeDescriptor(project: Project,
    override fun getElement(): Any = this
 }
 
-class TestNodeDescriptor(project: Project,
-                         val parent: NodeDescriptor<Any>,
-                         val psi: PsiElement,
-                         val test: TestElement,
-                         val spec: SpecNodeDescriptor,
-                         isUnique: Boolean, // if false then this test name is a duplicate
-                         val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
+class TestNodeDescriptor(
+   project: Project,
+   val parent: NodeDescriptor<Any>,
+   val psi: PsiElement,
+   val test: TestElement,
+   val spec: SpecNodeDescriptor,
+   isUnique: Boolean, // if false then this test name is a duplicate
+   val module: Module
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.locationString = null
@@ -109,10 +128,12 @@ class TestNodeDescriptor(project: Project,
    override fun getElement(): Any = this
 }
 
-class CallbackNodeDescriptor(project: Project,
-                             parent: SpecNodeDescriptor,
-                             val psi: PsiElement,
-                             callback: Callback) : PresentableNodeDescriptor<Any>(project, parent) {
+class CallbackNodeDescriptor(
+   project: Project,
+   parent: SpecNodeDescriptor,
+   val psi: PsiElement,
+   callback: Callback
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = callback.type.text
@@ -137,9 +158,14 @@ class CallbackNodeDescriptor(project: Project,
    override fun getElement(): Any = this
 }
 
-class ModuleNodeDescriptor(val module: Module,
-                           project: Project,
-                           parent: NodeDescriptor<Any>) : PresentableNodeDescriptor<Any>(project, parent) {
+/**
+ * [NodeDescriptor] for an individual module in the project.
+ */
+class ModuleNodeDescriptor(
+   val module: Module,
+   project: Project,
+   parent: NodeDescriptor<Any>
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = module.name
@@ -153,10 +179,33 @@ class ModuleNodeDescriptor(val module: Module,
    override fun getElement(): Any = this
 }
 
-class IncludeNodeDescriptor(project: Project,
-                            parent: SpecNodeDescriptor,
-                            val psi: PsiElement,
-                            val include: Include) : PresentableNodeDescriptor<Any>(project, parent) {
+/**
+ * [NodeDescriptor] for a detected kotest tag.
+ */
+class TagNodeDescriptor(
+   private val tag: String,
+   project: Project,
+   parent: NodeDescriptor<Any>
+) : PresentableNodeDescriptor<Any>(project, parent) {
+
+   init {
+      templatePresentation.presentableText = tag
+      templatePresentation.setIcon(AllIcons.Nodes.Tag)
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
+class IncludeNodeDescriptor(
+   project: Project,
+   parent: SpecNodeDescriptor,
+   val psi: PsiElement,
+   val include: Include
+) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = "Include: ${include.name}"

@@ -20,18 +20,22 @@ import javax.swing.tree.TreeModel
 /**
  * Creates a [TreeModel] for the given [VirtualFile].
  */
-fun createTreeModel(file: VirtualFile,
-                    project: Project,
-                    specs: List<KtClassOrObject>,
-                    module: Module): TreeModel {
+fun createTreeModel(
+   file: VirtualFile,
+   project: Project,
+   specs: List<KtClassOrObject>,
+   module: Module
+): TreeModel {
 
    val kotest = KotestRootNodeDescriptor(project)
    val root = DefaultMutableTreeNode(kotest)
 
-   fun addTests(node: DefaultMutableTreeNode,
-                parent: NodeDescriptor<Any>,
-                specDescriptor: SpecNodeDescriptor,
-                tests: List<TestElement>) {
+   fun addTests(
+      node: DefaultMutableTreeNode,
+      parent: NodeDescriptor<Any>,
+      specDescriptor: SpecNodeDescriptor,
+      tests: List<TestElement>
+   ) {
 
       val groups = tests.groupBy { it.test.name }
 
@@ -58,6 +62,19 @@ fun createTreeModel(file: VirtualFile,
             val moduleNode = DefaultMutableTreeNode(moduleDescriptor)
             allModulesNode.add(moduleNode)
          }
+   }
+
+   if (TestExplorerState.showTags) {
+
+      val descriptor = TagsNodeDescriptor(project)
+      val node = DefaultMutableTreeNode(descriptor)
+      root.add(node)
+
+      TestExplorerState.tags.forEach {
+         val tagDescriptor = TagNodeDescriptor(it, project, descriptor)
+         val tagNode = DefaultMutableTreeNode(tagDescriptor)
+         node.add(tagNode)
+      }
    }
 
    val fileDescriptor = TestFileNodeDescriptor(file, project, kotest)
@@ -103,5 +120,6 @@ fun createTreeModel(file: VirtualFile,
 fun Module.isKotlin(): Boolean = FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().isNotEmpty()
 
 fun Module.isTestModule(): Boolean {
-   return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().any { it.configuration.settings.isTestModule }
+   return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>()
+      .any { it.configuration.settings.isTestModule }
 }

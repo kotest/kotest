@@ -95,9 +95,13 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       }
       val manager = PsiManager.getInstance(project)
       manager.addPsiTreeChangeListener(listener) { manager.removePsiTreeChangeListener(listener) }
+
+      val tagsListener = KotestTagFileListener(tree, project)
+      manager.addPsiTreeChangeListener(tagsListener) { manager.removePsiTreeChangeListener(tagsListener) }
    }
 
    private fun refreshContent() {
+      scanTags(project)
       val file = fileEditorManager.selectedEditor?.file
       tree.setVirtualFile(file)
    }

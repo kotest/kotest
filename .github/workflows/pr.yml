@@ -14,6 +14,7 @@ jobs:
          matrix:
             product: [  "IC-211", "IC-212", "IC-213", "IC-221", "IC-222" ]
          max-parallel: 10
+         fail-fast: false
 
       steps:
          -  uses: actions/checkout@v3

@@ -32,6 +32,7 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
    result.add(FilterCallbacksAction(tree))
    result.add(FilterIncludesAction(tree))
    result.add(FilterModulesAction(tree))
+   result.add(FilterTagsAction(tree))
    result.addSeparator()
    result.add(NavigateToNodeAction())
    return result
@@ -49,7 +50,8 @@ class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand All", n
    }
 }
 
-class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter Vallbacks", null, AllIcons.Nodes.Controller) {
+class FilterCallbacksAction(private val tree: TestFileTree) :
+   ToggleAction("Filter Vallbacks", null, AllIcons.Nodes.Controller) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showCallbacks
@@ -61,7 +63,8 @@ class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filt
    }
 }
 
-class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
+class FilterModulesAction(private val tree: TestFileTree) :
+   ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showModules
@@ -69,6 +72,18 @@ class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter
 
    override fun setSelected(e: AnActionEvent, state: Boolean) {
       TestExplorerState.showModules = state
+      tree.reloadModel()
+   }
+}
+
+class FilterTagsAction(private val tree: TestFileTree) : ToggleAction("Filter Tags", null, AllIcons.Nodes.Tag) {
+
+   override fun isSelected(e: AnActionEvent): Boolean {
+      return TestExplorerState.showTags
+   }
+
+   override fun setSelected(e: AnActionEvent, state: Boolean) {
+      TestExplorerState.showTags = state
       tree.reloadModel()
    }
 }
@@ -88,7 +103,8 @@ class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filte
 class NavigateToNodeAction : ToggleAction(
    "Autoscroll To Source",
    null,
-   AllIcons.General.AutoscrollToSource) {
+   AllIcons.General.AutoscrollToSource
+) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.autoscrollToSource

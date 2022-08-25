@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.toolwindow.IncludeNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.KotestRootNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.ModulesNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
+import io.kotest.plugin.intellij.toolwindow.TagsNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.TestFileNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.createTreeModel
@@ -34,17 +35,20 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      val model = createTreeModel(myFixture.file.virtualFile, myFixture.project, myFixture.file.specs(), myFixture.module)
+      val model =
+         createTreeModel(myFixture.file.virtualFile, myFixture.project, myFixture.file.specs(), myFixture.module)
 
       val root = model.root as DefaultMutableTreeNode
       val kotest = root.userObject as KotestRootNodeDescriptor
       kotest.presentation.presentableText shouldBe Constants.FrameworkName
 
       val children = root.children().toList() as List<DefaultMutableTreeNode>
-      children.size shouldBe 2
+      children.size shouldBe 3
       children[0].userObject.shouldBeInstanceOf<ModulesNodeDescriptor>()
 
-      val testfile = children[1]
+      children[1].userObject.shouldBeInstanceOf<TagsNodeDescriptor>()
+
+      val testfile = children[2]
       testfile.userObject.shouldBeInstanceOf<TestFileNodeDescriptor>()
 
       val specs = testfile.children().toList() as List<DefaultMutableTreeNode>
