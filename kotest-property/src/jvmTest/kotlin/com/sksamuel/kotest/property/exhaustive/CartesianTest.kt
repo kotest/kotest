@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.cartesian
 import io.kotest.property.exhaustive.cartesianPairs
+import io.kotest.property.exhaustive.cartesianTriples
 import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.exhaustive.of
 
@@ -24,6 +25,38 @@ class CartesianTest : FunSpec() {
             Pair(3, 1),
             Pair(3, 2),
             Pair(3, 3),
+         )
+      }
+
+      test("Exhaustive.cartesianTriples") {
+         listOf(1, 2, 3).exhaustive().cartesianTriples().values shouldBe listOf(
+            Triple(1, 1, 1),
+            Triple(1, 1, 2),
+            Triple(1, 1, 3),
+            Triple(1, 2, 1),
+            Triple(1, 2, 2),
+            Triple(1, 2, 3),
+            Triple(1, 3, 1),
+            Triple(1, 3, 2),
+            Triple(1, 3, 3),
+            Triple(2, 1, 1),
+            Triple(2, 1, 2),
+            Triple(2, 1, 3),
+            Triple(2, 2, 1),
+            Triple(2, 2, 2),
+            Triple(2, 2, 3),
+            Triple(2, 3, 1),
+            Triple(2, 3, 2),
+            Triple(2, 3, 3),
+            Triple(3, 1, 1),
+            Triple(3, 1, 2),
+            Triple(3, 1, 3),
+            Triple(3, 2, 1),
+            Triple(3, 2, 2),
+            Triple(3, 2, 3),
+            Triple(3, 3, 1),
+            Triple(3, 3, 2),
+            Triple(3, 3, 3),
          )
       }
 
@@ -83,6 +116,35 @@ class CartesianTest : FunSpec() {
             Pair(2, false),
             Pair(3, true),
             Pair(3, false),
+         )
+      }
+
+      test("Exhaustive.cartesianTriples(a,b,c) arity 3") {
+         val e = Exhaustive.cartesianTriples(
+            Exhaustive.of(1, 2, 3),
+            Exhaustive.of("a", "b", "c"),
+            Exhaustive.of(true, false)
+         )
+         e.values.shouldHaveSize(18)
+         e.values shouldBe listOf(
+            Triple(1, "a", true),
+            Triple(1, "a", false),
+            Triple(1, "b", true),
+            Triple(1, "b", false),
+            Triple(1, "c", true),
+            Triple(1, "c", false),
+            Triple(2, "a", true),
+            Triple(2, "a", false),
+            Triple(2, "b", true),
+            Triple(2, "b", false),
+            Triple(2, "c", true),
+            Triple(2, "c", false),
+            Triple(3, "a", true),
+            Triple(3, "a", false),
+            Triple(3, "b", true),
+            Triple(3, "b", false),
+            Triple(3, "c", true),
+            Triple(3, "c", false)
          )
       }
 
