@@ -9,7 +9,7 @@ kotlin {
          dependencies {
             api(project(Projects.Assertions.Shared))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Common))
+            api(project(Projects.Common)) // needs to be API so the domain objects are open
 
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well

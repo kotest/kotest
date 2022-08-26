@@ -16,7 +16,7 @@ env:
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
    contents: read
@@ -74,7 +74,7 @@ jobs:
    publish_mac:
       runs-on: macos-11
       strategy:
-         max-parallel: 1
+         max-parallel: 6
          matrix:
             target:
                - publishMacosX64PublicationToDeployRepository
@@ -128,3 +128,24 @@ jobs:
 
          -  name: publish mingwX64 release
             run: ./gradlew publishMingwX64PublicationToDeployRepository
+
+   release-gradle-plugin:
+      runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v3
+            with:
+               fetch-depth: 0
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'adopt'
+               java-version: '8'
+
+         -  uses: gradle/gradle-build-action@v2
+
+         -  name: deploy to gradle
+            run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins -Dgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Dgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}

@@ -24,6 +24,7 @@ jobs:
                - jvmTest
                - jsIrTest
                - linuxX64Test
+               - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -131,4 +132,4 @@ jobs:
 
 
 env:
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

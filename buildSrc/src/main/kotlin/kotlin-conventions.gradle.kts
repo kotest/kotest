@@ -11,7 +11,9 @@ version = Ci.publishVersion
 repositories {
    mavenCentral()
    mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
+   maven("https://oss.sonatype.org/content/repositories/snapshots/") {
+      mavenContent { snapshotsOnly() }
+   }
    google()
    gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
@@ -20,7 +22,7 @@ testlogger {
    showPassed = false
 }
 
-tasks.withType<Test>() {
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
    filter {
@@ -30,7 +32,7 @@ tasks.withType<Test>() {
 
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+      freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
       jvmTarget = "1.8"
       apiVersion = "1.6"
       languageVersion = "1.6"
@@ -38,11 +40,11 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 kotlin {
-   sourceSets {
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+   sourceSets.configureEach {
+      languageSettings {
+         optIn("kotlin.time.ExperimentalTime")
+         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("kotlin.contracts.ExperimentalContracts")
       }
    }
 }

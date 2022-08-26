@@ -15,6 +15,14 @@ jobs:
    test_linux:
       runs-on: ubuntu-latest
       if: github.repository == 'kotest/kotest'
+      strategy:
+         fail-fast: false
+         matrix:
+            target:
+               - jvmTest
+               - jsIrTest
+               - linuxX64Test
+               - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -31,7 +39,7 @@ jobs:
          -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
-            run: ./gradlew check --scan
+            run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -128,4 +136,4 @@ jobs:
                name: error-report
                path: build-reports.zip
 env:
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

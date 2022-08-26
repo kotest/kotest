@@ -7,22 +7,52 @@ slug: project-config.html
 
 
 Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, or how
-test classes are created. Sometimes you may want to set this at a global level and for that you need to use project-level-config.
+test classes are created. Sometimes you may want to set this at a global level and for that you need to use
+project-level-config.
 
-Project level configuration can be used by creating an object or class that extends from `AbstractProjectConfig`. At runtime,
-Kotest will scan for classes that extend this abstract class and instantiate them, reading any configuration defined there.
-
-You can create more than one config class in different modules, and any on the current classpath will be detected and configs merged.
-This is effective for allowing common config to be placed into a root module. In the case of clashes, one value will be arbitrarily picked, so it is not recommended adding competing settings to different configs.
-
-:::note
-If your project specifies more than one project config, they will be merged, but the resolution of conflicting values is unspecified. It is advised that separate configs do not specify the same settings
-:::
+Project level configuration can be used by creating an object or class that extends from `AbstractProjectConfig`.
 
 Any configuration set at the Spec level or directly on a test will override the config specified at the project level.
 
-Some configuration options available in `KotestProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
+Some configuration options available in `KotestProjectConfig` include parallelism of tests, failing specs with ignored
+tests, global `AssertSoftly`, and reusable listeners or extensions.
 
+## Runtime Detection
+
+At runtime, Kotest will scan for classes that extend `AbstractProjectConfig` and instantiate them, using any
+configuration values defined in those classes.
+
+You can create more than one config class in different modules, and any on the current classpath will be detected and
+configs merged. This is effective for allowing common config to be placed into a root module. In the case of clashes,
+one value will be arbitrarily picked, so it is not recommended adding competing settings to different configs.
+
+If you have a large project, then you may wish to disable the auto scanning for these config classes if it is incurring
+a significant startup cost. You can do this by
+setting a system property or environment variable `kotest.framework.classpath.scanning.config.disable` to `true`.
+
+Once auto scanning is disabled, if you wish to still use project config, you an specify a well known class name which
+Kotest will reflectively instantiate. The system property or environment variable to use
+is `kotest.framework.config.fqn`.
+
+For example, setting:
+
+```
+kotest.framework.classpath.scanning.config.disable=true
+kotest.framework.config.fqn=com.wibble.KotestConfig
+```
+
+Will disable runtime scanning, and look for a class `com.wibble.KotestConfig`. The class must still
+inherit `AbstractProjectConfig`.
+
+:::tip
+Another related setting is `kotest.framework.classpath.scanning.autoscan.disable` which can also be set to false for speed.
+With auto scan disabled, Kotest will not scan the classpath looking for for `@AutoScan` annotated extensions.
+:::
+
+:::caution
+System properties set in your gradle file won't be picked up by the intellij plugin if you have that installed.
+Instead, look to specify the properties inside a `kotest.properties` file. Full details [here](../intellij/props.md).
+:::
 
 
 
@@ -90,6 +120,15 @@ object KotestProjectConfig : AbstractProjectConfig() {
 
 
 
+## Duplicate Test Name Handling
+
+By default, Kotest will rename a test if it has the same name as another test in the same scope. It will append _1, _2
+and so on to the test name. This is useful for automatically generated tests.
+
+You can change this behavior globally by setting `duplicateTestNameMode` to either `DuplicateTestNameMode.Error` or `DuplicateTestNameMode.Warn`.
+
+`Error` will fail the test suite on a repeated name, and warn will rename but output a warning.
+
 
 ## Fail On Ignored Tests
 
@@ -103,39 +142,49 @@ object KotestProjectConfig : AbstractProjectConfig() {
 ```
 
 
+## Ordering
 
+Kotest supports ordering both specs and tests independently.
 
-## Test Ordering
+### Test Ordering
 
 When running multiple tests from a Spec, there's a certain order on how to execute them.
 
 By default, a sequential order is used (the order that tests are defined in the spec), but this can be changed. For available options see [test ordering](test_ordering.md).
 
+### Spec Ordering
+
+By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we
+need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).
 
 
+## Test Naming
 
-## Spec Ordering
+Test names can be adjusted in several ways.
 
+### Test Case
 
-By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).
+Test names case can be controlled by changing the value of `testNameCase`.
 
-
-
-
-## Test name case
-
-The case of the test names can be controlled by changing the value of `testNameCase`.
 By default, the value is `TestNameCase.AsIs` which makes no change.
 
 By setting the value to `TestNameCase.Lowercase` a test's name will be lowercase in output.
 
-If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
+If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the
+values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
+
+### Test Name Tags
+
+Another using test name option is `testNameAppendTags` which, when set to true, will include any applicable tags in the
+test name.
+For example, if a test `foo` was defined in a spec with the tags `linux` and `spark` then the test name would be
+adjusted
+to be `foo [linux, spark]`
+
+This setting can also be set using a system property or environment variable `kotest.framework.testname.append.tags` to `true`.
 
 
-
-
-
-## Test name whitespace
+### Test name whitespace
 
 If you define test names over several lines then `removeTestNameWhitespace` can be useful. Take this example:
 

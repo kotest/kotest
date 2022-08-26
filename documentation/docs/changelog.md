@@ -4,27 +4,100 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.4.0
+## 5.4.3 - Still Unreleased
+
+### Improvements
+
+-  Support printing unsigned integers clearly (#3149) 
+-  ♻️ Refactors Success Matchers to its own file (#3119) 
+
+### Dependency upgrades
+
+- Update plugin com.gradle.enterprise to v3.11.1 (#3151)
+- Update dependency gradle to v7.5.1 (#3139)
+- Update dependency com.github.curious-odd-man:rgxgen to v1.4 (#3150) 
+- Update docusaurus monorepo to v2.0.1 (#3140) 
+
+## 5.4.2
+
+## 5.4.1 July 2022
 
 ### Fixes
 
+* Fix regression which causes `NoSuchMethodError` when using the Kotest Spring extension
+
+## 5.4.0 July 2022
+
+### Fixes
+
+* Fix problem with isolation mode when duplicate names occur (#3071)
+* Allow `Arb.bind` to directly bind to sealed, enum and private types (#3072)
+* Fix `kotest.properties` to apply before tests #3087
+* Fix `shouldHaveSameContentAs` doesn't close the readers (#3091
+* Fix tolerance matchers for negative values. (#3096)
+* Adjust warning message to match enum value (#3067)
+* Fix compilation failures for Kotlin/Native projects that use Kotlin 1.7 and the Kotest Gradle plugin. (#3073)
+* Fix description of harryPotterCharacter arb (#2963)
+
 ### Features
 
-* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality, over regular `equals`
+* Support persisting and reusing seeds for property tests #2967
+* `shouldMatchAll` has been added to Maps where each value is a function containing assertions. #3065
+* `shouldBeEqualToComparingFields` now supports configuring classes which require the use of `shouldBe` for equality,
+  over regular `equals`
+* Add arbs for `ZoneId`, `ZonedDateTime`, and `OffsetDateTime` (#3113)
+* `YearMonth` Arbitrary implementation (#2928)
+* Make `arb.orNull` provide a shrink to null (#2975)
+* Enable building native targets for kotest-assertions-json. (#3021)
+* Json Array size validation (#2974)
+* Add optional reason to `@Ignored` (#3030)
+* Set runtime retention on dsl marker (#3038)
+* Add shrinker for Sets (#3045)
 
 ### Experimental features and changes
 
-* JSON schema arrays now supports `minItems`, `maxItems` and `uniqueItems`
-* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed to `optional`, with false as default.
+* [Assumptions](https://kotest.io/docs/next/proptest/property-test-assumptions.html) have been added to property testing.
+* [Statistics](https://kotest.io/docs/next/proptest/property-test-statistics.html) generation has been added to property testing.
+* JSON schema array assertions now support `minItems`, `maxItems` and `uniqueItems` #3026
+* (BREAKING) Altered the contract of JSON schema DSL to default to required properties, `required` has been changed
+  to `optional`, with false as default.
 
 ### Deprecation
-* Deprecated existing shouldBeEqualToComparingFields in favor of a new shouldBeEqualToComparingFields matcher which let you configure behaviour its using a FieldsEqualityCheckConfig class.(#3034)
+
+* Deprecated existing `shouldBeEqualToComparingFields` in favor of a new `shouldBeEqualToComparingFields` matcher which
+  lets you configure the behaviour using a `FieldsEqualityCheckConfig` class. (#3034)
+
+Thanks to all contributors since the 5.3.0 release:
+
+* Alphonse Bendt
+* Andrey Bozhko
+* aSemy
+* Ashish Kumar Joy
+* blzsaa
+* Charles Korn
+* Cory Thomas
+* Emil Kantis
+* Erik Price
+* Francesco Feltrinelli
+* Javier Segovia Córdoba
+* Jim Schneidereit
+* Jordi
+* Norbert Nowak
+* Roland Müller
+* Shervinox
+* sksamuel
+* Tim van Heugten
+* YongJoon Kim
+* Zvika
+
+
 
 ## 5.3.2 June 2022
 
 ### Fixes
 
 * Fixes compiler plugin issue with Kotlin/Native using Kotlin 1.7, issue [#3060](https://github.com/kotest/kotest/issues/3060)
+
 
 ## 5.3.1 June 2022
 
@@ -51,7 +124,7 @@ slug: changelog.html
 * Make it easier to configure options through environment variables by also supporting variable names with underscores instead of dots. (#2925)
 * EndsWith and startsWith matcher support regex for (#2892)
 
-Thanks to all the contributors:
+Thanks to all the contributors since the 5.2.0 release:
 
 * Ashish Kumar Joy
 * Charles Korn
