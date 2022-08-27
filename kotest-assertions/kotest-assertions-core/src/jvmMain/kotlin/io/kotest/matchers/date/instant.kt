@@ -69,6 +69,6 @@ fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this sho
 
 /**
  * Assert that [Instant] is not between [fromInstant] and [toInstant].
- * @see [shouldBeBetween]
+ * @see [shouldNotBeBetween]
  * */
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
