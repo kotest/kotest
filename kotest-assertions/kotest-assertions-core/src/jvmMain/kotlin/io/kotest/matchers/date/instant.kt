@@ -68,7 +68,7 @@ infix fun Instant.shouldNotBeAfter(anotherInstant: Instant) = this shouldNot aft
 fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldBe between(fromInstant, toInstant)
 
 /**
- * Assert that [Instant] is between [fromInstant] and [toInstant].
+ * Assert that [Instant] is not between [fromInstant] and [toInstant].
  * @see [shouldBeBetween]
  * */
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
