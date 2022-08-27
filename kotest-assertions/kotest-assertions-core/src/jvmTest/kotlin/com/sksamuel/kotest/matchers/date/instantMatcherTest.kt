@@ -91,7 +91,7 @@ class InstantMatcherTest : FreeSpec() {
          futureInstant.shouldNotBeBetween(pastInstant, currentInstant)
       }
 
-      "100nanos ago instant and current instant should be close to 100nanos each other" {
+      "current instant and 100 nanos ago instant should be close to 100 nanoseconds each other" {
          val currentInstant = Instant.now()
          val hundredNanosAgoInstant = currentInstant.minusNanos(100L)
 
@@ -99,12 +99,12 @@ class InstantMatcherTest : FreeSpec() {
          hundredNanosAgoInstant.shouldBeCloseTo(currentInstant, 100L, ChronoUnit.NANOS)
       }
 
-      "1500millis ago instant and current instant should not be close to 1000millis each other" {
+      "current instant and 1500 millis ago instant should not be close to 1000 millis each other" {
          val currentInstant = Instant.now()
-         val hundredNanosAgoInstant = currentInstant.minusMillis(1500L)
+         val someMillisAgoInstant = currentInstant.minusMillis(1500L)
 
-         currentInstant.shouldNotBeCloseTo(hundredNanosAgoInstant, 1000L, ChronoUnit.MILLIS)
-         hundredNanosAgoInstant.shouldNotBeCloseTo(currentInstant, 1000L, ChronoUnit.MILLIS)
+         currentInstant.shouldNotBeCloseTo(someMillisAgoInstant, 1000L, ChronoUnit.MILLIS)
+         someMillisAgoInstant.shouldNotBeCloseTo(currentInstant, 1000L, ChronoUnit.MILLIS)
       }
 
    }

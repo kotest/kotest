@@ -44,8 +44,8 @@ fun closeTo(anotherInstant: Instant, point: Long, unit: ChronoUnit) = object : M
       val diff = kotlin.math.abs(value.toEpochMilli() - anotherInstant.toEpochMilli())
       return MatcherResult(
          diff <= Duration.of(point, unit).toMillis(),
-         { "Expected $value to be close to $point${unit.name}, but it's not." },
-         { "$value is not close as $point${unit.name} to $anotherInstant." }
+         { "Expected $value to be close to $anotherInstant in range by $point${unit.name}, but it's not." },
+         { "$value is not close to $anotherInstant in range by $point${unit.name} " }
       )
    }
 }
@@ -87,14 +87,14 @@ fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this sho
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
 
 /**
- * Assert that [Instant] is close as value of point by type to [anotherInstant].
+ * Assert that [Instant] is close to in range by value of point and type to [anotherInstant].
  * @see [shouldBeCloseTo]
  * */
 fun Instant.shouldBeCloseTo(anotherInstant: Instant, point: Long, unit: ChronoUnit) =
    this shouldBe closeTo(anotherInstant, point, unit)
 
 /**
- * Assert that [Instant] is not close as value of point by type to [anotherInstant].
+ * Assert that [Instant] is not close to in range by value of point and type to [anotherInstant].
  * @see [shouldNotBeCloseTo]
  * */
 fun Instant.shouldNotBeCloseTo(anotherInstant: Instant, point: Long, unit: ChronoUnit) =
