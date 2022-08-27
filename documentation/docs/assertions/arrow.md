@@ -42,3 +42,4 @@ In the case `io.arrow-kt:arrow-core:arrow-version` is not in your classpath, ple
 | `validated.shouldBeValid()` | Asserts that the validated is of type Valid and returns the Valid value |
 | `validated.shouldBeValid(v)` | Asserts that the validated is of type Valid with specific value v |
 | `validated.shouldBeInvalid()` | Asserts that the validated is of type Invalid and returns the Invalid value|
+| `validated.shouldBeInvalid(v)` | Asserts that the validated is of type Invalid with specific value v |

@@ -20,7 +20,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
       "1.7.0"
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
-         val testProjectPath = Paths.get("src", "test", "resources", "test-project").toAbsolutePath()
+         val testProjectPath = Paths.get("test-project").toAbsolutePath()
          val testReportsDirectory = testProjectPath.resolve("build").resolve("test-results")
 
          beforeEach {
