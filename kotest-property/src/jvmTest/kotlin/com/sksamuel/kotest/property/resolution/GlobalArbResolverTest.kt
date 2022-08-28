@@ -14,21 +14,15 @@ class GlobalArbResolverTest : FunSpec() {
 
       data class MyType(val value: String)
 
-      test("should fail without default mapping") {
-         shouldThrow<NoGeneratorFoundException> {
-            checkAll<MyType>() { }
-         }
-      }
+      val arb = arbitrary { MyType("foo") }
+      GlobalArbResolver.register<MyType>(arb)
 
       test("should detect global default mapping arity 1") {
-         val arb = arbitrary { MyType("foo") }
-         GlobalArbResolver.register<MyType>(arb)
          checkAll<MyType>() { it shouldBe MyType("foo") }
       }
 
       test("should detect global default mapping arity 2") {
          val arb = arbitrary { MyType("foo") }
-         GlobalArbResolver.register(typeOf<MyType>(), arb)
          checkAll<MyType, MyType>() { a, b ->
             a shouldBe MyType("foo")
             b shouldBe MyType("foo")
@@ -37,7 +31,6 @@ class GlobalArbResolverTest : FunSpec() {
 
       test("should detect global default mapping arity 3") {
          val arb = arbitrary { MyType("foo") }
-         GlobalArbResolver.register(typeOf<MyType>(), arb)
          checkAll<MyType, MyType, MyType>() { a, b, c ->
             a shouldBe MyType("foo")
             b shouldBe MyType("foo")
@@ -47,7 +40,6 @@ class GlobalArbResolverTest : FunSpec() {
 
       test("should detect global default mapping arity 4") {
          val arb = arbitrary { MyType("foo") }
-         GlobalArbResolver.register(typeOf<MyType>(), arb)
          checkAll<MyType, MyType, MyType, MyType>() { a, b, c, d ->
             a shouldBe MyType("foo")
             b shouldBe MyType("foo")
@@ -58,7 +50,6 @@ class GlobalArbResolverTest : FunSpec() {
 
       test("should detect global default mapping arity 5") {
          val arb = arbitrary { MyType("foo") }
-         GlobalArbResolver.register(typeOf<MyType>(), arb)
          checkAll<MyType, MyType, MyType, MyType, MyType>() { a, b, c, d, e ->
             a shouldBe MyType("foo")
             b shouldBe MyType("foo")
