@@ -24,7 +24,7 @@ import kotlin.reflect.KType
  * Any types available on all platforms can be added here.
  */
 @Suppress("UNCHECKED_CAST")
-object CommonTypeArbResolver : ArbResolver {
+internal object CommonTypeArbResolver : ArbResolver {
    override fun resolve(type: KType): Arb<*>? {
       val kclass = type.classifier as? KClass<*> ?: return null
       return when (kclass.bestName()) {

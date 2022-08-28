@@ -6,7 +6,7 @@ import kotlin.reflect.KType
 /**
  * Looks up default [Arb] instances for types.
  */
-interface ArbResolver {
+internal interface ArbResolver {
 
    /**
     * Returns a default [Arb] for the given [KType] or null if one is not available.
@@ -14,6 +14,6 @@ interface ArbResolver {
    fun resolve(type: KType): Arb<*>?
 }
 
-object EmptyArbResolver : ArbResolver {
+internal object EmptyArbResolver : ArbResolver {
    override fun resolve(type: KType): Arb<*>? = null
 }
