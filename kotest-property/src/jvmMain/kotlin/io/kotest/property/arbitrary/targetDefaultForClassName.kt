@@ -58,7 +58,7 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
          Arb.choice(clazz.sealedSubclasses.map { Arb.forClassUsingConstructor(providedArbs, it) })
       }
       else -> {
-         Arb.forClassUsingConstructor(providedArbs, clazz)
+         if (providedArbs.isEmpty()) null else Arb.forClassUsingConstructor(providedArbs, clazz)
       }
    }
 }
