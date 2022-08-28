@@ -3,7 +3,6 @@ package io.kotest.matchers.collections
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
@@ -13,26 +12,50 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 @JvmName("shouldContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
    this?.toList() should containExactly(expected.toList())
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 @JvmName("shouldContainExactly_array")
 infix fun <T> Array<T>?.shouldContainExactly(expected: Array<T>) =
    this?.asList() should containExactly(*expected)
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T> Iterable<T>?.shouldContainExactly(vararg expected: T) =
    this?.toList() should containExactly(*expected)
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T> Array<T>?.shouldContainExactly(vararg expected: T) =
    this?.asList() should containExactly(*expected)
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
+
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T> Collection<T>?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(expected.asList())
 
-/** Assert that a collection contains exactly the given values and nothing else, in order. */
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(IterableEq.trigger) == true
