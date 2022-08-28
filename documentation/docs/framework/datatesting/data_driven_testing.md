@@ -111,3 +111,17 @@ Data tests can only be defined at the root or in container scopes. They cannot b
 If you wish to have before / after callbacks in data-driven tests, then you can use the standard `beforeTest`
 / `afterTest` support. Every test created using data-driven testing acts the same way as a regular test, so all standard callbacks work as if
 you had written all the test by hand.
+
+For example:
+
+```kotlin
+beforeTest {
+  // reset test setup
+}
+
+context("...") {
+  withData(X, Y, Z) { x,y,z ->
+    // test code
+  }
+}
+```
