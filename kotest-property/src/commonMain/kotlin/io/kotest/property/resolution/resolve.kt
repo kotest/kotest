@@ -35,4 +35,4 @@ fun resolve(type: KType): Arb<*> {
 
 class NoGeneratorFoundException(msg: String) : RuntimeException(msg)
 
-expect fun platformArbResolver(): ArbResolver
+internal expect fun platformArbResolver(): ArbResolver

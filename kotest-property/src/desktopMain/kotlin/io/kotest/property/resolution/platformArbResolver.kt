@@ -1,3 +1,3 @@
 package io.kotest.property.resolution
 
-actual fun platformArbResolver(): ArbResolver = EmptyArbResolver
+internal actual fun platformArbResolver(): ArbResolver = EmptyArbResolver
