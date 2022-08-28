@@ -6,6 +6,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import java.time.Instant
+import kotlin.time.Duration
+import kotlin.time.toKotlinDuration
 
 fun before(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
@@ -33,6 +35,18 @@ fun between(fromInstant: Instant, toInstant: Instant) = object : Matcher<Instant
          value.isAfter(fromInstant) && value.isBefore(toInstant),
          { "$value should be after $fromInstant and before $toInstant" },
          { "$value should not be be after $fromInstant and before $toInstant" }
+      )
+   }
+}
+
+fun closeTo(anotherInstant: Instant, duration: Duration) = object : Matcher<Instant> {
+   override fun test(value: Instant): MatcherResult {
+      val diff = java.time.Duration.between(value, anotherInstant).toKotlinDuration().absoluteValue
+      val closeDuration = diff.minus(duration)
+      return MatcherResult(
+         closeDuration.isNegative() || closeDuration == Duration.ZERO,
+         { "Expected $value to be close to $anotherInstant in range by $duration but it's not." },
+         { "$value is not close to $anotherInstant in range by $duration" }
       )
    }
 }
@@ -72,3 +86,17 @@ fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this sho
  * @see [shouldNotBeBetween]
  * */
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
+
+/**
+ * Assert that [Instant] is close to [anotherInstant] in range by [duration].
+ * @see [shouldBeCloseTo]
+ * */
+fun Instant.shouldBeCloseTo(anotherInstant: Instant, duration: Duration) =
+   this shouldBe closeTo(anotherInstant, duration)
+
+/**
+ * Assert that [Instant] is not close to [anotherInstant] in range by [duration].
+ * @see [shouldNotBeCloseTo]
+ * */
+fun Instant.shouldNotBeCloseTo(anotherInstant: Instant, duration: Duration) =
+   this shouldNotBe closeTo(anotherInstant, duration)
