@@ -1,3 +1,5 @@
+rootProject.name = "kotest"
+
 pluginManagement {
    repositories {
       mavenCentral()
