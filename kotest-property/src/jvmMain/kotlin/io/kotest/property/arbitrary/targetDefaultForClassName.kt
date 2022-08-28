@@ -16,6 +16,7 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
 actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(type = typeOf<A>()) as Arb<A>?
 
 fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type: KType): Arb<*>? {
@@ -58,7 +59,7 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
          Arb.choice(clazz.sealedSubclasses.map { Arb.forClassUsingConstructor(providedArbs, it) })
       }
       else -> {
-         Arb.forClassUsingConstructor(providedArbs, clazz)
+        Arb.forClassUsingConstructor(providedArbs, clazz)
       }
    }
 }
