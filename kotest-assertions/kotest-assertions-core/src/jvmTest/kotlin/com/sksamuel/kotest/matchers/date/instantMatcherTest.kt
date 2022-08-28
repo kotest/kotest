@@ -12,7 +12,8 @@ import io.kotest.matchers.date.shouldNotBeCloseTo
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.Instant
-import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.nanoseconds
 
 class InstantMatcherTest : FreeSpec() {
    init {
@@ -91,20 +92,20 @@ class InstantMatcherTest : FreeSpec() {
          futureInstant.shouldNotBeBetween(pastInstant, currentInstant)
       }
 
-      "current instant and 100 nanos ago instant should be close to 100 nanoseconds each other" {
+      "current instant and 5 nanos ago instant should be close to 5 nanoseconds each other" {
          val currentInstant = Instant.now()
-         val hundredNanosAgoInstant = currentInstant.minusNanos(100L)
+         val hundredNanosAgoInstant = currentInstant.minusNanos(5L)
 
-         currentInstant.shouldBeCloseTo(hundredNanosAgoInstant, 100L, ChronoUnit.NANOS)
-         hundredNanosAgoInstant.shouldBeCloseTo(currentInstant, 100L, ChronoUnit.NANOS)
+         currentInstant.shouldBeCloseTo(hundredNanosAgoInstant, 5L.nanoseconds)
+         hundredNanosAgoInstant.shouldBeCloseTo(currentInstant, 5L.nanoseconds)
       }
 
       "current instant and 1500 millis ago instant should not be close to 1000 millis each other" {
          val currentInstant = Instant.now()
          val someMillisAgoInstant = currentInstant.minusMillis(1500L)
 
-         currentInstant.shouldNotBeCloseTo(someMillisAgoInstant, 1000L, ChronoUnit.MILLIS)
-         someMillisAgoInstant.shouldNotBeCloseTo(currentInstant, 1000L, ChronoUnit.MILLIS)
+         currentInstant.shouldNotBeCloseTo(someMillisAgoInstant, 1000L.milliseconds)
+         someMillisAgoInstant.shouldNotBeCloseTo(currentInstant, 1000L.milliseconds)
       }
 
    }

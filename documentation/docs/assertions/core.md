@@ -259,12 +259,12 @@ Matchers provided by the `kotest-assertions-core` module.
 
 
 
-| Instant                                                ||
-|--------------------------------------------------------| ---- |
-| `instant.shouldBeAfter(anotherInstant)`                | Asserts that the instant is after anotherInstant |
-| `instant.shouldBeBefore(anotherInstant)`               | Asserts that the instant is before anotherInstant |
-| `instant.shouldBeBetween(fromInstant, toInstant)`      | Asserts that the instant is between fromInstant and toInstant |
-| `instant.shouldBeCloseTo(anotherInstant, point, unit)` | Asserts that the instant is close To anotherInstant with as the point by the unit type |
+| Instant                                               ||
+|-------------------------------------------------------| ---- |
+| `instant.shouldBeAfter(anotherInstant)`               | Asserts that the instant is after anotherInstant |
+| `instant.shouldBeBefore(anotherInstant)`              | Asserts that the instant is before anotherInstant |
+| `instant.shouldBeBetween(fromInstant, toInstant)`     | Asserts that the instant is between fromInstant and toInstant |
+| `instant.shouldBeCloseTo(anotherInstant, duration)`   | Asserts that the instant is close To anotherInstant in range by duration |
 
 | Timestamp                                               ||
 |---------------------------------------------------------| ---- |
