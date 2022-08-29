@@ -14,23 +14,24 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
-import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
-import io.kotest.engine.spec.interceptor.FinalizeSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
+import io.kotest.engine.spec.interceptor.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
+import io.kotest.engine.spec.interceptor.ref.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
-import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
-import io.kotest.engine.spec.interceptor.PrepareSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.InlineTagSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.PrepareSpecInterceptor
 import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
-import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.RequiresTagInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
+import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
+import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
@@ -67,12 +68,12 @@ class SpecExecutor(
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, context.configuration.registry) else null,
+         if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.configuration.registry) else null,
          IgnoredSpecInterceptor(listener, context.configuration.registry),
          SpecFilterInterceptor(listener, context.configuration.registry),
          SystemPropertySpecFilterInterceptor(listener, context.configuration.registry),
-         TagsExcludedSpecInterceptor(listener, context.configuration),
-         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, context.configuration, context.configuration.registry) else null,
+         TagsInterceptor(listener, context.configuration),
+         if (platform == Platform.JVM) RequiresTagInterceptor(listener, context.configuration, context.configuration.registry) else null,
          SpecRefExtensionInterceptor(context.configuration.registry),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
@@ -97,7 +98,8 @@ class SpecExecutor(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.configuration.registry) else null,
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
-         ConfigurationInContextInterceptor(context.configuration),
+         ConfigurationInContextSpecInterceptor(context.configuration),
+         InlineTagSpecInterceptor(listener, context.configuration),
       )
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {

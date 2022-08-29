@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
@@ -29,6 +30,7 @@ import kotlin.coroutines.CoroutineContext
  * is instantiated for all the test cases.
  */
 @ExperimentalKotest
+@OptIn(KotestInternal::class)
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
@@ -44,8 +46,6 @@ internal class SingleInstanceSpecRunner(
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
 
       suspend fun interceptAndRun(context: CoroutineContext) = runCatching {
-         val rootTests = materializer.materialize(spec)
-         logger.log { Pair(spec::class.bestName(), "Materialized root tests: ${rootTests.size}") }
          launch(spec) {
             logger.log { Pair(it.name.testName, "Executing test $it") }
             runTest(it, context, null)

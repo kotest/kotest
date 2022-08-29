@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
@@ -11,6 +11,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv
@@ -48,8 +49,12 @@ internal class SystemPropertySpecFilterInterceptor(
       return if (included) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Filtered by ${KotestEngineProperties.filterSpecs} spec filter") }
-            .flatMap { extensions.ignored(ref.kclass, "Filtered by ${KotestEngineProperties.filterSpecs} spec filter") }
+         runCatching {
+            listener.specIgnored(
+               ref.kclass,
+               "Filtered by ${KotestEngineProperties.filterSpecs} spec filter"
+            )
+         }.flatMap { extensions.ignored(ref.kclass, "Filtered by ${KotestEngineProperties.filterSpecs} spec filter") }
             .map { emptyMap() }
       }
    }
