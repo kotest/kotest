@@ -12,6 +12,7 @@ import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
+import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -24,11 +25,19 @@ import kotlin.coroutines.CoroutineContext
 @Deprecated("Renamed to ContainerScope in 5.0")
 typealias ContainerContext = ContainerScope
 
+private val outOfOrderCallbacksException =
+   InvalidDslException("Cannot use afterTest after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true")
+
 /**
  * Extends a [TestScope] with convenience methods for registering tests and listeners.
  */
 @KotestTestScope
 interface ContainerScope : TestScope {
+
+   /**
+    * Returns true if this scope has at least one registered child.
+    */
+   fun hasChildren(): Boolean
 
    suspend fun registerTest(
       name: TestName,
@@ -94,6 +103,7 @@ interface ContainerScope : TestScope {
     * Only affects tests registered after a call to this function.
     */
    fun beforeTest(f: BeforeTest) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeTest(testCase: TestCase) {
@@ -107,6 +117,7 @@ interface ContainerScope : TestScope {
     * Only affects tests registered after a call to this function.
     */
    fun afterTest(f: AfterTest) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
@@ -119,9 +130,10 @@ interface ContainerScope : TestScope {
     * Registers a [BeforeContainer] function that executes before every test with
     * type [TestType.Container] in this context.
     *
-    * Only affects test conatiners registered after a call to this function.
+    * Only affects test containers registered after a call to this function.
     */
    fun beforeContainer(f: BeforeContainer) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
@@ -139,6 +151,7 @@ interface ContainerScope : TestScope {
     * Only affects test conatiners registered after a call to this function.
     */
    fun afterContainer(f: AfterContainer) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
@@ -153,6 +166,7 @@ interface ContainerScope : TestScope {
     * Registers a [BeforeEach] function that executes before every test with type [TestType.Test] in this scope.
     */
    fun beforeEach(f: BeforeEach) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
@@ -167,6 +181,7 @@ interface ContainerScope : TestScope {
     * Registers an [AfterEach] function that executes after every test with type [TestType.Test] in this scope.
     */
    fun afterEach(f: AfterEach) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
@@ -181,6 +196,7 @@ interface ContainerScope : TestScope {
     * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
     */
    fun beforeAny(f: BeforeAny) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
@@ -193,6 +209,7 @@ interface ContainerScope : TestScope {
     * Registers an [AfterAny] function that executes after every test with any [TestType] in this scope.
     */
    fun afterAny(f: AfterAny) {
+      if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
@@ -204,7 +221,15 @@ interface ContainerScope : TestScope {
 
 @KotestTestScope
 open class AbstractContainerScope(private val testScope: TestScope) : ContainerScope {
+
+   private var registered = false
    override val testCase: TestCase = testScope.testCase
+
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
+   override suspend fun registerTestCase(nested: NestedTest) {
+      registered = true
+      testScope.registerTestCase(nested)
+   }
+
+   override fun hasChildren(): Boolean = registered
 }
