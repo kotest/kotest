@@ -3,9 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
-import kotlinx.coroutines.internal.LockFreeLinkedListHead
 
 object IterableEq : Eq<Iterable<*>> {
 
@@ -132,13 +130,22 @@ object IterableEq : Eq<Iterable<*>> {
    const val trigger = "Disallowed"
 
    private fun errorWithTypeDetails(actual: Iterable<*>, expected: Iterable<*>): Throwable {
-      val tag = "${actual::class.simpleName?.let {it} ?: actual::class} with ${expected::class.simpleName?.let {it} ?: expected::class}\n"
+      val actualTypeName = actual::class.simpleName ?: actual::class
+      val expectedTypeName = expected::class.simpleName ?: expected::class
+      val tag = "$actualTypeName with $expectedTypeName\n"
+
       val detailErrorMessage = when {
-         actual is Set<*> || expected is Set<*> -> "$trigger: Set can be compared only to Set\nMay not compare $tag"
+         actual is Set<*> || expected is Set<*> -> {
+            val (setType, nonSetType) =
+               if (actual is Set<*>) actualTypeName to expectedTypeName
+               else expectedTypeName to actualTypeName
+
+            "$trigger: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
+         }
          (actual is Collection || actual is Array<*>) || (expected is Collection || expected is Array<*>) -> "$trigger typed contract\nMay not compare $tag"
          else -> "$trigger promiscuous iterators\nMay not compare $tag"
       }
-      return failure(Expected(Printed("*")), Actual(Printed("*")), detailErrorMessage)
+      return failure(detailErrorMessage)
    }
 
    private const val disallowed = "$trigger nesting iterator"
