@@ -71,6 +71,7 @@ module.exports = {
          "collapsed": false,
          "items": [
             "assertions/core",
+            "assertions/collections",
             {
                "type": "category",
                "label": "JSON",

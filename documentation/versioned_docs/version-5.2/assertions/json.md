@@ -87,7 +87,7 @@ Targets: **JVM**, **JS**
 
 ## shouldContainJsonKey
 
-`json?.shouldContainJsonKey("$.json.path")` asserts that a JSON string contains the given JSON path.
+`json.shouldContainJsonKey("$.json.path")` asserts that a JSON string contains the given JSON path.
 
 The inverse of this matcher is `shouldNotContainJsonKey` which will error if a JSON string _does_ contain the given JSON path.
 
@@ -95,7 +95,7 @@ Targets: **JVM**
 
 ## shouldContainJsonKeyValue
 
-`str?.shouldContainJsonKeyValue("$.json.path", value)` asserts that a JSON string contains a JSON path with a specific `value`.
+`str.shouldContainJsonKeyValue("$.json.path", value)` asserts that a JSON string contains a JSON path with a specific `value`.
 
 The inverse of this matcher is `shouldNotContainJsonKeyValue` which will error if a JSON string _does_ contain the given value at the given JSON path.
 
@@ -103,7 +103,7 @@ Targets: **JVM**
 
 ## shouldMatchJsonResource
 
-`json?.shouldMatchJsonResource("/file.json")` asserts that the JSON is equal to the existing test reosource `/file.json`, ignoring properties' order and formatting.
+`json.shouldMatchJsonResource("/file.json")` asserts that the JSON is equal to the existing test reosource `/file.json`, ignoring properties' order and formatting.
 
 Targets: **JVM**
 

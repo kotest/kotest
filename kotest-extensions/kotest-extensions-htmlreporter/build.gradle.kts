@@ -8,8 +8,8 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Framework.api))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(libs.jdom2)
          }
       }
