@@ -7,6 +7,7 @@ sidebar_label: Collections
 
 This page describes the rich assertions (matchers) that are available for Collection, Iterable and Array types.
 
+Also, see [inspectors](inspectors.md) which are useful ways to test multiple elements in a collection.
 
 
 | Collections                                     |                                                                                                                                                                   |
