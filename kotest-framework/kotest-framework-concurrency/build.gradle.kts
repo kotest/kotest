@@ -8,15 +8,15 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(libs.kotlinx.coroutines.core)
-            implementation(project(Projects.Common))
-            implementation(project(Projects.Framework.api))
+            implementation(projects.kotestCommon)
+            implementation(projects.kotestFramework.kotestFrameworkApi)
          }
       }
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.Framework.engine))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
    }
