@@ -32,7 +32,7 @@ Adds a JVM target and sets basic JVM options
 Adds JS targets
 
 ## Kotest native conventions
-Adds native targets and creates a common native source set (desktopMain / desktopTest)
+Adds native targets and creates a common native source set (`desktopMain` / `desktopTest`)
 
 ## Kotest publishing conventions
 Adds everything related to signing and publishing the libraries

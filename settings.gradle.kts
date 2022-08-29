@@ -105,3 +105,5 @@ gradleEnterprise {
       termsOfServiceAgree = "yes"
    }
 }
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")

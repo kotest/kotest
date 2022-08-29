@@ -33,6 +33,17 @@ fun <A> Exhaustive<A>.cartesianPairs(): Exhaustive<Pair<A, A>> {
    return cs.exhaustive()
 }
 
+fun <A> Exhaustive<A>.cartesianTriples(): Exhaustive<Triple<A, A, A>> {
+   val cs = values.flatMap { _a ->
+      values.flatMap { _b ->
+         values.map { _c ->
+            Triple(_a, _b, _c)
+         }
+      }
+   }
+   return cs.exhaustive()
+}
+
 fun <A, B, C> Exhaustive.Companion.cartesian(a: Exhaustive<A>, b: Exhaustive<B>, f: (A, B) -> C): Exhaustive<C> {
    val cs = a.values.flatMap { _a ->
       b.values.map { _b ->
@@ -49,6 +60,17 @@ fun <A, B> Exhaustive.Companion.cartesianPairs(a: Exhaustive<A>, b: Exhaustive<B
       }
    }
    return pairs.exhaustive()
+}
+
+fun <A, B, C> Exhaustive.Companion.cartesianTriples(a: Exhaustive<A>, b: Exhaustive<B>, c: Exhaustive<C>): Exhaustive<Triple<A, B, C>> {
+   val triples = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.map { _c ->
+            Triple(_a, _b, _c)
+         }
+      }
+   }
+   return triples.exhaustive()
 }
 
 fun <A, B, C, D> Exhaustive.Companion.cartesian(
