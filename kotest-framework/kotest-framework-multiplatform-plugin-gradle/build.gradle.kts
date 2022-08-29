@@ -38,7 +38,7 @@ tasks.withType<Test>().configureEach {
    // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
    setOf(
       projects.kotestAssertions.kotestAssertionsCore,
-      projects.kotestFramework.kotestFrameworkDiscovery,
+      projects.kotestFramework.kotestFrameworkApi,
       projects.kotestFramework.kotestFrameworkEngine,
    ).map { project ->
       project.dependencyProject.path
