@@ -17,15 +17,24 @@ fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>, conf: ProjectConfi
    val tags = kclass.tags(conf.tagInheritance)
    if (tags.isEmpty()) return true
 
-   return isPotentiallyActive(tags.toSet()) ?: true
+   return isPotentiallyActive(tags.toSet())
 }
 
-internal fun Expression.isPotentiallyActive(tags: Set<Tag>): Boolean? {
+/**
+ * Returns true if the given [Spec] class could contain an active test based on further tags.
+ * Returns false if the spec has been explicitly excluded and should not be instantiated.
+ */
+internal fun Expression?.isPotentiallyActive(tags: Set<Tag>): Boolean {
+
+   // nothing is excluded if the expression is null
+   if (this == null) return true
+   if (tags.isEmpty()) return true
+
    return when (this) {
-      is Expression.Or -> left.isPotentiallyActive(tags) ?: true || right.isPotentiallyActive(tags) ?: true
-      is Expression.And -> left.isPotentiallyActive(tags) ?: true && right.isPotentiallyActive(tags) ?: true
-      is Expression.Not -> expr.isPotentiallyActive(tags)?.not()
-      is Expression.Identifier -> if (tags.map { it.name }.contains(ident)) true else null
+      is Expression.Or -> left.isPotentiallyActive(tags) || right.isPotentiallyActive(tags)
+      is Expression.And -> left.isPotentiallyActive(tags) && right.isPotentiallyActive(tags)
+      is Expression.Not -> !expr.isPotentiallyActive(tags)
+      is Expression.Identifier -> tags.map { it.name }.contains(ident)
    }
 }
 
