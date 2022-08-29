@@ -10,19 +10,19 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(Projects.Common))
+            implementation(projects.kotestCommon)
             implementation(libs.kotlinx.serialization.json)
-            implementation(project(Projects.Assertions.Shared))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.api))
-            implementation(project(Projects.Framework.datatest))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Property))
+            implementation(projects.kotestFramework.kotestFrameworkApi)
+            implementation(projects.kotestFramework.kotestFrameworkDatatest)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestProperty)
          }
       }
 

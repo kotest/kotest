@@ -9,17 +9,17 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            api(project(Projects.Property))
-            api(project(Projects.Framework.api))
+            api(projects.kotestProperty)
+            api(projects.kotestFramework.kotestFrameworkApi)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(project(Projects.Common))
+            implementation(projects.kotestCommon)
          }
       }
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
    }

@@ -15,13 +15,13 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            api(project(Projects.Framework.api))
-            api(project(Projects.Common))
-            api(project(Projects.Framework.engine))
-            api(project(Projects.Discovery))
-            api(project(Projects.Assertions.Core))
-            api(project(Projects.Extensions))
-            api(project(Projects.Framework.concurrency))
+            api(projects.kotestFramework.kotestFrameworkApi)
+            api(projects.kotestCommon)
+            api(projects.kotestFramework.kotestFrameworkEngine)
+            api(projects.kotestFramework.kotestFrameworkDiscovery)
+            api(projects.kotestAssertions.kotestAssertionsCore)
+            api(projects.kotestExtensions)
+            api(projects.kotestFramework.kotestFrameworkConcurrency)
             api(libs.kotlinx.coroutines.core)
             api(libs.junit.platform.engine)
             api(libs.junit.platform.api)
@@ -32,8 +32,8 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform.testkit)
             implementation(libs.mockk)
          }

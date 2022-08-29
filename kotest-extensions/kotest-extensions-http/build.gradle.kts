@@ -22,7 +22,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.mockserver.netty)
             implementation(libs.kotest.extensions.mockserver)
          }

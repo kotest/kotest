@@ -10,9 +10,9 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework.api))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Common))
+            implementation(projects.kotestFramework.kotestFrameworkApi)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestCommon)
             implementation(libs.apache.commons.io)
             implementation(libs.mockk)
          }
@@ -20,7 +20,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
