@@ -7,11 +7,11 @@ kotlin {
    sourceSets {
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.JunitXmlExtension))
-            implementation(project(Projects.HtmlReporter))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
+            implementation(projects.kotestExtensions.kotestExtensionsJunitxml)
+            implementation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
             implementation(libs.jdom2)
          }
       }

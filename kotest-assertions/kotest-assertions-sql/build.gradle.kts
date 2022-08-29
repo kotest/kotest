@@ -7,8 +7,8 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Shared))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 

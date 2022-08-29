@@ -9,10 +9,10 @@ kotlin {
       val commonMain by getting {
          dependencies {
             // this is api because we want to expose `shouldBe` etc
-            api(project(Projects.Assertions.Api))
+            api(projects.kotestAssertions.kotestAssertionsApi)
 
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Common))
+            implementation(projects.kotestCommon)
             implementation(libs.kotlinx.coroutines.core)
          }
       }

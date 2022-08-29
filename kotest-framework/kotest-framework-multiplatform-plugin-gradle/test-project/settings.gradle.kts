@@ -1,3 +1,5 @@
+rootProject.name = "test-project"
+
 pluginManagement {
    val kotlinVersion: String by settings
 

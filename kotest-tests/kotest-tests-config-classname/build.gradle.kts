@@ -8,10 +8,10 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.Property))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
+            implementation(projects.kotestProperty)
          }
       }
    }
