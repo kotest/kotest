@@ -2,7 +2,6 @@ package io.kotest.framework.multiplatform.embeddablecompiler
 
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.IrStatement
@@ -11,6 +10,7 @@ import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
+import org.jetbrains.kotlin.ir.declarations.IrDeclarationContainer
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
@@ -20,8 +20,14 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
+import org.jetbrains.kotlin.ir.util.setDeclarationsParent
 import org.jetbrains.kotlin.name.FqName
 import java.util.concurrent.CopyOnWriteArrayList
+
+fun IrDeclarationContainer.addChild(declaration: IrDeclaration) {
+   this.declarations += declaration
+   declaration.setDeclarationsParent(this)
+}
 
 abstract class Transformer(protected val messageCollector: MessageCollector, protected val pluginContext: IrPluginContext) : IrElementTransformerVoidWithContext() {
    private val specs = CopyOnWriteArrayList<IrClass>()
@@ -60,6 +66,7 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
 
       val file = declaration.files.first()
       val launcher = generateLauncher(specs, configs, file)
+
       file.addChild(launcher)
 
       return fragment
