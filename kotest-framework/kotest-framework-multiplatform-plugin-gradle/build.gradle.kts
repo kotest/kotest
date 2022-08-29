@@ -26,10 +26,10 @@ repositories {
 dependencies {
    implementation(libs.kotlin.gradle.plugin)
 
-   testImplementation(project(Projects.Assertions.Core))
-   testImplementation(project(Projects.Framework.api))
-   testImplementation(project(Projects.Framework.engine))
-   testImplementation(project(Projects.JunitRunner))
+   testImplementation(projects.kotestAssertions.kotestAssertionsCore)
+   testImplementation(projects.kotestFramework.kotestFrameworkApi)
+   testImplementation(projects.kotestFramework.kotestFrameworkEngine)
+   testImplementation(projects.kotestRunner.kotestRunnerJunit5)
 
    testImplementation(libs.mockk)
 }
@@ -37,10 +37,12 @@ dependencies {
 tasks.withType<Test>().configureEach {
    // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
    setOf(
-      Projects.Assertions.Core,
-      Projects.Framework.api,
-      Projects.Framework.engine
-   ).forEach { project ->
+      projects.kotestAssertions.kotestAssertionsCore,
+      projects.kotestFramework.kotestFrameworkApi,
+      projects.kotestFramework.kotestFrameworkEngine,
+   ).map { project ->
+      project.dependencyProject.path
+   }.forEach { projectPath ->
       setOf(
          "jvmJar",
          "compileKotlinLinuxX64",
@@ -48,15 +50,17 @@ tasks.withType<Test>().configureEach {
          "compileKotlinMacosArm64",
          "compileKotlinMingwX64",
       ).forEach { task ->
-         dependsOn("$project:$task")
+         dependsOn("$projectPath:$task")
       }
    }
 
    setOf(
-      Projects.JunitRunner,
-      ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
-      ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native"
-   ).forEach { project ->
+      projects.kotestRunner.kotestRunnerJunit5,
+      projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler,
+      projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative,
+   ).map { project ->
+      project.dependencyProject.path
+   }.forEach { project ->
       dependsOn("$project:jvmJar")
    }
 

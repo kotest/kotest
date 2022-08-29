@@ -8,9 +8,9 @@ kotlin {
    sourceSets {
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Framework.datatest))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestFramework.kotestFrameworkDatatest)
          }
       }
    }

@@ -14,13 +14,13 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
    }

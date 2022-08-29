@@ -11,10 +11,10 @@ kotlin {
             implementation(kotlin("reflect"))
 //            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
-            api(project(Projects.Common)) // needs to be API so the domain objects are open
+            api(projects.kotestCommon) // needs to be API so the domain objects are open
             // needed to compile against Spec
             // but runtime classes must be provided by modules using discovery
-            compileOnly(project(Projects.Framework.api))
+            compileOnly(projects.kotestFramework.kotestFrameworkApi)
 
             // needed to scan the classpath for classes
             implementation(libs.classgraph)

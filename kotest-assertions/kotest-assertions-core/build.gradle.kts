@@ -8,11 +8,11 @@ kotlin {
       val commonMain by getting {
          dependencies {
             // this is api because we want to expose `shouldBe` etc
-            api(project(Projects.Assertions.Shared))
+            api(projects.kotestAssertions.kotestAssertionsShared)
 
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Common))
-            implementation(project(Projects.Assertions.Api))
+            implementation(projects.kotestCommon)
+            implementation(projects.kotestAssertions.kotestAssertionsApi)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
@@ -25,7 +25,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Property))
+            implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
