@@ -54,7 +54,7 @@ data class GradleTestPattern(
       fun parse(pattern: String): GradleTestPattern {
          require(pattern.isNotBlank())
 
-         val prefixWildcard = pattern.startsWith("*") || pattern.startsWith("*.")
+         val prefixWildcard = pattern.startsWith("*")
          val pattern2 = pattern.removePrefix("*.").removePrefix("*")
 
          val tokens = pattern2.split('.')
