@@ -40,7 +40,7 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
 }
 
 data class GradleTestPattern(
-   val suffixWildcard: Boolean,
+   val prefixWildcard: Boolean,
    val pckage: String?,
    val classname: String?,
    val path: String?,
