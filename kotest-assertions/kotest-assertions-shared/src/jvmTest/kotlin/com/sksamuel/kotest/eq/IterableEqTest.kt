@@ -74,9 +74,8 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(hs, listOf(1, 2, 3))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe """Disallowed: Set can be compared only to Set
-                                  |May not compare HashSet with ArrayList
-                                  |expected:<*> but was:<*>""".trimMargin()
+         error.message shouldBe """Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
+                                  |HashSet does not provide a stable iteration order and was compared with ArrayList which is not a Set""".trimMargin()
       }
    }
 
@@ -91,7 +90,7 @@ class IterableEqTest : FunSpec({
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed typed contract
                                   |May not compare BareIterable with ArrayList
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |""".trimMargin()
       }
    }
 
@@ -115,7 +114,7 @@ class IterableEqTest : FunSpec({
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
                                   |May not compare UnixPath with BareIterable
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |""".trimMargin()
       }
    }
 
@@ -125,7 +124,7 @@ class IterableEqTest : FunSpec({
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
                                   |May not compare UnixPath with BareRecursiveIterable
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |""".trimMargin()
       }
    }
 
