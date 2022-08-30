@@ -55,7 +55,7 @@ data class GradleTestPattern(
          require(pattern.isNotBlank())
 
          val prefixWildcard = pattern.startsWith("*")
-         val pattern2 = pattern.removePrefix("*.").removePrefix("*")
+         val pattern2 = pattern.removePrefix("*").removePrefix(".")
 
          val tokens = pattern2.split('.')
          val classIndex = tokens.indexOfFirst { it.first().isUpperCase() }
