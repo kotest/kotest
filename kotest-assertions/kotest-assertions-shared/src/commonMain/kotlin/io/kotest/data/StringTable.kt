@@ -18,20 +18,17 @@ internal data class StringTable(
             val skipHeader = index == 0 && skipFirstLine
             skipHeader || line.startsWith("#") || line.isBlank()
          }
-         .map { it.parseRow() }
+         .map { (index, line) -> IndexedValue(index, parseRow(line)) }
 
-   init { rowsShouldHaveSize(headers.size) }
+   init {
+      rowsShouldHaveSize(headers.size)
+   }
 
    private fun rowsShouldHaveSize(size: Int) {
       val invalid = rows
          .filter { it.value.size != size }
          .map { it.index }
       if (invalid.isNotEmpty()) fail("Expected all rows to have size $size, but got rows at lines $invalid")
-   }
-
-   private fun IndexedValue<String>.parseRow(): IndexedValue<List<String>> {
-      val (index, line) = this
-      return IndexedValue(index, Companion.parseRow(line))
    }
 
    companion object {

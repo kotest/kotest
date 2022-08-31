@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.data.writeToFile
 import io.kotest.matchers.shouldBe
 import java.io.File
 
@@ -99,4 +100,13 @@ class StringTableTest : FunSpec({
       }
    }
 
+   test("table.writeToFile() - happy path") {
+      val file = resourcesDir.resolve("writeToFile.table")
+      expectedTable.writeToFile(file)
+      file.readText() shouldBe """
+id | username | fullName
+4 | jmfayard | Jean-Michel Fayard
+6 | louis | Louis Caugnault
+      """.trim()
+   }
 })
