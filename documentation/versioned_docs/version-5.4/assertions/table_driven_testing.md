@@ -62,8 +62,8 @@ Here is how you read your `.table` file:
 
 ```kotlin
 val tableFromFile = table(
-    source = testResources.resolve("users.table"),
     headers = headers("id", "username", "fullName"),
+    source = testResources.resolve("users.table"),
     transform = { a: String, b: String, c: String ->
         row(a.toInt(), b, c)
     }
@@ -87,4 +87,3 @@ test("table-driven testing from the .table file") {
     }
 }
 ```
-
