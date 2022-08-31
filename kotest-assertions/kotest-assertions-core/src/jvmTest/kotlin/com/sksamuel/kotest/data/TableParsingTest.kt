@@ -29,6 +29,19 @@ class TableParsingTest : FunSpec({
       table(headers, validFileContent, transform) shouldBe expectedTable
    }
 
+   test("empty lines and comments starting with # are accepted") {
+      val fileContent = """
+         |4  | jmfayard | Jean-Michel Fayard
+         |# this is a comment
+         |# newlines are allowed
+         |
+         |6  | louis    | Louis Caugnault
+      """.trimMargin()
+      val table = table(headers, fileContent, transform)
+
+      table shouldBe expectedTable
+   }
+
    test("All rows must have the right number of columns") {
       val invalidRows = """
       4  | jmfayard | Jean-Michel Fayard
@@ -39,6 +52,16 @@ class TableParsingTest : FunSpec({
       shouldThrowMessage("Expected all rows to have size 3, but got rows at lines [1, 3]") {
          table(headers, invalidRows, transform)
       }
+   }
+
+   test("The '|' character can be escaped") {
+      val fileContent = """
+      1  | bad \| good | name
+   """.trimIndent()
+      table(headers, fileContent, transform) shouldBe table(
+         headers,
+         row(1, "bad | good", "name")
+      )
    }
 
 })
