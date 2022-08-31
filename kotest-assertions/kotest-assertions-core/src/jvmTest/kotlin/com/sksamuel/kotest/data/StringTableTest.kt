@@ -64,25 +64,27 @@ class StringTableTest : FunSpec({
       )
    }
 
-   test("happy path for reading a table from a file") {
+   val resourcesDir = File("src/jvmTest/resources/table")
 
+   test("happy path for reading a table from a file") {
+      val file = resourcesDir.resolve("users-valid.table")
+      table(headers, file, transform) shouldBe expectedTable
    }
 
    test("Validating table files") {
-      val relative = File("src/jvmTest/resources/table")
 
       shouldThrowMessage("Can't read table file") {
-         val file = relative.resolve("users-does-not-exist.table")
+         val file = resourcesDir.resolve("users-does-not-exist.table")
          table(headers, file, transform)
       }
 
       shouldThrowMessage("Table file must have a .table extension") {
-         val file = relative.resolve("users-invalid-extension.csv")
+         val file = resourcesDir.resolve("users-invalid-extension.csv")
          table(headers, file, transform)
       }
 
       shouldThrowMessage("Table file must have a header") {
-         val file = relative.resolve("users-invalid-empty.table")
+         val file = resourcesDir.resolve("users-invalid-empty.table")
          table(headers, file, transform)
       }
 
@@ -92,7 +94,7 @@ class StringTableTest : FunSpec({
          expected:<["id", "username", "fullName"]> but was:<["id", "username"]>
          """.trimIndent()
       ) {
-         val file = relative.resolve("users-invalid-header.table")
+         val file = resourcesDir.resolve("users-invalid-header.table")
          table(headers, file, transform)
       }
    }
