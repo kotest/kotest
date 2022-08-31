@@ -6,6 +6,7 @@ import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
 import io.kotest.matchers.shouldBe
+import java.io.File
 
 class StringTableTest : FunSpec({
 
@@ -61,6 +62,39 @@ class StringTableTest : FunSpec({
          headers,
          row(1, "bad | good", "name")
       )
+   }
+
+   test("happy path for reading a table from a file") {
+
+   }
+
+   test("Validating table files") {
+      val relative = File("src/jvmTest/resources/table")
+
+      shouldThrowMessage("Can't read table file") {
+         val file = relative.resolve("users-does-not-exist.table")
+         table(headers, file, transform)
+      }
+
+      shouldThrowMessage("Table file must have a .table extension") {
+         val file = relative.resolve("users-invalid-extension.csv")
+         table(headers, file, transform)
+      }
+
+      shouldThrowMessage("Table file must have a header") {
+         val file = relative.resolve("users-invalid-empty.table")
+         table(headers, file, transform)
+      }
+
+      shouldThrowMessage(
+         """
+         Missing elements from index 2
+         expected:<["id", "username", "fullName"]> but was:<["id", "username"]>
+         """.trimIndent()
+      ) {
+         val file = relative.resolve("users-invalid-header.table")
+         table(headers, file, transform)
+      }
    }
 
 })

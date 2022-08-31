@@ -5,15 +5,18 @@ import io.kotest.assertions.fail
 internal data class StringTable(
    val headers: List<String>,
    val lines: List<String>,
+   val skipFirstLine: Boolean = false, // for files
 ) {
+
    fun <T> mapRows(fn: (List<String>) -> T): List<T> =
       rows.map { fn(it.value) }
 
    val rows: List<IndexedValue<List<String>>> =
       lines
          .withIndex()
-         .filterNot { (_, line) ->
-            line.startsWith("#") || line.isBlank()
+         .filterNot { (index, line) ->
+            val skipHeader = index == 0 && skipFirstLine
+            skipHeader || line.startsWith("#") || line.isBlank()
          }
          .map { it.parseRow() }
 
@@ -28,11 +31,16 @@ internal data class StringTable(
 
    private fun IndexedValue<String>.parseRow(): IndexedValue<List<String>> {
       val (index, line) = this
-      val notAPipeSeparator = "🫓"
-      return line
-         .replace("\\|", notAPipeSeparator)
-         .split("|")
-         .map { it.trim().replace(notAPipeSeparator, "|") }
-         .let { IndexedValue(index, it) }
+      return IndexedValue(index, Companion.parseRow(line))
+   }
+
+   companion object {
+      internal fun parseRow(line: String): List<String> {
+         val notAPipeSeparator = "🫓"
+         return line
+            .replace("\\|", notAPipeSeparator)
+            .split("|")
+            .map { it.trim().replace(notAPipeSeparator, "|") }
+      }
    }
 }
