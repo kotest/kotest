@@ -45,3 +45,15 @@ data class Table19<out A, out B, out C, out D, out E, out F, out G, out H, out I
 data class Table20<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
 data class Table21<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
 data class Table22<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U, out V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
+
+// TODO I'm only supporting table with 3 arguments until the API stabilizes
+
+fun <A, B, C> table(
+   headers: Headers3,
+   fileContent: String,
+   transform: (String, String, String) -> Row3<A, B, C>
+): Table3<A, B, C> {
+   val table = StringTable(headers.values(), fileContent.lines())
+   val rows = table.mapRows { (a, b, c) -> transform(a, b, c) }
+   return Table3(headers, rows)
+}

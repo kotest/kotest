@@ -7,10 +7,9 @@ import io.kotest.data.row
 import io.kotest.data.table
 import io.kotest.matchers.shouldBe
 
-class TableParsingTest : FunSpec({
+class StringTableTest : FunSpec({
 
    val headers = headers("id", "username", "fullName")
-   val headersText = "id | username | fullName"
    val transform = { a: String, b: String, c: String ->
       row(a.toInt(), b, c)
    }
