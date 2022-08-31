@@ -37,7 +37,8 @@ internal fun File.readStringTable(headers: List<String>): StringTable {
 
 fun File.writeTable(headers: List<String>, cells: List<List<String>>): String {
    if (extension != "table") throw AssertionError("Table file must have a .table extension")
-
+   val containsNewLines = cells.any { it.any { cell -> cell.contains("\n") } }
+   if (containsNewLines) throw AssertionError("Cells con't contain new lines")
    val separator = " | "
    val formattedHeader = headers.joinToString(separator)
    val formattedContent = cells.joinToString("\n") { row ->
