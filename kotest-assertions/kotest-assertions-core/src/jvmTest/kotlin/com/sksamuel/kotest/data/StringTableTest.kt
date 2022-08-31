@@ -2,6 +2,7 @@ package com.sksamuel.kotest.data
 
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.Row3
 import io.kotest.data.headers
 import io.kotest.data.mapRows
 import io.kotest.data.row
@@ -149,8 +150,8 @@ class StringTableTest : FunSpec({
    context("file.writeTable - success") {
       val expectedFileContent = """
 id | username | fullName
-4 | jmfayard | Jean-Michel Fayard
-6 | louis | Louis Caugnault
+4  | jmfayard | Jean-Michel Fayard
+6  | louis    | Louis Caugnault
       """.trim()
 
       test("happy path") {
@@ -163,11 +164,31 @@ id | username | fullName
          fileContent shouldBe expectedFileContent
       }
 
+      test("columns should be aligned") {
+         fun row(i: Int): Row3<String, String, String> {
+            val value = "$i".repeat(i)
+            return row(value, value, value)
+         }
+
+         val table = table(
+            headers("a", "b", "c"),
+            row(2),
+            row(4),
+            row(6),
+         )
+         tempfile(suffix = ".table").writeTable(table.headers, table.rows) shouldBe """
+a      | b      | c
+22     | 22     | 22
+4444   | 4444   | 4444
+666666 | 666666 | 666666
+         """.trimIndent()
+      }
+
       test("| should be escaped") {
          val table = mapOf("greeting" to "Hello || world").toTable()
          val file = tempfile(suffix = ".table")
          file.writeTable(table.headers, table.rows) shouldBe """
-            key | value
+            key      | value
             greeting | Hello \|\| world
          """.trimIndent()
       }

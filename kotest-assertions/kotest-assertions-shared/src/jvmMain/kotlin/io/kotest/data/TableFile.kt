@@ -39,10 +39,27 @@ fun File.writeTable(headers: List<String>, cells: List<List<String>>): String {
    if (extension != "table") throw AssertionError("Table file must have a .table extension")
    val containsNewLines = cells.any { it.any { cell -> cell.contains("\n") } }
    if (containsNewLines) throw AssertionError("Cells con't contain new lines")
+
+   val columnSizes = headers.mapIndexed { index, header ->
+      val rowsSize = cells.map { it[index].length }.maxOrNull() ?: 0
+      maxOf(header.length, rowsSize)
+   }
+
+   fun String.formatCell(index: Int) =
+      this.plus(" ".repeat(maxOf(0, columnSizes[index] - length)))
+
    val separator = " | "
-   val formattedHeader = headers.joinToString(separator)
+
+   val formattedHeader = headers
+      .mapIndexed { index, header -> header.formatCell(index) }
+      .joinToString(separator)
+      .trimEnd()
+
    val formattedContent = cells.joinToString("\n") { row ->
-      row.joinToString(separator) { it.replace("|", "\\|") }
+      val list = row.mapIndexed { index, cell ->
+         cell.replace("|", "\\|").formatCell(index)
+      }
+      list.joinToString(separator).trimEnd()
    }
 
    val fileContent = """
