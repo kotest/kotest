@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.data.toTable
 import io.kotest.data.writeToFile
 import io.kotest.matchers.shouldBe
 import java.io.File
@@ -25,6 +26,18 @@ class StringTableTest : FunSpec({
       4  | jmfayard | Jean-Michel Fayard
       6  | louis    | Louis Caugnault
    """.trimIndent()
+
+   test("create table from map") {
+      val map = mapOf(
+         "fr" to "French",
+         "es" to "Spanish"
+      )
+      val table = map.toTable(headers("code", "language"))
+      table shouldBe table(
+         headers("code", "language"),
+         row("fr", "French"),
+         row("es", "Spanish"),
+      )
 
    test("happy path") {
       table(headers, validFileContent, transform) shouldBe expectedTable

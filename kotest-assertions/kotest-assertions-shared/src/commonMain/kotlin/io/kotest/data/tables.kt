@@ -1,5 +1,10 @@
 package io.kotest.data
 
+fun <Key, Value> Map<Key, Value>.toTable(
+   headers: Headers2 = headers("key", "value"),
+) = Table2(headers, entries.map { row(it.key, it.value) })
+
+
 fun <A> table(headers: Headers1, vararg rows: Row1<A>) = Table1(headers, rows.asList())
 fun <A, B> table(headers: Headers2, vararg rows: Row2<A, B>) = Table2(headers, rows.asList())
 fun <A, B, C> table(headers: Headers3, vararg rows: Row3<A, B, C>) = Table3(headers, rows.asList())
