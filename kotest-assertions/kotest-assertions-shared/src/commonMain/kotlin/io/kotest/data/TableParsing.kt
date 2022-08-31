@@ -1,7 +1,6 @@
 package io.kotest.data
 
 import io.kotest.assertions.fail
-import io.kotest.matchers.shouldBe
 
 // TODO I'm only supporting table with 3 arguments until the API stabilizes
 
@@ -9,24 +8,21 @@ fun <A, B, C> table(
    headers: Headers3,
    fileContent: String,
    transform: (String, String, String) -> Row3<A, B, C>
-): Table3<A, B, C> = parseTableContent(headers.values(), fileContent).let { matrix ->
-   val rows = matrix.map { row -> transform(row[0], row[1], row[2]) }
-   table(headers, *rows.toTypedArray())
-}
-
-internal fun parseTableContent(headers: List<String>, fileContent: String) : List<List<String>> {
-   val table = StringTable(headers, fileContent.lines())
-   return emptyList()
+): Table3<A, B, C> {
+   val table = StringTable(headers.values(), fileContent.lines())
+   val rows = table.mapRows { (a, b, c) -> transform(a, b, c) }
+   return Table3(headers, rows)
 }
 
 internal data class StringTable(
    val headers: List<String>,
    val lines: List<String>,
 ) {
+   fun <T> mapRows(fn: (List<String>) -> T): List<T> =
+      rows.map(fn)
+
    val rows: List<List<String>> = lines.map(this::parseRow)
-   init {
-      rowsShouldHaveSize(headers.size)
-   }
+   init { rowsShouldHaveSize(headers.size) }
 
    private fun rowsShouldHaveSize(size: Int) {
       val invalid = rows.withIndex()

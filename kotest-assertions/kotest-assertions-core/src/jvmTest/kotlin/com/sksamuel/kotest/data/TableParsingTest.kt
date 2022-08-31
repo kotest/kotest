@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.shouldBe
 
 class TableParsingTest : FunSpec({
 
@@ -24,6 +25,9 @@ class TableParsingTest : FunSpec({
       6  | louis    | Louis Caugnault
    """.trimIndent()
 
+   test("happy path") {
+      table(headers, validFileContent, transform) shouldBe expectedTable
+   }
 
    test("All rows must have the right number of columns") {
       val invalidRows = """
