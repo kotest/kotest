@@ -3,10 +3,12 @@ package com.sksamuel.kotest.data
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.headers
+import io.kotest.data.mapRows
 import io.kotest.data.row
 import io.kotest.data.table
 import io.kotest.data.toTable
-import io.kotest.data.writeToFile
+import io.kotest.data.writeTable
+import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 import java.io.File
 
@@ -41,22 +43,25 @@ class StringTableTest : FunSpec({
          )
       }
 
-      test("create table from list") {
-         data class Language(val code: String, val english: String, val name: String)
+      val languagesTable = table(
+         headers("code", "name", "english"),
+         row("fr", "Français", "French"),
+         row("es", "Español", "Spanish"),
+      )
 
-         val languages = listOf(
-            Language("fr", "French", "Français"),
-            Language("es", "Spanish", "Español"),
-         )
+      data class Language(val code: String, val english: String, val name: String)
+
+      val languages = listOf(
+         Language("fr", "French", "Français"),
+         Language("es", "Spanish", "Español"),
+      )
+
+      test("create table from list") {
          val table = table(
             headers("code", "name", "english"),
             languages.map { row(it.code, it.name, it.english) }
          )
-         table shouldBe table(
-            headers("code", "name", "english"),
-            row("fr", "Français", "French"),
-            row("es", "Español", "Spanish"),
-         )
+         table shouldBe languagesTable
       }
    }
 
@@ -134,13 +139,31 @@ class StringTableTest : FunSpec({
       }
    }
 
-   test("table.writeToFile() - happy path") {
-      val file = resourcesDir.resolve("writeToFile.table")
-      expectedTable.writeToFile(file)
-      file.readText() shouldBe """
+   context("file.writeTable(headers, rows)") {
+      data class UserInfo(val username: String, val fullName: String)
+
+      val expectedFileContent = """
 id | username | fullName
 4 | jmfayard | Jean-Michel Fayard
 6 | louis | Louis Caugnault
       """.trim()
+
+      val table = table(
+         headers("id", "UserInfo"),
+         row(4, UserInfo("jmfayard", "Jean-Michel Fayard")),
+         row(6, UserInfo("louis", "Louis Caugnault"))
+      )
+
+      test("happy path") {
+         val file = tempfile()
+         val rows = table.mapRows { (id, userInfo) ->
+            row(id.toString(), userInfo.username, userInfo.fullName)
+         }
+         val fileContent = file.writeTable(headers("id", "username", "fullName"), rows)
+         file.readText() shouldBe expectedFileContent
+         fileContent shouldBe expectedFileContent
+      }
    }
-})
+
+}
+)

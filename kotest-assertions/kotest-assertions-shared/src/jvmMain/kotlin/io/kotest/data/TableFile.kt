@@ -15,10 +15,16 @@ fun <A, B, C> table(
    return Table3(headers, rows)
 }
 
-fun <A, B, C> Table3<A, B, C>.writeToFile(file: File) {
-   val cells = rows.map { row -> row.values().map { it.toString() } }
-   writeToFile(file, headers.values(), cells)
-}
+fun File.writeTable(headers: Headers1, rows: List<Row1<String>>): String =
+   writeTable(headers.values(), rows.map { it.strings() } )
+fun File.writeTable(headers: Headers2, rows: List<Row2<String, String>>): String =
+   writeTable(headers.values(), rows.map { it.strings() } )
+fun File.writeTable(headers: Headers3, rows: List<Row3<String, String, String>>): String =
+   writeTable(headers.values(), rows.map { it.strings() } )
+// TODO
+
+private fun Row.strings(): List<String> = values().map { it.toString() }
+
 
 internal fun File.readStringTable(headers: List<String>): StringTable {
    if (exists().not()) throw AssertionError("Can't read table file")
@@ -29,15 +35,19 @@ internal fun File.readStringTable(headers: List<String>): StringTable {
    return StringTable(headers, lines, skipFirstLine = true)
 }
 
-fun writeToFile(file: File, headers: List<String>, cells: List<List<String>>) {
+fun File.writeTable(headers: List<String>, cells: List<List<String>>): String {
+   if (extension != "table") throw AssertionError("Table file must have a .table extension")
+
    val separator = " | "
    val formattedHeader = headers.joinToString(separator)
    val formattedContent = cells.joinToString("\n") { row ->
       row.joinToString(separator)
    }
 
-   file.writeText("""
+   val fileContent = """
 $formattedHeader
 $formattedContent
-   """.trimIndent())
+   """.trimIndent()
+   writeText(fileContent)
+   return fileContent
 }

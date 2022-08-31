@@ -2,11 +2,17 @@ package io.kotest.data
 
 fun <Key, Value> Map<Key, Value>.toTable(
    headers: Headers2 = headers("key", "value"),
-) = Table2(headers, entries.map { row(it.key, it.value) })
+) = table(headers, entries.map { row(it.key, it.value) })
 
-// only 3 arguments for now
+fun <A> table(headers: Headers1, rows: List<Row1<A>>) = Table1(headers, rows)
+fun <A, B> table(headers: Headers2, rows: List<Row2<A, B>>) = Table2(headers, rows)
 fun <A, B, C> table(headers: Headers3, rows: List<Row3<A, B, C>>) = Table3(headers, rows)
+// TODO more
 
+fun <A, T: Row> Table1<A>.mapRows(fn: (Row1<A>) -> T): List<T> = rows.map(fn)
+fun <A, B, T: Row> Table2<A, B>.mapRows(fn: (Row2<A, B>) -> T): List<T> = rows.map(fn)
+fun <A, B, C, T: Row> Table3<A, B, C>.mapRows(fn: (Row3<A, B, C>) -> T): List<T> = rows.map(fn)
+// TODO more
 
 fun <A> table(headers: Headers1, vararg rows: Row1<A>) = Table1(headers, rows.asList())
 fun <A, B> table(headers: Headers2, vararg rows: Row2<A, B>) = Table2(headers, rows.asList())
