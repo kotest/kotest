@@ -42,7 +42,7 @@ fun File.writeTable(headers: List<String>, cells: List<List<String>>): String {
    val separator = " | "
    val formattedHeader = headers.joinToString(separator)
    val formattedContent = cells.joinToString("\n") { row ->
-      row.joinToString(separator)
+      row.joinToString(separator) { it.replace("|", "\\|") }
    }
 
    val fileContent = """

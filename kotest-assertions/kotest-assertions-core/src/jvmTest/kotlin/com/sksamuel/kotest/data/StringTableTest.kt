@@ -140,7 +140,7 @@ class StringTableTest : FunSpec({
    }
 
    data class UserInfo(val username: String, val fullName: String)
-   val table = table(
+   val usersTable = table(
       headers("id", "UserInfo"),
       row(4, UserInfo("jmfayard", "Jean-Michel Fayard")),
       row(6, UserInfo("louis", "Louis Caugnault"))
@@ -155,27 +155,37 @@ id | username | fullName
 
       test("happy path") {
          val file = tempfile(suffix = ".table")
-         val rows = table.mapRows { (id, userInfo) ->
+         val rows = usersTable.mapRows { (id, userInfo) ->
             row(id.toString(), userInfo.username, userInfo.fullName)
          }
          val fileContent = file.writeTable(headers("id", "username", "fullName"), rows)
          file.readText() shouldBe expectedFileContent
          fileContent shouldBe expectedFileContent
       }
+
+      test("| should be escaped") {
+         val table = mapOf("greeting" to "Hello || world").toTable()
+         val file = tempfile(suffix = ".table")
+         file.writeTable(table.headers, table.rows) shouldBe """
+            key | value
+            greeting | Hello \|\| world
+         """.trimIndent()
+      }
    }
 
    context("file.writeTable - validation") {
       test("Table file must have a .table extension") {
          shouldThrowMessage(testCase.name.testName) {
-            tempfile().writeTable(table.headers, emptyList())
+            val fileMissingTableExtension = tempfile()
+            fileMissingTableExtension.writeTable(usersTable.headers, emptyList())
          }
       }
 
       test("Cells con't contain new lines") {
-         val table =
+         val tableWithNewLines =
             mapOf("1" to "one\n", "two" to "two", "three" to "three\nthree").toTable()
          shouldThrowMessage(testCase.name.testName) {
-            tempfile(suffix = ".table").writeTable(table.headers, table.rows)
+            tempfile(suffix = ".table").writeTable(tableWithNewLines.headers, tableWithNewLines.rows)
          }
       }
    }
