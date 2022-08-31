@@ -27,17 +27,38 @@ class StringTableTest : FunSpec({
       6  | louis    | Louis Caugnault
    """.trimIndent()
 
-   test("create table from map") {
-      val map = mapOf(
-         "fr" to "French",
-         "es" to "Spanish"
-      )
-      val table = map.toTable(headers("code", "language"))
-      table shouldBe table(
-         headers("code", "language"),
-         row("fr", "French"),
-         row("es", "Spanish"),
-      )
+   context("creating tables from collections") {
+      test("create table from map") {
+         val map = mapOf(
+            "fr" to "French",
+            "es" to "Spanish"
+         )
+         val table = map.toTable(headers("code", "language"))
+         table shouldBe table(
+            headers("code", "language"),
+            row("fr", "French"),
+            row("es", "Spanish"),
+         )
+      }
+
+      test("create table from list") {
+         data class Language(val code: String, val english: String, val name: String)
+
+         val languages = listOf(
+            Language("fr", "French", "Français"),
+            Language("es", "Spanish", "Español"),
+         )
+         val table = table(
+            headers("code", "name", "english"),
+            languages.map { row(it.code, it.name, it.english) }
+         )
+         table shouldBe table(
+            headers("code", "name", "english"),
+            row("fr", "Français", "French"),
+            row("es", "Español", "Spanish"),
+         )
+      }
+   }
 
    test("happy path") {
       table(headers, validFileContent, transform) shouldBe expectedTable

@@ -4,6 +4,9 @@ fun <Key, Value> Map<Key, Value>.toTable(
    headers: Headers2 = headers("key", "value"),
 ) = Table2(headers, entries.map { row(it.key, it.value) })
 
+// only 3 arguments for now
+fun <A, B, C> table(headers: Headers3, rows: List<Row3<A, B, C>>) = Table3(headers, rows)
+
 
 fun <A> table(headers: Headers1, vararg rows: Row1<A>) = Table1(headers, rows.asList())
 fun <A, B> table(headers: Headers2, vararg rows: Row2<A, B>) = Table2(headers, rows.asList())
