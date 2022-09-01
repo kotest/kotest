@@ -9,6 +9,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.datatest.withData
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.tags.tags
 import io.kotest.engine.test.status.isEnabledInternal
@@ -111,10 +112,25 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             .toSet() shouldBe setOf("b", "c")
       }
 
-      test("@Tags should be inherited by child classes") {
-         // TODO: Test with Materializer
-         InheritingTest::class.tags().map { it.name } shouldContainExactlyInAnyOrder
-            setOf("SuperTag", "Slow", "SuperSuper")
+      context("Inheritance of @Tags") {
+         withData(
+            true to setOf("a"),
+            false to setOf()
+         ) { (inheritanceEnabled, expectedTests) ->
+            val ext = object : TagExtension {
+               override fun tags(): TagExpression = TagExpression.include(NamedTag("SuperSuper"))
+            }
+
+            val conf = ProjectConfiguration()
+            conf.registry.add(ext)
+            conf.tagInheritance = inheritanceEnabled
+            conf.testCaseOrder = TestCaseOrder.Random
+
+            Materializer(conf).materialize(InheritingTest())
+               .filter { it.isEnabledInternal(conf).isEnabled }
+               .map { it.name.testName }
+               .toSet() shouldBe expectedTests
+         }
       }
    }
 }
