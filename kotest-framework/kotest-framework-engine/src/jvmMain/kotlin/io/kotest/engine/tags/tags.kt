@@ -10,9 +10,9 @@ import kotlin.reflect.full.superclasses
 /**
  * Returns the tags specified on the given class (and all it's supertypes) from the @[Tags] annotation if present.
  */
-actual fun KClass<*>.tags(): Set<Tag> {
+actual fun KClass<*>.tags(tagInheritance: Boolean): Set<Tag> {
    val myTags = annotation<Tags>()?.values?.map(::NamedTag) ?: emptyList()
-   val supertypeTags = superclasses.flatMap { it.tags() }
+   val supertypeTags = if (tagInheritance) superclasses.flatMap { it.tags(tagInheritance) } else emptyList()
 
    return (supertypeTags + myTags).toSet()
 }

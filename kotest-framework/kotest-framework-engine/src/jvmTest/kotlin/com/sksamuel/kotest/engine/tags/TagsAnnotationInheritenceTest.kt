@@ -112,6 +112,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("@Tags should be inherited by child classes") {
+         // TODO: Test with Materializer
          InheritingTest::class.tags().map { it.name } shouldContainExactlyInAnyOrder
             setOf("SuperTag", "Slow", "SuperSuper")
       }

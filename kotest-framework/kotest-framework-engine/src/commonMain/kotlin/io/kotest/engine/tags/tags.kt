@@ -6,4 +6,4 @@ import kotlin.reflect.KClass
 /**
  * Returns the tags specified on the given class from the @Tags annotation if present.
  */
-expect fun KClass<*>.tags(): Set<Tag>
+expect fun KClass<*>.tags(tagInheritance: Boolean): Set<Tag>
