@@ -3,6 +3,9 @@ plugins {
    `maven-publish`
 }
 
+group = "io.kotest"
+version = Ci.publishVersion
+
 val javadocJar by tasks.registering(Jar::class) {
    group = JavaBasePlugin.DOCUMENTATION_GROUP
    description = "Empty Javadoc Jar (required by Maven Central)"
