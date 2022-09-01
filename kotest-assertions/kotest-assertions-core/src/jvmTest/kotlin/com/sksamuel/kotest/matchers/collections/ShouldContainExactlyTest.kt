@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.matchers.collections
 
-import io.kotest.assertions.shouldFail
+import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.containExactly
@@ -74,6 +74,25 @@ class ShouldContainExactlyTest : WordSpec() {
             }
          }
 
+         "Iterable with non-stable iteration order gives an informative message" {
+
+            // Ideally the last two newlines shouldn't be there, IMO.
+            val expectedMessage = """
+               Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
+               HashSet does not provide a stable iteration order and was compared with ArrayList which is not a Set
+
+
+            """.trimIndent()
+
+            shouldFailWithMessage(expectedMessage) {
+               hashSetOf(1, 2) shouldContainExactly listOf(1, 2)
+            }
+
+            shouldFailWithMessage(expectedMessage) {
+               listOf(1, 2) shouldContainExactly hashSetOf(1, 2)
+            }
+         }
+
          "test contains exactly for byte arrays" {
             listOf("hello".toByteArray()) shouldContainExactly listOf("hello".toByteArray())
             listOf("helloworld".toByteArray()) shouldNotContainExactly listOf("hello".toByteArray())
@@ -88,16 +107,6 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                   |expected:<[1, 2]> but was:<[1L, 2L]>
                """.trimMargin()
-         }
-
-         "informs user of illegal comparisons" {
-            shouldFail {
-               HashSet(setOf(1, 2, 3)) shouldContainExactly listOf(1, 2, 3)
-            }.message shouldBe """Disallowed: Set can be compared only to Set
-                           |May not compare HashSet with ArrayList
-                           |expected:<*> but was:<*>
-                           |
-                           |""".trimMargin()
          }
 
          "print dataclasses" {
