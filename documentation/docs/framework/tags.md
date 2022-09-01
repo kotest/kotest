@@ -167,6 +167,10 @@ class MyTestClass : FunSpec()
 Note that when you use these annotations you pass the tag string name, not the tag itself. This is due to Kotlin annotations only allow "primitive" arguments
 :::
 
+### Inheriting tags
+
+By default, the `@Tags` annotation will only be considered on the immediate Spec which it was applied to. However, a Spec can also inherit tags from superclasses and superinterfaces. To enable this, toggle `tagInheritance = true` in your [project config](./project-config.html)
+
 
 ## Gradle
 
