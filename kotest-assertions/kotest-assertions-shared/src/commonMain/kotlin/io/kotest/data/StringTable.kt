@@ -35,35 +35,29 @@ internal data class StringTable(
          }
       val andMore = if (invalidRows.size <= maxRows) "" else "... and ${invalidRows.size - maxRows} other rows"
 
-      if (invalidRows.isNotEmpty()) fail("""
+      if (invalidRows.isNotEmpty()) fail(
+         """
          |Expected all rows to have $size columns, but ${invalidRows.size} rows differed
          |$formattedRows
          |$andMore
-         """.trimMargin().trim())
+         """.trimMargin().trim()
+      )
    }
 
    companion object {
-      internal fun parseRow(line: String): List<String> {
-         val result = mutableListOf<String>()
-         val list = line.split("|")
-         val needsMerge = list.withIndex().filter { (i, cell) ->
-            cell.endsWith("\\") && cell.endsWith("\\\\").not()
-         }.map { it.index }.toSet()
+      val separatorRegex = Regex("([\\\\]{2}|[^\\\\])\\|")
 
-         var current = ""
-         list.forEachIndexed { i, cell ->
-            if (i in needsMerge) {
-               current += cell
-                  .removeSuffix("\\")
-                  .plus("|")
-            } else {
-               result += "$current$cell"
+      internal fun parseRow(line: String): List<String> {
+         val trimmed = line.replace(" ", "")
+         return line
+            .split(separatorRegex)
+            .map {
+               val cell = it.trim()
+               val suffix = if ("$cell\\\\|" in trimmed) "\\" else ""
+               cell.plus(suffix)
+                  .replace("\\|", "|")
                   .replace("\\\\", "\\")
-                  .trim()
-               current  = ""
-            }
          }
-         return result
       }
    }
 }
