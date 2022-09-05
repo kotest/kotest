@@ -33,11 +33,26 @@ internal data class StringTable(
 
    companion object {
       internal fun parseRow(line: String): List<String> {
-         val notAPipeSeparator = "🫓"
-         return line
-            .replace("\\|", notAPipeSeparator)
-            .split("|")
-            .map { it.trim().replace(notAPipeSeparator, "|") }
+         val result = mutableListOf<String>()
+         val list = line.split("|")
+         val needsMerge = list.withIndex().filter { (i, cell) ->
+            cell.endsWith("\\") && cell.endsWith("\\\\").not()
+         }.map { it.index }.toSet()
+
+         var current = ""
+         list.forEachIndexed { i, cell ->
+            if (i in needsMerge) {
+               current += cell
+                  .removeSuffix("\\")
+                  .plus("|")
+            } else {
+               result += "$current$cell"
+                  .replace("\\\\", "\\")
+                  .trim()
+               current  = ""
+            }
+         }
+         return result
       }
    }
 }

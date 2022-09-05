@@ -97,11 +97,15 @@ class StringTableTest : FunSpec({
 
    test("The '|' character can be escaped") {
       val fileContent = """
-      1  | bad \| good | name
+      1  | prefix\|middle\|suffix | hello\|world
+      2  | prefix\suffix  | nothing
+      3  | prefix\\|suffix
    """.trimIndent()
       table(headers, fileContent, transform) shouldBe table(
          headers,
-         row(1, "bad | good", "name")
+         row(1, "prefix|middle|suffix", "hello|world"),
+         row(2,"prefix\\suffix", "nothing"),
+         row(3, "prefix\\", "suffix"),
       )
    }
 

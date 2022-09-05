@@ -50,7 +50,14 @@ id | username | fullName
 
 Curious why it's not just a .csv file?
 
-Well CSV is not a well defined format. Everyone has its flavor and we have too. The `.table` has its rules: it always uses `|` as separator, it must have an header, it can have comments, it can't have newlines inside the columns. Basically it's optimized for putting table data in a `.table` file.
+Well CSV is not a well defined format. Everyone has its flavor and we have too. The `.table` has its rules:
+
+- it always uses `|` as separator
+- it must have an header
+- cells are trimmed and cannot contain new lines
+- it can have comments and blank lines
+
+Basically it's optimized for putting table data in a `.table` file.
 
 We hope you don't use Microsoft Excel to edit the CSV-like file. IntelliJ with the [CSV plugin from Martin Sommer](https://plugins.jetbrains.com/plugin/10037-csv) does that better. You can associate the `.table` extension with it and configure  `|` as your CSV separator. It has a table edition mode too!
 
