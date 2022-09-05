@@ -12,13 +12,25 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
 
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
 
-      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest")).filter(spec) shouldBe TestFilterResult.Include
+      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest")).filter(spec) shouldBe
+         TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*thodRegexTestFilterTest")).filter(spec) shouldBe
+         TestFilterResult.Include
+
       GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest2")).filter(spec) shouldBe
          TestFilterResult.Exclude(null)
+
       GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTes")).filter(spec) shouldBe
          TestFilterResult.Exclude(null)
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*orm.gradle.GradleClassMethodRegexTestFilterTest"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*.platform.gradle.GradleClassMethodRegexTestFilterTest"))
          .filter(spec) shouldBe TestFilterResult.Include
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.GradleClassMethodRegexTestFilterTest"))
@@ -30,6 +42,12 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*nner.junit.platform.gradle"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*.junit.platform.gradle"))
          .filter(spec) shouldBe TestFilterResult.Include
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gra"))
@@ -51,6 +69,12 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context"))
          .filter(container) shouldBe TestFilterResult.Include
 
+      GradleClassMethodRegexTestFilter(listOf("*.gradle.GradleClassMethodRegexTestFilterTest.a context"))
+         .filter(container) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("*adle.GradleClassMethodRegexTestFilterTest.a context"))
+         .filter(container) shouldBe TestFilterResult.Include
+
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context2"))
          .filter(container) shouldBe TestFilterResult.Exclude(null)
 
@@ -61,6 +85,9 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          .filter(test) shouldBe TestFilterResult.Exclude(null)
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context -- nested test2"))
+         .filter(test) shouldBe TestFilterResult.Exclude(null)
+
+      GradleClassMethodRegexTestFilter(listOf("*sMethodRegexTestFilterTest.a context -- nested test2"))
          .filter(test) shouldBe TestFilterResult.Exclude(null)
    }
 })
