@@ -25,10 +25,21 @@ internal data class StringTable(
    }
 
    private fun rowsShouldHaveSize(size: Int) {
-      val invalid = rows
+      val maxRows = 5
+      val invalidRows = rows
          .filter { it.value.size != size }
-         .map { it.index }
-      if (invalid.isNotEmpty()) fail("Expected all rows to have size $size, but got rows at lines $invalid")
+      val formattedRows = invalidRows
+         .take(maxRows)
+         .joinToString("\n") { (i, row) ->
+            "- Row $i has ${row.size} columns: $row"
+         }
+      val andMore = if (invalidRows.size <= maxRows) "" else "... and ${invalidRows.size - maxRows} other rows"
+
+      if (invalidRows.isNotEmpty()) fail("""
+         |Expected all rows to have $size columns, but ${invalidRows.size} rows differed
+         |$formattedRows
+         |$andMore
+         """.trimMargin().trim())
    }
 
    companion object {

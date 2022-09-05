@@ -86,11 +86,18 @@ class StringTableTest : FunSpec({
    test("All rows must have the right number of columns") {
       val invalidRows = """
       4  | jmfayard | Jean-Michel Fayard
-      5  | victor | Victor Hugo | victor.hugo@guernesey.co.k
+      5  | victor | Victor Hugo | victor.hugo@guernesey.co.uk
       6  | louis    | Louis Caugnault
       7  | edgar
    """.trimIndent()
-      shouldThrowMessage("Expected all rows to have size 3, but got rows at lines [1, 3]") {
+
+      val expectedMessage = """
+Expected all rows to have 3 columns, but 2 rows differed
+- Row 1 has 4 columns: [5, victor, Victor Hugo, victor.hugo@guernesey.co.uk]
+- Row 3 has 2 columns: [7, edgar]
+      """.trimIndent()
+
+      shouldThrowMessage(expectedMessage) {
          table(headers, invalidRows, transform)
       }
    }
