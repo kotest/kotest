@@ -24,7 +24,9 @@ class RunLauncherTest: FunSpec() {
             null, null, null), listener)
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
-         listener.testFinished.sorted() shouldBe arrayOf("bar", "first", "foo", "nothing else", "second", "something", "something else")
+         listener.testFinished.sorted() shouldBe arrayOf(
+            "bar", "first", "foo", "nothing else", "second", "second bar", "something", "something else"
+         )
          listener.specFinished.sorted() shouldBe arrayOf("DescribeSpec1")
       }
 
