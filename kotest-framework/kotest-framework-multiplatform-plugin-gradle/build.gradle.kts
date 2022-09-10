@@ -35,37 +35,41 @@ dependencies {
 }
 
 tasks.withType<Test>().configureEach {
-   // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
-   setOf(
-      projects.kotestAssertions.kotestAssertionsCore,
-      projects.kotestFramework.kotestFrameworkApi,
-      projects.kotestFramework.kotestFrameworkEngine,
-   ).map { project ->
-      project.dependencyProject.path
-   }.forEach { projectPath ->
+   enabled = !project.hasProperty(Ci.JVM_ONLY)
+
+   if (!project.hasProperty(Ci.JVM_ONLY)) {
+      // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
       setOf(
-         "jvmJar",
-         "compileKotlinLinuxX64",
-         "compileKotlinMacosX64",
-         "compileKotlinMacosArm64",
-         "compileKotlinMingwX64",
-      ).forEach { task ->
-         dependsOn("$projectPath:$task")
+         projects.kotestAssertions.kotestAssertionsCore,
+         projects.kotestFramework.kotestFrameworkApi,
+         projects.kotestFramework.kotestFrameworkEngine,
+      ).map { project ->
+         project.dependencyProject.path
+      }.forEach { projectPath ->
+         setOf(
+            "jvmJar",
+            "compileKotlinLinuxX64",
+            "compileKotlinMacosX64",
+            "compileKotlinMacosArm64",
+            "compileKotlinMingwX64",
+         ).forEach { task ->
+            dependsOn("$projectPath:$task")
+         }
       }
-   }
 
-   setOf(
-      projects.kotestRunner.kotestRunnerJunit5,
-      projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler,
-      projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative,
-   ).map { project ->
-      project.dependencyProject.path
-   }.forEach { project ->
-      dependsOn("$project:jvmJar")
-   }
+      setOf(
+         projects.kotestRunner.kotestRunnerJunit5,
+         projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler,
+         projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative,
+      ).map { project ->
+         project.dependencyProject.path
+      }.forEach { project ->
+         dependsOn("$project:jvmJar")
+      }
 
-   dependsOn("jar")
-   dependsOn(":kotlinNpmInstall")
+      dependsOn("jar")
+      dependsOn(":kotlinNpmInstall")
+   }
 
    useJUnitPlatform()
 
