@@ -34,6 +34,12 @@ private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecurs
    override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
+private val expectedPath = if (System.getProperty("os.name").lowercase().contains("win")) {
+   "WindowsPath"
+} else {
+   "UnixPath"
+}
+
 class IterableEqTest : FunSpec({
 
    test("should give null for two equal sets") {
@@ -113,17 +119,18 @@ class IterableEqTest : FunSpec({
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
-                                  |May not compare UnixPath with BareIterable
+                                  |May not compare $expectedPath with BareIterable
                                   |""".trimMargin()
       }
    }
 
    test("should give error for promiscuous iterables when recursive") {
       val error = IterableEq.equals(Paths.get("foo"), BareRecursiveIterable(1,0))
+      System.getProperty("os")
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
-                                  |May not compare UnixPath with BareRecursiveIterable
+                                  |May not compare $expectedPath with BareRecursiveIterable
                                   |""".trimMargin()
       }
    }
