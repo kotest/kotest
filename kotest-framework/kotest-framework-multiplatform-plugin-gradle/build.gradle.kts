@@ -103,19 +103,19 @@ gradlePlugin {
 }
 
 
-val kotestPluginConstantsFileContents = resources.text.fromString(
-   """
-      |// Generated file, do not edit manually
-      |@file:org.gradle.api.Generated
-      |
-      |package io.kotest.framework.multiplatform.gradle
-      |
-      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
-      |
-   """.trimMargin()
-)
-
 val updateKotestPluginConstants by tasks.registering(Sync::class) {
+
+   val kotestPluginConstantsFileContents: TextResource = resources.text.fromString(
+      """
+         |// Generated file, do not edit manually
+         |@file:org.gradle.api.Generated
+         |
+         |package io.kotest.framework.multiplatform.gradle
+         |
+         |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+         |
+      """.trimMargin()
+   )
 
    from(kotestPluginConstantsFileContents) {
       rename { "kotestPluginConstants.kt" }
