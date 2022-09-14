@@ -27,7 +27,7 @@ class TagsExcludedSpecInterceptor(
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      val potentiallyActive = conf.runtimeTags().parse().isPotentiallyActive(ref.kclass)
+      val potentiallyActive = conf.runtimeTags().parse().isPotentiallyActive(ref.kclass, conf)
       return if (potentiallyActive) {
          fn(ref)
       } else {

@@ -114,6 +114,11 @@ private class EnabledOrReasonIfSpec : FunSpec() {
       test("a").config(enabledOrReasonIf = { Enabled.disabled("wobble") }) {
          throw RuntimeException()
       }
+      context("context") {
+         test("a").config(enabledOrReasonIf = { Enabled.disabled("wobble") }) {
+            throw RuntimeException()
+         }
+      }
    }
 }
 

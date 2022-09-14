@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.callbackorder
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec

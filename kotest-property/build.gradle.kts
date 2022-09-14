@@ -8,8 +8,8 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            api(project(Projects.Common))
-            api(project(Projects.Assertions.Shared))
+            api(projects.kotestCommon)
+            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
@@ -24,8 +24,8 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
