@@ -5,9 +5,14 @@ sidebar_label: Arrow
 ---
 
 
-This page lists all current matchers in the Kotest arrow matchers extension library. 
+[![Latest Release](https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-arrow)](https://search.maven.org/artifact/io.kotest.extensions/kotest-assertions-arrow)
 
-To use this library you need to add `io.kotest.extensions:kotest-assertions-arrow` to your build.
+This page lists all current matchers in the Kotest arrow matchers extension library.
+
+:::note
+The following module is needed: `io.kotest.extensions:kotest-assertions-arrow` which is versioned independently from the main Kotest project.
+Search maven central for latest version [here](https://search.maven.org/search?q=kotest-assertions-arrow).
+:::
 
 :::note
 In the case `io.arrow-kt:arrow-core:arrow-version` is not in your classpath, please add it. To prevent Unresolved Reference errors.
