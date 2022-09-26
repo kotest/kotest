@@ -3,7 +3,7 @@
    <id>kotest-plugin-intellij</id>
    <name>Kotest</name>
 
-   <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
+   <vendor email="sam@sksamuel.com" url="https://github.com/kotest">Kotest</vendor>
 
    <description><![CDATA[
       Official IntelliJ-based IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
