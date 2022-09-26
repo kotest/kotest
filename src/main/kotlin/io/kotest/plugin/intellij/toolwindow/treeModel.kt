@@ -6,11 +6,11 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.TestElement
+import io.kotest.plugin.intellij.fqname
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.includes
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
@@ -40,7 +40,7 @@ fun createTreeModel(
       val groups = tests.groupBy { it.test.name }
 
       tests.forEach { test ->
-         val isUnique = groups[test.test.name]?.size ?: 0 < 2
+         val isUnique = (groups[test.test.name]?.size ?: 0) < 2
          val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, isUnique, module)
          val testNode = DefaultMutableTreeNode(testDescriptor)
          node.add(testNode)
@@ -83,7 +83,7 @@ fun createTreeModel(
 
    specs.forEach { spec ->
 
-      val fqn = spec.getKotlinFqName()
+      val fqn = spec.fqname()
       val style = spec.specStyle()
       if (fqn != null && style != null) {
 

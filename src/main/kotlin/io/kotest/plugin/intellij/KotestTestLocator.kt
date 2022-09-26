@@ -8,11 +8,10 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
 import io.kotest.plugin.intellij.psi.elementAtLine
-import io.kotest.plugin.intellij.psi.isTestFile
+import io.kotest.plugin.intellij.psi.toPsiLocation
 
 /**
  * A parser for location URLs reported by test runners.
@@ -50,21 +49,6 @@ object KotestTestLocator : SMTestLocator {
       }
       return null
    }
-
-   private fun getLocationForFile(
-      project: Project,
-      scope: GlobalSearchScope,
-      name: String,
-      lineNumber: Int
-   ): PsiLocation<PsiElement>? {
-      return FilenameIndex
-         .getFilesByName(project, name, scope)
-         .firstOrNull { it.isTestFile() }
-         ?.elementAtLine(lineNumber)
-         ?.toPsiLocation()
-   }
-
-   private fun PsiElement.toPsiLocation() = PsiLocation(project, this)
 
    override fun getLocation(
       protocol: String,
