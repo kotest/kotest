@@ -15,7 +15,7 @@ jobs:
       strategy:
          matrix:
             product: [ "IC-211", "IC-212", "IC-213", "IC-221", "IC-222", "IC-223" ]
-         max-parallel: 6
+         max-parallel: 10
          fail-fast: false
 
       steps:
@@ -24,9 +24,16 @@ jobs:
                fetch-depth: 0
 
          -  uses: actions/setup-java@v3
+            if: ${{ matrix.product != "IC-223" }}
             with:
                distribution: 'adopt'
                java-version: '11'
+
+         -  uses: actions/setup-java@v3
+            if: ${{ matrix.product == "IC-223" }}
+            with:
+               distribution: 'temurin'
+               java-version: '17'
 
          -  name: Run tests
             run: ./gradlew check
