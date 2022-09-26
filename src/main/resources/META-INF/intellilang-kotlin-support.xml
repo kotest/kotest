@@ -1,0 +1,5 @@
+<idea-plugin>
+   <extensions defaultExtensionNs="org.intellij.intelliLang">
+      <injectionConfig config="injections/kotlinInjections.xml"/>
+   </extensions>
+</idea-plugin>

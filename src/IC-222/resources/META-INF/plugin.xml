@@ -17,6 +17,7 @@
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
    <depends>org.jetbrains.plugins.gradle</depends>
+   <depends optional="true" config-file="intellilang-kotlin-support.xml">org.intellij.intelliLang</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"
