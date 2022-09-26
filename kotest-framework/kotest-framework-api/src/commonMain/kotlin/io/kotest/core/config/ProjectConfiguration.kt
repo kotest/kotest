@@ -326,6 +326,12 @@ class ProjectConfiguration {
    var testNameAppendTags: Boolean = false
 
    /**
+    * Determines whether tags can be inherited from super types
+    * Default is false
+    */
+   var tagInheritance: Boolean = false
+
+   /**
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
     *

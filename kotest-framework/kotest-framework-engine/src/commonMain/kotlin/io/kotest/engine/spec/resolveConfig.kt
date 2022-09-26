@@ -72,7 +72,7 @@ internal fun resolveConfig(
       invocations = invocations,
       timeout = timeout,
       invocationTimeout = invocationTimeout,
-      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(),
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(configuration.tagInheritance),
       extensions = extensions,
       failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: configuration.failfast,
       severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: configuration.severity,
