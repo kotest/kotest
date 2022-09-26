@@ -27,7 +27,7 @@ class CollectTest : FunSpec() {
             }
          }
          stdout.shouldContain("Statistics: [collecting stats] (1000 iterations, 1 args)")
-         stdout.shouldContain(
+         stdout.lines().joinToString(separator = "\n").shouldContain(
             """
 HALF_DOWN                                                     142 (14%)
 HALF_UP                                                       141 (14%)
@@ -52,7 +52,7 @@ DOWN                                                          107 (11%)
          stdout.shouldContain("Statistics: [collecting labelled stats] (1000 iterations, 1 args)")
          stdout.shouldContain("Statistics: [collecting labelled stats] (1000 iterations, 1 args) [mylabel]")
          stdout.shouldContain("Statistics: [collecting labelled stats] (1000 iterations, 1 args) [mylabel2]")
-         stdout.shouldContain(
+         stdout.lines().joinToString(separator = "\n").shouldContain(
             """
 HALF_DOWN                                                     142 (14%)
 HALF_UP                                                       141 (14%)
