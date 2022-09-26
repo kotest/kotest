@@ -22,13 +22,13 @@ jobs:
                fetch-depth: 0
 
          -  uses: actions/setup-java@v3
-            if: ${{ matrix.product != 'IC-223' }}
+            if: matrix.product != 'IC-223'
             with:
                distribution: 'adopt'
                java-version: '11'
 
          -  uses: actions/setup-java@v3
-            if: ${{ matrix.product == 'IC-223' }}
+            if: matrix.product == 'IC-223'
             with:
                distribution: 'temurin'
                java-version: '17'
