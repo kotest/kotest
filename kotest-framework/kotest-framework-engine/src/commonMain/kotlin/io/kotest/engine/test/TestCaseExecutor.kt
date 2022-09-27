@@ -72,7 +72,7 @@ class TestCaseExecutor(
          TestInvocationInterceptor(configuration.registry, timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
-         if (platform == Platform.JVM && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+         if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
          CoroutineDebugProbeInterceptor,
       )
 

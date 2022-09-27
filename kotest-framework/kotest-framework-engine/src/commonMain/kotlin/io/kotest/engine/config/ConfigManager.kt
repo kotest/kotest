@@ -15,17 +15,17 @@ object ConfigManager {
     *
     * @return the initialized input
     */
-   fun initialize(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>): ProjectConfiguration {
+   fun initialize(configuration: ProjectConfiguration, projectConfigs: () -> List<AbstractProjectConfig>): ProjectConfiguration {
       compile(configuration, projectConfigs).getOrThrow()
       return configuration
    }
 
-   fun compile(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>) = runCatching {
+   fun compile(configuration: ProjectConfiguration, projectConfigs: () -> List<AbstractProjectConfig>) = runCatching {
       log { "ConfigManager: compiling config projectConfigs=$projectConfigs" }
       applyPlatformDefaults(configuration)
       applyConfigFromSystemProperties(configuration)
       applyConfigFromAutoScan(configuration)
-      projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
+      projectConfigs().forEach { applyConfigFromProjectConfig(it, configuration) }
    }.mapError { ConfigurationException(it) }
 }
 

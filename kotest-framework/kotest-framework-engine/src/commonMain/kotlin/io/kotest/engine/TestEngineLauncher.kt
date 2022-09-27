@@ -167,9 +167,8 @@ class TestEngineLauncher(
          ),
          interceptors = testEngineInterceptors(),
          configuration = ConfigManager.initialize(
-            projectConfiguration,
-            configs + detectAbstractProjectConfigs() + listOfNotNull(loadProjectConfigFromClassname())
-         ),
+            projectConfiguration
+         ) { configs + detectAbstractProjectConfigs() + listOfNotNull(loadProjectConfigFromClassname()) },
          tagExpression,
       )
    }
