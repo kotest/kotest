@@ -7,6 +7,10 @@ import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
 
 /**
  * Assert that a collection contains only the given elements.
+ * For example,
+ *  list(1, 1, 2) shouldContainOnly listOf(1, 2)    // Assertion passes
+ *  list(1, 2, 1) shouldContainOnly listOf(1)       // Assertion fails
+ *  list(1) shouldContainOnly listOf(2, 2)          // Assertion fails
  */
 @JvmName("shouldContainOnly_iterable")
 infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
@@ -14,6 +18,10 @@ infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
 
 /**
  * Assert that an array contains only the given elements.
+ * For example,
+ *  arrayOf(1, 1, 2) shouldContainOnly arrayOf(1, 2)    // Assertion passes
+ *  arrayOf(1, 2, 1) shouldContainOnly arrayOf(1)       // Assertion fails
+ *  arrayOf(1) shouldContainOnly arrayOf(2, 2)          // Assertion fails
  */
 @JvmName("shouldContainOnly_array")
 infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>) =
@@ -21,12 +29,20 @@ infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>) =
 
 /**
  * Assert that a collection contains only the given elements.
+ * For example,
+ *  list(1, 1, 2) shouldContainOnly(1, 2)    // Assertion passes
+ *  list(1, 2, 1) shouldContainOnly(1)       // Assertion fails
+ *  list(1) shouldContainOnly(2, 2)          // Assertion fails
  */
 fun <T> Iterable<T>?.shouldContainOnly(vararg expected: T) =
     this?.toList() should containOnly(*expected)
 
 /**
  * Assert that an array contains only the given elements.
+ * For example,
+ *  arrayOf(1, 1, 2) shouldContainOnly(1, 2)    // Assertion passes
+ *  arrayOf(1, 2, 1) shouldContainOnly(1)       // Assertion fails
+ *  arrayOf(1) shouldContainOnly(2, 2)          // Assertion fails
  */
 fun <T> Array<T>?.shouldContainOnly(vararg expected: T) =
     this?.asList() should containOnly(*expected)
