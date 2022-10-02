@@ -52,13 +52,8 @@ interface LazyMountableExtension<CONFIG, MATERIALIZED> : Extension {
    fun mount(configure: CONFIG.() -> Unit): LazyMaterialized<MATERIALIZED>
 }
 
-data class LazyMaterialized<MATERIALIZED>(private var value: MATERIALIZED) {
-
-   fun set(value: MATERIALIZED) {
-      this.value = value
-   }
-
-   fun get() = value
+interface LazyMaterialized<MATERIALIZED> {
+   suspend fun get(): MATERIALIZED
 }
 
 // cannot be suspending as it is used in constructors
