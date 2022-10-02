@@ -86,7 +86,7 @@ suspend fun <T> ContainerScope.withData(
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withDataMap")
-suspend fun <T : Any> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
+suspend fun <T> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
       registerTest(TestName(name), false, null, TestType.Dynamic) { AbstractContainerScope(this).test(t) }
    }
