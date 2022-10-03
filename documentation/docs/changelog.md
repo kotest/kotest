@@ -4,21 +4,63 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.4.3 - Still Unreleased
+## 5.5.0 October 2022
+
+
+### Fixes
+
+* Fix issue using compiler plugin with Kotlin 1.7.20. (#3220)
+* Allow registering global custom arbs through `GlobalArbResolver` (#3185)
+* Fix data tests for all `BehaviorSpec` scopes. (#3222)
+* Fix nullable maps in data tests (#3218)
+* Detect project config after applying config from system properties (#3204)
+* Support `enabledOrReasonIf` in nested `FunSpec`
+* Fix misleading error message when `Arb.of` is given an empty list (#3195)
+* Error if trying to use `afterEach` callback after test registration (#3191)
+* Attempt to improve the error message for `containExactly` when used with non-stable sets (#3194)
+* Wrap InvalidPathException into an AssertionError when attempting to use invalid json path (#3147)
 
 ### Improvements
 
--  Support printing unsigned integers clearly (#3149) 
--  ♻️ Refactors Success Matchers to its own file (#3119) 
+* Added lazy mountable extensions (#3187)
+* Support printing unsigned integers clearly (#3149)
+* Added `shouldBeCloseTo` matcher (#3181)
+* Added new regex matchers: `shouldMatch`, `shouldMatchAll`, `shouldMatchAny`
+* Wildcard support in launcher (#3200)
+* Support test coroutines on K/N (#3219)
+* Add ability to toggle the inheritance of `@Tags` (#3199)
+* Publish Gradle version catalog (#3171)
+* Support prefix wildcards in gradle --test selectors (#3190)
+* Better unique collection matchers (#3188)
+* Add cartesian triples helpers for `Exhaustive` (#3174)
+* use configurable property for Kotest compiler plugin version (#3168)
+* Support printing unsigned integers clearly (#3149)
 
-### Dependency upgrades
+Thanks to all the contributors since the 5.4.0 release:
 
-- Update plugin com.gradle.enterprise to v3.11.1 (#3151)
-- Update dependency gradle to v7.5.1 (#3139)
-- Update dependency com.github.curious-odd-man:rgxgen to v1.4 (#3150) 
-- Update docusaurus monorepo to v2.0.1 (#3140) 
+* Alex
+* aSemy
+* ataronet
+* Charles Korn
+* Emil Kantis
+* Jaehyun Park
+* James Baker
+* Jinseong Hwang
+* Kevin Woodland
+* Leonardo Colman
+* Michael Sewell
+* Mitchell Yuwono
+* Nikunj Yadav
+* Prat
+* Rasmus V. Plauborg
+* sksamuel
+* YongJoon Kim
 
-## 5.4.2
+
+## 5.4.2 August 2022
+
+* Fix issues running tests for native targets on Kotlin 1.7+ (#3107)
+* `shouldContainJsonKey` should be true for keys with null values (#3128)
 
 ## 5.4.1 July 2022
 
