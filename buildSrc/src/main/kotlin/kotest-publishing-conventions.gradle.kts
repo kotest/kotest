@@ -64,7 +64,6 @@ publishing {
 }
 
 signing {
-   sign(publishing.publications)
    useGpgCmd()
    if (signingKey != null && signingPassword != null) {
       useInMemoryPgpKeys(signingKey, signingPassword)

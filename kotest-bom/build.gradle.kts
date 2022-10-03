@@ -83,15 +83,12 @@ publishing {
 }
 
 signing {
-   val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
    useGpgCmd()
-
    if (signingKey != null && signingPassword != null) {
       @Suppress("UnstableApiUsage")
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
-
    if (Ci.isRelease) {
-      sign(publications)
+      sign(publishing.publications)
    }
 }
