@@ -65,10 +65,12 @@ publishing {
 
 signing {
    useGpgCmd()
-   if (signingKey != null && signingPassword != null) {
-      useInMemoryPgpKeys(signingKey, signingPassword)
+   publishing.publications.configureEach {
+      println("Signing " + this.name)
+      sign(this)
    }
-   if (Ci.isRelease) {
-      sign(publishing.publications)
+   if (signingKey != null && signingPassword != null) {
+      println("useInMemoryPgpKeys")
+      useInMemoryPgpKeys(signingKey, signingPassword)
    }
 }
