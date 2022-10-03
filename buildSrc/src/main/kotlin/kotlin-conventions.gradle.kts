@@ -17,9 +17,8 @@ testlogger {
    showPassed = false
 }
 
-tasks.withType<Test>() {
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-
    filter {
       isFailOnNoMatchingTests = false
    }
@@ -35,11 +34,11 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 kotlin {
-   sourceSets {
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+   sourceSets.configureEach {
+      languageSettings {
+         optIn("kotlin.time.ExperimentalTime")
+         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("kotlin.contracts.ExperimentalContracts")
       }
    }
 }
