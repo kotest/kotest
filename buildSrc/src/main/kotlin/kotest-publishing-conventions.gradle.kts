@@ -1,7 +1,10 @@
 plugins {
    signing
+   `java-library`
    `maven-publish`
 }
+
+val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
 group = "io.kotest"
 version = Ci.publishVersion
@@ -16,6 +19,17 @@ val ossrhUsername: String by project
 val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
+
+signing {
+   useGpgCmd()
+   if (signingKey != null && signingPassword != null) {
+      @Suppress("UnstableApiUsage")
+      useInMemoryPgpKeys(signingKey, signingPassword)
+   }
+   if (Ci.isRelease) {
+      sign(publications)
+   }
+}
 
 publishing {
    repositories {
@@ -60,17 +74,5 @@ publishing {
             }
          }
       }
-   }
-}
-
-signing {
-   useGpgCmd()
-   publishing.publications.configureEach {
-      println("Signing " + this.name)
-      sign(this)
-   }
-   if (signingKey != null && signingPassword != null) {
-      println("useInMemoryPgpKeys")
-      useInMemoryPgpKeys(signingKey, signingPassword)
    }
 }
