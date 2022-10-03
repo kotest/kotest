@@ -64,16 +64,7 @@ interface ContainerScope : TestScope {
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTestCase(
-         NestedTest(
-            name = name,
-            disabled = disabled,
-            config = config,
-            test = test,
-            type = TestType.Container,
-            source = sourceRef(),
-         )
-      )
+      registerTest(name, disabled, config, TestType.Container, test)
    }
 
    suspend fun registerTest(
@@ -82,16 +73,7 @@ interface ContainerScope : TestScope {
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTestCase(
-         NestedTest(
-            name = name,
-            disabled = disabled,
-            config = config,
-            test = test,
-            type = TestType.Test,
-            source = sourceRef(),
-         )
-      )
+      registerTest(name, disabled, config, TestType.Test, test)
    }
 
    private fun addListener(listener: TestListener) {
