@@ -64,7 +64,7 @@ publishing {
 }
 
 signing {
-   sign(publishing.publications["mavenJava"])
+   sign(publishing.publications)
    useGpgCmd()
    if (signingKey != null && signingPassword != null) {
       useInMemoryPgpKeys(signingKey, signingPassword)
