@@ -8,6 +8,9 @@ val publications: PublicationContainer = (extensions.getByName("publishing") as 
 
 val javadoc = tasks.named("javadoc")
 
+group = "io.kotest"
+version = Ci.publishVersion
+
 val javadocJar by tasks.creating(Jar::class) {
    group = JavaBasePlugin.DOCUMENTATION_GROUP
    description = "Assembles java doc to jar"
