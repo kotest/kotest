@@ -22,7 +22,7 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
       val (prefixWildcard, pck, classname, path) = GradleTestPattern.parse(pattern)
       return when (descriptor) {
          is Descriptor.TestDescriptor -> when (path) {
-           null -> false
+           null -> true
            else -> descriptor.path(false).value.startsWith(path)
          }
 
@@ -55,10 +55,16 @@ data class GradleTestPattern(
          require(pattern.isNotBlank())
 
          val prefixWildcard = pattern.startsWith("*")
-         val pattern2 = pattern.removePrefix("*").removePrefix(".")
+         val pattern2 = pattern
+            .removePrefix("*")
+            .removePrefix(".")
+            .replace("\\Q", "") // Quote start regex, added by Gradle
+            .replace("\\E", "") // Quote end regex, added by Gradle
 
          val tokens = pattern2.split('.')
-         val classIndex = tokens.indexOfFirst { it.first().isUpperCase() }
+
+         // Package names shouldn't contain any upper-case letters
+         val classIndex = tokens.indexOfFirst { token -> token.any { it.isUpperCase() } }
 
          // if class is not specified, then we assume the entire string is a package
          if (classIndex == -1) return GradleTestPattern(prefixWildcard, pattern2, null, null)
