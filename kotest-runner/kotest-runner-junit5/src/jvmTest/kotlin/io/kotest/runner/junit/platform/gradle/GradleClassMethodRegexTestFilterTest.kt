@@ -66,6 +66,9 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       val container = spec.append("a context")
       val test = container.append("nested test")
 
+      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest"))
+         .filter(container) shouldBe TestFilterResult.Include
+
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context"))
          .filter(container) shouldBe TestFilterResult.Include
 
