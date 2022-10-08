@@ -16,7 +16,7 @@ class Logger(private val kclass: KClass<*>) {
       log(null) {
          val (testName, message) = f()
          listOf(
-            (kclass.simpleName ?: "").padEnd(50, ' '),
+            (kclass.simpleName ?: "").padEnd(60, ' '),
             (testName ?: "").padEnd(70, ' ').take(70),
             message
          ).joinToString("  ")

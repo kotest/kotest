@@ -2,7 +2,9 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.TypeCoercion
 import io.kotest.assertions.json.shouldEqualJson
+import io.kotest.assertions.json.shouldNotEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldStartWith
@@ -236,15 +238,29 @@ expected:<{
          )
       }
 
-
-      test("comparing boolean to string with lenient mode") {
+      context("comparing boolean to string with lenient mode") {
          val a = """ { "a" : "foo", "b" : true } """
          val b = """ { "a" : "foo", "b" : "true" } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
-
          val c = """ { "a" : "foo", "b" : false } """
          val d = """ { "a" : "foo", "b" : "false" } """
-         c.shouldEqualJson(d, CompareMode.Lenient)
+
+         test("Check new block-style configuration options") {
+            a shouldEqualJson {
+               typeCoercion = TypeCoercion.Enabled
+               b
+            }
+
+            a shouldNotEqualJson {
+               typeCoercion = TypeCoercion.Disabled
+               b
+            }
+         }
+
+
+         test("Using old CompareMode flags") {
+            a.shouldEqualJson(b, CompareMode.Lenient)
+            c.shouldEqualJson(d, CompareMode.Lenient)
+         }
       }
 
       test("comparing long to string with lenient mode") {
@@ -739,7 +755,8 @@ expected:<{
          a.shouldEqualJson(b)
          shouldFail {
             a.shouldEqualJson(b, CompareOrder.Strict)
-         }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
+         }.shouldHaveMessage(
+            """The top level object expected field 0 to be 'sku' but was 'id'
 
 expected:<{
   "sku": "RIND-TOTEO-001-MCF",
@@ -755,7 +772,8 @@ expected:<{
   "requires_shipping": true,
   "taxable": true,
   "featured_image": null
-}>""")
+}>"""
+         )
       }
    }
 }

@@ -8,9 +8,7 @@ plugins {
 repositories {
    mavenCentral()
    mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots/") {
-      mavenContent { snapshotsOnly() }
-   }
+   maven("https://oss.sonatype.org/content/repositories/snapshots/")
    google()
    gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
@@ -21,7 +19,6 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-
    filter {
       isFailOnNoMatchingTests = false
    }
@@ -29,7 +26,7 @@ tasks.withType<Test>().configureEach {
 
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+      freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
       jvmTarget = "1.8"
       apiVersion = "1.6"
       languageVersion = "1.6"
