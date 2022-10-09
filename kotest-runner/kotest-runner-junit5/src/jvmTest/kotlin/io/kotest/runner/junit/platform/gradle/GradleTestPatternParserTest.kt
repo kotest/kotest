@@ -44,9 +44,17 @@ class GradleTestPatternParserTest : FunSpec() {
          GradleTestPattern.parse("org.A") shouldBe GradleTestPattern(false, "org", "A", null)
       }
 
-      test("parse package.Classname.path") {
+      test("Package name containing caps") {
+         // This is obviously unwanted, but currently we rely on the capital letters to determine
+         // the class being tested. Having capital letters in a package name goes against
+         // Java coding conventions, so for now you're out of luck if you do it.
+         // https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html
+
          GradleTestPattern.parse("org.myPackage.MyClass.test") shouldBe
-            GradleTestPattern(false, "org.myPackage", "MyClass", "test")
+            GradleTestPattern(false, "org", "myPackage", "MyClass.test")
+      }
+
+      test("parse package.Classname.path") {
          GradleTestPattern.parse("org.A.test with space") shouldBe GradleTestPattern(
             false,
             "org",
