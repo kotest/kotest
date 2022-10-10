@@ -11,6 +11,9 @@ import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.JavaRunConfigurationModule
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.target.LanguageRuntimeType
+import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
+import com.intellij.execution.target.TargetEnvironmentConfiguration
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.openapi.module.Module
@@ -30,7 +33,8 @@ import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 class KotestConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
-   JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory) {
+   JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory),
+   TargetEnvironmentAwareRunProfile {
 
    private var alternativeJrePath: String? = ""
    private var alternativeJrePathEnabled = false
@@ -111,6 +115,20 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
          else -> KotestRunnableState(environment, this)
       }
    }
+
+   override fun canRunOn(target: TargetEnvironmentConfiguration): Boolean {
+      return true
+   }
+
+   override fun getDefaultLanguageRuntimeType(): LanguageRuntimeType<*>? {
+      return null
+   }
+
+   override fun getDefaultTargetName(): String? {
+      return null
+   }
+
+   override fun setDefaultTargetName(targetName: String?) {}
 
    override fun getTestSearchScope(): TestSearchScope = this.searchScope.scope
 
