@@ -129,3 +129,242 @@ fun <A, B, C, D, E, F> Exhaustive.Companion.cartesian(
    }
    return fs.exhaustive()
 }
+
+
+fun <A, B, C, D, E, F, G> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: (A, B, C, D, E, F) -> G
+): Exhaustive<G> {
+   val gs = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.map { _f ->
+                     g(_a, _b, _c, _d, _e, _f)
+                  }
+               }
+            }
+         }
+      }
+   }
+   return gs.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: (A, B, C, D, E, F, G) -> H
+): Exhaustive<H> {
+   val hs = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.map { _g ->
+                        h(_a, _b, _c, _d, _e, _f, _g)
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return hs.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H, I> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: Exhaustive<H>,
+   i: (A, B, C, D, E, F, G, H) -> I
+): Exhaustive<I> {
+   val `is` = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.flatMap { _g ->
+                        h.values.map { _h ->
+                           i(_a, _b, _c, _d, _e, _f, _g, _h)
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return `is`.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H, I, J> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: Exhaustive<H>,
+   i: Exhaustive<I>,
+   j: (A, B, C, D, E, F, G, H, I) -> J
+): Exhaustive<J> {
+   val js = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.flatMap { _g ->
+                        h.values.flatMap { _h ->
+                           i.values.map { _i ->
+                              j(_a, _b, _c, _d, _e, _f, _g, _h, _i)
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return js.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H, I, J, K> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: Exhaustive<H>,
+   i: Exhaustive<I>,
+   j: Exhaustive<J>,
+   k: (A, B, C, D, E, F, G, H, I, J) -> K
+): Exhaustive<K> {
+   val ks = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.flatMap { _g ->
+                        h.values.flatMap { _h ->
+                           i.values.flatMap { _i ->
+                              j.values.map { _j ->
+                                 k(_a, _b, _c, _d, _e, _f, _g, _h, _i, _j)
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return ks.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H, I, J, K, L> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: Exhaustive<H>,
+   i: Exhaustive<I>,
+   j: Exhaustive<J>,
+   k: Exhaustive<K>,
+   l: (A, B, C, D, E, F, G, H, I, J, K) -> L
+): Exhaustive<L> {
+   val ls = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.flatMap { _g ->
+                        h.values.flatMap { _h ->
+                           i.values.flatMap { _i ->
+                              j.values.flatMap { _j ->
+                                 k.values.map { _k ->
+                                    l(_a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k)
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return ls.exhaustive()
+}
+
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Exhaustive.Companion.cartesian(
+   a: Exhaustive<A>,
+   b: Exhaustive<B>,
+   c: Exhaustive<C>,
+   d: Exhaustive<D>,
+   e: Exhaustive<E>,
+   f: Exhaustive<F>,
+   g: Exhaustive<G>,
+   h: Exhaustive<H>,
+   i: Exhaustive<I>,
+   j: Exhaustive<J>,
+   k: Exhaustive<K>,
+   l: Exhaustive<L>,
+   m: (A, B, C, D, E, F, G, H, I, J, K, L) -> M
+): Exhaustive<M> {
+   val ms = a.values.flatMap { _a ->
+      b.values.flatMap { _b ->
+         c.values.flatMap { _c ->
+            d.values.flatMap { _d ->
+               e.values.flatMap { _e ->
+                  f.values.flatMap { _f ->
+                     g.values.flatMap { _g ->
+                        h.values.flatMap { _h ->
+                           i.values.flatMap { _i ->
+                              j.values.flatMap { _j ->
+                                 k.values.flatMap { _k ->
+                                    l.values.map { _l ->
+                                       m(_a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l)
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+   return ms.exhaustive()
+}
