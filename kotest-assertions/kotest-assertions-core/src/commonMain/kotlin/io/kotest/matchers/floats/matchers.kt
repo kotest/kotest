@@ -71,7 +71,6 @@ fun Float.shouldBeZero() = this shouldBeExactly 0f
 fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f
 
 
-
 /**
  * Verifies that this float is within [percentage]% of [other]
  *
@@ -81,7 +80,7 @@ fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f
  *
  */
 fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double) {
-   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   checkPreconditions(other, percentage)
    this should beWithinPercentageOf(other, percentage)
 }
 
@@ -94,16 +93,30 @@ fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double) {
  *
  */
 fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
-   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   checkPreconditions(other, percentage)
    this shouldNot beWithinPercentageOf(other, percentage)
 }
 
 fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
    private val tolerance = other.times(percentage / 100).absoluteValue.toFloat()
-   private val range = (other - tolerance)..(other + tolerance)
+   private val range = constructRange()
 
-   override fun test(value: Float) = MatcherResult(
-      value in range,
-      { "$value should be in $range" },
-      { "$value should not be in $range" })
+   override fun test(value: Float) =
+      MatcherResult(
+         value in range,
+         { "$value should be in $range" },
+         { "$value should not be in $range" })
+
+   private fun constructRange() =
+      if (other.isInfinite()) {
+         other..other
+      } else {
+         (other - tolerance)..(other + tolerance)
+      }
+}
+
+private fun Float.checkPreconditions(other: Float, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   require(percentage.isFinite()) { "Percentage must be finite" }
+   require(!other.isNaN() && !this.isNaN()) { "Values must not be NaN" }
 }

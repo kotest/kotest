@@ -56,6 +56,25 @@ class DoubleToleranceTest : FunSpec({
             (value - delta).shouldBeWithinPercentageOf(value, percentage)
          }
       }
+
+      test("Match infinity numbers") {
+         Double.POSITIVE_INFINITY.shouldBeWithinPercentageOf(Double.POSITIVE_INFINITY, 1.0)
+         Double.NEGATIVE_INFINITY.shouldBeWithinPercentageOf(Double.NEGATIVE_INFINITY, 1.0)
+      }
+
+      test("Refuse infinity percentage") {
+         shouldThrow<IllegalArgumentException> {
+            2.0.shouldBeWithinPercentageOf(2.0, Double.POSITIVE_INFINITY)
+         }
+      }
+
+      test("Refuse expected value of Nan") {
+         shouldThrow<IllegalArgumentException> { 2.0.shouldBeWithinPercentageOf(Double.NaN, 1.0) }
+      }
+
+      test("Refuse when given value of NaN") {
+         shouldThrow<IllegalArgumentException> { Double.NaN.shouldBeWithinPercentageOf(2.0, 1.0) }
+      }
    }
 })
 

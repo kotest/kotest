@@ -30,6 +30,25 @@ class FloatPercentageTest : FunSpec() {
                (value - delta).shouldBeWithinPercentageOf(value, percentage)
             }
          }
+
+         test("Match infinity") {
+            Float.POSITIVE_INFINITY.shouldBeWithinPercentageOf(Float.POSITIVE_INFINITY, 1.0)
+            Float.NEGATIVE_INFINITY.shouldBeWithinPercentageOf(Float.NEGATIVE_INFINITY, 1.0)
+         }
+
+         test("Refuse infinity percentage") {
+            shouldThrow<IllegalArgumentException> {
+               2.0f.shouldBeWithinPercentageOf(2.0f, Double.POSITIVE_INFINITY)
+            }
+         }
+
+         test("Refuse expected value of Nan") {
+            shouldThrow<IllegalArgumentException> { 2.0f.shouldBeWithinPercentageOf(Float.NaN, 1.0) }
+         }
+
+         test("Refuse when given value of NaN") {
+            shouldThrow<IllegalArgumentException> { Float.NaN.shouldBeWithinPercentageOf(2.0f, 1.0) }
+         }
       }
    }
 }

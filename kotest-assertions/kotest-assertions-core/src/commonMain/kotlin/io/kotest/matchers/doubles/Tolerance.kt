@@ -90,7 +90,7 @@ class ToleranceMatcher(private val expected: Double?, private val tolerance: Dou
  *
  */
 fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double) {
-   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   checkPreconditions(other, percentage)
    this should beWithinPercentageOf(other, percentage)
 }
 
@@ -103,13 +103,14 @@ fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double) {
  *
  */
 fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double) {
-   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   checkPreconditions(other, percentage)
    this shouldNot beWithinPercentageOf(other, percentage)
 }
 
 fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<Double> {
    private val tolerance = other.times(percentage / 100).absoluteValue
-   private val range = (other - tolerance)..(other + tolerance)
+
+   private val range = constructRange()
 
    override fun test(value: Double) = MatcherResult(
       value in range,
@@ -117,4 +118,17 @@ fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<D
       {
          "$value should not be in $range"
       })
+
+   private fun constructRange() =
+      if (other.isInfinite()) {
+         other..other
+      } else {
+         (other - tolerance)..(other + tolerance)
+      }
+}
+
+private fun Double.checkPreconditions(other: Double, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   require(percentage.isFinite()) { "Percentage must be finite" }
+   require(!other.isNaN() && !this.isNaN()) { "Values must not be NaN" }
 }
