@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.percent
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
+import io.kotest.matchers.doubles.shouldNotBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
@@ -54,6 +55,45 @@ class DoubleToleranceTest : FunSpec({
             val delta = value.times(percentage / 100)
             (value + delta).shouldBeWithinPercentageOf(value, percentage)
             (value - delta).shouldBeWithinPercentageOf(value, percentage)
+         }
+      }
+
+      test("Correctly compare NaN") {
+         (Double.NaN).shouldNotBeWithinPercentageOf(1.0, 1.0)
+
+         Double.NaN shouldNotBe (1.0 plusOrMinus 1.percent)
+      }
+
+      test("Refuse comparing with NaN") {
+         shouldThrow<IllegalArgumentException> {
+            (0.0).shouldBeWithinPercentageOf(Double.NaN, 1.0)
+         }
+         shouldThrow<IllegalArgumentException> {
+            0.0 shouldBe (Double.NaN plusOrMinus 1.percent)
+         }
+      }
+
+      test("Refuse comparing to zero with +inf precision") {
+         shouldThrow<IllegalArgumentException> {
+            0.0.shouldBeWithinPercentageOf(0.0, Double.POSITIVE_INFINITY)
+         }
+         shouldThrow<IllegalArgumentException> {
+            0.0 shouldBe (0.0 plusOrMinus Double.POSITIVE_INFINITY.percent)
+         }
+      }
+
+      test("Refuse comparing to ranges around intinity") {
+         shouldThrow<IllegalArgumentException> {
+            0.0.shouldBeWithinPercentageOf(Double.NEGATIVE_INFINITY, 1.0)
+         }
+         shouldThrow<IllegalArgumentException> {
+            0.0 shouldBe (Double.NEGATIVE_INFINITY plusOrMinus 1.percent)
+         }
+         shouldThrow<IllegalArgumentException> {
+            0.0.shouldBeWithinPercentageOf(Double.POSITIVE_INFINITY, 1.0)
+         }
+         shouldThrow<IllegalArgumentException> {
+            0.0 shouldBe (Double.POSITIVE_INFINITY plusOrMinus 1.percent)
          }
       }
    }

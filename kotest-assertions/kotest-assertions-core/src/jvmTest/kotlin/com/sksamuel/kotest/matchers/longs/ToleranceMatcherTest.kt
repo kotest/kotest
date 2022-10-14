@@ -29,5 +29,11 @@ class ToleranceMatcherTest : FunSpec({
          (value - delta).shouldBeWithinPercentageOf(value, percentage)
       }
    }
+
+   test("Refuse comparing to zero with +inf precision") {
+      shouldThrow<IllegalArgumentException> {
+         0L.shouldBeWithinPercentageOf(0L, Double.POSITIVE_INFINITY)
+      }
+   }
 })
 
