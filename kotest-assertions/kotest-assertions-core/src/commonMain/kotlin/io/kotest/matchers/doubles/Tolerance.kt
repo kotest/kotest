@@ -2,6 +2,7 @@ package io.kotest.matchers.doubles
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.numeric.ToleranceMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.math.abs
@@ -16,7 +17,7 @@ import kotlin.math.absoluteValue
  * 0.1 shouldBe (0.4 plusOrMinus 0.2)   // Assertion fails
  * ```
  */
-infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher {
+infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher<Double> {
    require(tolerance >= 0 && tolerance.isFinite())
    return ToleranceMatcher(this, tolerance)
 }
@@ -38,11 +39,12 @@ data class Percentage(val value: Double)
  * 1.5 shouldBe (1.0 plusOrMinus 10.percent)   // Assertion fails
  * ```
  */
-infix fun Double.plusOrMinus(tolerance: Percentage): ToleranceMatcher {
+infix fun Double.plusOrMinus(tolerance: Percentage): ToleranceMatcher<Double> {
    val realValue = (this * tolerance.value / 100).absoluteValue
    return ToleranceMatcher(this, realValue)
 }
 
+/*
 class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> {
 
   override fun test(value: Double?): MatcherResult {
@@ -80,7 +82,7 @@ class ToleranceMatcher(private val expected: Double?, private val tolerance: Dou
     }
   }
 }
-
+*/
 /**
  * Verifies that this double is within [percentage]% of [other]
  *
@@ -107,14 +109,4 @@ fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double) {
    this shouldNot beWithinPercentageOf(other, percentage)
 }
 
-fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<Double> {
-   private val tolerance = other.times(percentage / 100).absoluteValue
-   private val range = (other - tolerance)..(other + tolerance)
-
-   override fun test(value: Double) = MatcherResult(
-      value in range,
-      { "$value should be in $range" },
-      {
-         "$value should not be in $range"
-      })
-}
+fun beWithinPercentageOf(other: Double, percentage: Double) = ToleranceMatcher(other, other.times(percentage / 100).absoluteValue)

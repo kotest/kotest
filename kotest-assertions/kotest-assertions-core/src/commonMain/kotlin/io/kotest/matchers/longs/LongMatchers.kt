@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.math.absoluteValue
+import io.kotest.matchers.numeric.ToleranceMatcher
 
 fun lt(x: Long) = beLessThan(x)
 fun beLessThan(x: Long) = object : Matcher<Long> {
@@ -86,12 +87,4 @@ fun Long.shouldNotBeWithinPercentageOf(other: Long, percentage: Double) {
    this shouldNot beWithinPercentageOf(other, percentage)
 }
 
-fun beWithinPercentageOf(other: Long, percentage: Double) = object : Matcher<Long> {
-   private val tolerance = other.times(percentage / 100).absoluteValue
-   private val range = (other - tolerance)..(other + tolerance)
-
-   override fun test(value: Long) = MatcherResult(
-      value.toDouble() in range,
-      { "$value should be in $range" },
-      { "$value should not be in $range" })
-}
+fun beWithinPercentageOf(other: Long, percentage: Double) = ToleranceMatcher(other, other.times(percentage / 100).absoluteValue)

@@ -2,6 +2,7 @@ package io.kotest.matchers.floats
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.numeric.ToleranceMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
@@ -98,12 +99,4 @@ fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
    this shouldNot beWithinPercentageOf(other, percentage)
 }
 
-fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
-   private val tolerance = other.times(percentage / 100).absoluteValue.toFloat()
-   private val range = (other - tolerance)..(other + tolerance)
-
-   override fun test(value: Float) = MatcherResult(
-      value in range,
-      { "$value should be in $range" },
-      { "$value should not be in $range" })
-}
+fun beWithinPercentageOf(other: Float, percentage: Double) = ToleranceMatcher(other, other.times(percentage / 100).absoluteValue)
