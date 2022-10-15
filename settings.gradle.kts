@@ -97,7 +97,7 @@ include(
 )
 
 plugins {
-   id("com.gradle.enterprise") version "3.11.1"
+   id("com.gradle.enterprise") version "3.11.2"
 }
 
 gradleEnterprise {
