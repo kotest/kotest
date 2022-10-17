@@ -15,7 +15,7 @@ import java.util.regex.Pattern
  *
  * Since ClassMethodNameFilter is private, we can't get access to the underlying patterns, so we resort
  * to this reflection bullshit to get the raw strings out, so we can parse and apply the patterns ourselves,
- * thus allowing kotest to properly support the --tests options.
+ * thus allowing kotest to properly support the --tests options as well as filter { } block defined in build.gradle.kts.
  *
  */
 object GradlePostDiscoveryFilterExtractor {
@@ -32,10 +32,13 @@ object GradlePostDiscoveryFilterExtractor {
       val matcher = testMatcher(filter)
       logger.log { Pair(null, "TestMatcher [$matcher]") }
 
+      val buildScriptIncludePatterns = buildScriptIncludePatterns(matcher)
+      logger.log { Pair(null, "buildScriptIncludePatterns [$buildScriptIncludePatterns]") }
+
       val commandLineIncludePatterns = commandLineIncludePatterns(matcher)
       logger.log { Pair(null, "commandLineIncludePatterns [$commandLineIncludePatterns]") }
 
-      val regexes = commandLineIncludePatterns.map { pattern(it) }
+      val regexes = (buildScriptIncludePatterns + commandLineIncludePatterns).map { pattern(it) }
       logger.log { Pair(null, "ClassMethodNameFilter regexes [$regexes]") }
       regexes
    }.getOrElse { emptyList() }
@@ -44,6 +47,12 @@ object GradlePostDiscoveryFilterExtractor {
       val field = obj::class.java.getDeclaredField("matcher")
       field.isAccessible = true
       return field.get(obj)
+   }
+
+   private fun buildScriptIncludePatterns(obj: Any): List<Any> {
+      val field = obj::class.java.getDeclaredField("buildScriptIncludePatterns")
+      field.isAccessible = true
+      return field.get(obj) as List<Any>
    }
 
    private fun commandLineIncludePatterns(obj: Any): List<Any> {
