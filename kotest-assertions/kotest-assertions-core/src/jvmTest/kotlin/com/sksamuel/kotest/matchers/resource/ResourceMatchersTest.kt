@@ -48,14 +48,18 @@ class ResourceMatchersTest : ShouldSpec({
 
    }
 
-
-
    context("shouldNotMatchResource") {
 
       should("should not match resource") {
          val givenValue = "not a test resource"
 
          givenValue shouldNotMatchResource  "/resourceMatchersTest/expected/testResource.txt"
+      }
+
+      should("should not match binary resource") {
+         val givenValue = "not a test resource"
+
+         givenValue shouldNotMatchResource  "/resourceMatchersTest/expected/binary.bin"
       }
 
       should("should return message with resource file path") {
