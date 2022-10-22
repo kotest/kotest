@@ -53,9 +53,12 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
       val path = descriptor.dotSeparatedFullPath().value
       val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
       val laxRegexPattern = "^(.*)$pattern(.*)\$".toRegex() // matches pattern that can be followed by others
-      val packagePath = descriptor.spec().kclass.java.packageName // io.kotest
+      val packagePath = descriptor.spec().id.value.split(".").dropLast(1).joinToString(".") // io.kotest
 
-      val isSimpleClassMatch by lazy { descriptor.spec().kclass.java.simpleName.matches(pattern.toRegex()) } // SomeTest or *Test
+      val isSimpleClassMatch by lazy {
+         // SomeTest or *Test
+         descriptor.spec().id.value.split(".").lastOrNull()?.matches(pattern.toRegex()) ?: false
+      }
       val isSpecMatched by lazy { descriptor.spec().id.value.matches(regexPattern) } // *.SomeTest
       val isFullPathMatched by lazy { path.matches(regexPattern) } // io.*.SomeTest
       val isFullPathDotMatched by lazy { "$path.".matches(regexPattern) } // io.*. or io.*.SomeTest.*
