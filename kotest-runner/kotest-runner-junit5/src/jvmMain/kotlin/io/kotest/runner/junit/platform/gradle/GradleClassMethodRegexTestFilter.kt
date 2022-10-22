@@ -21,8 +21,28 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
 
    /**
     * Matches the pattern supplied from gradle build script or command line interface.
-    * Gradle supplies a well-formed regex to the engine that we can leverage to construct a well-formed regex object.
     *
+    * supports:
+    * - gradle test --tests "SomeTest"
+    * - gradle test --tests "*Test"
+    * - gradle test --tests "io.package.*"
+    * - gradle test --tests "io.package"
+    * - gradle test --tests "io.package.SomeTest"
+    * - gradle test --tests "io.package.SomeTest.first level context*"
+    * - gradle test --tests "io.package.SomeTest.*"
+    * - gradle test --tests "io.*.SomeTest"
+    * - gradle test --tests "SomeTest.first level context*"
+    * - gradle test --tests "*.first level context*"
+    *
+    * Exact nested context / test matching is NOT CURRENTLY SUPPORTED.
+    * Kotest support lazy test registration within nested context. Gradle test filter does not
+    * natively work nicely with kotest. In order to make it work we need to think of a way to
+    * recursively apply partial context-search as we dive deeper into the contexts.
+    *
+    * Notes to Maintainers:
+    *
+    * Gradle supplies a pattern string which corresponds to a well-formed regex object.
+    * This can be directly usable for kotest.
     * - A* becomes \QA\E.*
     * - A*Test becomes \QA\E.*\QTest\E
     * - io.*.A*Test becomes \Qio.\E.*\Q.A\E.*\QTest\E
@@ -31,19 +51,20 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
     */
    private fun match(pattern: String, descriptor: Descriptor): Boolean {
       val path = descriptor.dotSeparatedFullPath().value
-      val regexPattern = "^(.*)$pattern".toRegex() // matches
-      val laxRegexPattern = "^(.*)$pattern(.*)\$".toRegex() // matches pattern that begins with and followed by
+      val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
+      val laxRegexPattern = "^(.*)$pattern(.*)\$".toRegex() // matches pattern that can be followed by others
       val packagePath = descriptor.spec().kclass.java.packageName // io.kotest
 
-      val isSimpleClassMatch = descriptor.spec().kclass.java.simpleName.matches(pattern.toRegex()) // SomeTest or *Test
-      val isSpecMatched = descriptor.spec().id.value.matches(regexPattern) // *.SomeTest
-      val isFullPathMatched = path.matches(regexPattern) // io.*.SomeTest
-      val isFullPathDotMatched = "$path.".matches(regexPattern) // io.*. or io.*.SomeTest.*
+      val isSimpleClassMatch by lazy { descriptor.spec().kclass.java.simpleName.matches(pattern.toRegex()) } // SomeTest or *Test
+      val isSpecMatched by lazy { descriptor.spec().id.value.matches(regexPattern) } // *.SomeTest
+      val isFullPathMatched by lazy { path.matches(regexPattern) } // io.*.SomeTest
+      val isFullPathDotMatched by lazy { "$path.".matches(regexPattern) } // io.*. or io.*.SomeTest.*
 
-      val doesNotContainUppercase = pattern.replace("\\Q", "").replace("\\E", "").all { !it.isUpperCase() }
+      // if there's no uppercase in the supplied pattern, activate trigger relaxed matching
+      val doesNotContainUppercase by lazy { pattern.replace("\\Q", "").replace("\\E", "").all { !it.isUpperCase() } }
 
-      val isPackageMatched = doesNotContainUppercase && packagePath.matches(laxRegexPattern) // io.kotest
-      val isPackageWithDotMatched = doesNotContainUppercase && "$packagePath.".matches(laxRegexPattern) // io.kotest.*
+      val isPackageMatched by lazy { doesNotContainUppercase && packagePath.matches(laxRegexPattern) } // io.kotest
+      val isPackageWithDotMatched by lazy { doesNotContainUppercase && "$packagePath.".matches(laxRegexPattern) } // io.kotest.*
 
       return isSimpleClassMatch ||
          isFullPathMatched ||
@@ -55,6 +76,14 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
 
    /**
     * Returns a gradle-compatible dot-separated full path of the given descriptor.
+    * i.e. io.package.MyTest.given something -- should do something
+    *
+    * Note: I'm forced to do this... :(
+    *
+    * We cannot use the / separator for contexts as gradle rejects that.
+    * Filters also seemingly only works on first "." after the class. This was severely limiting.
+    * The other problem is that also means we can't have "." in the test / context path because gradle doesn't
+    * like it and will not even give us any candidate classes.
     */
    private fun Descriptor.dotSeparatedFullPath(): TestPath = when (this) {
       is Descriptor.SpecDescriptor -> TestPath(this.id.value)
