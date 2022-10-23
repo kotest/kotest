@@ -226,6 +226,8 @@ abstract class AbstractProjectConfig {
 
    open val testNameAppendTags: Boolean? = null
 
+   open val tagInheritance: Boolean? = null
+
    /**
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
