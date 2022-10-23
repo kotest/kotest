@@ -148,9 +148,9 @@ sealed interface Descriptor {
    fun getTreePrefix(): List<Descriptor> {
       val ret = mutableListOf<Descriptor>()
       var x = this
-      loop@ while(true) {
+      loop@ while (true) {
          ret.add(0, x)
-         when(x) {
+         when (x) {
             is SpecDescriptor -> {
                break@loop
             }
@@ -179,7 +179,7 @@ data class DescriptorId(
    /**
     * Treats the lhs and rhs both as wildcard regex one by one and check if it matches the other
     */
-   fun wildCardMatch(id: DescriptorId) :Boolean  {
+   fun wildCardMatch(id: DescriptorId): Boolean {
       val thisRegex = with(this.value) {
          ("\\Q$this\\E").replace("*", "\\E.*\\Q").toRegex()
       }
@@ -204,7 +204,7 @@ fun Descriptor.append(name: String): TestDescriptor =
  * This may be the same descriptor that this method is invoked on, if that descriptor
  * is a root test.
  */
-fun TestDescriptor.root(): TestDescriptor {
+tailrec fun TestDescriptor.root(): TestDescriptor {
    return when (parent) {
       is SpecDescriptor -> this // if my parent is a spec, then I am a root
       is TestDescriptor -> parent.root()
