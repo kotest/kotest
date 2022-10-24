@@ -30,6 +30,7 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
    allowMultilineTestName()?.let { configuration.removeTestNameWhitespace = it }
    globalAssertSoftly()?.let { configuration.globalAssertSoftly = it }
    testNameAppendTags()?.let { configuration.testNameAppendTags = it }
+   tagInheritance()?.let { configuration.tagInheritance = it }
    duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
    projectTimeout()?.let { configuration.projectTimeout = it }
    logLevel(configuration.logLevel).let { configuration.logLevel = it }
@@ -64,6 +65,9 @@ internal fun globalAssertSoftly(): Boolean? =
 
 internal fun testNameAppendTags(): Boolean? =
    sysprop(KotestEngineProperties.testNameAppendTags)?.let { it.uppercase() == "TRUE" }
+
+internal fun tagInheritance(): Boolean? =
+   syspropOrEnv(KotestEngineProperties.tagInheritance)?.let { it.uppercase() == "TRUE" }
 
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
    sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
