@@ -1,7 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -51,8 +49,26 @@ data class JsonTree(val root: JsonNode, val raw: String)
 infix fun String.shouldEqualJson(expected: String): Unit =
    this.shouldEqualJson(expected, defaultCompareJsonOptions)
 
+/**
+ * Configures [CompareJsonOptions] with the given block, which should also return the expected value
+ */
+infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String) {
+   val options = CompareJsonOptions()
+   val expected = options.configureAndProvideExpected()
+   this.shouldEqualJson(expected, options)
+}
+
 infix fun String.shouldNotEqualJson(expected: String): Unit =
    this.shouldNotEqualJson(expected, defaultCompareJsonOptions)
+
+/**
+ * Configures [CompareJsonOptions] with the given block, which should also return the expected value
+ */
+infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String) {
+   val options = CompareJsonOptions()
+   val expected = options.configureAndProvideExpected()
+   this.shouldNotEqualJson(expected, options)
+}
 
 fun String.shouldEqualJson(expected: String, mode: CompareMode) =
    shouldEqualJson(expected, legacyOptions(mode, CompareOrder.Strict))

@@ -7,6 +7,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
 import io.kotest.property.exhaustive.of
+import kotlin.math.pow
 
 class CheckAllExhaustivesIterationTest : FunSpec() {
    init {
@@ -74,6 +75,155 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
          context.attempts() shouldBe 6 * 6 * 6 * 6 * 6
          context.successes() shouldBe 6 * 6 * 6 * 6 * 6
          context.failures() shouldBe 0
+      }
+
+      fun Int.pow(exp: Int) = toBigInteger().pow(exp).toInt()
+
+      test("checkAll with 6 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            1000,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(6)
+         context.successes() shouldBe 2.pow(6)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 7 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            1000,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(7)
+         context.successes() shouldBe 2.pow(7)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 8 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            1000,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(8)
+         context.successes() shouldBe 2.pow(8)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 9 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            1000,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(9)
+         context.successes() shouldBe 2.pow(9)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 10 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            Int.MAX_VALUE,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(10)
+         context.successes() shouldBe 2.pow(10)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 11 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            Int.MAX_VALUE,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(11)
+         context.successes() shouldBe 2.pow(11)
+         context.failures() shouldBe 0
+
+      }
+
+      test("checkAll with 12 exhaustives should run for each cross product") {
+
+         val context = checkAll(
+            Int.MAX_VALUE,
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _, _ -> }
+
+         context.attempts() shouldBe 2.pow(12)
+         context.successes() shouldBe 2.pow(12)
+         context.failures() shouldBe 0
+
       }
    }
 }

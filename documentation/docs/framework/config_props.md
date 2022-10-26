@@ -122,6 +122,11 @@ object KotestEngineProperties {
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
 
    /**
+    * Controls whether classes will inherit tags from their supertypes. Default false
+    */
+   const val tagInheritance = "kotest.framework.tag.inheritance"
+
+   /**
     * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
     */
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"

@@ -51,6 +51,8 @@ class TestCaseExecutor(
 
    @OptIn(ExperimentalStdlibApi::class)
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
+      logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
+
       val timeMark = MonotonicTimeSourceCompat.markNow()
 
       val interceptors = listOfNotNull(
@@ -72,7 +74,7 @@ class TestCaseExecutor(
          TestInvocationInterceptor(configuration.registry, timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
-         if (platform == Platform.JVM && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+         if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
          CoroutineDebugProbeInterceptor,
       )
 

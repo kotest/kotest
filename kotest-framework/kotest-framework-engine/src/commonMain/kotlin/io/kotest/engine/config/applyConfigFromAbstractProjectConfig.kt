@@ -48,6 +48,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // config
    config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
    config.logLevel?.let { configuration.logLevel = it }
+   config.tagInheritance?.let { configuration.tagInheritance = it }
 
    // coroutines
    config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }

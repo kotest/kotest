@@ -82,6 +82,17 @@ sealed interface Descriptor {
    fun isRootTest() = this is TestDescriptor && this.parent.isSpec()
 
    /**
+    * Returns true if this type equals that type. For example
+    * if this is a spec and the rhs is also spec
+    */
+   fun isEqualType(that: Descriptor): Boolean {
+      return when (this) {
+         is SpecDescriptor -> that.isSpec()
+         is TestDescriptor -> that.isTestCase()
+      }
+   }
+
+   /**
     * Returns the depth of this node, where the [SpecDescriptor] has depth of 0,
     * a root test has depth 1 and so on.
     */
@@ -132,6 +143,26 @@ sealed interface Descriptor {
       this == description || this.isAncestorOf(description)
 
    /**
+    * Returns the prefix of the descriptor starting with the root (spec)
+    */
+   fun getTreePrefix(): List<Descriptor> {
+      val ret = mutableListOf<Descriptor>()
+      var x = this
+      loop@ while (true) {
+         ret.add(0, x)
+         when (x) {
+            is SpecDescriptor -> {
+               break@loop
+            }
+            is TestDescriptor -> {
+               x = x.parent
+            }
+         }
+      }
+      return ret
+   }
+
+   /**
     * Returns the [SpecDescriptor] parent for this [Descriptor].
     * If this is already a spec descriptor, then returns itself.
     */
@@ -143,7 +174,21 @@ sealed interface Descriptor {
 
 data class DescriptorId(
    val value: String,
-)
+) {
+
+   /**
+    * Treats the lhs and rhs both as wildcard regex one by one and check if it matches the other
+    */
+   fun wildCardMatch(id: DescriptorId): Boolean {
+      val thisRegex = with(this.value) {
+         ("\\Q$this\\E").replace("*", "\\E.*\\Q").toRegex()
+      }
+      val thatRegex = with(id.value) {
+         ("\\Q$this\\E").replace("*", "\\E.*\\Q").toRegex()
+      }
+      return (thisRegex.matches(id.value) || thatRegex.matches(this.value))
+   }
+}
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
    TestDescriptor(this, DescriptorId(name.testName))
@@ -159,7 +204,7 @@ fun Descriptor.append(name: String): TestDescriptor =
  * This may be the same descriptor that this method is invoked on, if that descriptor
  * is a root test.
  */
-fun TestDescriptor.root(): TestDescriptor {
+tailrec fun TestDescriptor.root(): TestDescriptor {
    return when (parent) {
       is SpecDescriptor -> this // if my parent is a spec, then I am a root
       is TestDescriptor -> parent.root()

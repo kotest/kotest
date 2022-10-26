@@ -154,7 +154,7 @@ module.exports = {
             docs: {
                versions: {
                   current: {
-                     label: `5.5 🚧`,
+                     label: `5.6 🚧`,
                   },
                },
                sidebarPath: require.resolve('./sidebars.js'),
