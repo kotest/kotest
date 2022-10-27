@@ -8,6 +8,7 @@ import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
+import org.junit.jupiter.api.parallel.ExecutionMode
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Method
 import java.util.Optional
@@ -19,6 +20,8 @@ class KotestExtensionContext(
 ) : ExtensionContext {
 
    private val formatter = getDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
+
+   override fun getExecutionMode(): ExecutionMode = ExecutionMode.CONCURRENT
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
