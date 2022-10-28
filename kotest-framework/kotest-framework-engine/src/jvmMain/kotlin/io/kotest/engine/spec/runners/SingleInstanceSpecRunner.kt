@@ -81,7 +81,7 @@ internal class SingleInstanceSpecRunner(
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         logger.log { Pair(testCase.name.testName, "Nested test case discovered '${nested}") }
+         logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
 
          val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
          if (skipRemaining) {

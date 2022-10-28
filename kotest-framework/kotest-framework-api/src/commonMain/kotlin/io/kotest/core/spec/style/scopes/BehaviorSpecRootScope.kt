@@ -11,12 +11,12 @@ typealias BehaviorSpecRootContext = BehaviorSpecRootScope
  * given("some test")
  * xgiven("some disabled test")
  */
-@Suppress("FunctionName")
 interface BehaviorSpecRootScope : RootScope {
 
    /**
     * Adds a top level [BehaviorSpecGivenContainerScope] to this spec.
     */
+   @Suppress("FunctionName")
    fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, false, test)
 
    /**
@@ -34,7 +34,7 @@ interface BehaviorSpecRootScope : RootScope {
     */
    fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, true, test)
 
-   private fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
+   fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       addContainer(
          TestName("Given: ", name, true),
          disabled = xdisabled,

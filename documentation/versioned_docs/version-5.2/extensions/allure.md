@@ -6,7 +6,7 @@ slug: allure.html
 ---
 
 
-[Allure](http://allure.qatools.ru) is an open-source framework designed for detailed and interactive test reports.
+[Allure](https://qameta.io/allure-report/) is an open-source framework designed for detailed and interactive test reports.
 It works by generating report files which are then used to create the final HTML report.
 You can think of it as like the traditional junit report but more advanced and detailed.
 

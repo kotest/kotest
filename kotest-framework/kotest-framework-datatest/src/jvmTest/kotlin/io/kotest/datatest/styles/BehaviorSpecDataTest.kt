@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
@@ -20,7 +21,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
+         count shouldBe 189
       }
 
       given("inside a given") {
@@ -32,6 +33,26 @@ class BehaviorSpecDataTest : BehaviorSpec() {
             registerContextTests().assertDataTestResults()
             and("inside an and") {
                registerContextTests().assertDataTestResults()
+            }
+         }
+      }
+
+      withData(nameFn = { "$it" }, 100, 101) { a ->
+         Given("k") {
+            When("l") {
+               Then("m") {
+                  a shouldBe a
+               }
+            }
+         }
+      }
+
+      Given("d") {
+         withData(nameFn = { "$it" }, 200, 201) { a ->
+            When("e") {
+               Then("f") {
+                  a shouldBe a
+               }
             }
          }
       }
