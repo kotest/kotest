@@ -33,6 +33,31 @@ class AbortedExceptionTest : FreeSpec({
          .values
          .shouldContainExactly(TestResult.Ignored)
    }
+
+   "Failure is not reclassified" {
+      val assertionError = AssertionError("blah")
+      val result = MarkAbortedExceptionsAsSkippedTestInterceptor.intercept(DummySpec()) {
+         Result.success(
+            mapOf(fakeTestCase to TestResult.Failure(1.milliseconds, assertionError))
+         )
+      }
+
+      result.shouldBeSuccess()
+         .values
+         .shouldContainExactly(TestResult.Failure(1.milliseconds, assertionError))
+   }
+
+   "Successful test is not reclassified" {
+      val result = MarkAbortedExceptionsAsSkippedTestInterceptor.intercept(DummySpec()) {
+         Result.success(
+            mapOf(fakeTestCase to TestResult.Success(1.milliseconds))
+         )
+      }
+
+      result.shouldBeSuccess()
+         .values
+         .shouldContainExactly(TestResult.Success(1.milliseconds))
+   }
 })
 
 private class DummySpec : FreeSpec()
