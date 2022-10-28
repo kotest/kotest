@@ -51,6 +51,8 @@ class TestCaseExecutor(
 
    @OptIn(ExperimentalStdlibApi::class)
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
+      logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
+
       val timeMark = MonotonicTimeSourceCompat.markNow()
 
       val interceptors = listOfNotNull(

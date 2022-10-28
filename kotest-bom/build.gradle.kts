@@ -38,8 +38,8 @@ val signingPassword: String? by project
 publishing {
    repositories {
       maven {
-         val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-         val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+         val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+         val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
          name = "deploy"
          url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
          credentials {
@@ -83,15 +83,12 @@ publishing {
 }
 
 signing {
-   val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
    useGpgCmd()
-
    if (signingKey != null && signingPassword != null) {
       @Suppress("UnstableApiUsage")
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
-
    if (Ci.isRelease) {
-      sign(publications)
+      sign(publishing.publications)
    }
 }

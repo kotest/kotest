@@ -32,10 +32,17 @@ object GradlePostDiscoveryFilterExtractor {
       val matcher = testMatcher(filter)
       logger.log { Pair(null, "TestMatcher [$matcher]") }
 
+      val buildScriptIncludePatterns = buildScriptIncludePatterns(matcher)
+      logger.log { Pair(null, "buildScriptIncludePatterns [$buildScriptIncludePatterns]") }
+
       val commandLineIncludePatterns = commandLineIncludePatterns(matcher)
       logger.log { Pair(null, "commandLineIncludePatterns [$commandLineIncludePatterns]") }
 
-      val regexes = commandLineIncludePatterns.map { pattern(it) }
+      val regexes = buildList {
+         addAll(buildScriptIncludePatterns)
+         addAll(commandLineIncludePatterns)
+      }.map { pattern(it) }
+
       logger.log { Pair(null, "ClassMethodNameFilter regexes [$regexes]") }
       regexes
    }.getOrElse { emptyList() }
@@ -48,6 +55,12 @@ object GradlePostDiscoveryFilterExtractor {
 
    private fun commandLineIncludePatterns(obj: Any): List<Any> {
       val field = obj::class.java.getDeclaredField("commandLineIncludePatterns")
+      field.isAccessible = true
+      return field.get(obj) as List<Any>
+   }
+
+   private fun buildScriptIncludePatterns(obj: Any): List<Any> {
+      val field = obj::class.java.getDeclaredField("buildScriptIncludePatterns")
       field.isAccessible = true
       return field.get(obj) as List<Any>
    }

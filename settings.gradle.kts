@@ -97,7 +97,7 @@ include(
 )
 
 plugins {
-   id("com.gradle.enterprise") version "3.11.1"
+   id("com.gradle.enterprise") version "3.11.2"
 }
 
 gradleEnterprise {
@@ -107,5 +107,4 @@ gradleEnterprise {
    }
 }
 
-enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
