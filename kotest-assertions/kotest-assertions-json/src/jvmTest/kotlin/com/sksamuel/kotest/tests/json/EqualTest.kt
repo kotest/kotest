@@ -21,6 +21,18 @@ import io.kotest.property.exhaustive.boolean
 class EqualTest : FunSpec() {
    init {
 
+      test("error message shows correct actual and expected") {
+         shouldFail {
+            val expected = """
+               {"a":"Hello"}
+            """
+
+            val actual = """{}"""
+
+            actual shouldEqualJson expected
+         }.message shouldStartWith "The top level object was missing expected field(s) [a]"
+      }
+
       test("comparing strings in objects") {
 
          checkAll(Arb.string(1..10, Codepoint.az())) { string ->
@@ -161,12 +173,12 @@ expected:<{
       }
 
       test("comparing object with extra key") {
-         val a = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
-         val b = """ { "a" : "foo", "b" : "bar" } """
+         val actual = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
+         val expected = """ { "a" : "foo", "b" : "bar" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c]
+            """The top level object has extra field(s) [c]
 
 expected:<{
   "a": "foo",
@@ -180,12 +192,12 @@ expected:<{
       }
 
       test("comparing object with extra keys") {
-         val a = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": true } """
-         val b = """ { "a" : "foo", "b" : "bar" } """
+         val actual = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": true } """
+         val expected = """ { "a" : "foo", "b" : "bar" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c,d]
+            """The top level object has extra field(s) [c,d]
 
 expected:<{
   "a": "foo",
@@ -200,12 +212,12 @@ expected:<{
       }
 
       test("comparing object with missing key") {
-         val a = """ { "a" : "foo", "b" : "bar" } """
-         val b = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
+         val actual = """ { "a" : "foo", "b" : "bar" } """
+         val expected = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object has extra field(s) [c]
+            """The top level object was missing expected field(s) [c]
 
 expected:<{
   "a": "foo",
@@ -219,12 +231,12 @@ expected:<{
       }
 
       test("comparing object with missing keys") {
-         val a = """ { "a" : "foo", "b" : "bar" } """
-         val b = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": 123 } """
+         val actual = """ { "a" : "foo", "b" : "bar" } """
+         val expected = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": 123 } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object has extra field(s) [c,d]
+            """The top level object was missing expected field(s) [c,d]
 
 expected:<{
   "a": "foo",
@@ -674,12 +686,12 @@ expected:<{
       }
 
       test("real world json without field") {
-         val a = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
-         val b = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
+         val actual = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         val expected = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.message.shouldStartWith(
-            """At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
+            """At 'products.[0].variants.[0]' object has extra field(s) [sku]
 
 expected:<{
   "products": [
