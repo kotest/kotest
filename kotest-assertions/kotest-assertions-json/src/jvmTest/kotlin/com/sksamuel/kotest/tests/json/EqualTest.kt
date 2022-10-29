@@ -21,18 +21,6 @@ import io.kotest.property.exhaustive.boolean
 class EqualTest : FunSpec() {
    init {
 
-      test("error message shows correct actual and expected") {
-         shouldFail {
-            val expected = """
-               {"a":"Hello"}
-            """
-
-            val actual = """{}"""
-
-            actual shouldEqualJson expected
-         }.message shouldStartWith "The top level object was missing expected field(s) [a]"
-      }
-
       test("comparing strings in objects") {
 
          checkAll(Arb.string(1..10, Codepoint.az())) { string ->
