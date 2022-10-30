@@ -27,9 +27,9 @@ class ContainerTimeoutTest : FunSpec() {
 @ExperimentalKotest
 private class NestedTimeout : FunSpec() {
    init {
-      context("a").config(timeout = 10.milliseconds) {
+      context("a").config(timeout = 100.milliseconds) {
          test("b") {
-            delay(200.milliseconds)
+            delay(2000.milliseconds)
          }
       }
    }
