@@ -43,22 +43,22 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       val test = container.append("nested test")
 
       withData(
-         nameFn = { filters -> "should be INCLUDED when evaluating $filters" },
+         nameFn = { filters -> "should be INCLUDED if any of the filters matches when evaluating $filters" },
          listOf("\\Qio.kotest.runner.junit.platform.gradle\\E"),
          listOf("\\Qio.kotest.runner.junit.platform.gradle.\\E.*"),
          listOf(".*\\Qnner.junit.platform.gradle\\E"),
          listOf(".*\\Qnner.junit.platform.gradle.\\E.*"),
          listOf(".*\\Q.junit.platform.gradle\\E"),
          listOf("\\Qio.kotest.runner.junit.platform.gra\\E.*"),
-         listOf("\\Qio.kotest.runner.junit\\E"),
+         listOf(".*\\QNotSpec\\E", "\\Qio.kotest.runner.junit\\E"),
       ) { filters ->
          GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Include
       }
 
       withData(
-         nameFn = { filters -> "should be EXCLUDED when evaluating $filters" },
+         nameFn = { filters -> "should be EXCLUDED if none of the filters matches when evaluating $filters" },
          listOf("\\Qio.kotest.runner.junit2\\E"),
-         listOf("\\Qio.kotest.runner.junit\\E", ".*\\QSpec\\E"),
+         listOf("\\Qio.kotest.runner.junit2\\E", ".*\\QNotSpec\\E"),
       ) { filters ->
          GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Exclude(null)
       }
