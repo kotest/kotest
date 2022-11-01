@@ -14,7 +14,7 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
       logger.log { Pair(descriptor.toString(), "Testing against $patterns") }
       return when {
          patterns.isEmpty() -> TestFilterResult.Include
-         patterns.all { match(it, descriptor) } -> TestFilterResult.Include
+         patterns.any { match(it, descriptor) } -> TestFilterResult.Include
          else -> TestFilterResult.Exclude(null)
       }
    }
