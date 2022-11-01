@@ -18,7 +18,7 @@ class ContainerTimeoutTest : FunSpec() {
             .launch()
          collector.tests.keys.map { it.name.testName }.toSet() shouldBe setOf("a")
          collector.tests.values.map { it.errorOrNull?.message }.toSet() shouldBe setOf(
-            "Test 'a' did not complete within 10ms",
+            "Test 'a' did not complete within 100ms",
          )
       }
    }
