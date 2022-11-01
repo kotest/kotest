@@ -48,7 +48,7 @@ And we can test that instances fail validation with specific error messages like
 
 ```kotlin
 val bob = UserProfile("bob", 18)
-validateUser.shouldBeInvalid(a) {
+validateUser.shouldBeInvalid(bob) {
   it.shouldContainError(UserProfile::fullName, "must have at least 4 characters")
   it.shouldContainError(UserProfile::age, "must be at least '21'")
 }

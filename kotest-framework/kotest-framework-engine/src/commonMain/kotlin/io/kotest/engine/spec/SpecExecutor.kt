@@ -31,6 +31,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.specInterceptorsForPlatform
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
@@ -98,7 +99,7 @@ class SpecExecutor(
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextInterceptor(context.configuration),
-      )
+      ) + specInterceptorsForPlatform()
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          try {
