@@ -27,8 +27,8 @@ typealias WordSpecShouldContainerContext = WordSpecShouldContainerScope
  */
 @KotestTestScope
 class WordSpecShouldContainerScope(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    suspend fun String.config(
       enabled: Boolean? = null,

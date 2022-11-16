@@ -4,7 +4,9 @@ import io.kotest.common.KotestInternal
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.test.TestScope as CoroutinesTestScope
 
 @SoftDeprecated("Renamed in 5.0 to TestScope")
 typealias TestContext = TestScope
@@ -35,4 +37,8 @@ interface TestScope : CoroutineScope {
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
+
+   @ExperimentalCoroutinesApi
+   val testScope: CoroutinesTestScope
+      get() = error("Test Scope not active. You need to set coroutineTestScope = true to enable it")
 }

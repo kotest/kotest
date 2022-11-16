@@ -13,8 +13,8 @@ typealias WordSpecWhenContainerContext = WordSpecWhenContainerScope
 @Suppress("FunctionName")
 @KotestTestScope
 class WordSpecWhenContainerScope(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    suspend infix fun String.Should(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, false)
    suspend infix fun String.should(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, false)

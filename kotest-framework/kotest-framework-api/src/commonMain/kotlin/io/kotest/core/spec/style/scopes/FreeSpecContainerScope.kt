@@ -17,7 +17,7 @@ typealias FreeScope = FreeSpecContainerScope
 typealias FreeSpecContainerContext = FreeSpecContainerScope
 
 @KotestTestScope
-class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class FreeSpecContainerScope(val parentTestScope: TestScope) : AbstractContainerScope(parentTestScope) {
 
    /**
     * Creates a new container scope inside this spec.

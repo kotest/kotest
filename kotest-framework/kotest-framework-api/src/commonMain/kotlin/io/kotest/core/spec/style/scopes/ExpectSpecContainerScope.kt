@@ -27,8 +27,8 @@ typealias ExpectSpecContainerContext = ExpectSpecContainerScope
  */
 @KotestTestScope
 class ExpectSpecContainerScope(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    suspend fun context(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
       registerContainer(TestName("Context: ", name, false), false, null) { ExpectSpecContainerScope(this).test() }
@@ -47,7 +47,7 @@ class ExpectSpecContainerScope(
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Expect: ", name, false),
          context = this,
@@ -56,7 +56,7 @@ class ExpectSpecContainerScope(
    }
 
    suspend fun xexpect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Expect: ", name, false),
          context = this,

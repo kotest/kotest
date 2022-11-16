@@ -68,7 +68,7 @@ interface StringSpecRootScope : RootScope {
     */
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
       addTest(TestName(null, this, false), false, null) {
-         StringSpecScope(this.coroutineContext, testCase).test()
+         StringSpecScope(this.coroutineContext, testCase, testScope).test()
       }
    }
 }
@@ -80,4 +80,5 @@ interface StringSpecRootScope : RootScope {
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
    override val testCase: TestCase,
+   override val testScope: kotlinx.coroutines.test.TestScope
 ) : TerminalScope()

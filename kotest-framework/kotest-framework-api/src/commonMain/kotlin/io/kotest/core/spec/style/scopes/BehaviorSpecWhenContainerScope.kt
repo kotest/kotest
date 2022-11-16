@@ -24,7 +24,7 @@ typealias BehaviorSpecWhenContainerContext = BehaviorSpecWhenContainerScope
  */
 @Suppress("FunctionName")
 @KotestTestScope
-class BehaviorSpecWhenContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class BehaviorSpecWhenContainerScope(val parentTestScope: TestScope) : AbstractContainerScope(parentTestScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       addAnd(name, test, xdisabled = false)

@@ -20,6 +20,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.UnresolvedTestConfig
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
 
 @Deprecated("Renamed to ContainerScope in 5.0")
@@ -202,16 +203,20 @@ interface ContainerScope : TestScope {
 }
 
 @KotestTestScope
-open class AbstractContainerScope(private val testScope: TestScope) : ContainerScope {
+open class AbstractContainerScope(private val parentTestScope: TestScope) : ContainerScope {
 
    private var registered = false
-   override val testCase: TestCase = testScope.testCase
+   override val testCase: TestCase = parentTestScope.testCase
 
-   override val coroutineContext: CoroutineContext = testScope.coroutineContext
+   override val coroutineContext: CoroutineContext = parentTestScope.coroutineContext
    override suspend fun registerTestCase(nested: NestedTest) {
       registered = true
-      testScope.registerTestCase(nested)
+      parentTestScope.registerTestCase(nested)
    }
 
    override fun hasChildren(): Boolean = registered
+
+   @ExperimentalCoroutinesApi
+   override val testScope: kotlinx.coroutines.test.TestScope
+      get() = parentTestScope.testScope
 }

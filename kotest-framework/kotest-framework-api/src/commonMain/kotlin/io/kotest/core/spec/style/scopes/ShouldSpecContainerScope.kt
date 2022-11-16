@@ -22,8 +22,8 @@ typealias ShouldSpecContainerContext = ShouldSpecContainerScope
  */
 @KotestTestScope
 class ShouldSpecContainerScope(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    /**
     * Adds a nested context scope to this scope.
@@ -50,12 +50,12 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(TestName("should ", name, false), this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(TestName("should ", name, false), this, true)
    }
 

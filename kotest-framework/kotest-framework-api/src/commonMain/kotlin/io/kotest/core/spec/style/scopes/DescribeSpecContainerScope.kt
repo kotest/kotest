@@ -30,8 +30,8 @@ typealias DescribeSpecContainerContext = DescribeSpecContainerScope
  */
 @KotestTestScope
 class DescribeSpecContainerScope(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    /**
     * Registers a container test.
@@ -86,7 +86,7 @@ class DescribeSpecContainerScope(
       ) { DescribeSpecContainerScope(it) }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,
@@ -95,7 +95,7 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,

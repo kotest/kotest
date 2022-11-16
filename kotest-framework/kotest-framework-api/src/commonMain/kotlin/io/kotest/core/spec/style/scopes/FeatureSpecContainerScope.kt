@@ -25,9 +25,9 @@ typealias FeatureSpecContainerContext = FeatureSpecContainerScope
  * xscenario("some test").config(...)
  *
  */
-class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class FeatureSpecContainerScope(val parentTestScope: TestScope) : AbstractContainerScope(parentTestScope) {
 
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
+   override suspend fun registerTestCase(nested: NestedTest) = parentTestScope.registerTestCase(nested)
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
@@ -54,7 +54,7 @@ class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerSco
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,
@@ -63,7 +63,7 @@ class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerSco
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,

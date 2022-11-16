@@ -22,8 +22,8 @@ typealias FunSpecContainerContext = FunSpecContainerScope
  */
 @KotestTestScope
 class FunSpecContainerScope(
-   private val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+   private val parentTestScope: TestScope,
+) : AbstractContainerScope(parentTestScope) {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
@@ -68,7 +68,7 @@ class FunSpecContainerScope(
     * Adds a test case to this context, expecting config.
     */
    suspend fun test(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
@@ -80,7 +80,7 @@ class FunSpecContainerScope(
     * Adds a disabled test case to this context, expecting config.
     */
    suspend fun xtest(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(parentTestScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
