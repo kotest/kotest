@@ -6,6 +6,7 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.engine.listener.TestEngineListener
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -18,11 +19,32 @@ internal fun TestScope.withCoroutineContext(coroutineContext: CoroutineContext):
    else -> TestScopeWithCoroutineContext(this, coroutineContext)
 }
 
+/**
+ * Returns a new [TestScope] which uses the given [coroutineTestScope] with the other methods
+ * delegating to the receiver context.
+ */
+@ExperimentalCoroutinesApi
+internal fun TestScope.withCoroutineTestScope(coroutineTestScope: kotlinx.coroutines.test.TestScope): TestScope = when  {
+   this is TestScopeWithCoroutineTestScope -> TestScopeWithCoroutineTestScope(delegate, coroutineTestScope)
+   else -> TestScopeWithCoroutineTestScope(this, coroutineTestScope)
+}
+
 private class TestScopeWithCoroutineContext(
    val delegate: TestScope,
    override val coroutineContext: CoroutineContext
 ) : TestScope by delegate {
    override fun toString(): String = "TestCaseContext [$coroutineContext]"
+}
+
+@ExperimentalCoroutinesApi
+private class TestScopeWithCoroutineTestScope(
+   val delegate: TestScope,
+   override val testScope: kotlinx.coroutines.test.TestScope
+) : TestScope by delegate {
+   override fun toString(): String = "TestCaseContext [$coroutineContext]"
+
+   override val coroutineContext: CoroutineContext
+      get() = testScope.coroutineContext
 }
 
 /**

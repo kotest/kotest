@@ -5,10 +5,13 @@ import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlin.time.Duration.Companion.days
 
+@ExperimentalCoroutinesApi
 class CoroutineScopeFunSpecTest : FunSpec() {
    init {
       test("should advance time when using coroutine test scope").config(coroutineTestScope = true) {
@@ -17,11 +20,23 @@ class CoroutineScopeFunSpecTest : FunSpec() {
             delay(2.days)
          }
       }
+      test("should advance time when using coroutine test scope variable").config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
+         }
+      }
       context("container") {
          test("should advance time when using coroutine test scope in a nested test").config(coroutineTestScope = true) {
             // if this isn't working, this test will stall
             launch {
                delay(2.days)
+            }
+         }
+         test("should advance time when using coroutine test scope variable in a nested test").config(coroutineTestScope = true) {
+            // if this isn't working, this test will crash
+            launch {
+               testScope.advanceTimeBy(2.days.inWholeMilliseconds)
             }
          }
       }
@@ -36,11 +51,23 @@ class CoroutineScopeShouldSpecTest : ShouldSpec() {
             delay(2.days)
          }
       }
+      should("should advance time when using coroutine test scope variable").config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
+         }
+      }
       context("container") {
          should("should advance time when using coroutine test scope in a nested test").config(coroutineTestScope = true) {
             // if this isn't working, this test will stall
             launch {
                delay(2.days)
+            }
+         }
+         should("should advance time when using coroutine test scope variable in a nested test").config(coroutineTestScope = true) {
+            // if this isn't working, this test will crash
+            launch {
+               testScope.advanceTimeBy(2.days.inWholeMilliseconds)
             }
          }
       }
@@ -57,10 +84,24 @@ class CoroutineScopeExpectSpecTest : ExpectSpec() {
          }
       }
 
+      context("should advance time when using coroutine test scope variable in a context").config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
+         }
+      }
+
       expect("should advance time when using coroutine test scope in an expect").config(coroutineTestScope = true) {
          // if this isn't working, this test will stall
          launch {
             delay(2.days)
+         }
+      }
+
+      expect("should advance time when using coroutine test scope variable in an expect").config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
          }
       }
    }
@@ -75,11 +116,25 @@ class CoroutineScopeFeatureSpecTest : FeatureSpec() {
          }
       }
 
+      feature("should advance time when using coroutine test scope variable").config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
+         }
+      }
+
       feature("container") {
          scenario("should advance time when using coroutine test scope in a nested scenario").config(coroutineTestScope = true) {
             // if this isn't working, this test will stall
             launch {
                delay(2.days)
+            }
+         }
+
+         scenario("should advance time when using coroutine test scope variable in a nested scenario").config(coroutineTestScope = true) {
+            // if this isn't working, this test will crash
+            launch {
+               testScope.advanceTimeBy(2.days.inWholeMilliseconds)
             }
          }
       }
@@ -94,11 +149,23 @@ class CoroutineScopeFreeSpecTest : FreeSpec() {
             delay(2.days)
          }
       }
+      "should advance time when using coroutine test scope variable".config(coroutineTestScope = true) {
+         // if this isn't working, this test will crash
+         launch {
+            testScope.advanceTimeBy(2.days.inWholeMilliseconds)
+         }
+      }
       "container" - {
          "should advance time when using coroutine test scope in a container".config(coroutineTestScope = true) {
             // if this isn't working, this test will stall
             launch {
                delay(2.days)
+            }
+         }
+         "should advance time when using coroutine test scope variable in a container".config(coroutineTestScope = true) {
+            // if this isn't working, this test will crash
+            launch {
+               testScope.advanceTimeBy(2.days.inWholeMilliseconds)
             }
          }
       }
