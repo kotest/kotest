@@ -3,51 +3,73 @@ package io.kotest.matchers.resource
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.be
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.io.File
 import java.net.URL
 import java.nio.file.Path
-import kotlin.contracts.contract
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
-infix fun String?.shouldMatchResource(path: String) {
-   contract {
-      returns() implies (this@shouldMatchResource != null)
-   }
-
-   this should matchResource(path)
+infix fun String.shouldMatchResource(
+   path: String
+) {
+   this should matchResource(path) { s -> be(s) }
 }
 
-infix fun String?.shouldNotMatchResource(path: String) = this shouldNot matchResource(path)
+fun String.shouldMatchResource(
+   path: String,
+   matcherProvider: (String) -> Matcher<String>
+) {
+   this should matchResource(path, matcherProvider)
+}
 
-fun matchResource(resourcePath: String) = object : Matcher<String?> {
+infix fun String.shouldNotMatchResource(
+   path: String
+) {
+   this shouldNot matchResource(path) { s -> be(s) }
+}
 
-   override fun test(value: String?): MatcherResult {
+fun String.shouldNotMatchResource(
+   path: String,
+   matcherProvider: (String) -> Matcher<String>
+) {
+   this shouldNot matchResource(path, matcherProvider)
+}
+
+fun matchResource(resourcePath: String, matcherProvider: (String) -> Matcher<String>) = object : Matcher<String> {
+
+   override fun test(value: String): MatcherResult {
       val resource = getResource(resourcePath)
       val resourceValue = resource.readText()
 
-      return ComparableMatcherResult(
-         value == resourceValue,
-         {
-            val actualFilePath = value.writeToActualValueFile(resource)
+      return matcherProvider(resourceValue).test(value).let {
+         ComparableMatcherResult(
+            it.passed(),
+            {
+               val actualFilePath = value.writeToActualValueFile(resource)
 
-            """expected to match resource, but they differed
+               """${it.failureMessage()}
+
+expected to match resource, but they differed
 Expected : $resourcePath
 Actual   : $actualFilePath
 
 """
-         },
-         {
-            """expected not to match resource, but they match
+            },
+            {
+               """${it.negatedFailureMessage()}
+
+expected not to match resource, but they match
 Expected : $resourcePath
 
 """
-         },
-         value.toString(),
-         resourceValue,
-      )
+            },
+            value,
+            resourceValue,
+         )
+      }
    }
 }
 

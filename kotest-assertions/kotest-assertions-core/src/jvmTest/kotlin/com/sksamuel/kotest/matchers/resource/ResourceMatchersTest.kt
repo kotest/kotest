@@ -8,6 +8,7 @@ import io.kotest.matchers.resource.shouldMatchResource
 import io.kotest.matchers.resource.shouldNotMatchResource
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.startWith
 import java.io.File
 
 class ResourceMatchersTest : ShouldSpec({
@@ -48,18 +49,38 @@ class ResourceMatchersTest : ShouldSpec({
 
    }
 
+   context("shouldMatchResource with custom matcher") {
+
+      should("should match resource") {
+         val givenValue = "test\nresource\nsomething"
+
+         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+      }
+
+      should("should return message with both resource and actual value files paths") {
+         val givenValue = "not a test resource"
+
+         val errorMessage = shouldThrow<AssertionError> {
+            givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+         }.message ?: fail("Cannot get error message")
+
+         errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
+         errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/testResource\\.txt".toRegex()
+      }
+   }
+
    context("shouldNotMatchResource") {
 
       should("should not match resource") {
          val givenValue = "not a test resource"
 
-         givenValue shouldNotMatchResource  "/resourceMatchersTest/expected/testResource.txt"
+         givenValue shouldNotMatchResource "/resourceMatchersTest/expected/testResource.txt"
       }
 
       should("should not match binary resource") {
          val givenValue = "not a test resource"
 
-         givenValue shouldNotMatchResource  "/resourceMatchersTest/expected/binary.bin"
+         givenValue shouldNotMatchResource "/resourceMatchersTest/expected/binary.bin"
       }
 
       should("should return message with resource file path") {
@@ -72,6 +93,25 @@ class ResourceMatchersTest : ShouldSpec({
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
       }
 
+   }
+
+   context("shouldNotMatchResource with custom matcher") {
+
+      should("should not match resource") {
+         val givenValue = "not a test resource"
+
+         givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+      }
+
+      should("should return message with resource file path") {
+         val givenValue = "test\nresource\n"
+
+         val errorMessage = shouldThrow<AssertionError> {
+            givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+         }.message ?: fail("Cannot get error message")
+
+         errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
+      }
    }
 
 })
