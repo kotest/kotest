@@ -201,17 +201,17 @@ internal fun compareObjects(
 ): JsonError? {
 
    if (FieldComparison.Strict == options.fieldComparison) {
-      val keys1 = expected.elements.keys
-      val keys2 = actual.elements.keys
+      val expectedKeys = expected.elements.keys
+      val actualKeys = actual.elements.keys
 
-      if (keys1.size < keys2.size) {
-         val missing = keys2 - keys1
-         return JsonError.ObjectMissingKeys(path, missing)
+      if (actualKeys.size > expectedKeys.size) {
+         val extra = actualKeys - expectedKeys
+         return JsonError.ObjectExtraKeys(path, extra)
       }
 
-      if (keys2.size < keys1.size) {
-         val extra = keys1 - keys2
-         return JsonError.ObjectExtraKeys(path, extra)
+      if (actualKeys.size < expectedKeys.size) {
+         val missing = expectedKeys - actualKeys
+         return JsonError.ObjectMissingKeys(path, missing)
       }
    }
 
