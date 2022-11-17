@@ -24,5 +24,5 @@ internal object DumpConfigInterceptor : EngineInterceptor {
    }
 
    private fun syspropEnabled() =
-      syspropOrEnv(KotestEngineProperties.dumpConfig) != null
+      syspropOrEnv(KotestEngineProperties.dumpConfig) == true
 }
