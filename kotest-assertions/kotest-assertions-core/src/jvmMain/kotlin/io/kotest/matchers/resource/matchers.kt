@@ -12,43 +12,62 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
+/**
+ * Will match when given String and resource value are equal
+ *
+ * This will ignore differences in "\r", "\n" and "\r\n", so it is not dependent on the system line separator.
+ */
 infix fun String.shouldMatchResource(
    path: String
 ) {
-   this should matchResource(path) { s -> be(s) }
+   this.toLF() should matchResource(path, { s -> be(s.toLF()) }, true)
+}
+
+/**
+ * Will match when given string and resource value differ
+ *
+ * This will ignore differences in "\r", "\n" and "\r\n", so it is not dependent on the system line separator.
+ */
+infix fun String.shouldNotMatchResource(
+   path: String
+) {
+   this shouldNot matchResource(path, ::be, true)
 }
 
 fun String.shouldMatchResource(
    path: String,
-   matcherProvider: (String) -> Matcher<String>
+   matcherProvider: (String) -> Matcher<String>,
+   ignoreLineSeparators: Boolean = true
 ) {
-   this should matchResource(path, matcherProvider)
-}
-
-infix fun String.shouldNotMatchResource(
-   path: String
-) {
-   this shouldNot matchResource(path) { s -> be(s) }
+   this should matchResource(path, matcherProvider, ignoreLineSeparators)
 }
 
 fun String.shouldNotMatchResource(
    path: String,
-   matcherProvider: (String) -> Matcher<String>
+   matcherProvider: (String) -> Matcher<String>,
+   ignoreLineSeparators: Boolean = true
 ) {
-   this shouldNot matchResource(path, matcherProvider)
+   this shouldNot matchResource(path, matcherProvider, ignoreLineSeparators)
 }
 
-fun matchResource(resourcePath: String, matcherProvider: (String) -> Matcher<String>) = object : Matcher<String> {
+fun matchResource(
+   resourcePath: String,
+   matcherProvider: (String) -> Matcher<String>,
+   ignoreLineSeparators: Boolean
+) = object : Matcher<String> {
 
    override fun test(value: String): MatcherResult {
       val resource = getResource(resourcePath)
       val resourceValue = resource.readText()
 
-      return matcherProvider(resourceValue).test(value).let {
+      val normalizedValue = if (ignoreLineSeparators) value.toLF() else value
+      val normalizedResourceValue = if (ignoreLineSeparators) resourceValue.toLF() else resourceValue
+
+      return matcherProvider(normalizedResourceValue).test(normalizedValue).let {
          ComparableMatcherResult(
             it.passed(),
             {
-               val actualFilePath = value.writeToActualValueFile(resource)
+               val actualFilePath = normalizedValue.writeToActualValueFile(resource)
 
                """${it.failureMessage()}
 
@@ -66,12 +85,14 @@ Expected : $resourcePath
 
 """
             },
-            value,
-            resourceValue,
+            normalizedValue,
+            normalizedResourceValue,
          )
       }
    }
 }
+
+fun resourceAsString(path: String) = getResource(path).readText()
 
 fun getResource(path: String): URL =
    object {}.javaClass.getResource(path) ?: error("Failed to get resource at $path")
@@ -88,3 +109,5 @@ private fun getActualFilePath(expectedFileURL: URL): Path =
          .createDirectories()
          .resolve(expectedFile.name)
    }
+
+private fun String.toLF() = replace("\\r\\n?".toRegex(), "\n")
