@@ -54,14 +54,15 @@ class ResourceMatchersTest : ShouldSpec({
       should("should match resource") {
          val givenValue = "test\nresource\nsomething"
 
-         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
+         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s.lowercase()) }
       }
 
       should("should return message with both resource and actual value files paths") {
          val givenValue = "not a test resource"
 
          val errorMessage = shouldThrow<AssertionError> {
-            givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+            givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
          }.message ?: fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
@@ -100,14 +101,14 @@ class ResourceMatchersTest : ShouldSpec({
       should("should not match resource") {
          val givenValue = "not a test resource"
 
-         givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+         givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
       }
 
       should("should return message with resource file path") {
          val givenValue = "test\nresource\n"
 
          val errorMessage = shouldThrow<AssertionError> {
-            givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt") { s -> startWith(s) }
+            givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
          }.message ?: fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
