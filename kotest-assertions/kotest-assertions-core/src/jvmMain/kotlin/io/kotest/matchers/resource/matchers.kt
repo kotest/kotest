@@ -20,7 +20,7 @@ import kotlin.io.path.writeText
 infix fun String.shouldMatchResource(
    path: String
 ) {
-   this.toLF() should matchResource(path, { s -> be(s.toLF()) }, true)
+   this should matchResource(path, ::be, ignoreLineSeparators = true)
 }
 
 /**
@@ -31,7 +31,7 @@ infix fun String.shouldMatchResource(
 infix fun String.shouldNotMatchResource(
    path: String
 ) {
-   this shouldNot matchResource(path, ::be, true)
+   this shouldNot matchResource(path, ::be, ignoreLineSeparators = true)
 }
 
 fun String.shouldMatchResource(
