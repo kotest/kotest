@@ -2,7 +2,6 @@
 
 package io.kotest.assertions
 
-import io.kotest.mpp.stacktraces
 import kotlinx.coroutines.CopyableThreadContextElement
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,11 +65,7 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
 actual fun ErrorCollector.collectiveError(): AssertionError? {
    val failures = errors()
    clear()
-   return when {
-      failures.isEmpty() -> null
-      failures.singleOrNull() is AssertionFailedError -> failures.single() as AssertionFailedError
-      failures.size == 1 -> AssertionError(failures.single().message).also { stacktraces.cleanStackTrace(it) }
-      else -> MultiAssertionError(failures).also { stacktraces.cleanStackTrace(it) } // cleans the creation of MultiAssertionError
-   }
+   return if (failures.size == 1 && failures[0] is AssertionFailedError) failures[0] as AssertionFailedError
+   else failures.toAssertionError()
 }
 

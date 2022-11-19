@@ -163,3 +163,12 @@ inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, blo
          setCollectionMode(original)
       }
    }
+
+internal fun List<Throwable>.toAssertionError(): AssertionError? =
+   when (size) {
+      0 -> null
+      1 -> AssertionError(this[0].message)
+      else -> MultiAssertionError(this)
+   }?.let {
+      stacktraces.cleanStackTrace(it)
+   }
