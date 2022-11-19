@@ -151,21 +151,8 @@ fun ErrorCollector.throwCollectedErrors() {
 /**
  * All errors currently collected in the [ErrorCollector] are returned as a single [MultiAssertionError].
  */
-fun ErrorCollector.collectiveError(): AssertionError? {
-   val failures = errors()
-   clear()
-   return if (failures.isNotEmpty()) {
-      if (failures.size == 1) {
-         AssertionError(failures[0].message).also {
-            stacktraces.cleanStackTrace(it)
-         }
-      } else {
-         MultiAssertionError(failures).also {
-            stacktraces.cleanStackTrace(it) // cleans the creation of MultiAssertionError
-         }
-      }
-   } else null
-}
+expect fun ErrorCollector.collectiveError(): AssertionError?
+
 
 inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> T): T =
    getCollectionMode().let { original ->
@@ -175,4 +162,13 @@ inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, blo
       } finally {
          setCollectionMode(original)
       }
+   }
+
+internal fun List<Throwable>.toAssertionError(): AssertionError? =
+   when (size) {
+      0 -> null
+      1 -> AssertionError(this[0].message)
+      else -> MultiAssertionError(this)
+   }?.let {
+      stacktraces.cleanStackTrace(it)
    }
