@@ -44,7 +44,7 @@ First we build out our matcher type:
 
 ```kotlin
 fun haveLength(length: Int) = Matcher<String> { value ->
-  return MatcherResult(
+  MatcherResult(
     value.length == length,
     { "string had length ${value.length} but we expected length $length" },
     { "string should not have length $length" },
