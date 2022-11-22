@@ -149,7 +149,7 @@ class MyTest : FunSpec({
         // ...
     }
 
-    isolation = IsolationMode.InstancePerTest
+    isolationMode = IsolationMode.InstancePerTest
 
 })
 ```
