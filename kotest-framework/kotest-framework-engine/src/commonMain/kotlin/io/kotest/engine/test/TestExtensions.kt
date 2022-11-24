@@ -77,7 +77,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          }.mapError { ExtensionException.BeforeContainerException(it) }.exceptionOrNull()
       } + be.mapNotNull {
          runCatching {
-            if (testCase.type == TestType.Test) it.beforeEach(testCase)
+            if (testCase.type in arrayOf(TestType.Test, TestType.Dynamic) ) it.beforeEach(testCase)
          }.mapError { ExtensionException.BeforeEachException(it) }.exceptionOrNull()
       } + bt.mapNotNull {
          runCatching {
@@ -120,7 +120,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          }.mapError { ExtensionException.AfterContainerException(it) }.exceptionOrNull()
       } + ae.mapNotNull {
          runCatching {
-            if (testCase.type == TestType.Test) it.afterEach(testCase, result)
+            if (testCase.type in arrayOf(TestType.Test, TestType.Dynamic)) it.afterEach(testCase, result)
          }.mapError { ExtensionException.AfterEachException(it) }.exceptionOrNull()
       }
 
