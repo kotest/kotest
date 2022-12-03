@@ -202,7 +202,7 @@ And then add the Kotest JUnit5 runner to your dependencies section.
    <TabItem value="Android">
 
 :::info
-Currently, only JVM tests are officially supported in Kotest. Experimental support for instrumented and Robolectric tests is currently under work.
+Currently, only JVM tests are officially supported in Kotest. We are open to suggestions on how to support UI tests.
 
 The following steps enable Kotest to be used for unit and integration tests, where the Android framework is not needed or is mocked that usually reside in the
 `src/test` folder of your module.
@@ -214,7 +214,7 @@ This requires configuring the android test options block in your build file and 
 ```kotlin
 android.testOptions {
    unitTests.all {
-      useJUnitPlatform()
+      it.useJUnitPlatform()
    }
 }
 ```
