@@ -23,6 +23,12 @@ class ResourceMatchersTest : ShouldSpec({
          givenValue shouldMatchResource "/resourceMatchersTest/expected/testResource.txt"
       }
 
+      should("should match binary resource") {
+         val givenValue = String(byteArrayOf(4, 2))
+
+         givenValue shouldMatchResource "/resourceMatchersTest/expected/binary.bin"
+      }
+
       should("should return message with both resource and actual value files paths") {
          val givenValue = "not a test resource"
 
