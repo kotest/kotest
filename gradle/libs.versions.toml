@@ -17,7 +17,7 @@ mockserver-netty = "5.14.0"
 mockk = "1.13.1"
 mordant = "1.2.1"
 opentest4j = "1.2.0"
-plugin-publish = "1.0.0"
+plugin-publish = "1.1.0"
 rgxgen = "1.4"
 shadowjar = "7.1.2"
 
