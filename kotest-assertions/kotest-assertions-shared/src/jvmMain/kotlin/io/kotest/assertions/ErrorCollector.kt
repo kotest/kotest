@@ -61,3 +61,11 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
    override fun mergeForChild(overwritingElement: CoroutineContext.Element): CoroutineContext =
       copyForChild()
 }
+
+actual fun ErrorCollector.collectiveError(): AssertionError? {
+   val failures = errors()
+   clear()
+   return if (failures.size == 1 && failures[0] is AssertionFailedError) failures[0] as AssertionFailedError
+   else failures.toAssertionError()
+}
+
