@@ -94,14 +94,14 @@ Expected : $resourcePath
 
 fun resourceAsString(path: String) = getResource(path).readText()
 
-fun getResource(path: String): URL =
+internal fun getResource(path: String): URL =
    object {}.javaClass.getResource(path) ?: error("Failed to get resource at $path")
 
 private fun String?.writeToActualValueFile(resourceUrl: URL): Path =
    getActualFilePath(resourceUrl)
       .apply { writeText(this@writeToActualValueFile.toString()) }
 
-private fun getActualFilePath(expectedFileURL: URL): Path =
+internal fun getActualFilePath(expectedFileURL: URL): Path =
    File(expectedFileURL.toURI()).let { expectedFile ->
       expectedFile.toPath()
          .parent

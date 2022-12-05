@@ -13,7 +13,8 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.startWith
 import java.io.File
 
-class ResourceMatchersTest : ShouldSpec({
+@Suppress("RegExpRepeatedSpace")
+class StringResourceMatchersTest : ShouldSpec({
 
    context("shouldMatchResource") {
 
@@ -23,10 +24,10 @@ class ResourceMatchersTest : ShouldSpec({
          givenValue shouldMatchResource "/resourceMatchersTest/expected/testResource.txt"
       }
 
-      should("should match binary resource") {
+      should("should match binary resource as string") {
          val givenValue = String(byteArrayOf(4, 2))
 
-         givenValue shouldMatchResource "/resourceMatchersTest/expected/binary.bin"
+         givenValue shouldMatchResource "/resourceMatchersTest/expected/binary42.bin"
       }
 
       should("should return message with both resource and actual value files paths") {
@@ -87,10 +88,10 @@ class ResourceMatchersTest : ShouldSpec({
          givenValue shouldNotMatchResource "/resourceMatchersTest/expected/testResource.txt"
       }
 
-      should("should not match binary resource") {
+      should("should not match binary resource as string") {
          val givenValue = "not a test resource"
 
-         givenValue shouldNotMatchResource "/resourceMatchersTest/expected/binary.bin"
+         givenValue shouldNotMatchResource "/resourceMatchersTest/expected/binary42.bin"
       }
 
       should("should return message with resource file path") {
@@ -175,7 +176,7 @@ class ResourceMatchersTest : ShouldSpec({
 
 })
 
-private fun String.fileFromRegex(fileRegex: Regex) =
+fun String.fileFromRegex(fileRegex: Regex) =
    fileRegex
       .find(this)
       ?.value
