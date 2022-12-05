@@ -43,8 +43,8 @@ would need to be something like `"string should not have length 8"`
 First we build out our matcher type:
 
 ```kotlin
-fun haveLength(length: Int) = Matcher<String> {
-  return MatcherResult(
+fun haveLength(length: Int) = Matcher<String> { value ->
+  MatcherResult(
     value.length == length,
     { "string had length ${value.length} but we expected length $length" },
     { "string should not have length $length" },
