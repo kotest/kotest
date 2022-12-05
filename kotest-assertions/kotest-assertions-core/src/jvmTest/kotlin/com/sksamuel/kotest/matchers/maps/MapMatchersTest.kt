@@ -4,6 +4,9 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.spec.style.stringSpec
+import io.kotest.core.spec.style.wordSpec
+import io.kotest.matchers.Matcher
 import io.kotest.matchers.and
 import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
@@ -418,54 +421,83 @@ expected:<{
          }
       }
 
+      include(matchMapTests("matchAll"))
+
       "matchAll" should {
-         "empty map is matched by empty matchers" {
-            emptyMap<String, String>() should matchAll()
+         "extra keys in map are ignored" {
+            mapOf("key1" to "value1", "key2" to "value2") should matchAll("key1" to {})
          }
+      }
 
-         "empty map is matched by empty matchers - negated" {
-            shouldThrow<AssertionError> {
-               emptyMap<String, String>() shouldNot matchAll()
-            }
-         }
+      include(matchMapTests("matchExactly"))
 
-         "works correctly within assertSoftly" {
+      "matchExactly" should {
+         "extra keys in map are not allowed" {
             shouldFail {
-               assertSoftly {
-                  mapOf("key" to "hi") should matchAll("key" to { it shouldHaveLength 4 })
-               }
-            }.also {
-               it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)]."""
+               mapOf("key1" to "value1", "key2" to "value2") should matchExactly("key1" to {})
             }
          }
+      }
+   }
+}
 
-         "empty map is not matched by matcher" {
-            emptyMap<String, String>() shouldNot matchAll("key" to { it shouldBe "value" })
+private fun matchMapTests(contextName: String) = wordSpec {
+
+   fun <K, V> matcher(vararg expected: Pair<K, (V) -> Unit>): Matcher<Map<K, V>> {
+      return when (contextName) {
+         "matchAll" -> matchAll(*expected)
+         "matchExactly" -> matchExactly(*expected)
+         else -> throw IllegalArgumentException()
+      }
+   }
+
+   contextName should {
+      "empty map is matched by empty matchers" {
+         emptyMap<String, String>() should matcher()
+      }
+
+      "empty map is matched by empty matchers - negated" {
+         shouldThrow<AssertionError> {
+            emptyMap<String, String>() shouldNot matcher()
          }
+      }
 
-         "can match value" {
-            mapOf("key" to "value") should matchAll("key" to { it shouldBe "value" })
-         }
-
-         "match negated" {
-            mapOf("key" to "value") shouldNot matchAll("otherKey" to { it shouldBe "value" })
-            mapOf("key" to "value") shouldNot matchAll("key" to { it shouldBe "otherValue" })
-         }
-
-         "fail if key is not present" {
-            shouldThrow<AssertionError> {
-               mapOf("otherKey" to "value") should matchAll("key" to { it shouldBe "value" })
-            }.also {
-               it.message shouldBe "Expected map to match all assertions. Missing keys were=[key], Mismatched values were=[]."
+      "works correctly within assertSoftly" {
+         shouldFail {
+            assertSoftly {
+               mapOf("key" to "hi") should matcher("key" to { it shouldHaveLength 4 })
             }
+         }.also {
+            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)], Unexpected keys were []."""
          }
+      }
 
-         "fail if value is not matched" {
-            shouldThrow<AssertionError> {
-               mapOf("key" to "otherValue") should matchAll("key" to { it shouldBe "value" })
-            }.also {
-               it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, expected:<"value"> but was:<"otherValue">)]."""
-            }
+      "empty map is not matched by matcher" {
+         emptyMap<String, String>() shouldNot matcher("key" to { it shouldBe "value" })
+      }
+
+      "can match value" {
+         mapOf("key" to "value") should matcher("key" to { it shouldBe "value" })
+      }
+
+      "match negated" {
+         mapOf("key" to "value") shouldNot matcher("otherKey" to { it shouldBe "value" })
+         mapOf("key" to "value") shouldNot matcher("key" to { it shouldBe "otherValue" })
+      }
+
+      "fail if key is not present" {
+         shouldThrow<AssertionError> {
+            emptyMap<String,String>() should matcher("key" to { it shouldBe "value" })
+         }.also {
+            it.message shouldBe "Expected map to match all assertions. Missing keys were=[key], Mismatched values were=[], Unexpected keys were []."
+         }
+      }
+
+      "fail if value is not matched" {
+         shouldThrow<AssertionError> {
+            mapOf("key" to "otherValue") should matcher("key" to { it shouldBe "value" })
+         }.also {
+            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, expected:<"value"> but was:<"otherValue">)], Unexpected keys were []."""
          }
       }
    }

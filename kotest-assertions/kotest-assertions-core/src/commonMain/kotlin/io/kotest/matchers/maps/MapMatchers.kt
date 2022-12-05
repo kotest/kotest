@@ -141,35 +141,43 @@ class MapContainsMatcher<K, V>(
    }
 }
 
+fun <K, V> matchAll(
+   vararg expected: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), true)
 
-fun <K, V> matchAll(vararg expected: Pair<K, (V) -> Unit>): Matcher<Map<K, V>> =
-   object : Matcher<Map<K, V>> {
+fun <K, V> matchExactly(
+   vararg expected: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), false)
 
-      override fun test(value: Map<K, V>): MatcherResult {
+class MapMatchesMatcher<K, V>(
+   private val expected: Map<K, (V) -> Unit>,
+   private val ignoreExtraKeys: Boolean = false
+) : Matcher<Map<K, V>> {
+   override fun test(value: Map<K, V>): MatcherResult {
+      val missingKeys = mutableListOf<K>()
+      val mismatches = mutableListOf<Pair<K, String?>>()
+      val unexpectedKeys = if (ignoreExtraKeys) emptySet() else value.keys - expected.keys
 
-         val missingKeys = mutableListOf<K>()
-         val mismatches = mutableListOf<Pair<K, String?>>()
+      errorCollector.runWithMode(ErrorCollectionMode.Hard) {
+         expected.forEach { (k, matcher) ->
+            val v = value[k]
 
-         errorCollector.runWithMode(ErrorCollectionMode.Hard) {
-            expected.forEach { (k, matcher) ->
-               val v = value[k]
-
-               if (v == null) {
-                  missingKeys.add(k)
-               } else {
-                  try {
-                     matcher(v)
-                  } catch (e: AssertionError) {
-                     mismatches.add(Pair(k, e.message))
-                  }
+            if (v == null) {
+               missingKeys.add(k)
+            } else {
+               try {
+                  matcher(v)
+               } catch (e: AssertionError) {
+                  mismatches.add(Pair(k, e.message))
                }
             }
          }
-
-         return MatcherResult(
-            missingKeys.isEmpty() && mismatches.isEmpty(),
-            { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches." },
-            { "Expected map to not match all assertions." },
-         )
       }
+
+      return MatcherResult(
+         missingKeys.isEmpty() && mismatches.isEmpty() && unexpectedKeys.isEmpty(),
+         { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches, Unexpected keys were $unexpectedKeys." },
+         { "Expected map to not match all assertions." },
+      )
    }
+}
