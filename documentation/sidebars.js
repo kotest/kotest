@@ -43,7 +43,8 @@ module.exports = {
       "extensions/wiremock",
       "extensions/robolectric",
       "extensions/clock",
-      "extensions/pitest"
+      "extensions/pitest",
+      "extensions/blockhound"
    ],
    "assertions": [
       "assertions/index",
