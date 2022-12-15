@@ -84,13 +84,12 @@ To customize BlockHound, familiarize yourself with the [BlockHound documentation
 Exceptions for blocking calls considered harmless can be added via a separate `BlockHoundIntegration` class like this:
 
 ```kotlin
-import reactor.blockhound.BlockingOperationError
+import reactor.blockhound.BlockHound
 import reactor.blockhound.integration.BlockHoundIntegration
-import reactor.blockhound.BlockHound.Builder as BlockHoundBuilder
 
 class MyBlockHoundIntegration : BlockHoundIntegration {
-   override fun applyTo(builder: BlockHoundBuilder): Unit = with(builder) {
-     allowBlockingCallsInside("org.slf4j.LoggerFactory", "performInitialization")
+   override fun applyTo(builder: BlockHound.Builder): Unit = with(builder) {
+      allowBlockingCallsInside("org.slf4j.LoggerFactory", "performInitialization")
    }
 }
 ```
