@@ -15,8 +15,9 @@ import kotlin.io.path.writeBytes
  */
 infix fun ByteArray.shouldMatchResource(
    path: String
-) {
+): ByteArray {
    this should matchResource(path, ::be)
+   return this
 }
 
 /**
@@ -24,22 +25,31 @@ infix fun ByteArray.shouldMatchResource(
  */
 infix fun ByteArray.shouldNotMatchResource(
    path: String
-) {
+): ByteArray {
    this shouldNot matchResource(path, ::be)
+   return this
 }
 
+/**
+ * Will match if the given ByteArray and the resource value matches using matcher provided by [matcherProvider]
+ */
 fun ByteArray.shouldMatchResource(
    path: String,
    matcherProvider: (ByteArray) -> Matcher<ByteArray>
-) {
+): ByteArray {
    this should matchResource(path, matcherProvider)
+   return this
 }
 
+/**
+ * Will match if the given ByteArray and the resource value **not** matches using matcher provided by [matcherProvider]
+ */
 fun ByteArray.shouldNotMatchResource(
    path: String,
    matcherProvider: (ByteArray) -> Matcher<ByteArray>
-) {
+): ByteArray {
    this shouldNot matchResource(path, matcherProvider)
+   return this
 }
 
 fun matchResource(
