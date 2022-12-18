@@ -1,4 +1,5 @@
 [versions]
+blockhound = "1.0.6.RELEASE"
 classgraph = "4.8.152"
 commons-lang3 = "3.12.0"
 commons-io = "2.11.0"
@@ -24,6 +25,7 @@ shadowjar = "7.1.2"
 [libraries]
 apache-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
