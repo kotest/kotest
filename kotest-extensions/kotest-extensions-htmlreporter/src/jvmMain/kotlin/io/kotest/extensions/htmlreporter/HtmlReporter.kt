@@ -16,7 +16,6 @@ class HtmlReporter(
 ) : ProjectListener {
 
    companion object {
-      const val DefaultLocation = "./reports/tests/test/"
       const val DefaultResultsLocation = "./build/test-results/test"
       const val BuildDirKey = "gradle.build.dir"
    }
@@ -74,7 +73,7 @@ class HtmlReporter(
       return if (buildDir != null)
          Paths.get(buildDir).resolve(outputDir)
       else
-         Paths.get(DefaultLocation)
+         Paths.get("./$outputDir")
    }
 
    private fun write(text: String, path: String) {
