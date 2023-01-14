@@ -2,21 +2,15 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
-import io.kotest.inspectors.shouldForSome
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.concurrent.shouldCompleteWithin
-import io.kotest.matchers.sequences.shouldContainAll
-import io.kotest.matchers.sequences.shouldContainAllInAnyOrder
-import io.kotest.matchers.sequences.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldHave
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bigDecimal
 import io.kotest.property.arbitrary.bigDecimalDefaultEdgecases
 import io.kotest.property.arbitrary.edgecases
-import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
 import java.math.RoundingMode
