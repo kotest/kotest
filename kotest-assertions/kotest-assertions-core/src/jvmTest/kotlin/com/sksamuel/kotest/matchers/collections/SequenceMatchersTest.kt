@@ -393,6 +393,14 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for sparse") {
             sparse.shouldContainNull()
          }
+
+         fail("for non-nulls constrained") {
+            single.constrainOnce().shouldContainNull()
+         }
+
+         succeed("for sparse constrained") {
+            sparse.constrainOnce().shouldContainNull()
+         }
       }
 
       "not contain a null" should {
@@ -410,6 +418,14 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for sparse") {
             sparse.shouldNotContainNull()
+         }
+
+         succeed("for non-nulls constrained") {
+            single.constrainOnce().shouldNotContainNull()
+         }
+
+         fail("for sparse constrained") {
+            sparse.constrainOnce().shouldNotContainNull()
          }
       }
 
