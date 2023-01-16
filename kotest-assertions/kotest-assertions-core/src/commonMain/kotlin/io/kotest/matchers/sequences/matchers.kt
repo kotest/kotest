@@ -294,11 +294,15 @@ fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<
 infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
 
 fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() > other.count(),
-      { "Sequence of count ${value.count()} should be larger than sequence of count ${other.count()}" },
-      { "Sequence of count ${value.count()} should not be larger than sequence of count ${other.count()}" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      val expectedCount = other.count()
+      return MatcherResult(
+         actualCount > expectedCount,
+         { "Sequence of count $actualCount should be larger than sequence of count $expectedCount" },
+         { "Sequence of count $actualCount should not be larger than sequence of count $expectedCount" }
+      )
+   }
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
