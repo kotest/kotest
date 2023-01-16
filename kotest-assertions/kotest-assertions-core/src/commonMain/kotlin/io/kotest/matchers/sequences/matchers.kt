@@ -439,10 +439,10 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
          remaining.remove(iter.next())
       }
 
-      return MatcherResult(
-         remaining.isEmpty(),
-         { "Sequence should contain all of ${value.joinToString(",", limit = 10)}" },
-         { "Sequence should not contain all of ${value.joinToString(",", limit = 10)}" }
-      )
+      val failure =
+         { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
+      val negFailure = { "Sequence should not contain all of ${ts.print().value}" }
+
+      return MatcherResult(remaining.isEmpty(), failure, negFailure)
    }
 }

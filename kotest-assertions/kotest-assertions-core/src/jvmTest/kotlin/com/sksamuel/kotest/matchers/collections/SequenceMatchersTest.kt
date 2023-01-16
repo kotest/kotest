@@ -683,6 +683,14 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for same elements, repeated (variadic)") {
             unique.shouldContainAll(1, 2, 3, 1, 2, 3)
          }
+
+         fail("for constrained for empty with any other") {
+            empty.constrainOnce().shouldContainAll(single)
+         }
+
+         succeed("for constrained for same elements, repeated (variadic)") {
+            unique.constrainOnce().shouldContainAll(1, 2, 3, 1, 2, 3)
+         }
       }
 
       "contain exactly empty" should {
