@@ -202,11 +202,14 @@ fun <T> beUnique() = object : Matcher<Sequence<T>> {
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.toSet().size < value.count(),
-      { "Sequence should contain duplicates" },
-      { "Sequence should not contain duplicates" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      return MatcherResult(
+         valueAsList.toSet().size < valueAsList.size,
+         { "Sequence should contain duplicates" },
+         { "Sequence should not contain duplicates" }
+      )
+   }
 }
 
 fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()

@@ -1088,11 +1088,19 @@ class SequenceMatchersTest : WordSpec() {
          }
 
          succeed("with repeats") {
-            repeating.shouldNotBeUnique()
+            repeating.shouldContainDuplicates()
          }
 
          fail("for multiple unique") {
             countup.shouldContainDuplicates()
+         }
+
+         succeed("for constrained with repeats") {
+            repeating.constrainOnce().shouldContainDuplicates()
+         }
+
+         fail("for constrained for multiple unique") {
+            countup.constrainOnce().shouldContainDuplicates()
          }
       }
 
