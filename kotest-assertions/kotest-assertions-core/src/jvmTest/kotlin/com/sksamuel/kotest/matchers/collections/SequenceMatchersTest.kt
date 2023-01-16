@@ -576,6 +576,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("when the sequence doesn't contain the value") {
             sparse.shouldContain(2)
          }
+
+         succeed("for constrained when the sequence contains the value") {
+            countup.constrainOnce().shouldContain(2)
+         }
+
+         fail("for constrained when the sequence doesn't contain the value") {
+            sparse.constrainOnce().shouldContain(2)
+         }
       }
 
       "not contain" should {
@@ -589,6 +597,14 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("when the sequence doesn't contain the value") {
             sparse.shouldNotContain(2)
+         }
+
+         fail("for constrained when the sequence contains the value") {
+            countup.constrainOnce().shouldNotContain(2)
+         }
+
+         succeed("for constrained when the sequence doesn't contain the value") {
+            sparse.constrainOnce().shouldNotContain(2)
          }
       }
 
