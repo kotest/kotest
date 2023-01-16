@@ -198,6 +198,18 @@ class SequenceMatchersTest : WordSpec() {
          fail("for larger") {
             countup.shouldBeSmallerThan(nulls)
          }
+
+         succeed("for constrained for smaller") {
+            nulls.constrainOnce().shouldBeSmallerThan(countup)
+         }
+
+         fail("for constrained for same count") {
+            countup.constrainOnce().shouldBeSmallerThan(countdown)
+         }
+
+         fail("for constrained for larger") {
+            countup.constrainOnce().shouldBeSmallerThan(nulls)
+         }
       }
 
       "same count" should {
