@@ -719,6 +719,18 @@ class SequenceMatchersTest : WordSpec() {
          fail("for multiple (variadic)") {
             nulls.shouldContainExactly()
          }
+
+         succeed("for empty constrained (variadic)") {
+            empty.constrainOnce().shouldContainExactly()
+         }
+
+         fail("for multiple constrained") {
+            nulls.constrainOnce().shouldContainExactly(empty)
+         }
+
+         fail("for multiple constrained (variadic)") {
+            nulls.constrainOnce().shouldContainExactly()
+         }
       }
 
       "contain exactly non-empty" should {
@@ -763,6 +775,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("for same elements but different order (variadic)") {
             repeating.shouldContainExactly(1, 1, 2, 2, 3, 3)
          }
+
+         succeed("for constrained for same (variadic)") {
+            sparse.constrainOnce().shouldContainExactly(*sparse.toList().toTypedArray())
+         }
+
+         fail("for constrained for same elements but different order (variadic)") {
+            repeating.constrainOnce().shouldContainExactly(1, 1, 2, 2, 3, 3)
+         }
       }
 
       "not contain exactly empty" should {
@@ -776,6 +796,14 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("for multiple") {
             nulls.shouldNotContainExactly(empty)
+         }
+
+         fail("for empty constrained") {
+            empty.constrainOnce().shouldNotContainExactly(sequenceOf<Int>())
+         }
+
+         succeed("for multiple constrained") {
+            nulls.constrainOnce().shouldNotContainExactly(empty)
          }
       }
 
