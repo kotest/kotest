@@ -1156,6 +1156,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("for multiple with wrong bound") {
             countup.shouldHaveLowerBound((countup.minOrNull() ?: Int.MIN_VALUE) + 1)
          }
+
+         succeed("for constrained for multiple") {
+            countup.constrainOnce().shouldHaveLowerBound(countup.minOrNull() ?: Int.MIN_VALUE)
+         }
+
+         fail("for constrained for multiple with wrong bound") {
+            countup.constrainOnce().shouldHaveLowerBound((countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+         }
       }
 
 
