@@ -189,11 +189,14 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.toSet().size == value.count(),
-      { "Sequence should be Unique" },
-      { "Sequence should contain at least one duplicate element" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      return MatcherResult(
+         valueAsList.toSet().size == valueAsList.size,
+         { "Sequence should be Unique" },
+         { "Sequence should contain at least one duplicate element" }
+      )
+   }
 }
 
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()

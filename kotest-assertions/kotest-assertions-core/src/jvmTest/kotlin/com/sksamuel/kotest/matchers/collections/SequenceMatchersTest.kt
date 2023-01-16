@@ -1034,6 +1034,14 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for multiple unique") {
             countup.shouldBeUnique()
          }
+
+         fail("for constrained with repeats") {
+            repeating.constrainOnce().shouldBeUnique()
+         }
+
+         succeed("for constrained for multiple unique") {
+            countup.constrainOnce().shouldBeUnique()
+         }
       }
 
       "not unique" should {
@@ -1055,6 +1063,14 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for multiple unique") {
             countup.shouldNotBeUnique()
+         }
+
+         succeed("for constrained with repeats") {
+            repeating.constrainOnce().shouldNotBeUnique()
+         }
+
+         fail("for constrained for multiple unique") {
+            countup.constrainOnce().shouldNotBeUnique()
          }
       }
 
