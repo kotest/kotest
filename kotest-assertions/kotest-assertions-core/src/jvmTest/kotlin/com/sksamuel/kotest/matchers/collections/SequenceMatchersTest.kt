@@ -230,7 +230,15 @@ class SequenceMatchersTest : WordSpec() {
          }
 
          fail("for larger") {
-            countup.shouldBeSmallerThan(nulls)
+            countup.shouldBeSameCountAs(nulls)
+         }
+
+         succeed("for constrained with same count") {
+            countup.constrainOnce().shouldBeSameCountAs(countdown)
+         }
+
+         fail("for constrained for larger") {
+            countup.constrainOnce().shouldBeSameCountAs(nulls)
          }
       }
 

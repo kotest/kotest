@@ -324,11 +324,15 @@ infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this shou
 )
 
 fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() == other.count(),
-      { "Sequence of count ${value.count()} should be the same count as sequence of count ${other.count()}" },
-      { "Sequence of count ${value.count()} should not be the same count as sequence of count ${other.count()}" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      val expectedCount = other.count()
+      return MatcherResult(
+         actualCount == expectedCount,
+         { "Sequence of count $actualCount should be the same count as sequence of count $expectedCount" },
+         { "Sequence of count $actualCount should not be the same count as sequence of count $expectedCount" }
+      )
+   }
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSameSizeAs(other: Sequence<U>) = this.shouldBeSameCountAs(other)
