@@ -395,20 +395,20 @@ fun <T : Comparable<T>> Sequence<T>.shouldNotContainInOrder(expected: Sequence<T
 
 /** Assert that a sequence contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = neverNullMatcher { actual ->
-   val subsequenceCount = subsequence.count()
-   require(subsequenceCount > 0) { "expected values must not be empty" }
+   val subsequenceAsList = subsequence.toList()
+   require(subsequenceAsList.isNotEmpty()) { "expected values must not be empty" }
 
    var subsequenceIndex = 0
    val actualIterator = actual.iterator()
 
-   while (actualIterator.hasNext() && subsequenceIndex < subsequenceCount) {
-      if (actualIterator.next() == subsequence.elementAt(subsequenceIndex)) subsequenceIndex += 1
+   while (actualIterator.hasNext() && subsequenceIndex < subsequenceAsList.size) {
+      if (actualIterator.next() == subsequenceAsList.elementAt(subsequenceIndex)) subsequenceIndex += 1
    }
 
    MatcherResult(
-      subsequenceIndex == subsequence.count(),
-      { "[$actual] did not contain the elements [$subsequence] in order" },
-      { "[$actual] should not contain the elements [$subsequence] in order" }
+      subsequenceIndex == subsequenceAsList.size,
+      { "[$actual] did not contain the elements [$subsequenceAsList] in order" },
+      { "[$actual] should not contain the elements [$subsequenceAsList] in order" }
    )
 }
 

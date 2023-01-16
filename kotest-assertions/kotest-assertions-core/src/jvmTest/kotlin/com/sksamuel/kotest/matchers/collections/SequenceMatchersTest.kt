@@ -998,6 +998,18 @@ class SequenceMatchersTest : WordSpec() {
          fail("for subset not in order (variadic)") {
             countup.shouldContainInOrder(2, 5, 3, 7)
          }
+
+         fail("for constrained for overlapping sequences") {
+            countup.constrainOnce().shouldContainInOrder((5..15).asSequence().constrainOnce())
+         }
+
+         succeed("for constrained for subset in order with repeats (variadic) constrained") {
+            repeating.constrainOnce().shouldContainInOrder(sequenceOf(1, 3, 1, 2).constrainOnce())
+         }
+
+         fail("for constrained for subset not in order (variadic)") {
+            countup.constrainOnce().shouldContainInOrder(2, 5, 3, 7)
+         }
       }
 
 
