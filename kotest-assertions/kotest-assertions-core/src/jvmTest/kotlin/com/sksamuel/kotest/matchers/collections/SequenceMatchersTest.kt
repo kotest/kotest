@@ -520,6 +520,18 @@ class SequenceMatchersTest : WordSpec() {
          fail("when the sequence doesn't have the element") {
             countdown.shouldHaveElementAt(10, 10)
          }
+
+         abort<IndexOutOfBoundsException>("for constrained when an element after the end is requested") {
+            nulls.constrainOnce().shouldHaveElementAt(nulls.count(), 0)
+         }
+
+         succeed("for constrained when the sequence has the element") {
+            countup.constrainOnce().shouldHaveElementAt(10, 10)
+         }
+
+         fail("for constrained when the sequence doesn't have the element") {
+            countdown.constrainOnce().shouldHaveElementAt(10, 10)
+         }
       }
 
       "not have element at" should {
@@ -537,6 +549,18 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("when the sequence doesn't have the element") {
             countdown.shouldNotHaveElementAt(10, 10)
+         }
+
+         abort<IndexOutOfBoundsException>("for constrained when an element after the end is requested") {
+            nulls.constrainOnce().shouldNotHaveElementAt(nulls.count(), 0)
+         }
+
+         fail("for constrained when the sequence has the element") {
+            countup.constrainOnce().shouldNotHaveElementAt(10, 10)
+         }
+
+         succeed("for constrained when the sequence doesn't have the element") {
+            countdown.constrainOnce().shouldNotHaveElementAt(10, 10)
          }
       }
 
