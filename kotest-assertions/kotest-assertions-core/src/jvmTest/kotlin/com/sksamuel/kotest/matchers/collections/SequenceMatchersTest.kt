@@ -270,6 +270,18 @@ class SequenceMatchersTest : WordSpec() {
          fail("for larger count") {
             countup.shouldHaveAtLeastCount(countup.count() + 1)
          }
+
+         succeed("for constrained for smaller count") {
+            single.constrainOnce().shouldHaveAtLeastCount(0)
+         }
+
+         succeed("for constrained for same count") {
+            nulls.constrainOnce().shouldHaveAtLeastCount(nulls.count())
+         }
+
+         fail("for constrained for larger count") {
+            countup.constrainOnce().shouldHaveAtLeastCount(countup.count() + 1)
+         }
       }
 
       "at most count" should {
