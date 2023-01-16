@@ -156,11 +156,13 @@ fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
 
 /** Assert that a sequence contains all the given values and nothing else, in any order. */
 fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val passed = value.count() == expected.count() && expected.all { value.contains(it) }
+   val valueAsList = value.toList()
+   val expectedAsList = expected.toList()
+   val passed = valueAsList.size == expectedAsList.size && valueAsList.containsAll(expectedAsList)
    MatcherResult(
       passed,
-      { "Sequence should contain the values of $expected in any order, but was $value" },
-      { "Sequence should not contain the values of $expected in any order" }
+      { "Sequence should contain the values of $expectedAsList in any order, but was $valueAsList" },
+      { "Sequence should not contain the values of $expectedAsList in any order" }
    )
 }
 

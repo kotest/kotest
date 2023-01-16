@@ -890,6 +890,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("for same, different count") {
             repeating.shouldContainAllInAnyOrder(unique)
          }
+
+         succeed("for constrained for subset, same count (variadic)") {
+            repeating.constrainOnce().shouldContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
+         }
+
+         fail("for constrained for same, different count") {
+            repeating.constrainOnce().shouldContainAllInAnyOrder(unique)
+         }
       }
 
       "not contain in any order" should {
@@ -928,6 +936,15 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for same, different count") {
             repeating.shouldNotContainAllInAnyOrder(unique)
          }
+
+         fail("for constrained for subset, same count (variadic)") {
+            repeating.constrainOnce().shouldNotContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
+         }
+
+         succeed("for constrained for same, different count") {
+            repeating.constrainOnce().shouldNotContainAllInAnyOrder(unique)
+         }
+
       }
 
       "contain in order" should {
