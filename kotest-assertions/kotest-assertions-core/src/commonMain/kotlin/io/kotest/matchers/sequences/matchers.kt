@@ -280,12 +280,14 @@ infix fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCoun
 fun <T> haveSize(size: Int): Matcher<Sequence<T>> = haveCount(size)
 
 fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.count() == count,
-         { "Sequence should have count $count but has count ${value.count()}" },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      return MatcherResult(
+         actualCount == count,
+         { "Sequence should have count $count but has count $actualCount" },
          { "Sequence should not have count $count" }
       )
+   }
 }
 
 

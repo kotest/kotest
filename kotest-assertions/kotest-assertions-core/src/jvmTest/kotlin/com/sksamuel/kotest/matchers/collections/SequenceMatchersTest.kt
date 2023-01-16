@@ -3,8 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
 import io.kotest.core.spec.style.scopes.WordSpecShouldContainerScope
+import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
 import io.kotest.matchers.sequences.shouldBeSmallerThan
@@ -51,7 +51,7 @@ class SequenceMatchersTest : WordSpec() {
 
    fun WordSpecShouldContainerScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
    suspend fun WordSpecShouldContainerScope.fail(name: String, test: () -> Any?) {
-      ("fail $name") { shouldThrowAny(test) }
+      ("fail $name") { shouldThrow<AssertionError>(test) }
    }
 
    suspend inline fun <reified E : Throwable> WordSpecShouldContainerScope.abort(name: String, crossinline test: () -> Any?) {
@@ -104,6 +104,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("to mis-match count() for multiple") {
             sparse.shouldHaveCount(sparse.count() - 1)
          }
+
+         "match count() for multiple constrained" {
+            sparse.constrainOnce().shouldHaveCount(sparse.count())
+         }
+
+         fail("to mis-match count() for multiple constrained") {
+            sparse.constrainOnce().shouldHaveCount(sparse.count() - 1)
+         }
       }
 
       "not have count" should {
@@ -129,6 +137,14 @@ class SequenceMatchersTest : WordSpec() {
 
          "mis-match count() for multiple" {
             sparse.shouldNotHaveCount(sparse.count() - 1)
+         }
+
+         fail("to match count() for multiple constrained") {
+            sparse.constrainOnce().shouldNotHaveCount(sparse.count())
+         }
+
+         "mis-match count() for multiple constrained" {
+            sparse.constrainOnce().shouldNotHaveCount(sparse.count() - 1)
          }
       }
 
@@ -738,7 +754,7 @@ class SequenceMatchersTest : WordSpec() {
             }
          }
 
-         fail("with empty (variadic)") {
+         abort<IllegalArgumentException>("with empty (variadic)") {
             countup.shouldContainInOrder()
          }
 
