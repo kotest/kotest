@@ -1188,6 +1188,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("for count-down") {
             countdown.shouldBeSorted()
          }
+
+         succeed("for constrained for count-up") {
+            countup.constrainOnce().shouldBeSorted()
+         }
+
+         fail("for constrained for count-down") {
+            countdown.constrainOnce().shouldBeSorted()
+         }
       }
 
       "not sorted" should {
@@ -1209,6 +1217,14 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("for count-down") {
             countdown.shouldNotBeSorted()
+         }
+
+         fail("for constrained for count-up") {
+            countup.constrainOnce().shouldNotBeSorted()
+         }
+
+         succeed("for constrained for count-down") {
+            countdown.constrainOnce().shouldNotBeSorted()
          }
       }
 

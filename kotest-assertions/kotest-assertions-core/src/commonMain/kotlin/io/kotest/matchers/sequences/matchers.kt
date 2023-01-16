@@ -218,9 +218,9 @@ fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorte
 fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      @Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
-      val failure = value.zipWithNext().withIndex().firstOrNull { (i, it) -> it.first > it.second }
-      val snippet = value.joinToString(",", limit = 10)
+      val valueAsList = value.toList()
+      val failure = valueAsList.zipWithNext().withIndex().firstOrNull { (_, it) -> it.first > it.second }
+      val snippet = valueAsList.joinToString(",", limit = 10)
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value.first} at index ${failure.index} was greater than element ${failure.value.second}"
