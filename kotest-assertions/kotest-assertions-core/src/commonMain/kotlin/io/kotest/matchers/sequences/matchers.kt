@@ -246,9 +246,9 @@ fun <T> sortedWith(comparator: Comparator<in T>): Matcher<Sequence<T>> = sortedW
 
 fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      @Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
-      val failure = value.zipWithNext().withIndex().firstOrNull { (i, it) -> cmp(it.first, it.second) > 0 }
-      val snippet = value.joinToString(",", limit = 10)
+      val valueAsList = value.toList()
+      val failure = valueAsList.zipWithNext().withIndex().firstOrNull { (_, it) -> cmp(it.first, it.second) > 0 }
+      val snippet = valueAsList.joinToString(",", limit = 10)
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value.first} at index ${failure.index} shouldn't precede element ${failure.value.second}"

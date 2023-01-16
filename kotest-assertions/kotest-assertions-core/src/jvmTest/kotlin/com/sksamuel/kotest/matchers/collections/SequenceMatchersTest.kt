@@ -1251,6 +1251,14 @@ class SequenceMatchersTest : WordSpec() {
             countdown.shouldBeSortedWith(dir)
          }
 
+         succeed("for constrained for count-up") {
+            countup.constrainOnce().shouldBeSortedWith(dir)
+         }
+
+         fail("for constrained for count-down") {
+            countdown.constrainOnce().shouldBeSortedWith(dir)
+         }
+
       }
 
       "sorted descending" should {
@@ -1274,6 +1282,14 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("for count-down") {
             countdown.shouldBeSortedWith(dir)
+         }
+
+         fail("for constrained for count-up") {
+            countup.constrainOnce().shouldBeSortedWith(dir)
+         }
+
+         succeed("for constrained for count-down") {
+            countdown.constrainOnce().shouldBeSortedWith(dir)
          }
       }
 
@@ -1299,6 +1315,14 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for count-down") {
             countdown.shouldNotBeSortedWith(dir)
          }
+
+         fail("for constrained for count-up") {
+            countup.constrainOnce().shouldNotBeSortedWith(dir)
+         }
+
+         succeed("for constrained for count-down") {
+            countdown.constrainOnce().shouldNotBeSortedWith(dir)
+         }
       }
 
       "not sorted descending" should {
@@ -1322,6 +1346,14 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for count-down") {
             countdown.shouldNotBeSortedWith(dir)
+         }
+
+         succeed("for constrained for count-up") {
+            countup.constrainOnce().shouldNotBeSortedWith(dir)
+         }
+
+         fail("for constrained for count-down") {
+            countdown.constrainOnce().shouldNotBeSortedWith(dir)
          }
       }
    }
