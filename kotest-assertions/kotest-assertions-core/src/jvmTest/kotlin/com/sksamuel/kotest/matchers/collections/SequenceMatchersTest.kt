@@ -494,6 +494,14 @@ class SequenceMatchersTest : WordSpec() {
          fail("for multiple") {
             nulls.shouldHaveSingleElement(null)
          }
+
+         succeed("for single constrained") {
+            single.constrainOnce().shouldHaveSingleElement(single.first())
+         }
+
+         fail("for multiple constrained") {
+            nulls.constrainOnce().shouldHaveSingleElement(null)
+         }
       }
 
       "have element at" should {

@@ -260,11 +260,15 @@ infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElem
 infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 
 fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() == 1 && value.first() == t,
-      { "Sequence should be a single element of $t but has ${value.count()} elements" },
-      { "Sequence should not be a single element of $t" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      val actualCount = valueAsList.count()
+      return MatcherResult(
+         actualCount == 1 && valueAsList.first() == t,
+         { "Sequence should be a single element of $t but has $actualCount elements" },
+         { "Sequence should not be a single element of $t" }
+      )
+   }
 }
 
 
