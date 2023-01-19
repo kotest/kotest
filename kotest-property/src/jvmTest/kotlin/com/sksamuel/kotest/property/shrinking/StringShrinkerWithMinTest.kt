@@ -138,12 +138,12 @@ class StringShrinkerWithMinTest : DescribeSpec({
 
          stdout.shouldContain(
             """
-Attempting to shrink arg "`a,ONF/b"
-Shrink #1: "`a,O" fail
-Shrink #2: "``,O" fail
-Shrink #3: "```O" fail
-Shrink #4: "````" fail
-Shrink result (after 4 shrinks) => "````"
+Attempting to shrink arg `a,ONF/b
+Shrink #1: `a,O fail
+Shrink #2: ``,O fail
+Shrink #3: ```O fail
+Shrink #4: ```` fail
+Shrink result (after 4 shrinks) => ````
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt
@@ -234,14 +234,14 @@ Shrink result (after 4 shrinks) => "````"
 
          stdout.shouldContain(
             """
-Attempting to shrink arg "_____#_____"
-Shrink #1: "_____#####" fail
-Shrink #2: "#____#####" fail
-Shrink #3: "##___#####" fail
-Shrink #4: "###__#####" fail
-Shrink #5: "####_#####" fail
-Shrink #6: "##########" fail
-Shrink result (after 6 shrinks) => "##########"
+Attempting to shrink arg _____#_____
+Shrink #1: _____##### fail
+Shrink #2: #____##### fail
+Shrink #3: ##___##### fail
+Shrink #4: ###__##### fail
+Shrink #5: ####_##### fail
+Shrink #6: ########## fail
+Shrink result (after 6 shrinks) => ##########
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt
@@ -274,16 +274,16 @@ Shrink result (after 6 shrinks) => "##########"
 
          stdout.shouldContain(
             """
-Attempting to shrink arg "a b c d e f g h i j k"
-Shrink #1: "a b c d e f" fail
-Shrink #2: "a b c ffff" fail
-Shrink #3: "f b c ffff" fail
-Shrink #4: "ffb c ffff" fail
-Shrink #5: "fff c ffff" fail
-Shrink #6: "ffffc ffff" fail
-Shrink #7: "fffff ffff" fail
-Shrink #8: "ffffffffff" fail
-Shrink result (after 8 shrinks) => "ffffffffff"
+Attempting to shrink arg a b c d e f g h i j k
+Shrink #1: a b c d e f fail
+Shrink #2: a b c ffff fail
+Shrink #3: f b c ffff fail
+Shrink #4: ffb c ffff fail
+Shrink #5: fff c ffff fail
+Shrink #6: ffffc ffff fail
+Shrink #7: fffff ffff fail
+Shrink #8: ffffffffff fail
+Shrink result (after 8 shrinks) => ffffffffff
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt

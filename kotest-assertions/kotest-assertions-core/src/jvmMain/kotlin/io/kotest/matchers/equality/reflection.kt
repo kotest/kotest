@@ -565,7 +565,7 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
 
       val isEqual = eq(actual, expected) == null
 
-      if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
+      if (isEqual) null else "${it.name}: ${actual.print(1).value} != ${expected.print(1).value}"
    }
 }
 
