@@ -76,17 +76,24 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "222.2270.16", // this version is 2022.2 EAP 2
+      since = "222.2270.16", // this version is 2022.2
       until = "222.*",
       sdkVersion = "IC-2022.2",
       sourceFolder = "IC-222",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "223.4884.69", // this version is 2022.3 EAP
+      since = "223.4884.69", // this version is 2022.3
       until = "223.*",
-      sdkVersion = "223.4884.69-EAP-SNAPSHOT",
+      sdkVersion = "IC-2022.3",
       sourceFolder = "IC-223",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
+   ),
+   PluginDescriptor(
+      since = "231.4840.387", // this version is 2023.1 EAP
+      until = "232.*",
+      sdkVersion = "231.4840.387-EAP-SNAPSHOT",
+      sourceFolder = "IC-231",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    )
 )
