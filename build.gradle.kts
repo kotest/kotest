@@ -148,13 +148,13 @@ tasks {
 
    compileKotlin {
       kotlinOptions {
-         jvmTarget = "11"
+         jvmTarget = "17"
       }
    }
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "11"
+         jvmTarget = "17"
       }
    }
 
