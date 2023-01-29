@@ -54,8 +54,6 @@
       <toolWindow id="Kotest" anchor="left" icon="/icon13_greyscale.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
-      <lang.structureViewExtension implementation="io.kotest.plugin.intellij.structure.KotestStructureViewExtension"/>
-
       <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
       <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
       <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.run.TestRunLineMarkerContributor"/>
