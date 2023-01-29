@@ -98,12 +98,12 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-231"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-223"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
 
-version = "1.2." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
+version = "1.3." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
    sandboxDir.set(project.property("sandbox").toString())
