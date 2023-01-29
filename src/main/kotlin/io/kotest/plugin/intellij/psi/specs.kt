@@ -57,7 +57,8 @@ fun KtClassOrObject.isSpec(): Boolean {
 }
 
 /**
- * Returns true if this element is a kotlin class and it is a subclass of a spec.
+ * Returns true if this element is a kotlin class, and it is a subclass of a spec.
+ *
  * See [isSpec]
  */
 fun PsiElement.isSpec(): Boolean = when (this) {

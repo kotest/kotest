@@ -44,7 +44,7 @@ fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Bo
    if (path != null) {
       when (val node = path.nodeDescriptor()) {
          is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
-         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
+         is TestNodeDescriptor -> if (executeBranch || node.test.nestedTests.isEmpty()) runTest(node, project, executorId)
          is ModuleNodeDescriptor -> runModule(node.module, executorId)
       }
    }

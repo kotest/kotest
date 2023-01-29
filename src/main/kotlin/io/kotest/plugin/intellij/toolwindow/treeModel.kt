@@ -44,7 +44,7 @@ fun createTreeModel(
          val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, isUnique, module)
          val testNode = DefaultMutableTreeNode(testDescriptor)
          node.add(testNode)
-         addTests(testNode, testDescriptor, specDescriptor, test.tests)
+         addTests(testNode, testDescriptor, specDescriptor, test.nestedTests)
       }
    }
 
@@ -109,7 +109,7 @@ fun createTreeModel(
             }
          }
 
-         val tests = style.tests(spec)
+         val tests = style.tests(spec, false)
          addTests(specNode, specDescriptor, specDescriptor, tests)
       }
    }

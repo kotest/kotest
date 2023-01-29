@@ -30,10 +30,10 @@ abstract class NavigateToTestAction(private val direction: Direction) : AnAction
 
       // gets the test that contains the element where the action occurred.
       val test = style.findAssociatedTest(element) ?: return
-      val alltests = style.tests(spec)
+      val alltests = style.tests(spec, false)
 
       fun flatten(tests:List<TestElement>): List<Test> {
-         return tests.flatMap { listOf(it.test) + flatten(it.tests) }
+         return tests.flatMap { listOf(it.test) + flatten(it.nestedTests) }
       }
 
       val tests = flatten(alltests)

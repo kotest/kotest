@@ -58,7 +58,7 @@ interface SpecStyle {
     * speculatively for tests.
     */
    fun findAssociatedTest(element: PsiElement): Test? {
-      return generateSequence(element, { it.parent }).mapNotNull { test(it) }.firstOrNull()
+      return generateSequence(element) { it.parent }.mapNotNull { test(it) }.firstOrNull()
    }
 
    /**
@@ -75,8 +75,10 @@ interface SpecStyle {
    /**
     * Returns all tests located in the given [PsiElement] as a tree of elements.
     * Nested tests are associated with their parent TestElement.
+    *
+    * @root if set to true will only include top level tests
     */
-   fun tests(element: PsiElement): List<TestElement> {
+   fun tests(element: PsiElement, root: Boolean): List<TestElement> {
       return element.children.flatMap { child ->
          when (child) {
             // there are some element types we don't need to traverse to save time and nested traversals
@@ -88,13 +90,18 @@ interface SpecStyle {
             is KtParameterList, is KtDeclarationModifierList, is KtTypeReference, is KtNameReferenceExpression -> emptyList()
             else ->
                when (val test = test(child)) {
-                  null -> tests(child)
+                  null -> tests(child, root)
                   else ->
-                     // if the test is a TestType.Test we don't need to inspect the children
-                     // because we know there can't be any further tests nested
-                     when (test.testType) {
-                        TestType.Container -> listOf(TestElement(child, test, tests(child)))
-                        TestType.Test -> listOf(TestElement(child, test, emptyList()))
+                     // if root is true, we don't need to go any further than the first test we find
+                     when (root) {
+                        true -> listOf(TestElement(child, test, emptyList()))
+                        else ->
+                           // if the test is a TestType.Test we don't need to inspect the children
+                           // because we know there can't be any further tests nested
+                           when (test.testType) {
+                              TestType.Container -> listOf(TestElement(child, test, tests(child, false)))
+                              TestType.Test -> listOf(TestElement(child, test, emptyList()))
+                           }
                      }
                }
          }

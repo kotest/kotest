@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 data class TestElement(
    val psi: PsiElement,
    val test: Test,
-   val tests: List<TestElement>
+   val nestedTests: List<TestElement>,
 )
 
 data class TestName(
@@ -25,6 +25,9 @@ data class TestName(
       }
    }
 
+   /**
+    * Returns a flattened name that can be used for a single line ui component
+    */
    fun displayName(): String {
       val flattened = name.trim().replace("\n", "")
       return if (prefix == null) flattened else "$prefix$flattened"

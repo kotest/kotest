@@ -24,7 +24,7 @@ class DuplicatedTestNameAnnotator : Annotator {
       if (test.name.interpolated) return
 
       // locate all tests for this style
-      val tests = style.tests(ktclass)
+      val tests = style.tests(ktclass, false)
 
       // generate the full path as nested tests may be unique if inside differently named parents
       // this test is duplicated if any other test has the same full path

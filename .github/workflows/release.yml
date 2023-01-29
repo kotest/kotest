@@ -10,6 +10,28 @@ jobs:
          matrix:
             product: [ "IC-211", "IC-212", "IC-213", "IC-221", "IC-222", "IC-223", "IC-231" ]
          max-parallel: 1
+         include:
+            -  product: "IC-211"
+               java: "11"
+               distribution: "adopt"
+            -  product: "IC-212"
+               java: "11"
+               distribution: "adopt"
+            -  product: "IC-213"
+               java: "11"
+               distribution: "adopt"
+            -  product: "IC-221"
+               java: "11"
+               distribution: "adopt"
+            -  product: "IC-222"
+               java: "11"
+               distribution: "adopt"
+            -  product: "IC-223"
+               java: "17"
+               distribution: "temurin"
+            -  product: "IC-231"
+               java: "17"
+               distribution: "temurin"
 
       runs-on: ubuntu-latest
 
@@ -19,16 +41,9 @@ jobs:
                fetch-depth: 0
 
          -  uses: actions/setup-java@v3
-            if: matrix.product != 'IC-223' && matrix.product != 'IC-231'
             with:
-               distribution: 'adopt'
-               java-version: '11'
-
-         -  uses: actions/setup-java@v3
-            if: matrix.product == 'IC-223' || matrix.product == 'IC-231'
-            with:
-               distribution: 'temurin'
-               java-version: '17'
+               java-version: ${{ matrix.java }}
+               distribution: ${{ matrix.distribution }}
 
          -  name: deploy to jetbrains
             run: ./gradlew --stacktrace publishPlugin
