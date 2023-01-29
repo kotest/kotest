@@ -98,7 +98,8 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-221"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-213"
+val jvmTarget = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -148,13 +149,13 @@ tasks {
 
    compileKotlin {
       kotlinOptions {
-         jvmTarget = "17"
+         jvmTarget = jvmTarget
       }
    }
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "17"
+         jvmTarget = jvmTarget
       }
    }
 
