@@ -13,30 +13,30 @@ jobs:
       strategy:
          matrix:
             product: [ "IC-211", "IC-212", "IC-213", "IC-221", "IC-222", "IC-223", "IC-231" ]
+            include:
+               -  product: "IC-211"
+                  java: "11"
+                  distribution: "adopt"
+               -  product: "IC-212"
+                  java: "11"
+                  distribution: "adopt"
+               -  product: "IC-213"
+                  java: "11"
+                  distribution: "adopt"
+               -  product: "IC-221"
+                  java: "11"
+                  distribution: "adopt"
+               -  product: "IC-222"
+                  java: "11"
+                  distribution: "adopt"
+               -  product: "IC-223"
+                  java: "17"
+                  distribution: "temurin"
+               -  product: "IC-231"
+                  java: "17"
+                  distribution: "temurin"
          max-parallel: 10
          fail-fast: false
-         include:
-            -  product: "IC-211"
-               java: "11"
-               distribution: "adopt"
-            -  product: "IC-212"
-               java: "11"
-               distribution: "adopt"
-            -  product: "IC-213"
-               java: "11"
-               distribution: "adopt"
-            -  product: "IC-221"
-               java: "11"
-               distribution: "adopt"
-            -  product: "IC-222"
-               java: "11"
-               distribution: "adopt"
-            -  product: "IC-223"
-               java: "17"
-               distribution: "temurin"
-            -  product: "IC-231"
-               java: "17"
-               distribution: "temurin"
 
       steps:
          -  uses: actions/checkout@v3

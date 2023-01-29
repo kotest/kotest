@@ -26,7 +26,6 @@ jobs:
                fetch-depth: 0
 
          -  uses: actions/setup-java@v3
-            if: matrix.product != 'IC-223' && matrix.product != 'IC-231'
             with:
                java-version: ${{ inputs.java }}
                distribution: ${{ inputs.distribution }}
