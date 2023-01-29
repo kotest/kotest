@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
+import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
-import org.jetbrains.kotlin.idea.inspections.findExistingEditor
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
@@ -33,7 +33,7 @@ class DisabledTestLineMarker : LineMarkerProvider {
          is LeafPsiElement -> {
 
             // we don't show these line markers inside a diff
-            val editor = element.findExistingEditor() ?: return null
+            val editor = element.existingEditor() ?: return null
             if (DiffUtil.isDiffEditor(editor)) return null
 
             when (element.context) {
