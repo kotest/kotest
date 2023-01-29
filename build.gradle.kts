@@ -90,9 +90,9 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "231.4840.387", // this version is 2023.1 EAP
+      since = "231.5920.14", // this version is 2023.1 EAP
       until = "231.*",
-      sdkVersion = "231.4840-EAP-CANDIDATE-SNAPSHOT",
+      sdkVersion = "231.5920.14-EAP-SNAPSHOT",
       sourceFolder = "IC-231",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    )
