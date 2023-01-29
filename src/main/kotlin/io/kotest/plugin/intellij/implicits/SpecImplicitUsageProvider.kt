@@ -4,7 +4,9 @@ import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
  * Allows disabling highlighting of certain elements as unused when such elements are not referenced
@@ -20,7 +22,8 @@ class SpecImplicitUsageProvider : ImplicitUsageProvider {
 
    override fun isImplicitUsage(element: PsiElement): Boolean {
       val ktclass = when (element) {
-         is KtClass -> element
+         is KtClassOrObject -> element
+         is KtUltraLightClass -> element
          is KtLightClass -> when (val origin = element.kotlinOrigin) {
             is KtClass -> origin
             else -> null
