@@ -13,7 +13,6 @@ kotlin {
             implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestCommon)
-            implementation(libs.apache.commons.io)
             implementation(libs.mockk)
          }
       }
