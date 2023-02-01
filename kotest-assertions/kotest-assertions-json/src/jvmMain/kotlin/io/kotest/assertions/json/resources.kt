@@ -9,8 +9,9 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.contract
+import org.intellij.lang.annotations.Language
 
-infix fun String?.shouldMatchJsonResource(resource: String) {
+infix fun String?.shouldMatchJsonResource(@Language("file-reference") resource: String) {
    contract {
       returns() implies (this@shouldMatchJsonResource != null)
    }
@@ -18,7 +19,8 @@ infix fun String?.shouldMatchJsonResource(resource: String) {
    this should matchJsonResource(resource)
 }
 
-infix fun String.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
+infix fun String.shouldNotMatchJsonResource(@Language("file-reference") resource: String) =
+   this shouldNot matchJsonResource(resource)
 
 fun matchJsonResource(resource: String) = object : Matcher<String?> {
 

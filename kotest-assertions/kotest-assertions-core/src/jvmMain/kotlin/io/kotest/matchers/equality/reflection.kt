@@ -626,7 +626,14 @@ private fun requiresUseOfDefaultEq(
 ): Boolean {
    val expectedOrActualIsNull = actual == null || expected == null
    val typeIsJavaOrKotlinBuiltIn by lazy { typeName.startsWith("kotlin") || typeName.startsWith("java") }
-   return expectedOrActualIsNull || typeIsJavaOrKotlinBuiltIn || useDefaultEqualForFields.contains(typeName)
+   val expectedOrActualIsEnum = actual is Enum<*>
+      || expected is Enum<*>
+      || (actual != null && actual::class.java.isEnum)
+      || (expected != null && expected::class.java.isEnum)
+   return expectedOrActualIsNull
+      || typeIsJavaOrKotlinBuiltIn
+      || useDefaultEqualForFields.contains(typeName)
+      || expectedOrActualIsEnum
 }
 
 /**
