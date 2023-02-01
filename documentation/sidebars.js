@@ -41,7 +41,6 @@ module.exports = {
       "extensions/instant",
       "extensions/koin",
       "extensions/wiremock",
-      "extensions/robolectric",
       "extensions/clock",
       "extensions/pitest",
       "extensions/blockhound"

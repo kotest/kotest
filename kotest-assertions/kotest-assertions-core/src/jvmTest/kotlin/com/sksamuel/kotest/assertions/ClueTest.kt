@@ -2,12 +2,12 @@ package com.sksamuel.kotest.assertions
 
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
@@ -61,26 +61,71 @@ class ClueTest : FreeSpec({
          shouldThrow<AssertionError> { "7" shouldBe "8" }.message shouldBe "expected:<\"8\"> but was:<\"7\">"
       }
 
-      "should only invoke the lazy if an assertion fails" {
-         val expected = UUID.randomUUID()
-         var state: String? = null
-         val clue: Lazy<UUID> = lazy {
-            expected.also { state = it.toString() }
-         }
-
-         state.shouldBeNull()
-
-         withClue(clue) {
+      "should not invoke the lazy clue if an assertion succeeds" {
+         @Suppress("DEPRECATION")
+         withClue(lazy { fail("lazy clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
+      }
 
-         state.shouldBeNull()
-
-         withClue(clue) {
-            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith expected.toString()
+      "should invoke the lazy clue if an assertion fails" {
+         var counter = 1
+         @Suppress("DEPRECATION")
+         withClue(lazy {
+            counter -= 1
+            if (counter == 0) {
+               fail("lazy clue must be called only once")
+            }
+            "extra lazy message"
+         }) {
+            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith "extra lazy message"
          }
+      }
 
-         state shouldBe expected.toString()
+      "should not invoke { .. } clue if an assertion succeeds" {
+         withClue({ fail("{ .. } clue must not be called in case assertion succeeds") }) {
+            1 + 1 shouldBe 2
+         }
+      }
+
+      "should invoke { .. } clue if an assertion fails" {
+         var counter = 1
+         @Suppress("DEPRECATION")
+         withClue({
+            counter -= 1
+            if (counter == 0) {
+               fail("{ .. } clue must be called only once")
+            }
+            "extra lazy message"
+         }) {
+            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith "extra lazy message"
+         }
+      }
+
+      "{ \"message\" }.asClue { ... } should work" {
+         { "{...}.asClue message" }.asClue {
+            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith "{...}.asClue message"
+         }
+      }
+
+      "clues can nest" {
+         "first level clue 1".asClue {
+            "second level clue 2".asClue {
+               shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith "first level clue 1\nsecond level clue 2"
+            }
+         }
+      }
+
+      "top-level clue should not stick when nesting" {
+         for (i in 1..2) {
+            { "first level clue $i" }.asClue {
+               for (j in 1..2) {
+                  { "second level clue $j" }.asClue {
+                     shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith "first level clue $i\nsecond level clue $j"
+                  }
+               }
+            }
+         }
       }
 
       "clue can be nullable" {

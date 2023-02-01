@@ -4,7 +4,7 @@ slug: clues.html
 ---
 
 :::note
-Clues only work if you are using the Kotest test framework in conjuction with the assertions library
+Clues only work if you are using the Kotest assertions library or Kotest test framework
 :::
 
 
@@ -38,7 +38,7 @@ If this failed, you would simply get:
 
 Which isn't particularly helpful. This is where `withClue` comes into play.
 
-The `withClue` and `asClue` helpers can add extra context to assertions so failures are self explanatory:
+The `withClue` and `asClue` helpers can add extra context to assertions so failures are self-explanatory:
 
 For example, we can use `withClue` with a string message
 
