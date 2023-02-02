@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
@@ -64,14 +65,12 @@ fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: K
 }
 
 /**
- * **Do not call directly**
+ * Most callers should use [Arb.Companion.bind] without [KClass] and [KType] parameters instead.
  *
- * Callers should use [Arb.Companion.bind] without [KClass] and [KType] parameters instead.
+ * This method's primary use-case is for generating [Arb]s for types that are not available at compile-time.
+ * See [#3362](https://github.com/kotest/kotest/issues/3362) for an example of such usage.
  */
-@Deprecated(
-   "Superceded by bind without KClass parameter.",
-   ReplaceWith("bind(providedArbs)")
-)
+@DelicateKotest
 fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: KClass<T>): Arb<T> {
    return forClassUsingConstructor(providedArbs, kclass)
 }
