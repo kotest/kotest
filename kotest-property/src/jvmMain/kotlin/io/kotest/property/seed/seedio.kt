@@ -42,7 +42,7 @@ actual fun writeSeed(path: TestPath, seed: Long) {
       Files.write(f, seed.toString().encodeToByteArray())
    } catch (e: Exception) {
       println("Error writing seed")
-      e.print()
+      e.printStackTrace()
    }
 }
 
@@ -52,6 +52,6 @@ actual fun clearSeed(path: TestPath) {
       f.toFile().deleteRecursively()
    } catch (e: Exception) {
       println("Error clearing seed")
-      e.print()
+      e.printStackTrace()
    }
 }

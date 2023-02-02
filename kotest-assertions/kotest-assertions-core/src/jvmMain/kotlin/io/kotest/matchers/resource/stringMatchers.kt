@@ -19,8 +19,9 @@ import kotlin.io.path.writeText
  */
 infix fun String.shouldMatchResource(
    path: String
-) {
+): String {
    this should matchResource(path, ::be, ignoreLineSeparators = true)
+   return this
 }
 
 /**
@@ -30,24 +31,33 @@ infix fun String.shouldMatchResource(
  */
 infix fun String.shouldNotMatchResource(
    path: String
-) {
+): String {
    this shouldNot matchResource(path, ::be, ignoreLineSeparators = true)
+   return this
 }
 
+/**
+ * Will match if the given String and the resource value matches using matcher provided by [matcherProvider]
+ */
 fun String.shouldMatchResource(
    path: String,
    matcherProvider: (String) -> Matcher<String>,
    ignoreLineSeparators: Boolean = true
-) {
+): String {
    this should matchResource(path, matcherProvider, ignoreLineSeparators)
+   return this
 }
 
+/**
+ * Will match if the given String and the resource value **not** matches using matcher provided by [matcherProvider]
+ */
 fun String.shouldNotMatchResource(
    path: String,
    matcherProvider: (String) -> Matcher<String>,
    ignoreLineSeparators: Boolean = true
-) {
+): String {
    this shouldNot matchResource(path, matcherProvider, ignoreLineSeparators)
+   return this
 }
 
 fun matchResource(

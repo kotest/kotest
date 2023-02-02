@@ -40,11 +40,11 @@ suspend fun checkCoverage(label: String, percentage: Double, f: suspend () -> Pr
  */
 suspend fun checkCoverage(vararg pairs: Pair<String, Double>, f: suspend () -> PropertyContext): PropertyContext {
    val context = f()
-   val coverage = pairs.toMap()
    val attempts = context.attempts()
-   context.classifications().forEach { (label, count) ->
-      val actual = (count.toDouble() / attempts.toDouble()) * 100.0
-      val required = coverage[label] ?: 0.0
+   val classifications = context.classifications()
+   pairs.forEach { (label, required) ->
+      val actualCount = classifications[label] ?: 0
+      val actual = (actualCount.toDouble() / attempts.toDouble()) * 100.0
       if (actual < required)
          fail("Property test required coverage of $required% for [$label] but was [${actual.toInt()}%]")
    }

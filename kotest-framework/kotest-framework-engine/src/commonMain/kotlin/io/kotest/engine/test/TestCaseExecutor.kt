@@ -71,10 +71,15 @@ class TestCaseExecutor(
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
-         TestInvocationInterceptor(configuration.registry, timeMark),
-         InvocationTimeoutInterceptor,
-         if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
-         if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+         TestInvocationInterceptor(
+            configuration.registry,
+            timeMark,
+            listOfNotNull(
+               InvocationTimeoutInterceptor,
+               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
+               if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+            )
+         ),
          CoroutineDebugProbeInterceptor,
       )
 

@@ -1,7 +1,7 @@
 [versions]
-classgraph = "4.8.151"
+blockhound = "1.0.7.RELEASE"
+classgraph = "4.8.154"
 commons-lang3 = "3.12.0"
-commons-io = "2.11.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
 jdom2 = "2.0.6.1"
@@ -22,8 +22,8 @@ rgxgen = "1.4"
 shadowjar = "7.1.2"
 
 [libraries]
-apache-commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
