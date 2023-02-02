@@ -4,6 +4,26 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.5.4 October 2022
+Fixes an issue when combining gradle filters. (`AND` was wrongly applied between filters, instead of `OR`) (#3277)
+
+## 5.5.3 October 2022
+
+Updated JUnit version from 5.7.2 to 5.8.2.
+
+Kotest now requires the runtime version of JUnit to be at least 5.8.x
+
+> Note: If your build somehow manages to put both JUnit 5.7 and 5.8 onto the classpath and they load in the wrong order, you might see problems related to ClassOrderer not being found. Please make sure that only JUnit 5.8+ is loaded
+
+## 5.5.2 October 2022
+
+* Gradle test filter fixes, by @myuwono (#3257)
+* Tag inheritance configuration is now available on AbstractProjectConfig
+
+## 5.5.1 October 2022
+
+* Fixed an issue where tests where being skipped when filtered out by the full spec name
+
 ## 5.5.0 October 2022
 
 

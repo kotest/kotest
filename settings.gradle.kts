@@ -62,6 +62,7 @@ include(
 
    ":kotest-runner:kotest-runner-junit4",
    ":kotest-extensions",
+   ":kotest-extensions:kotest-extensions-blockhound",
    ":kotest-extensions:kotest-extensions-http",
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
@@ -97,7 +98,7 @@ include(
 )
 
 plugins {
-   id("com.gradle.enterprise") version "3.11.2"
+   id("com.gradle.enterprise") version "3.11.4"
 }
 
 gradleEnterprise {

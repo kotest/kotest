@@ -156,11 +156,13 @@ fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
 
 /** Assert that a sequence contains all the given values and nothing else, in any order. */
 fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val passed = value.count() == expected.count() && expected.all { value.contains(it) }
+   val valueAsList = value.toList()
+   val expectedAsList = expected.toList()
+   val passed = valueAsList.size == expectedAsList.size && valueAsList.containsAll(expectedAsList)
    MatcherResult(
       passed,
-      { "Sequence should contain the values of $expected in any order, but was $value" },
-      { "Sequence should not contain the values of $expected in any order" }
+      { "Sequence should contain the values of $expectedAsList in any order, but was $valueAsList" },
+      { "Sequence should not contain the values of $expectedAsList in any order" }
    )
 }
 
@@ -187,21 +189,27 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.toSet().size == value.count(),
-      { "Sequence should be Unique" },
-      { "Sequence should contain at least one duplicate element" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      return MatcherResult(
+         valueAsList.toSet().size == valueAsList.size,
+         { "Sequence should be Unique" },
+         { "Sequence should contain at least one duplicate element" }
+      )
+   }
 }
 
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.toSet().size < value.count(),
-      { "Sequence should contain duplicates" },
-      { "Sequence should not contain duplicates" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      return MatcherResult(
+         valueAsList.toSet().size < valueAsList.size,
+         { "Sequence should contain duplicates" },
+         { "Sequence should not contain duplicates" }
+      )
+   }
 }
 
 fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()
@@ -210,9 +218,9 @@ fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorte
 fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      @Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
-      val failure = value.zipWithNext().withIndex().firstOrNull { (i, it) -> it.first > it.second }
-      val snippet = value.joinToString(",", limit = 10)
+      val valueAsList = value.toList()
+      val failure = valueAsList.zipWithNext().withIndex().firstOrNull { (_, it) -> it.first > it.second }
+      val snippet = valueAsList.joinToString(",", limit = 10)
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value.first} at index ${failure.index} was greater than element ${failure.value.second}"
@@ -238,9 +246,9 @@ fun <T> sortedWith(comparator: Comparator<in T>): Matcher<Sequence<T>> = sortedW
 
 fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      @Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
-      val failure = value.zipWithNext().withIndex().firstOrNull { (i, it) -> cmp(it.first, it.second) > 0 }
-      val snippet = value.joinToString(",", limit = 10)
+      val valueAsList = value.toList()
+      val failure = valueAsList.zipWithNext().withIndex().firstOrNull { (_, it) -> cmp(it.first, it.second) > 0 }
+      val snippet = valueAsList.joinToString(",", limit = 10)
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value.first} at index ${failure.index} shouldn't precede element ${failure.value.second}"
@@ -260,11 +268,15 @@ infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElem
 infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 
 fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() == 1 && value.first() == t,
-      { "Sequence should be a single element of $t but has ${value.count()} elements" },
-      { "Sequence should not be a single element of $t" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val valueAsList = value.toList()
+      val actualCount = valueAsList.count()
+      return MatcherResult(
+         actualCount == 1 && valueAsList.first() == t,
+         { "Sequence should be a single element of $t but has $actualCount elements" },
+         { "Sequence should not be a single element of $t" }
+      )
+   }
 }
 
 
@@ -280,33 +292,43 @@ infix fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCoun
 fun <T> haveSize(size: Int): Matcher<Sequence<T>> = haveCount(size)
 
 fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.count() == count,
-         { "Sequence should have count $count but has count ${value.count()}" },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      return MatcherResult(
+         actualCount == count,
+         { "Sequence should have count $count but has count $actualCount" },
          { "Sequence should not have count $count" }
       )
+   }
 }
 
 
 infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
 
 fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() > other.count(),
-      { "Sequence of count ${value.count()} should be larger than sequence of count ${other.count()}" },
-      { "Sequence of count ${value.count()} should not be larger than sequence of count ${other.count()}" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      val expectedCount = other.count()
+      return MatcherResult(
+         actualCount > expectedCount,
+         { "Sequence of count $actualCount should be larger than sequence of count $expectedCount" },
+         { "Sequence of count $actualCount should not be larger than sequence of count $expectedCount" }
+      )
+   }
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
 
 fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() < other.count(),
-      { "Sequence of count ${value.count()} should be smaller than sequence of count ${other.count()}" },
-      { "Sequence of count ${value.count()} should not be smaller than sequence of count ${other.count()}" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      val expectedCount = other.count()
+      return MatcherResult(
+         actualCount < expectedCount,
+         { "Sequence of count $actualCount should be smaller than sequence of count $expectedCount" },
+         { "Sequence of count $actualCount should not be smaller than sequence of count $expectedCount" }
+      )
+   }
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this should beSameCountAs(
@@ -314,11 +336,15 @@ infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this shou
 )
 
 fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.count() == other.count(),
-      { "Sequence of count ${value.count()} should be the same count as sequence of count ${other.count()}" },
-      { "Sequence of count ${value.count()} should not be the same count as sequence of count ${other.count()}" }
-   )
+   override fun test(value: Sequence<T>): MatcherResult {
+      val actualCount = value.count()
+      val expectedCount = other.count()
+      return MatcherResult(
+         actualCount == expectedCount,
+         { "Sequence of count $actualCount should be the same count as sequence of count $expectedCount" },
+         { "Sequence of count $actualCount should not be the same count as sequence of count $expectedCount" }
+      )
+   }
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSameSizeAs(other: Sequence<U>) = this.shouldBeSameCountAs(other)
@@ -375,20 +401,20 @@ fun <T : Comparable<T>> Sequence<T>.shouldNotContainInOrder(expected: Sequence<T
 
 /** Assert that a sequence contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = neverNullMatcher { actual ->
-   val subsequenceCount = subsequence.count()
-   require(subsequenceCount > 0) { "expected values must not be empty" }
+   val subsequenceAsList = subsequence.toList()
+   require(subsequenceAsList.isNotEmpty()) { "expected values must not be empty" }
 
    var subsequenceIndex = 0
    val actualIterator = actual.iterator()
 
-   while (actualIterator.hasNext() && subsequenceIndex < subsequenceCount) {
-      if (actualIterator.next() == subsequence.elementAt(subsequenceIndex)) subsequenceIndex += 1
+   while (actualIterator.hasNext() && subsequenceIndex < subsequenceAsList.size) {
+      if (actualIterator.next() == subsequenceAsList.elementAt(subsequenceIndex)) subsequenceIndex += 1
    }
 
    MatcherResult(
-      subsequenceIndex == subsequence.count(),
-      { "[$actual] did not contain the elements [$subsequence] in order" },
-      { "[$actual] should not contain the elements [$subsequence] in order" }
+      subsequenceIndex == subsequenceAsList.size,
+      { "[$actual] did not contain the elements [$subsequenceAsList] in order" },
+      { "[$actual] should not contain the elements [$subsequenceAsList] in order" }
    )
 }
 
@@ -421,10 +447,10 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
          remaining.remove(iter.next())
       }
 
-      return MatcherResult(
-         remaining.isEmpty(),
-         { "Sequence should contain all of ${value.joinToString(",", limit = 10)}" },
-         { "Sequence should not contain all of ${value.joinToString(",", limit = 10)}" }
-      )
+      val failure =
+         { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
+      val negFailure = { "Sequence should not contain all of ${ts.print().value}" }
+
+      return MatcherResult(remaining.isEmpty(), failure, negFailure)
    }
 }
