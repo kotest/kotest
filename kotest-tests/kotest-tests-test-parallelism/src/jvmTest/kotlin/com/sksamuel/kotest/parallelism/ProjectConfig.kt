@@ -22,9 +22,11 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override suspend fun afterProject() {
       val duration = System.currentTimeMillis() - start
-      // there are 10 tests in the spec, and each one has a delay of 100ms
+      // there are 10 tests in the spec, and each one has a delay of 1s
       // if parallel is working they should all block at the same time
-      if (duration > 750)
+      //
+      // We allow a large margin of error here as the GitHub runner seems to have a lot of contention
+      if (duration > 2500)
          error("Parallel execution failure: Execution time was $duration")
    }
 }
