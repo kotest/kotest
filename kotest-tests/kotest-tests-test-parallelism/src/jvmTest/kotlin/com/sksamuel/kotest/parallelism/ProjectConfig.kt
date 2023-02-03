@@ -26,7 +26,9 @@ object ProjectConfig : AbstractProjectConfig() {
       // if parallel is working they should all block at the same time
       //
       // We allow a large margin of error here as the GitHub runner seems to have a lot of contention
-      if (duration > 2500)
-         error("Parallel execution failure: Execution time was $duration")
+      if (duration > 2500) {
+         val cores = Runtime.getRuntime().availableProcessors()
+         error("Parallel execution failure: Execution time was $duration (using $cores cores)")
+      }
    }
 }
