@@ -12,7 +12,9 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -56,9 +58,9 @@ internal class ConcurrentTestSuiteScheduler(
       val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(context.configuration)
       val semaphore = Semaphore(concurrency)
       val collector = CollectingTestEngineListener()
-      specs.forEach { ref ->
+      specs.map { ref ->
          logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
-         launch {
+         async {
             semaphore.withPermit {
                logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
 
@@ -77,6 +79,6 @@ internal class ConcurrentTestSuiteScheduler(
             }
             logger.log { Pair(ref.kclass.bestName(), "Released permit") }
          }
-      }
+      }.joinAll()
    }
 }
