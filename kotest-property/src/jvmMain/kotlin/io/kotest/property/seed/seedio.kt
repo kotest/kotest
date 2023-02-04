@@ -34,6 +34,9 @@ private fun escape(path: String) = path
    .replace('\\', '_')
    .replace('<', '_')
    .replace('>', '_')
+   .replace(':', '_')
+   .replace('(', '_')
+   .replace(')', '_')
 
 actual fun writeSeed(path: TestPath, seed: Long) {
    try {
