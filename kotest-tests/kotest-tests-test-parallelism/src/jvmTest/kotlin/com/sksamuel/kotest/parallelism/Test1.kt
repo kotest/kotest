@@ -1,11 +1,35 @@
 package com.sksamuel.kotest.parallelism
 
+import com.sksamuel.kotest.parallelism.ProjectConfig.parallelism
 import io.kotest.core.spec.style.FunSpec
+import kotlinx.coroutines.sync.Semaphore
 
 class Test1 : FunSpec({
-   repeat(10) { k ->
+   threads = parallelism
+
+   repeat(parallelism) { k ->
       test("$k") {
-         Thread.sleep(1000)
+         acquire()
+         Thread.sleep(100)
+         release()
       }
    }
-})
+}) {
+   companion object {
+      var maxLeasesUsed = 0
+
+      val sema = Semaphore(parallelism)
+
+      fun acquire() {
+         synchronized(sema) {
+            sema.tryAcquire()
+            val leasesAcquired = parallelism - sema.availablePermits
+            maxLeasesUsed = maxOf(maxLeasesUsed, leasesAcquired)
+         }
+      }
+
+      fun release() {
+         sema.release()
+      }
+   }
+}
