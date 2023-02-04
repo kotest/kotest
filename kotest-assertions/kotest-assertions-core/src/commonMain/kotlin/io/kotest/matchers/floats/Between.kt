@@ -76,27 +76,13 @@ fun Float.shouldNotBeBetween(a: Float, b: Float, tolerance: Float): Float {
  * @see [Float.shouldNotBeBetween]
  */
 fun between(a: Float, b: Float, tolerance: Float): Matcher<Float> = object : Matcher<Float> {
-  override fun test(value: Float): MatcherResult {
-    val differenceToMinimum = value - a
-    val differenceToMaximum = b - value
-
-    if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
+   override fun test(value: Float): MatcherResult {
+      val min = a - tolerance
+      val max = b + tolerance
       return invoke(
-         false,
-         { "$value should be bigger than $a" },
-         { "$value should not be bigger than $a" })
-    }
-
-    if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
-      return invoke(
-         false,
-         { "$value should be smaller than $b" },
-         { "$value should not be smaller than $b" })
-    }
-
-    return invoke(
-       true,
-       { "$value should be smaller than $b and bigger than $a" },
-       { "$value should not be smaller than $b and should not be bigger than $a" })
-  }
+         value in min..max,
+         { "$value is outside expected range [$a, $b] (using tolerance $tolerance)" },
+         { "$value is not outside expected range [$a, $b] (using tolerance $tolerance)" }
+      )
+   }
 }
