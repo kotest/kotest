@@ -25,6 +25,7 @@ typealias StringSpecRootContext = StringSpecRootScope
  * }
  *
  */
+@KotestTestScope
 interface StringSpecRootScope : RootScope {
 
    fun String.config(
