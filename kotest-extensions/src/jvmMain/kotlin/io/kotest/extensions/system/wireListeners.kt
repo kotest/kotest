@@ -3,8 +3,8 @@ package io.kotest.extensions.system
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.io.PrintStream
 
 /**
@@ -93,5 +93,42 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       System.setErr(previous)
+   }
+}
+
+/**
+ * Write to multiple output streams at once
+ *
+ * (avoids pulling in commons-io:commons-io just for a single class)
+ */
+@Suppress("BlockingMethodInNonBlockingContext")
+internal class TeeOutputStream(
+   private val firstOutput: OutputStream,
+   private val secondOutput: OutputStream
+) : OutputStream() {
+
+   override fun write(data: Int) = synchronized(this) {
+      firstOutput.write(data)
+      secondOutput.write(data)
+   }
+
+   override fun write(data: ByteArray) = synchronized(this) {
+      firstOutput.write(data)
+      secondOutput.write(data)
+   }
+
+   override fun write(data: ByteArray, offset: Int, length: Int) = synchronized(this) {
+      firstOutput.write(data, offset, length)
+      secondOutput.write(data, offset, length)
+   }
+
+   override fun flush() {
+      firstOutput.flush()
+      secondOutput.flush()
+   }
+
+   override fun close() {
+      firstOutput.close()
+      secondOutput.close()
    }
 }
