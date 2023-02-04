@@ -76,6 +76,60 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 """
       }
 
+      test("should supported nested dynamic tests") {
+
+         val x = TestCase(
+            TeamCityTestEngineListenerTest::class.toDescriptor().append("x"),
+            TestName("x"),
+            this@TeamCityTestEngineListenerTest,
+            { },
+            SourceRef.ClassSource("foo.bar.Test", 12),
+            TestType.Container,
+            ResolvedTestConfig.default,
+            null,
+            null
+         )
+
+         val y = x.copy(
+            parent = x,
+            name = TestName("y"),
+            descriptor = x.descriptor.append("y"),
+            type = TestType.Dynamic,
+            source = SourceRef.ClassSource("foo.bar.Test", 17),
+         )
+
+         val z = y.copy(
+            parent = y,
+            name = TestName("z"),
+            descriptor = y.descriptor.append("z"),
+            type = TestType.Dynamic,
+            source = SourceRef.ClassSource("foo.bar.Test", 33),
+         )
+
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a")
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(x)
+            listener.testStarted(y)
+            listener.testStarted(z)
+            listener.testFinished(z, TestResult.Success(123.milliseconds))
+            listener.testFinished(y, TestResult.Success(324.milliseconds))
+            listener.testFinished(x, TestResult.Success(653.milliseconds))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='x' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='y' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='z' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y -- z' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='z' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y -- z' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y' duration='123' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testSuiteFinished name='y' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x -- y' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x' duration='324' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='x' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/x' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='653' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
       test("should support errors in tests") {
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
