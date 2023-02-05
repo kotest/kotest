@@ -1,14 +1,14 @@
 package io.kotest.engine.concurrency
 
+import io.kotest.common.concurrentHashMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.Logger
-import io.kotest.mpp.bestName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
-import kotlin.math.abs
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 /**
@@ -35,6 +35,7 @@ class FixedThreadCoroutineDispatcherFactory(
 
    private val logger = Logger(FixedThreadCoroutineDispatcherFactory::class)
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
+   private val cursor = AtomicInteger(0)
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
@@ -45,7 +46,7 @@ class FixedThreadCoroutineDispatcherFactory(
       // otherwise each test just gets a random dispatcher
       val dispatcher = when (resolvedAffinity) {
          true -> dispatcherFor(testCase.spec::class)
-         else -> dispatchers.random()
+         else -> dispatchers[cursor.incrementAndGet() % dispatchers.size]
       }
 
       logger.log { Pair(testCase.name.testName, "Switching dispatcher to $dispatcher") }
@@ -54,10 +55,14 @@ class FixedThreadCoroutineDispatcherFactory(
       }
    }
 
+
    /**
     * Returns a consistent dispatcher for the given [kclass].
     */
    private fun dispatcherFor(kclass: KClass<*>): CoroutineDispatcher =
-      dispatchers[abs(kclass.bestName().hashCode()) % dispatchers.size]
+      dispatcherAffinity[kclass] ?: dispatchers[cursor.getAndIncrement() % dispatchers.size].also {
+         dispatcherAffinity[kclass] = it
+      }
 
+   private val dispatcherAffinity = concurrentHashMap<KClass<*>, CoroutineDispatcher>()
 }
