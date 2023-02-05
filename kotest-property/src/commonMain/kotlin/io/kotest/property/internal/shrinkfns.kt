@@ -516,3 +516,63 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> shrinkfn(
       listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN)
    }
 }
+
+   /**
+    * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
+    * the smallest failing case.
+    */
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> shrinkfn(
+   a: Sample<A>,
+   b: Sample<B>,
+   c: Sample<C>,
+   d: Sample<D>,
+   e: Sample<E>,
+   f: Sample<F>,
+   g: Sample<G>,
+   h: Sample<H>,
+   i: Sample<I>,
+   j: Sample<J>,
+   k: Sample<K>,
+   l: Sample<L>,
+   m: Sample<M>,
+   n: Sample<N>,
+   o: Sample<O>,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit,
+   shrinkingMode: ShrinkingMode
+): suspend () -> List<ShrinkResult<Any?>> = {
+   // we use a new context for the shrinks, as we don't want to affect classification etc
+   val context = PropertyContext()
+   with(context) {
+      val smallestA =
+         doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestB =
+         doShrinking(b.shrinks, shrinkingMode) { property(smallestA.shrink, it, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestC =
+         doShrinking(c.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, it, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestD =
+         doShrinking(d.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, it, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestE =
+         doShrinking(e.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, it, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestF =
+         doShrinking(f.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, it, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestG =
+         doShrinking(g.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, it, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestH =
+         doShrinking(h.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, it, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestI =
+         doShrinking(i.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, it, j.value, k.value, l.value, m.value, n.value, o.value) }
+      val smallestJ =
+         doShrinking(j.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, it, k.value, l.value, m.value, n.value, o.value) }
+      val smallestK =
+         doShrinking(k.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, it, l.value, m.value, n.value, o.value) }
+      val smallestL =
+         doShrinking(l.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, it, m.value, n.value, o.value) }
+      val smallestM =
+         doShrinking(m.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, it, n.value, o.value) }
+      val smallestN =
+         doShrinking(n.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, it, o.value) }
+      val smallestO =
+         doShrinking(o.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, it) }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO)
+   }
+}
