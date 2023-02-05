@@ -9,7 +9,6 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.valueParameters
 import kotlin.reflect.typeOf
 
 /**
@@ -30,10 +29,13 @@ import kotlin.reflect.typeOf
  * - Collections (Set, List, Map) of types that fall into this category
  * - Classes for which an [Arb] has been provided through [providedArbs]
  */
-inline fun <reified T : Any> Arb.Companion.bind(
-   providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(),
-   arbsForProperties: Map<KProperty1<*, *>, Arb<*>> = emptyMap()
-): Arb<T> = bind(providedArbs, arbsForProperties, T::class, typeOf<T>())
+inline fun <reified T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
+   bind(providedArbs, emptyMap(), T::class, typeOf<T>())
+
+inline fun <reified T : Any> Arb.Companion.bind(builder: ProvidedArbsBuilder.() -> Unit): Arb<T> =
+   ProvidedArbsBuilder().apply(builder).run {
+      bind(classArbs, propertyArbs, T::class, typeOf<T>())
+   }
 
 /**
  * Alias for [Arb.Companion.bind]
@@ -55,10 +57,13 @@ inline fun <reified T : Any> Arb.Companion.bind(
  * - Collections (Set, List, Map) of types that fall into this category
  * - Classes for which an [Arb] has been provided through [providedArbs]
  */
-inline fun <reified T : Any> Arb.Companion.data(
-   providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(),
-   arbsForProps: Map<KProperty1<*, *>, Arb<*>> = emptyMap(),
-): Arb<T> = Arb.bind(providedArbs, arbsForProps)
+inline fun <reified T : Any> Arb.Companion.data(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
+   Arb.bind(providedArbs)
+
+inline fun <reified T : Any> Arb.Companion.data(builder: ProvidedArbsBuilder.() -> Unit): Arb<T> =
+   ProvidedArbsBuilder().apply(builder).run {
+      bind(classArbs, propertyArbs, T::class, typeOf<T>())
+   }
 
 /**
  * **Do not call directly**
@@ -85,10 +90,9 @@ fun <T : Any> Arb.Companion.bind(
 @DelicateKotest
 fun <T : Any> Arb.Companion.bind(
    providedArbs: Map<KClass<*>, Arb<*>>,
-   arbsForProperties: Map<KProperty1<*, *>, Arb<*>>,
    kclass: KClass<T>
 ): Arb<T> {
-   return forClassUsingConstructor(providedArbs, arbsForProperties, kclass)
+   return forClassUsingConstructor(providedArbs, emptyMap(), kclass)
 }
 
 internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
@@ -144,4 +148,22 @@ internal fun Arb.Companion.forType(
    return (type.classifier as? KClass<*>)?.let { providedArbs[it] ?: defaultForClass(it) }
       ?: GlobalArbResolver.resolve(type)
       ?: targetDefaultForType(providedArbs, arbsForProperties, type)
+}
+
+class ProvidedArbsBuilder {
+   private val _classArbs = mutableMapOf<KClass<*>, Arb<*>>()
+   private val _propertyArbs = mutableMapOf<KProperty1<*, *>, Arb<*>>()
+
+   val classArbs: Map<KClass<*>, Arb<*>> get() = _classArbs
+   val propertyArbs: Map<KProperty1<*, *>, Arb<*>> get() = _propertyArbs
+
+   @JvmName("bindClass")
+   fun bind(mapping: Pair<KClass<*>, Arb<*>>) {
+      _classArbs[mapping.first] = mapping.second
+   }
+
+   @JvmName("bindProperty")
+   fun bind(mapping: Pair<KProperty1<*, *>, Arb<*>>) {
+      _propertyArbs[mapping.first] = mapping.second
+   }
 }

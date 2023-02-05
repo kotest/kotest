@@ -20,7 +20,6 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
-import io.kotest.property.arbitrary.data
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.map
@@ -31,10 +30,6 @@ import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.arbitrary.zip
 import io.kotest.property.checkAll
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.valueParameters
-import kotlin.reflect.typeOf
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
 class BindTest : StringSpec({
@@ -44,7 +39,7 @@ class BindTest : StringSpec({
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
 
-   "Bind using param" {
+   "Bind using properties" {
       data class Person(val id: Int, val name: String)
       data class Family(val name: String, val persons: List<Person>)
 
@@ -64,10 +59,10 @@ class BindTest : StringSpec({
 //      println(someProp.parameters)
 
 
-      checkAll(Arb.bind<Family>(arbsForProperties = mapOf(
-         Family::name to Arb.string().map { s -> "Flanders-$s" },
-         Person::id to Arb.positiveInt(),
-      ))) { family ->
+      checkAll(Arb.bind<Family> {
+         bind(Family::name to Arb.string().map { s -> "Flanders-$s" })
+         bind(Person::id to Arb.positiveInt())
+      }) { family ->
          family.name.shouldStartWith("Flanders-")
          family.persons.forAll {
             it.name.shouldNotStartWith("Flanders-")
