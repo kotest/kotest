@@ -43,7 +43,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(
    genN: Gen<N>,
    genO: Gen<O>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Boolean
-) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, genN, genO,config) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o -> property(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) shouldBe true }
+) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, genN, genO, config) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o -> property(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) shouldBe true }
 
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(
    config: PropTestConfig = PropTestConfig(),
@@ -63,7 +63,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(
    genN: Gen<N>,
    genO: Gen<O>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Boolean
-) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, genN, genO,config) {
+) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, genN, genO, config) {
       a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ->
    property(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) shouldBe false
 }

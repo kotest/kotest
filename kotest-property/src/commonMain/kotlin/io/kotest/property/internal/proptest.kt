@@ -7,6 +7,8 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
+import io.kotest.property.Sample
+import io.kotest.property.ShrinkingMode
 import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
@@ -1576,6 +1578,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
    context.checkMaxDiscards()
    return context
 }
+
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1764,3 +1767,445 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
    context.checkMaxDiscards()
    return context
 }
+
+suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   genL: Gen<L>,
+   genM: Gen<M>,
+   genN: Gen<N>,
+   genO: Gen<O>,
+   genP: Gen<P>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit
+): PropertyContext {
+
+   config.checkFailOnSeed()
+
+   val constraints = config.constraints
+      ?: config.iterations?.let { Constraints.iterations(it) }
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
+
+   val context = PropertyContext(config)
+   val random = createRandom(config)
+
+   if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            genC.values.forEach { c ->
+               genD.values.forEach { d ->
+                  genE.values.forEach { e ->
+                     genF.values.forEach { f ->
+                        genG.values.forEach { g ->
+                           genH.values.forEach { h ->
+                              genI.values.forEach { i ->
+                                 genJ.values.forEach { j ->
+                                    genK.values.forEach { k ->
+                                       genL.values.forEach { l ->
+                                          genM.values.forEach { m ->
+                                             genN.values.forEach { n ->
+                                                genO.values.forEach { o ->
+                                                   genP.values.forEach { p ->
+                                                      config.listeners.forEach { it.beforeTest() }
+                                                      test(
+                                                         context,
+                                                         config,
+                                                         { emptyList() },
+                                                         listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p),
+                                                         listOf(
+                                                            genA.classifier,
+                                                            genB.classifier,
+                                                            genC.classifier,
+                                                            genD.classifier,
+                                                            genE.classifier,
+                                                            genF.classifier,
+                                                            genG.classifier,
+                                                            genH.classifier,
+                                                            genI.classifier,
+                                                            genJ.classifier,
+                                                            genK.classifier,
+                                                            genL.classifier,
+                                                            genM.classifier,
+                                                            genN.classifier,
+                                                            genO.classifier,
+                                                         ),
+                                                         random.seed
+                                                      ) {
+                                                         context.property(
+                                                            a,
+                                                            b,
+                                                            c,
+                                                            d,
+                                                            e,
+                                                            f,
+                                                            g,
+                                                            h,
+                                                            i,
+                                                            j,
+                                                            k,
+                                                            l,
+                                                            m,
+                                                            n,
+                                                            o,
+                                                            p
+                                                         )
+                                                      }
+                                                      config.listeners.forEach { it.afterTest() }
+                                                   }
+                                                }
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   } else {
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
+         .zip(genC.generate(random, config.edgeConfig))
+         .zip(genD.generate(random, config.edgeConfig))
+         .zip(genE.generate(random, config.edgeConfig))
+         .zip(genF.generate(random, config.edgeConfig))
+         .zip(genG.generate(random, config.edgeConfig))
+         .zip(genH.generate(random, config.edgeConfig))
+         .zip(genI.generate(random, config.edgeConfig))
+         .zip(genJ.generate(random, config.edgeConfig))
+         .zip(genK.generate(random, config.edgeConfig))
+         .zip(genL.generate(random, config.edgeConfig))
+         .zip(genM.generate(random, config.edgeConfig))
+         .zip(genN.generate(random, config.edgeConfig))
+         .zip(genO.generate(random, config.edgeConfig))
+         .zip(genP.generate(random, config.edgeConfig))
+         .takeWhile { constraints.evaluate(context) }
+         .forEach { (abcdefghijklmno, p) ->
+            val (abcdefghijklmn, o) = abcdefghijklmno
+            val (abcdefghijklm, n) = abcdefghijklmn
+            val (abcdefghijkl, m) = abcdefghijklm
+            val (abcdefghijk, l) = abcdefghijkl
+            val (abcdefghij, k) = abcdefghijk
+            val (abcdefghi, j) = abcdefghij
+            val (abcdefgh, i) = abcdefghi
+            val (abcdefg, h) = abcdefgh
+            val (abcdef, g) = abcdefg
+            val (abcde, f) = abcdef
+            val (abcd, e) = abcde
+            val (abc, d) = abcd
+            val (ab, c) = abc
+            val (a, b) = ab
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode)
+            config.listeners.forEach { it.beforeTest() }
+            test(
+               context,
+               config,
+               shrinkfn,
+               listOf(
+                  a.value,
+                  b.value,
+                  c.value,
+                  d.value,
+                  e.value,
+                  f.value,
+                  g.value,
+                  h.value,
+                  i.value,
+                  j.value,
+                  k.value,
+                  l.value,
+                  m.value,
+                  n.value,
+                  o.value,
+                  p.value
+               ),
+               listOf(
+                  genA.classifier,
+                  genB.classifier,
+                  genC.classifier,
+                  genD.classifier,
+                  genE.classifier,
+                  genF.classifier,
+                  genG.classifier,
+                  genH.classifier,
+                  genI.classifier,
+                  genJ.classifier,
+                  genK.classifier,
+                  genL.classifier,
+                  genM.classifier,
+                  genN.classifier,
+                  genO.classifier,
+                  genP.classifier
+               ),
+               random.seed
+            ) {
+               context.property(
+                  a.value,
+                  b.value,
+                  c.value,
+                  d.value,
+                  e.value,
+                  f.value,
+                  g.value,
+                  h.value,
+                  i.value,
+                  j.value,
+                  k.value,
+                  l.value,
+                  m.value,
+                  n.value,
+                  o.value,
+                  p.value
+               )
+            }
+            config.listeners.forEach { it.afterTest() }
+         }
+   }
+
+   outputStatistics(context, 12, true)
+   context.outputClassifications(12, config, random.seed)
+   context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
+   return context
+}
+
+suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   genL: Gen<L>,
+   genM: Gen<M>,
+   genN: Gen<N>,
+   genO: Gen<O>,
+   genP: Gen<P>,
+   genQ: Gen<Q>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit
+): PropertyContext {
+
+   config.checkFailOnSeed()
+
+   val constraints = config.constraints
+      ?: config.iterations?.let { Constraints.iterations(it) }
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
+
+   val context = PropertyContext(config)
+   val random = createRandom(config)
+
+   if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            genC.values.forEach { c ->
+               genD.values.forEach { d ->
+                  genE.values.forEach { e ->
+                     genF.values.forEach { f ->
+                        genG.values.forEach { g ->
+                           genH.values.forEach { h ->
+                              genI.values.forEach { i ->
+                                 genJ.values.forEach { j ->
+                                    genK.values.forEach { k ->
+                                       genL.values.forEach { l ->
+                                          genM.values.forEach { m ->
+                                             genN.values.forEach { n ->
+                                                genO.values.forEach { o ->
+                                                   genP.values.forEach { p ->
+                                                      genQ.values.forEach { q ->
+                                                         config.listeners.forEach { it.beforeTest() }
+                                                         test(
+                                                            context,
+                                                            config,
+                                                            { emptyList() },
+                                                            listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q),
+                                                            listOf(
+                                                               genA.classifier,
+                                                               genB.classifier,
+                                                               genC.classifier,
+                                                               genD.classifier,
+                                                               genE.classifier,
+                                                               genF.classifier,
+                                                               genG.classifier,
+                                                               genH.classifier,
+                                                               genI.classifier,
+                                                               genJ.classifier,
+                                                               genK.classifier,
+                                                               genL.classifier,
+                                                               genM.classifier,
+                                                               genN.classifier,
+                                                               genO.classifier,
+                                                               genP.classifier,
+                                                            ),
+                                                            random.seed
+                                                         ) {
+                                                            context.property(
+                                                               a,
+                                                               b,
+                                                               c,
+                                                               d,
+                                                               e,
+                                                               f,
+                                                               g,
+                                                               h,
+                                                               i,
+                                                               j,
+                                                               k,
+                                                               l,
+                                                               m,
+                                                               n,
+                                                               o,
+                                                               p,
+                                                               q
+                                                            )
+                                                         }
+                                                         config.listeners.forEach { it.afterTest() }
+                                                      }
+                                                   }
+                                                }
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   } else {
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
+         .zip(genC.generate(random, config.edgeConfig))
+         .zip(genD.generate(random, config.edgeConfig))
+         .zip(genE.generate(random, config.edgeConfig))
+         .zip(genF.generate(random, config.edgeConfig))
+         .zip(genG.generate(random, config.edgeConfig))
+         .zip(genH.generate(random, config.edgeConfig))
+         .zip(genI.generate(random, config.edgeConfig))
+         .zip(genJ.generate(random, config.edgeConfig))
+         .zip(genK.generate(random, config.edgeConfig))
+         .zip(genL.generate(random, config.edgeConfig))
+         .zip(genM.generate(random, config.edgeConfig))
+         .zip(genN.generate(random, config.edgeConfig))
+         .zip(genO.generate(random, config.edgeConfig))
+         .zip(genP.generate(random, config.edgeConfig))
+         .zip(genQ.generate(random, config.edgeConfig))
+         .takeWhile { constraints.evaluate(context) }
+         .forEach { (abcdefghijklmnop, q) ->
+            val (abcdefghijklmno, p) = abcdefghijklmnop
+            val (abcdefghijklmn, o) = abcdefghijklmno
+            val (abcdefghijklm, n) = abcdefghijklmn
+            val (abcdefghijkl, m) = abcdefghijklm
+            val (abcdefghijk, l) = abcdefghijkl
+            val (abcdefghij, k) = abcdefghijk
+            val (abcdefghi, j) = abcdefghij
+            val (abcdefgh, i) = abcdefghi
+            val (abcdefg, h) = abcdefgh
+            val (abcdef, g) = abcdefg
+            val (abcde, f) = abcdef
+            val (abcd, e) = abcde
+            val (abc, d) = abcd
+            val (ab, c) = abc
+            val (a, b) = ab
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode)
+            config.listeners.forEach { it.beforeTest() }
+            test(
+               context,
+               config,
+               shrinkfn,
+               listOf(
+                  a.value,
+                  b.value,
+                  c.value,
+                  d.value,
+                  e.value,
+                  f.value,
+                  g.value,
+                  h.value,
+                  i.value,
+                  j.value,
+                  k.value,
+                  l.value,
+                  m.value,
+                  n.value,
+                  o.value,
+                  p.value,
+                  q.value
+               ),
+               listOf(
+                  genA.classifier,
+                  genB.classifier,
+                  genC.classifier,
+                  genD.classifier,
+                  genE.classifier,
+                  genF.classifier,
+                  genG.classifier,
+                  genH.classifier,
+                  genI.classifier,
+                  genJ.classifier,
+                  genK.classifier,
+                  genL.classifier,
+                  genM.classifier,
+                  genN.classifier,
+                  genO.classifier,
+                  genP.classifier,
+                  genQ.classifier
+               ),
+               random.seed
+            ) {
+               context.property(
+                  a.value,
+                  b.value,
+                  c.value,
+                  d.value,
+                  e.value,
+                  f.value,
+                  g.value,
+                  h.value,
+                  i.value,
+                  j.value,
+                  k.value,
+                  l.value,
+                  m.value,
+                  n.value,
+                  o.value,
+                  p.value,
+                  q.value
+               )
+            }
+            config.listeners.forEach { it.afterTest() }
+         }
+   }
+
+   outputStatistics(context, 12, true)
+   context.outputClassifications(12, config, random.seed)
+   context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
+   return context
+}
+
+
