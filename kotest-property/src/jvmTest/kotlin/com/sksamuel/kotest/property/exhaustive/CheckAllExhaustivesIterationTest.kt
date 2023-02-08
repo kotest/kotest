@@ -332,34 +332,6 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 16 exhaustives should run for each cross product") {
-
-         val context = checkAll(
-            PropTestConfig(iterations = Int.MAX_VALUE),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
-
-         context.attempts() shouldBe 2.pow(16)
-         context.successes() shouldBe 2.pow(16)
-         context.failures() shouldBe 0
-
-      }
-
       test("checkAll with 17 exhaustives should run for each cross product") {
 
          val context = checkAll(
@@ -419,36 +391,6 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 18 exhaustives should run for each cross product") {
-
-         val context = checkAll(
-            PropTestConfig(iterations = Int.MAX_VALUE),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-            Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
-
-         context.attempts() shouldBe 2.pow(18)
-         context.successes() shouldBe 2.pow(18)
-         context.failures() shouldBe 0
-
-      }
-
       test("checkAll with 19 exhaustives should run for each cross product") {
 
          val context = checkAll(
@@ -471,7 +413,8 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
 
          context.attempts() shouldBe 2.pow(19)
          context.successes() shouldBe 2.pow(19)
@@ -501,7 +444,9 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
 
          context.attempts() shouldBe 2.pow(20)
          context.successes() shouldBe 2.pow(20)
@@ -532,7 +477,9 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
 
          context.attempts() shouldBe 2.pow(21)
          context.successes() shouldBe 2.pow(21)
@@ -564,7 +511,9 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
             Exhaustive.ints(0..1),
-         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
+            Exhaustive.ints(0..1),
+            Exhaustive.ints(0..1),
+         ) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }
 
          context.attempts() shouldBe 2.pow(22)
          context.successes() shouldBe 2.pow(22)
