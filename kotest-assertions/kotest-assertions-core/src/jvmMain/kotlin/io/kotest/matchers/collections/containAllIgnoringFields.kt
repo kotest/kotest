@@ -7,19 +7,39 @@ import io.kotest.matchers.equality.beEqualToIgnoringFields
 import io.kotest.matchers.should
 import kotlin.reflect.KProperty
 
-
+/**
+ * Similar to [shouldContainAll] but supports ignoring one or more fields in comparison.
+ *
+ * @param ts collection that needs to be compared against
+ * @param field ignored field in comparison
+ * @param other other ignored fields in comparison
+ */
 fun <T : Any> Iterable<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,
    vararg other: KProperty<*>
 ) = toList() should containAllIgnoringFields(ts = ts, property = field, other = other)
 
+/**
+ * Similar to [shouldContainAll] but supports ignoring one or more fields in comparison.
+ *
+ * @param ts collection that needs to be compared against
+ * @param field ignored field in comparison
+ * @param other other ignored fields in comparison
+ */
 fun <T : Any> Array<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,
    vararg other: KProperty<*>
 ) = asList() should containAllIgnoringFields(ts = ts, property = field, other = other)
 
+/**
+ * Similar to [shouldContainAll] but supports ignoring one or more fields in comparison.
+ *
+ * @param ts collection that needs to be compared against
+ * @param field ignored field in comparison
+ * @param other other ignored fields in comparison
+ */
 fun <T : Any> Collection<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,
