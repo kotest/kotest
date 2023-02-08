@@ -30,3 +30,7 @@ java {
    sourceCompatibility = JavaVersion.VERSION_1_8
    targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+tasks.withType<Test>().configureEach {
+   setJvmArgs((getJvmArgs() ?: emptyList()) + listOf("--add-opens=java.base/java.util=ALL-UNNAMED"))
+}

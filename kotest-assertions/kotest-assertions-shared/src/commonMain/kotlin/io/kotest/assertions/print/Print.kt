@@ -33,6 +33,7 @@ interface Print<in A> {
  * may be escaped and the empty string may be quoted.
  */
 data class Printed(val value: String)
+data class PrintedWithType(val value: String, val type: String)
 
 /**
  * Wraps the given string in a [Printed].
@@ -48,6 +49,14 @@ fun Any?.print(): Printed =
 
 fun Any?.print(level: Int): Printed =
    if (this == null) NullPrint.print(this, level) else printFor(this).print(this, level)
+
+fun Any?.printWithType(): PrintedWithType =
+   PrintedWithType(print().value, printType())
+
+private fun Any?.printType() = when {
+   this == null -> "Nothing"
+   else -> this::class.qualifiedName ?: "UnknownType"
+}
 
 /**
  * Returns a [Print] for this non-null value by delegating to platform specific, or commonly
