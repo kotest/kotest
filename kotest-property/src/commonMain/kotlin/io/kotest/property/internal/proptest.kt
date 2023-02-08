@@ -7,8 +7,6 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
-import io.kotest.property.Sample
-import io.kotest.property.ShrinkingMode
 import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
@@ -1462,6 +1460,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
                                                       genK.classifier,
                                                       genL.classifier,
                                                       genM.classifier,
+                                                      genN.classifier,
                                                    ),
                                                    random.seed
                                                 ) {
@@ -1645,6 +1644,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
                                                          genL.classifier,
                                                          genM.classifier,
                                                          genN.classifier,
+                                                         genO.classifier,
                                                       ),
                                                       random.seed
                                                    ) {
@@ -1837,6 +1837,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
                                                             genM.classifier,
                                                             genN.classifier,
                                                             genO.classifier,
+                                                            genP.classifier,
                                                          ),
                                                          random.seed
                                                       ) {
@@ -2055,6 +2056,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
                                                                genN.classifier,
                                                                genO.classifier,
                                                                genP.classifier,
+                                                               genQ.classifier,
                                                             ),
                                                             random.seed
                                                          ) {
@@ -2302,6 +2304,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
                                                                   genO.classifier,
                                                                   genP.classifier,
                                                                   genQ.classifier,
+                                                                  genR.classifier,
                                                                ),
                                                                random.seed
                                                             ) {
@@ -2560,6 +2563,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
                                                                      genP.classifier,
                                                                      genQ.classifier,
                                                                      genR.classifier,
+                                                                     genS.classifier,
                                                                   ),
                                                                   random.seed
                                                                ) {
@@ -2829,6 +2833,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
                                                                         genQ.classifier,
                                                                         genR.classifier,
                                                                         genS.classifier,
+                                                                        genT.classifier,
                                                                      ),
                                                                      random.seed
                                                                   ) {
@@ -3109,6 +3114,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
                                                                            genR.classifier,
                                                                            genS.classifier,
                                                                            genT.classifier,
+                                                                           genU.classifier,
                                                                         ),
                                                                         random.seed
                                                                      ) {
@@ -3400,6 +3406,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
                                                                               genS.classifier,
                                                                               genT.classifier,
                                                                               genU.classifier,
+                                                                              genV.classifier,
                                                                            ),
                                                                            random.seed
                                                                         ) {
