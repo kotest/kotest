@@ -1,0 +1,12 @@
+
+# This project is run using Gradle TestKit, which does not require these files.
+# However, it is convenient to open up the project in IntelliJ, which will automatically
+# download them - but since they're not nessessary, don't commit them.
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+
+# Don't ignore licenses - they're required by Android to auto download the SDK
+ANDROID_SDK/*
+!ANDROID_SDK/licenses/
