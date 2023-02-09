@@ -2,7 +2,7 @@
 
 plugins {
    id("com.android.library") version "7.3.0"
-   id("org.jetbrains.kotlin.android") version "1.8.0"
+   id("org.jetbrains.kotlin.android") version "1.6.21"
 }
 
 android {
