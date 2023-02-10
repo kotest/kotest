@@ -2,6 +2,7 @@ plugins {
    signing
    `java-library`
    `maven-publish`
+   id ("kotest-publishing-test")
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
