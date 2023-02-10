@@ -93,6 +93,8 @@ include(
    ":kotest-tests:kotest-tests-project-configuration",
    ":kotest-tests:kotest-tests-config-classname",
 
+   ":kotest-tests:kotest-tests-android",
+
    // BOM for whole kotest project
    ":kotest-bom",
 )
