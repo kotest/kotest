@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import io.kotest.property.arbitrary.strings.StringClassifier
+import io.kotest.property.exhaustive.upperLowerCases
 import kotlin.random.nextInt
 
 /**
@@ -148,4 +149,13 @@ class StringShrinkerWithMin(
 
    private fun replace(value: String, newChar: Char, index: Int) =
       if (index == -1) null else value.replaceRange(index..index, newChar.toString())
+}
+
+fun Arb.Companion.upperLowerCase(s: String): Arb<String> {
+   return ArbitraryBuilder.create { rs ->
+      val upperLower = s.upperLowerCases(rs).iterator()
+      upperLower.next()
+   }.withEdgecaseFn { rs ->
+      listOf(s.uppercase(), s.lowercase()).random(rs.random)
+   }.build()
 }
