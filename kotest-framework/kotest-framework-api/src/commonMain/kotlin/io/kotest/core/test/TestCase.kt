@@ -25,18 +25,21 @@ import io.kotest.core.test.config.ResolvedTestConfig
  *
  * For example, in the FunSpec we only allow top level tests.
  *
+ * ```
  * test("this is a test") { }
+ * ```
  *
  * And in WordSpec we allow two levels of tests.
  *
+ * ```
  * "a string" should {
  *   "return the length" {
  *   }
  * }
- *
+ * ```
  */
 data class TestCase(
-   // parseable, stable, consistent identifer for this test element
+   // parseable, stable, consistent identifier for this test element
    val descriptor: Descriptor.TestDescriptor,
    // the name of the test as entered by the user
    val name: TestName,

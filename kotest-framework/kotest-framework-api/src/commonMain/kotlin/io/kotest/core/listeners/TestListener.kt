@@ -5,6 +5,9 @@ import io.kotest.core.test.TestCase
 @Deprecated("Renamed to IgnoredSpecListener. Deprecated since 5.0")
 typealias SpecIgnoredListner = IgnoredSpecListener
 
+@Deprecated("Renamed to IgnoredSpecListener. Deprecated since 5.0")
+typealias SpecIgnoredListener = IgnoredSpecListener
+
 /**
  * A [TestListener] contains functions that are invoked as part of the lifecycle of a [TestCase].
  *

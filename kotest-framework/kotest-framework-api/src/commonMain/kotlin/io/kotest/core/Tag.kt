@@ -13,7 +13,7 @@ package io.kotest.core
  * different packages) are treated as the same single tag.
  *
  * For example, if you create a Tag `com.sksamuel.kotest.SuperTag` then the tag name will
- * simply be SuperTag.
+ * simply be `SuperTag`.
  *
  * Therefore, the tags `com.sksamuel.kotest.SuperTag` and `io.kotest.SuperTag` would be
  * considered equal.
