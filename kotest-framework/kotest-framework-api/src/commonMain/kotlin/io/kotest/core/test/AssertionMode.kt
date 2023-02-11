@@ -15,8 +15,11 @@ package io.kotest.core.test
  * Note: There are valid use cases for not having an assertion. For example, testing that some code will
  * compile is a valid use case, and the successful return of the compiler is sufficient test.
  *
- * Warning: This mode will only work with kotest-assertions. If you are using another
- * assertion library, such as `kotlin.test` or AssertJ, then this setting will have no effect.
+ * Warning: This mode will only work with
+ * [`kotest-assertions`](https://kotest.io/docs/assertions/assertions.html).
+ * If you are using another assertion library, such as
+ * [`kotlin.test`](https://kotlinlang.org/api/latest/kotlin.test/) or
+ * [AssertJ](https://assertj.github.io/doc/), then this setting will have no effect.
  */
 enum class AssertionMode {
    Error, Warn, None
