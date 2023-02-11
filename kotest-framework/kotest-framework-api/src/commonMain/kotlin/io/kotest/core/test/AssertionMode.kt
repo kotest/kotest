@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 /**
- * AssertionMode is used to detect and warn a developer that a test does not execute any assertions.
+ * [AssertionMode] is used to detect and warn a developer that a test does not execute any assertions.
  *
  * It is usually the case that if a test function does not execute some kind of assertion then the test
  * is probably erroneous (see note). It is common to see junior developers write a test that does not actually test
