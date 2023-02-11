@@ -1,1 +1,1 @@
-io.kotest.framework.multiplatform.native.KotestNativeComponentRegistrar
+io.kotest.framework.multiplatform.native.KotestNativeCompilerPluginRegistrar

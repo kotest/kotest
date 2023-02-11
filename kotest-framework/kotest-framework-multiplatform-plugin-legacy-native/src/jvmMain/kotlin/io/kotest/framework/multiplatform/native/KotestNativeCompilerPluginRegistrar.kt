@@ -1,21 +1,19 @@
 package io.kotest.framework.multiplatform.native
 
-import com.intellij.mock.MockProject
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
-import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
+import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
-class KotestNativeComponentRegistrar : ComponentRegistrar {
-
-   override fun registerProjectComponents(
-      project: MockProject,
-      configuration: CompilerConfiguration
-   ) {
+@OptIn(ExperimentalCompilerApi::class)
+class KotestNativeCompilerPluginRegistrar : CompilerPluginRegistrar() {
+   override val supportsK2 = true // Why not? Lets see
+   override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
       val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
       messageCollector.toLogger().log("Installing Kotest SpecIrGenerationExtension")
-      IrGenerationExtension.registerExtension(project, SpecIrGenerationExtension(messageCollector))
+      IrGenerationExtension.registerExtension(SpecIrGenerationExtension(messageCollector))
    }
 }

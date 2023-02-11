@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.timeInMillis
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A [SpecRefInterceptor] that invokes the [specFinished] test engine listener callbacks.
@@ -22,7 +22,7 @@ internal class SpecFinishedInterceptor(private val listener: TestEngineListener)
 
       // We deliberately use the deprecated method here to maintain backwards compatibility with Kotlin 1.5.
       // See https://github.com/kotest/kotest/issues/3059.
-      val duration = Duration.milliseconds(timeInMillis() - start)
+      val duration = (timeInMillis() - start).milliseconds
       return value
          .onSuccess { listener.specFinished(ref.kclass, TestResult.Success(duration)) }
          .onFailure { listener.specFinished(ref.kclass, TestResult.Error(duration, it)) }

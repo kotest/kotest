@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
@@ -74,7 +75,7 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
    }
 
    private val eagerAnnotationConstructor by lazy {
-      val annotationName = FqName("kotlin.native.EagerInitialization")
+      val annotationName = ClassId.fromString("kotlin.native.EagerInitialization")
 
       val annotation = pluginContext.referenceClass(annotationName)
          ?: error("Cannot find eager initialisation annotation class $annotationName")

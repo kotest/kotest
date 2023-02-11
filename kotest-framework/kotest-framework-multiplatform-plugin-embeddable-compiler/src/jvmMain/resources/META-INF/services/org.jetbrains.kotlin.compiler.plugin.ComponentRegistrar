@@ -1,1 +1,1 @@
-io.kotest.framework.multiplatform.embeddablecompiler.KotestJsComponentRegistrar
+io.kotest.framework.multiplatform.embeddablecompiler.KotestJsCompilerPluginRegistrar

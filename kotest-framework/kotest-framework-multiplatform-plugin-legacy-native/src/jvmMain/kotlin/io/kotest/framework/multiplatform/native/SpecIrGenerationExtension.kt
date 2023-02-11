@@ -3,7 +3,6 @@ package io.kotest.framework.multiplatform.native
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
@@ -20,10 +19,11 @@ import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.util.addChild
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
-import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
@@ -46,7 +46,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
             val file = declaration.files.first()
 
-            val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
+            val launcherClass = pluginContext.referenceClass(ClassId.fromString(EntryPoint.TestEngineClassName))
                ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
 
             val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
@@ -61,7 +61,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
                   ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
 
-            val eagerAnnotationName = FqName("kotlin.native.EagerInitialization")
+            val eagerAnnotationName = ClassId.fromString("kotlin.native.EagerInitialization")
             val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
                ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
 

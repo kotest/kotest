@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
-import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.ClassId
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class Transformer(protected val messageCollector: MessageCollector, protected val pluginContext: IrPluginContext) : IrElementTransformerVoidWithContext() {
@@ -56,10 +56,10 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
       if (specs.isEmpty()) {
          return fragment
       }
-
-      val file = declaration.files.first()
-      val launcher = generateLauncher(specs, configs, file)
-      file.addChild(launcher)
+//
+//      val file = declaration.files.first()
+//      val launcher = generateLauncher(specs, configs, file)
+//      file.addChild(launcher)
 
       return fragment
    }
@@ -96,7 +96,7 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
    }
 
    protected val launcherClass by lazy {
-      pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
+      pluginContext.referenceClass(ClassId.fromString(EntryPoint.TestEngineClassName))
          ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
    }
 
