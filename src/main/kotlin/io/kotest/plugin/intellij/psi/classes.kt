@@ -52,14 +52,18 @@ fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
             bindingContext.get(BindingContext.TYPE, it)
          }.getOrNull()
       }.flatMap {
-         it.supertypes() + it
+         runCatching {
+            it.supertypes() + it
+         }.getOrElse { emptyList() }
       }.mapNotNull {
          runCatching {
             it.constructor.declarationDescriptor.classId
          }.getOrNull()
-      }.map {
-         val packageName = it.packageFqName
-         val simpleName = it.relativeClassName
-         FqName("$packageName.$simpleName")
+      }.mapNotNull {
+         runCatching {
+            val packageName = it.packageFqName
+            val simpleName = it.relativeClassName
+            FqName("$packageName.$simpleName")
+         }.getOrNull()
       }.filterNot { it.toString() == "kotlin.Any" }
 }
