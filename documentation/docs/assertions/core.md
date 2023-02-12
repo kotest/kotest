@@ -121,7 +121,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||     |
+| BigDecimal                                  ||
 |---------------------------------------------| ---- |
 | `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
@@ -344,7 +344,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)` | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
 
 
-| Field by Field Comparison Matchers                                                                                                                      ||     |
+| Field by Field Comparison Matchers                                                                                                                      ||
 |---------------------------------------------------------------------------------------------------------------------------------------------------------| ---- |
 | `any.shouldBeEqualToComparingFields(other: T)`                                                                                                          | Asserts that the any is equal to other considering their fields(ignoring private fields) instead of `equals` method.|
 | `any.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean)`                                                                            | Asserts that the any is equal to other considering their fields and private fields(if `ignorePrivateFields` is false) instead of `equals` method.|

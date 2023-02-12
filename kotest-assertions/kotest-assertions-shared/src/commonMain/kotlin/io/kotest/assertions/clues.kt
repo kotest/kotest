@@ -21,14 +21,15 @@ inline fun <R> withClue(clue: Any?, thunk: () -> R): R {
  * @return the return value of the supplied [thunk]
  */
 inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
+   val collector = errorCollector
    try {
-      errorCollector.pushClue { clue.invoke().toString() }
+      collector.pushClue { clue.invoke().toString() }
       return thunk()
       // this is a special control exception used by coroutines
    } catch (t: TimeoutCancellationException) {
       throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
    } finally {
-      errorCollector.popClue()
+      collector.popClue()
    }
 }
 
