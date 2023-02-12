@@ -1,8 +1,8 @@
 ---
-id: data_class_matchers
-title: Data Class Matchers
-slug: data-class-matchers.html
-sidebar_label: Data Class Matchers
+id: composed_matchers
+title: Composed Matchers
+slug: composed-matchers.html
+sidebar_label: Composed Matchers
 ---
 
 
