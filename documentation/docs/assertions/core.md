@@ -43,17 +43,18 @@ Matchers provided by the `kotest-assertions-core` module.
 | `iterator.shouldBeEmpty()`  | Asserts that the iterator does not have a next value. |
 | `iterator.shouldHaveNext()` | Asserts that the iterator has a next value |
 
-| Maps                                ||
-|-------------------------------------| ---- |
-| `map.shouldContain("key", "value")` | Asserts that the map contains the mapping "key" to "value" |
-| `map.shouldContainAll(other)`       | Asserts that the map contains all the pairs from the given map. |
-| `map.shouldContainExactly(other)`   | Asserts that the map contains exactly the pairs from given map, and no extra. |
-| `map.shouldContainKey(key)`         | Asserts that the map contains a key called `key` with any value |
-| `map.shouldContainKeys(keys)`       | Asserts that the map contains mappings for all the given keys. |
-| `map.shouldContainValue(value)`     | Asserts that the map contains at least one mapping where the value is `value`. |
-| `map.shouldContainValues(values)`   | Asserts that the map contains all the given values. |
-| `map.shouldBeEmpty()`               | Asserts that this map is empty. |
-| `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`|  Asserts that all the entries in the map can be matched with the provided matchers, and no extra. |
+| Maps                                                                                  ||
+|---------------------------------------------------------------------------------------| ---- |
+| `map.shouldContain("key", "value")`                                                   | Asserts that the map contains the mapping "key" to "value" |
+| `map.shouldContainAll(other)`                                                         | Asserts that the map contains all the pairs from the given map. |
+| `map.shouldContainExactly(other)`                                                     | Asserts that the map contains exactly the pairs from given map, and no extra. |
+| `map.shouldContainKey(key)`                                                           | Asserts that the map contains a key called `key` with any value |
+| `map.shouldContainKeys(keys)`                                                         | Asserts that the map contains mappings for all the given keys. |
+| `map.shouldContainValue(value)`                                                       | Asserts that the map contains at least one mapping where the value is `value`. |
+| `map.shouldContainValues(values)`                                                     | Asserts that the map contains all the given values. |
+| `map.shouldBeEmpty()`                                                                 | Asserts that this map is empty. |
+| `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
+| `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
 
 
 | Strings                                     ||
@@ -120,7 +121,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||     |
+| BigDecimal                                  ||
 |---------------------------------------------| ---- |
 | `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
@@ -343,10 +344,22 @@ Matchers provided by the `kotest-assertions-core` module.
 | `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)` | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
 
 
-| Field by Field Comparison Matchers                                                                                                                      ||     |
+| Field by Field Comparison Matchers                                                                                                                      ||
 |---------------------------------------------------------------------------------------------------------------------------------------------------------| ---- |
 | `any.shouldBeEqualToComparingFields(other: T)`                                                                                                          | Asserts that the any is equal to other considering their fields(ignoring private fields) instead of `equals` method.|
 | `any.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean)`                                                                            | Asserts that the any is equal to other considering their fields and private fields(if `ignorePrivateFields` is false) instead of `equals` method.|
 | `any.shouldBeEqualToComparingFieldsExcept(other: T, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)`                               | Asserts that the any is equal to other considering their public fields ignoring private fields and other fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.|
 | `any.shouldBeEqualToComparingFieldsExcept(other: T, ignorePrivateFields: Boolean, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)` | Asserts that the any is equal to other considering all their fields including private fields(if `ignorePrivateFields` is false) but ignoring fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.|
+
+
+| Resource Matchers                                                                   |                                                                                                                                                          |
+|-------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `str shouldMatchResource "/path/to/test_resource.txt"`                              | Asserts that the string is equal to the given resource (as String). This matcher will ignore differences in line separators.                             |
+| `str shouldNotMatchResource "/path/to/test_resource.txt"`                           | Asserts that the string is **not** equal to the given resource (as String). This matcher will ignore differences in line separators.                     |
+| `str.shouldMatchResource("/path/to/test_resource.txt", ::providedMatcher)`          | Asserts that the string matches to the given resource (as String) using `providedMatcher`. Differences in line separators is ignored by default.         |
+| `str.shouldNotMatchResource("/path/to/test_resource.txt", ::providedMatcher)`       | Asserts that the string **not** matches to the given resource (as String) using `providedMatcher`. Differences in line separators is ignored by default. |
+| `byteArray shouldMatchResource "/path/to/test_resource.bin"`                        | Asserts that the byteArray is equal to the given resource.                                                                                               |
+| `byteArray shouldNotMatchResource "/path/to/test_resource.bin"`                     | Asserts that the byteArray is **not** equal to the given resource.                                                                                       |
+| `byteArray.shouldMatchResource("/path/to/test_resource.bin", ::providedMatcher)`    | Asserts that the byteArray matches to the given resource using `providedMatcher`.                                                                        |
+| `byteArray.shouldNotMatchResource("/path/to/test_resource.bin", ::providedMatcher)` | Asserts that the byteArray **not** matches to the given resource using `providedMatcher`.                                                                |
 

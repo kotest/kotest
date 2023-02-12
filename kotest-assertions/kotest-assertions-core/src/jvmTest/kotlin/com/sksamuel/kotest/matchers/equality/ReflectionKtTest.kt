@@ -44,6 +44,12 @@ class ReflectionKtTest : FunSpec() {
 
    class City(val name: String, val mainHospital: Hospital)
 
+   enum class SimpleEnum { ONE, TWO }
+
+   enum class EnumWithProperties(val value: String) { ONE("one"), TWO("two"), }
+
+   data class EnumWrapper<E : Enum<E>>(val enum: E)
+
    init {
 
       test("shouldBeEqualToUsingFields") {
@@ -272,5 +278,18 @@ class ReflectionKtTest : FunSpec() {
             HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
          }.message shouldNotContain "random"
       }
+
+      test("shouldBeEqualToWithEnums") {
+         shouldFail {
+            EnumWrapper(SimpleEnum.ONE).shouldBeEqualToComparingFields(EnumWrapper(SimpleEnum.TWO))
+         }.message.shouldContain("expected:<TWO> but was:<ONE>")
+      }
+
+      test("shouldBeEqualToWithEnums message contains enum names") {
+         shouldFail {
+            EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
+         }.message.shouldContain("expected:<TWO> but was:<ONE>")
+      }
+
    }
 }

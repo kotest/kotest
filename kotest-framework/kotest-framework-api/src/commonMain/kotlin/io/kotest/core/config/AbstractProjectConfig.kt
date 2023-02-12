@@ -112,6 +112,8 @@ abstract class AbstractProjectConfig {
     */
    open val parallelism: Int? = null
 
+   open val coroutineTestScope: Boolean? = null
+
    /**
     * When set to true, failed specs are written to a file called spec_failures.
     * This file is used on subsequent test runs to run the failed specs first.

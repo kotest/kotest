@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class CluesTests : FunSpec({
@@ -72,6 +73,21 @@ class CluesTests : FunSpec({
          }
 
          minimumThreadRepetitionCount shouldBeGreaterThanOrEqual minimumThreadRepetitionQuota
+      }
+   }
+
+   test("concurrent withClue invocations should be isolated from each other in unconfined launch") {
+      repeat(200) {
+         runBlocking { // this call can be inside another framework, e.g. Ktor
+            withContext(Dispatchers.Unconfined) {
+               withClue("some hint") {
+                  withContext(Dispatchers.Unconfined) {
+                     delay(1)
+                     1 shouldBe 1
+                  }
+               }
+            }
+         }
       }
    }
 })

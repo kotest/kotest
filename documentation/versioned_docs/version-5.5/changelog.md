@@ -4,12 +4,37 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.5.4 October 2022
-Fixes an issue when combining gradle filters. (`AND` was wrongly applied between filters, instead of `OR`) (#3277)
+## 5.5.5 February 2023
+
+*  Support coroutineTestScope globally (#3383)
+*  Improved double and float tolerance messages (#3355)
+*  Nested Data Driven Tests is not displayed as nested in Intellij #3341
+*  Fixed writing seeds when test name contains a colon on windows (#3304)
+*  withClue() fails with EmptyStackException if a coroutine switches threads #2447
+*  Use TestDispatcher inside beforeInvocation callbacks (#3363)
+*  Make checkCoverage checking against provided pairs (#3344)
+*  Kotest runner junit5 jvm has vulnerable transative dependency CVE-2021-29425 #3364
+*  Fix sequence matchers for constrained sequences (#3336)
+*  Print full path in JunitXmlReporter when useTestPathAsName is enabled instead of just leaf and first parent #3347
+*  Support {  } lambdas as lazy clues (#3348)
+*  Use 'language injection' on assertions, so embedded languages are easier to use in IntelliJ #2916
+*  Removing default location for htmlReporter and using the default value from the constructor (#3306)
+*  Arb.bigDecimal should generate decimals which terminate with all kinds of terminal digit #3282
+*  Check enums using equals method instead of scanning their properties (#3291)
+*  Add BlockHound support (#3308)
+*  Matchers return `this`. (#2945)
+*  Added shouldMatchResource, shouldNotMatchResource matchers (#2945)
+*  Added `matchExactly` matcher for Maps #3246
+*  Fix dumping config when systemProperty set to true (#3275)
+*  Returning the original failure when ErrorCollector has only collected a single failure (#3269)
+
+## 5.5.4 November 2022
+
+* Fixes an issue when combining gradle filters. (`AND` was wrongly applied between filters, instead of `OR`) (#3277)
 
 ## 5.5.3 October 2022
 
-Updated JUnit version from 5.7.2 to 5.8.2.
+* Updated JUnit version from 5.7.2 to 5.8.2.
 
 Kotest now requires the runtime version of JUnit to be at least 5.8.x
 

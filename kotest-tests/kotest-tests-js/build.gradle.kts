@@ -1,7 +1,7 @@
 plugins {
    id("kotest-js-conventions")
    // must be a published version and not one in the current build
-   id("io.kotest.multiplatform").version("5.3.0")
+   id("io.kotest.multiplatform").version("5.5.4")
 }
 
 kotlin {

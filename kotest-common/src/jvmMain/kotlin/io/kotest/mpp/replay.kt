@@ -8,15 +8,11 @@ import java.util.concurrent.atomic.AtomicReference
 actual suspend fun replay(
    times: Int,
    threads: Int,
-   before: suspend (Int) -> Unit,
-   after: suspend (Int) -> Unit,
    action: suspend (Int) -> Unit
 ) {
    if (threads == 1) {
       repeat(times) {
-         before(it)
          action(it)
-         after(it)
       }
    } else {
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("replay-%d"))
@@ -25,12 +21,9 @@ actual suspend fun replay(
          executor.submit {
             runBlocking {
                try {
-                  before(k)
                   action(k)
                } catch (t: Throwable) {
                   error.compareAndSet(null, t)
-               } finally {
-                  after(k)
                }
             }
          }
