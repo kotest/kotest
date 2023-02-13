@@ -18,8 +18,8 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
- * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [io.kotest.core.spec.Spec] and [io.kotest.core.test.TestCase]s.
+ * Project-wide configuration. Extensions returned by an instance of this class will be applied
+ * to all [Spec]s and [TestCase][io.kotest.core.test.TestCase]s.
  *
  * Create an object or class that is derived from this class and place it in your source.
  *
