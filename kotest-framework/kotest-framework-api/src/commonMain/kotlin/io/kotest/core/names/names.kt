@@ -14,7 +14,7 @@ package io.kotest.core.names
  * @param bang if the test name was specified with `!` prefix
  * @param prefix if the test style includes a test name prefix, such as "should"
  * @param suffix if the test style includes a test name suffix, such as "when"
- * @param defaultAffixes if the test style recommends test affixes by default, such as [`BehaviorSpec`][io.kotest.core.spec.style.BehaviorSpec]
+ * @param defaultAffixes if the test style recommends test affixes by default, such as [BehaviorSpec][io.kotest.core.spec.style.BehaviorSpec]
  */
 data class TestName(
    val testName: String,

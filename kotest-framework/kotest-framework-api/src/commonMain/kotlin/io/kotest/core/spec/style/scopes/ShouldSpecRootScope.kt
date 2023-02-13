@@ -60,7 +60,7 @@ interface ShouldSpecRootScope : RootScope {
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied
-    * by invoking [`.config()`][RootContainerWithConfigBuilder.config] on the return of this function.
+    * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
    fun should(name: String): RootTestWithConfigBuilder =
       RootTestWithConfigBuilder(this, TestName("should ", name, true), false)

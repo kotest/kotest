@@ -20,7 +20,7 @@ interface AfterSpecListener : Listener {
     * This callback should be used if you need to perform cleanup
     * after each individual spec instance. If you simply need to
     * perform cleanup once per class file, then use
-    * [`finalizeSpec`][io.kotest.core.listeners.TestListener.finalizeSpec].
+    * [finalizeSpec][io.kotest.core.listeners.TestListener.finalizeSpec].
     *
     * @param spec the [Spec] instance.
     */
