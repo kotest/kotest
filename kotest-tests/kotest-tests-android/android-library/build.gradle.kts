@@ -57,3 +57,9 @@ dependencies {
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions.allWarningsAsErrors = true
 }
+
+java {
+   toolchain {
+      languageVersion.set(JavaLanguageVersion.of(11))
+   }
+}
