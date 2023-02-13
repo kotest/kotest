@@ -281,7 +281,7 @@ class ProjectConfiguration {
     *    test this 2
     * ```
     *
-    * Defaults to `null`, which is the default.
+    * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
     */
    var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
 
