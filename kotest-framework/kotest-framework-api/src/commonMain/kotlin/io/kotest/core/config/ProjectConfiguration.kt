@@ -66,7 +66,7 @@ class ProjectConfiguration {
    var globalAssertSoftly: Boolean = Defaults.globalAssertSoftly
 
    /**
-    * The casing of the tests' names can be adjusted using different strategies. It affects test
+    * The casing of test names can be adjusted using different strategies. It affects test
     * prefixes (I.e.: Given, When, Then) and test titles.
     *
     * This setting's options are defined in [TestNameCase].

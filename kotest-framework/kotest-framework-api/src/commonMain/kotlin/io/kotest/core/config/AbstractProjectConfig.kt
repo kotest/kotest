@@ -121,7 +121,10 @@ abstract class AbstractProjectConfig {
     * This file is used on subsequent test runs to run the failed specs first.
     *
     * To enable this feature, set this to true, or set the system property
-    * 'kotest.write.specfailures=true'
+    *
+    * ```properties
+    * kotest.write.specfailures=true
+    * ```
     *
     * Note: This is a JVM platform only option.
     */
@@ -151,15 +154,17 @@ abstract class AbstractProjectConfig {
    open val globalAssertSoftly: Boolean? = null
 
    /**
-    * Override this value and set it to false if you want to disable autoscanning of extensions
+    * Override this value and set it to false if you want to disable auto-scanning of extensions
     * and listeners.
     *
-    *  Note: This is a JVM platform only option.
+    * Note: This is a JVM platform only option.
     */
    open val autoScanEnabled: Boolean? = null
 
    /**
-    * Override this value with a list of classes for which @autoscan is disabled.
+    * Override this value with a list of classes for which
+    * [@AutoScan][io.kotest.core.annotation.AutoScan]
+    * is disabled.
     *
     *  Note: This is a JVM platform only option.
     */
@@ -190,36 +195,39 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overriden in a spec,
+    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overridden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.
-    * For example, when using ExpectSpec like this:
+    * For example, when using [io.kotest.core.spec.style.ExpectSpec] like this:
     *
+    * ```
     * expect("this test 1") {
     *   feature("this test 2") {
     *   }
     * }
+    * ```
     *
     * Will result in:
-    *
+    * ```text
     * Expect: this test 1
     *   Feature: this test 2
-    *
+    * ```
     * From 4.2, this feature can be disabled by setting this value to false.
     * Then the output of the previous test would be:
-    *
+    * ```text
     * this test 1
     *   this test 2
+    * ```
     */
    open val includeTestScopePrefixes: Boolean? = null
 
    /**
-    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
-    * prefixes (I.e.: Given, When, Then) and tests' titles.
+    * The casing of test names can be adjusted using different strategies. It affects test
+    * prefixes (I.e.: Given, When, Then) and test titles.
     *
     * This setting's options are defined in [TestNameCase]. Check the previous enum for the
     * available options and examples.
