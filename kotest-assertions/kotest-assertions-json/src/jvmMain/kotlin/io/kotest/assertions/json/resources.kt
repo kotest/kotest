@@ -1,17 +1,14 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
-import io.kotest.assertions.print.printed
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.contract
-import org.intellij.lang.annotations.Language
+import io.kotest.common.KotestLanguage
 
-infix fun String?.shouldMatchJsonResource(@Language("file-reference") resource: String) {
+infix fun String?.shouldMatchJsonResource(@KotestLanguage("file-reference") resource: String) {
    contract {
       returns() implies (this@shouldMatchJsonResource != null)
    }
@@ -19,7 +16,7 @@ infix fun String?.shouldMatchJsonResource(@Language("file-reference") resource: 
    this should matchJsonResource(resource)
 }
 
-infix fun String.shouldNotMatchJsonResource(@Language("file-reference") resource: String) =
+infix fun String.shouldNotMatchJsonResource(@KotestLanguage("file-reference") resource: String) =
    this shouldNot matchJsonResource(resource)
 
 fun matchJsonResource(resource: String) = object : Matcher<String?> {

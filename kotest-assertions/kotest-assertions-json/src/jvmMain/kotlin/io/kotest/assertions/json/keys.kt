@@ -8,9 +8,9 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.contract
-import org.intellij.lang.annotations.Language
+import io.kotest.common.KotestLanguage
 
-infix fun String?.shouldContainJsonKey(@Language("JSONPath") path: String) {
+infix fun String?.shouldContainJsonKey(@KotestLanguage("JSONPath") path: String) {
    contract {
       returns() implies (this@shouldContainJsonKey != null)
    }
@@ -18,7 +18,7 @@ infix fun String?.shouldContainJsonKey(@Language("JSONPath") path: String) {
    this should containJsonKey(path)
 }
 
-infix fun String.shouldNotContainJsonKey(@Language("JSONPath") path: String) =
+infix fun String.shouldNotContainJsonKey(@KotestLanguage("JSONPath") path: String) =
    this shouldNot containJsonKey(path)
 
 fun containJsonKey(path: String) = object : Matcher<String?> {
