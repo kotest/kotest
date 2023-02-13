@@ -5,10 +5,32 @@ slug: composed-matchers.html
 sidebar_label: Composed Matchers
 ---
 
+Composed matchers can be created for any type by composing one or more other matchers. This allows us to
+build up complicated matchers from simpler ones.
 
+Let's say we'd like to define a password `Matcher`, which will `containADigit()`, `contain(Regex("[a-z]"))` and
+`contain(Regex("[A-Z]"))`. We can compose these matchers this way:
+```kotlin
+val passwordMatcher = Matcher.compose(
+   containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
+)
+```
 
-Composed matchers can be created for any `class` or `interface` by composing one or more other matchers along with the property to extract to
-test against. This allows us to build up complicated matchers from simpler ones.
+We can add extension function then:
+
+```kotlin
+fun String.shouldBeStrongPassword() = this shouldBe passwordMatcher
+```
+
+So it can be invoked like this:
+
+```kotlin
+"StrongPassword123".shouldBeStrongPassword()
+"WeakPassword".shouldBeStrongPassword() // would fail
+```
+
+Composed matchers can also be created for any `class` or `interface` by composing one or more other matchers along with
+the property to extract to test against.
 
 For example, say we had the following structures:
 
