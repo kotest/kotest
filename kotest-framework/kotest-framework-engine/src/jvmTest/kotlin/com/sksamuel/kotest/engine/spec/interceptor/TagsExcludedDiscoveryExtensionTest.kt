@@ -36,7 +36,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
             }
          executed.shouldBeTrue()
 
-         // will be included as we can must check the spec itself later to see if the test themselves have the include or exclude
+         // will be included as we must check the spec itself later to see if the test themselves have the include or exclude
          executed = false
          TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(UntaggedSpec::class)) {

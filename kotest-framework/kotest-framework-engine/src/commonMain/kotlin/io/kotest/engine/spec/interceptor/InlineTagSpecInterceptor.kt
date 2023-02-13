@@ -7,6 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
 import io.kotest.engine.tags.runtimeTagExpression
@@ -26,10 +27,14 @@ class InlineTagSpecInterceptor(
       spec: Spec,
       fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      val alltags = spec.tags() + spec.appliedTags()
-      val active = projectConfiguration.runtimeTagExpression().parse().isPotentiallyActive(alltags)
-      return if (active) fn(spec) else {
-         val reason = "Ignored due to tags in spec: ${alltags.joinToString(", ")}"
+      val allTags = spec.tags() + spec.appliedTags()
+      val potentiallyActive = TagExpressionResult.Exclude != projectConfiguration
+         .runtimeTagExpression()
+         .parse()
+         .isPotentiallyActive(allTags)
+
+      return if (potentiallyActive) fn(spec) else {
+         val reason = "Ignored due to tags in spec: ${allTags.joinToString(", ")}"
          runCatching { listener.specIgnored(spec::class, reason) }
             .flatMap { extensions.ignored(spec::class, reason) }
             .map { emptyMap() }
