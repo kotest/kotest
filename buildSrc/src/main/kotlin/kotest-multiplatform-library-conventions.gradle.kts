@@ -11,6 +11,7 @@ kotlin {
          languageSettings {
             optIn("kotlin.RequiresOptIn")
             optIn("io.kotest.common.KotestInternal")
+            optIn("io.kotest.common.ExperimentalKotest")
          }
       }
    }

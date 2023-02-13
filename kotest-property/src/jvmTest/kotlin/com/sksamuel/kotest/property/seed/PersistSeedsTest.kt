@@ -31,14 +31,14 @@ class PersistSeedsTest : FunSpec({
          .readText().shouldBe("2344324")
    }
 
-   test("failed tests should persist seeds even for illegal chars <>/\\") {
+   test("failed tests should persist seeds even for illegal chars ():<>/\\") {
       shouldThrowAny {
          checkAll<Int, Int>(PropTestConfig(seed = 623515)) { a, b ->
             a shouldBe 0
          }
       }
       seedDirectory()
-         .resolve("com.sksamuel.kotest.property.seed.PersistSeedsTest_failed tests should persist seeds even for illegal chars ____")
+         .resolve("com.sksamuel.kotest.property.seed.PersistSeedsTest_failed tests should persist seeds even for illegal chars _______")
          .readText().shouldBe("623515")
    }
 
