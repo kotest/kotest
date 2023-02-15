@@ -64,10 +64,11 @@ data class UnresolvedTestConfig(
    val coroutineDebugProbes: Boolean? = null,
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     * This can be retrieved via `delayController` in your tests.
     *
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
    val testCoroutineDispatcher: Boolean? = null,

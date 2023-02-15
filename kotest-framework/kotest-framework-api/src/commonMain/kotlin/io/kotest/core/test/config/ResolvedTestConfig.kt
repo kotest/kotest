@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
 /**
- * Runtime resolved config attached to a [TestCase].
+ * Runtime resolved config attached to a [io.kotest.core.test.TestCase].
  *
  * Settings specified here have been resolved against spec level and project level defaults
  * and are the final definitive settings to be used by a test case.
@@ -69,10 +69,11 @@ data class ResolvedTestConfig(
    val coroutineDebugProbes: Boolean,
 
    /**
-    * If set to true then the test engine will install a [TestDispatcher].
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     * This can be retrieved via `delayController` in your tests.
     *
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
    val testCoroutineDispatcher: Boolean,

@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KClass
-import org.intellij.lang.annotations.Language
+import io.kotest.common.KotestLanguage
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
@@ -23,13 +23,13 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
  * regardless of order.
  *
  */
-infix fun String?.shouldMatchJson(@Language("json") expected: String?) =
+infix fun String?.shouldMatchJson(@KotestLanguage("json", "", "") expected: String?) =
    this should matchJson(expected)
 
-infix fun String?.shouldNotMatchJson(@Language("json") expected: String?) =
+infix fun String?.shouldNotMatchJson(@KotestLanguage("json", "", "") expected: String?) =
    this shouldNot matchJson(expected)
 
-fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
+fun matchJson(@KotestLanguage("json", "", "") expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)
@@ -108,18 +108,18 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
  * regardless of order.
  *
  */
-fun String.shouldEqualJson(@Language("json") expected: String, mode: CompareMode, order: CompareOrder) =
+fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
-fun String.shouldEqualJson(@Language("json") expected: String, options: CompareJsonOptions) {
+fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
    val (e, a) = parse(expected, this)
    a should equalJson(e, options)
 }
 
-fun String.shouldNotEqualJson(@Language("json") expected: String, mode: CompareMode, order: CompareOrder) =
+fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
-fun String.shouldNotEqualJson(@Language("json") expected: String, options: CompareJsonOptions) {
+fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
    val (e, a) = parse(expected, this)
    a shouldNot equalJson(e, options)
 }
