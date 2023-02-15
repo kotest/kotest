@@ -6,8 +6,8 @@ import kotlin.reflect.KClass
  * A [SpecRef] is a reference to a spec that was detected during classpath
  * scanning or during compilation.
  *
- * On platforms that lack reflective capability, such as nodeJS, web or kotlin/native,
- * specs are preconstructed or constructed through a simple function. On the JVM, the
+ * On platforms that lack reflective capability, such as nodeJS, web or Kotlin/Native,
+ * specs are pre-constructed or constructed through a simple function. On JVM, the
  * powerful reflection support means instances can be created via the [KClass] reference.
  */
 sealed interface SpecRef {
