@@ -9,7 +9,7 @@ description = "Android integration tests"
 
 kotlin {
    sourceSets {
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestCommon)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
@@ -43,20 +43,16 @@ val updateAndroidLibraryGradleProperties by tasks.registering(WriteProperties::c
 }
 
 val updateAndroidLibraryLocalProperties by tasks.registering(WriteProperties::class) {
-   comment = """
-      multi
-      line
-      comment
-   """.trimIndent()
+   comment = " Manual edits will be overwritten by $path"
    properties(
-      "sdk.dir" to projectDir.resolve("/android-library/ANDROID_SDK").absolutePath,
+      "sdk.dir" to "$projectDir/android-library/ANDROID_SDK",
    )
    outputFile = file("$projectDir/android-library/local.properties")
 }
 
 tasks.withType<Test>().configureEach {
-   dependsOn(configurations.testMavenPublication)
    dependsOn(
+      configurations.testMavenPublicationJvm, // only depend on JVM publications
       updateAndroidLibraryGradleProperties,
       updateAndroidLibraryLocalProperties,
    )
