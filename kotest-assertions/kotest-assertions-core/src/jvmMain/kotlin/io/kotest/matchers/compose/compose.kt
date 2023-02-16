@@ -5,6 +5,10 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KProperty1
 
+/**
+ * Compose matchers along with the property to extract to test against.
+ * All matchers must be the same type `T`. If any matcher fails, composed matcher fails, too.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T : Any?> Matcher.Companion.compose(
    vararg pairs: Pair<Matcher<*>, KProperty1<T, *>>
@@ -26,6 +30,9 @@ fun <T : Any?> Matcher.Companion.compose(
    }
 }
 
+/**
+ * Compose matchers. All matchers must be the same type `T`. If any matcher fails, composed matcher fails, too.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T : Any?> Matcher.Companion.compose(
    vararg matchers: Matcher<T>
