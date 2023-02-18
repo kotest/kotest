@@ -41,7 +41,7 @@ object IterableEq : Eq<Iterable<*>> {
    fun isValidIterable(it: Any): Boolean {
       return when (it) {
          is String -> false
-         is List<*>, is Set<*>, is Array<*>, is Collection<*>, is Iterable<*> -> true
+         is List<*>, is Set<*>, is Array<*>, is Collection<*> -> true
          else -> false
       }
    }
@@ -53,7 +53,6 @@ object IterableEq : Eq<Iterable<*>> {
          is List<*> -> it
          is Set<*> -> it
          is Collection<*> -> it
-         is Iterable<*> -> it
          else -> error("Cannot convert $it to Iterable<*>")
       }
    }
