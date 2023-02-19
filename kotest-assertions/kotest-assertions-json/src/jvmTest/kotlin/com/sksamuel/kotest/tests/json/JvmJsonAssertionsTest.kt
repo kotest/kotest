@@ -11,7 +11,9 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.common.KotestLanguage
 
+@KotestLanguage("json")
 const val json = """{
     "store": {
         "book": [

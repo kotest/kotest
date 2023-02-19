@@ -274,6 +274,321 @@ class PropTestConfigConstraintsTest : FunSpec() {
          }
       }
 
+      test("PropTestConfig constraints should be used by proptest13 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest14 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest15 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest16 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest17 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest18 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest19 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest20 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest21 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
+      test("PropTestConfig constraints should be used by proptest22 if present") {
+         checkAll(Arb.int(1..1000)) { iterations ->
+            var iterationCount = 0
+            proptest(
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               Arb.int(),
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
+            { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+               iterationCount++
+            }
+
+            iterationCount shouldBe iterations
+         }
+      }
+
       test("PropTestConfig constraints should support durations") {
          val config = PropTestConfig(constraints = Constraints.duration(200.milliseconds))
          val start = MonotonicTimeSourceCompat.markNow()

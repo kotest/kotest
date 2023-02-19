@@ -54,7 +54,7 @@ abstract class TestConfiguration {
 
    /**
     * Sets an assertion mode which is applied to every test.
-    * If null, then the project default is used.
+    * If `null`, then the project default is used.
     */
    var assertions: AssertionMode? = null
 

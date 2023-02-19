@@ -31,5 +31,6 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [Kotlin Multiplatform library with Kotest and Gradle Version Catalog](https://blog.devgenius.io/kotlin-multiplatform-library-with-kotest-and-gradle-version-catalog-23861a6f1bb1)
 * [Kotlin Assertion Libraries - Kotest](https://www.novatec-gmbh.de/blog/kotlin-assertion-libraries-kotest-assertions/)
 * [Introduction to Kotest at Baeldung](https://www.baeldung.com/kotlin/kotest)
+* [How to improve the quality of tests using property-based testing](https://blog.devgenius.io/how-to-improve-the-quality-of-tests-using-property-based-testing-587b817ea82e)
 
 Please open a PR to add your blog or article here.

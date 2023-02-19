@@ -41,7 +41,6 @@
     "extensions/instant",
     "extensions/koin",
     "extensions/wiremock",
-    "extensions/robolectric",
     "extensions/clock",
     "extensions/pitest"
   ],

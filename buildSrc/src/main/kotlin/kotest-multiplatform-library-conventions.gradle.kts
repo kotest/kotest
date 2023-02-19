@@ -4,3 +4,15 @@ plugins {
    id("kotest-native-conventions")
    id("kotest-publishing-conventions")
 }
+
+kotlin {
+   sourceSets {
+      all {
+         languageSettings {
+            optIn("kotlin.RequiresOptIn")
+            optIn("io.kotest.common.KotestInternal")
+            optIn("io.kotest.common.ExperimentalKotest")
+         }
+      }
+   }
+}

@@ -1,0 +1,3 @@
+testResource.txt -text
+testResource_cr.txt -text
+testResource_crlf.txt -text

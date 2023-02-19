@@ -6,6 +6,6 @@ import io.kotest.core.test.TestCase
 fun DisplayNameFormatter.formatTestPath(testCase: TestCase, separator: String): String {
    return when (val parent = testCase.parent) {
       null -> format(testCase)
-      else -> format(parent) + separator + format(testCase)
+      else -> formatTestPath(parent, separator) + separator + format(testCase)
    }
 }

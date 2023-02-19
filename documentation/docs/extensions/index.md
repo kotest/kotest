@@ -20,7 +20,6 @@ maintained and hosted by third parties.
 | [Instant](instant.md) | Override the 'now' context in java.time |
 | [Test Containers](test_containers.md) | Run docker images as part of a test lifecycle |
 | [Wiremock](wiremock.md) | Provides a mock HTTP server. Project homepage [here](http://wiremock.org/). |
-| [Roboelectric](roboelectric.md) | Integrate roboelectric with the test lifecycle |
 | [Allure](allure.md) | Provides output for the allure framework |
 | [JUnit XML](junit_xml.md) | Provides output in the JUnit XML format for integration with reporting tools |
 | [HTML Reporter](html_reporter.md) | Generates HTML reports of test results based on [JUnit XML](junit_xml.md) |
