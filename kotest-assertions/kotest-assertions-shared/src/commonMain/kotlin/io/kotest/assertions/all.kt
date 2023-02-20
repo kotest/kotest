@@ -74,9 +74,11 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  */
 @ExperimentalKotest
 suspend fun <T> all(t: T, assertions: suspend T.(T) -> Unit): T {
-   return all {
-      t.assertions(t)
-      t
+   return withClue({ "Composite assertion of: $t" }) {
+      all {
+         t.assertions(t)
+         t
+      }
    }
 }
 
