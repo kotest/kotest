@@ -81,8 +81,10 @@ suspend fun <T> all(t: T, assertions: suspend T.(T) -> Unit): T {
 }
 
 inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
-   return assertSoftly {
-      t.assertions(t)
-      t
+   return withClue({ "Soft assertion of: $t" }) {
+      assertSoftly {
+         t.assertions(t)
+         t
+      }
    }
 }
