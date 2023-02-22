@@ -1,7 +1,9 @@
+package io.kotest.property.arbitrary
+
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
-import io.kotest.property.arbitrary.ArbitraryBuilder
 import io.kotest.property.arbitrary.duration.DurationClassifier
+import kotlin.random.nextLong
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -9,27 +11,35 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
+import kotlin.time.DurationUnit.MILLISECONDS
+import kotlin.time.DurationUnit.values
 import kotlin.time.toDuration
 
 /**
  * Arbitrary [Duration]s.
  *
- * @param[range] constrain the generated durations to be within this range.
+ * @param[range] constrains the generated durations to be within this range.
+ * @param[unit] specifies [DurationUnit] of arbitrary [Duration]s; if not passed random unit will be picked.
  */
 fun Arb.Companion.duration(
-   range: ClosedRange<Duration> = (-Int.MAX_VALUE.seconds)..Int.MAX_VALUE.seconds
+   range: ClosedRange<Duration> = (-Int.MAX_VALUE.seconds)..Int.MAX_VALUE.seconds,
+   unit: DurationUnit? = null
 ): Arb<Duration> =
    ArbitraryBuilder.create { rs ->
-      val unit = DurationUnit.values().random(rs.random)
-      val value = rs.random.nextLong()
-      value.toDuration(unit).coerceIn(range)
+      val durationUnit: DurationUnit = unit ?: values().random(rs.random)
+
+      rs.random
+         .nextLong(range.start.toLong(durationUnit)..range.endInclusive.toLong(durationUnit))
+         .toDuration(durationUnit)
+         .coerceIn(range)
    }.withEdgecases(
-      listOf(
+      setOfNotNull(
+         range.start,
          Duration.ZERO,
-         Duration.INFINITE,
-         Duration.INFINITE * -1,
+         range.endInclusive,
       ).map { it.coerceIn(range) }
-   ).withShrinker(DurationShrinker(range))
+   )
+      .withShrinker(DurationShrinker(range))
       .withClassifier(DurationClassifier(range))
       .build()
 
@@ -55,14 +65,11 @@ class DurationShrinker(
          ?: emptyList()
    }
 
-//   private fun interface ShrinkUnsafe : (Duration) -> Duration
-//   Implementing function interface is prohibited in JavaScript
-
    /** Tries to shrink, but might through an [IllegalArgumentException] if the resulting duration is invalid */
    private val unsafeShrinks: List<(Duration) -> Duration> =
       listOf(
-         { d -> (d / 10).truncate(DurationUnit.MILLISECONDS) },
-         { d -> (d / 100).truncate(DurationUnit.MILLISECONDS) },
+         { d -> (d / 10).truncate(MILLISECONDS) },
+         { d -> (d / 100).truncate(MILLISECONDS) },
          { d -> d * 10 },
          { d -> d * 100 },
       )
