@@ -785,9 +785,6 @@ You can use the same mechanism to run tests only under certain conditions.
 }
 ```
 
-`isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
-
-
 ### Focus
 
 KotlinTest supports isolating a single top level test by preceding the test name with `f:`.
