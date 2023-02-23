@@ -123,10 +123,10 @@ Clues can be nested, and they all will be visible in the failed assertion messag
 
 ```kotlin
 { "Verifying user_id=${user.name}" }.asClue {
-  "email_confirmed should be false since we've just created the user" {
+  "email_confirmed should be false since we've just created the user".asClue {
     user.emailConfirmed shouldBe false
   }
-  "login" {
+  "login".asClue {
     user.login shouldBe "sksamuel"
   }
 }
