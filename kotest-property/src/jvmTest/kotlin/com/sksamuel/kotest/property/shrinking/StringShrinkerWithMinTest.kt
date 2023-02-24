@@ -138,12 +138,12 @@ class StringShrinkerWithMinTest : DescribeSpec({
 
          stdout.shouldContain(
             """
-Attempting to shrink arg "`a,ONF/b"
-Shrink #1: "`a,O" fail
-Shrink #2: "``,O" fail
-Shrink #3: "```O" fail
-Shrink #4: "````" fail
-Shrink result (after 4 shrinks) => "````"
+Attempting to shrink arg "su{90) e"
+Shrink #1: "su{9" fail
+Shrink #2: "ss{9" fail
+Shrink #3: "sss9" fail
+Shrink #4: "ssss" fail
+Shrink result (after 4 shrinks) => "ssss"
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt

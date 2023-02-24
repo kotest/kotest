@@ -235,11 +235,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abk",
-         "abK",
-         "abz",
-         "aaw",
-         "ab/"
+         "ab<",
+         "abZ",
+         "ab<",
+         "aad",
+         "ab."
       )
    }
 
@@ -255,11 +255,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abb ",
-         "aaaC",
-         "aabV",
-         "abad",
-         "aabb"
+         "abbM",
+         "aaa$",
+         "aabh",
+         "abau",
+         "aab\""
       )
    }
 
@@ -276,11 +276,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abkbb",
-         "aaCab",
-         "aa-ba",
-         "ab/aa",
-         "aa`aa"
+         "ab<bb",
+         "aa\$ab",
+         "aa&ba",
+         "ab.aa",
+         "aanaa"
       )
    }
 
@@ -299,11 +299,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "bbkbb?",
-         "aaGaaP",
-         "ba'ab/",
-         "bb;bbL",
-         "bbiab;"
+         "bb<bbG",
+         "aa;aaq",
+         "baDab.",
+         "bb{bbX",
+         "bb.ab6"
       )
    }
 
@@ -323,11 +323,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "%babb?a",
-         "#baabVa",
-         "'aaabsb",
-         ":baaa\\b",
-         "`babaBa"
+         "[babbGa",
+         "xbaabha",
+         "DaaabQb",
+         "1baaaXb",
+         "Lbaba+a"
       )
    }
 
@@ -349,11 +349,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "babacbbK",
-         "aaaaPbaw",
-         "aaabsbb;",
-         "aaabsbb`",
-         "babbPbb'"
+         "baba:bbZ",
+         "aaaaqbad",
+         "aaabQbb{",
+         "aaabFbbL",
+         "babbFbbO"
       )
    }
 
@@ -384,11 +384,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "boabb?aaa",
-         "bzaab8aba",
-         "azabb;bba",
-         "bsabaAaba",
-         "aEaabBaaa"
+         "bsabbGaaa",
+         "b<aabCaba",
+         "a\$abb{bba",
+         "bFabaJaba",
+         "agaabeaaa"
       )
    }
 
@@ -412,11 +412,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "boababbKaa",
-         "aVababa'ab",
-         "a2bbabbLab",
-         "b\\bbabaBab",
-         "aabaaaa*ab"
+         "bsababbZaa",
+         "auababaDab",
+         "aDbbabbXab",
+         "b1bbaba+ab",
+         "aZbaaaaxab"
       )
    }
 
@@ -442,11 +442,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "babacbbaaCa",
-         "aaab8abaaSb",
-         "baba`aaabsb",
-         "baabYbabb=b",
-         "aaaa*abbaOa"
+         "baba:bbaa\$a",
+         "aaabCabaaub",
+         "babanaaabFb",
+         "baabKbabb4b",
+         "aaaaxabbafa"
       )
    }
 
@@ -486,11 +486,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "bbkbbbbaaaaG",
-         "ba-babaababs",
-         "ba`aaabbbab`",
-         "baBabbbababh",
-         "ab?babbabaa0"
+         "bb<bbbbaaaa;",
+         "ba&babaababQ",
+         "banaaabbbabL",
+         "ba+abbbabab0",
+         "abCbabbabaa@"
       )
    }
 
@@ -532,11 +532,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "%baabbWaaaabz",
-         "-baaaaSbaabb;",
-         "Lababb\\bbabaB",
-         " ababa#aaaab ",
-         "7aaaaapbaaaav"
+         "[baabbqaaaab<",
+         "&baaaaubaabb{",
+         "Xababb1bbaba+",
+         "*ababaqaaaab]",
+         "iaaaaa\$baaaaM"
       )
    }
 
@@ -579,11 +579,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abbabbbWaaaabz",
-         "aababaaSbaabb;",
-         "aaabbbb\\bbabaB",
-         "abababa#aabab ",
-         "abaabaapbabaav"
+         "abbabbbqaaaab<",
+         "aababaaubaabb{",
+         "aaabbbb1bbaba+",
+         "abababaqaabab]",
+         "abaabaa\$babaaM"
       )
    }
 
