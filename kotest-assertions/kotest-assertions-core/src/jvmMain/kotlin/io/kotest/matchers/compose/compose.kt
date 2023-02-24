@@ -38,13 +38,7 @@ fun <T : Any?> Matcher.Companion.compose(
    vararg matchers: Matcher<T>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val results = matchers.mapIndexed { i, matcher  ->
-         runCatching {
-            (matcher as Matcher<Any?>).test(value)
-         }.onFailure {
-            fail("Mismatching types in argument ${i + 1} for composed matcher:\n\n${it.message}")
-         }.getOrThrow()
-      }
+      val results = matchers.map { matcher -> matcher.test(value) }
 
       return MatcherResult(
          results.all { it.passed() },
