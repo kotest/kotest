@@ -112,16 +112,14 @@ fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, mod
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
 fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, options)
+   this should beEqualJson(expected, options)
 }
 
 fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
 fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, options)
+   this shouldNot beEqualJson(expected, options)
 }
 
 fun String.shouldBeEmptyJsonArray(): String {
@@ -135,24 +133,28 @@ fun String.shouldBeEmptyJsonObject(): String {
 }
 
 fun String.shouldBeJsonArray(): String {
-   this should beJsonType(JsonArray::class)
+   this should beJsonArray()
    return this
 }
 
 fun String.shouldNotBeJsonArray(): String {
-   this shouldNot beJsonType(JsonArray::class)
+   this shouldNot beJsonArray()
    return this
 }
 
+fun beJsonArray() = beJsonType(JsonArray::class)
+
 fun String.shouldBeJsonObject(): String {
-   this should beJsonType(JsonObject::class)
+   this should beJsonObject()
    return this
 }
 
 fun String.shouldNotBeJsonObject(): String {
-   this shouldNot beJsonType(JsonObject::class)
+   this shouldNot beJsonObject()
    return this
 }
+
+fun beJsonObject() = beJsonType(JsonObject::class)
 
 fun String.shouldBeValidJson(): String {
    this should beValidJson()

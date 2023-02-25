@@ -1,5 +1,6 @@
 package io.kotest.assertions.json
 
+import io.kotest.common.KotestLanguage
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -19,9 +20,21 @@ fun equalJson(
    expected: JsonTree,
    mode: CompareMode,
    order: CompareOrder,
-) = equalJson(expected, legacyOptions(mode, order))
+) = beEqualJsonTree(expected, legacyOptions(mode, order))
 
+fun beEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions): Matcher<String> =
+   Matcher {
+      val (expectedTree, actualTree) = parse(expected, it)
+      beEqualJsonTree(expectedTree, options).test(actualTree)
+   }
+
+@Deprecated(message = "deprecated", replaceWith = ReplaceWith("beEqualJsonTree"))
 fun equalJson(
+   expected: JsonTree,
+   options: CompareJsonOptions
+) = beEqualJsonTree(expected, options)
+
+fun beEqualJsonTree(
    expected: JsonTree,
    options: CompareJsonOptions
 ) =
