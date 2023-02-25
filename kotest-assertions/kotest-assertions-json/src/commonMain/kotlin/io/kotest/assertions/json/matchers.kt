@@ -4,6 +4,7 @@ import io.kotest.common.KotestLanguage
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.nulls.beNull
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
@@ -22,10 +23,24 @@ fun equalJson(
    order: CompareOrder,
 ) = beEqualJsonTree(expected, legacyOptions(mode, order))
 
-fun beEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions): Matcher<String> =
-   Matcher {
-      val (expectedTree, actualTree) = parse(expected, it)
-      beEqualJsonTree(expectedTree, options).test(actualTree)
+fun beEqualJson(
+   @KotestLanguage("json", "", "") expected: String?,
+   options: CompareJsonOptions
+): Matcher<String?> =
+   Matcher { actual ->
+      if (expected == null) {
+         beNull().test(actual)
+      } else {
+         if (actual == null) {
+            MatcherResult(
+               false,
+               { "Expected value to be equal to json '${expected}', but was: null" },
+               { "Expected value to be not equal to json '${expected}', but was: null" })
+         } else {
+            val (expectedTree, actualTree) = parse(expected, actual)
+            beEqualJsonTree(expectedTree, options).test(actualTree)
+         }
+      }
    }
 
 @Deprecated(message = "deprecated", replaceWith = ReplaceWith("beEqualJsonTree"))
