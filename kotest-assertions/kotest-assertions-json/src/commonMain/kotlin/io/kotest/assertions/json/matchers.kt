@@ -4,7 +4,6 @@ import io.kotest.common.KotestLanguage
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.nulls.beNull
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
@@ -24,26 +23,23 @@ fun equalJson(
 ) = beEqualJsonTree(expected, legacyOptions(mode, order))
 
 fun beEqualJson(
-   @KotestLanguage("json", "", "") expected: String?,
+   @KotestLanguage("json", "", "") expected: String,
    options: CompareJsonOptions
 ): Matcher<String?> =
    Matcher { actual ->
-      if (expected == null) {
-         beNull().test(actual)
+      if (actual == null) {
+         MatcherResult(
+            expected == "null",
+            { "Expected value to be equal to json '$expected', but was: null" },
+            { "Expected value to be not equal to json '$expected', but was: null" }
+         )
       } else {
-         if (actual == null) {
-            MatcherResult(
-               false,
-               { "Expected value to be equal to json '${expected}', but was: null" },
-               { "Expected value to be not equal to json '${expected}', but was: null" })
-         } else {
-            val (expectedTree, actualTree) = parse(expected, actual)
-            beEqualJsonTree(expectedTree, options).test(actualTree)
-         }
+         val (expectedTree, actualTree) = parse(expected, actual)
+         beEqualJsonTree(expectedTree, options).test(actualTree)
       }
    }
 
-@Deprecated(message = "deprecated", replaceWith = ReplaceWith("beEqualJsonTree"))
+@Deprecated(message = "deprecated", replaceWith = ReplaceWith("beEqualJsonTree(expected,options)", imports = ["import io.kotest.assertions.json.beEqualJsonTree"]))
 fun equalJson(
    expected: JsonTree,
    options: CompareJsonOptions
@@ -52,24 +48,22 @@ fun equalJson(
 fun beEqualJsonTree(
    expected: JsonTree,
    options: CompareJsonOptions
-) =
-   object : Matcher<JsonTree> {
-      override fun test(value: JsonTree): MatcherResult {
-         val error = compare(
-            path = listOf(),
-            expected = expected.root,
-            actual = value.root,
-            options,
-         )?.asString()
+): Matcher<JsonTree> =
+   Matcher { value ->
+      val error = compare(
+         path = listOf(),
+         expected = expected.root,
+         actual = value.root,
+         options,
+      )?.asString()
 
-         return ComparableMatcherResult(
-            error == null,
-            { "$error\n\n" },
-            { "Expected values to not match\n\n" },
-            value.raw,
-            expected.raw,
-         )
-      }
+      ComparableMatcherResult(
+         error == null,
+         { "$error\n\n" },
+         { "Expected values to not match\n\n" },
+         value.raw,
+         expected.raw,
+      )
    }
 
 data class JsonTree(val root: JsonNode, val raw: String)

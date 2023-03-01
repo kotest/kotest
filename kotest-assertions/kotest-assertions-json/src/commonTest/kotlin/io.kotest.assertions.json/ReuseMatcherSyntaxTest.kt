@@ -28,22 +28,29 @@ class ReuseMatcherSyntaxTest : FreeSpec({
          matcherReUse1(beEqualJson("dummy", CompareJsonOptions()))
          matcherReUse2(beEqualJson("dummy", CompareJsonOptions()))
 
-         // no way to externally create a JsonTree? should this matcher be internal?
-         // externalFunThatAcceptsMatcher(beEqualJsonTree(TODO(), CompareJsonOptions()))
+         // there seems to be no way to externally create a JsonTree. should this matcher be internal?
+         // matcherReUse1(beEqualJsonTree(TODO(), CompareJsonOptions()))
          matcherReUse1(beJsonArray())
          matcherReUse2(beJsonArray())
       }
    }
 
-   "matcher" -  {
-      "null should beEqualJson null" {
-         val subject: String? = null
-         subject should beEqualJson(null, CompareJsonOptions())
+   "beEqualJson" - {
+      val nullSubject: String? = null
+      "null should beEqualJson('null')" {
+         nullSubject should beEqualJson("null", CompareJsonOptions())
       }
 
-      "notNull shouldNot beEqualJson null" {
-         val subject: String? = null
-         subject shouldNot beEqualJson("null", CompareJsonOptions())
+      "null shouldNot beEqualJson(notNull)" {
+         nullSubject shouldNot beEqualJson("{}", CompareJsonOptions())
+      }
+
+      "notNull shouldNot beEqualJson('null')" {
+         "{}" shouldNot beEqualJson("null", CompareJsonOptions())
+      }
+
+      "can compare using beEqualJson" {
+         "{}" should beEqualJson("{}", CompareJsonOptions())
       }
    }
 })
