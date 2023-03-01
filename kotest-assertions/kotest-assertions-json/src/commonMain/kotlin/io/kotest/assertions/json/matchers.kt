@@ -5,17 +5,15 @@ import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 
-/**
- * Returns a [Matcher] that verifies json trees are equal.
- *
- * This common matcher requires json in kotest's [JsonNode] abstraction.
- *
- * The jvm module provides wrappers to convert from Jackson to this format.
- *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
- * regardless of order.
- *
- */
+
+@Deprecated(
+   message = "deprecated",
+   replaceWith = ReplaceWith(
+      "beEqualJsonTree(expected,legacyOptions(mode,order))",
+      imports = ["import io.kotest.assertions.json.beEqualJsonTree",
+         "import io.kotest.assertions.json.legacyOptions"]
+   )
+)
 fun equalJson(
    expected: JsonTree,
    mode: CompareMode,
@@ -39,12 +37,28 @@ fun beEqualJson(
       }
    }
 
-@Deprecated(message = "deprecated", replaceWith = ReplaceWith("beEqualJsonTree(expected,options)", imports = ["import io.kotest.assertions.json.beEqualJsonTree"]))
+@Deprecated(
+   message = "deprecated",
+   replaceWith = ReplaceWith(
+      "beEqualJsonTree(expected,options)",
+      imports = ["import io.kotest.assertions.json.beEqualJsonTree"]
+   )
+)
 fun equalJson(
    expected: JsonTree,
    options: CompareJsonOptions
 ) = beEqualJsonTree(expected, options)
 
+/**
+ * Returns a [Matcher] that verifies json trees are equal.
+ *
+ * This common matcher requires json in kotest's [JsonNode] abstraction.
+ *
+ * The jvm module provides wrappers to convert from Jackson to this format.
+ *
+ * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * regardless of order.
+ */
 fun beEqualJsonTree(
    expected: JsonTree,
    options: CompareJsonOptions
