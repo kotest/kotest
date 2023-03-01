@@ -118,6 +118,13 @@ fun Codepoint.Companion.ascii(): Arb<Codepoint> =
       .withEdgecases((0..31).map(::Codepoint))
 
 /**
+ * Returns an [Arb] that generates **printable** ASCII codepoints(32-126).
+ */
+fun Codepoint.Companion.printableAscii(): Arb<Codepoint> =
+   Arb.of((' '.code..'~'.code).map(::Codepoint))
+      .withEdgecases(Codepoint('a'.code))
+
+/**
  * Returns an [Arb] that generates HEX codepoints.
  */
 fun Codepoint.Companion.hex(): Arb<Codepoint> =
