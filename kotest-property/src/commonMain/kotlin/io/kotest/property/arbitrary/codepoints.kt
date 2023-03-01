@@ -111,11 +111,11 @@ fun Codepoint.Companion.alphanumeric(): Arb<Codepoint> =
    Arb.of((('a'..'z') + ('A'..'Z') + ('0'..'9')).map { Codepoint(it.code) })
 
 /**
- * Returns an [Arb] that generates **printable** ASCII codepoints.
+ * Returns an [Arb] that generates ASCII codepoints including control characters(0-127).
  */
 fun Codepoint.Companion.ascii(): Arb<Codepoint> =
-   Arb.of((' '.code..'~'.code).map(::Codepoint))
-      .withEdgecases(Codepoint('a'.code))
+   Arb.of((0..127).map(::Codepoint))
+      .withEdgecases((0..31).map(::Codepoint))
 
 /**
  * Returns an [Arb] that generates HEX codepoints.
