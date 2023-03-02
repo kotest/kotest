@@ -14,16 +14,19 @@ typealias FeatureSpecContainerContext = FeatureSpecContainerScope
 /**
  * A scope that allows tests to be registered using the syntax:
  *
+ * ```
  * feature("some context")
  * xfeature("some disabled context")
+ * ```
  *
  * and
  *
+ * ```
  * scenario("some test")
  * scenario("some test").config(...)
  * xscenario("some test")
  * xscenario("some test").config(...)
- *
+ * ```
  */
 class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 

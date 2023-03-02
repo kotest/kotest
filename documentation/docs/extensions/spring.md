@@ -47,7 +47,8 @@ In Kotest 4.3 and earlier, the Spring extension was called `SpringListener`. Thi
 ### Constructor Injection
 
 For constructor injection, Kotest automatically registers a `SpringAutowireConstructorExtension`
-when the spring module is added to the build.
+when the spring module is added to the build, assuming auto scan is enabled (see [Project Config](../framework/project-config.html)). If Auto scan is
+disabled, you will need to manually load the extension in your Project config.
 
 This extension will intercept each call to create a Spec instance
 and will autowire the beans declared in the primary constructor.

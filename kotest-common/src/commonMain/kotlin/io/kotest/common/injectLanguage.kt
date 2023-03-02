@@ -1,8 +1,4 @@
-@file:Suppress("PackageDirectoryMismatch")
-
-package org.intellij.lang.annotations
-
-import io.kotest.common.KotestInternal
+package io.kotest.common
 
 // This class is a workaround for injecting language annotations in multiple Kotlin targets,
 // because the original org.intellij.lang.annotations.Language is JVM only.
@@ -57,8 +53,10 @@ import io.kotest.common.KotestInternal
    AnnotationTarget.LOCAL_VARIABLE,
    AnnotationTarget.ANNOTATION_CLASS,
 )
-expect annotation class Language(
+expect annotation class KotestLanguage(
    val value: String,
-   val prefix: String = "",
-   val suffix: String = "",
+   // can't set default values for annotation params
+   // https://youtrack.jetbrains.com/issue/KT-25946/
+   val prefix: String, // = "",
+   val suffix: String, // = "",
 )

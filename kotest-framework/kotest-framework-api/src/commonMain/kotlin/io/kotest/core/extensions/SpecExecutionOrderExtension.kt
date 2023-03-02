@@ -9,7 +9,7 @@ import io.kotest.core.spec.SpecRef
  * invoked but the order of invocation is undefined.
  *
  * If no [SpecExecutionOrderExtension]s are registered, then specs will be
- * sorted using the value of [specExecutionOrder] defined in configuration.
+ * sorted using the value of [io.kotest.core.config.AbstractProjectConfig.specExecutionOrder] defined in configuration.
  */
 interface SpecExecutionOrderExtension {
    fun sort(specs: List<SpecRef>): List<SpecRef>
