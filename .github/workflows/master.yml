@@ -22,7 +22,7 @@ jobs:
          matrix:
             target:
                - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
-               - jsIrTest publishJsPublicationToDeployRepository
+               - jsTest publishJsPublicationToDeployRepository
                - linuxX64Test publishLinuxX64PublicationToDeployRepository
       steps:
          -  uses: kotest/kotest-action@master
