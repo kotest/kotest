@@ -12,6 +12,12 @@ fun equalJson(
    order: CompareOrder,
 ) = equalJsonTree(expected, legacyOptions(mode, order))
 
+/**
+ * Returns a [Matcher] that verifies that two json strings are equal.
+ *
+ * This matcher will consider two json strings matched if they have the same key-values pairs.
+ * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
+ */
 fun equalJson(
    @KotestLanguage("json", "", "") expected: String,
    options: CompareJsonOptions
@@ -34,6 +40,7 @@ fun equalJson(
    expected: JsonTree,
    options: CompareJsonOptions
 ) = equalJsonTree(expected, options)
+
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
