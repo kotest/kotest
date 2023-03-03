@@ -5,22 +5,14 @@ import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 
-
-@Deprecated(
-   message = "deprecated",
-   replaceWith = ReplaceWith(
-      "beEqualJsonTree(expected,legacyOptions(mode,order))",
-      imports = ["import io.kotest.assertions.json.beEqualJsonTree",
-         "import io.kotest.assertions.json.legacyOptions"]
-   )
-)
+// remove?
 fun equalJson(
    expected: JsonTree,
    mode: CompareMode,
    order: CompareOrder,
-) = beEqualJsonTree(expected, legacyOptions(mode, order))
+) = equalJsonTree(expected, legacyOptions(mode, order))
 
-fun beEqualJson(
+fun equalJson(
    @KotestLanguage("json", "", "") expected: String,
    options: CompareJsonOptions
 ): Matcher<String?> =
@@ -33,21 +25,15 @@ fun beEqualJson(
          )
       } else {
          val (expectedTree, actualTree) = parse(expected, actual)
-         beEqualJsonTree(expectedTree, options).test(actualTree)
+         equalJsonTree(expectedTree, options).test(actualTree)
       }
    }
 
-@Deprecated(
-   message = "deprecated",
-   replaceWith = ReplaceWith(
-      "beEqualJsonTree(expected,options)",
-      imports = ["import io.kotest.assertions.json.beEqualJsonTree"]
-   )
-)
+// remove?
 fun equalJson(
    expected: JsonTree,
    options: CompareJsonOptions
-) = beEqualJsonTree(expected, options)
+) = equalJsonTree(expected, options)
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
@@ -59,7 +45,7 @@ fun equalJson(
  * This matcher will consider two json strings matched if they have the same key-values pairs,
  * regardless of order.
  */
-fun beEqualJsonTree(
+private fun equalJsonTree(
    expected: JsonTree,
    options: CompareJsonOptions
 ): Matcher<JsonTree> =

@@ -112,14 +112,14 @@ fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, mod
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
 fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
-   this should beEqualJson(expected, options)
+   this should equalJson(expected, options)
 }
 
 fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
 fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
-   this shouldNot beEqualJson(expected, options)
+   this shouldNot equalJson(expected, options)
 }
 
 fun String.shouldBeEmptyJsonArray(): String {
