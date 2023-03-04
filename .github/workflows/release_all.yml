@@ -71,6 +71,9 @@ jobs:
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
 
+         -  name: publish linux ARM release
+            run: ./gradlew publishLinuxArm64PublicationToDeployRepository
+
    publish_mac:
       runs-on: macos-11
       strategy:

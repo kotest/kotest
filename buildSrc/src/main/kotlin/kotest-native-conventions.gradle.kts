@@ -8,6 +8,7 @@ kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
       targets {
          linuxX64()
+         linuxArm64()
 
          mingwX64()
 
