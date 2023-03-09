@@ -83,21 +83,16 @@ tasks.withType<Test>().configureEach {
    }
 }
 
-
-pluginBundle {
-   website = "https://kotest.io"
-   vcsUrl = "https://github.com/kotest"
-   tags = listOf("kotest", "kotlin", "testing", "integrationTesting", "javascript")
-}
-
-
 gradlePlugin {
+   website.set("https://kotest.io")
+   vcsUrl.set("https://github.com/kotest")
    plugins {
       create("KotestMultiplatformCompilerGradlePlugin") {
          id = "io.kotest.multiplatform"
          implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
          displayName = "Kotest Multiplatform Compiler Plugin"
          description = "Adds support for Javascript and Native tests in Kotest"
+         tags.set(listOf("kotest", "kotlin", "testing", "integrationTesting", "javascript"))
       }
    }
 }
