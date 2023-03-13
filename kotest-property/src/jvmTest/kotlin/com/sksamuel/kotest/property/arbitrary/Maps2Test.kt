@@ -4,20 +4,25 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
+import io.kotest.property.PropTestConfig
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.Maps2Result
+import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map2
+import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.unit
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.exhaustive
@@ -27,7 +32,7 @@ class Maps2Test : FreeSpec({
 
    "shared keys" - {
       val result = givenSamples(theArb(withSharedKeysPercent = 0..100, withSizeRange = 0..100))
-         .map { it.value.first.keys.intersect(it.value.second.keys).size }
+         .map { it.value.left.keys.intersect(it.value.right.keys).size }
          .toList()
 
       "at least one sample should share no keys" {
@@ -47,7 +52,7 @@ class Maps2Test : FreeSpec({
 
    "sizes" - {
       val result = givenSamples(theArb(withSizeRange = 50..150))
-         .map { it.value.first.size to it.value.second.size }
+         .map { it.value.left.size to it.value.right.size }
 
       "all samples should respect the min size" {
          result.forAll {
@@ -62,47 +67,81 @@ class Maps2Test : FreeSpec({
             it.second.shouldBeLessThanOrEqualTo(150)
          }
       }
-   }
 
-   "edgecases" - {
-      "should contain 2 empty maps" {
-         theArb().edgecases().forAtLeastOne {
-            it.first.shouldBeEmpty()
-            it.second.shouldBeEmpty()
+      "for some left side should be bigger (non max)" {
+         result.forAtLeastOne {
+            it.first.shouldBeLessThan(150)
+            it.first.shouldBeGreaterThan(it.second)
          }
       }
 
-      "one map should have maxSize while the other map should be empty" {
-         givenSamples(theArb(withSizeRange = 0..100))
-            .forAtLeastOne {
-               it.value.first.shouldHaveSize(100)
-               it.value.second.shouldBeEmpty()
-            }.forAtLeastOne {
-               it.value.first.shouldBeEmpty()
-               it.value.second.shouldHaveSize(100)
-            }
-      }
-
-      "both maps should have the same size and share all keys" {
-         givenSamples(theArb(withSizeRange = 0..100))
-            .forAtLeastOne {
-               it.value.first.size.shouldBeLessThan(100)
-               it.value.first.keys shouldBe it.value.second.keys
-            }
-      }
-
-      "both maps should have maxSize and share all keys" {
-         givenSamples(theArb(withSizeRange = 0..100))
-            .forAtLeastOne {
-               it.value.first.size shouldBe 100
-               it.value.first.keys shouldBe it.value.second.keys
-            }
+      "for some right side should be bigger (non max)" {
+         result.forAtLeastOne {
+            it.second.shouldBeLessThan(150)
+            it.second.shouldBeGreaterThan(it.first)
+         }
       }
    }
 
+   "edgecases" - {
+      "should contain sample with two empty maps (with minSize = 0)" {
+         theArb(withSizeRange = 0 .. 100).edgecases().forAtLeastOne {
+            it.left.shouldBeEmpty()
+            it.right.shouldBeEmpty()
+         }
+      }
+
+      "should contain sample where one map has maxSize and the other map is empty (+ vice versa)" {
+         givenSamples(theArb(withSizeRange = 0..100))
+            .forAtLeastOne {
+               it.value.left.shouldHaveSize(100)
+               it.value.right.shouldBeEmpty()
+            }.forAtLeastOne {
+               it.value.left.shouldBeEmpty()
+               it.value.right.shouldHaveSize(100)
+            }
+      }
+
+      "should contain sample where both maps have the same size (not max, not empty) and share all keys" {
+         givenSamples(theArb(withSizeRange = 0..100))
+            .forAtLeastOne {
+               it.value.left.size.shouldBeLessThan(100)
+               it.value.left.size.shouldBeGreaterThan(0)
+               it.value.left.keys shouldBe it.value.right.keys
+            }
+      }
+
+      "should contain sample where both maps have maxSize and share all keys" {
+         givenSamples(theArb(withSizeRange = 0..100))
+            .forAtLeastOne {
+               it.value.left.size shouldBe 100
+               it.value.left.keys shouldBe it.value.right.keys
+            }
+      }
+
+      "should contain sample where both maps have maxSize and share no keys" {
+         givenSamples(theArb(withSizeRange = 0..100))
+            .forAtLeastOne {
+               it.value.left.size shouldBe 100
+               it.value.right.size shouldBe 100
+
+               it.value.left.keys.intersect(it.value.right.keys).shouldBeEmpty()
+            }
+      }
+
+      "should contain sample where both maps have minSize > 0 and share all keys" {
+         givenSamples(theArb(withSizeRange = 50..100))
+            .forAtLeastOne {
+               it.value.left.size shouldBe 50
+               it.value.left.keys shouldBe it.value.right.keys
+            }
+      }
+
+   }
+
    "intersect size" {
-      val arb = theArb()
-      checkAll(arb) { (a, b) ->
+      val arb = theArb(withSizeRange = 10 .. 100)
+      checkAll(PropTestConfig(outputClassifications = true),  arb) { (a, b) ->
          val size = a.keys.intersect(b.keys).size
          collect("intersection", size)
          collect("mapA", a.keys.size)
@@ -119,17 +158,28 @@ class Maps2Test : FreeSpec({
          }
       }
    }
+
+   "can use exhaustive" {
+      Arb.map2(
+         genK = (0..10).toList().exhaustive(),
+         genA = Arb.boolean(),
+         genB = Arb.boolean(),
+         sizeRange = 0..10
+      ).take(6).forEach {
+         println(it)
+      }
+   }
 })
 
-typealias SampleType = Pair<Map<Int, Unit>, Map<Int, Unit>>
+typealias SampleType = Maps2Result<Int, Unit, Unit>
 
 private fun givenSamples(withArb: Arb<SampleType>) =
-   withArb.generate(RandomSource.default()).take(1000).toList()
+   withArb.generate(RandomSource.default()).take(2000).toList()
 
 private fun theArb(withSizeRange: IntRange = 0..1000, withSharedKeysPercent: IntRange = 0..100) = Arb.map2(
-   keyArb = Arb.int(),
-   arbA = Arb.unit(),
-   arbB = Arb.unit(),
+   genK = Arb.int(),
+   genA = Arb.unit(),
+   genB = Arb.unit(),
    sizeRange = withSizeRange,
    sharedKeyPercentage = withSharedKeysPercent
 )
