@@ -83,7 +83,7 @@ class NativeThreadingTest {
    fun testNonAtomicProperty() {
       var boolProperty =  false
 
-      shouldThrow<kotlin.native.concurrent.InvalidMutabilityException> {
+      shouldThrow<Throwable> {
          threadedTest {
             boolProperty = true
          }
@@ -96,7 +96,6 @@ class NativeThreadingTest {
       body()
 
       // Run again on a background thread
-      body.freeze()
       val worker = Worker.start()
       val future = worker.execute(SAFE, { body }) {
          runCatching(it)

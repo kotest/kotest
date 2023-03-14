@@ -119,5 +119,5 @@ typealias BeFailureOfType<T> = FailureTypeMatcher<T>
 inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType(): A = shouldBeFailure<A>()
 
 @Deprecated("This method isn't easy to understand. Prefer writing a different assertion")
-inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot BeFailureOfType(A::class)
+inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot FailureTypeMatcher(A::class)
 

@@ -13,7 +13,7 @@ class ConfigTests {
 
    @Test
    fun `The frozen PropertyTesting object's properties can be modified without exception`() {
-         shouldNotThrow<kotlin.native.concurrent.InvalidMutabilityException> {
+         shouldNotThrow<Throwable> {
             PropertyTesting.maxFilterAttempts = PropertyTesting.maxFilterAttempts
             PropertyTesting.shouldPrintShrinkSteps = PropertyTesting.shouldPrintShrinkSteps
             PropertyTesting.shouldPrintGeneratedValues = PropertyTesting.shouldPrintGeneratedValues
