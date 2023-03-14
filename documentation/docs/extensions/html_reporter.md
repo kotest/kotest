@@ -35,6 +35,18 @@ class ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
+Additionally, prevent Gradle from generating its own html reports by adding `html.required.set(false)` to the test task.
+```
+tasks.test {
+  useJUnitPlatform()
+  reports {
+    html.required.set(false)
+    junitXml.required.set(false)
+  }
+  systemProperty("gradle.build.dir", project.buildDir)
+}
+```
+
 Notice that we also add `JunitXmlReporter`. This will generate the necessary XML reports, used to generate the HTML reports.
 There's no additional configuration needed, it should simply start generating HTML reports.
 
