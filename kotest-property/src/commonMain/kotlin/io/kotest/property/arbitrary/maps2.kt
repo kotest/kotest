@@ -29,32 +29,24 @@ fun <K, A, B> Arb.Companion.map2(
    return ArbitraryBuilder.create { random ->
 
       val (kk, aa, bb) = buildIterators(random, genK, genA, genB)
-
-      val size1 = random.random.nextInt(sizeRange)
-      val size2 = random.random.nextInt(IntRange(sizeRange.first, size1))
-      val smallerSize = if (size1 > size2) size2 else size1
-
-      // choose by random which side should have more overall entries
-      val (sizeA, sizeB) = if (random.random.nextBoolean()) {
-         size1 to size2
-      } else {
-         size2 to size1
-      }
+      val (lSize, rSize) = random.nextSizePair(sizeRange)
+      val smallerSize = minOf(lSize, rSize)
 
       // calc number of keys both maps should share
       val sharedKeysPercentage = random.random.nextInt(sharedKeyPercentage)
       val sharedKeysCount = (smallerSize / 100.0 * sharedKeysPercentage).toInt()
 
-      // step #1 create two equally sized maps that share all keys
+      // create two equally sized maps that share all keys
       val ls1 = buildMap(sharedKeysCount, kk, aa)
       val rs1 = ls1.keys.associateWith { bb.next() }
 
-      // step #2 add additional entries (not sharing keys) to reach expected size
-      val ls2 = buildMap(sizeA, kk, aa, ls1)
-      val rs2 = buildMap(sizeB, genK, bb, ls2.keys, random, rs1)
+      // add additional entries (not sharing keys) to reach expected size
+      val ls2 = buildMap(lSize, kk, aa, ls1)
+      val rs2 = buildMap(rSize, genK, bb, ls2.keys, random, rs1)
 
       Maps2Result(ls2, rs2)
-   }.withEdgecaseFn { random ->
+   }
+      .withEdgecaseFn { random ->
 
       val (kk, aa, bb) = buildIterators(random, genK, genA, genB)
 
@@ -128,36 +120,24 @@ fun <K, A, B> Arb.Companion.map2(
       .build()
 }
 
+private fun RandomSource.nextSizePair(sizeRange: IntRange): Pair<Int, Int> {
+   val size1 = random.nextInt(sizeRange)
+   val size2 = random.nextInt(IntRange(sizeRange.first, size1))
+
+   // choose by random which side should have more overall entries
+   return if (random.nextBoolean()) {
+      size1 to size2
+   } else {
+      size2 to size1
+   }
+}
+
 private fun <A,B,C> buildIterators(random: RandomSource, a: Gen<A>, b: Gen<B>, c: Gen<C>): Triple<Iterator<A>, Iterator<B>, Iterator<C>> =
    Triple(
       a.generate(random).map { it.value }.iterator(),
       b.generate(random).map { it.value }.iterator(),
       c.generate(random).map { it.value }.iterator()
    )
-
-private fun <K, A> Map<K, A>.classify(minSize: Int, maxSize: Int) =
-   when (size) {
-      0 -> "empty    "
-      minSize -> "min sized"
-      maxSize -> "max sized"
-      else -> "mid sized"
-   }
-
-private fun <K, A, B> Maps2Result<K, A, B>.classify(minSize: Int, maxSize: Int): String {
-   val intersect = left.keys.intersect(right.keys)
-   val allSharedKeys = (intersect.size == left.size && intersect.size == right.size)
-   val noSharedKeys = intersect.isEmpty()
-
-   val overlap = if (allSharedKeys) {
-      " / all keys shared"
-   } else if (noSharedKeys) {
-      " / no keys shared"
-   } else {
-      " / some keys shared"
-   }
-
-   return left.classify(minSize, maxSize) + " / " + right.classify(minSize, maxSize) + overlap
-}
 
 private fun <K, V> buildMap(
    withSize: Int,
@@ -205,4 +185,28 @@ private fun IntRange.requireBetween(min: Int, max: Int) {
    require(this.last <= max)
 }
 
-data class Maps2Result<K, A, B>(val left: Map<K, A>, val right: Map<K, B>)
+data class Maps2Result<K, A, B>(val left: Map<K, A>, val right: Map<K, B>) {
+   internal fun classify(minSize: Int, maxSize: Int): String {
+      val intersect = left.keys.intersect(right.keys)
+      val allSharedKeys = (intersect.size == left.size && intersect.size == right.size)
+      val noSharedKeys = intersect.isEmpty()
+
+      val overlap = if (allSharedKeys) {
+         " / all keys shared"
+      } else if (noSharedKeys) {
+         " / no keys shared"
+      } else {
+         " / some keys shared"
+      }
+
+      return left.classify(minSize, maxSize) + " / " + right.classify(minSize, maxSize) + overlap
+   }
+
+   private fun <K, A> Map<K, A>.classify(minSize: Int, maxSize: Int) =
+      when (size) {
+         0 -> "empty    "
+         minSize -> "min sized"
+         maxSize -> "max sized"
+         else -> "mid sized"
+      }
+}

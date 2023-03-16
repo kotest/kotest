@@ -29,7 +29,6 @@ import io.kotest.property.exhaustive.exhaustive
 
 class Maps2Test : FreeSpec({
 
-
    "shared keys" - {
       val result = givenSamples(theArb(withSharedKeysPercent = 0..100, withSizeRange = 0..100))
          .map { it.value.left.keys.intersect(it.value.right.keys).size }
@@ -43,7 +42,7 @@ class Maps2Test : FreeSpec({
          result.forAtLeastOne { it shouldBe 100 }
       }
 
-      "all should be in between" {
+      "number of shared keys should be between min and max percentage" {
          result.forAll {
             it.shouldBeBetween(0, 100)
          }
@@ -85,7 +84,7 @@ class Maps2Test : FreeSpec({
 
    "edgecases" - {
       "should contain sample with two empty maps (with minSize = 0)" {
-         theArb(withSizeRange = 0 .. 100).edgecases().forAtLeastOne {
+         theArb(withSizeRange = 0..100).edgecases().forAtLeastOne {
             it.left.shouldBeEmpty()
             it.right.shouldBeEmpty()
          }
@@ -129,23 +128,12 @@ class Maps2Test : FreeSpec({
             }
       }
 
-      "should contain sample where both maps have minSize > 0 and share all keys" {
+      "should contain sample where both maps have minSize and share all keys" {
          givenSamples(theArb(withSizeRange = 50..100))
             .forAtLeastOne {
                it.value.left.size shouldBe 50
                it.value.left.keys shouldBe it.value.right.keys
             }
-      }
-
-   }
-
-   "intersect size" {
-      val arb = theArb(withSizeRange = 10 .. 100)
-      checkAll(PropTestConfig(outputClassifications = true),  arb) { (a, b) ->
-         val size = a.keys.intersect(b.keys).size
-         collect("intersection", size)
-         collect("mapA", a.keys.size)
-         collect("mapB", b.keys.size)
       }
    }
 
@@ -156,6 +144,17 @@ class Maps2Test : FreeSpec({
          checkAll(arb) { (a, b) ->
             a.size.shouldBeLessThan(5)
          }
+      }
+   }
+
+
+   "intersect size" {
+      val arb = theArb(withSizeRange = 10..100)
+      checkAll(PropTestConfig(outputClassifications = true), arb) { (a, b) ->
+         val size = a.keys.intersect(b.keys).size
+         collect("intersection", size)
+         collect("mapA", a.keys.size)
+         collect("mapB", b.keys.size)
       }
    }
 
@@ -171,16 +170,16 @@ class Maps2Test : FreeSpec({
    }
 })
 
-typealias SampleType = Maps2Result<Int, Unit, Unit>
+private typealias SampleForTest = Maps2Result<Int, Unit, Unit>
 
-private fun givenSamples(withArb: Arb<SampleType>) =
+private fun givenSamples(withArb: Arb<SampleForTest>) =
    withArb.generate(RandomSource.default()).take(2000).toList()
 
-private fun theArb(withSizeRange: IntRange = 0..1000, withSharedKeysPercent: IntRange = 0..100) = Arb.map2(
-   genK = Arb.int(),
-   genA = Arb.unit(),
-   genB = Arb.unit(),
-   sizeRange = withSizeRange,
-   sharedKeyPercentage = withSharedKeysPercent
-)
-
+private fun theArb(withSizeRange: IntRange = 0..1000, withSharedKeysPercent: IntRange = 0..100) =
+   Arb.map2(
+      genK = Arb.int(),
+      genA = Arb.unit(),
+      genB = Arb.unit(),
+      sizeRange = withSizeRange,
+      sharedKeyPercentage = withSharedKeysPercent
+   )
