@@ -1,5 +1,6 @@
 plugins {
    `kotlin-dsl`
+   `embedded-kotlin`
 }
 
 repositories {
@@ -10,4 +11,5 @@ repositories {
 dependencies {
    implementation(libs.testlogger.gradle.plugin)
    implementation(libs.kotlin.gradle.plugin)
+   implementation(gradleApi())
 }
