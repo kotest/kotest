@@ -10,113 +10,114 @@ fun <K, A, B> Arb.Companion.map2(
    genK: Gen<K>,
    genA: Gen<A>,
    genB: Gen<B>,
-   sharedKeyPercentage: IntRange = 0..100,
-   sizeRange: IntRange = 0..1000,
-): Arb<Maps2Result<K, A, B>> {
+   size: IntRange = 0..1000,
+   slippage: Int = 10,
+   shared: IntRange = 0..100
+   ): Arb<Maps2Result<K, A, B>> {
 
    if (genK is Exhaustive) {
-      require(sizeRange.last <= genK.values.size) {
+      require(size.last <= genK.values.size) {
          "Size should be <= ${genK.values.size}"
       }
    }
 
-   sizeRange.requireBetween(0, Int.MAX_VALUE)
-   sharedKeyPercentage.requireBetween(0, 100)
+   size.requireBetween(0, Int.MAX_VALUE)
+   shared.requireBetween(0, 100)
 
-   val lsShrinker = MapShrinker<K, A>(sizeRange.first)
-   val rsShrinker = MapShrinker<K, B>(sizeRange.first)
+   val lShrinker = MapShrinker<K, A>(size.first)
+   val rShrinker = MapShrinker<K, B>(size.first)
 
    return ArbitraryBuilder.create { random ->
 
       val (kk, aa, bb) = buildIterators(random, genK, genA, genB)
-      val (lSize, rSize) = random.nextSizePair(sizeRange)
+      val (lSize, rSize) = random.nextSizePair(size)
       val smallerSize = minOf(lSize, rSize)
 
       // calc number of keys both maps should share
-      val sharedKeysPercentage = random.random.nextInt(sharedKeyPercentage)
-      val sharedKeysCount = (smallerSize / 100.0 * sharedKeysPercentage).toInt()
+      val sharedKeysPercent = random.random.nextInt(shared)
+      val sharedKeysCount = (smallerSize / 100.0 * sharedKeysPercent).toInt()
 
       // create two equally sized maps that share all keys
-      val ls1 = buildMap(sharedKeysCount, kk, aa)
+      val ls1 = buildMap(sharedKeysCount, kk, aa, slippage = slippage)
       val rs1 = ls1.keys.associateWith { bb.next() }
 
       // add additional entries (not sharing keys) to reach expected size
-      val ls2 = buildMap(lSize, kk, aa, ls1)
-      val rs2 = buildMap(rSize, genK, bb, ls2.keys, random, rs1)
+      val ls2 = buildMap(lSize, kk, aa, slippage, ls1)
+      val rs2 = buildMap(rSize, genK, bb, ls2.keys, random, slippage, rs1)
 
       Maps2Result(ls2, rs2)
    }
       .withEdgecaseFn { random ->
 
-      val (kk, aa, bb) = buildIterators(random, genK, genA, genB)
+         val (kk, aa, bb) = buildIterators(random, genK, genA, genB)
 
-      when (random.random.nextInt(7)) {
-         0 -> {
-            // both sides min size. no shared keys
-            val ls = buildMap(sizeRange.first, kk, aa)
-            val rs = buildMap(sizeRange.first, genK, bb, ls.keys, random)
+         when (random.random.nextInt(7)) {
+            0 -> {
+               // both sides min size. no shared keys
+               val ls = buildMap(size.first, kk, aa, slippage = slippage)
+               val rs = buildMap(size.first, genK, bb, ls.keys, random, slippage = slippage)
 
-            Maps2Result(ls, rs)
+               Maps2Result(ls, rs)
+            }
+
+            1 -> {
+               // left side min size, right side max size. no shared keys
+               val ls = buildMap(size.first, kk, aa, slippage = slippage)
+               val rs = buildMap(size.last, genK, bb, ls.keys, random, slippage = slippage)
+
+               Maps2Result(ls, rs)
+            }
+
+            2 -> {
+               // left side max size, right side min size. no shared keys
+               val ls = buildMap(size.last, kk, aa, slippage = slippage)
+               val rs = buildMap(size.first, genK, bb, ls.keys, random, slippage = slippage)
+
+               Maps2Result(ls, rs)
+            }
+
+            3 -> {
+               // both maps max size, all keys shared
+               val ls = buildMap(size.last, kk, aa, slippage = slippage)
+               val rs = ls.keys.associateWith { bb.next() }
+
+               Maps2Result(ls, rs)
+            }
+
+            4 -> {
+               // mid size, all keys shared
+               val size = random.random.nextInt(size)
+               val ls = buildMap(size, kk, aa, slippage = slippage)
+               val rs = ls.keys.associateWith { bb.next() }
+
+               Maps2Result(ls, rs)
+            }
+
+            5 -> {
+               // min size, all keys shared
+               val ls = buildMap(size.first, kk, aa, slippage = slippage)
+               val rs = ls.keys.associateWith { bb.next() }
+
+               Maps2Result(ls, rs)
+            }
+
+            6 -> {
+               // both max size, no keys shared
+               val ls = buildMap(size.last, kk, aa, slippage = slippage)
+               val rs = buildMap(size.last, genK, bb, ls.keys, random, slippage = slippage)
+
+               Maps2Result(ls, rs)
+            }
+
+            else -> throw AssertionError("should never happen")
          }
-
-         1 -> {
-            // left side min size, right side max size. no shared keys
-            val ls = buildMap(sizeRange.first, kk, aa)
-            val rs = buildMap(sizeRange.last, genK, bb, ls.keys, random)
-
-            Maps2Result(ls, rs)
-         }
-
-         2 -> {
-            // left side max size, right side min size. no shared keys
-            val ls = buildMap(sizeRange.last, kk, aa)
-            val rs = buildMap(sizeRange.first, genK, bb, ls.keys, random)
-
-            Maps2Result(ls, rs)
-         }
-
-         3 -> {
-            // both maps max size, all keys shared
-            val ls = buildMap(sizeRange.last, kk, aa)
-            val rs = ls.keys.associateWith { bb.next() }
-
-            Maps2Result(ls, rs)
-         }
-
-         4 -> {
-            // mid size, all keys shared
-            val size = random.random.nextInt(sizeRange)
-            val ls = buildMap(size, kk, aa)
-            val rs = ls.keys.associateWith { bb.next() }
-
-            Maps2Result(ls, rs)
-         }
-
-         5 -> {
-            // min size, all keys shared
-            val ls = buildMap(sizeRange.first, kk, aa)
-            val rs = ls.keys.associateWith { bb.next() }
-
-            Maps2Result(ls, rs)
-         }
-
-         6 -> {
-            // both max size, no keys shared
-            val ls = buildMap(sizeRange.last, kk, aa)
-            val rs = buildMap(sizeRange.last, genK, bb, ls.keys, random)
-
-            Maps2Result(ls, rs)
-         }
-
-         else -> throw AssertionError("should never happen")
+      }.withShrinker { sample ->
+         lShrinker.shrink(sample.left).map { Maps2Result(it, sample.right) } +
+            rShrinker.shrink(sample.right).map { Maps2Result(sample.left, it) } +
+            lShrinker.shrink(sample.left).flatMap { ls -> rShrinker.shrink(sample.right).map { Maps2Result(ls, it) } }
+      }.withClassifier {
+         it.classify(size.first, size.last)
       }
-   }.withShrinker { sample ->
-      lsShrinker.shrink(sample.left).map { Maps2Result(it, sample.right) } +
-         rsShrinker.shrink(sample.right).map { Maps2Result(sample.left, it) } +
-         lsShrinker.shrink(sample.left).flatMap { ls -> rsShrinker.shrink(sample.right).map { Maps2Result(ls, it) } }
-   }.withClassifier {
-      it.classify(sizeRange.first, sizeRange.last)
-   }
       .build()
 }
 
@@ -132,7 +133,12 @@ private fun RandomSource.nextSizePair(sizeRange: IntRange): Pair<Int, Int> {
    }
 }
 
-private fun <A,B,C> buildIterators(random: RandomSource, a: Gen<A>, b: Gen<B>, c: Gen<C>): Triple<Iterator<A>, Iterator<B>, Iterator<C>> =
+private fun <A, B, C> buildIterators(
+   random: RandomSource,
+   a: Gen<A>,
+   b: Gen<B>,
+   c: Gen<C>
+): Triple<Iterator<A>, Iterator<B>, Iterator<C>> =
    Triple(
       a.generate(random).map { it.value }.iterator(),
       b.generate(random).map { it.value }.iterator(),
@@ -143,9 +149,10 @@ private fun <K, V> buildMap(
    withSize: Int,
    keys: Iterator<K>,
    values: Iterator<V>,
+   slippage: Int,
    map: Map<K, V> = emptyMap()
 ): Map<K, V> =
-   map.fillToSize(withSize) {
+   map.fillToSize(withSize, slippage) {
       keys.next() to values.next()
    }
 
@@ -155,24 +162,23 @@ private fun <K, V> buildMap(
    values: Iterator<V>,
    excludeKeys: Set<K>,
    random: RandomSource,
-   map: Map<K,V> = emptyMap()
+   slippage: Int,
+   map: Map<K, V> = emptyMap(),
 ): Map<K, V> {
    val validKeys = keys.generate(random).filter { !excludeKeys.contains(it.value) }.iterator()
-   return map.fillToSize(withSize) {
+   return map.fillToSize(withSize, slippage) {
       validKeys.next().value to values.next()
    }
 }
 
-private fun <K, V> Map<K, V>.fillToSize(expectedSize: Int, nextEntry: () -> Pair<K, V>): Map<K, V> =
+private fun <K, V> Map<K, V>.fillToSize(expectedSize: Int, slippage: Int, nextEntry: () -> Pair<K, V>): Map<K, V> =
    buildMap {
+      val maxMisses = expectedSize * slippage
+
       putAll(this@fillToSize)
 
-      // TODO: there is a chance this loops runs forever if we cannot fill the map to expected size
-      // when nextEntry() produces a limited number of unique keys
-      // therefor we are limiting the number of iterations here. maybe there is a more elegant solution?
-      val maxIterations = expectedSize * 2
       var iterations = 0
-      while (size < expectedSize && iterations < maxIterations) {
+      while (iterations < maxMisses && size < expectedSize) {
          iterations++
          val entry = nextEntry()
          val (k, v) = entry

@@ -163,7 +163,7 @@ class Maps2Test : FreeSpec({
          genK = (0..10).toList().exhaustive(),
          genA = Arb.boolean(),
          genB = Arb.boolean(),
-         sizeRange = 0..10
+         size = 0..10
       ).take(6).forEach {
          println(it)
       }
@@ -180,6 +180,6 @@ private fun theArb(withSizeRange: IntRange = 0..1000, withSharedKeysPercent: Int
       genK = Arb.int(),
       genA = Arb.unit(),
       genB = Arb.unit(),
-      sizeRange = withSizeRange,
-      sharedKeyPercentage = withSharedKeysPercent
+      size = withSizeRange,
+      shared = withSharedKeysPercent
    )
