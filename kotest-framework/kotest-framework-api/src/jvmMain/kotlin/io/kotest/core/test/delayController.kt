@@ -6,11 +6,13 @@ import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("this will fail")
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
 val TestScope.testCoroutineScheduler: TestCoroutineScheduler
    get() = coroutineContext.testCoroutineScheduler
 
+@Deprecated("this will fail")
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
 val CoroutineContext.testCoroutineScheduler: TestCoroutineScheduler
