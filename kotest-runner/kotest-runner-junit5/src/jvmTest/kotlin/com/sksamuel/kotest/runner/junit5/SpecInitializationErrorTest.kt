@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -23,6 +24,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         ProjectConfiguration(),
          emptyList(),
          emptyList(),
          emptyList(),
@@ -41,7 +43,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
+      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
       val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
       executor.execute(SpecRef.Reference(SpecWithFieldError::class))
 
@@ -55,6 +57,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         ProjectConfiguration(),
          emptyList(),
          emptyList(),
          emptyList(),
@@ -73,7 +76,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
+      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
       val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
       executor.execute(SpecRef.Reference(SpecWithInitError::class))
 

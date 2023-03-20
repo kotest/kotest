@@ -62,7 +62,6 @@ class FeatureSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
                "1",
                "1.1",
                "1.2",
@@ -112,7 +111,6 @@ class FeatureSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
                "1",
                "1.1",
                "1.2",

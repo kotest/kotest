@@ -14,6 +14,7 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.engine.discovery.PackageNameFilter
+import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.launcher.EngineFilter.excludeEngines
 import org.junit.platform.launcher.EngineFilter.includeEngines
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
@@ -186,6 +187,7 @@ class DiscoveryTest : FunSpec({
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName)
+      descriptor.children.map { (it.source.get() as ClassSource).javaClass } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java)
    }
 
    test("kotest should support multiple selected class names") {
@@ -200,6 +202,10 @@ class DiscoveryTest : FunSpec({
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
+      )
+      descriptor.children.map { (it.source.get() as ClassSource).javaClass } shouldBe listOf(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java,
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java,
       )
    }
 
