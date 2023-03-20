@@ -11,10 +11,10 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.framework.discovery.Discovery
+import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.mpp.Logger
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
-import org.junit.platform.engine.DiscoverySelector
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -102,27 +102,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
       if (!isKotest)
          return KotestEngineDescriptor(uniqueId, configuration, emptyList(), emptyList(), emptyList(), null)
 
-      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
-      val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
+      val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
-      // a method selector is passed by intellij to run just a single method inside a test file
-      // this happens for example, when trying to run a junit test alongside kotest tests,
-      // and kotest will then run all other tests.
-      // Some other engines run tests via uniqueId selectors
-      // therefore, the presence of a MethodSelector or a UniqueIdSelector means we must run no tests in KT.
-      // if we get a uniqueid with kotest as engine we throw because that should never happen
-      val allSelectors = request.getSelectorsByType(DiscoverySelector::class.java)
-      val containsUnsupported = allSelectors.any {
-         if (it is UniqueIdSelector)
-            if (it.uniqueId.engineId.get() == EngineId)
-               throw RuntimeException("Kotest does not allow running tests via uniqueId")
-            else true
-         else
-            it is MethodSelector
-      }
-      val descriptor = if (!containsUnsupported) {
+      val descriptor = if (shouldRunTests(discoveryRequest, request)) {
          val discovery = Discovery(emptyList())
-         val result = discovery.discover(request.toKotestDiscoveryRequest())
+         val result = discovery.discover(discoveryRequest)
+
          if (result.specs.isNotEmpty()) {
             request.configurationParameters.get("kotest.extensions").orElseGet { "" }
                .split(',')
@@ -131,6 +116,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
                .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
                .forEach { configuration.registry.add(it) }
          }
+
+         val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
+         val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
 
          KotestEngineDescriptor(
             uniqueId,
@@ -147,6 +135,14 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { Pair(null, "JUnit discovery completed [descriptor=$descriptor]") }
       return descriptor
    }
+
+   // a method selector is passed by intellij to run just a single method inside a test file
+   // this happens for example, when trying to run a junit test alongside kotest tests,
+   // and kotest will then run all other tests.
+   // therefore, no detected selectors and the presence of a MethodSelector or UniqueIdSelector means we must run no tests in KT.
+   private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest) =
+      discoveryRequest.selectors.isNotEmpty()
+         || (request.getSelectorsByType(MethodSelector::class.java).isEmpty() && request.getSelectorsByType(UniqueIdSelector::class.java).isEmpty())
 }
 
 class KotestEngineDescriptor(
