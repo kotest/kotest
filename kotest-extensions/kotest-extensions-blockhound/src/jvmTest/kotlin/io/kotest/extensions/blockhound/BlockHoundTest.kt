@@ -49,6 +49,12 @@ class BlockHoundSpecTest : FunSpec({
       }
    }
 
+   context("nested test") {
+      test("child test") {
+         shouldThrow<BlockingOperationError> { blockInNonBlockingContext() }
+      }
+   }
+
    /*
       test("configuration failure").config(extensions = listOf(BlockHound(BlockHoundMode.PRINT))) {
          // Cannot register a BlockHound extension twice (spec plus test case).
