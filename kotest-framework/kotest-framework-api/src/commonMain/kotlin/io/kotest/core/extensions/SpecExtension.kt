@@ -26,7 +26,7 @@ interface SpecExtension : Extension {
     *
     * @param process callback function required to continue spec processing
     */
-   @Deprecated("This function had ambigious specifications. Instead prefer intercept(spec: Spec, execute: suspend (Spec) -> Unit) which is guaranteed to run once per spec instance or use SpecRefExtension which runs once per spec class. This function was deprecated in 5.0")
+   @Deprecated("This function had ambiguous specifications. Instead prefer intercept(spec: Spec, execute: suspend (Spec) -> Unit) which is guaranteed to run once per spec instance or use SpecRefExtension which runs once per spec class. This function was deprecated in 5.0")
    suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
       process()
    }

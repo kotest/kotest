@@ -48,6 +48,8 @@ jobs:
                - watchosArm64TestKlibrary publishWatchosArm64PublicationToDeployRepository
                - watchosX86Test publishWatchosX86PublicationToDeployRepository
                - watchosX64Test publishWatchosX64PublicationToDeployRepository
+               - watchosSimulatorArm64Test publishWatchosSimulatorArm64PublicationToDeployRepository
+               - tvosSimulatorArm64Test publishTvosSimulatorArm64PublicationToDeployRepository
       steps:
          -  uses: kotest/kotest-action@master
             with:
