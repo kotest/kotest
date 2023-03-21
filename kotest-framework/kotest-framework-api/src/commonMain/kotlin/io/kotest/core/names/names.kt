@@ -4,17 +4,17 @@ package io.kotest.core.names
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
  *
  * A test case can sometimes have a prefix and/or suffix set by the spec style,
- * eg when using BehaviorSpec or WordSpec. Note that the prefix or suffix should include
+ * e.g. when using BehaviorSpec or WordSpec. Note that the prefix or suffix should include
  * any whitespace required.
  *
- * Test names can be prefixed with ! or f: to indicate bang or focus respectively.
+ * Test names can be prefixed with `!` or `f:` to indicate bang or focus respectively.
  *
  * @param testName the name exactly as the user entered it but with focus or bang stripped
- * @param focus if the test name was specified with f: prefix
- * @param bang if the test name was specified with ! prefix
+ * @param focus if the test name was specified with `f:` prefix
+ * @param bang if the test name was specified with `!` prefix
  * @param prefix if the test style includes a test name prefix, such as "should"
  * @param suffix if the test style includes a test name suffix, such as "when"
- * @param defaultAffixes if the test style recommends test affixes by default, such as BehaviorSpec
+ * @param defaultAffixes if the test style recommends test affixes by default, such as [BehaviorSpec][io.kotest.core.spec.style.BehaviorSpec]
  */
 data class TestName(
    val testName: String,

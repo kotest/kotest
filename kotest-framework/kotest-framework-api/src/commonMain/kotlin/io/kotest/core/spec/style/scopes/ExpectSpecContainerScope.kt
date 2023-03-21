@@ -14,16 +14,19 @@ typealias ExpectSpecContainerContext = ExpectSpecContainerScope
 /**
  * A context that allows tests to be registered using the syntax:
  *
+ * ```
  * context("some test")
  * xcontext("some disabled test")
+ * ```
  *
  * and
  *
+ * ```
  * expect("some test")
  * expect("some test").config(...)
  * xexpect("some test")
  * xexpect("some test").config(...)
- *
+ * ```
  */
 @KotestTestScope
 class ExpectSpecContainerScope(

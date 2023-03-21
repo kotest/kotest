@@ -34,17 +34,20 @@ import kotlin.coroutines.CoroutineContext
  *
  * So, given the following structure:
  *
- *  outerTest {
- *    innerTestA {
- *      // test
- *    }
- *    innerTestB {
- *      // test
- *    }
- *  }
+ * ```
+ * outerTest {
+ *   innerTestA {
+ *     // test
+ *   }
+ *   innerTestB {
+ *     // test
+ *   }
+ * }
+ * ```
  *
  * Three spec instances will be created. The execution process will be:
  *
+ * ```
  * spec1 = instantiate spec
  * spec1.outerTest
  * spec2 = instantiate spec
@@ -53,6 +56,7 @@ import kotlin.coroutines.CoroutineContext
  * spec3 = instantiate spec
  * spec3.outerTest
  * spec3.innerTestB
+ * ```
  */
 @ExperimentalKotest
 internal class InstancePerTestSpecRunner(
