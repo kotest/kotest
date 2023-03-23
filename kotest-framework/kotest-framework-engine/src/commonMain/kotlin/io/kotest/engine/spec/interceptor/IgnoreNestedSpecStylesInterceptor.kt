@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.Spec
@@ -18,10 +19,14 @@ import io.kotest.mpp.log
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
  */
+@KotestInternal
 internal class IgnoreNestedSpecStylesInterceptor(
    private val listener: TestEngineListener,
    registry: ExtensionRegistry,
 ) : SpecInterceptor {
+
+   // note: this must be a spec interceptor until js / native have the ability to poke into the class hierarchy
+   // using some equivalent of reflection
 
    private val extensions = SpecExtensions(registry)
 

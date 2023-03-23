@@ -1,13 +1,14 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.common.flatMap
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 
 /**
- * A [SpecRefInterceptor] that invokes the [specStarted] test engine listener callbacks.
+ * A [SpecRefInterceptor] that invokes the [TestEngineListener.specStarted] callbacks.
  */
 internal class SpecStartedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
