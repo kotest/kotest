@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.withContext
  */
 @ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
+@OptIn(KotestInternal::class)
 actual class TestCoroutineInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(TestCoroutineInterceptor::class)
