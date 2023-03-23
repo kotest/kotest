@@ -1,9 +1,10 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.timeInMillis
 import kotlin.time.Duration
 
