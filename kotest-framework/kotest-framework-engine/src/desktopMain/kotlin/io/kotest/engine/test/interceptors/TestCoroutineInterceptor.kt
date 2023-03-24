@@ -3,12 +3,10 @@ package io.kotest.engine.test.interceptors
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.coroutines.TestScopeContainer
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 
 @ExperimentalCoroutinesApi
 actual class TestCoroutineInterceptor : TestExecutionInterceptor {
@@ -23,9 +21,7 @@ actual class TestCoroutineInterceptor : TestExecutionInterceptor {
       var result: TestResult = TestResult.Ignored
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }
       runTest {
-         withContext(TestScopeContainer(this)) {
-            result = test(testCase, scope.withCoroutineContext(coroutineContext))
-         }
+         result = test(testCase, scope.withCoroutineContext(this.coroutineContext))
       }
       return result
    }
