@@ -68,7 +68,7 @@ fun Arb.Companion.numericFloat(
    min: Float = -Float.MAX_VALUE,
    max: Float = Float.MAX_VALUE
 ): Arb<Float> = arbitrary((numericEdgeCases.filter { it in min..max } + listOf(min, max)).distinct(), FloatShrinker) {
-   it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
+   Float.fromBits(it.random.nextInt(min.toInt(), max.toInt()))
 }
 
 @Deprecated("use numericFloat", ReplaceWith("numericFloat(from, to)"))

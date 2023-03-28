@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.sequences.shouldHaveAtLeastSize
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.float
@@ -10,6 +11,7 @@ import io.kotest.property.arbitrary.negativeFloat
 import io.kotest.property.arbitrary.numericFloat
 import io.kotest.property.arbitrary.positiveFloat
 import io.kotest.property.arbitrary.take
+import kotlin.math.log10
 
 class FloatTest : FunSpec({
    test("Numeric Float should generate negative values by default") {
@@ -52,5 +54,27 @@ class FloatTest : FunSpec({
          Float.MIN_VALUE,
          Float.MAX_VALUE,
       )
+   }
+
+   test("Positive high exponent float value distribution should be within 1%") {
+      val highFloatDistribution = Arb.numericFloat()
+         .take(1_000_000)
+         .filter{ it > 1e+34f }
+         .distinct()
+         .count()
+
+      val highFloatDistributionLog = log10(highFloatDistribution.toDouble()).toInt()
+      highFloatDistributionLog.shouldBe(4)
+   }
+
+   test("Negative low exponent float value distribution should be within 1%") {
+      val lowFloatDistribution = Arb.numericFloat()
+         .take(1_000_000)
+         .filter{ it < -1e+34f }
+         .distinct()
+         .count()
+
+      val lowFloatDistributionLog = log10(lowFloatDistribution.toDouble()).toInt()
+      lowFloatDistributionLog.shouldBe(4)
    }
 })
