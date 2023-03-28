@@ -56,7 +56,7 @@ class FloatTest : FunSpec({
       )
    }
 
-   test("Positive high exponent float value distribution should be within 1%") {
+   test("Positive high exponent float value distribution should have 4 exponents") {
       val highFloatDistribution = Arb.numericFloat()
          .take(1_000_000)
          .filter{ it > 1e+34f }
@@ -67,7 +67,7 @@ class FloatTest : FunSpec({
       highFloatDistributionLog.shouldBe(4)
    }
 
-   test("Negative low exponent float value distribution should be within 1%") {
+   test("Negative low exponent float value distribution should have 4 exponents") {
       val lowFloatDistribution = Arb.numericFloat()
          .take(1_000_000)
          .filter{ it < -1e+34f }
