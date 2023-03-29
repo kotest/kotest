@@ -50,12 +50,12 @@
       <!--                       enabledByDefault="true" level="WARNING"-->
       <!--                       implementationClass="io.kotest.plugin.intellij.inspections.NoZeroArgConstructorInspection"/>-->
 
-      <localInspection groupPath="Kotlin" language="JVM" shortName="ShouldBeInstanceOfInspection"
-                       bundle="KotestGadgetsBundle"
-                       key="kotest.should.be.instance.of"
-                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"
-                       enabledByDefault="true" level="WARNING"
-                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>
+<!--      <localInspection groupPath="Kotlin" language="JVM" shortName="ShouldBeInstanceOfInspection"-->
+<!--                       bundle="KotestGadgetsBundle"-->
+<!--                       key="kotest.should.be.instance.of"-->
+<!--                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"-->
+<!--                       enabledByDefault="true" level="WARNING"-->
+<!--                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>-->
 
       <toolWindow id="Kotest" anchor="left" icon="/icon13_greyscale.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
