@@ -6,7 +6,7 @@ import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass

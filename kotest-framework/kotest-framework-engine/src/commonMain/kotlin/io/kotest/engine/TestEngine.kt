@@ -10,7 +10,7 @@ import io.kotest.core.project.TestSuite
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.tags.runtimeTags
+import io.kotest.engine.tags.runtimeTagExpression
 import io.kotest.mpp.Logger
 
 data class EngineResult(val errors: List<Throwable>) {
@@ -68,7 +68,7 @@ class TestEngine(private val config: TestEngineConfig) {
          { context -> extension.intercept(context, next) }
       }
 
-      val tags = config.configuration.runtimeTags()
+      val tags = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
       return execute(EngineContext(suite, config.listener, tags, config.configuration))
