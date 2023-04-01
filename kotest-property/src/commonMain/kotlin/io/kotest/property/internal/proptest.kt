@@ -32,7 +32,8 @@ suspend fun <A> proptest(
          genA.generate(random, config.edgeConfig)
             .takeWhile { constraints.evaluate(context) }
             .forEach { a ->
-               val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
+               val contextualSeed = random.random.nextLong()
+               val shrinkfn = shrinkfn(a, property, config.shrinkingMode, contextualSeed)
                config.listeners.forEach { it.beforeTest() }
                test(
                   context,
@@ -40,7 +41,8 @@ suspend fun <A> proptest(
                   shrinkfn,
                   listOf(a.value),
                   listOf(genA.classifier),
-                  random.seed
+                  random.seed,
+                  contextualSeed
                ) {
                   context.property(a.value)
                }
@@ -56,7 +58,8 @@ suspend fun <A> proptest(
                { emptyList() },
                listOf(a),
                listOf(genA.classifier),
-               random.seed
+               random.seed,
+               random.random.nextLong()
             ) {
                context.property(a)
             }
@@ -97,7 +100,8 @@ suspend fun <A, B> proptest(
                { emptyList() },
                listOf(a, b),
                listOf(genA.classifier, genB.classifier),
-               random.seed
+               random.seed,
+               random.random.nextLong()
             ) {
                context.property(a, b)
             }
@@ -109,7 +113,8 @@ suspend fun <A, B> proptest(
          .zip(genB.generate(random, config.edgeConfig))
          .takeWhile { constraints.evaluate(context) }
          .forEach { (a, b) ->
-            val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -117,7 +122,8 @@ suspend fun <A, B> proptest(
                shrinkfn,
                listOf(a.value, b.value),
                listOf(genA.classifier, genB.classifier),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value)
             }
@@ -160,7 +166,8 @@ suspend fun <A, B, C> proptest(
                   { emptyList() },
                   listOf(a, b, c),
                   listOf(genA.classifier, genB.classifier, genC.classifier),
-                  random.seed
+                  random.seed,
+                  random.random.nextLong()
                ) {
                   context.property(a, b, c)
                }
@@ -175,7 +182,8 @@ suspend fun <A, B, C> proptest(
          .takeWhile { constraints.evaluate(context) }
          .forEach { (ab, c) ->
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -183,7 +191,8 @@ suspend fun <A, B, C> proptest(
                shrinkfn,
                listOf(a.value, b.value, c.value),
                listOf(genA.classifier, genB.classifier, genC.classifier),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value)
             }
@@ -224,7 +233,8 @@ suspend fun <A, B, C, D> proptest(
                   config.listeners.forEach { it.beforeTest() }
                   test(
                      context, config, { emptyList() }, listOf(a, b, c, d),
-                     listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier), random.seed
+                     listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier), random.seed,
+                     random.random.nextLong()
                   ) {
                      context.property(a, b, c, d)
                   }
@@ -243,13 +253,15 @@ suspend fun <A, B, C, D> proptest(
          .forEach { (abc, d) ->
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context, config, shrinkfn,
                listOf(a.value, b.value, c.value, d.value),
                listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value)
             }
@@ -302,7 +314,8 @@ suspend fun <A, B, C, D, E> proptest(
                            genD.classifier,
                            genE.classifier,
                         ),
-                        random.seed
+                        random.seed,
+                        random.random.nextLong()
                      ) {
                         context.property(a, b, c, d, e)
                      }
@@ -323,7 +336,8 @@ suspend fun <A, B, C, D, E> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -337,7 +351,8 @@ suspend fun <A, B, C, D, E> proptest(
                   genD.classifier,
                   genE.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value, e.value)
             }
@@ -393,7 +408,8 @@ suspend fun <A, B, C, D, E, F> proptest(
                               genE.classifier,
                               genF.classifier,
                            ),
-                           random.seed
+                           random.seed,
+                           random.random.nextLong()
                         ) {
                            context.property(a, b, c, d, e, f)
                         }
@@ -417,7 +433,8 @@ suspend fun <A, B, C, D, E, F> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -432,7 +449,8 @@ suspend fun <A, B, C, D, E, F> proptest(
                   genE.classifier,
                   genF.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value, e.value, f.value)
             }
@@ -491,7 +509,8 @@ suspend fun <A, B, C, D, E, F, G> proptest(
                                  genF.classifier,
                                  genG.classifier,
                               ),
-                              random.seed
+                              random.seed,
+                              random.random.nextLong()
                            ) {
                               context.property(a, b, c, d, e, f, g)
                            }
@@ -518,7 +537,8 @@ suspend fun <A, B, C, D, E, F, G> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -534,7 +554,8 @@ suspend fun <A, B, C, D, E, F, G> proptest(
                   genF.classifier,
                   genG.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value)
             }
@@ -596,7 +617,8 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
                                     genG.classifier,
                                     genH.classifier,
                                  ),
-                                 random.seed
+                                 random.seed,
+                                 random.random.nextLong()
                               ) {
                                  context.property(a, b, c, d, e, f, g, h)
                               }
@@ -626,7 +648,8 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -643,7 +666,8 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
                   genG.classifier,
                   genH.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value)
             }
@@ -708,7 +732,8 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
                                        genH.classifier,
                                        genI.classifier,
                                     ),
-                                    random.seed
+                                    random.seed,
+                                    random.random.nextLong()
                                  ) {
                                     context.property(a, b, c, d, e, f, g, h, i)
                                  }
@@ -741,7 +766,8 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -759,7 +785,8 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
                   genH.classifier,
                   genI.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value)
             }
@@ -827,7 +854,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
                                           genI.classifier,
                                           genJ.classifier,
                                        ),
-                                       random.seed
+                                       random.seed,
+                                       random.random.nextLong()
                                     ) {
                                        context.property(a, b, c, d, e, f, g, h, i, j)
                                     }
@@ -863,7 +891,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -882,7 +911,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
                   genI.classifier,
                   genJ.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -964,7 +994,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
                                              genJ.classifier,
                                              genK.classifier,
                                           ),
-                                          random.seed
+                                          random.seed,
+                                          random.random.nextLong()
                                        ) {
                                           context.property(a, b, c, d, e, f, g, h, i, j, k)
                                        }
@@ -1003,7 +1034,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1035,7 +1067,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
                   genJ.classifier,
                   genK.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -1121,7 +1154,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
                                                 genK.classifier,
                                                 genL.classifier,
                                              ),
-                                             random.seed
+                                             random.seed,
+                                             random.random.nextLong()
                                           ) {
                                              context.property(a, b, c, d, e, f, g, h, i, j, k, l)
                                           }
@@ -1163,7 +1197,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1197,7 +1232,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
                   genK.classifier,
                   genL.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -1287,7 +1323,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
                                                    genL.classifier,
                                                    genM.classifier,
                                                 ),
-                                                random.seed
+                                                random.seed,
+                                                random.random.nextLong()
                                              ) {
                                                 context.property(a, b, c, d, e, f, g, h, i, j, k, l, m)
                                              }
@@ -1332,7 +1369,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1368,7 +1406,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
                   genL.classifier,
                   genM.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -1462,7 +1501,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
                                                       genM.classifier,
                                                       genN.classifier,
                                                    ),
-                                                   random.seed
+                                                   random.seed,
+                                                   random.random.nextLong()
                                                 ) {
                                                    context.property(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
                                                 }
@@ -1510,7 +1550,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1548,7 +1589,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
                   genM.classifier,
                   genN.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -1646,7 +1688,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
                                                          genN.classifier,
                                                          genO.classifier,
                                                       ),
-                                                      random.seed
+                                                      random.seed,
+                                                      random.random.nextLong()
                                                    ) {
                                                       context.property(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
                                                    }
@@ -1697,7 +1740,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1737,7 +1781,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
                   genN.classifier,
                   genO.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -1839,7 +1884,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
                                                             genO.classifier,
                                                             genP.classifier,
                                                          ),
-                                                         random.seed
+                                                         random.seed,
+                                                         random.random.nextLong()
                                                       ) {
                                                          context.property(
                                                             a,
@@ -1910,7 +1956,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1952,7 +1999,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
                   genO.classifier,
                   genP.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -2058,7 +2106,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
                                                                genP.classifier,
                                                                genQ.classifier,
                                                             ),
-                                                            random.seed
+                                                            random.seed,
+                                                            random.random.nextLong()
                                                          ) {
                                                             context.property(
                                                                a,
@@ -2133,7 +2182,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2177,7 +2227,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
                   genP.classifier,
                   genQ.classifier
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -2306,7 +2357,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
                                                                   genQ.classifier,
                                                                   genR.classifier,
                                                                ),
-                                                               random.seed
+                                                               random.seed,
+                                                               random.random.nextLong()
                                                             ) {
                                                                context.property(
                                                                   a,
@@ -2385,7 +2437,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2431,7 +2484,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
                   genQ.classifier,
                   genR.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -2565,7 +2619,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
                                                                      genR.classifier,
                                                                      genS.classifier,
                                                                   ),
-                                                                  random.seed
+                                                                  random.seed,
+                                                                  random.random.nextLong()
                                                                ) {
                                                                   context.property(
                                                                      a,
@@ -2648,7 +2703,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2696,7 +2752,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
                   genR.classifier,
                   genS.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -2835,7 +2892,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
                                                                         genS.classifier,
                                                                         genT.classifier,
                                                                      ),
-                                                                     random.seed
+                                                                     random.seed,
+                                                                     random.random.nextLong()
                                                                   ) {
                                                                      context.property(
                                                                         a,
@@ -2922,7 +2980,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2972,7 +3031,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
                   genS.classifier,
                   genT.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -3116,7 +3176,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
                                                                            genT.classifier,
                                                                            genU.classifier,
                                                                         ),
-                                                                        random.seed
+                                                                        random.seed,
+                                                                        random.random.nextLong()
                                                                      ) {
                                                                         context.property(
                                                                            a,
@@ -3207,7 +3268,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3259,7 +3321,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
                   genT.classifier,
                   genU.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
@@ -3408,7 +3471,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
                                                                               genU.classifier,
                                                                               genV.classifier,
                                                                            ),
-                                                                           random.seed
+                                                                           random.seed,
+                                                                           random.random.nextLong()
                                                                         ) {
                                                                            context.property(
                                                                               a,
@@ -3503,7 +3567,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode)
+            val contextualSeed = random.random.nextLong()
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3557,7 +3622,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
                   genU.classifier,
                   genV.classifier,
                ),
-               random.seed
+               random.seed,
+               contextualSeed
             ) {
                context.property(
                   a.value,
