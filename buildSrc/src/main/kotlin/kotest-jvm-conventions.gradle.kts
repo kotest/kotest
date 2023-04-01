@@ -4,22 +4,11 @@ plugins {
    id("kotlin-conventions")
 }
 
-java {
-   sourceCompatibility = JavaVersion.VERSION_11
-   targetCompatibility = JavaVersion.VERSION_11
-}
-
 kotlin {
 
    targets {
       jvm {
          withJava()
-
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "11"
-            }
-         }
       }
    }
 
