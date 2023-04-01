@@ -29,6 +29,11 @@ dependencies {
    testImplementation(libs.mockk)
 }
 
+java {
+   sourceCompatibility = JavaVersion.VERSION_11
+   targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks.withType<Test>().configureEach {
    enabled = !project.hasProperty(Ci.JVM_ONLY)
 
