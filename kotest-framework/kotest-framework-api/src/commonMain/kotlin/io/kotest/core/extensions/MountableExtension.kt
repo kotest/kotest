@@ -10,6 +10,7 @@ import io.kotest.core.spec.Spec
  *
  * For example:
  *
+ * ```
  * class MyTest : FunSpec() {
  *  init {
  *   val kafka = install(EmbeddedKafka) {
@@ -17,9 +18,10 @@ import io.kotest.core.spec.Spec
  *   }
  *  }
  * }
+ * ```
  *
  * Here `kafka` is a materialized value that contains details of the host/port of the
- * started kafka instance and `EmbeddedKafka` is the extension itself.
+ * started Kafka instance and `EmbeddedKafka` is the extension itself.
  *
  */
 interface MountableExtension<CONFIG, MATERIALIZED> : Extension {
@@ -35,6 +37,7 @@ interface MountableExtension<CONFIG, MATERIALIZED> : Extension {
  *
  * For example:
  *
+ * ```
  * class MyTest : FunSpec() {
  *  init {
  *   val kafka = install(EmbeddedKafka) {
@@ -42,9 +45,10 @@ interface MountableExtension<CONFIG, MATERIALIZED> : Extension {
  *   }
  *  }
  * }
+ * ```
  *
  * Here `kafka` is a materialized value that contains details of the host/port of the
- * started kafka instance and `EmbeddedKafka` is the extension itself.
+ * started Kafka instance and `EmbeddedKafka` is the extension itself.
  *
  */
 interface LazyMountableExtension<CONFIG, MATERIALIZED> : Extension {

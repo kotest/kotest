@@ -75,13 +75,18 @@ class JvmSpecExecutorDelegate(
 /**
  * Returns the concurrent tests count to use for tests in this spec.
  *
- * If threads is specified on the spec, then that will implicitly raise the concurrentTests
- * count to the same value if concurrentTests is not specified.
+ * If threads is specified on the spec, then that will implicitly raise the
+ * [concurrentTests][io.kotest.core.config.AbstractProjectConfig.concurrentTests]
+ * count to the same value if
+ * [concurrentTests][io.kotest.core.config.AbstractProjectConfig.concurrentTests]
+ * is not specified.
  *
- * Note that if this spec is annotated with @Isolate then the value
- * will be 1 regardless of the config setting.
+ * Note that if this spec is annotated with [@Isolate][io.kotest.core.annotation.Isolate] then
+ * the value will be 1 regardless of the config setting.
  *
+ * ```
  * spec.concurrency ?: configuration.concurrentTests
+ * ```
  */
 @OptIn(ExperimentalKotest::class)
 internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {

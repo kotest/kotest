@@ -39,26 +39,26 @@ internal class InstancePerLeafSpecRunner(
    private val extensions = SpecExtensions(configuration.registry)
    private val results = mutableMapOf<TestCase, TestResult>()
 
-   // keeps track of tests we've already discovered
+   /** keeps track of tests we've already discovered */
    private val seen = mutableSetOf<Descriptor>()
 
-   // keeps track of tests we've already notified the listener about
+   /** keeps track of tests we've already notified the listener about */
    private val ignored = mutableSetOf<Descriptor>()
    private val started = mutableSetOf<Descriptor>()
 
-   // we keep a count to break ties (first discovered)
+   /** we keep a count to break ties (first discovered) */
    data class Enqueued(val testCase: TestCase, val count: Int)
 
    private val counter = AtomicInteger(0)
 
-   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
+   /** the queue contains tests discovered to run next. We always run the tests with the "furthest" path first. */
    private val queue = PriorityQueue(Comparator<Enqueued> { o1, o2 ->
       val o1s = o1.testCase.descriptor.depth()
       val o2s = o2.testCase.descriptor.depth()
       if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
    })
 
-   // enqueues a test case that will execute in it's own spec instance
+   /** enqueues a test case that will execute in its own spec instance */
    private fun enqueue(testCase: TestCase) {
       queue.add(Enqueued(testCase, counter.incrementAndGet()))
    }

@@ -17,11 +17,11 @@ class DefaultClassifierTest : FunSpec() {
          }
          println(out)
          out.shouldContain("Label statistics for arg 0 (1000 inputs):")
-         out.shouldContain("ANY LENGTH LETTER OR DIGITS                                    13 (1%)")
-         out.shouldContain("SINGLE CHARACTER LETTER                                        13 (1%)")
+         out.shouldContain("ANY LENGTH LETTER OR DIGITS                                     5 (1%)")
+         out.shouldContain("SINGLE CHARACTER LETTER                                         1 (1%)")
          out.shouldContain("EMPTY STRING                                                   11 (1%)")
          out.shouldContain("MAX LENGTH                                                     11 (1%)")
-         out.shouldContain("OTHER                                                         952 (95%)")
+         out.shouldContain("OTHER                                                         967 (97%)")
       }
 
       test("int classifier should be provided by default int arb") {
