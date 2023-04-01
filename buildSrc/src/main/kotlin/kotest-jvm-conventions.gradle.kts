@@ -6,8 +6,6 @@ plugins {
 
 kotlin {
 
-   jvmToolchain(11)
-
    targets {
       jvm {
          withJava()
