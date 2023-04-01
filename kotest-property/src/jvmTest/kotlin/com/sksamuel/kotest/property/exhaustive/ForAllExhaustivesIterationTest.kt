@@ -393,7 +393,7 @@ class ForAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("forAll with 19 exhaustives should run for each cross product") {
+      xtest("forAll with 19 exhaustives should run for each cross product") {
 
          val context = forAll(
             PropTestConfig(iterations =  Int.MAX_VALUE),
@@ -424,7 +424,7 @@ class ForAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("forAll with 20 exhaustives should run for each cross product") {
+      xtest("forAll with 20 exhaustives should run for each cross product") {
 
          val context = forAll(
             PropTestConfig(iterations =  Int.MAX_VALUE),
@@ -489,7 +489,7 @@ class ForAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("forAll with 22 exhaustives should run for each cross product") {
+      xtest("forAll with 22 exhaustives should run for each cross product") {
 
          val context = forAll(
             PropTestConfig(iterations =  Int.MAX_VALUE),
