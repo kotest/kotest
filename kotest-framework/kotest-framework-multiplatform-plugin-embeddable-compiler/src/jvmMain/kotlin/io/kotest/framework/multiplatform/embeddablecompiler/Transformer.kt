@@ -19,10 +19,13 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
-import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.ClassId
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class Transformer(protected val messageCollector: MessageCollector, protected val pluginContext: IrPluginContext) : IrElementTransformerVoidWithContext() {
+abstract class Transformer(
+   private val messageCollector: MessageCollector,
+   protected val pluginContext: IrPluginContext
+) : IrElementTransformerVoidWithContext() {
    private val specs = CopyOnWriteArrayList<IrClass>()
    private var configs = CopyOnWriteArrayList<IrClass>()
 
@@ -35,7 +38,8 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
    override fun visitFileNew(declaration: IrFile): IrFile {
       super.visitFileNew(declaration)
       val specs = declaration.specs()
-      messageCollector.toLogger().log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
+      messageCollector.toLogger()
+         .log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
       this.specs.addAll(specs)
       return declaration
    }
@@ -64,7 +68,11 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
       return fragment
    }
 
-   abstract fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration
+   abstract fun generateLauncher(
+      specs: Iterable<IrClass>,
+      configs: Iterable<IrClass>,
+      declarationParent: IrDeclarationParent
+   ): IrDeclaration
 
    protected fun IrBuilderWithScope.callLauncher(
       launchFunction: IrSimpleFunctionSymbol,
@@ -96,18 +104,18 @@ abstract class Transformer(protected val messageCollector: MessageCollector, pro
    }
 
    protected val launcherClass by lazy {
-      pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
+      pluginContext.referenceClass(ClassId.fromString(EntryPoint.TestEngineClassName))
          ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
    }
 
    protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
 
-   protected val withSpecsFn by lazy {
+   private val withSpecsFn by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
          ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
    }
 
-   protected val withConfigFn by lazy {
+   private val withConfigFn by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
          ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
    }
