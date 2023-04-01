@@ -37,4 +37,4 @@ maintained and hosted by third parties.
 | [Kotless](https://github.com/LeoColman/kotest-kotless) | Utilties for kotless and kotest |
 | [LogCapture](https://github.com/jsalinaspolo/logcapture) | LogCapture is a testing library for asserting logging messages |
 | [KotlinFixture](https://github.com/appmattus/kotlinfixture/blob/main/fixture-kotest/README.adoc) | generate well-defined, but essentially random, input |
-| [Fluentlenium](https://fluentlenium.com/docs/test-runners/#kotest) | FluentLenium integration with Kotest |
+| [Fluentlenium](https://fluentlenium.io/docs/test-runners/#kotest) | FluentLenium integration with Kotest |

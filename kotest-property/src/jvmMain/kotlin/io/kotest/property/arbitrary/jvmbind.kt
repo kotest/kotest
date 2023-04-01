@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
+import io.kotest.property.resolution.GlobalArbResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
@@ -108,5 +109,6 @@ private fun arbForParameter(providedArbs: Map<KClass<*>, Arb<*>>, className: Str
 
 internal fun Arb.Companion.forType(providedArbs: Map<KClass<*>, Arb<*>>, type: KType): Arb<*>? {
    return (type.classifier as? KClass<*>)?.let { providedArbs[it] ?: defaultForClass(it) }
+      ?: GlobalArbResolver.resolve(type)
       ?: targetDefaultForType(providedArbs, type)
 }

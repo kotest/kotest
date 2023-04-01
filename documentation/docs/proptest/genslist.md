@@ -119,6 +119,8 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb.datetime(ranges)` | Generates random date times with the year between the given range |  | ✓ |  |
 | `Arb.localDateTime(ranges)` | Generates random LocalDateTime's with the year between the given range | ✓ |  |  |
 | `Arb.localDate(ranges)` | Generates random LocalDate's with the year between the given range | ✓ |  |  |
+| **Durations** |
+| `Arb.duration(ranges)` | Generates random durations in the given range. | ✓ | ✓ | ✓ |
 | **Kotlinx DateTime** | Requires `io.kotest.extensions:kotest-property-datetime` module |
 | `Arb.date(yearRange)` | Generates `LocalDate`s with the year between the given range and other fields randomly. | ✓ | ✓ | ✓ |
 | `Arb.datetime(yearRange, hourRange, minuteRange, secondRage)` | Generates `LocalDateTime`s with all fields in the given ranges | ✓ | ✓ | ✓ |
