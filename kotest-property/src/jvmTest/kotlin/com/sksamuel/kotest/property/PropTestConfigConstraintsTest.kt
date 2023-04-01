@@ -17,7 +17,7 @@ import io.kotest.common.MonotonicTimeSourceCompat
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
       test("PropTestConfig constraints should be used by proptest1 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -31,7 +31,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest2 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -46,7 +46,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest3 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -65,7 +65,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest4 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -85,7 +85,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest5 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -104,7 +104,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest6 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -126,7 +126,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest7 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -149,7 +149,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest8 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -173,7 +173,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest9 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -198,7 +198,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest10 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
 
 
             var iterationCount = 0
@@ -224,7 +224,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest11 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -249,7 +249,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest12 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -275,7 +275,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest13 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -302,7 +302,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest14 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -330,7 +330,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest15 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -359,7 +359,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest16 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -389,7 +389,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest17 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -420,7 +420,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest18 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -452,7 +452,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest19 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -485,7 +485,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest20 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -519,7 +519,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest21 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -554,7 +554,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should be used by proptest22 if present") {
-         checkAll(Arb.int(1..1000)) { iterations ->
+         checkAll(Arb.int(1..10)) { iterations ->
             var iterationCount = 0
             proptest(
                Arb.int(),

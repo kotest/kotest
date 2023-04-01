@@ -16,6 +16,7 @@ import io.kotest.property.arbitrary.hebrew
 import io.kotest.property.arbitrary.hiragana
 import io.kotest.property.arbitrary.katakana
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.printableAscii
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
@@ -56,6 +57,14 @@ class StringArbTest : FunSpec() {
 
       test("all ascii strings generated should be valid code codepoints") {
          checkAll(Arb.string(10..20, Codepoint.ascii())) { a ->
+            a.codepoints().forEach {
+               Character.isValidCodePoint(it)
+            }
+         }
+      }
+
+      test("all printable ascii strings generated should be valid code codepoints") {
+         checkAll(Arb.string(10..20, Codepoint.printableAscii())) { a ->
             a.codepoints().forEach {
                Character.isValidCodePoint(it)
             }
