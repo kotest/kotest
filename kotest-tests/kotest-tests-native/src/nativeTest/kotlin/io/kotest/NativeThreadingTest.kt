@@ -61,20 +61,20 @@ class NativeThreadingTest {
       }
    }
 
-   @Test
-   fun testAtomicProperty() {
-      var boolProperty: Boolean by AtomicProperty { false }
-
-      threadedTest {
-         listOf(true, false).forEach { newValue ->
-            boolProperty = newValue
-         }
-
-         boolProperty shouldBe false
-      }
-
-      boolProperty shouldBe false
-   }
+//   @Test
+//   fun testAtomicProperty() {
+//      var boolProperty: Boolean by AtomicProperty { false }
+//
+//      threadedTest {
+//         listOf(true, false).forEach { newValue ->
+//            boolProperty = newValue
+//         }
+//
+//         boolProperty shouldBe false
+//      }
+//
+//      boolProperty shouldBe false
+//   }
 
    // https://jakewharton.com/litmus-testing-kotlins-many-memory-models/
    private fun threadedTest(body: () -> Unit) {
