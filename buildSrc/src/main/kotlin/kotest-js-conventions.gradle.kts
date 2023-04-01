@@ -5,7 +5,7 @@ plugins {
 kotlin {
    targets {
       if (!project.hasProperty(Ci.JVM_ONLY)) {
-         js(BOTH) {
+         js {
             browser()
             nodejs()
          }
