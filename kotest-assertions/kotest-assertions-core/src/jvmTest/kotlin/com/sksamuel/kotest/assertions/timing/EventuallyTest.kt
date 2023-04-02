@@ -308,7 +308,7 @@ class EventuallyTest : WordSpec() {
          }
 
          "call the listener when an exception is thrown in the producer function" {
-            var state: EventuallyState<Unit>? = null
+            var state: EventuallyState<Int>? = null
 
             shouldThrow<Throwable> {
                eventually(retries = 1, listener = {
