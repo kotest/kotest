@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.common.flatMap
 import io.kotest.core.annotation.EnabledIf
@@ -9,6 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 import io.kotest.mpp.newInstanceNoArgConstructor
 
@@ -18,7 +19,7 @@ import io.kotest.mpp.newInstanceNoArgConstructor
  *
  * Note: annotations are only available on the JVM.
  */
-internal class EnabledIfSpecInterceptor(
+internal class EnabledIfInterceptor(
    private val listener: TestEngineListener,
    registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
