@@ -6,6 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.equality.beEqualToIgnoringFields
 import io.kotest.matchers.should
 import kotlin.reflect.KProperty
+import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
 
 /**
  * Similar to [shouldContainAll] but supports ignoring one or more fields in comparison.
@@ -71,8 +72,8 @@ fun <T : Any> containAllIgnoringFields(
 
       return MatcherResult(
          missingItems.isEmpty(),
-         { "Collection should contain equals of $missingItems ignoring $fieldsString" },
-         { "Collection should not contain equals of $missingItems ignoring $fieldsString" }
+         { "Collection should contain equals of ${missingItems.take(printSize.value)} ignoring $fieldsString" },
+         { "Collection should not contain equals of ${missingItems.take(printSize.value)} ignoring $fieldsString" }
       )
    }
 }
