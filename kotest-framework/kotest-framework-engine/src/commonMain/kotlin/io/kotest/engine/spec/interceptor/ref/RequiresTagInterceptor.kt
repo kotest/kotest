@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.common.flatMap
 import io.kotest.core.NamedTag
@@ -12,16 +12,17 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
-import io.kotest.engine.tags.runtimeTags
+import io.kotest.engine.tags.runtimeTagExpression
 import io.kotest.mpp.annotation
 
 /**
  * A [SpecFilter] which will ignore specs if they are annotated with @[RequiresTag]
  * and those tags are not present in the runtime tags.
  */
-internal class RequiresTagSpecInterceptor(
+internal class RequiresTagInterceptor(
    private val listener: TestEngineListener,
    private val configuration: ProjectConfiguration,
    private val registry: ExtensionRegistry,
@@ -35,7 +36,7 @@ internal class RequiresTagSpecInterceptor(
          null -> fn(ref)
          else -> {
             val requiredTags = annotation.wrapper.map { NamedTag(it) }.toSet()
-            val expr = configuration.runtimeTags().parse()
+            val expr = configuration.runtimeTagExpression().parse()
             if (requiredTags.isEmpty() || expr.isActive(requiredTags)) {
                fn(ref)
             } else {
