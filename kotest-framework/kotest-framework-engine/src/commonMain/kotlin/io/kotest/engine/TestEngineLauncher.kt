@@ -166,6 +166,10 @@ class TestEngineLauncher(
       )
    }
 
+   fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
+   fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
+   fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
+
    fun withPlatform(platform: Platform): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
