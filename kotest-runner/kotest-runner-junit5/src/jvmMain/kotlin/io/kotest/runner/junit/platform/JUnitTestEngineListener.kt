@@ -146,7 +146,7 @@ class JUnitTestEngineListener(
          }
          else -> {
             val descriptor = getSpecDescriptor(kclass)
-            val result = when (t) {
+            val r = when (t) {
                null -> TestExecutionResult.successful()
                else -> {
                   addPlaceholderTest(descriptor, t, kclass)
@@ -155,7 +155,7 @@ class JUnitTestEngineListener(
             }
 
             logger.log { Pair(kclass.bestName(), "executionFinished: $descriptor") }
-            listener.executionFinished(descriptor, result)
+            listener.executionFinished(descriptor, r)
          }
       }
       reset()
@@ -309,7 +309,7 @@ class JUnitTestEngineListener(
       val c = children[testCase.descriptor]
       val t = when {
          type != null -> type
-         c == null || c.isEmpty() -> TestDescriptor.Type.TEST
+         c.isNullOrEmpty() -> TestDescriptor.Type.TEST
          else -> TestDescriptor.Type.CONTAINER
       }
 
