@@ -8,8 +8,6 @@ import io.kotest.property.Shrinker
  * drawn from the given pair generating arb. The size of each
  * generated map is a random value between the specified min and max bounds.
  *
- * There are no edge cases.
- *
  * This arbitrary uses a [Shrinker] which will reduce the size of a failing map by
  * removing elements from the failed case until it is empty.
  *
@@ -22,13 +20,15 @@ import io.kotest.property.Shrinker
  *        The slippage factor determines how many times we continue after retrieving a duplicate key.
  *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
  *        If this value is not specified, then the default slippage value of 10 will be used.
+ * @param includeEmpty include empty map as edgecase or not
  */
 fun <K, V> Arb.Companion.map(
    arb: Arb<Pair<K, V>>,
    minSize: Int = 1,
    maxSize: Int = 100,
-   slippage: Int = 10
-): Arb<Map<K, V>> = arbitrary(MapShrinker(minSize)) { random ->
+   slippage: Int = 10,
+   includeEmpty: Boolean = true
+): Arb<Map<K, V>> = arbitrary(mapEdgeCases(includeEmpty), MapShrinker(minSize)) { random ->
    val targetSize = random.random.nextInt(minSize, maxSize)
    val maxMisses = targetSize * slippage
    val map = mutableMapOf<K, V>()
@@ -46,6 +46,9 @@ fun <K, V> Arb.Companion.map(
 
    map
 }
+
+private fun <K,V> mapEdgeCases(includeEmpty: Boolean): List<Map<K,V>> =
+   if (includeEmpty) listOf(emptyMap()) else emptyList()
 
 /**
  * Returns an [Arb] where each generated value is a map, with the entries of the map
@@ -67,18 +70,20 @@ fun <K, V> Arb.Companion.map(
  *        The slippage factor determines how many times we continue after retrieving a duplicate key.
  *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
  *        If this value is not specified, then the default slippage value of 10 will be used.
+ * @param includeEmpty include empty map as edgecase or not
  */
 fun <K, V> Arb.Companion.map(
    keyArb: Arb<K>,
    valueArb: Arb<V>,
    minSize: Int = 1,
    maxSize: Int = 100,
-   slippage: Int = 10
+   slippage: Int = 10,
+   includeEmpty: Boolean = true
 ): Arb<Map<K, V>> {
    require(minSize >= 0) { "minSize must be positive" }
    require(maxSize >= 0) { "maxSize must be positive" }
 
-   return arbitrary(MapShrinker(minSize)) { random ->
+   return arbitrary(mapEdgeCases(includeEmpty), MapShrinker(minSize)) { random ->
       val targetSize = random.random.nextInt(minSize, maxSize)
       val maxMisses = targetSize * slippage
       val map = mutableMapOf<K, V>()
