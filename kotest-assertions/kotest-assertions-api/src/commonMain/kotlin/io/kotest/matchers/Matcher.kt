@@ -18,7 +18,7 @@ interface Matcher<in T> {
 
    fun test(value: T): MatcherResult
 
-   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(f(it)) }
+   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { test(f(it)) }
 
    fun invert(): Matcher<T> = Matcher {
       with(test(it)) {
@@ -29,7 +29,7 @@ interface Matcher<in T> {
    fun <T> Matcher<T>.invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
 
    @Deprecated("Use contramap. Deprecated in 5.3", ReplaceWith("contramap(fn)"))
-   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(fn(it)) }
+   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { test(fn(it)) }
 
    companion object {
 
