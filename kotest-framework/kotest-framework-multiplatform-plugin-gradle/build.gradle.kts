@@ -78,17 +78,9 @@ tasks.withType<Test>().configureEach {
    }
 }
 
-
-//pluginBundle {
-//   website = "https://kotest.io"
-//   vcsUrl = "https://github.com/kotest"
-//   tags = listOf("kotest", "kotlin", "testing", "integrationTesting", "javascript")
-//}
-
-
 gradlePlugin {
-//   website.set("https://kotest.io")
-//   vcsUrl.set("https://github.com/kotest")
+   website.set("https://kotest.io")
+   vcsUrl.set("https://github.com/kotest")
    plugins {
       create("KotestMultiplatformCompilerGradlePlugin") {
          id = "io.kotest.multiplatform"
