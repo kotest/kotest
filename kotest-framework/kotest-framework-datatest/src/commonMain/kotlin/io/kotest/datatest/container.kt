@@ -9,7 +9,6 @@ import kotlin.jvm.JvmName
 
 /**
  * Registers tests inside the given test context for each element.
- *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 suspend fun <T> ContainerScope.withData(
@@ -22,7 +21,6 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
 suspend fun <T> ContainerScope.withData(
@@ -32,7 +30,6 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
 suspend fun <T> ContainerScope.withData(
@@ -44,7 +41,6 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
  * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
@@ -55,8 +51,7 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element.
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
@@ -67,9 +62,8 @@ suspend fun <T> ContainerScope.withData(
 ) = withData(nameFn, listOf(first, second) + rest, test)
 
 /**
- * Registers tests inside the given test context for each element of [ts].
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ * Registers tests inside the given [ContainerScope] for each element of [ts].
+ * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
