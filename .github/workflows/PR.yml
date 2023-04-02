@@ -20,7 +20,7 @@ jobs:
          matrix:
             target:
                - jvmTest
-               - jsIrTest
+               - jsTest
                - linuxX64Test
                - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
       steps:
