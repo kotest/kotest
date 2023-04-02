@@ -7,6 +7,7 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
+import io.kotest.property.RandomSource
 import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
@@ -26,13 +27,14 @@ suspend fun <A> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    when (genA) {
       is Arb -> {
          genA.generate(random, config.edgeConfig)
             .takeWhile { constraints.evaluate(context) }
             .forEach { a ->
-               val contextualSeed = random.random.nextLong()
+               val contextualSeed = contextRandom.random.nextLong()
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode, contextualSeed)
                config.listeners.forEach { it.beforeTest() }
                test(
@@ -59,7 +61,7 @@ suspend fun <A> proptest(
                listOf(a),
                listOf(genA.classifier),
                random.seed,
-               random.random.nextLong()
+               contextRandom.random.nextLong()
             ) {
                context.property(a)
             }
@@ -89,6 +91,7 @@ suspend fun <A, B> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive) {
       genA.values.forEach { a ->
@@ -101,7 +104,7 @@ suspend fun <A, B> proptest(
                listOf(a, b),
                listOf(genA.classifier, genB.classifier),
                random.seed,
-               random.random.nextLong()
+               contextRandom.random.nextLong()
             ) {
                context.property(a, b)
             }
@@ -113,7 +116,7 @@ suspend fun <A, B> proptest(
          .zip(genB.generate(random, config.edgeConfig))
          .takeWhile { constraints.evaluate(context) }
          .forEach { (a, b) ->
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -154,6 +157,7 @@ suspend fun <A, B, C> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
       genA.values.forEach { a ->
@@ -167,7 +171,7 @@ suspend fun <A, B, C> proptest(
                   listOf(a, b, c),
                   listOf(genA.classifier, genB.classifier, genC.classifier),
                   random.seed,
-                  random.random.nextLong()
+                  contextRandom.random.nextLong()
                ) {
                   context.property(a, b, c)
                }
@@ -182,7 +186,7 @@ suspend fun <A, B, C> proptest(
          .takeWhile { constraints.evaluate(context) }
          .forEach { (ab, c) ->
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -224,6 +228,7 @@ suspend fun <A, B, C, D> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
       genA.values.forEach { a ->
@@ -234,7 +239,7 @@ suspend fun <A, B, C, D> proptest(
                   test(
                      context, config, { emptyList() }, listOf(a, b, c, d),
                      listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier), random.seed,
-                     random.random.nextLong()
+                     contextRandom.random.nextLong()
                   ) {
                      context.property(a, b, c, d)
                   }
@@ -253,7 +258,7 @@ suspend fun <A, B, C, D> proptest(
          .forEach { (abc, d) ->
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -294,6 +299,7 @@ suspend fun <A, B, C, D, E> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
       genA.values.forEach { a ->
@@ -315,7 +321,7 @@ suspend fun <A, B, C, D, E> proptest(
                            genE.classifier,
                         ),
                         random.seed,
-                        random.random.nextLong()
+                        contextRandom.random.nextLong()
                      ) {
                         context.property(a, b, c, d, e)
                      }
@@ -336,7 +342,7 @@ suspend fun <A, B, C, D, E> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -386,6 +392,7 @@ suspend fun <A, B, C, D, E, F> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive) {
       genA.values.forEach { a ->
@@ -409,7 +416,7 @@ suspend fun <A, B, C, D, E, F> proptest(
                               genF.classifier,
                            ),
                            random.seed,
-                           random.random.nextLong()
+                           contextRandom.random.nextLong()
                         ) {
                            context.property(a, b, c, d, e, f)
                         }
@@ -433,7 +440,7 @@ suspend fun <A, B, C, D, E, F> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -485,6 +492,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive) {
       genA.values.forEach { a ->
@@ -510,7 +518,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
                                  genG.classifier,
                               ),
                               random.seed,
-                              random.random.nextLong()
+                              contextRandom.random.nextLong()
                            ) {
                               context.property(a, b, c, d, e, f, g)
                            }
@@ -537,7 +545,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -591,6 +599,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive) {
       genA.values.forEach { a ->
@@ -618,7 +627,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
                                     genH.classifier,
                                  ),
                                  random.seed,
-                                 random.random.nextLong()
+                                 contextRandom.random.nextLong()
                               ) {
                                  context.property(a, b, c, d, e, f, g, h)
                               }
@@ -648,7 +657,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -704,6 +713,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive) {
       genA.values.forEach { a ->
@@ -733,7 +743,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
                                        genI.classifier,
                                     ),
                                     random.seed,
-                                    random.random.nextLong()
+                                    contextRandom.random.nextLong()
                                  ) {
                                     context.property(a, b, c, d, e, f, g, h, i)
                                  }
@@ -766,7 +776,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -824,6 +834,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive) {
       genA.values.forEach { a ->
@@ -855,7 +866,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
                                           genJ.classifier,
                                        ),
                                        random.seed,
-                                       random.random.nextLong()
+                                       contextRandom.random.nextLong()
                                     ) {
                                        context.property(a, b, c, d, e, f, g, h, i, j)
                                     }
@@ -891,7 +902,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -962,6 +973,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive) {
       genA.values.forEach { a ->
@@ -995,7 +1007,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
                                              genK.classifier,
                                           ),
                                           random.seed,
-                                          random.random.nextLong()
+                                          contextRandom.random.nextLong()
                                        ) {
                                           context.property(a, b, c, d, e, f, g, h, i, j, k)
                                        }
@@ -1034,7 +1046,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -1120,6 +1132,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive) {
       genA.values.forEach { a ->
@@ -1155,7 +1168,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
                                                 genL.classifier,
                                              ),
                                              random.seed,
-                                             random.random.nextLong()
+                                             contextRandom.random.nextLong()
                                           ) {
                                              context.property(a, b, c, d, e, f, g, h, i, j, k, l)
                                           }
@@ -1197,7 +1210,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -1287,6 +1300,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive) {
       genA.values.forEach { a ->
@@ -1324,7 +1338,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
                                                    genM.classifier,
                                                 ),
                                                 random.seed,
-                                                random.random.nextLong()
+                                                contextRandom.random.nextLong()
                                              ) {
                                                 context.property(a, b, c, d, e, f, g, h, i, j, k, l, m)
                                              }
@@ -1369,7 +1383,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -1463,6 +1477,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive) {
       genA.values.forEach { a ->
@@ -1502,7 +1517,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
                                                       genN.classifier,
                                                    ),
                                                    random.seed,
-                                                   random.random.nextLong()
+                                                   contextRandom.random.nextLong()
                                                 ) {
                                                    context.property(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
                                                 }
@@ -1550,7 +1565,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -1648,6 +1663,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive) {
       genA.values.forEach { a ->
@@ -1689,7 +1705,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
                                                          genO.classifier,
                                                       ),
                                                       random.seed,
-                                                      random.random.nextLong()
+                                                      contextRandom.random.nextLong()
                                                    ) {
                                                       context.property(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
                                                    }
@@ -1740,7 +1756,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -1842,6 +1858,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive) {
       genA.values.forEach { a ->
@@ -1885,7 +1902,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
                                                             genP.classifier,
                                                          ),
                                                          random.seed,
-                                                         random.random.nextLong()
+                                                         contextRandom.random.nextLong()
                                                       ) {
                                                          context.property(
                                                             a,
@@ -1956,7 +1973,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -2062,6 +2079,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive) {
       genA.values.forEach { a ->
@@ -2107,7 +2125,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
                                                                genQ.classifier,
                                                             ),
                                                             random.seed,
-                                                            random.random.nextLong()
+                                                            contextRandom.random.nextLong()
                                                          ) {
                                                             context.property(
                                                                a,
@@ -2182,7 +2200,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -2292,6 +2310,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive && genR is Exhaustive) {
       genA.values.forEach { a ->
@@ -2358,7 +2377,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
                                                                   genR.classifier,
                                                                ),
                                                                random.seed,
-                                                               random.random.nextLong()
+                                                               contextRandom.random.nextLong()
                                                             ) {
                                                                context.property(
                                                                   a,
@@ -2437,7 +2456,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -2551,6 +2570,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive && genR is Exhaustive && genS is Exhaustive) {
       genA.values.forEach { a ->
@@ -2620,7 +2640,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
                                                                      genS.classifier,
                                                                   ),
                                                                   random.seed,
-                                                                  random.random.nextLong()
+                                                                  contextRandom.random.nextLong()
                                                                ) {
                                                                   context.property(
                                                                      a,
@@ -2703,7 +2723,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -2821,6 +2841,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive && genR is Exhaustive && genS is Exhaustive && genT is Exhaustive) {
       genA.values.forEach { a ->
@@ -2893,7 +2914,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
                                                                         genT.classifier,
                                                                      ),
                                                                      random.seed,
-                                                                     random.random.nextLong()
+                                                                     contextRandom.random.nextLong()
                                                                   ) {
                                                                      context.property(
                                                                         a,
@@ -2980,7 +3001,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -3102,6 +3123,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive && genR is Exhaustive && genS is Exhaustive && genT is Exhaustive && genU is Exhaustive) {
       genA.values.forEach { a ->
@@ -3177,7 +3199,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
                                                                            genU.classifier,
                                                                         ),
                                                                         random.seed,
-                                                                        random.random.nextLong()
+                                                                        contextRandom.random.nextLong()
                                                                      ) {
                                                                         context.property(
                                                                            a,
@@ -3268,7 +3290,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
@@ -3394,6 +3416,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
 
    val context = PropertyContext(config)
    val random = createRandom(config)
+   val contextRandom = RandomSource.seeded(random.seed)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive && genF is Exhaustive && genG is Exhaustive && genH is Exhaustive && genI is Exhaustive && genJ is Exhaustive && genK is Exhaustive && genL is Exhaustive && genM is Exhaustive && genN is Exhaustive && genO is Exhaustive && genP is Exhaustive && genQ is Exhaustive && genR is Exhaustive && genS is Exhaustive && genT is Exhaustive && genU is Exhaustive && genV is Exhaustive) {
       genA.values.forEach { a ->
@@ -3472,7 +3495,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
                                                                               genV.classifier,
                                                                            ),
                                                                            random.seed,
-                                                                           random.random.nextLong()
+                                                                           contextRandom.random.nextLong()
                                                                         ) {
                                                                            context.property(
                                                                               a,
@@ -3567,7 +3590,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
             val (abc, d) = abcd
             val (ab, c) = abc
             val (a, b) = ab
-            val contextualSeed = random.random.nextLong()
+            val contextualSeed = contextRandom.random.nextLong()
             val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
