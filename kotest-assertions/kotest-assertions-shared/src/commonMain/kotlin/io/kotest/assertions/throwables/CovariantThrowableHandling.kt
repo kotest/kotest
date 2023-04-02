@@ -154,7 +154,7 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
  *
  * This function is identical to [shouldThrow] except is used inside soft assertion blocks. When inside such a block,
- * errors are only throw at the end of the block, rather than immediately. Therefore, the signature cannot return
+ * errors are only thrown at the end of the block, rather than immediately. Therefore, the signature cannot return
  * the throwable type, as in the case of a failure, there would be neither an immediate throws, nor a type to return.
  */
 inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
