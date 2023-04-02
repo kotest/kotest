@@ -2,6 +2,7 @@
 
 package io.kotest.engine
 
+import io.kotest.common.Platform
 import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.TagExpression
@@ -28,8 +29,11 @@ import kotlin.reflect.KClass
  *
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
+ *
+ * @param platform specifies the platform which the tests will be running on.
  */
 class TestEngineLauncher(
+   private val platform: Platform,
    private val listener: TestEngineListener,
    private val projectConfiguration: ProjectConfiguration,
    private val configs: List<AbstractProjectConfig>,
@@ -38,6 +42,7 @@ class TestEngineLauncher(
 ) {
 
    constructor() : this(
+      Platform.JVM,
       NoopTestEngineListener,
       ProjectConfiguration(),
       emptyList(),
@@ -46,6 +51,7 @@ class TestEngineLauncher(
    )
 
    constructor(listener: TestEngineListener) : this(
+      Platform.JVM,
       listener,
       ProjectConfiguration(),
       emptyList(),
@@ -65,6 +71,7 @@ class TestEngineLauncher(
     */
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
@@ -75,6 +82,7 @@ class TestEngineLauncher(
 
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
@@ -86,6 +94,7 @@ class TestEngineLauncher(
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
@@ -107,6 +116,7 @@ class TestEngineLauncher(
     */
    fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs + projectConfig,
@@ -117,6 +127,7 @@ class TestEngineLauncher(
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
@@ -146,8 +157,20 @@ class TestEngineLauncher(
 
    fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
       return TestEngineLauncher(
+         platform = platform,
          listener = listener,
          projectConfiguration = configuration,
+         configs = configs,
+         refs = refs,
+         tagExpression = tagExpression,
+      )
+   }
+
+   fun withPlatform(platform: Platform): TestEngineLauncher {
+      return TestEngineLauncher(
+         platform = platform,
+         listener = listener,
+         projectConfiguration = projectConfiguration,
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
@@ -170,6 +193,7 @@ class TestEngineLauncher(
             projectConfiguration
          ) { configs + detectAbstractProjectConfigs() + listOfNotNull(loadProjectConfigFromClassname()) },
          tagExpression,
+         platform,
       )
    }
 
