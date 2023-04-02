@@ -4,15 +4,14 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
 
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestCommon)
+            implementation(projects.kotestFramework.kotestFrameworkApi)
+            implementation(libs.mockk)
          }
       }
 
