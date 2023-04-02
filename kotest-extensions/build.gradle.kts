@@ -20,6 +20,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
          }
       }
    }
