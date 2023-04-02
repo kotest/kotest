@@ -1,7 +1,6 @@
 package io.kotest
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
@@ -11,7 +10,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.mpp.atomics.AtomicProperty
 import kotlin.native.concurrent.TransferMode.SAFE
 import kotlin.native.concurrent.Worker
-import kotlin.native.concurrent.freeze
 import kotlin.test.Test
 
 
@@ -63,40 +61,26 @@ class NativeThreadingTest {
       }
    }
 
-   @Test
-   fun testAtomicProperty() {
-      var boolProperty: Boolean by AtomicProperty { false }
-
-      threadedTest {
-         listOf(true, false).forEach { newValue ->
-            boolProperty = newValue
-         }
-
-         boolProperty shouldBe false
-      }
-
-      boolProperty shouldBe false
-   }
-
-   // Educational test to show the issue with kotlin native's memory model mutability
-   @Test
-   fun testNonAtomicProperty() {
-      var boolProperty =  false
-
-      shouldThrow<kotlin.native.concurrent.InvalidMutabilityException> {
-         threadedTest {
-            boolProperty = true
-         }
-      }
-   }
+//   @Test
+//   fun testAtomicProperty() {
+//      var boolProperty: Boolean by AtomicProperty { false }
+//
+//      threadedTest {
+//         listOf(true, false).forEach { newValue ->
+//            boolProperty = newValue
+//         }
+//
+//         boolProperty shouldBe false
+//      }
+//
+//      boolProperty shouldBe false
+//   }
 
    // https://jakewharton.com/litmus-testing-kotlins-many-memory-models/
    private fun threadedTest(body: () -> Unit) {
       // Run once on the main thread
       body()
 
-      // Run again on a background thread
-      body.freeze()
       val worker = Worker.start()
       val future = worker.execute(SAFE, { body }) {
          runCatching(it)

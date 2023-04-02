@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
 @Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
@@ -85,7 +86,7 @@ class JunitXmlReporter(
       val document = Document()
       val testSuite = Element("testsuite")
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
-      testSuite.setAttribute("time", (Duration.milliseconds(duration).toDouble(DurationUnit.SECONDS)).toString())
+      testSuite.setAttribute("time", (duration.milliseconds.toDouble(DurationUnit.SECONDS)).toString())
       testSuite.setAttribute("hostname", hostname())
       testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
       testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())
