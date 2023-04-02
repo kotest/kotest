@@ -6,6 +6,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Retry [f] until it's a success or [maxRetry]/[timeout] is reached
@@ -26,7 +27,7 @@ import kotlinx.coroutines.delay
 suspend fun <T> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = Duration.seconds(1),
+   delay: Duration = 1.seconds,
    multiplier: Int = 1,
    f: suspend () -> T
 ): T = retry(maxRetry, timeout, delay, multiplier, Exception::class, f)
@@ -51,7 +52,7 @@ suspend fun <T> retry(
 suspend fun <T, E : Throwable> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = Duration.seconds(1),
+   delay: Duration = 1.seconds,
    multiplier: Int = 1,
    exceptionClass: KClass<E>,
    f: suspend () -> T
