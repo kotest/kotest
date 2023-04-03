@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.Name
 
 class JsTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+
    override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
       val main = pluginContext.irFactory.buildFun {
          name = Name.identifier("main")
@@ -28,6 +29,8 @@ class JsTransformer(messageCollector: MessageCollector, pluginContext: IrPluginC
 
       return main
    }
+
+   override val withPlatformMethodName: String = EntryPoint.WithJsMethodName
 
    private val promiseFn by lazy {
       launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
