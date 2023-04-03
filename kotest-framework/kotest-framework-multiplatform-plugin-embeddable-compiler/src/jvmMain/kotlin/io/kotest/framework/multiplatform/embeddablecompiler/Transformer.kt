@@ -89,15 +89,17 @@ abstract class Transformer(
                   specs.map { irCall(it.constructors.first()) }
                )
             )
-            withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
-               withConfig.putValueArgument(
-                  0,
-                  irVararg(
-                     pluginContext.irBuiltIns.stringType,
-                     configs.map { irCall(it.constructors.first()) }
+            withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
+               withPlatform.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                  withConfig.putValueArgument(
+                     0,
+                     irVararg(
+                        pluginContext.irBuiltIns.stringType,
+                        configs.map { irCall(it.constructors.first()) }
+                     )
                   )
-               )
-               withConfig.dispatchReceiver = constructorGenerator()
+                  withConfig.dispatchReceiver = constructorGenerator()
+               }
             }
          }
       }
@@ -110,12 +112,19 @@ abstract class Transformer(
 
    protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
 
-   private val withSpecsFn by lazy {
+   protected abstract val withPlatformMethodName: String
+
+   private val withPlatformFn: IrSimpleFunctionSymbol by lazy {
+      launcherClass.getSimpleFunction(withPlatformMethodName)
+         ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+   }
+
+   private val withSpecsFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
          ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
    }
 
-   private val withConfigFn by lazy {
+   private val withConfigFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
          ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
    }
