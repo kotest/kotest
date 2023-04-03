@@ -4,9 +4,8 @@ import io.kotest.common.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.annotation.requirestag.wrapper
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.ExtensionRegistry
-import io.kotest.core.filter.SpecFilter
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -19,7 +18,7 @@ import io.kotest.engine.tags.runtimeTagExpression
 import io.kotest.mpp.annotation
 
 /**
- * A [SpecFilter] which will ignore specs if they are annotated with @[RequiresTag]
+ * A [SpecRefInterceptor] which will ignore specs if they are annotated with @[RequiresTag]
  * and those tags are not present in the runtime tags.
  */
 internal class RequiresTagInterceptor(
