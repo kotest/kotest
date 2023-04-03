@@ -1,11 +1,13 @@
-package io.kotest
+package com.sksamuel.kotest.engine.config
 
+import io.kotest.assertions.throwables.shouldThrowSoftly
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldInclude
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.exhaustive
 
@@ -33,13 +35,41 @@ private class FooTest : DescribeSpec({
 
 })
 
-class GlobalAssertionEnableBehaviourTest : FunSpec({
+private class ShouldThrowSoftlyTest : FunSpec() {
+   init {
+      test("shouldThrow") {
+         shouldThrowSoftly<NullPointerException> { println("1") }
+         shouldThrowSoftly<NullPointerException> { println("2") }
+      }
+   }
+}
+
+class GlobalAssertionTest : FunSpec({
+
+   test("globalAssertSoftly should work for shouldThrowSoftly") {
+      val collector = CollectingTestEngineListener()
+      val projectConfiguration = ProjectConfiguration()
+      projectConfiguration.globalAssertSoftly = true
+
+      TestEngineLauncher(collector)
+         .withConfiguration(projectConfiguration)
+         .withClasses(ShouldThrowSoftlyTest::class)
+         .launch()
+
+      collector.result("shouldThrow")!!.isSuccess shouldBe false
+      collector.result("shouldThrow")!!.errorOrNull!!.message shouldInclude
+         """1) Expected exception java.lang.NullPointerException but no exception was thrown."""
+      collector.result("shouldThrow")!!.errorOrNull!!.message shouldInclude
+         """2) Expected exception java.lang.NullPointerException but no exception was thrown."""
+   }
+
    test("globalAssertSoftly should work for property test and non property test") {
       val collector = CollectingTestEngineListener()
       val projectConfiguration = ProjectConfiguration()
       projectConfiguration.globalAssertSoftly = true
 
-      TestEngineLauncher(collector, projectConfiguration, emptyList(), emptyList(), null)
+      TestEngineLauncher(collector)
+         .withConfiguration(projectConfiguration)
          .withClasses(FooTest::class)
          .launch()
 
@@ -53,7 +83,8 @@ class GlobalAssertionEnableBehaviourTest : FunSpec({
       val projectConfiguration = ProjectConfiguration()
       projectConfiguration.globalAssertSoftly = true
 
-      TestEngineLauncher(collector, projectConfiguration, emptyList(), emptyList(), null)
+      TestEngineLauncher(collector)
+         .withConfiguration(projectConfiguration)
          .withClasses(FooTest::class)
          .launch()
 
