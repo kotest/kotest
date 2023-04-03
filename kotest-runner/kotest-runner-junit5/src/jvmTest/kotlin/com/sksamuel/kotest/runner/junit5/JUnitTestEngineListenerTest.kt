@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.common.Platform
 import io.kotest.core.TagExpression
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.ProjectConfiguration
@@ -285,8 +286,9 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val conf = ProjectConfiguration()
       conf.displayFullTestPath = true
+ 
       val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter(conf))
-      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf))
+      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf, Platform.JVM))
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testStarted(tc2)
