@@ -1,6 +1,7 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.Platform
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
@@ -26,49 +27,85 @@ data class EngineContext(
    val listener: TestEngineListener,
    val tags: TagExpression,
    val configuration: ProjectConfiguration,
+   val platform: Platform,
 ) {
 
-   constructor(configuration: ProjectConfiguration) : this(
+   constructor(configuration: ProjectConfiguration, platform: Platform) : this(
       TestSuite.empty,
       NoopTestEngineListener,
       TagExpression.Empty,
-      configuration
+      configuration,
+      platform,
    )
 
    companion object {
-      val empty = EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, ProjectConfiguration())
+      val empty = EngineContext(
+         TestSuite.empty,
+         NoopTestEngineListener,
+         TagExpression.Empty,
+         ProjectConfiguration(),
+         Platform.JVM
+      )
    }
 
    /**
     * Returns this [EngineContext] with the given [listener] added via a [CompositeTestEngineListener].
     */
    fun mergeListener(listener: TestEngineListener): EngineContext {
-      return EngineContext(suite, CompositeTestEngineListener(listOf(this.listener, listener)), tags, configuration)
+      return EngineContext(
+         suite,
+         CompositeTestEngineListener(listOf(this.listener, listener)),
+         tags,
+         configuration,
+         platform
+      )
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite, listener, tags, configuration,
+         platform
+      )
    }
 
    fun withListener(listener: TestEngineListener): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+      )
    }
 
-   fun withConfiguration(c: ProjectConfiguration): EngineContext {
-      return EngineContext(suite, listener, tags, c)
+   fun withConfiguration(conf: ProjectConfiguration): EngineContext {
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         conf,
+         platform,
+      )
    }
 
    fun withTags(tags: TagExpression): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+      )
    }
 }
 
-fun ProjectContext.toEngineContext(context: EngineContext): EngineContext {
+fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform): EngineContext {
    return EngineContext(
       suite,
       context.listener,
       tags,
-      configuration
+      configuration,
+      platform,
    )
 }
 

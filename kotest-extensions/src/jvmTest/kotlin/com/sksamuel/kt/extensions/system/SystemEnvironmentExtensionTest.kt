@@ -69,9 +69,6 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 @AutoScan
 object SysEnvTestListener : TestListener {
-   override val name: String
-      get() = "SysEnvTestListener"
-
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       if (kclass == SystemEnvironmentTestListenerTest::class) {
          System.getenv("mop") shouldBe null
@@ -87,7 +84,7 @@ object SysEnvTestListener : TestListener {
 
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
-   val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
+   private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
 
    override fun listeners() = listOf(setl)
 
