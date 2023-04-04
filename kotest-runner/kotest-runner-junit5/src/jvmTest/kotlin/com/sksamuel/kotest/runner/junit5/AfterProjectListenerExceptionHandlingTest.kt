@@ -50,7 +50,6 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error"
             )
@@ -91,7 +90,6 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error",
                "After Project Error_1"
