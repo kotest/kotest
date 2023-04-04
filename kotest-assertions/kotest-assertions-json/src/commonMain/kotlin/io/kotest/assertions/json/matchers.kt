@@ -5,13 +5,6 @@ import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 
-// remove?
-fun equalJson(
-   expected: JsonTree,
-   mode: CompareMode,
-   order: CompareOrder,
-) = equalJsonTree(expected, legacyOptions(mode, order))
-
 /**
  * Returns a [Matcher] that verifies that two json strings are equal.
  *
@@ -34,13 +27,6 @@ fun equalJson(
          equalJsonTree(expectedTree, options).test(actualTree)
       }
    }
-
-// remove?
-fun equalJson(
-   expected: JsonTree,
-   options: CompareJsonOptions
-) = equalJsonTree(expected, options)
-
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
