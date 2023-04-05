@@ -13,7 +13,6 @@ kotlin {
             implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestCommon)
-            implementation(libs.mockk)
          }
       }
 
@@ -21,6 +20,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
          }
       }
    }

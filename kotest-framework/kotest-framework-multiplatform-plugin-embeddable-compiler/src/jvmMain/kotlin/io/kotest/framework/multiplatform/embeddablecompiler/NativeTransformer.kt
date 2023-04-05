@@ -15,12 +15,14 @@ import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
+import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
-import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
 class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+
    override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
@@ -63,18 +65,20 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
       return launcher
    }
 
-   private val launchFn by lazy {
+   override val withPlatformMethodName: String = EntryPoint.WithNativeMethodName
+
+   private val launchFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
          ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
    }
 
-   private val withTeamCityListenerMethodNameFn by lazy {
+   private val withTeamCityListenerMethodNameFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
          ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
    }
 
    private val eagerAnnotationConstructor by lazy {
-      val annotationName = FqName("kotlin.native.EagerInitialization")
+      val annotationName = ClassId.fromString("kotlin.native.EagerInitialization")
 
       val annotation = pluginContext.referenceClass(annotationName)
          ?: error("Cannot find eager initialisation annotation class $annotationName")

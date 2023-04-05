@@ -9,6 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.mpp.sysprop
 import io.kotest.mpp.syspropOrEnv
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [ProjectConfiguration] object.
@@ -74,7 +75,7 @@ internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
 
 internal fun projectTimeout(): Duration? {
    val d = sysprop(KotestEngineProperties.projectTimeout)?.toLong() ?: return null
-   return Duration.milliseconds(d)
+   return d.milliseconds
 }
 
 
