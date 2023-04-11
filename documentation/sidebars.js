@@ -1,4 +1,4 @@
-{
+module.exports = {
   "docs": [
     "quickstart",
     "changelog",
@@ -218,4 +218,4 @@
       ]
     }
   ]
-}
+};
