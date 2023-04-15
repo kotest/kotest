@@ -12,15 +12,23 @@ fun Exhaustive.Companion.azstring(range: IntRange): Exhaustive<String> {
 }
 
 fun Exhaustive.Companion.upperLowerCase(s: String): Exhaustive<String> {
-   // TODO: Sanity check how many cases `s` will produce. Not sure how many iterations is a good cap
+   val caseSensitiveChars = s.filter(::isCaseSensitive).length
+
+   if (caseSensitiveChars > 20) {
+      println(
+         "[WARN] Generating exhaustive permutations for $s, which has $caseSensitiveChars case-sensitive characters. " +
+            "This will generate 2**$caseSensitiveChars permutations, which may take a while to run."
+      )
+   }
+
    return Exhaustive.of(*s.upperLowerCases(RandomSource.default()).toList().toTypedArray())
 }
 
 internal fun String.upperLowerCases(rs: RandomSource): Sequence<String> = when {
    isEmpty() -> sequenceOf("")
    else -> first().let { c ->
-      val upper = c.uppercase()
-      val lower = c.lowercase()
+      val upper = c.uppercaseChar()
+      val lower = c.lowercaseChar()
       val rest = substring(1).upperLowerCases(rs)
 
       sequence {
@@ -36,3 +44,4 @@ internal fun String.upperLowerCases(rs: RandomSource): Sequence<String> = when {
    }
 }
 
+private fun isCaseSensitive(c: Char) = c.uppercaseChar() != c.lowercaseChar()
