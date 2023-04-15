@@ -64,8 +64,7 @@ private fun equalJsonTree(
 data class JsonTree(val root: JsonNode, val raw: String)
 
 infix fun String.shouldEqualJson(expected: String): String {
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, CompareJsonOptions())
+   this should equalJson(expected, CompareJsonOptions())
    return this
 }
 
@@ -76,14 +75,12 @@ infix fun String.shouldEqualJson(expected: String): String {
 infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, options)
+   this should equalJson(expected, options)
    return this
 }
 
 infix fun String.shouldNotEqualJson(expected: String): String {
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, CompareJsonOptions())
+   this shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
 
@@ -93,8 +90,7 @@ infix fun String.shouldNotEqualJson(expected: String): String {
 infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, options)
+   this shouldNot equalJson(expected, options)
    return this
 }
 
