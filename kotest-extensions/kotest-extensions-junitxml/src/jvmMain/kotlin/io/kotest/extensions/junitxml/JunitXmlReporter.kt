@@ -23,6 +23,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.absolute
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -63,9 +64,9 @@ class JunitXmlReporter(
    private fun outputDir(): Path {
       val buildDir = System.getProperty(BuildDirKey)
       return if (buildDir != null)
-         Paths.get(buildDir).resolve(outputDir)
+         Paths.get(buildDir, outputDir).normalize().absolute()
       else
-         Paths.get(DefaultBuildDir).resolve(outputDir)
+         Paths.get(DefaultBuildDir, outputDir).normalize().absolute()
    }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
