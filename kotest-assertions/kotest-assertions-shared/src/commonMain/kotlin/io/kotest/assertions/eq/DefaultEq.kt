@@ -1,12 +1,9 @@
 package io.kotest.assertions.eq
 
-import io.kotest.assertions.Actual
 import io.kotest.assertions.ActualWithType
-import io.kotest.assertions.Expected
 import io.kotest.assertions.ExpectedWithType
 import io.kotest.assertions.failure
 import io.kotest.assertions.failureWithTypeInformation
-import io.kotest.assertions.print.print
 import io.kotest.assertions.print.printWithType
 
 /**
