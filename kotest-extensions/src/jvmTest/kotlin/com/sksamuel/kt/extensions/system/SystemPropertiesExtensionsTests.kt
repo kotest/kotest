@@ -20,7 +20,7 @@ import io.mockk.mockk
 import java.util.*
 import kotlin.reflect.KClass
 
-class rystemPropertiesExtensionsTest : FreeSpec() {
+class SystemPropertiesExtensionsTest : FreeSpec() {
 
    private val key = "SystemPropertiesExtensionsTestFoo"
    private val value = "SystemPropertiesExtensionsTestBar"
