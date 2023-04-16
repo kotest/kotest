@@ -1,10 +1,20 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.PrintedWithType
+import io.kotest.assertions.print.printed
 import io.kotest.mpp.stacktraces
 
 data class Expected(val value: Printed)
 data class Actual(val value: Printed)
+
+data class ExpectedWithType(val value: PrintedWithType) {
+   fun toExpected() = Expected(value.value.printed())
+}
+
+data class ActualWithType(val value: PrintedWithType) {
+   fun toActual() = Actual(value.value.printed())
+}
 
 /**
  * Creates the most appropriate error from the given message, wrapping in clue context(s)
@@ -43,6 +53,18 @@ fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Th
          null,
          expected,
          actual
+      )
+   )
+}
+
+fun failureWithTypeInformation(expected: ExpectedWithType, actual: ActualWithType, prependMessage: String = ""): Throwable {
+   if (actual.value.type == expected.value.type) return failure(expected.toExpected(), actual.toActual(), prependMessage)
+   return stacktraces.cleanStackTrace(
+      Exceptions.createAssertionError(
+         prependMessage + clueContextAsString() + intellijFormatErrorWithTypeInformation(expected, actual),
+         null,
+         expected.toExpected(),
+         actual.toActual()
       )
    )
 }
