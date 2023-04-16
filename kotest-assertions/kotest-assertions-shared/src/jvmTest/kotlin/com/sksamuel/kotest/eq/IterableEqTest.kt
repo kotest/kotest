@@ -1,7 +1,5 @@
 package com.sksamuel.kotest.eq
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.IterableEq
 import io.kotest.core.spec.style.FunSpec
