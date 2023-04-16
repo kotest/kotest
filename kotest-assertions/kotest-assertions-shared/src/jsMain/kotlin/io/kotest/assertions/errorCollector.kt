@@ -9,6 +9,6 @@ object JsErrorCollector : BasicErrorCollector()
 actual fun ErrorCollector.collectiveError(): AssertionError? {
    val failures = errors()
    clear()
-   return failures.toAssertionError()
+   return failures.toAssertionError(depth, subject)
 }
 
