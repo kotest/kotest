@@ -53,10 +53,7 @@ fun Any?.print(level: Int): Printed =
 fun Any?.printWithType(): PrintedWithType =
    PrintedWithType(print().value, printType())
 
-private fun Any?.printType() = when {
-   this == null -> "Nothing"
-   else -> this::class.qualifiedName ?: "UnknownType"
-}
+internal expect fun Any?.printType(): String
 
 /**
  * Returns a [Print] for this non-null value by delegating to platform specific, or commonly
