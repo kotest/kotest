@@ -1,7 +1,7 @@
 package io.kotest.property.internal
 
-import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.ShrinkingMode
 
@@ -11,14 +11,20 @@ import io.kotest.property.ShrinkingMode
  */
 fun <A> shrinkfn(
    a: Sample<A>,
-   property: suspend PropertyContext.(A) -> Unit,
-   shrinkingMode: ShrinkingMode
-): suspend () -> List<ShrinkResult<A>> = {
+   propertyFn: suspend PropertyContext.(A) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
+): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A) -> Unit = { a ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a)
+   }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it) }
-      listOf(smallestA)
+      val smallestContextual = doContextualShrinking(shrinkingMode) { property(smallestA.shrink) }
+      listOf(smallestA) + smallestContextual
    }
 }
 
@@ -29,14 +35,20 @@ fun <A> shrinkfn(
 fun <A, B> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
-   property: suspend PropertyContext.(A, B) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B) -> Unit = { a, b ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b)
+   }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value) }
       val smallestB = doShrinking(b.shrinks, shrinkingMode) { property(smallestA.shrink, it) }
-      listOf(smallestA, smallestB)
+      val smallestContextual = doContextualShrinking(shrinkingMode) { property(smallestA.shrink, smallestB.shrink) }
+      listOf(smallestA, smallestB) + smallestContextual
    }
 }
 
@@ -48,16 +60,22 @@ fun <A, B, C> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    c: Sample<C>,
-   property: suspend PropertyContext.(A, B, C) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C) -> Unit = { a, b, c ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c)
+   }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value) }
       val smallestB = doShrinking(b.shrinks, shrinkingMode) { property(smallestA.shrink, it, c.value) }
       val smallestC = doShrinking(c.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, it) }
-      listOf(smallestA, smallestB, smallestC)
+      val smallestContextual = doContextualShrinking(shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink) }
+      listOf(smallestA, smallestB, smallestC) + smallestContextual
    }
 }
 
@@ -70,17 +88,23 @@ fun <A, B, C, D> shrinkfn(
    b: Sample<B>,
    c: Sample<C>,
    d: Sample<D>,
-   property: suspend PropertyContext.(A, B, C, D) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D) -> Unit = { a, b, c, d ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d)
+   }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value) }
       val smallestB = doShrinking(b.shrinks, shrinkingMode) { property(smallestA.shrink, it, c.value, d.value) }
       val smallestC = doShrinking(c.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, it, d.value) }
       val smallestD = doShrinking(d.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD)
+      val smallestContextual = doContextualShrinking(shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink) }
+      listOf(smallestA, smallestB, smallestC, smallestD) + smallestContextual
    }
 }
 
@@ -94,18 +118,26 @@ fun <A, B, C, D, E> shrinkfn(
    c: Sample<C>,
    d: Sample<D>,
    e: Sample<E>,
-   property: suspend PropertyContext.(A, B, C, D, E) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E) -> Unit = { a, b, c, d, e ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e)
+   }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value) }
       val smallestB = doShrinking(b.shrinks, shrinkingMode) { property(smallestA.shrink, it, c.value, d.value, e.value) }
       val smallestC = doShrinking(c.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, it, d.value, e.value) }
       val smallestD = doShrinking(d.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, it, e.value) }
       val smallestE = doShrinking(e.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink)
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE) + smallestContextual
    }
 }
 
@@ -120,11 +152,16 @@ fun <A, B, C, D, E, F> shrinkfn(
    d: Sample<D>,
    e: Sample<E>,
    f: Sample<F>,
-   property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit = { a, b, c, d, e, f ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value) }
@@ -138,10 +175,12 @@ fun <A, B, C, D, E, F> shrinkfn(
          doShrinking(e.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, it, f.value) }
       val smallestF =
          doShrinking(f.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink)
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF) + smallestContextual
    }
 }
-
 
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
@@ -155,11 +194,16 @@ fun <A, B, C, D, E, F, G> shrinkfn(
    e: Sample<E>,
    f: Sample<F>,
    g: Sample<G>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit = { a, b, c, d, e, f, g ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value) }
@@ -175,7 +219,13 @@ fun <A, B, C, D, E, F, G> shrinkfn(
          doShrinking(f.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, it, g.value) }
       val smallestG =
          doShrinking(g.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG) + smallestContextual
    }
 }
 
@@ -192,11 +242,16 @@ fun <A, B, C, D, E, F, G, H> shrinkfn(
    f: Sample<F>,
    g: Sample<G>,
    h: Sample<H>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit = { a, b, c, d, e, f, g, h ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g, h)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value) }
@@ -214,7 +269,13 @@ fun <A, B, C, D, E, F, G, H> shrinkfn(
          doShrinking(g.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, it, h.value) }
       val smallestH =
          doShrinking(h.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH) + smallestContextual
    }
 }
 
@@ -232,11 +293,16 @@ fun <A, B, C, D, E, F, G, H, I> shrinkfn(
    g: Sample<G>,
    h: Sample<H>,
    i: Sample<I>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit = { a, b, c, d, e, f, g, h, i ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g, h, i)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value) }
@@ -256,10 +322,15 @@ fun <A, B, C, D, E, F, G, H, I> shrinkfn(
          doShrinking(h.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, it, i.value) }
       val smallestI =
          doShrinking(i.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI) + smallestContextual
    }
 }
-
 
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
@@ -276,11 +347,16 @@ fun <A, B, C, D, E, F, G, H, I, J> shrinkfn(
    h: Sample<H>,
    i: Sample<I>,
    j: Sample<J>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit = { a, b, c, d, e, f, g, h, i, j ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g, h, i, j)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value) }
@@ -302,7 +378,13 @@ fun <A, B, C, D, E, F, G, H, I, J> shrinkfn(
          doShrinking(i.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, it, j.value) }
       val smallestJ =
          doShrinking(j.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ) + smallestContextual
    }
 }
 
@@ -323,11 +405,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K> shrinkfn(
    i: Sample<I>,
    j: Sample<J>,
    k: Sample<K>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value) }
@@ -351,7 +439,13 @@ fun <A, B, C, D, E, F, G, H, I, J, K> shrinkfn(
          doShrinking(j.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, it, k.value) }
       val smallestK =
          doShrinking(k.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK) + smallestContextual
    }
 }
 
@@ -372,11 +466,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> shrinkfn(
    j: Sample<J>,
    k: Sample<K>,
    l: Sample<L>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value) }
@@ -402,7 +502,13 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> shrinkfn(
          doShrinking(k.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, it, l.value) }
       val smallestL =
          doShrinking(l.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL) + smallestContextual
    }
 }
 
@@ -424,11 +530,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> shrinkfn(
    k: Sample<K>,
    l: Sample<L>,
    m: Sample<M>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value) }
@@ -456,7 +568,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> shrinkfn(
          doShrinking(l.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, it, m.value) }
       val smallestM =
          doShrinking(m.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM) + smallestContextual
    }
 }
 
@@ -479,11 +598,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> shrinkfn(
    l: Sample<L>,
    m: Sample<M>,
    n: Sample<N>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value) }
@@ -513,7 +638,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> shrinkfn(
          doShrinking(m.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, it, n.value) }
       val smallestN =
          doShrinking(n.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN) + smallestContextual
    }
 }
 
@@ -537,11 +669,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> shrinkfn(
    m: Sample<M>,
    n: Sample<N>,
    o: Sample<O>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value) }
@@ -573,7 +711,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> shrinkfn(
          doShrinking(n.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, it, o.value) }
       val smallestO =
          doShrinking(o.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO) + smallestContextual
    }
 }
 
@@ -598,11 +743,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> shrinkfn(
    n: Sample<N>,
    o: Sample<O>,
    p: Sample<P>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value) }
@@ -636,7 +787,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> shrinkfn(
          doShrinking(o.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, it, p.value) }
       val smallestP =
          doShrinking(p.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP) + smallestContextual
    }
 }
 
@@ -662,11 +820,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> shrinkfn(
    o: Sample<O>,
    p: Sample<P>,
    q: Sample<Q>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
       // we use a new context for the shrinks, as we don't want to affect classification etc
       val context = PropertyContext()
+      val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
+      }
       with(context) {
          val smallestA =
             doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value) }
@@ -702,7 +865,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> shrinkfn(
             doShrinking(p.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, it, q.value) }
          val smallestQ =
             doShrinking(q.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, it) }
-         listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ)
+         val smallestContextual = doContextualShrinking(shrinkingMode) {
+            property(
+               smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+               smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+               smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink
+            )
+         }
+         listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ) + smallestContextual
       }
    }
 
@@ -729,11 +899,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> shrinkfn(
    p: Sample<P>,
    q: Sample<Q>,
    r: Sample<R>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value, r.value) }
@@ -771,7 +946,14 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> shrinkfn(
          doShrinking(q.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, it, r.value) }
       val smallestR =
          doShrinking(r.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR) + smallestContextual
    }
 }
 
@@ -799,11 +981,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> shrinkfn(
    q: Sample<Q>,
    r: Sample<R>,
    s: Sample<S>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s ->
+      setupContextual(RandomSource.seeded(contextualSeed))
+      propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
+   }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value, r.value, s.value) }
@@ -843,7 +1030,15 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> shrinkfn(
          doShrinking(r.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, it, s.value) }
       val smallestS =
          doShrinking(s.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink,
+            smallestS.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS) + smallestContextual
    }
 }
 
@@ -872,11 +1067,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> shrinkfn(
    r: Sample<R>,
    s: Sample<S>,
    t: Sample<T>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value, r.value, s.value, t.value) }
@@ -918,7 +1119,15 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> shrinkfn(
          doShrinking(s.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, it, t.value) }
       val smallestT =
          doShrinking(t.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, smallestS.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink,
+            smallestS.shrink, smallestT.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT) + smallestContextual
    }
 }
 
@@ -948,11 +1157,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> shrinkfn(
    s: Sample<S>,
    t: Sample<T>,
    u: Sample<U>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value, r.value, s.value, t.value, u.value) }
@@ -996,7 +1211,15 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> shrinkfn(
          doShrinking(t.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, smallestS.shrink, it, u.value) }
       val smallestU =
          doShrinking(u.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, smallestS.shrink, smallestT.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT, smallestU)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink,
+            smallestS.shrink, smallestT.shrink, smallestU.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT, smallestU) + smallestContextual
    }
 }
 
@@ -1027,11 +1250,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> shrinkfn(
    t: Sample<T>,
    u: Sample<U>,
    v: Sample<V>,
-   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit,
-   shrinkingMode: ShrinkingMode
+   propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit,
+   shrinkingMode: ShrinkingMode,
+   contextualSeed: Long
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
+   val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit =
+      { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v ->
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
+      }
    with(context) {
       val smallestA =
          doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value, m.value, n.value, o.value, p.value, q.value, r.value, s.value, t.value, u.value, v.value) }
@@ -1077,7 +1306,15 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> shrinkfn(
          doShrinking(u.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, smallestS.shrink, smallestT.shrink, it, v.value) }
       val smallestV =
          doShrinking(v.shrinks, shrinkingMode) { property(smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink, smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink, smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink, smallestS.shrink, smallestT.shrink, smallestU.shrink, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT, smallestU, smallestV)
+      val smallestContextual = doContextualShrinking(shrinkingMode) {
+         property(
+            smallestA.shrink, smallestB.shrink, smallestC.shrink, smallestD.shrink, smallestE.shrink, smallestF.shrink,
+            smallestG.shrink, smallestH.shrink, smallestI.shrink, smallestJ.shrink, smallestK.shrink, smallestL.shrink,
+            smallestM.shrink, smallestN.shrink, smallestO.shrink, smallestP.shrink, smallestQ.shrink, smallestR.shrink,
+            smallestS.shrink, smallestT.shrink, smallestU.shrink, smallestV.shrink
+         )
+      }
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF, smallestG, smallestH, smallestI, smallestJ, smallestK, smallestL, smallestM, smallestN, smallestO, smallestP, smallestQ, smallestR, smallestS, smallestT, smallestU, smallestV) + smallestContextual
    }
 }
 
