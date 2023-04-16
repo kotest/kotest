@@ -101,12 +101,6 @@ class StringShrinkerWithMin(
    private val simplestCharSelector: (preShrinkValue: String) -> Char? = CharSequence::firstOrNull
 ) : Shrinker<String> {
 
-//   @Deprecated("a static 'simplestChar' means invalid shrinks can be generated - use the alternative constructor instead, which allows for a dynamic 'simplestChar'")
-//   constructor (
-//      minLength: Int = 0,
-//      simplestChar: Char,
-//   ) : this(minLength, { simplestChar })
-
    override fun shrink(value: String): List<String> {
 
       val simplestChar: Char? = simplestCharSelector(value)

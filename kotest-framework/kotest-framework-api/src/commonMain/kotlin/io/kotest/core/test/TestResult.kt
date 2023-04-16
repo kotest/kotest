@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface TestResult {
 
@@ -9,19 +10,19 @@ sealed interface TestResult {
          "Replaced with TestResult.Success. Deprecated since 5.0",
          ReplaceWith("TestResult.Success(durationMillis.milliseconds)", "kotlin.time.Duration.Companion.milliseconds")
       )
-      fun success(durationMillis: Long): Success = Success(Duration.milliseconds(durationMillis))
+      fun success(durationMillis: Long): Success = Success(durationMillis.milliseconds)
 
       @Deprecated(
          "Replaced with TestResult.Failure. Deprecated since 5.0",
          ReplaceWith("TestResult.Failure(durationMillis.milliseconds, error)", "kotlin.time.Duration.Companion.milliseconds")
       )
-      fun failure(error: AssertionError, durationMillis: Long): Failure = Failure(Duration.milliseconds(durationMillis), error)
+      fun failure(error: AssertionError, durationMillis: Long): Failure = Failure(durationMillis.milliseconds, error)
 
       @Deprecated(
          "Replaced with TestResult.Error. Deprecated since 5.0",
          ReplaceWith("TestResult.Error(durationMillis.milliseconds, error)", "kotlin.time.Duration.Companion.milliseconds")
       )
-      fun error(error: Throwable, durationMillis: Long): Error = Error(Duration.milliseconds(durationMillis), error)
+      fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
 
       val Ignored = Ignored(null)
    }

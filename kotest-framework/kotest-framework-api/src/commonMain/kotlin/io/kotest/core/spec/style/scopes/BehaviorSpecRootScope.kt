@@ -8,8 +8,10 @@ typealias BehaviorSpecRootContext = BehaviorSpecRootScope
 /**
  * A context that allows tests to be registered using the syntax:
  *
+ * ```
  * given("some test")
  * xgiven("some disabled test")
+ * ```
  */
 interface BehaviorSpecRootScope : RootScope {
 

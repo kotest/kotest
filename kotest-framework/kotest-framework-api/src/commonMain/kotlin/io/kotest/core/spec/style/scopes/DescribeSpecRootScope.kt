@@ -10,11 +10,15 @@ typealias DescribeSpecRootContext = DescribeSpecRootScope
 /**
  * A context that allows root tests to be registered using the syntax:
  *
+ * ```
  * describe("some test")
+ * ```
  *
  * or
  *
+ * ```
  * xdescribe("some disabled test")
+ * ```
  */
 interface DescribeSpecRootScope : RootScope {
 

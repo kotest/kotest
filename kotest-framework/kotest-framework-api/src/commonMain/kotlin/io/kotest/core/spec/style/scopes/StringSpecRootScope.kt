@@ -19,11 +19,11 @@ typealias StringSpecRootContext = StringSpecRootScope
  * Defines the DSL for creating tests in the 'StringSpec' style.
  *
  * Example:
- *
+ * ```
  * "my test" {
  *   1 + 1 shouldBe 2
  * }
- *
+ * ```
  */
 interface StringSpecRootScope : RootScope {
 
