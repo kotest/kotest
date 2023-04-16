@@ -30,6 +30,7 @@ data class TestEngineConfig(
    val interceptors: List<EngineInterceptor>,
    val configuration: ProjectConfiguration,
    val explicitTags: TagExpression?,
+   val platform: Platform,
 )
 
 /**
@@ -71,7 +72,7 @@ class TestEngine(private val config: TestEngineConfig) {
       val tags = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.configuration))
+      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform))
    }
 }
 

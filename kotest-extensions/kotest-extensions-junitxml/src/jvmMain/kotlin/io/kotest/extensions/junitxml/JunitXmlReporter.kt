@@ -23,8 +23,10 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.absolute
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
 @Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
@@ -62,9 +64,9 @@ class JunitXmlReporter(
    private fun outputDir(): Path {
       val buildDir = System.getProperty(BuildDirKey)
       return if (buildDir != null)
-         Paths.get(buildDir).resolve(outputDir)
+         Paths.get(buildDir, outputDir).normalize().absolute()
       else
-         Paths.get(DefaultBuildDir).resolve(outputDir)
+         Paths.get(DefaultBuildDir, outputDir).normalize().absolute()
    }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
@@ -85,7 +87,7 @@ class JunitXmlReporter(
       val document = Document()
       val testSuite = Element("testsuite")
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
-      testSuite.setAttribute("time", (Duration.milliseconds(duration).toDouble(DurationUnit.SECONDS)).toString())
+      testSuite.setAttribute("time", (duration.milliseconds.toDouble(DurationUnit.SECONDS)).toString())
       testSuite.setAttribute("hostname", hostname())
       testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
       testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())

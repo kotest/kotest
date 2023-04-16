@@ -9,6 +9,7 @@ import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
@@ -85,4 +86,4 @@ internal fun resolveConfig(
    )
 }
 
-fun Long.toMillis(): Duration = Duration.milliseconds(this)
+fun Long.toMillis(): Duration = this.milliseconds
