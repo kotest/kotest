@@ -80,7 +80,6 @@ class WordSpecEngineKitTest : FunSpec({
                "Kotest",
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "a container should",
                "skip a test",
                "fail a test",

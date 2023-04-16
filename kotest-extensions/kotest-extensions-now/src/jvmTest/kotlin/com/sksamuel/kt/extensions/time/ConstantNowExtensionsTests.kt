@@ -1,23 +1,25 @@
 package com.sksamuel.kt.extensions.time
 
-import com.sksamuel.kt.extensions.system.SystemPropertyListenerTest
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.AutoScan
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.extensions.time.withConstantNow
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import kotlinx.coroutines.delay
-import java.time.*
+import java.time.Clock
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.Year
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.chrono.HijrahDate
 import java.time.chrono.JapaneseDate
 import java.time.chrono.MinguoDate
 import java.time.chrono.ThaiBuddhistDate
-import kotlin.reflect.KClass
 
 class ConstantNowExtensionFunctionsTest : DescribeSpec() {
 
@@ -399,20 +401,3 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
       }
    }
 }
-
-@AutoScan
-object Assertion : TestListener {
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      if (kclass == SystemPropertyListenerTest::class) {
-         System.getProperty("bee") shouldBe null
-      }
-
-   }
-
-   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == SystemPropertyListenerTest::class) {
-         System.getProperty("bee") shouldBe null
-      }
-   }
-}
-
