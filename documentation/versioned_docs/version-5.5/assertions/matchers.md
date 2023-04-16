@@ -35,6 +35,7 @@ Kotest framework.
 | Module                                                | Description                                                  | Type          |
 |-------------------------------------------------------|--------------------------------------------------------------|---------------|
 | [kotest-assertions-core](core.md)                     | Provides matchers for standard libary types.                 | Multiplatform |
+| [kotest-assertions-collections](collections.md)       | Provides matchers for Collection, Iterable, and Array types. | Multiplatform |
 | [kotest-assertions-json](json/overview.md)            | Provides matchers for testing json objects.                  | JVM           |
 | [kotest-assertions-kotlinx-time](kotlinx-datetime.md) | Provides matchers for Kotlin's date / time library.          | Multiplatform |
 | [kotest-assertions-sql](sql.md)                       | Provides matchers for JDBC.                                  | JVM           |
@@ -67,5 +68,6 @@ This is a list of projects that provide Kotest matchers. They are maintained out
 
 | Library | Description |
 | -------- | ---- |
+| [Android](https://github.com/LeoColman/kotest-android) | Toolbox for working with Kotest and Android |
 | [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing/kotest) | Functional toolkit for Kotlin HTTP applications |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test) | JVM-based, full-stack framework for building modular, easily testable microservice |

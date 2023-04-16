@@ -12,6 +12,9 @@ enum class BlockHoundMode {
 
 data class BlockHound(private val mode: BlockHoundMode = BlockHoundMode.ERROR) : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      // Skip intercepting lower level tests in case of nesting.
+      if (testCase.parent != null) return execute(testCase)
+
       initialize()
 
       require (activeExtension == null) {

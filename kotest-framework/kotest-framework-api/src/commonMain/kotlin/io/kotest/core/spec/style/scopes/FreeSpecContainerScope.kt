@@ -36,7 +36,10 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    /**
     * Adds a configured test to this scope as a leaf test.
     *
-    * eg, "this test".config(...) { }
+    * E.g.
+    * ```
+    * "this test".config(...) { }
+    * ```
     */
    suspend fun String.config(
       enabled: Boolean? = null,
@@ -76,7 +79,10 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    /**
     * Adds the contained config and test to this scope as a container test.
     *
-    * eg, "this test".config(...) - { }
+    * E.g.
+    * ```
+    * "this test".config(...) - { }
+    * ```
     */
    suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
       registerContainer(TestName(name), false, config) { FreeSpecContainerScope(this).test() }
@@ -85,8 +91,10 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    /**
     * Starts a config builder, which can be added to the scope by invoking [minus] on the returned value.
     *
-    * eg, "this test".config(...) - { }
-    *
+    * E.g.
+    * ```
+    * "this test".config(...) - { }
+    * ```
     */
    fun String.config(
       enabled: Boolean? = null,

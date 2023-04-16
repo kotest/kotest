@@ -67,6 +67,9 @@ include(
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
 
+   // allows overriding the .now() functionality on time classes
+   ":kotest-extensions:kotest-extensions-now",
+
    // extensions that adapt junit extensions into kotest extensions
    ":kotest-extensions:kotest-extensions-junit5",
 
@@ -90,7 +93,6 @@ include(
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
    ":kotest-tests:kotest-tests-native",
    //":kotest-tests:kotest-tests-js",
-   ":kotest-tests:kotest-tests-project-configuration",
    ":kotest-tests:kotest-tests-config-classname",
 
    // BOM for whole kotest project

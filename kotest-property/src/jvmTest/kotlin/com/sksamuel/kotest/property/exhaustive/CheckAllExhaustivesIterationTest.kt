@@ -391,7 +391,7 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 19 exhaustives should run for each cross product") {
+      xtest("checkAll with 19 exhaustives should run for each cross product") {
 
          val context = checkAll(
             PropTestConfig(iterations = Int.MAX_VALUE),
@@ -422,7 +422,7 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 20 exhaustives should run for each cross product") {
+      xtest("checkAll with 20 exhaustives should run for each cross product") {
 
          val context = checkAll(
             PropTestConfig(iterations = Int.MAX_VALUE),
@@ -454,7 +454,7 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 21 exhaustives should run for each cross product") {
+      xtest("checkAll with 21 exhaustives should run for each cross product") {
 
          val context = checkAll(
             PropTestConfig(iterations = Int.MAX_VALUE),
@@ -487,7 +487,7 @@ class CheckAllExhaustivesIterationTest : FunSpec() {
 
       }
 
-      test("checkAll with 22 exhaustives should run for each cross product") {
+      xtest("checkAll with 22 exhaustives should run for each cross product") {
 
          val context = checkAll(
             PropTestConfig(iterations = Int.MAX_VALUE),

@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 typealias TestPath = io.kotest.common.TestPath
 
 /**
- * A parseable, stable, consistent identifer for a test element.
+ * A parseable, stable, consistent identifier for a test element.
  *
  * The id should not depend on runtime configuration and should not change between test runs,
  * unless the test, or a parent test, has been modified by the user.
@@ -67,22 +67,22 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns true if this descriptor is for a class based test file.
+    * Returns `true` if this descriptor is for a class based test file.
     */
    fun isSpec() = this is SpecDescriptor
 
    /**
-    * Returns true if this descriptor is for a test case.
+    * Returns `true` if this descriptor is for a test case.
     */
    fun isTestCase() = this is TestDescriptor
 
    /**
-    * Returns true if this descriptor represents a root test case.
+    * Returns `true` if this descriptor represents a root test case.
     */
    fun isRootTest() = this is TestDescriptor && this.parent.isSpec()
 
    /**
-    * Returns true if this type equals that type. For example
+    * Returns `true` if this type equals that type. For example
     * if this is a spec and the rhs is also spec
     */
    fun isEqualType(that: Descriptor): Boolean {
@@ -110,7 +110,7 @@ sealed interface Descriptor {
    fun chain() = parents() + this
 
    /**
-    * Returns true if this descriptor is the immediate parent of the given [descriptor].
+    * Returns `true` if this descriptor is the immediate parent of the given [descriptor].
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be the parent of a spec
@@ -118,7 +118,7 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns true if this descriptor is ancestor (1..nth-parent) of the given [descriptor].
+    * Returns `true` if this descriptor is ancestor (1..nth-parent) of the given [descriptor].
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
@@ -126,17 +126,17 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns true if this descriptor is the immediate child of the given [descriptor].
+    * Returns `true` if this descriptor is the immediate child of the given [descriptor].
     */
    fun isChildOf(descriptor: Descriptor): Boolean = descriptor.isParentOf(this)
 
    /**
-    * Returns true if this descriptor is a child, grandchild, etc of the given [descriptor].
+    * Returns `true` if this descriptor is a child, grandchild, etc of the given [descriptor].
     */
    fun isDescendentOf(descriptor: Descriptor): Boolean = descriptor.isAncestorOf(this)
 
    /**
-    * Returns true if this instance is on the path to the given description. That is, if this
+    * Returns `true` if this instance is on the path to the given description. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
     */
    fun isOnPath(description: Descriptor): Boolean =

@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KClass
-import org.intellij.lang.annotations.Language
+import io.kotest.common.KotestLanguage
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
@@ -23,13 +23,15 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
  * regardless of order.
  *
  */
-infix fun String?.shouldMatchJson(@Language("json") expected: String?) =
+@Deprecated("Use shouldEqualJson. Deprecated since 5.6. Will be removed in 6.0")
+infix fun String?.shouldMatchJson(@KotestLanguage("json", "", "") expected: String?) =
    this should matchJson(expected)
 
-infix fun String?.shouldNotMatchJson(@Language("json") expected: String?) =
+@Deprecated("Use shouldNotEqualJson. Deprecated since 5.6. Will be removed in 6.0")
+infix fun String?.shouldNotMatchJson(@KotestLanguage("json", "", "") expected: String?) =
    this shouldNot matchJson(expected)
 
-fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
+fun matchJson(@KotestLanguage("json", "", "") expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)
@@ -108,20 +110,22 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
  * regardless of order.
  *
  */
-fun String.shouldEqualJson(@Language("json") expected: String, mode: CompareMode, order: CompareOrder) =
+@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
+fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
-fun String.shouldEqualJson(@Language("json") expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, options)
+@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
+fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
+   this should equalJson(expected, options)
 }
 
-fun String.shouldNotEqualJson(@Language("json") expected: String, mode: CompareMode, order: CompareOrder) =
+@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
+fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
-fun String.shouldNotEqualJson(@Language("json") expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, options)
+@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
+fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
+   this shouldNot equalJson(expected, options)
 }
 
 fun String.shouldBeEmptyJsonArray(): String {
@@ -135,24 +139,28 @@ fun String.shouldBeEmptyJsonObject(): String {
 }
 
 fun String.shouldBeJsonArray(): String {
-   this should beJsonType(JsonArray::class)
+   this should beJsonArray()
    return this
 }
 
 fun String.shouldNotBeJsonArray(): String {
-   this shouldNot beJsonType(JsonArray::class)
+   this shouldNot beJsonArray()
    return this
 }
 
+fun beJsonArray() = beJsonType(JsonArray::class)
+
 fun String.shouldBeJsonObject(): String {
-   this should beJsonType(JsonObject::class)
+   this should beJsonObject()
    return this
 }
 
 fun String.shouldNotBeJsonObject(): String {
-   this shouldNot beJsonType(JsonObject::class)
+   this shouldNot beJsonObject()
    return this
 }
+
+fun beJsonObject() = beJsonType(JsonObject::class)
 
 fun String.shouldBeValidJson(): String {
    this should beValidJson()

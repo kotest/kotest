@@ -5,23 +5,13 @@ import io.kotest.assertions.fail
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.EmptyExtensionRegistry
-import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.Isolate
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.datatest.withData
-import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalKotest::class)

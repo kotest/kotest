@@ -1,12 +1,14 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.Platform
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -23,6 +25,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         ProjectConfiguration(),
          emptyList(),
          emptyList(),
          emptyList(),
@@ -41,8 +44,8 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
+      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
+      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener))
       executor.execute(SpecRef.Reference(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
@@ -55,6 +58,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         ProjectConfiguration(),
          emptyList(),
          emptyList(),
          emptyList(),
@@ -73,8 +77,9 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
+      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
+      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener))
+
       executor.execute(SpecRef.Reference(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
