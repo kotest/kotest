@@ -6,7 +6,7 @@ import kotlin.reflect.KType
 expect val reflection: Reflection
 
 /**
- * Groups together some basic platform agnostic reflection oeprations.
+ * Groups together some basic platform agnostic reflection operations.
  */
 interface Reflection {
 
@@ -19,9 +19,9 @@ interface Reflection {
    /**
     * Returns the annotations on this class or empty list if not supported.
     *
-    * @param recursive if true will recursively gather annotations on annotations...
+    * @param parameters options of search.
     */
-   fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation>
+   fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation>
 
    /**
     * Returns true if this class is a data class or false if it is not, or the platform does not
@@ -53,9 +53,28 @@ interface Reflection {
    fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean
 }
 
+/**
+ * Parameter that using for annotation search.
+ */
+sealed interface AnnotationSearchParameter
+
+/**
+ * Search should also include composed annotations.
+ */
+object IncludingAnnotations : AnnotationSearchParameter
+
+/**
+ * Search should include full type hierarchy.
+ *
+ * If used with [IncludingAnnotations] also include composed annotations of superclasses.
+ */
+object IncludingSuperclasses : AnnotationSearchParameter
+
 object BasicReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = null
-   override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> = emptyList()
+   override fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation> =
+      emptyList()
+
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = false
    override fun isPublic(kclass: KClass<out Any>): Boolean = false
@@ -78,28 +97,36 @@ fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
  * Finds the first annotation of type T on this class, or returns null if annotations
  * are not supported on this platform or the annotation is missing.
  *
- * This method will recursively included composed annotations.
+ * This method by default will recursively included composed annotations.
  */
-inline fun <reified T : Any> KClass<*>.annotation(): T? {
-   return reflection.annotations(this, true).filterIsInstance<T>().firstOrNull()
+inline fun <reified T : Any> KClass<*>.annotation(
+   vararg parameters: AnnotationSearchParameter = arrayOf(IncludingAnnotations)
+): T? {
+   return reflection.annotations(this, parameters.toSet()).filterIsInstance<T>().firstOrNull()
 }
 
 /**
  * Finds all annotations of type T on this class, or returns an empty list if annotations
  * are not supported on this platform or the annotation is not present.
  *
- * This method will recursively included composed annotations.
+ * This method by default will recursively included composed annotations.
  */
-inline fun <reified T : Any> KClass<*>.annotations(): List<T> {
-   return reflection.annotations(this, true).filterIsInstance<T>()
+inline fun <reified T : Any> KClass<*>.annotations(
+   vararg parameters: AnnotationSearchParameter = arrayOf(IncludingAnnotations)
+): List<T> {
+   return reflection.annotations(this, parameters.toSet()).filterIsInstance<T>()
 }
 
 /**
  * Returns true if this class has the given annotation.
  *
- * This will recursively check for annotations by looking for annotations on annotations.
+ * This method by default will recursively check for annotations by looking for annotations on annotations.
  */
-inline fun <reified T : Any> KClass<*>.hasAnnotation(): Boolean = this.annotation<T>() != null
+inline fun <reified T : Any> KClass<*>.hasAnnotation(
+   vararg parameters: AnnotationSearchParameter = arrayOf(IncludingAnnotations)
+): Boolean {
+   return this.annotation<T>(*parameters) != null
+}
 
 /**
  * Returns an instance of this KClass via a no-arg default constructor or if this kclass

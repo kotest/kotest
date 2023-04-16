@@ -75,11 +75,10 @@ import kotlin.time.Duration
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
+   private val formatter: DisplayNameFormatter,
 ) : AbstractTestEngineListener() {
 
    private val logger = Logger(JUnitTestEngineListener::class)
-
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -106,7 +105,6 @@ class JUnitTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       failOnIgnoredTests = context.configuration.failOnIgnoredTests
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
@@ -171,10 +169,7 @@ class JUnitTestEngineListener(
    private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
       return try {
 
-         val descriptor = getSpecDescriptor(root, kclass.toDescriptor(), formatter.format(kclass))
-
-         logger.log { Pair(kclass.bestName(), "Registering dynamic spec $descriptor") }
-         listener.dynamicTestRegistered(descriptor)
+         val descriptor = getSpecDescriptor(kclass)
 
          logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
          listener.executionStarted(descriptor)

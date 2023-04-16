@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
@@ -9,7 +10,9 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.doubles.negative
 import io.kotest.matchers.doubles.positive
 import io.kotest.matchers.doubles.shouldBeNegative
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.ints.shouldBeOdd
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.maps.haveKey
 import io.kotest.matchers.should
@@ -19,6 +22,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotEndWith
 import io.kotest.matchers.string.shouldStartWith
@@ -80,8 +84,10 @@ class AssertSoftlyTest : FreeSpec({
             it.message should contain("6) expected:<[2L]> but was:<[1L]>")
             it.message should contain("7) expected:<[2]> but was:<[1]>")
             it.message should contain("8) expected:<['b']> but was:<['a']>")
-            it.message should contain("""9) Element differ at index: [0]
-                                                |expected:<["bar"]> but was:<["foo"]>""".trimMargin())
+            it.message should contain(
+               """9) Element differ at index: [0]
+                                                |expected:<["bar"]> but was:<["foo"]>""".trimMargin()
+            )
             it.message shouldNot contain("10) ")
          }
       }
@@ -156,10 +162,22 @@ class AssertSoftlyTest : FreeSpec({
                   this[1] shouldBe 'o' // should pass
                   this shouldNotBe "foo"
                }
-            }.let {
-               it.message should contain("1) expected:<2> but was:<3>")
-               it.message should contain("2) \"foo\" should not equal \"foo\"")
+            }.run {
+               message should contain("The following 2 assertions for \"foo\" failed:")
+               message should contain("1) expected:<2> but was:<3>")
+               message should contain("2) \"foo\" should not equal \"foo\"")
             }
+         }
+
+         "Includes the receiver in failure message when there's a single failure" {
+            shouldThrow<AssertionError> {
+               assertSoftly("foo") {
+                  length shouldBe 2
+               }
+            }.message shouldBe """
+               The following assertion for "foo" failed:
+               expected:<2> but was:<3>
+            """.trimIndent()
          }
 
          "Returns the receiver" {
@@ -185,6 +203,28 @@ class AssertSoftlyTest : FreeSpec({
                }
 
             a shouldBe "foo"
+         }
+
+         "With nested receivers" - {
+            data class Person(val name: String, val age: Int)
+
+            "Prints both subjects" {
+               shouldFail {
+                  assertSoftly(Person("John", 20)) {
+                     name shouldBe "Jane"
+                     assertSoftly(age) {
+                        it shouldBeGreaterThan 30
+                        it.shouldBeOdd()
+                     }
+                  }
+               }.message.shouldContainInOrder(
+                  """The following 2 assertions for Person(name=John, age=20) failed:""",
+                  """1) expected:<"Jane"> but was:<"John">""",
+                  """2) The following 2 assertions for 20 failed:""",
+                  """   1) 20 should be > 30""",
+                  """   2) 20 should be odd""",
+               )
+            }
          }
       }
 

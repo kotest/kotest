@@ -19,7 +19,8 @@ class SystemPropertyConfigClassTest : FunSpec() {
          ) {
             val projectConfiguration = ProjectConfiguration()
             val collector = CollectingTestEngineListener()
-            TestEngineLauncher(collector, projectConfiguration, emptyList(), emptyList(), null)
+            TestEngineLauncher(collector)
+               .withConfiguration(projectConfiguration)
                .withClasses(FooTest::class)
                .launch()
             collector.result("a")?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"

@@ -28,8 +28,9 @@ To configure in your project, you need to add the `JunitXmlReporter` using [proj
 class MyConfig : AbstractProjectConfig() {
   override fun extensions(): List<Extension> = listOf(
     JunitXmlReporter(
-      includeContainers = false,
-      useTestPathAsName = true
+      includeContainers = false, // don't write out status for all tests
+      useTestPathAsName = true, // use the full test path (ie, includes parent test names)
+      outputDir = "../target/junit-xml" // include to set output dir for maven
     )
   )
 }

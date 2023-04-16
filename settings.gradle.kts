@@ -67,6 +67,9 @@ include(
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
 
+   // allows overriding the .now() functionality on time classes
+   ":kotest-extensions:kotest-extensions-now",
+
    // extensions that adapt junit extensions into kotest extensions
    ":kotest-extensions:kotest-extensions-junit5",
 
