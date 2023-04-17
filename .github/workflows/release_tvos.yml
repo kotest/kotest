@@ -25,7 +25,7 @@ jobs:
    publish_tvos:
       runs-on: macos-11
       strategy:
-         max-parallel: 6
+         max-parallel: 1
          matrix:
             target:
                - publishTvosX64PublicationToDeployRepository
