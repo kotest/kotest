@@ -15,11 +15,29 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.numericDouble
 import io.kotest.property.arbitrary.string
+import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
 class EqualTest : FunSpec() {
    init {
+      test("compare non equal objects") {
+         val arb = Arb.string(1 .. 10, Codepoint.az())
+         checkAll(arb, arb) {a,b ->
+            assume( a != b)
+
+            val left = """{ "a": "$a" }"""
+            val right = """{ "a": "$b" }"""
+
+            left shouldNotEqualJson right
+         }
+
+         val a = """ { "a" : "foo", "b" : "bar" } """
+
+         shouldFail {
+            a shouldNotEqualJson a
+         }.shouldHaveMessage("Expected values to not match")
+      }
 
       test("comparing strings in objects") {
 

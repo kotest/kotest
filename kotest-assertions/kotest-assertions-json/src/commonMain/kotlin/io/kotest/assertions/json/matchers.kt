@@ -63,7 +63,7 @@ private fun equalJsonTree(
 
 data class JsonTree(val root: JsonNode, val raw: String)
 
-infix fun String.shouldEqualJson(expected: String): String {
+infix fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String): String {
    this should equalJson(expected, CompareJsonOptions())
    return this
 }
@@ -79,7 +79,7 @@ infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions
    return this
 }
 
-infix fun String.shouldNotEqualJson(expected: String): String {
+infix fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String): String {
    this shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
