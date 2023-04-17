@@ -10,8 +10,9 @@ on:
             description: "The branch to release from"
             required: true
             default: 'master'
+
 env:
-   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   RELEASE_VERSION: ${{ inputs.version }}
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -24,41 +25,21 @@ permissions:
 jobs:
    publish_base:
       runs-on: ubuntu-latest
+      strategy:
+         max-parallel: 1
+         matrix:
+            target:
+               - publishKotlinMultiplatformPublicationToDeployRepository
+               - publishJvmPublicationToDeployRepository
+               - publishJsPublicationToDeployRepository
+               - publishKotestBomPublicationToDeployRepository
+               - publishLinuxX64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'zulu'
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: publish multiplatform release
-            run: ./gradlew publishKotlinMultiplatformPublicationToDeployRepository
-
-         -  name: publish jvm release
-            run: ./gradlew publishJvmPublicationToDeployRepository
-
-         -  name: publish js release
-            run: ./gradlew publishJsPublicationToDeployRepository
-
-         -  name: publish bom release
-            run: ./gradlew publishKotestBomPublicationToDeployRepository
-
-   publish_linux:
-      runs-on: ubuntu-latest
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
+               ref: ${{ inputs.branch }}
 
          -  name: Setup JDK
             uses: actions/setup-java@v3
@@ -68,5 +49,5 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: publish linux x64 release
-            run: ./gradlew publishLinuxX64PublicationToDeployRepository
+         -  name: publish
+            run: ./gradlew ${{ matrix.target }}
