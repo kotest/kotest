@@ -22,7 +22,8 @@ env:
 permissions:
    contents: read
 
-   publish_mac:
+jobs:
+   publish_watchos:
       runs-on: macos-11
       strategy:
          max-parallel: 1
