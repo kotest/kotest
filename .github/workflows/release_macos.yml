@@ -1,4 +1,4 @@
-name: release-watchos
+name: release_macos
 
 on:
    workflow_dispatch:
@@ -10,7 +10,6 @@ on:
             description: "The branch to release from"
             required: true
             default: 'master'
-
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -22,17 +21,15 @@ env:
 permissions:
    contents: read
 
+jobs:
    publish_mac:
       runs-on: macos-11
       strategy:
          max-parallel: 1
          matrix:
             target:
-               - publishWatchosArm32PublicationToDeployRepository
-               - publishWatchosArm64PublicationToDeployRepository
-               - publishWatchosX86PublicationToDeployRepository
-               - publishWatchosX64PublicationToDeployRepository
-               - publishWatchosSimulatorArm64PublicationToDeployRepository
+               - "publishMacosX64PublicationToDeployRepository"
+               - "publishMacosArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
