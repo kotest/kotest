@@ -15,7 +15,6 @@ on:
             required: true
             type: choice
             options:
-               - "publishMingwX64PublicationToDeployRepository"
                - "publishMacosX64PublicationToDeployRepository"
                - "publishMacosArm64PublicationToDeployRepository"
                - "publishIosX64PublicationToDeployRepository"
