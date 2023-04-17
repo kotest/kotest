@@ -72,7 +72,7 @@ jobs:
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
 
    publish_mac:
-      runs-on: macos-11
+      runs-on: macos-latest
       strategy:
          max-parallel: 6
          matrix:

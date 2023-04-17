@@ -10,7 +10,7 @@ on:
             description: "The branch to release from"
             required: true
             default: 'master'
-            
+
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -24,7 +24,7 @@ permissions:
 
 jobs:
    publish_tvos:
-      runs-on: macos-11
+      runs-on: macos-latest
       strategy:
          max-parallel: 1
          matrix:

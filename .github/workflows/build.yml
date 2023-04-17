@@ -55,7 +55,7 @@ jobs:
 
    macos:
       if: github.repository == 'kotest/kotest'
-      runs-on: macos-11
+      runs-on: macos-latest
       strategy:
          matrix:
             target:
