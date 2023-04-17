@@ -10,12 +10,7 @@ on:
             description: "The branch to release from"
             required: true
             default: 'master'
-         release-task:
-            description: "The gradle release task to run"
-            required: true
-            type: choice
-            options:
-               - "publishMingwX64PublicationToDeployRepository"
+
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -46,4 +41,4 @@ jobs:
          -  uses: gradle/gradle-build-action@v2
 
          -  name: publish mingwX64 release
-            run: ./gradlew
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
