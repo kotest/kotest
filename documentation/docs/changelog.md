@@ -11,11 +11,11 @@ slug: changelog.html
 ### Improvements
 
 * add language annotation to json matchers (#3487)
-*
 
 ## 5.6.0 April 2023
 
-** Note this release bumps the minimum required version of Kotlin to 1.8.0. If you are using < 1.8.0 you can continue to use Kotest 5.5.x **
+** Note this release bumps the minimum required version of Kotlin to 1.8.0. **
+** If you are using < 1.8.0 you can continue to use Kotest 5.5.x **
 
 ### Breaking change:
 
