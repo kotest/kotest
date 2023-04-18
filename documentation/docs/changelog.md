@@ -4,6 +4,107 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.6.1 April 2023
+
+** This release is mainly to add some missing klib dependencies for ios **
+
+### Improvements
+
+* add language annotation to json matchers (#3487)
+*
+
+## 5.6.0 April 2023
+
+** Note this release bumps the minimum required version of Kotlin to 1.8.0. If you are using < 1.8.0 you can continue to use Kotest 5.5.x **
+
+### Breaking change:
+
+* Remove Iterable checking logic from IterableEq (#3420)
+
+### Fixes
+
+* BlockHound extension: Fix handling of nested tests (#3454) (#3456)
+* fix(JunitXmlReporter): resolve paths with irrelevant directories correctly (#3479)
+* Fix `Codepoint.ascii()` to return arbitrary printable ASCII characters (#3429)
+* Fixing BOM publication to include -jvm artifacts. Fixes #3417
+* Re-implement language injection annotation (#3397)
+* Support UUID, Path, file as stable identifier on JVM (#3472)
+
+### Improvements
+
+* Upgrade to Kotlin 1.8 (#3468)
+* Adding generators for upper/lower casing strings (#3402)
+* expose random seed in property context (#3469)
+* Printing type when failing numeric or default comparison (#3395)
+* Add access to background scope via extension (#3315)
+* 'assertSoftly' and 'all' imply clue (#3425)
+* enhance Json assertions reuseability (#3438)
+* Add shouldContainAllIgnoringFields (#3394)
+* Expose discovered specs as TestDescriptors during discovery and add support for unique IDs (#3461)
+* Support superclass annotations when deciding whether a class should be isolated. (#3441)
+* Deprecate older json matchers (#3474)
+* Move constant now to new module; bump junit to 1.8.2 (#3470)
+* Added @RequiresPlatform (#3475)
+* Added shouldBeEqual (#3477)
+* Expose testCoroutineScheduler to mpp (#3471)
+* Implement shouldThrowSoftly (#3476)
+* Added Exhaustive for permutations of a list (#3473)
+* shouldBe/shouldNotBe chain (#3186)
+* Tags defined in spec should be applied before listeners (#3189)
+* use GlobalArbResolver for reflective Arbs (#3455)
+* property arb for duration (#3227)
+* add edgecase 'emptyMap' to Arb.map() (#3447)
+* Restoring old mocha/jasmine external test functions
+* Remove concurrency mode from docs (#3434)
+* Adding tvos sim / watchos sim snapshot deployments
+* Increase max arity of checkall property tests to 22 (#3382)
+* Support coroutineTestScope globally (#3383)
+
+
+Thank you to all the contributors since the 5.5.0 release:
+
+* Alex Decker
+* Alexey Genus
+* Alphonse Bendt
+* Andrey Kozlov
+* AnouarD
+* Anouar Doukkali
+* Arvind Arikatla
+* aSemy
+* Bartłomiej Zaręba
+* eduardbosch-jt
+* Emil Kantis
+* Grégory Lureau
+* Ivan “CLOVIS” Canet
+* IvanPavlov1995
+* Jama Mohamed
+* Jean-Michel Fayard
+* julian abiodun
+* Julian K
+* Leonardo Colman Lopes
+* Łukasz Pięta
+* Marc Philipp
+* Martin Caslavsky
+* Matej Drobnič
+* Mitchell Yuwono
+* OliverO2
+* Osip Fatkullin
+* ov7a
+* Pankaj
+* Ryan Lewis
+* RyuNen344
+* Sangboak Lee
+* Sergey Volkov
+* Shervinox
+* sksamuel
+* Stefanqn
+* Travis
+* Varun Arora
+* Vinícius Hashimoto
+* Vladimir Sitnikov
+* Xavier Oliver
+* Zak Henry
+
 ## 5.5.5 February 2023
 
 *  Support coroutineTestScope globally (#3383)
