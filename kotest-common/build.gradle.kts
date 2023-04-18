@@ -5,20 +5,20 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(libs.kotlinx.coroutines.core)
          }
       }
 
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
          }

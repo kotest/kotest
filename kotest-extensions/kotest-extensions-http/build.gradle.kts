@@ -7,20 +7,20 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.core)
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.ktor.client.apache)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.mockserver.netty)
@@ -29,7 +29,7 @@ kotlin {
       }
 
       if (!project.hasProperty(Ci.JVM_ONLY)) {
-         val jsMain by getting {
+         jsMain {
             dependencies {
                implementation(libs.ktor.client.js)
             }

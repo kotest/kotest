@@ -6,7 +6,7 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             // this is api because we want to expose `shouldBe` etc
             api(projects.kotestAssertions.kotestAssertionsApi)
@@ -17,7 +17,7 @@ kotlin {
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
             implementation(libs.diffutils)

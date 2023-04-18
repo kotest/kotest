@@ -7,7 +7,7 @@ kotlin {
    sourceSets {
 
       @Suppress("UNUSED_VARIABLE")
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestFramework.kotestFrameworkApi)
