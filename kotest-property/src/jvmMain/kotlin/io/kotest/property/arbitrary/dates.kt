@@ -228,8 +228,8 @@ fun Arb.Companion.instant(
  * Arberates a stream of random [OffsetDateTime]
  */
 fun Arb.Companion.offsetDateTime(
-   minValue: LocalDateTime = LocalDateTime.MIN,
-   maxValue: LocalDateTime = LocalDateTime.MAX,
+   minValue: LocalDateTime = LocalDateTime.of(1970, 1, 1, 0, 0),
+   maxValue: LocalDateTime = LocalDateTime.of(2030, 12, 31, 23, 59),
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
@@ -240,8 +240,8 @@ fun Arb.Companion.offsetDateTime(
  * Arberates a stream of random [ZonedDateTime]
  */
 fun Arb.Companion.zonedDateTime(
-   minValue: LocalDateTime = LocalDateTime.MIN,
-   maxValue: LocalDateTime = LocalDateTime.MAX,
+   minValue: LocalDateTime = LocalDateTime.of(1970, 1, 1, 0, 0),
+   maxValue: LocalDateTime = LocalDateTime.of(2030, 12, 31, 23, 59),
    zoneId: Arb<ZoneId> = zoneId()
 ): Arb<ZonedDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
