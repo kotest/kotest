@@ -6,7 +6,7 @@ kotlin {
 
    sourceSets {
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(projects.kotestFramework.kotestFrameworkEngine)

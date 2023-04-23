@@ -7,6 +7,7 @@ on:
          - 'documentation/**'
          - '*.md'
          - '*.yml'
+         - '.github/workflows/**'
       branches:
          - master
 
@@ -30,7 +31,7 @@ jobs:
                gradle-command: ${{ matrix.target }}
 
    mac:
-      runs-on: macos-11
+      runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       strategy:
          fail-fast: false

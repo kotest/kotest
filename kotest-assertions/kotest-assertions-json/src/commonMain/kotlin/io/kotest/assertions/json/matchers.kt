@@ -1,10 +1,34 @@
 package io.kotest.assertions.json
 
+import io.kotest.common.KotestLanguage
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+
+/**
+ * Returns a [Matcher] that verifies that two json strings are equal.
+ *
+ * This matcher will consider two json strings matched if they have the same key-values pairs.
+ * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
+ */
+fun equalJson(
+   @KotestLanguage("json", "", "") expected: String,
+   options: CompareJsonOptions
+): Matcher<String?> =
+   Matcher { actual ->
+      if (actual == null) {
+         MatcherResult(
+            expected == "null",
+            { "Expected value to be equal to json '$expected', but was: null" },
+            { "Expected value to be not equal to json '$expected', but was: null" }
+         )
+      } else {
+         val (expectedTree, actualTree) = parse(expected, actual)
+         equalJsonTree(expectedTree, options).test(actualTree)
+      }
+   }
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
@@ -15,42 +39,32 @@ import io.kotest.matchers.shouldNot
  *
  * This matcher will consider two json strings matched if they have the same key-values pairs,
  * regardless of order.
- *
  */
-fun equalJson(
-   expected: JsonTree,
-   mode: CompareMode,
-   order: CompareOrder,
-) = equalJson(expected, legacyOptions(mode, order))
-
-fun equalJson(
+private fun equalJsonTree(
    expected: JsonTree,
    options: CompareJsonOptions
-) =
-   object : Matcher<JsonTree> {
-      override fun test(value: JsonTree): MatcherResult {
-         val error = compare(
-            path = listOf(),
-            expected = expected.root,
-            actual = value.root,
-            options,
-         )?.asString()
+): Matcher<JsonTree> =
+   Matcher { value ->
+      val error = compare(
+         path = listOf(),
+         expected = expected.root,
+         actual = value.root,
+         options,
+      )?.asString()
 
-         return ComparableMatcherResult(
-            error == null,
-            { "$error\n\n" },
-            { "Expected values to not match\n\n" },
-            value.raw,
-            expected.raw,
-         )
-      }
+      ComparableMatcherResult(
+         error == null,
+         { "$error\n\n" },
+         { "Expected values to not match\n\n" },
+         value.raw,
+         expected.raw,
+      )
    }
 
 data class JsonTree(val root: JsonNode, val raw: String)
 
-infix fun String.shouldEqualJson(expected: String): String {
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, CompareJsonOptions())
+infix fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String): String {
+   this should equalJson(expected, CompareJsonOptions())
    return this
 }
 
@@ -61,14 +75,12 @@ infix fun String.shouldEqualJson(expected: String): String {
 infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, options)
+   this should equalJson(expected, options)
    return this
 }
 
-infix fun String.shouldNotEqualJson(expected: String): String {
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, CompareJsonOptions())
+infix fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String): String {
+   this shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
 
@@ -78,8 +90,7 @@ infix fun String.shouldNotEqualJson(expected: String): String {
 infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, options)
+   this shouldNot equalJson(expected, options)
    return this
 }
 

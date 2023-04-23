@@ -84,7 +84,7 @@ Add the following dependency to your build.
 ```kotlin
 kotlin {
   sourceSets {
-    val commonTest by getting {
+    commonTest {
       dependencies {
         implementation("io.kotest:kotest-property:$version")
       }
@@ -105,7 +105,7 @@ kotlin {
       }
    }
    sourceSets {
-      val jsTest by getting {
+      jsTest {
          dependencies {
             implementation("io.kotest:kotest-property:$version")
          }

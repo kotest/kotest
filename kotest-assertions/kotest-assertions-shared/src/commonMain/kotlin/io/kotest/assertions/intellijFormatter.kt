@@ -9,6 +9,12 @@ package io.kotest.assertions
  * From the above link:
  * private static final Pattern ASSERT_EQUALS_PATTERN = Pattern.compile("expected:<(.*)> but was:<(.*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
  */
+// TODO: Should this be internal?
 fun intellijFormatError(expected: Expected, actual: Actual): String {
    return "expected:<${expected.value.value}> but was:<${actual.value.value}>"
 }
+
+internal fun intellijFormatErrorWithTypeInformation(
+   expected: ExpectedWithType,
+   actual: ActualWithType,
+) = "expected:${expected.value.type}<${expected.value.value}> but was:${actual.value.type}<${actual.value.value}>"

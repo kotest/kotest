@@ -48,3 +48,8 @@ private fun javaIoFileKlass(): KClass<*>? = try {
 } catch (_: ClassNotFoundException) {
   null
 }
+
+internal actual fun Any?.printType() = when {
+   this == null -> "Nothing"
+   else -> this::class.qualifiedName ?: "UnknownType"
+}

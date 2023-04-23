@@ -3,6 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.*
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
+import io.kotest.assertions.print.printWithType
 import io.kotest.common.isIntellij
 
 /**
@@ -30,7 +31,7 @@ object StringEq : Eq<String> {
             )
          }
          useDiff(expected, actual) -> diff(expected, actual)
-         else -> failure(Expected(expected.print()), Actual(actual.print()))
+         else -> failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
       }
    }
 
