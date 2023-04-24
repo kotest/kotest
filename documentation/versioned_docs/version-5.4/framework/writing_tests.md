@@ -33,7 +33,7 @@ Note that tests must be defined inside an `init {}` block or an init lambda as i
 
 ### Nested Tests
 
-All styles offer the ability to nest tests. The actual syntax varies from style to style,
+Most styles offer the ability to nest tests. The actual syntax varies from style to style,
 but is essentially just a different keyword used for the outer tests.
 
 For example, in _Describe Spec_, the outer tests are created using the `describe` function and
