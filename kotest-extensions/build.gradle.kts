@@ -7,20 +7,20 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestCommon)
-            implementation(libs.mockk)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
          }
       }
    }

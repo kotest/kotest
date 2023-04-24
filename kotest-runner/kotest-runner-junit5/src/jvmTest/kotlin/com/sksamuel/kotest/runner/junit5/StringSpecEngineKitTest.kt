@@ -53,7 +53,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecTestCase",
                "a failing test",
                "a passing test",
                "an erroring test",
@@ -69,7 +68,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 8
+            count() shouldBe 7
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit",
@@ -87,7 +86,6 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit",
                "SpecInstantiationException",
             )
          }
@@ -101,7 +99,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 8
+            count() shouldBe 7
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecOverride",
@@ -119,7 +117,6 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecOverride",
                "Before Spec Error",
             )
          }
@@ -149,7 +146,6 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecFunction",
                "Before Spec Error",
             )
          }
@@ -162,7 +158,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 14
+            count() shouldBe 13
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterSpec",
@@ -189,7 +185,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterSpec",
                "a failing test",
                "a passing test",
                "After Spec Error",
@@ -204,7 +199,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 14
+            count() shouldBe 13
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterSpecFunction",
@@ -231,7 +226,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterSpecFunction",
                "a failing test",
                "a passing test",
                "After Spec Error",
@@ -246,7 +240,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 11
+            count() shouldBe 10
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeTest",
@@ -270,7 +264,8 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeTest", "a failing test", "a passing test"
+               "a failing test",
+               "a passing test"
             )
          }
    }
@@ -282,7 +277,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 11
+            count() shouldBe 10
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeTestFunction",
@@ -306,7 +301,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeTestFunction",
                "a failing test",
                "a passing test"
             )
@@ -323,7 +317,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 11
+            count() shouldBe 10
             started().shouldHaveNames(
                "Kotest",
                fullyQualifiedTestClassName,
@@ -347,7 +341,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               fullyQualifiedTestClassName,
                "a failing test",
                "a passing test"
             )
@@ -361,7 +354,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 11
+            count() shouldBe 10
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterTest",
@@ -385,7 +378,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterTest",
                "a failing test",
                "a passing test"
             )
@@ -399,7 +391,7 @@ class StringSpecEngineKitTest : FunSpec({
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
-            count() shouldBe 11
+            count() shouldBe 10
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterTestFunction",
@@ -423,7 +415,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
             aborted().shouldBeEmpty()
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInAfterTestFunction",
                "a failing test",
                "a passing test"
             )
@@ -456,7 +447,6 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               fullyQualifiedTestClassName,
                "Before Spec Error",
             )
          }

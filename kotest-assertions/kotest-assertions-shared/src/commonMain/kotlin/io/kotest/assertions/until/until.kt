@@ -4,6 +4,7 @@ import io.kotest.assertions.failure
 import kotlin.time.Duration
 import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 fun interface UntilListener<in T> {
    fun onEval(t: T)
@@ -32,7 +33,7 @@ data class PatienceConfig(
  * This method supports suspension.
  */
 suspend fun until(duration: Duration, f: suspend () -> Boolean) =
-   until(duration, interval = Duration.seconds(1).fixed(), f = f)
+   until(duration, interval = 1.seconds.fixed(), f = f)
 
 /**
  * Executes a function at a given interval until it returns true, or until a specified duration has elapsed.
@@ -71,7 +72,7 @@ suspend fun <T> until(
    duration: Duration,
    predicate: suspend (T) -> Boolean,
    f: suspend () -> T
-): T = until(duration, interval = Duration.seconds(1).fixed(), predicate = predicate, f = f)
+): T = until(duration, interval = 1.seconds.fixed(), predicate = predicate, f = f)
 
 /**
  * Executes the function [f] at a given [interval] until it returns a value that passes the given [predicate],
@@ -108,7 +109,7 @@ suspend fun <T> until(
 @Deprecated("Simply move the listener code into the predicate code. Will be removed in 6.0")
 suspend fun <T> until(
    duration: Duration,
-   interval: Interval = Duration.seconds(1).fixed(),
+   interval: Interval = 1.seconds.fixed(),
    predicate: suspend (T) -> Boolean,
    listener: UntilListener<T>,
    f: suspend () -> T
