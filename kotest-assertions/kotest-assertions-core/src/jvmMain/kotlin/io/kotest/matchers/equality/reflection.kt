@@ -397,7 +397,7 @@ fun <T : Any> T.shouldBeEqualToComparingFields(
  * */
 @Deprecated(
    message = "This will be removed in Kotest 7.0",
-   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig) or shouldBeEqualToIgnoringFields(other, ignoredField)")
 )
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
@@ -418,7 +418,7 @@ fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
 
 @Deprecated(
    message = "This will be removed in Kotest 7.0",
-   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig) or shouldNotBeEqualToIgnoringFields(other, ignoredField)")
 )
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
@@ -439,7 +439,7 @@ fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
 
 @Deprecated(
    message = "This will be removed in Kotest 7.0",
-   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+   replaceWith = ReplaceWith("shouldBeEqualToComparingFields(other, fieldEqualityCheckConfig) or shouldBeEqualToIgnoringFields(other, ignoredField)")
 )
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
@@ -454,7 +454,7 @@ fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
 
 @Deprecated(
    message = "This will be removed in Kotest 7.0",
-   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig)")
+   replaceWith = ReplaceWith("shouldNotBeEqualToComparingFields(other, fieldEqualityCheckConfig) or shouldNotBeEqualToIgnoringFields(other, ignoredField)")
 )
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
