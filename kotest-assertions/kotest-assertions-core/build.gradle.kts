@@ -1,5 +1,7 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    id("kotest-multiplatform-library-conventions")
+   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
 kotlin {
