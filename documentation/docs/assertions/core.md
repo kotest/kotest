@@ -209,6 +209,11 @@ Matchers provided by the `kotest-assertions-core` module.
 | `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today. |
 | `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
 
+| OffsetDateTime                                                  |                                                                                                      |
+|-----------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `offsetDateTime.shouldBeToday()`                                | Asserts that the OffsetDateTime has the same day as today.                                           |
+| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)` | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+
 | Times                                         ||
 |-----------------------------------------------| ---- |
 | `time.shouldHaveSameHoursAs(otherTime)`       | Asserts that the time has the same hours as the given time. |
