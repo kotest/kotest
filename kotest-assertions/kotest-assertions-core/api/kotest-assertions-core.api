@@ -768,8 +768,11 @@ public final class io/kotest/matchers/date/MatchersKt {
 
 public final class io/kotest/matchers/date/OffsetdatetimeKt {
 	public static final fun beInTodayODT ()Lio/kotest/matchers/Matcher;
+	public static final fun haveSameInstantAs (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeToday (Ljava/time/OffsetDateTime;)V
+	public static final fun shouldHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/OffsetDateTime;)V
+	public static final fun shouldNotHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 }
 
 public final class io/kotest/matchers/date/TimestampKt {

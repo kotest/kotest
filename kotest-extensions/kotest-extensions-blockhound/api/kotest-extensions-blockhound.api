@@ -1,0 +1,29 @@
+public final class io/kotest/extensions/blockhound/BlockHound : io/kotest/core/extensions/TestCaseExtension {
+	public static final field Companion Lio/kotest/extensions/blockhound/BlockHound$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/kotest/extensions/blockhound/BlockHoundMode;)V
+	public synthetic fun <init> (Lio/kotest/extensions/blockhound/BlockHoundMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lio/kotest/extensions/blockhound/BlockHoundMode;)Lio/kotest/extensions/blockhound/BlockHound;
+	public static synthetic fun copy$default (Lio/kotest/extensions/blockhound/BlockHound;Lio/kotest/extensions/blockhound/BlockHoundMode;ILjava/lang/Object;)Lio/kotest/extensions/blockhound/BlockHound;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/extensions/blockhound/BlockHound$Companion {
+}
+
+public final class io/kotest/extensions/blockhound/BlockHoundMode : java/lang/Enum {
+	public static final field DISABLED Lio/kotest/extensions/blockhound/BlockHoundMode;
+	public static final field ERROR Lio/kotest/extensions/blockhound/BlockHoundMode;
+	public static final field PRINT Lio/kotest/extensions/blockhound/BlockHoundMode;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/blockhound/BlockHoundMode;
+	public static fun values ()[Lio/kotest/extensions/blockhound/BlockHoundMode;
+}
+
+public final class io/kotest/extensions/blockhound/KotestBlockHoundIntegration : reactor/blockhound/integration/BlockHoundIntegration {
+	public fun <init> ()V
+	public fun applyTo (Lreactor/blockhound/BlockHound$Builder;)V
+}
+
