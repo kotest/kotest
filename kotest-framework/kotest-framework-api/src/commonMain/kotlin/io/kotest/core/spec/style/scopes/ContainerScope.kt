@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tuple2
+import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
@@ -198,6 +199,18 @@ interface ContainerScope : TestScope {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(Tuple2(testCase, result))
          }
       })
+   }
+
+   suspend fun include(factory: TestFactory) {
+      factory.tests.forEach { test ->
+         registerTest(
+            test.name,
+            test.disabled ?: false,
+            test.config,
+            test.type,
+            test.test,
+         )
+      }
    }
 }
 

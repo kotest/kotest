@@ -36,6 +36,16 @@ class NestedFactoriesShouldInlineTest : FunSpec() {
    }
 }
 
+class FactoryInContainerTest : FunSpec({
+   context("foo") {
+      include(factory1(StringBuilder()))
+
+      test("bar") {
+         1 shouldBe 2
+      }
+   }
+})
+
 class NestedFactoriesShouldRespectTestOrderFunctionOverrideTest : FunSpec() {
 
    override fun testCaseOrder() = TestCaseOrder.Lexicographic
