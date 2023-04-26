@@ -2,7 +2,6 @@
 plugins {
    id("kotest-multiplatform-library-conventions")
    alias(libs.plugins.kotlin.serialization)
-   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
 kotlin {

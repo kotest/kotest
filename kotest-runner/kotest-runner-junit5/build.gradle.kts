@@ -2,7 +2,6 @@
 plugins {
    id("kotest-jvm-conventions")
    id("kotest-publishing-conventions")
-   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
 kotlin {
