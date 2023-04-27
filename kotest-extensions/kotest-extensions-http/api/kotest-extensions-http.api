@@ -1,0 +1,12 @@
+public final class io/kotest/extensions/http/ParserKt {
+	public static final fun parseHttpRequest (Ljava/util/List;)Lio/ktor/client/request/HttpRequestBuilder;
+	public static final fun runRequest (Lio/ktor/client/request/HttpRequestBuilder;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun runRequest (Lio/ktor/client/request/HttpRequestBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/http/TestKt {
+	public static final fun http (Ljava/lang/String;Ljava/util/Map;Ljava/lang/Long;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun http (Ljava/lang/String;Ljava/util/Map;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun http (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
