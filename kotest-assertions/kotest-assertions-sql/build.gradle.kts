@@ -5,14 +5,14 @@ plugins {
 
 kotlin {
    sourceSets {
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(libs.mockk)
          }

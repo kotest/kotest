@@ -4,7 +4,7 @@ plugins {
 
 kotlin {
    sourceSets {
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))

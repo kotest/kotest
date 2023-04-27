@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    id("kotest-jvm-conventions")
    id("kotest-publishing-conventions")
@@ -7,13 +8,13 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(kotlin("reflect"))
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             api(projects.kotestFramework.kotestFrameworkApi)
             api(projects.kotestCommon)
@@ -30,7 +31,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestFramework.kotestFrameworkDatatest)

@@ -53,7 +53,7 @@ jobs:
                path: build-reports.zip
 
    test_mac:
-      runs-on: macos-11
+      runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       strategy:
          matrix:

@@ -1,0 +1,14 @@
+public final class io/kotest/matchers/sql/ResultsetKt {
+	public static final fun containColumn (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveColumnCount (I)Lio/kotest/matchers/Matcher;
+	public static final fun haveRowCount (I)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainColumn (Ljava/sql/ResultSet;Ljava/lang/String;)V
+	public static final fun shouldHaveColumn (Ljava/sql/ResultSet;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveColumns (Ljava/sql/ResultSet;I)V
+	public static final fun shouldHaveRow (Ljava/sql/ResultSet;ILkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveRows (Ljava/sql/ResultSet;I)V
+	public static final fun shouldNotContainColumn (Ljava/sql/ResultSet;Ljava/lang/String;)V
+	public static final fun shouldNotHaveColumns (Ljava/sql/ResultSet;I)V
+	public static final fun shouldNotHaveRows (Ljava/sql/ResultSet;I)V
+}
+

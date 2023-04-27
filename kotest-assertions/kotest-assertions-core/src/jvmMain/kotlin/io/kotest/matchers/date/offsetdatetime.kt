@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 fun beInTodayODT() = object : Matcher<OffsetDateTime> {
    override fun test(value: OffsetDateTime): MatcherResult {
@@ -37,3 +38,77 @@ fun OffsetDateTime.shouldBeToday() = this should beInTodayODT()
  */
 fun OffsetDateTime.shouldNotBeToday() = this shouldNot beInTodayODT()
 
+/**
+ * Asserts that this is equal to [other] using the [OffsetDateTime.isEqual]
+ *
+ * Opposite of [OffsetDateTime.shouldNotHaveSameInstantAs]
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldHaveSameInstantAs(other)  // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldHaveSameInstantAs(other)  // Assertion fails, date is NOT equal to the other date
+ * ```
+ *
+ * @see OffsetDateTime.shouldNotHaveSameInstantAs
+ */
+infix fun OffsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime) = this should haveSameInstantAs(other)
+
+/**
+ * Asserts that this is NOT equal to [other] using the [OffsetDateTime.isEqual]
+ *
+ * Opposite of [OffsetDateTime.shouldHaveSameInstantAs]
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotHaveSameInstantAs(other)  // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotHaveSameInstantAs(other)  // Assertion fails, date is equal to the other date
+ * ```
+ *
+ * @see OffsetDateTime.shouldHaveSameInstantAs
+ */
+infix fun OffsetDateTime.shouldNotHaveSameInstantAs(other: OffsetDateTime) = this shouldNot haveSameInstantAs(other)
+
+/**
+ * Matcher that checks if OffsetDateTime is equal to another OffsetDateTime using the
+ * [OffsetDateTime.isEqual]
+ *
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.haveSameInstantAs(other)  // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.haveSameInstantAs(other)  // Assertion fails, date is NOT equal to the other date
+ * ```
+ *
+ * @see OffsetDateTime.shouldHaveSameInstantAs
+ * @see OffsetDateTime.shouldNotHaveSameInstantAs
+ */
+fun haveSameInstantAs(other: OffsetDateTime) = object : Matcher<OffsetDateTime> {
+   override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(
+         passed = value.isEqual(other),
+         failureMessageFn = { "$value should be equal to $other" },
+         negatedFailureMessageFn = {
+            "$value should not be equal to $other"
+         })
+}

@@ -22,3 +22,4 @@ jobs:
             run: |
                npm --prefix documentation ci
                npm --prefix documentation run build
+

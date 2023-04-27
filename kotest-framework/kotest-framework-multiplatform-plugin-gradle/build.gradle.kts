@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.internal.impldep.io.opencensus.tags.Tags
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -87,6 +88,7 @@ gradlePlugin {
          implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
          displayName = "Kotest Multiplatform Compiler Plugin"
          description = "Adds support for Javascript and Native tests in Kotest"
+         tags.set(listOf("kotest", "kotlin", "testing", "integrationtesting", "javascript"))
       }
    }
 }

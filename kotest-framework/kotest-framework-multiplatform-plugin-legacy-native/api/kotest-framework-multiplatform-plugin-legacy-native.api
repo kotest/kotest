@@ -1,0 +1,28 @@
+public final class io/kotest/framework/multiplatform/native/EntryPoint {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/native/EntryPoint;
+	public static final field LaunchMethodName Ljava/lang/String;
+	public static final field LauncherValName Ljava/lang/String;
+	public static final field TestEngineClassName Ljava/lang/String;
+	public static final field WithSpecsMethodName Ljava/lang/String;
+	public static final field WithTeamCityListenerMethodName Ljava/lang/String;
+}
+
+public final class io/kotest/framework/multiplatform/native/KotestNativeComponentRegistrar : org/jetbrains/kotlin/compiler/plugin/CompilerPluginRegistrar {
+	public fun <init> ()V
+	public fun getSupportsK2 ()Z
+	public fun registerExtensions (Lorg/jetbrains/kotlin/compiler/plugin/CompilerPluginRegistrar$ExtensionStorage;Lorg/jetbrains/kotlin/config/CompilerConfiguration;)V
+}
+
+public final class io/kotest/framework/multiplatform/native/SpecIrGenerationExtension : org/jetbrains/kotlin/backend/common/extensions/IrGenerationExtension {
+	public fun <init> (Lorg/jetbrains/kotlin/cli/common/messages/MessageCollector;)V
+	public fun generate (Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;)V
+	public fun resolveSymbol (Lorg/jetbrains/kotlin/ir/symbols/IrSymbol;Lorg/jetbrains/kotlin/ir/builders/TranslationPluginContext;)Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;
+}
+
+public final class io/kotest/framework/multiplatform/native/SpecsKt {
+	public static final fun getSpecClasses ()Ljava/util/List;
+	public static final fun isSpecClass (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Z
+	public static final fun specs (Lorg/jetbrains/kotlin/ir/declarations/IrFile;)Ljava/util/List;
+	public static final fun superTypes (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Ljava/util/List;
+}
+
