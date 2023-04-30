@@ -11,14 +11,14 @@ Let's start with the most exciting news. As part of the 4.1.0 release cycle, we'
 of the [Kotest plugin for Intellij](https://plugins.jetbrains.com/plugin/14080-kotest). The plugin is available in the Jetbrains plugin repository, so hop on over to
 settings -> plugins and search for "kotest".
 
-![plugin image](./images/plugin.png)
+![plugin image](images/plugin.png)
 
 As this is the first release that will be used by the majority of users, bugs will likely be found. If you do encounter
 an issue, please open a ticket [here](https://github.com/kotest/kotest-intellij-plugin).
 
 The plugin provides gutter run icons for specs, top level tests, and nested tests.
 
-![gutter_icon_picture](./images/gutter_icons.png)
+![gutter_icon_picture](images/gutter_icons.png)
 
 The plugin additionally provides a tool window view which displays the structure of your tests.
 The window describes the currently selected test file, which includes any specs defined in that file and tests
@@ -29,7 +29,7 @@ as well as included test factories.
 
 Clicking on a spec, test, include or callback will navigate directly to that element in the source editor.
 
-![test_explorer_tests](./images/test_explorer_tests.png)
+![test_explorer_tests](images/test_explorer_tests.png)
 
 For full details on the features provided by the plugin, check out the [readme](https://github.com/kotest/kotest-intellij-plugin).
 

@@ -6,7 +6,7 @@ sidebar_label: Fail On Empty Test Suite
 ---
 
 To ensure that a project always executes at least one test,
-you can enable `failOnEmptyTestSuite` in [project config](./project_config.md).
+you can enable `failOnEmptyTestSuite` in [project config](project_config.md).
 
 If this is set to true and a module has no tests executed then the build will fail.
 

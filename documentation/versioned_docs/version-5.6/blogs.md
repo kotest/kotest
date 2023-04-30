@@ -32,5 +32,6 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [Kotlin Assertion Libraries - Kotest](https://www.novatec-gmbh.de/blog/kotlin-assertion-libraries-kotest-assertions/)
 * [Introduction to Kotest at Baeldung](https://www.baeldung.com/kotlin/kotest)
 * [How to improve the quality of tests using property-based testing](https://blog.devgenius.io/how-to-improve-the-quality-of-tests-using-property-based-testing-587b817ea82e)
+* [JUnit 5 vs Kotest. Part 1: Is it the new way we test?](https://test-architect.dev/junit-5-vs-kotest-part-1/)
 
 Please open a PR to add your blog or article here.

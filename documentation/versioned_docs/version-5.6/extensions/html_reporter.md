@@ -7,12 +7,12 @@ slug: html_reporter.html
 
 [![Latest Release](https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-htmlreporter)](https://search.maven.org/artifact/io.kotest/kotest-extensions-htmlreporter)
 
-When using [JUnit XML](./junit_xml.md), we can generate XML results from tests that are able to produce output with nested
+When using [JUnit XML](junit_xml.md), we can generate XML results from tests that are able to produce output with nested
 tests. Unfortunately, Gradle generates its HTML reports with the results it has in-memory, which doesn't support nested
 tests, and it doesn't seem to be able to fetch results from a different XML.
 
 To solve this, Kotest has a listener that is able to generate HTML reports based on the XML reports that are generated
-by [JUnit XML](./junit_xml.md).
+by [JUnit XML](junit_xml.md).
 
 :::note
 The following module is needed: `io.kotest:kotest-extensions-htmlreporter` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-htmlreporter).
