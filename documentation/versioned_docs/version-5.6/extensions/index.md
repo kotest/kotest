@@ -30,6 +30,7 @@ maintained and hosted by third parties.
 |--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
 | [Android](https://github.com/LeoColman/kotest-android)                                           | Toolbox for working with Kotest and Android                                        |
 | [Fluentlenium](https://fluentlenium.io/docs/test-runners/#kotest)                                | FluentLenium integration with Kotest                                               |
+| [H2 Database Extension](https://github.com/LeoColman/kotest-extensions-h2)                       | H2 Database integration with Kotest                                                |
 | [Http4k](https://www.http4k.org/guide/reference/kotest/)                                         | Functional toolkit for Kotlin HTTP applications                                    |
 | [Kotless](https://github.com/LeoColman/kotest-kotless)                                           | Utilties for kotless and kotest                                                    |
 | [KotlinFixture](https://github.com/appmattus/kotlinfixture/blob/main/fixture-kotest/README.adoc) | generate well-defined, but essentially random, input                               |
