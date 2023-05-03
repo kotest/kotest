@@ -8,13 +8,13 @@ kotlin {
 
    sourceSets {
 
-      commonMain {
+      val commonMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
          }
       }
 
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
             api(projects.kotestFramework.kotestFrameworkApi)
             api(projects.kotestCommon)
@@ -31,7 +31,7 @@ kotlin {
          }
       }
 
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestFramework.kotestFrameworkDatatest)

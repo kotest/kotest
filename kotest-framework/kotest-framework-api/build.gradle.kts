@@ -5,7 +5,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      commonMain {
+      val commonMain by getting {
          dependencies {
             api(libs.kotlinx.coroutines.core)
             api(projects.kotestAssertions.kotestAssertionsShared)
@@ -15,12 +15,12 @@ kotlin {
          }
       }
 
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
          }
       }
 
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(projects.kotestFramework.kotestFrameworkEngine)

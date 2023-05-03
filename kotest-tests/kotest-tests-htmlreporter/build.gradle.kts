@@ -5,7 +5,7 @@ plugins {
 kotlin {
 
    sourceSets {
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
