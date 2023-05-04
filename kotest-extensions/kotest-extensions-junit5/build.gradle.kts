@@ -6,7 +6,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
             implementation(projects.kotestCommon)
             implementation(projects.kotestFramework.kotestFrameworkEngine)

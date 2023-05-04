@@ -1,12 +1,16 @@
 plugins {
-   id("kotest-jvm-conventions")
+   id("kotlin-conventions")
 }
 
 kotlin {
 
+   targets {
+      jvm()
+   }
+
    sourceSets {
 
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsShared)

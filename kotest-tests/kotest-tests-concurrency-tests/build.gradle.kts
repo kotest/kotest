@@ -6,7 +6,7 @@ kotlin {
 
    sourceSets {
 
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
