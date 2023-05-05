@@ -6,7 +6,7 @@ import kotlin.test.Test
 
 class NativeAtomicReferenceTest {
    @Test
-   fun testShouldWithMatcher() {
+   fun testAtomicReference() {
       shouldNotThrowAnyUnit { AtomicReference(1234) }
    }
 }
