@@ -7,7 +7,7 @@ kotlin {
 
    sourceSets {
 
-      commonMain {
+      val commonMain by getting {
          dependencies {
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.serialization.json)
@@ -16,7 +16,7 @@ kotlin {
          }
       }
 
-      commonTest {
+      val commonTest by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkDatatest)
@@ -25,7 +25,7 @@ kotlin {
          }
       }
 
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
             implementation(libs.jayway.json.path)
          }

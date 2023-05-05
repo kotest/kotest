@@ -96,7 +96,7 @@ kotlin {
   }
 
   sourceSets {
-    commonTest {
+    val commonTest by getting {
       dependencies {
         implementation("io.kotest:kotest-framework-engine:$version")
       }
@@ -155,7 +155,7 @@ kotlin {
   }
 }
 sourceSets {
-  commonTest {
+  val commonTest by getting {
     dependencies {
       implementation("io.kotest:kotest-framework-engine:$version")
     }
@@ -296,7 +296,7 @@ kotlin {
       }
    }
    sourceSets {
-      jsTest {
+      val jsTest by getting {
          dependencies {
             implementation("io.kotest:kotest-assertions-core:$version")
          }
@@ -378,7 +378,7 @@ kotlin {
       }
    }
    sourceSets {
-      jsTest {
+      val jsTest by getting {
          dependencies {
             implementation("io.kotest:kotest-property:$version")
          }

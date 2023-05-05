@@ -17,8 +17,10 @@ slug: changelog.html
 ** Note this release bumps the minimum required version of Kotlin to 1.8.0. **
 ** If you are using < 1.8.0 you can continue to use Kotest 5.5.x **
 
-### Breaking change:
+### Breaking changes:
 
+* Moved `ConstantNow`-related functions to a new module named `io.kotest:kotest-extensions-now` (remember to add -jvm suffix for Maven)
+  * Add this module as a dependency to keep using `withConstantNow`
 * Remove Iterable checking logic from IterableEq (#3420)
 
 ### Fixes

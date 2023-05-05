@@ -5,7 +5,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      commonMain {
+      val commonMain by getting {
          dependencies {
             // this is api because we want to expose `shouldBe` etc
             api(projects.kotestAssertions.kotestAssertionsShared)
@@ -17,13 +17,13 @@ kotlin {
          }
       }
 
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
          }
       }
 
-      jvmTest {
+      val jvmTest by getting {
          dependencies {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)

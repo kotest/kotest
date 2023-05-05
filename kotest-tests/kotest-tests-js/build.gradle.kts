@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
    sourceSets {
-      commonTest {
+      val commonTest by getting {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestFramework.kotestFrameworkEngine)

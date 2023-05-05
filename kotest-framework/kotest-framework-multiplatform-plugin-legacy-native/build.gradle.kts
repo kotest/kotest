@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
    sourceSets {
-      jvmMain {
+      val jvmMain by getting {
          dependencies {
             compileOnly(libs.kotlin.compiler)
          }
