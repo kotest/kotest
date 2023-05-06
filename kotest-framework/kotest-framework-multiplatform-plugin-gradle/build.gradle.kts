@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.internal.impldep.io.opencensus.tags.Tags
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    kotlin("jvm")
    `maven-publish`
