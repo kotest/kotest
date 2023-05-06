@@ -1,0 +1,16 @@
+public final class io/kotest/extensions/junitxml/JunitXmlReporter : io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/PrepareSpecListener {
+	public static final field AttributeName Ljava/lang/String;
+	public static final field BuildDirKey Ljava/lang/String;
+	public static final field Companion Lio/kotest/extensions/junitxml/JunitXmlReporter$Companion;
+	public static final field DefaultBuildDir Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (ZZLjava/lang/String;)V
+	public synthetic fun <init> (ZZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getName ()Ljava/lang/String;
+	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/junitxml/JunitXmlReporter$Companion {
+}
+

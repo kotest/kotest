@@ -29,6 +29,7 @@ import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.spec.interceptor.ref.RequiresPlatformInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
@@ -69,6 +70,7 @@ class SpecExecutor(
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOfNotNull(
+         RequiresPlatformInterceptor(listener, context, context.configuration.registry),
          if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.configuration.registry) else null,
          IgnoredSpecInterceptor(listener, context.configuration.registry),
          SpecFilterInterceptor(listener, context.configuration.registry),

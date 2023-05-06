@@ -108,12 +108,12 @@ class MapsTest : FunSpec({
    }
 
    context("Arb.map(arb,arb) edgecases") {
-      test("should be empty if disabled") {
-         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), includeEmpty = false).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+      test("should be empty if minSize is larger than 0") {
+         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
       }
 
-      test("should contain empty map if enabled") {
-         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), includeEmpty = true).edgecase(RandomSource.seeded(1234L))
+      test("should contain empty map if minSize is 0 (default)") {
+         Arb.map(keyArb = Arb.string(), valueArb = Arb.int()).edgecase(RandomSource.seeded(1234L))
             .shouldNotBeNull()
             .shouldBeEmpty()
       }
@@ -121,11 +121,11 @@ class MapsTest : FunSpec({
 
    context("Arb.map(arb) edgecases") {
       test("should be empty if disabled") {
-         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), includeEmpty = false).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
       }
 
       test("should contain empty map if enabled") {
-         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), includeEmpty = true).edgecase(RandomSource.seeded(1234L))
+         Arb.map(arb = Arb.pair(Arb.string(), Arb.int())).edgecase(RandomSource.seeded(1234L))
             .shouldNotBeNull()
             .shouldBeEmpty()
       }

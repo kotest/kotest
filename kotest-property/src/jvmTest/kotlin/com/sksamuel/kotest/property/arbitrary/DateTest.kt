@@ -6,6 +6,10 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -13,17 +17,22 @@ import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
+import io.kotest.property.arbitrary.offsetDateTime
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.yearMonth
+import io.kotest.property.arbitrary.zonedDateTime
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.Period
 import java.time.YearMonth
+import java.time.ZoneId
+import kotlin.time.Duration.Companion.hours
 
 class DateTest : WordSpec({
 
@@ -244,6 +253,40 @@ class DateTest : WordSpec({
             2016,
             2
          )
+      }
+   }
+
+   "Arb.offsetDateTime(minLocalDateTime, maxLocalDateTime, zoneOffset)" should {
+      "generate OffsetDateTimes between with default values" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val offsets = mutableSetOf<Int>()
+
+         checkAll(5000, Arb.offsetDateTime()) {
+            days.add(it.dayOfMonth)
+            months.add(it.monthValue)
+            offsets.add(it.offset.totalSeconds)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
+         offsets.min() shouldBeGreaterThanOrEqual -18.hours.inWholeSeconds.toInt()
+         offsets.max() shouldBeLessThanOrEqual 18.hours.inWholeSeconds.toInt()
+      }
+   }
+
+   "Arb.zonedDateTime(minLocalDateTime, maxLocalDateTime, zoneId)" should {
+      "generate ZonedDateTime between with default values" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+
+         checkAll(5000, Arb.zonedDateTime()) {
+            days.add(it.dayOfMonth)
+            months.add(it.monthValue)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
       }
    }
 })

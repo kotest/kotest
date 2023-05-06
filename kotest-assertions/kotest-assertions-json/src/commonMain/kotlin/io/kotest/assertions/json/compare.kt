@@ -69,6 +69,7 @@ internal fun legacyOptions(mode: CompareMode, order: CompareOrder) =
 internal val defaultCompareJsonOptions = CompareJsonOptions()
 
 class CompareJsonOptions(
+
    /**
     * Controls whether property order must be identical
     */
@@ -123,6 +124,7 @@ enum class ArrayOrder {
 }
 
 enum class FieldComparison {
+
    /**
     * Default. Objects in [expected] and [actual] must contain the same fields.
     */

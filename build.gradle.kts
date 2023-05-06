@@ -1,3 +1,7 @@
+plugins {
+   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
+}
+
 repositories {
    mavenCentral()
    mavenLocal()

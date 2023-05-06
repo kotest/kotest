@@ -86,7 +86,6 @@ class FreeSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "a simple failing test",
                "a simple passing test",
                "a simple erroring test",

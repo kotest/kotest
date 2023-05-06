@@ -1,0 +1,232 @@
+public final class io/kotest/framework/multiplatform/embeddablecompiler/EntryPoint {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/embeddablecompiler/EntryPoint;
+	public static final field LaunchMethodName Ljava/lang/String;
+	public static final field LauncherValName Ljava/lang/String;
+	public static final field PromiseMethodName Ljava/lang/String;
+	public static final field TestEngineClassName Ljava/lang/String;
+	public static final field WithConfigMethodName Ljava/lang/String;
+	public static final field WithJsMethodName Ljava/lang/String;
+	public static final field WithNativeMethodName Ljava/lang/String;
+	public static final field WithSpecsMethodName Ljava/lang/String;
+	public static final field WithTeamCityListenerMethodName Ljava/lang/String;
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/IrFileExtensionsKt {
+	public static final fun addChild (Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationContainer;Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;)V
+	public static final fun setDeclarationsParent (Lorg/jetbrains/kotlin/ir/IrElement;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)Lorg/jetbrains/kotlin/ir/IrElement;
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/JsTransformer : io/kotest/framework/multiplatform/embeddablecompiler/Transformer {
+	public fun <init> (Lorg/jetbrains/kotlin/cli/common/messages/MessageCollector;Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;)V
+	public fun generateLauncher (Ljava/lang/Iterable;Ljava/lang/Iterable;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/KotestJsComponentRegistrar : org/jetbrains/kotlin/compiler/plugin/CompilerPluginRegistrar {
+	public fun <init> ()V
+	public fun getSupportsK2 ()Z
+	public fun registerExtensions (Lorg/jetbrains/kotlin/compiler/plugin/CompilerPluginRegistrar$ExtensionStorage;Lorg/jetbrains/kotlin/config/CompilerConfiguration;)V
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/NativeTransformer : io/kotest/framework/multiplatform/embeddablecompiler/Transformer {
+	public fun <init> (Lorg/jetbrains/kotlin/cli/common/messages/MessageCollector;Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;)V
+	public fun generateLauncher (Ljava/lang/Iterable;Ljava/lang/Iterable;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/SetDeclarationsParentVisitor : org/jetbrains/kotlin/ir/visitors/IrElementVisitor {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/embeddablecompiler/SetDeclarationsParentVisitor;
+	public synthetic fun visitAnonymousInitializer (Lorg/jetbrains/kotlin/ir/declarations/IrAnonymousInitializer;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitAnonymousInitializer (Lorg/jetbrains/kotlin/ir/declarations/IrAnonymousInitializer;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBlock (Lorg/jetbrains/kotlin/ir/expressions/IrBlock;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBlock (Lorg/jetbrains/kotlin/ir/expressions/IrBlock;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBlockBody (Lorg/jetbrains/kotlin/ir/expressions/IrBlockBody;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBlockBody (Lorg/jetbrains/kotlin/ir/expressions/IrBlockBody;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBody (Lorg/jetbrains/kotlin/ir/expressions/IrBody;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBody (Lorg/jetbrains/kotlin/ir/expressions/IrBody;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBranch (Lorg/jetbrains/kotlin/ir/expressions/IrBranch;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBranch (Lorg/jetbrains/kotlin/ir/expressions/IrBranch;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBreak (Lorg/jetbrains/kotlin/ir/expressions/IrBreak;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBreak (Lorg/jetbrains/kotlin/ir/expressions/IrBreak;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitBreakContinue (Lorg/jetbrains/kotlin/ir/expressions/IrBreakContinue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitBreakContinue (Lorg/jetbrains/kotlin/ir/expressions/IrBreakContinue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitCall (Lorg/jetbrains/kotlin/ir/expressions/IrCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitCall (Lorg/jetbrains/kotlin/ir/expressions/IrCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitCallableReference (Lorg/jetbrains/kotlin/ir/expressions/IrCallableReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitCallableReference (Lorg/jetbrains/kotlin/ir/expressions/IrCallableReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitCatch (Lorg/jetbrains/kotlin/ir/expressions/IrCatch;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitCatch (Lorg/jetbrains/kotlin/ir/expressions/IrCatch;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitClass (Lorg/jetbrains/kotlin/ir/declarations/IrClass;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitClass (Lorg/jetbrains/kotlin/ir/declarations/IrClass;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitClassReference (Lorg/jetbrains/kotlin/ir/expressions/IrClassReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitClassReference (Lorg/jetbrains/kotlin/ir/expressions/IrClassReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitComposite (Lorg/jetbrains/kotlin/ir/expressions/IrComposite;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitComposite (Lorg/jetbrains/kotlin/ir/expressions/IrComposite;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConst (Lorg/jetbrains/kotlin/ir/expressions/IrConst;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConst (Lorg/jetbrains/kotlin/ir/expressions/IrConst;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstantArray (Lorg/jetbrains/kotlin/ir/expressions/IrConstantArray;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstantArray (Lorg/jetbrains/kotlin/ir/expressions/IrConstantArray;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstantObject (Lorg/jetbrains/kotlin/ir/expressions/IrConstantObject;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstantObject (Lorg/jetbrains/kotlin/ir/expressions/IrConstantObject;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstantPrimitive (Lorg/jetbrains/kotlin/ir/expressions/IrConstantPrimitive;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstantPrimitive (Lorg/jetbrains/kotlin/ir/expressions/IrConstantPrimitive;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstantValue (Lorg/jetbrains/kotlin/ir/expressions/IrConstantValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstantValue (Lorg/jetbrains/kotlin/ir/expressions/IrConstantValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstructor (Lorg/jetbrains/kotlin/ir/declarations/IrConstructor;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstructor (Lorg/jetbrains/kotlin/ir/declarations/IrConstructor;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrConstructorCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrConstructorCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitContainerExpression (Lorg/jetbrains/kotlin/ir/expressions/IrContainerExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitContainerExpression (Lorg/jetbrains/kotlin/ir/expressions/IrContainerExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitContinue (Lorg/jetbrains/kotlin/ir/expressions/IrContinue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitContinue (Lorg/jetbrains/kotlin/ir/expressions/IrContinue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDeclaration (Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationBase;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDeclaration (Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationBase;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDeclarationReference (Lorg/jetbrains/kotlin/ir/expressions/IrDeclarationReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDeclarationReference (Lorg/jetbrains/kotlin/ir/expressions/IrDeclarationReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDelegatingConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrDelegatingConstructorCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDelegatingConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrDelegatingConstructorCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDoWhileLoop (Lorg/jetbrains/kotlin/ir/expressions/IrDoWhileLoop;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDoWhileLoop (Lorg/jetbrains/kotlin/ir/expressions/IrDoWhileLoop;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDynamicExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDynamicExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDynamicMemberExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicMemberExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDynamicMemberExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicMemberExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitDynamicOperatorExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicOperatorExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitDynamicOperatorExpression (Lorg/jetbrains/kotlin/ir/expressions/IrDynamicOperatorExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitElement (Lorg/jetbrains/kotlin/ir/IrElement;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitElement (Lorg/jetbrains/kotlin/ir/IrElement;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitElseBranch (Lorg/jetbrains/kotlin/ir/expressions/IrElseBranch;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitElseBranch (Lorg/jetbrains/kotlin/ir/expressions/IrElseBranch;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitEnumConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrEnumConstructorCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitEnumConstructorCall (Lorg/jetbrains/kotlin/ir/expressions/IrEnumConstructorCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitEnumEntry (Lorg/jetbrains/kotlin/ir/declarations/IrEnumEntry;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitEnumEntry (Lorg/jetbrains/kotlin/ir/declarations/IrEnumEntry;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitErrorCallExpression (Lorg/jetbrains/kotlin/ir/expressions/IrErrorCallExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitErrorCallExpression (Lorg/jetbrains/kotlin/ir/expressions/IrErrorCallExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitErrorDeclaration (Lorg/jetbrains/kotlin/ir/declarations/IrErrorDeclaration;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitErrorDeclaration (Lorg/jetbrains/kotlin/ir/declarations/IrErrorDeclaration;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitErrorExpression (Lorg/jetbrains/kotlin/ir/expressions/IrErrorExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitErrorExpression (Lorg/jetbrains/kotlin/ir/expressions/IrErrorExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitExpression (Lorg/jetbrains/kotlin/ir/expressions/IrExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitExpression (Lorg/jetbrains/kotlin/ir/expressions/IrExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitExpressionBody (Lorg/jetbrains/kotlin/ir/expressions/IrExpressionBody;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitExpressionBody (Lorg/jetbrains/kotlin/ir/expressions/IrExpressionBody;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitExternalPackageFragment (Lorg/jetbrains/kotlin/ir/declarations/IrExternalPackageFragment;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitExternalPackageFragment (Lorg/jetbrains/kotlin/ir/declarations/IrExternalPackageFragment;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitField (Lorg/jetbrains/kotlin/ir/declarations/IrField;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitField (Lorg/jetbrains/kotlin/ir/declarations/IrField;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFieldAccess (Lorg/jetbrains/kotlin/ir/expressions/IrFieldAccessExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFieldAccess (Lorg/jetbrains/kotlin/ir/expressions/IrFieldAccessExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFile (Lorg/jetbrains/kotlin/ir/declarations/IrFile;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFile (Lorg/jetbrains/kotlin/ir/declarations/IrFile;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFunction (Lorg/jetbrains/kotlin/ir/declarations/IrFunction;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFunction (Lorg/jetbrains/kotlin/ir/declarations/IrFunction;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFunctionAccess (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionAccessExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFunctionAccess (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionAccessExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFunctionExpression (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFunctionExpression (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitFunctionReference (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFunctionReference (Lorg/jetbrains/kotlin/ir/expressions/IrFunctionReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitGetClass (Lorg/jetbrains/kotlin/ir/expressions/IrGetClass;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitGetClass (Lorg/jetbrains/kotlin/ir/expressions/IrGetClass;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitGetEnumValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetEnumValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitGetEnumValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetEnumValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitGetField (Lorg/jetbrains/kotlin/ir/expressions/IrGetField;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitGetField (Lorg/jetbrains/kotlin/ir/expressions/IrGetField;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitGetObjectValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetObjectValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitGetObjectValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetObjectValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitGetValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitGetValue (Lorg/jetbrains/kotlin/ir/expressions/IrGetValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitInstanceInitializerCall (Lorg/jetbrains/kotlin/ir/expressions/IrInstanceInitializerCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitInstanceInitializerCall (Lorg/jetbrains/kotlin/ir/expressions/IrInstanceInitializerCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitLocalDelegatedProperty (Lorg/jetbrains/kotlin/ir/declarations/IrLocalDelegatedProperty;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitLocalDelegatedProperty (Lorg/jetbrains/kotlin/ir/declarations/IrLocalDelegatedProperty;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitLocalDelegatedPropertyReference (Lorg/jetbrains/kotlin/ir/expressions/IrLocalDelegatedPropertyReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitLocalDelegatedPropertyReference (Lorg/jetbrains/kotlin/ir/expressions/IrLocalDelegatedPropertyReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitLoop (Lorg/jetbrains/kotlin/ir/expressions/IrLoop;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitLoop (Lorg/jetbrains/kotlin/ir/expressions/IrLoop;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitMemberAccess (Lorg/jetbrains/kotlin/ir/expressions/IrMemberAccessExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitMemberAccess (Lorg/jetbrains/kotlin/ir/expressions/IrMemberAccessExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitModuleFragment (Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitModuleFragment (Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitPackageFragment (Lorg/jetbrains/kotlin/ir/declarations/IrPackageFragment;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitPackageFragment (Lorg/jetbrains/kotlin/ir/declarations/IrPackageFragment;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitProperty (Lorg/jetbrains/kotlin/ir/declarations/IrProperty;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitProperty (Lorg/jetbrains/kotlin/ir/declarations/IrProperty;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitPropertyReference (Lorg/jetbrains/kotlin/ir/expressions/IrPropertyReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitPropertyReference (Lorg/jetbrains/kotlin/ir/expressions/IrPropertyReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitRawFunctionReference (Lorg/jetbrains/kotlin/ir/expressions/IrRawFunctionReference;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitRawFunctionReference (Lorg/jetbrains/kotlin/ir/expressions/IrRawFunctionReference;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitReturn (Lorg/jetbrains/kotlin/ir/expressions/IrReturn;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitReturn (Lorg/jetbrains/kotlin/ir/expressions/IrReturn;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitScript (Lorg/jetbrains/kotlin/ir/declarations/IrScript;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitScript (Lorg/jetbrains/kotlin/ir/declarations/IrScript;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSetField (Lorg/jetbrains/kotlin/ir/expressions/IrSetField;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSetField (Lorg/jetbrains/kotlin/ir/expressions/IrSetField;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSetValue (Lorg/jetbrains/kotlin/ir/expressions/IrSetValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSetValue (Lorg/jetbrains/kotlin/ir/expressions/IrSetValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSimpleFunction (Lorg/jetbrains/kotlin/ir/declarations/IrSimpleFunction;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSimpleFunction (Lorg/jetbrains/kotlin/ir/declarations/IrSimpleFunction;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSingletonReference (Lorg/jetbrains/kotlin/ir/expressions/IrGetSingletonValue;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSingletonReference (Lorg/jetbrains/kotlin/ir/expressions/IrGetSingletonValue;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSpreadElement (Lorg/jetbrains/kotlin/ir/expressions/IrSpreadElement;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSpreadElement (Lorg/jetbrains/kotlin/ir/expressions/IrSpreadElement;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitStringConcatenation (Lorg/jetbrains/kotlin/ir/expressions/IrStringConcatenation;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitStringConcatenation (Lorg/jetbrains/kotlin/ir/expressions/IrStringConcatenation;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSuspendableExpression (Lorg/jetbrains/kotlin/ir/expressions/IrSuspendableExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSuspendableExpression (Lorg/jetbrains/kotlin/ir/expressions/IrSuspendableExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSuspensionPoint (Lorg/jetbrains/kotlin/ir/expressions/IrSuspensionPoint;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSuspensionPoint (Lorg/jetbrains/kotlin/ir/expressions/IrSuspensionPoint;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitSyntheticBody (Lorg/jetbrains/kotlin/ir/expressions/IrSyntheticBody;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitSyntheticBody (Lorg/jetbrains/kotlin/ir/expressions/IrSyntheticBody;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitThrow (Lorg/jetbrains/kotlin/ir/expressions/IrThrow;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitThrow (Lorg/jetbrains/kotlin/ir/expressions/IrThrow;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitTry (Lorg/jetbrains/kotlin/ir/expressions/IrTry;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitTry (Lorg/jetbrains/kotlin/ir/expressions/IrTry;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitTypeAlias (Lorg/jetbrains/kotlin/ir/declarations/IrTypeAlias;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitTypeAlias (Lorg/jetbrains/kotlin/ir/declarations/IrTypeAlias;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitTypeOperator (Lorg/jetbrains/kotlin/ir/expressions/IrTypeOperatorCall;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitTypeOperator (Lorg/jetbrains/kotlin/ir/expressions/IrTypeOperatorCall;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitTypeParameter (Lorg/jetbrains/kotlin/ir/declarations/IrTypeParameter;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitTypeParameter (Lorg/jetbrains/kotlin/ir/declarations/IrTypeParameter;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitValueAccess (Lorg/jetbrains/kotlin/ir/expressions/IrValueAccessExpression;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitValueAccess (Lorg/jetbrains/kotlin/ir/expressions/IrValueAccessExpression;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitValueParameter (Lorg/jetbrains/kotlin/ir/declarations/IrValueParameter;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitValueParameter (Lorg/jetbrains/kotlin/ir/declarations/IrValueParameter;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitVararg (Lorg/jetbrains/kotlin/ir/expressions/IrVararg;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitVararg (Lorg/jetbrains/kotlin/ir/expressions/IrVararg;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitVariable (Lorg/jetbrains/kotlin/ir/declarations/IrVariable;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitVariable (Lorg/jetbrains/kotlin/ir/declarations/IrVariable;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitWhen (Lorg/jetbrains/kotlin/ir/expressions/IrWhen;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitWhen (Lorg/jetbrains/kotlin/ir/expressions/IrWhen;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+	public synthetic fun visitWhileLoop (Lorg/jetbrains/kotlin/ir/expressions/IrWhileLoop;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitWhileLoop (Lorg/jetbrains/kotlin/ir/expressions/IrWhileLoop;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)V
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/SpecIrGenerationExtension : org/jetbrains/kotlin/backend/common/extensions/IrGenerationExtension {
+	public fun <init> (Lorg/jetbrains/kotlin/cli/common/messages/MessageCollector;)V
+	public fun generate (Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;)V
+	public fun resolveSymbol (Lorg/jetbrains/kotlin/ir/symbols/IrSymbol;Lorg/jetbrains/kotlin/ir/builders/TranslationPluginContext;)Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;
+}
+
+public final class io/kotest/framework/multiplatform/embeddablecompiler/SpecsKt {
+	public static final fun getAbstractProjectConfigFqName ()Lorg/jetbrains/kotlin/name/FqName;
+	public static final fun getSpecClasses ()Ljava/util/List;
+	public static final fun isProjectConfig (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Z
+	public static final fun isSpecClass (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Z
+	public static final fun specs (Lorg/jetbrains/kotlin/ir/declarations/IrFile;)Ljava/util/List;
+	public static final fun superTypes (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Ljava/util/List;
+}
+
+public abstract class io/kotest/framework/multiplatform/embeddablecompiler/Transformer : org/jetbrains/kotlin/backend/common/IrElementTransformerVoidWithContext {
+	public fun <init> (Lorg/jetbrains/kotlin/cli/common/messages/MessageCollector;Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;)V
+	protected final fun callLauncher (Lorg/jetbrains/kotlin/ir/builders/IrBuilderWithScope;Lorg/jetbrains/kotlin/ir/symbols/IrSimpleFunctionSymbol;Ljava/lang/Iterable;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Lorg/jetbrains/kotlin/ir/expressions/IrCall;
+	public abstract fun generateLauncher (Ljava/lang/Iterable;Ljava/lang/Iterable;Lorg/jetbrains/kotlin/ir/declarations/IrDeclarationParent;)Lorg/jetbrains/kotlin/ir/declarations/IrDeclaration;
+	protected final fun getLauncherClass ()Lorg/jetbrains/kotlin/ir/symbols/IrClassSymbol;
+	protected final fun getLauncherConstructor ()Lorg/jetbrains/kotlin/ir/symbols/IrConstructorSymbol;
+	protected final fun getPluginContext ()Lorg/jetbrains/kotlin/backend/common/extensions/IrPluginContext;
+	protected abstract fun getWithPlatformMethodName ()Ljava/lang/String;
+	public fun visitClassNew (Lorg/jetbrains/kotlin/ir/declarations/IrClass;)Lorg/jetbrains/kotlin/ir/IrStatement;
+	public fun visitFileNew (Lorg/jetbrains/kotlin/ir/declarations/IrFile;)Lorg/jetbrains/kotlin/ir/declarations/IrFile;
+	public fun visitModuleFragment (Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;)Lorg/jetbrains/kotlin/ir/declarations/IrModuleFragment;
+}
+

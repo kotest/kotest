@@ -419,5 +419,12 @@ class DateMatchersTest : StringSpec() {
        ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNot haveSameInstantAs(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2)))
        ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotHaveSameInstantAs ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2))
     }
+
+     "OffsetDateTime should be have same instant of the given OffsetDateTime irrespective of their timezone" {
+        OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) should haveSameInstantAs(OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3)))
+        OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldHaveSameInstantAs OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+        OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNot haveSameInstantAs(OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2)))
+        OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotHaveSameInstantAs OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2))
+     }
   }
 }

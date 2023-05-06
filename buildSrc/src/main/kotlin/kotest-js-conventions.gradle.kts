@@ -3,15 +3,13 @@ plugins {
 }
 
 kotlin {
-   targets {
-      if (!project.hasProperty(Ci.JVM_ONLY)) {
-         js(BOTH) {
-            browser()
-            nodejs()
-         }
-      } else {
-         // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
-         jvm()
+   if (!project.hasProperty(Ci.JVM_ONLY)) {
+      js(IR) {
+         browser()
+         nodejs()
       }
+   } else {
+      // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
+      jvm()
    }
 }

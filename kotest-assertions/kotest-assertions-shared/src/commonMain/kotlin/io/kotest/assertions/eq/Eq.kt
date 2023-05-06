@@ -32,6 +32,7 @@ fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
       actual != null && expected == null && actual != expected -> expectedIsNull(actual)
       actual != null && expected != null -> when {
          actual is Map<*, *> && expected is Map<*, *> -> MapEq.equals(actual, expected, strictNumberEq)
+         actual is Map.Entry<*, *> && expected is Map.Entry<*, *> -> MapEntryEq.equals(actual, expected, strictNumberEq)
          actual is Regex && expected is Regex -> RegexEq.equals(actual, expected)
          actual is String && expected is String -> StringEq.equals(actual, expected)
          actual is Number && expected is Number -> NumberEq.equals(actual, expected, strictNumberEq)

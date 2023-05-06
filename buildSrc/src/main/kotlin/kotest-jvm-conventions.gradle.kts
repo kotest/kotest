@@ -5,16 +5,9 @@ plugins {
 }
 
 kotlin {
-   targets {
-      jvm {
-         withJava()
 
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
+   jvm {
+      withJava()
    }
 
    sourceSets {
@@ -24,9 +17,4 @@ kotlin {
          }
       }
    }
-}
-
-java {
-   sourceCompatibility = JavaVersion.VERSION_1_8
-   targetCompatibility = JavaVersion.VERSION_1_8
 }

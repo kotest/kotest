@@ -30,7 +30,7 @@ If you have a large project, then you may wish to disable the auto scanning for 
 a significant startup cost. You can do this by
 setting a system property or environment variable `kotest.framework.classpath.scanning.config.disable` to `true`.
 
-Once auto scanning is disabled, if you wish to still use project config, you an specify a well known class name which
+Once auto scanning is disabled, if you wish to still use project config, you can specify a well known class name which
 Kotest will reflectively instantiate. The system property or environment variable to use
 is `kotest.framework.config.fqn`.
 
