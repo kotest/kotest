@@ -6,10 +6,8 @@ plugins {
 
 kotlin {
 
-   targets {
-      jvm {
-         withJava()
-      }
+   jvm {
+      withJava()
    }
 
    sourceSets {

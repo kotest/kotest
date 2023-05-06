@@ -6,28 +6,26 @@ plugins {
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
-      targets {
-         linuxX64()
+      linuxX64()
 
-         mingwX64()
+      mingwX64()
 
-         macosX64()
-         macosArm64()
+      macosX64()
+      macosArm64()
 
-         tvos()
-         tvosSimulatorArm64()
+      tvos()
+      tvosSimulatorArm64()
 
-         watchosArm32()
-         watchosArm64()
-         watchosX86()
-         watchosX64()
-         watchosSimulatorArm64()
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+      watchosSimulatorArm64()
 
-         iosX64()
-         iosArm64()
-         iosArm32()
-         iosSimulatorArm64()
-      }
+      iosX64()
+      iosArm64()
+      iosArm32()
+      iosSimulatorArm64()
 
       sourceSets {
 
@@ -87,6 +85,6 @@ kotlin {
       }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
-      targets { jvm() }
+      jvm()
    }
 }
