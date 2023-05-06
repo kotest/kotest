@@ -40,7 +40,11 @@ fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALU
          ).distinct(),
       FloatShrinker
    ) {
-      it.random.nextDouble(range.start.toDouble(), range.endInclusive.toDouble()).toFloat()
+      val sign = it.random.nextBits(1)
+      val exponent = it.random.nextInt(0,254)
+      val mantissa = it.random.nextBits(23)
+      val bits = (sign shl 31) or (exponent shl 23) or mantissa
+      Float.fromBits(bits)
    }
 
 /**
@@ -68,7 +72,15 @@ fun Arb.Companion.numericFloat(
    min: Float = -Float.MAX_VALUE,
    max: Float = Float.MAX_VALUE
 ): Arb<Float> = arbitrary((numericEdgeCases.filter { it in min..max } + listOf(min, max)).distinct(), FloatShrinker) {
-   Float.fromBits(it.random.nextInt(min.toInt(), max.toInt()))
+   if (min == -Float.MAX_VALUE && max == Float.MAX_VALUE) {
+      val sign = it.random.nextBits(1)
+      val exponent = it.random.nextInt(0,254)
+      val mantissa = it.random.nextBits(23)
+      val bits = (sign shl 31) or (exponent shl 23) or mantissa
+      Float.fromBits(bits)
+   }else {
+      it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
+   }
 }
 
 @Deprecated("use numericFloat", ReplaceWith("numericFloat(from, to)"))
