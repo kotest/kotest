@@ -4,6 +4,12 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.6.2 May 2023
+
+* Fixes a problem with property testing on Apple platforms [#3506](https://github.com/kotest/kotest/issues/3506)
+* Reverts behaviour of `Arb.string()` to only generate Strings of printable ascii characters.
+  * 5.6.0 changed it to include some control characters, see [#3513](https://github.com/kotest/kotest/issues/3513) for details
+
 ## 5.6.1 April 2023
 
 ** This release is mainly to add some missing klib dependencies for ios **
