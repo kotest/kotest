@@ -34,6 +34,7 @@ jobs:
                - publishJsPublicationToDeployRepository
                - publishKotestBomPublicationToDeployRepository
                - publishLinuxX64PublicationToDeployRepository
+               - publishLinuxArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3

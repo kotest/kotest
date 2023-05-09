@@ -7,6 +7,7 @@ plugins {
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
       linuxX64()
+      linuxArm64()
 
       mingwX64()
 
@@ -42,6 +43,7 @@ kotlin {
          val mingwX64Main by getting { dependsOn(desktopMain) }
 
          val linuxX64Main by getting { dependsOn(desktopMain) }
+         val linuxArm64Main by getting { dependsOn(desktopMain) }
 
          val iosX64Main by getting { dependsOn(desktopMain) }
          val iosArm64Main by getting { dependsOn(desktopMain) }
@@ -68,6 +70,7 @@ kotlin {
          val mingwX64Test by getting { dependsOn(nativeTest) }
 
          val linuxX64Test by getting { dependsOn(nativeTest) }
+         val linuxArm64Test by getting { dependsOn(nativeTest) }
 
          val iosX64Test by getting { dependsOn(nativeTest) }
          val iosArm64Test by getting { dependsOn(nativeTest) }
