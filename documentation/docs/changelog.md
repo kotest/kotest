@@ -4,6 +4,45 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.6.2 May 2023
+
+#### Assertions
+* Adding shouldHaveSameInstantAs matcher for OffsetDateTime. Fixes #3488 by @Kantis in https://github.com/kotest/kotest/pull/3501
+
+#### Property testing
+* Fixes a problem with property testing on Apple platforms [#3506](https://github.com/kotest/kotest/issues/3506)
+* Reverts behaviour of `Arb.string()` to only generate Strings of printable ascii characters
+  * 5.6.0 changed it to include some control characters, see [#3513](https://github.com/kotest/kotest/issues/3513) for details
+* Fix huge allocation for OffsetDateTime Arb without arguments by @rescribet in https://github.com/kotest/kotest/pull/3491
+* Fix Arb.map edgecases by @myuwono in https://github.com/kotest/kotest/pull/3496
+
+
+#### Documentation
+* Update writing_tests.md by @erikhuizinga in https://github.com/kotest/kotest/pull/3497
+* Update shouldBeEqualToComparingFields doc by @ktrueda in https://github.com/kotest/kotest/pull/3416
+
+#### Other
+* Build Kotlin/Native library for ARM64 on Linux by @charleskorn in https://github.com/kotest/kotest/pull/3521
+
+### ⚠️ Reverted behavior of `Arb.string()`
+
+With Kotest 5.6.0, `Codepoint.ascii()` was changed to include a wider range of ascii chararacters, and `Codepoint.printableAscii()` was introduced with the historic range used by `Codepoint.ascii()`.
+
+`Arb.string()` has been using `Codepoint.ascii()` as it's default for generating chars for the string. This caused issues for some users, and we decided to revert `Arb.string()` to the historic behavior by changing the default to the new `Codepoint.printableAscii()`.
+
+Hopefully this doesn't cause any issues for you. If it does, you can revert to the 5.6.0 ~ 5.6.1 behavior by using  `Codepoint.ascii()` explicitly.
+
+If you added explicit usage of `Codepoint.printableAscii()` to circumvent the issue, you can safely remove the explicit parameter starting with Kotest 5.6.2.
+
+
+### New Contributors
+* @rescribet made their first contribution in https://github.com/kotest/kotest/pull/3491
+* @ktrueda made their first contribution in https://github.com/kotest/kotest/pull/3416
+* @erikhuizinga made their first contribution in https://github.com/kotest/kotest/pull/3497
+
+**Full Changelog**: https://github.com/kotest/kotest/compare/v5.6.1...v5.6.2
+
+
 ## 5.6.1 April 2023
 
 ** This release is mainly to add some missing klib dependencies for ios **
