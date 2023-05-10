@@ -5,6 +5,11 @@ sidebar_label: Current Instant Listeners
 slug: instant.html
 ---
 
+:::tip
+Since Kotest 5.6.0, Current instant listeners are located in the artifact `io.kotest:kotest-extensions-now:${kotest-version}`.
+
+Add it as a dependency to use any of the functionality mentioned below.
+:::
 
 ### Current instant listeners
 
