@@ -165,6 +165,19 @@ class ReflectiveBindTest : StringSpec(
          shapes4d
             .forAtLeastOne { it.shouldBeInstanceOf<Tesseract>() }
             .forAtLeastOne { it.shouldBeInstanceOf<Hypersphere>() }
+
+         val petArb = Arb.bind<Pet>()
+         petArb.next().shouldBeInstanceOf<Pet>()
+
+         val pets = petArb.take(100, randomSource).toList()
+         pets.forAtLeastOne { it shouldBe Puppy }
+         pets.forAtLeastOne { it shouldBe Cat }
+         pets.forAtLeastOne { it.shouldBeInstanceOf<Fish>().species.shouldBeInstanceOf<FishSpecies.GoldFish>() }
+         pets.forAtLeastOne { it.shouldBeInstanceOf<Fish>().species.shouldBeInstanceOf<FishSpecies.Other>() }
+
+         val catArb = Arb.bind<Cat>()
+         catArb.next() shouldBe Cat
+         catArb.take(100, randomSource).toList().forAll { it shouldBe Cat }
       }
 
       "Fails to bind for non default type when class or primary constructor is private" {
@@ -195,6 +208,17 @@ class ReflectiveBindTest : StringSpec(
       sealed class Shape4d
       class Tesseract : Shape4d()
       class Hypersphere : Shape4d()
+
+      sealed class Pet
+      object Puppy : Pet()
+      object Cat : Pet()
+
+      data class Fish(val species: FishSpecies): Pet()
+
+      sealed class FishSpecies {
+         object GoldFish : FishSpecies()
+         data class Other(val name: String): FishSpecies()
+      }
 
       class NoArgConstructor
 

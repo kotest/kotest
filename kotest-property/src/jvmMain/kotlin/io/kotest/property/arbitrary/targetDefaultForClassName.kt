@@ -55,8 +55,11 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       clazz.isSubclassOf(Enum::class) -> {
          Arb.of(Class.forName(clazz.java.name).enumConstants.map { it as Enum<*> })
       }
+      clazz.objectInstance != null -> Arb.constant(clazz.objectInstance!!)
       clazz.isSealed -> {
-         Arb.choice(clazz.sealedSubclasses.map { Arb.forClassUsingConstructor(providedArbs, it) })
+         Arb.choice(clazz.sealedSubclasses.map { subclass ->
+            subclass.objectInstance?.let { Arb.constant(it) } ?: Arb.forClassUsingConstructor(providedArbs, subclass)
+         })
       }
       else -> {
         Arb.forClassUsingConstructor(providedArbs, clazz)
