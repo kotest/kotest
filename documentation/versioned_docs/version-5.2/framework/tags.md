@@ -158,7 +158,7 @@ For example, the following spec would be skipped and not instantiated unless the
 specified at runtime.
 
 ```kotlin
-@RequireTags("Linux", "Mysql")
+@RequiresTag("Linux", "Mysql")
 class MyTestClass : FunSpec()
 ```
 
