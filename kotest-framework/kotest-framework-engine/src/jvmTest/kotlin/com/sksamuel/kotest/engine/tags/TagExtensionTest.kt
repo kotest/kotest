@@ -13,13 +13,14 @@ class TagExtensionTest : StringSpec() {
 
    init {
       "tag extensions should be used when calculating runtime tags" {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression =
-               TagExpression(setOf(TagA), setOf(TagB))
-         }
-         val c = ProjectConfiguration().apply { registry.add(ext) }
+
+         val c = ProjectConfiguration().apply { registry.add(TagExtension { TagExpression("!SpecExcluded") }) }
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector).withClasses(TestWithTags::class).withConfiguration(c).launch()
+         TestEngineLauncher(collector)
+            .withClasses(TestWithTags::class)
+            .withConfiguration(c)
+            .launch()
+
          collector.tests.mapKeys { it.key.name.testName }.mapValues { it.value.reasonOrNull } shouldBe
             mapOf(
                "should be tagged with tagA and therefore included" to null,
@@ -35,6 +36,8 @@ object TagB : Tag()
 
 private class TestWithTags : StringSpec() {
    init {
+      extension(ext)
+
       "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
 
       "should be untagged and therefore excluded" { }
@@ -42,3 +45,5 @@ private class TestWithTags : StringSpec() {
       "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
    }
 }
+
+private val ext = TagExtension { TagExpression(setOf(TagA), setOf(TagB)) }
