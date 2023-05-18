@@ -6,6 +6,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
@@ -14,7 +15,11 @@ class TagExtensionTest : StringSpec() {
    init {
       "tag extensions should be used when calculating runtime tags" {
 
-         val c = ProjectConfiguration().apply { registry.add(TagExtension { TagExpression("!SpecExcluded") }) }
+         val c = ProjectConfiguration().apply {
+            registry.add(TagExtension { TagExpression(setOf(TagA), setOf(TagB)) })
+            registry.add(SpecifiedTagsTagExtension(TagExpression("!SpecExcluded")))
+         }
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(TestWithTags::class)
@@ -36,8 +41,6 @@ object TagB : Tag()
 
 private class TestWithTags : StringSpec() {
    init {
-      extension(ext)
-
       "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
 
       "should be untagged and therefore excluded" { }
@@ -45,5 +48,3 @@ private class TestWithTags : StringSpec() {
       "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
    }
 }
-
-private val ext = TagExtension { TagExpression(setOf(TagA), setOf(TagB)) }
