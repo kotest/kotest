@@ -21,6 +21,10 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
       if (result.isErrorOrFailure) errors = true
    }
 
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
+      specs[kclass] = TestResult.Ignored(reason)
+   }
+
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       tests[testCase] = TestResult.Ignored(reason)
       names.add(testCase.name.testName)
