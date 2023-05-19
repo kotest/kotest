@@ -7,20 +7,17 @@ fun <A> Exhaustive.Companion.collection(collection: Collection<A>): Exhaustive<A
 }
 
 
-fun <A> Exhaustive.Companion.permutations(list: List<A>): Exhaustive<List<A>> {
-   require(list.isNotEmpty()) { "Can't build an Exhaustive for an empty list." }
+fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size): Exhaustive<List<A>> {
+   require(length in 0..list.size) { "length must be between 0 and the list size (${list.size}), but was $length." }
 
-   fun perms(list: List<A>): List<List<A>> = when {
-      list.isEmpty() -> emptyList()
-      list.size == 1 -> listOf(list)
-      else -> {
-         val result = mutableListOf<List<A>>()
-         for (i in list.indices) {
-            perms(list - list[i]).forEach { result.add(it + list[i]) }
+   fun perms(list: List<A>, length: Int): List<List<A>> = buildList {
+      when (length) {
+         0 -> add(emptyList())
+         else -> list.forEach { element ->
+            perms(list - element, length - 1).forEach { add(it + element) }
          }
-         result.toList()
       }
    }
 
-   return perms(list).exhaustive()
+   return perms(list, length).exhaustive()
 }
