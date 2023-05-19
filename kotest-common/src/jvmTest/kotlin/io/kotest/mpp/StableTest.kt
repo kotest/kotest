@@ -1,8 +1,9 @@
 package io.kotest.mpp
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
-class NamedThreadFactoryTest : StringSpec({
+class StableTest : StringSpec({
    "class should be correctly identified as stable" {
       data class StableClass(
          val string: String,
@@ -13,8 +14,8 @@ class NamedThreadFactoryTest : StringSpec({
          val byte: Byte,
          val short: Short,
          val boolean: Boolean,
-         val pair: Pair,
-         val triple: Triple,
+         val pair: Pair<String, String>,
+         val triple: Triple<String, String, String>,
          val char: Char,
       )
 
