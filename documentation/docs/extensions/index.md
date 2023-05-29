@@ -21,7 +21,7 @@ maintained and hosted by third parties.
 | [Mockserver](mockserver.md)           | Integrate mockserver HTTP servers with the test lifecycle                    |
 | [Spring](spring.md)                   | Adds support for spring beans in tests and spring test annotations           |
 | [System](system.md)                   | Provides utilities for integrating with System.* functions                   |
-| [Test Containers](test_containers.md) | Run docker images as part of a test lifecycle                                |
+| [Testcontainers](test_containers.md)  | Run docker images as part of a test lifecycle                                |
 | [Wiremock](wiremock.md)               | Provides a mock HTTP server. Project homepage [here](http://wiremock.org/).  |
 
 ### Third Party Extensions

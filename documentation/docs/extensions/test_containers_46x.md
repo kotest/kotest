@@ -1,17 +1,17 @@
 ---
 id: test_containers_46
-title: Test Containers
-sidebar_label: Test Containers
+title: Testcontainers
+sidebar_label: Testcontainers
 slug: test_containers_46.html
 ---
 
 
 
-## Test Containers
+## Testcontainers
 
-The [testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases, elasticsearch, kafka, Selenium web browsers, or anything else that can run in a Docker container, ideal for use inside tests.
+The [Testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases, elasticsearch, kafka, Selenium web browsers, or anything else that can run in a Docker container, ideal for use inside tests.
 
-This module provides integration for using testcontainers with kotest.
+This module provides integration for using Testcontainers with kotest.
 To use add the below dependency to your Gradle build file.
 
 ```groovy
