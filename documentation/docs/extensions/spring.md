@@ -37,11 +37,12 @@ class MyTestSpec : FunSpec() {
 ```
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
-This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
+This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use
+[`@ActiveProfiles`](https://docs.spring.io/spring-framework/reference/testing/annotations/integration-spring/annotation-activeprofiles.html) to
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
 :::note
-In Kotest 4.3 and earlier, the Spring extension was called `SpringListener`. This extension has now been deprecated in favour of `SpringExtension`. The usage is the same, but the SpringExtension has more functionality. 
+In Kotest 4.3 and earlier, the Spring extension was called `SpringListener`. This extension has now been deprecated in favour of `SpringExtension`. The usage is the same, but the SpringExtension has more functionality.
 :::
 
 ### Constructor Injection
