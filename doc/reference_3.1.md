@@ -1023,7 +1023,8 @@ KotlinTest offers a Spring extension that allows you to test code that wires dep
 To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
-This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
+This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use
+[`@ActiveProfiles`](https://docs.spring.io/spring-framework/reference/testing/annotations/integration-spring/annotation-activeprofiles.html) to
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
 There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
