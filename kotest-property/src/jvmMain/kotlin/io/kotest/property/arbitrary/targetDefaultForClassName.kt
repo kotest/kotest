@@ -10,6 +10,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
@@ -22,6 +23,7 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultFo
 fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type: KType): Arb<*>? {
    when (type) {
       typeOf<Instant>() -> Arb.instant()
+      typeOf<Date>() -> Arb.javaDate()
       typeOf<LocalDate>() -> Arb.localDate()
       typeOf<LocalDateTime>() -> Arb.localDateTime()
       typeOf<LocalTime>() -> Arb.localTime()

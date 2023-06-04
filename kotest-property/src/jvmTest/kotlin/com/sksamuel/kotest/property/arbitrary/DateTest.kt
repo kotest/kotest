@@ -6,17 +6,17 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
-import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
-import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
+import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.offsetDateTime
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
@@ -24,14 +24,15 @@ import io.kotest.property.arbitrary.yearMonth
 import io.kotest.property.arbitrary.zonedDateTime
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.OffsetDateTime
 import java.time.Period
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.hours
 
 class DateTest : WordSpec({
@@ -287,6 +288,54 @@ class DateTest : WordSpec({
 
          days.sorted() shouldBe (1..31).toSet()
          months.sorted() shouldBe (1..12).toSet()
+      }
+   }
+
+   "Arb.javaDate(minDate: String, maxDate: String, zoneId)" should {
+      "generate Dates between with default values" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val years = mutableSetOf<Int>()
+
+         val zoneId = ZoneId.systemDefault()
+         val testedArb = Arb.javaDate(zoneId = Arb.of(zoneId))
+
+         checkAll(5000, testedArb) { date ->
+            val localDate = ZonedDateTime.ofInstant(date.toInstant(), zoneId)
+            days.add(localDate.dayOfMonth)
+            months.add(localDate.monthValue)
+            years.add(localDate.year)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
+         years.sorted() shouldBe (1970 .. 2050).toSet()
+      }
+   }
+
+   "Arb.javaDate(minDate: Date, maxDate: Date, zoneId)" should {
+      "generate Dates between with default values" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val years = mutableSetOf<Int>()
+
+         val zoneId = ZoneId.systemDefault()
+         val testedArb = Arb.javaDate(
+            minDate = SimpleDateFormat("yyyy-mm-dd").parse("1970-01-01"),
+            maxDate = SimpleDateFormat("yyyy-mm-dd").parse("2050-12-31"),
+            zoneId = Arb.of(zoneId)
+         )
+
+         checkAll(5000, testedArb) { date ->
+            val localDate = ZonedDateTime.ofInstant(date.toInstant(), zoneId)
+            days.add(localDate.dayOfMonth)
+            months.add(localDate.monthValue)
+            years.add(localDate.year)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
+         years.sorted() shouldBe (1970 .. 2050).toSet()
       }
    }
 })
