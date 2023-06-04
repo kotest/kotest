@@ -56,7 +56,7 @@ fun targetDefaultForType(
       }
       clazz.java.isArray -> {
          val upperBound = type.arguments.first().type ?: error("No bound for Array")
-         Arb.array(Arb.forType(providedArbs, upperBound) as Arb<*>) {
+         Arb.array(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>) {
             val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
             val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
             for ((i, item) in this.withIndex()) {
@@ -70,12 +70,12 @@ fun targetDefaultForType(
          val upperBoundKClass = (upperBound.classifier as? KClass<*>)
          if (upperBoundKClass != null && upperBoundKClass.isSubclassOf(Enum::class)) {
             val maxElements = Class.forName(upperBoundKClass.java.name).enumConstants.size
-            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>, 0..maxElements)
+            Arb.set(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>, 0..maxElements)
          } else if(upperBoundKClass != null && upperBoundKClass.isSealed) {
             val maxElements = upperBoundKClass.sealedSubclasses.size
             Arb.set(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>, 0..maxElements)
          } else {
-            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>)
+            Arb.set(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>)
          }
       }
       clazz.isSubclassOf(Pair::class) -> {
