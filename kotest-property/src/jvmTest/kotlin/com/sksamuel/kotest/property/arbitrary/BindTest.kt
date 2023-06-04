@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -12,13 +13,17 @@ import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotStartWith
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.data
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
@@ -26,6 +31,10 @@ import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.arbitrary.zip
 import io.kotest.property.checkAll
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.valueParameters
+import kotlin.reflect.typeOf
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
 class BindTest : StringSpec({
@@ -34,6 +43,38 @@ class BindTest : StringSpec({
    data class FooC(val a: String, val b: Int, val c: Double)
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
+
+   "Bind using param" {
+      data class Person(val id: Int, val name: String)
+      data class Family(val name: String, val persons: List<Person>)
+
+//      println("Family constructor \n ${Family::class.primaryConstructor!!.parameters.joinToString(separator = "\n")}")
+//      println("Person constructor \n ${Person::class.primaryConstructor!!.parameters.joinToString(separator = "\n")}")
+//      println("Family name: ${Family::name}")
+//      println("Person name: ${Person::name}")
+//
+//      println("Family constrcutor param types")
+//      println(Family::class.primaryConstructor!!.returnType)
+//
+//
+//      val someProp: KProperty1<*, *> = Family::name
+//      println(someProp.typeParameters)
+//      println(someProp.valueParameters)
+//      println(someProp.returnType)
+//      println(someProp.parameters)
+
+
+      checkAll(Arb.bind<Family>(arbsForProperties = mapOf(
+         Family::name to Arb.string().map { s -> "Flanders-$s" },
+         Person::id to Arb.positiveInt(),
+      ))) { family ->
+         family.name.shouldStartWith("Flanders-")
+         family.persons.forAll {
+            it.name.shouldNotStartWith("Flanders-")
+            it.id shouldBeGreaterThan 0
+         }
+      }
+   }
 
    "Arb.bind(a,b) should generate distinct values" {
       val arbA = Arb.string()
