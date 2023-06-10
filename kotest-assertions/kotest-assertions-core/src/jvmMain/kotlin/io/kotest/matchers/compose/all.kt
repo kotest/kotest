@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty1
  * All matchers must be the same type `T`. If any matcher fails, composed matcher fails, too.
  */
 @Suppress("UNCHECKED_CAST")
-fun <T : Any?> Matcher.Companion.compose(
+fun <T : Any?> Matcher.Companion.all(
    vararg pairs: Pair<Matcher<*>, KProperty1<T, *>>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
@@ -18,7 +18,7 @@ fun <T : Any?> Matcher.Companion.compose(
          runCatching {
             (matcher as Matcher<Any?>).test(prop(value))
          }.onFailure {
-            fail("Mismatching types in argument ${i + 1} for composed matcher:\n\n${it.message}")
+            fail("Mismatching types in argument ${i + 1} for composed matcher: ${it.message}")
          }.getOrThrow()
       }
 
@@ -34,7 +34,7 @@ fun <T : Any?> Matcher.Companion.compose(
  * Compose matchers. All matchers must be the same type `T`. If any matcher fails, composed matcher fails, too.
  */
 @Suppress("UNCHECKED_CAST")
-fun <T : Any?> Matcher.Companion.compose(
+fun <T : Any?> Matcher.Companion.all(
    vararg matchers: Matcher<T>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {

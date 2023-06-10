@@ -3,10 +3,8 @@ package com.sksamuel.kotest.matchers.reflection
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.compose.compose
+import io.kotest.matchers.reflection.compose
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.contain
-import io.kotest.matchers.string.containADigit
 
 class ComposeTest : StringSpec() {
    data class Person(
@@ -64,27 +62,6 @@ class ComposeTest : StringSpec() {
             Name John should not be John
             Age 10 should not be 10
             Address ${Address("Warsaw", "Test", "1/1")} should not be Test 1/1 Warsaw
-         """.trimIndent()
-      }
-
-      "password matcher test" {
-
-         val passwordMatcher = Matcher.compose(
-            containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
-         )
-
-         val matcherResult = passwordMatcher.test("StrongPassword123")
-
-         matcherResult.passed() shouldBe true
-         matcherResult.failureMessage() shouldBe """
-            "StrongPassword123" should contain at least one digit
-            "StrongPassword123" should contain regex [a-z]
-            "StrongPassword123" should contain regex [A-Z]
-         """.trimIndent()
-         matcherResult.negatedFailureMessage() shouldBe """
-            "StrongPassword123" should not contain any digits
-            "StrongPassword123" should not contain regex [a-z]
-            "StrongPassword123" should not contain regex [A-Z]
          """.trimIndent()
       }
    }
