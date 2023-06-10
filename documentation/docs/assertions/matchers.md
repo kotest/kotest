@@ -1,27 +1,3 @@
----
-title: Matchers
-slug: matchers.html
----
-
-
-A `Matcher` is the Kotest term for an assertion that performs a specific test. For example, a matcher may test that a double is greater than zero.
-Or it it may test that a file is not empty.
-
-Kotest currently has approximately 325 matchers split across several modules. Most of these matchers are for standard library types.
-Others are project specific. Additionally, there are matchers provided by third party libraries.
-
-Kotest matchers are _framework agnostic_. You can use them with the Kotest framework, or with any other framework. If you are happy with JUnit,
-you can still use the powerful matchers provided by the kotest assertion modules.
-
-Matchers can be used in two styles:
-
- * Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
- * Infix functions like `a shouldBe b` or `a should startWith("foo")`
-
-Both styles are supported. The advantage of the extension function style is that the IDE can autocomplete for you,
- but some people may prefer the infix style as it is slightly cleaner.
-
-Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
 For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
 
 
@@ -68,5 +44,6 @@ This is a list of projects that provide Kotest matchers. They are maintained out
 
 | Library | Description |
 | -------- | ---- |
+| [Android](https://github.com/LeoColman/kotest-android) | Toolbox for working with Kotest and Android |
 | [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing/kotest) | Functional toolkit for Kotlin HTTP applications |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test) | JVM-based, full-stack framework for building modular, easily testable microservice |

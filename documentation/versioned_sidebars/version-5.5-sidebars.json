@@ -87,7 +87,6 @@
           ]
         },
         "assertions/ktor",
-        "assertions/android_matchers",
         "assertions/kotlinx_datetime",
         "assertions/arrow",
         "assertions/sql-matchers",
