@@ -6,12 +6,12 @@ sidebar_label: Composed Matchers
 ---
 
 Composed matchers can be created for any type by composing one or more other matchers. This allows us to
-build up complicated matchers from simpler ones.
+build up complex matchers from simpler ones.
 
 Let's say we'd like to define a password `Matcher`, which will `containADigit()`, `contain(Regex("[a-z]"))` and
 `contain(Regex("[A-Z]"))`. We can compose these matchers this way:
 ```kotlin
-val passwordMatcher = Matcher.compose(
+val passwordMatcher = Matcher.all(
    containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
 )
 ```
@@ -77,24 +77,24 @@ val addressMatcher = Matcher<Address> {
 }
 ```
 
-Now we can simply combine these together to make a John in Warsaw matcher. Notice that we specify the property to
+Now we can simply combine these together to make a *John in Warsaw matcher*. Notice that we specify the property to
 extract to pass to each matcher in turn.
 
 ```kotlin
-fun personMatcher(name: String, age: Int) = Matcher.compose(
+fun personMatcher(name: String, age: Int) = Matcher.all(
   nameMatcher(name) to Person::name,
   ageMatcher(age) to Person::age,
   addressMatcher to Person::address
 )
 ```
 
-And we could add the extension variant too:
+And we can add the extension variant too:
 
 ```kotlin
 fun Person.shouldBePerson(name: String, age: Int) = this shouldBe personMatcher(name, age)
 ```
 
-Then we invoke like this:
+Then we invoke it this way:
 
 ```kotlin
 Person("John", 21, Address("Warsaw", "Test", "1/1")).shouldBePerson("John", 21)
