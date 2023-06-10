@@ -14,6 +14,8 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
    private var evals = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
+   private var contextualRandomSource: RandomSource? = null
+   private val generatedSamples = mutableListOf<Sample<*>>()
 
    private val statistics = mutableMapOf<Label?, MutableMap<Any?, Int>>()
 
@@ -23,6 +25,32 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
 
    fun markFailure() {
       failures++
+   }
+
+   /**
+    * Setup this [PropertyContext] for a single run of property test.
+    *
+    * This function sets the [contextualRandomSource] as well as clears the [generatedSamples].
+    */
+   internal fun setupContextual(rs: RandomSource) {
+      contextualRandomSource = rs
+      generatedSamples.clear()
+   }
+
+   internal fun generatedSamples(): List<Sample<*>> = generatedSamples
+
+   /**
+    * Returns a [RandomSource] that can be used within this [PropertyContext]
+    */
+   fun randomSource(): RandomSource = contextualRandomSource ?: RandomSource.default()
+
+   /**
+    * Extracts a sample or edgecase value from an [Arb] using the contextual [RandomSource].
+    */
+   fun <A> Arb<A>.bind(): A {
+      val sample = this.generate(randomSource(), config.edgeConfig).first()
+      generatedSamples.add(sample)
+      return sample.value
    }
 
    fun markEvaluation() = evals++

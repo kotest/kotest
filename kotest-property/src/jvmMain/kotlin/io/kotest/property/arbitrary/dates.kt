@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
+import java.util.Date
 import kotlin.random.Random
 
 /**
@@ -228,8 +230,8 @@ fun Arb.Companion.instant(
  * Arberates a stream of random [OffsetDateTime]
  */
 fun Arb.Companion.offsetDateTime(
-   minValue: LocalDateTime = LocalDateTime.MIN,
-   maxValue: LocalDateTime = LocalDateTime.MAX,
+   minValue: LocalDateTime = LocalDateTime.of(1970, 1, 1, 0, 0),
+   maxValue: LocalDateTime = LocalDateTime.of(2030, 12, 31, 23, 59),
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
@@ -240,10 +242,37 @@ fun Arb.Companion.offsetDateTime(
  * Arberates a stream of random [ZonedDateTime]
  */
 fun Arb.Companion.zonedDateTime(
-   minValue: LocalDateTime = LocalDateTime.MIN,
-   maxValue: LocalDateTime = LocalDateTime.MAX,
+   minValue: LocalDateTime = LocalDateTime.of(1970, 1, 1, 0, 0),
+   maxValue: LocalDateTime = LocalDateTime.of(2030, 12, 31, 23, 59),
    zoneId: Arb<ZoneId> = zoneId()
 ): Arb<ZonedDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
    zoneId
 ) { time, zone -> time.atZone(zone) }
+
+/**
+ * Arberates a stream of random [Date]
+ */
+fun Arb.Companion.javaDate(
+   minDate: String = "1970-01-01",
+   maxDate: String = "2050-12-31",
+   zoneId: Arb<ZoneId> = zoneId()
+): Arb<Date> {
+   return Arb.bind(
+      localDate(LocalDate.parse(minDate), LocalDate.parse(maxDate)),
+      zoneId
+   ) { localDate, zone -> Date.from(localDate.atStartOfDay(zone).toInstant()) }
+}
+
+fun Arb.Companion.javaDate(
+   minDate: Date,
+   maxDate: Date,
+   zoneId: Arb<ZoneId> = zoneId()
+): Arb<Date> {
+   val dateFormat = SimpleDateFormat("yyyy-mm-dd")
+   return javaDate(
+      minDate = dateFormat.format(minDate),
+      maxDate = dateFormat.format(maxDate),
+      zoneId = zoneId
+   )
+}

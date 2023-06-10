@@ -16,12 +16,12 @@ class DefaultClassifierTest : FunSpec() {
             checkAll<String>(PropTestConfig(outputClassifications = true, seed = 123123123)) {}
          }
          println(out)
-         out.shouldContain("Label statistics for arg 0 (1000 inputs):")
-         out.shouldContain("ANY LENGTH LETTER OR DIGITS                                     5 (1%)")
-         out.shouldContain("SINGLE CHARACTER LETTER                                         1 (1%)")
+         out.shouldContain("ANY LENGTH LETTER OR DIGITS                                    11 (1%)")
+         out.shouldContain("SINGLE CHARACTER LETTER                                        10 (1%)")
+         out.shouldContain("SINGLE CHARACTER DIGIT                                          2 (1%)")
          out.shouldContain("EMPTY STRING                                                   11 (1%)")
          out.shouldContain("MAX LENGTH                                                     11 (1%)")
-         out.shouldContain("OTHER                                                         967 (97%)")
+         out.shouldContain("OTHER                                                         955 (96%)")
       }
 
       test("int classifier should be provided by default int arb") {

@@ -7,6 +7,7 @@ on:
          - 'documentation/**'
          - '*.md'
          - '*.yml'
+         - '.github/workflows/**'
       branches:
          - master
 
@@ -24,13 +25,14 @@ jobs:
                - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
                - jsTest publishJsPublicationToDeployRepository
                - linuxX64Test publishLinuxX64PublicationToDeployRepository
+               - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
       steps:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: ${{ matrix.target }}
 
    mac:
-      runs-on: macos-11
+      runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       strategy:
          fail-fast: false

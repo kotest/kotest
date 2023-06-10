@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    `java-library`
    id("kotest-jvm-conventions")

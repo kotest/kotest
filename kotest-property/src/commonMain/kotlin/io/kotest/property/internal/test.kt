@@ -8,6 +8,7 @@ import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.RandomSource
 import io.kotest.property.seed.clearFailedSeed
 import io.kotest.property.seed.writeFailedSeedIfEnabled
 import io.kotest.property.statistics.outputStatistics
@@ -27,11 +28,12 @@ internal suspend fun test(
    inputs: List<Any?>,
    classifiers: List<Classifier<out Any?>?>,
    seed: Long,
+   contextualSeed: Long,
    testFn: suspend () -> Any
 ) {
    require(inputs.size == classifiers.size)
    context.markEvaluation()
-
+   context.setupContextual(RandomSource.seeded(contextualSeed))
    try {
 
       inputs.indices.forEach { k ->
@@ -68,8 +70,12 @@ internal suspend fun handleException(
    if (config.maxFailure == 0) {
 
       println("Property test failed for inputs\n")
-      inputs.withIndex().forEach { (index, value) ->
-         println("$index) ${value.print().value}")
+      val allInputs = buildList {
+         addAll(inputs.map { it.print().value })
+         context.generatedSamples().forEach { add("${it.value.print().value} (generated within property context)") }
+      }
+      allInputs.withIndex().forEach { (index, value) ->
+         println("$index) $value")
       }
       println()
 

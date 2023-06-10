@@ -122,9 +122,9 @@ class ReflectiveBindTest : StringSpec(
             .toList()
 
          edgeCases shouldContainExactly listOf(
-            Wobble(a = "\u001D", b = false, c = 1, d = Pair(-0.0, Float.POSITIVE_INFINITY)),
+            Wobble(a = "a", b = false, c = 1, d = Pair(-0.0, Float.POSITIVE_INFINITY)),
             Wobble(a = "", b = true, c = 0, d = Pair(3.5669621934936836E307, -3.4028235E38F)),
-            Wobble(a = "\r", b = true, c = Int.MIN_VALUE, d = Pair(1.3317496548681731E308, -1.0F)),
+            Wobble(a = "a", b = true, c = Int.MIN_VALUE, d = Pair(1.3317496548681731E308, -1.0F)),
             Wobble(a = "", b = false, c = 1, d = Pair(-1.402243144992822E308, 1.0F)),
             Wobble(a = "", b = false, c = 0, d = Pair(Double.POSITIVE_INFINITY, 3.4028235E38F))
          )
@@ -165,6 +165,19 @@ class ReflectiveBindTest : StringSpec(
          shapes4d
             .forAtLeastOne { it.shouldBeInstanceOf<Tesseract>() }
             .forAtLeastOne { it.shouldBeInstanceOf<Hypersphere>() }
+
+         val petArb = Arb.bind<Pet>()
+         petArb.next().shouldBeInstanceOf<Pet>()
+
+         val pets = petArb.take(100, randomSource).toList()
+         pets.forAtLeastOne { it shouldBe Puppy }
+         pets.forAtLeastOne { it shouldBe Cat }
+         pets.forAtLeastOne { it.shouldBeInstanceOf<Fish>().species.shouldBeInstanceOf<FishSpecies.GoldFish>() }
+         pets.forAtLeastOne { it.shouldBeInstanceOf<Fish>().species.shouldBeInstanceOf<FishSpecies.Other>() }
+
+         val catArb = Arb.bind<Cat>()
+         catArb.next() shouldBe Cat
+         catArb.take(100, randomSource).toList().forAll { it shouldBe Cat }
       }
 
       "Fails to bind for non default type when class or primary constructor is private" {
@@ -195,6 +208,17 @@ class ReflectiveBindTest : StringSpec(
       sealed class Shape4d
       class Tesseract : Shape4d()
       class Hypersphere : Shape4d()
+
+      sealed class Pet
+      object Puppy : Pet()
+      object Cat : Pet()
+
+      data class Fish(val species: FishSpecies): Pet()
+
+      sealed class FishSpecies {
+         object GoldFish : FishSpecies()
+         data class Other(val name: String): FishSpecies()
+      }
 
       class NoArgConstructor
 

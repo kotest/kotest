@@ -80,7 +80,7 @@ org.opentest4j.AssertionFailedError: data class diff for Foo
 
 ### Integration with Testcontainers
 
-[Test containers](https://www.testcontainers.org/) is a popular Java library that supports lightweight, throwaway instances of databases,
+[Testcontainers](https://www.testcontainers.org/) is a popular Java library that supports lightweight, throwaway instances of databases,
 message queues, elasticsearch and so on. And now Kotest has a module that allows easy integration into the test lifecylce.
 
 Add the `kotest-extensions-testcontainers` module to your build and then you can register a test container like this:

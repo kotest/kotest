@@ -17,6 +17,6 @@ import io.kotest.core.TagExpression
  * 'kotest.tags.include' and 'kotest.tags.exclude'.
  *
  */
-interface TagExtension : Extension {
+fun interface TagExtension : Extension {
    fun tags(): TagExpression
 }

@@ -6,28 +6,27 @@ plugins {
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
-      targets {
-         linuxX64()
+      linuxX64()
+      linuxArm64()
 
-         mingwX64()
+      mingwX64()
 
-         macosX64()
-         macosArm64()
+      macosX64()
+      macosArm64()
 
-         tvos()
-         tvosSimulatorArm64()
+      tvos()
+      tvosSimulatorArm64()
 
-         watchosArm32()
-         watchosArm64()
-         watchosX86()
-         watchosX64()
-         watchosSimulatorArm64()
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+      watchosSimulatorArm64()
 
-         iosX64()
-         iosArm64()
-         iosArm32()
-         iosSimulatorArm64()
-      }
+      iosX64()
+      iosArm64()
+      iosArm32()
+      iosSimulatorArm64()
 
       sourceSets {
 
@@ -44,6 +43,7 @@ kotlin {
          val mingwX64Main by getting { dependsOn(desktopMain) }
 
          val linuxX64Main by getting { dependsOn(desktopMain) }
+         val linuxArm64Main by getting { dependsOn(desktopMain) }
 
          val iosX64Main by getting { dependsOn(desktopMain) }
          val iosArm64Main by getting { dependsOn(desktopMain) }
@@ -70,6 +70,7 @@ kotlin {
          val mingwX64Test by getting { dependsOn(nativeTest) }
 
          val linuxX64Test by getting { dependsOn(nativeTest) }
+         val linuxArm64Test by getting { dependsOn(nativeTest) }
 
          val iosX64Test by getting { dependsOn(nativeTest) }
          val iosArm64Test by getting { dependsOn(nativeTest) }
@@ -87,6 +88,6 @@ kotlin {
       }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
-      targets { jvm() }
+      jvm()
    }
 }
