@@ -1,6 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.internal.impldep.io.opencensus.tags.Tags
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    kotlin("jvm")
@@ -92,6 +93,19 @@ gradlePlugin {
    }
 }
 
+kotlin {
+   jvmToolchain(17)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions {
+      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+   }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+   options.release.set(8)
+}
 
 val updateKotestPluginConstants by tasks.registering(Sync::class) {
 
