@@ -142,12 +142,20 @@ class MapContainsMatcher<K, V>(
 }
 
 fun <K, V> matchAll(
-   vararg expected: Pair<K, (V) -> Unit>
-): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), true)
+   vararg matchers: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(matchers.toMap(), true)
+
+fun <K, V> matchAll(
+   expected: Map<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected, true)
 
 fun <K, V> matchExactly(
-   vararg expected: Pair<K, (V) -> Unit>
-): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), false)
+   vararg matchers: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(matchers.toMap(), false)
+
+fun <K, V> matchExactly(
+   expected: Map<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected, false)
 
 class MapMatchesMatcher<K, V>(
    private val expected: Map<K, (V) -> Unit>,
