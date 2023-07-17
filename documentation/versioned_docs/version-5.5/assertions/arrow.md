@@ -10,7 +10,7 @@ sidebar_label: Arrow
 This page lists all current matchers in the Kotest arrow matchers extension library.
 
 :::note
-The following module is needed: `io.kotest.extensions:kotest-assertions-arrow` which is versioned independently from the main Kotest project.
+The following module is needed: `io.kotest.extensions:kotest-assertions-arrow` which is versioned independently of the main Kotest project.
 Search maven central for latest version [here](https://central.sonatype.com/search?q=io.kotest.extensions:kotest-assertions-arrow).
 :::
 
