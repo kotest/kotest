@@ -11,7 +11,7 @@ This page lists all current matchers in the Kotest arrow matchers extension libr
 
 :::note
 The following module is needed: `io.kotest.extensions:kotest-assertions-arrow` which is versioned independently from the main Kotest project.
-Search maven central for latest version [here](https://search.maven.org/search?q=kotest-assertions-arrow).
+Search maven central for latest version [here](https://central.sonatype.com/search?q=io.kotest.extensions:kotest-assertions-arrow).
 :::
 
 :::note
