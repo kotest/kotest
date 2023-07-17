@@ -480,6 +480,10 @@ private fun matchMapTests(contextName: String) = wordSpec {
          mapOf("key" to "value") should matcher("key" to { it shouldBe "value" })
       }
 
+      "can match null value" {
+         mapOf("key" to null) should matcher("key" to { it shouldBe null })
+      }
+
       "match negated" {
          mapOf("key" to "value") shouldNot matcher("otherKey" to { it shouldBe "value" })
          mapOf("key" to "value") shouldNot matcher("key" to { it shouldBe "otherValue" })

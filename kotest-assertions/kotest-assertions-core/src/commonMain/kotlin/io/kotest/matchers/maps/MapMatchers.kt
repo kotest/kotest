@@ -154,16 +154,16 @@ class MapMatchesMatcher<K, V>(
    private val ignoreExtraKeys: Boolean = false
 ) : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>): MatcherResult {
-      val missingKeys = mutableListOf<K>()
+      val unexpectedKeys = mutableListOf<K>()
       val mismatches = mutableListOf<Pair<K, String?>>()
-      val unexpectedKeys = if (ignoreExtraKeys) emptySet() else value.keys - expected.keys
+      val missingKeys = expected.keys - value.keys
 
       errorCollector.runWithMode(ErrorCollectionMode.Hard) {
-         expected.forEach { (k, matcher) ->
-            val v = value[k]
+         value.forEach { (k, v) ->
+            val matcher = expected[k]
 
-            if (v == null) {
-               missingKeys.add(k)
+            if (matcher == null) {
+               unexpectedKeys.add(k)
             } else {
                try {
                   matcher(v)
@@ -175,7 +175,7 @@ class MapMatchesMatcher<K, V>(
       }
 
       return MatcherResult(
-         missingKeys.isEmpty() && mismatches.isEmpty() && unexpectedKeys.isEmpty(),
+         missingKeys.isEmpty() && mismatches.isEmpty() && (ignoreExtraKeys || unexpectedKeys.isEmpty()),
          { "Expected map to match all assertions. Missing keys were=$missingKeys, Mismatched values were=$mismatches, Unexpected keys were $unexpectedKeys." },
          { "Expected map to not match all assertions." },
       )
