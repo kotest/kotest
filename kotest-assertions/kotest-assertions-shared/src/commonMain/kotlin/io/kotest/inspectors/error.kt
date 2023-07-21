@@ -17,7 +17,8 @@ import io.kotest.assertions.print.print
  *     -Dkotest.assertions.output.max=20
  * ```
  */
-fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
+@PublishedApi
+internal fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
 
    val maxResults = AssertionsConfig.maxErrorsOutput
 
