@@ -1,5 +1,7 @@
 package io.kotest.framework.multiplatform.embeddablecompiler
 
+import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.isClass
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.types.IrType
@@ -27,9 +29,11 @@ val abstractProjectConfigFqName = FqName("io.kotest.core.config.AbstractProjectC
 fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
 
 /**
- * Returns true if this IrClass is a project config
+ * Returns true if this IrClass is an instantiable project config
  */
-fun IrClass.isProjectConfig() = superTypes().any { it.classFqName == abstractProjectConfigFqName }
+fun IrClass.isInstantiableProjectConfig() =
+   kind.isClass && modality != Modality.ABSTRACT && modality != Modality.SEALED &&
+      superTypes().any { it.classFqName == abstractProjectConfigFqName }
 
 /**
  * Recursively returns all supertypes for an [IrClass] to the top of the type tree.

@@ -30,6 +30,7 @@ jobs:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: ${{ matrix.target }}
+               java-version: 17
 
    mac:
       runs-on: macos-latest
@@ -56,6 +57,7 @@ jobs:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: ${{ matrix.target }}
+               java-version: 17
 
    windows:
       runs-on: windows-latest
@@ -64,6 +66,7 @@ jobs:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: "mingwX64Test publishMingwX64PublicationToDeployRepository"
+               java-version: 17
 
 env:
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

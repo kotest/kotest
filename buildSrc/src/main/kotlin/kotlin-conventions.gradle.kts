@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
    kotlin("multiplatform")
@@ -33,10 +34,13 @@ tasks.withType<KotlinCompile>().configureEach {
       )
       apiVersion = "1.8"
       languageVersion = "1.8"
+      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
    }
 }
 
 kotlin {
+   jvmToolchain(17)
+
    sourceSets.configureEach {
       languageSettings {
          optIn("kotlin.time.ExperimentalTime")
@@ -44,4 +48,8 @@ kotlin {
          optIn("kotlin.contracts.ExperimentalContracts")
       }
    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+   options.release.set(8)
 }

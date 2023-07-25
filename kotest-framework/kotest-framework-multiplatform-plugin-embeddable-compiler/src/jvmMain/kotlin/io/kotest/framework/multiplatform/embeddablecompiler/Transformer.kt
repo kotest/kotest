@@ -31,7 +31,7 @@ abstract class Transformer(
 
    override fun visitClassNew(declaration: IrClass): IrStatement {
       super.visitClassNew(declaration)
-      if (declaration.isProjectConfig()) configs.add(declaration)
+      if (declaration.isInstantiableProjectConfig()) configs.add(declaration)
       return declaration
    }
 

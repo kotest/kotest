@@ -2835,16 +2835,18 @@ public final class io/kotest/equals/types/ObjectEqualsEqualityKt {
 }
 
 public final class io/kotest/inspectors/ElementFail : io/kotest/inspectors/ElementResult {
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Throwable;)V
+	public fun <init> (ILjava/lang/Object;Ljava/lang/Throwable;)V
 	public fun error ()Ljava/lang/Throwable;
+	public final fun getIndex ()I
 	public final fun getT ()Ljava/lang/Object;
 	public final fun getThrowable ()Ljava/lang/Throwable;
 	public fun value ()Ljava/lang/Object;
 }
 
 public final class io/kotest/inspectors/ElementPass : io/kotest/inspectors/ElementResult {
-	public fun <init> (Ljava/lang/Object;)V
+	public fun <init> (ILjava/lang/Object;)V
 	public fun error ()Ljava/lang/Throwable;
+	public final fun getIndex ()I
 	public final fun getT ()Ljava/lang/Object;
 	public fun value ()Ljava/lang/Object;
 }
@@ -2968,7 +2970,7 @@ public final class io/kotest/inspectors/InspectorsKt {
 }
 
 public final class io/kotest/inspectors/RunTestsKt {
-	public static final fun runTest (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/inspectors/ElementResult;
+	public static final fun runTest (ILjava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/inspectors/ElementResult;
 	public static final fun runTests (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun runTests (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }

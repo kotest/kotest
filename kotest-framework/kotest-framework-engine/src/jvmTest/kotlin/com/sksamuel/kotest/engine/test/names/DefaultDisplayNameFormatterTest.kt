@@ -1,20 +1,27 @@
 package com.sksamuel.kotest.engine.test.names
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
+import io.kotest.core.TagExpression
+import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.Tags
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.DisplayName
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 @Isolate
 class DefaultDisplayNameFormatterTest : FunSpec() {
@@ -156,11 +163,41 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          c.includeTestScopeAffixes = true
          DefaultDisplayNameFormatter(c).format(tc) shouldBe "foosuffix"
       }
+
+      test("Tags from Spec are only added once when displaying the name of the test with tags included") {
+         val configuration = ProjectConfiguration().apply {
+            testNameAppendTags = true
+         }
+
+         val collector = TeamCityTestEngineListener()
+
+         val report = captureStandardOut {
+            TestEngineLauncher(collector)
+               .withConfiguration(configuration)
+               .withClasses(TaggedSpec::class)
+               .withTagExpression(TagExpression.Empty)
+               .launch()
+         }
+
+         assertSoftly(report) {
+            shouldContain("Bar|[tags = A|]")
+            shouldContain("Foo|[tags = A|]")
+         }
+      }
    }
 }
 
-object Dummy : Tag()
-object NoUse : Tag()
+@Tags("A")
+private class TaggedSpec : FunSpec({
+   context("Foo") {
+      test("Bar") {
+
+      }
+   }
+})
+
+private object Dummy : Tag()
+private object NoUse : Tag()
 
 @DisplayName("ZZZZZ")
 private class SpecWithDisplayName : FunSpec({

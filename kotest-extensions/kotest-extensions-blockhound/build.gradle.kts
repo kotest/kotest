@@ -17,3 +17,7 @@ kotlin {
       }
    }
 }
+
+tasks.withType<Test>().configureEach {
+   jvmArgs("-XX:+AllowRedefinitionToAddDeleteMethods") // https://github.com/reactor/BlockHound/issues/33
+}

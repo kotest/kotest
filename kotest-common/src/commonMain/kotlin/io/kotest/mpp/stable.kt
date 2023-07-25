@@ -53,4 +53,5 @@ private val allPlatformStableTypes = setOf(
    Boolean::class,
    Pair::class,
    Triple::class,
+   Char::class,
 )
