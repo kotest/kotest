@@ -48,6 +48,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterInvocation (Lkotlin/jvm/functions/Function3;)V
 	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun appliedTags ()Ljava/util/Set;

@@ -6,6 +6,7 @@ import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterInvocationListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeInvocationListener
@@ -13,6 +14,7 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
+import io.kotest.core.spec.AfterInvocation
 import io.kotest.core.spec.AfterSpec
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.AroundTestFn
@@ -257,6 +259,20 @@ abstract class TestConfiguration {
    fun beforeInvocation(f: BeforeInvocation) {
       register(object : BeforeInvocationListener {
          override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
+            f(testCase, iteration)
+         }
+      })
+   }
+
+   /**
+    * Registers a callback to be executed after every invocation of [TestCase]
+    * with type [TestType.Test].
+    *
+    * The [TestCase] about to be executed and invocation iteration is provided as the parameter.
+    */
+   fun afterInvocation(f: AfterInvocation) {
+      register(object : AfterInvocationListener {
+         override suspend fun afterInvocation(testCase: TestCase, iteration: Int) {
             f(testCase, iteration)
          }
       })

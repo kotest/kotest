@@ -16,6 +16,7 @@ typealias BeforeInvocation = suspend (TestCase, Int) -> Unit
 typealias AfterAny = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = suspend (Spec) -> Unit
 typealias AfterSpec = suspend (Spec) -> Unit
+typealias AfterInvocation = suspend (TestCase, Int) -> Unit
 typealias AfterProject = () -> Unit
 typealias FinalizeSpec = suspend (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
 typealias TestCaseExtensionFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
