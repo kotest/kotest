@@ -248,6 +248,12 @@ abstract class TestConfiguration {
       })
    }
 
+   /**
+    * Registers a callback to be executed before every invocation of [TestCase]
+    * with type [TestType.Test].
+    *
+    * The [TestCase] about to be executed and invocation iteration is provided as the parameter.
+    */
    fun beforeInvocation(f: BeforeInvocation) {
       register(object : BeforeInvocationListener {
          override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
