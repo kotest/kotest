@@ -54,6 +54,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterInvocation (Lkotlin/jvm/functions/Function3;)V
 	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun appliedTags ()Ljava/util/Set;
@@ -63,6 +64,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun beforeInvocation (Lkotlin/jvm/functions/Function3;)V
 	public final fun beforeSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun extension (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
