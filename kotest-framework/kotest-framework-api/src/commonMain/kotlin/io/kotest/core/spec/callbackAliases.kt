@@ -12,6 +12,7 @@ typealias AfterEach = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeContainer = suspend (TestCase) -> Unit
 typealias AfterContainer = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeAny = suspend (TestCase) -> Unit
+typealias BeforeInvocation = suspend (TestCase, Int) -> Unit
 typealias AfterAny = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = suspend (Spec) -> Unit
 typealias AfterSpec = suspend (Spec) -> Unit

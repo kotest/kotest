@@ -8,6 +8,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
+import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -19,6 +20,7 @@ import io.kotest.core.spec.AutoCloseable
 import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
+import io.kotest.core.spec.BeforeInvocation
 import io.kotest.core.spec.BeforeSpec
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.Spec
@@ -242,6 +244,14 @@ abstract class TestConfiguration {
       register(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
+         }
+      })
+   }
+
+   fun beforeInvocation(f: BeforeInvocation) {
+      register(object : BeforeInvocationListener {
+         override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
+            f(testCase, iteration)
          }
       })
    }
