@@ -1,24 +1,27 @@
 package com.sksamuel.kotest.engine.test.names
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.Tags
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.DisplayName
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 @Isolate
 class DefaultDisplayNameFormatterTest : FunSpec() {
@@ -165,20 +168,21 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          val configuration = ProjectConfiguration().apply {
             testNameAppendTags = true
          }
-         val formatter = DefaultDisplayNameFormatter(configuration)
 
-         val collector = CollectingTestEngineListener()
+         val collector = TeamCityTestEngineListener()
 
-         TestEngineLauncher(collector)
-            .withConfiguration(configuration)
-            .withClasses(TaggedSpec::class)
-            .withTagExpression(TagExpression.Empty)
-            .launch()
+         val report = captureStandardOut {
+            TestEngineLauncher(collector)
+               .withConfiguration(configuration)
+               .withClasses(TaggedSpec::class)
+               .withTagExpression(TagExpression.Empty)
+               .launch()
+         }
 
-         collector.tests.map { formatter.format(it.key) } shouldBe listOf(
-            "Bar[tags = A]",
-            "Foo[tags = A]",
-         )
+         assertSoftly(report) {
+            shouldContain("Bar|[tags = A|]")
+            shouldContain("Foo|[tags = A|]")
+         }
       }
    }
 }
