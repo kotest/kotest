@@ -17,32 +17,54 @@ import io.kotest.assertions.print.print
  *     -Dkotest.assertions.output.max=20
  * ```
  */
-fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
+@PublishedApi
+internal fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
 
    val maxResults = AssertionsConfig.maxErrorsOutput
 
    val passed = results.filterIsInstance<ElementPass<T>>()
    val failed = results.filterIsInstance<ElementFail<T>>()
 
-   val builder = StringBuilder(msg)
-   builder.append("\n\nThe following elements passed:\n")
-   if (passed.isEmpty()) {
-      builder.append("--none--")
-   } else {
-      builder.append(passed.take(maxResults).map { it.t }.joinToString("\n"))
-      if (passed.size > maxResults) {
-         builder.append("\n... and ${passed.size - maxResults} more passed elements")
+   throw failure(
+      buildString {
+         appendLine(msg)
+
+
+         // Print passed elements
+         appendLine()
+         appendLine("The following elements passed:")
+
+         if (passed.isEmpty()) {
+            appendLine("  --none--")
+         } else {
+            passed.take(maxResults)
+               .forEach {
+                  appendLine("  [${it.index}] ${it.t}") // Why not print().value??
+               }
+
+            if (passed.size > maxResults) {
+               appendLine("  ... and ${passed.size - maxResults} more passed elements")
+            }
+         }
+
+         // Print failed elements
+         appendLine()
+         appendLine("The following elements failed:")
+
+         if (failed.isEmpty()) {
+            // Can this really happen, given that we're in the buildAssertionError function?
+            appendLine("  --none--")
+         } else {
+            failed.take(maxResults)
+               .forEach {
+                  appendLine("  [${it.index}] ${it.t.print().value} => ${exceptionToMessage(it.throwable)}")
+               }
+
+            if (failed.size > maxResults) {
+               appendLine("  ... and ${failed.size - maxResults} more failed elements")
+            }
+         }
       }
-   }
-   builder.append("\n\nThe following elements failed:\n")
-   if (failed.isEmpty()) {
-      builder.append("--none--")
-   } else {
-      builder.append(failed.take(maxResults).joinToString("\n") { it.t.print().value + " => " + exceptionToMessage(it.throwable) })
-      if (failed.size > maxResults) {
-         builder.append("\n... and ${failed.size - maxResults} more failed elements")
-      }
-   }
-   throw failure(builder.toString())
+   )
 }
 
