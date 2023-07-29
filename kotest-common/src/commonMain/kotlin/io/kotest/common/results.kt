@@ -4,6 +4,15 @@ inline fun <A, B> Result<A>.flatMap(fn: (A) -> Result<B>): Result<B> {
    return fold({ fn(it) }, { Result.failure(it) })
 }
 
+@KotestInternal
+inline fun <A> Result<Result<A>>.flatten(): Result<A> {
+   return when {
+      isSuccess -> getOrThrow()
+      else -> Result.failure(exceptionOrNull()!!)
+   }
+}
+
+
 fun <A> Result<A>.mapError(f: (Throwable) -> Throwable): Result<A> =
    fold({ Result.success(it) }, { Result.failure(f(this.exceptionOrNull()!!)) })
 
