@@ -1,14 +1,36 @@
 ---
-id: data_class_matchers
-title: Data Class Matchers
-slug: data-class-matchers.html
-sidebar_label: Data Class Matchers
+id: composed_matchers
+title: Composed Matchers
+slug: composed-matchers.html
+sidebar_label: Composed Matchers
 ---
 
+Composed matchers can be created for any type by composing one or more other matchers. This allows us to
+build up complex matchers from simpler ones.
 
+Let's say we'd like to define a password `Matcher`, which will `containADigit()`, `contain(Regex("[a-z]"))` and
+`contain(Regex("[A-Z]"))`. We can compose these matchers this way:
+```kotlin
+val passwordMatcher = Matcher.all(
+   containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
+)
+```
 
-Matchers for data classes can be created by composing one or more other matchers along with the property to extract to
-test against. This allows us to build up complicated matchers from simpler ones.
+We can add extension function then:
+
+```kotlin
+fun String.shouldBeStrongPassword() = this shouldBe passwordMatcher
+```
+
+So it can be invoked like this:
+
+```kotlin
+"StrongPassword123".shouldBeStrongPassword()
+"WeakPassword".shouldBeStrongPassword() // would fail
+```
+
+Composed matchers can also be created for any `class` or `interface` by composing one or more other matchers along with
+the property to extract to test against.
 
 For example, say we had the following structures:
 
@@ -55,24 +77,24 @@ val addressMatcher = Matcher<Address> {
 }
 ```
 
-Now we can simply combine these together to make a John in Warsaw matcher. Notice that we specify the property to
+Now we can simply combine these together to make a *John in Warsaw matcher*. Notice that we specify the property to
 extract to pass to each matcher in turn.
 
 ```kotlin
-fun personMatcher(name: String, age: Int) = Matcher.compose(
+fun personMatcher(name: String, age: Int) = Matcher.all(
   nameMatcher(name) to Person::name,
   ageMatcher(age) to Person::age,
   addressMatcher to Person::address
 )
 ```
 
-And we could add the extension variant too:
+And we can add the extension variant too:
 
 ```kotlin
 fun Person.shouldBePerson(name: String, age: Int) = this shouldBe personMatcher(name, age)
 ```
 
-Then we invoke like this:
+Then we invoke it this way:
 
 ```kotlin
 Person("John", 21, Address("Warsaw", "Test", "1/1")).shouldBePerson("John", 21)
