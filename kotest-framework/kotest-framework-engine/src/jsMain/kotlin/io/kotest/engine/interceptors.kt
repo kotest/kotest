@@ -28,9 +28,7 @@ internal actual fun testEngineInterceptors(): List<EngineInterceptor> {
 }
 
 @KotestInternal
-internal actual fun specInterceptorsForPlatform(): List<SpecInterceptor> =
-   listOf()
+internal actual fun specInterceptorsForPlatform(): List<SpecInterceptor> = emptyList()
 
 @KotestInternal
-internal actual fun testInterceptorsForPlatform(): List<TestExecutionInterceptor> =
-   listOf()
+internal actual fun testInterceptorsForPlatform(): List<TestExecutionInterceptor> = emptyList()
