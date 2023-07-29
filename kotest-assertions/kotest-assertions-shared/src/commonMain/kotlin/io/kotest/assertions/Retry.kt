@@ -109,7 +109,7 @@ class RetryConfigBuilder {
    var exceptionClass: KClass<out Throwable>? = null
 }
 
-fun RetryConfigBuilder.build(): RetryConfig {
+internal fun RetryConfigBuilder.build(): RetryConfig {
    return RetryConfig(
       maxRetry = this.maxRetry,
       timeout = this.timeout,
