@@ -97,7 +97,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 26
+      descriptor.classes.size shouldBe 28
    }
 
    test("kotest should return classes if request has no included or excluded test engines") {
@@ -108,7 +108,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 25
+      descriptor.classes.size shouldBe 27
    }
 
    test("kotest should support include package name filter") {

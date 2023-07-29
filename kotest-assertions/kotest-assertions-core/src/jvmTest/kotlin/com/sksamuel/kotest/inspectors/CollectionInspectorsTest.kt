@@ -63,34 +63,37 @@ class CollectionInspectorsTest : WordSpec() {
                array.forAll {
                   if (true) throw NullPointerException()
                }
-            }.message shouldBe "0 elements passed but expected 5\n" +
-               "\n" +
-               "The following elements passed:\n" +
-               "--none--\n" +
-               "\n" +
-               "The following elements failed:\n" +
-               "1 => java.lang.NullPointerException\n" +
-               "2 => java.lang.NullPointerException\n" +
-               "3 => java.lang.NullPointerException\n" +
-               "4 => java.lang.NullPointerException\n" +
-               "5 => java.lang.NullPointerException"
+            }.message shouldBe """0 elements passed but expected 5
+
+The following elements passed:
+  --none--
+
+The following elements failed:
+  [0] 1 => java.lang.NullPointerException
+  [1] 2 => java.lang.NullPointerException
+  [2] 3 => java.lang.NullPointerException
+  [3] 4 => java.lang.NullPointerException
+  [4] 5 => java.lang.NullPointerException
+"""
          }
+
          "fail when an exception is thrown inside a list" {
             shouldThrowAny {
                list.forAll {
                   if (true) throw NullPointerException()
                }
-            }.message shouldBe "0 elements passed but expected 5\n" +
-               "\n" +
-               "The following elements passed:\n" +
-               "--none--\n" +
-               "\n" +
-               "The following elements failed:\n" +
-               "1 => java.lang.NullPointerException\n" +
-               "2 => java.lang.NullPointerException\n" +
-               "3 => java.lang.NullPointerException\n" +
-               "4 => java.lang.NullPointerException\n" +
-               "5 => java.lang.NullPointerException"
+            }.message shouldBe """0 elements passed but expected 5
+
+The following elements passed:
+  --none--
+
+The following elements failed:
+  [0] 1 => java.lang.NullPointerException
+  [1] 2 => java.lang.NullPointerException
+  [2] 3 => java.lang.NullPointerException
+  [3] 4 => java.lang.NullPointerException
+  [4] 5 => java.lang.NullPointerException
+"""
          }
       }
 
@@ -131,13 +134,14 @@ class CollectionInspectorsTest : WordSpec() {
             }.message shouldBe """1 elements passed but expected 0
 
 The following elements passed:
-4
+  [3] 4
 
 The following elements failed:
-1 => expected:<4> but was:<1>
-2 => expected:<4> but was:<2>
-3 => expected:<4> but was:<3>
-5 => expected:<4> but was:<5>"""
+  [0] 1 => expected:<4> but was:<1>
+  [1] 2 => expected:<4> but was:<2>
+  [2] 3 => expected:<4> but was:<3>
+  [4] 5 => expected:<4> but was:<5>
+"""
          }
          "fail if all elements pass fn test" {
             shouldThrow<AssertionError> {
@@ -147,14 +151,15 @@ The following elements failed:
             }.message shouldBe """5 elements passed but expected 0
 
 The following elements passed:
-1
-2
-3
-4
-5
+  [0] 1
+  [1] 2
+  [2] 3
+  [3] 4
+  [4] 5
 
 The following elements failed:
---none--"""
+  --none--
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -203,14 +208,15 @@ The following elements failed:
             }.message shouldBe """No elements passed but expected at least one
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1 => 1 should be < 0
-2 => 2 should be < 0
-3 => 3 should be < 0
-4 => 4 should be < 0
-5 => 5 should be < 0"""
+  [0] 1 => 1 should be < 0
+  [1] 2 => 2 should be < 0
+  [2] 3 => 3 should be < 0
+  [3] 4 => 4 should be < 0
+  [4] 5 => 5 should be < 0
+"""
          }
          "fail if all elements pass test"  {
             shouldThrow<AssertionError> {
@@ -220,14 +226,15 @@ The following elements failed:
             }.message shouldBe """All elements passed but expected < 5
 
 The following elements passed:
-1
-2
-3
-4
-5
+  [0] 1
+  [1] 2
+  [2] 3
+  [3] 4
+  [4] 5
 
 The following elements failed:
---none--"""
+  --none--
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -272,13 +279,14 @@ The following elements failed:
             }.message shouldBe """3 elements passed but expected 1
 
 The following elements passed:
-3
-4
-5
+  [2] 3
+  [3] 4
+  [4] 5
 
 The following elements failed:
-1 => 1 should be > 2
-2 => 2 should be > 2"""
+  [0] 1 => 1 should be > 2
+  [1] 2 => 2 should be > 2
+"""
          }
          "fail if no elements pass test"  {
             shouldThrow<AssertionError> {
@@ -288,14 +296,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1 => expected:<22> but was:<1>
-2 => expected:<22> but was:<2>
-3 => expected:<22> but was:<3>
-4 => expected:<22> but was:<4>
-5 => expected:<22> but was:<5>"""
+  [0] 1 => expected:<22> but was:<1>
+  [1] 2 => expected:<22> but was:<2>
+  [2] 3 => expected:<22> but was:<3>
+  [3] 4 => expected:<22> but was:<4>
+  [4] 5 => expected:<22> but was:<5>
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -344,14 +353,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1 => expected:<6> but was:<1>
-2 => expected:<6> but was:<2>
-3 => expected:<6> but was:<3>
-4 => expected:<6> but was:<4>
-5 => expected:<6> but was:<5>"""
+  [0] 1 => expected:<6> but was:<1>
+  [1] 2 => expected:<6> but was:<2>
+  [2] 3 => expected:<6> but was:<3>
+  [3] 4 => expected:<6> but was:<4>
+  [4] 5 => expected:<6> but was:<5>
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -382,13 +392,14 @@ The following elements failed:
             }.message shouldBe """3 elements passed but expected 2
 
 The following elements passed:
-3
-4
-5
+  [2] 3
+  [3] 4
+  [4] 5
 
 The following elements failed:
-1 => 1 should be > 2
-2 => 2 should be > 2"""
+  [0] 1 => 1 should be > 2
+  [1] 2 => 2 should be > 2
+"""
          }
          "fail if less elements pass test"  {
             shouldThrow<AssertionError> {
@@ -398,13 +409,14 @@ The following elements failed:
             }.message shouldBe """1 elements passed but expected 2
 
 The following elements passed:
-1
+  [0] 1
 
 The following elements failed:
-2 => 2 should be < 2
-3 => 3 should be < 2
-4 => 4 should be < 2
-5 => 5 should be < 2"""
+  [1] 2 => 2 should be < 2
+  [2] 3 => 3 should be < 2
+  [3] 4 => 4 should be < 2
+  [4] 5 => 5 should be < 2
+"""
          }
          "fail if no elements pass test"  {
             shouldThrow<AssertionError> {
@@ -414,14 +426,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected 2
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1 => expected:<33> but was:<1>
-2 => expected:<33> but was:<2>
-3 => expected:<33> but was:<3>
-4 => expected:<33> but was:<4>
-5 => expected:<33> but was:<5>"""
+  [0] 1 => expected:<33> but was:<1>
+  [1] 2 => expected:<33> but was:<2>
+  [2] 3 => expected:<33> but was:<3>
+  [3] 4 => expected:<33> but was:<4>
+  [4] 5 => expected:<33> but was:<5>
+"""
          }
       }
 
@@ -439,13 +452,14 @@ The following elements failed:
             }.message shouldBe """2 elements passed but expected at most 1
 
 The following elements passed:
-4
-5
+  [3] 4
+  [4] 5
 
 The following elements failed:
-1 => 1 should be > 3
-2 => 2 should be > 3
-3 => 3 should be > 3"""
+  [0] 1 => 1 should be > 3
+  [1] 2 => 2 should be > 3
+  [2] 3 => 3 should be > 3
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -476,14 +490,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1 => expected:<22> but was:<1>
-2 => expected:<22> but was:<2>
-3 => expected:<22> but was:<3>
-4 => expected:<22> but was:<4>
-5 => expected:<22> but was:<5>"""
+  [0] 1 => expected:<22> but was:<1>
+  [1] 2 => expected:<22> but was:<2>
+  [2] 3 => expected:<22> but was:<3>
+  [3] 4 => expected:<22> but was:<4>
+  [4] 5 => expected:<22> but was:<5>
+"""
          }
          "work inside assertSoftly block" {
             val dummyEntries = listOf(
@@ -523,10 +538,11 @@ The following elements failed:
                Expected a single element in the collection, but found 2.
 
                The following elements passed:
-               DummyEntry(id=1, name=first)
+                 [0] DummyEntry(id=1, name=first)
 
                The following elements failed:
-               DummyEntry(id=2, name=second) => expected:<1> but was:<2>
+                 [1] DummyEntry(id=2, name=second) => expected:<1> but was:<2>
+
             """.trimIndent()
          }
 
@@ -545,15 +561,14 @@ The following elements failed:
                arrayOf(2).forSingle {
                   it shouldBe 3
                }
-            }.message shouldBe """
-               Expected a single element to pass, but it failed.
+            }.message shouldBe """Expected a single element to pass, but it failed.
 
-               The following elements passed:
-               --none--
+The following elements passed:
+  --none--
 
-               The following elements failed:
-               2 => expected:<3> but was:<2>
-            """.trimIndent()
+The following elements failed:
+  [0] 2 => expected:<3> but was:<2>
+"""
          }
 
          "work inside assertSoftly block" {

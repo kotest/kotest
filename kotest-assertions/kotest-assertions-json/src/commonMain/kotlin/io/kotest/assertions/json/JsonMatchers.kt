@@ -11,7 +11,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KClass
-import io.kotest.common.KotestLanguage
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
@@ -24,14 +23,14 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
  *
  */
 @Deprecated("Use shouldEqualJson. Deprecated since 5.6. Will be removed in 6.0")
-infix fun String?.shouldMatchJson(@KotestLanguage("json", "", "") expected: String?) =
+infix fun String?.shouldMatchJson(expected: String?) =
    this should matchJson(expected)
 
 @Deprecated("Use shouldNotEqualJson. Deprecated since 5.6. Will be removed in 6.0")
-infix fun String?.shouldNotMatchJson(@KotestLanguage("json", "", "") expected: String?) =
+infix fun String?.shouldNotMatchJson(expected: String?) =
    this shouldNot matchJson(expected)
 
-fun matchJson(@KotestLanguage("json", "", "") expected: String?) = object : Matcher<String?> {
+fun matchJson(expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)
@@ -69,15 +68,15 @@ fun beValidJson() = object : Matcher<String?> {
       return try {
          value?.let(pretty::parseToJsonElement)
          MatcherResult(
-              true,
-              { "expected: actual json to be valid json: $value" },
-              { "expected: actual json to be invalid json: $value" }
+            true,
+            { "expected: actual json to be valid json: $value" },
+            { "expected: actual json to be invalid json: $value" }
          )
       } catch (ex: Exception) {
          MatcherResult(
-              false,
-              { "expected: actual json to be valid json: $value" },
-              { "expected: actual json to be invalid json: $value" }
+            false,
+            { "expected: actual json to be valid json: $value" },
+            { "expected: actual json to be invalid json: $value" }
          )
       }
    }
@@ -111,20 +110,20 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
  *
  */
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
+fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
+fun String.shouldEqualJson(expected: String, options: CompareJsonOptions) {
    this should equalJson(expected, options)
 }
 
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, mode: CompareMode, order: CompareOrder) =
+fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldNotEqualJson(@KotestLanguage("json", "", "") expected: String, options: CompareJsonOptions) {
+fun String.shouldNotEqualJson(expected: String, options: CompareJsonOptions) {
    this shouldNot equalJson(expected, options)
 }
 
