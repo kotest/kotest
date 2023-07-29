@@ -62,7 +62,7 @@ val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
 Secondly, install the container inside an extension wrapper, providing an optional configuration lambda.
 
 ```kotlin
-val ds = install(JdbcTestContainerExtension(mysql)) {
+val ds = install(JdbcDatabaseContainerExtension(mysql)) {
   poolName = "myconnectionpool"
   maximumPoolSize = 8
   idleTimeout = 10000
@@ -83,7 +83,7 @@ class QueryDatastoreTest : FunSpec({
     withUrlParam("zeroDateTimeBehavior", "convertToNull")
   }
 
-  val ds = install(JdbcTestContainerExtension(mysql)) {
+  val ds = install(JdbcDatabaseContainerExtension(mysql)) {
     poolName = "myconnectionpool"
     maximumPoolSize = 8
     idleTimeout = 10000
@@ -105,7 +105,7 @@ class QueryDatastoreTest : FunSpec({
 ```
 
 :::tip
-This extension also supports the `LifecycleMode` flag to control when the container is started and stopped.
+This extension also supports the `ContainerLifecycleMode` flag to control when the container is started and stopped.
 See #lifecycle
 :::
 
@@ -125,7 +125,7 @@ val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
 
 If you have multiple init scripts or sets of changesets, you can add them as a list to the `dbInitScripts` extension config lambda, like so:
 ```kotlin
-val ds = install(JdbcTestContainerExtension(mysql, LifecycleMode.Leaf)) {
+val ds: DataSource = install(JdbcDatabaseContainerExtension(mysql)) {
       maximumPoolSize = 8
       minimumIdle = 4
       dbInitScripts = listOf("/init.sql", "/sql-changesets")
@@ -134,12 +134,12 @@ val ds = install(JdbcTestContainerExtension(mysql, LifecycleMode.Leaf)) {
 The list can contain absolute or relative paths, for files and folders on the filesystem or on the classpath.
 
 The extension will process the list provided in order. If the list item is a folder, it will process all `.sql` scripts in the folder,
-sorted lexicographically. These scripts run every time the container is started, so it supports the `LifecycleMode` flag.
+sorted lexicographically. These scripts run every time the container is started, so it supports the `ContainerLifecycleMode` flag.
 
 
 ### General Containers
 
-Similar to the `JdbcTestContainerExtension`, this module also provides a `TestContainerExtension` extension which can
+Similar to the `JdbcDatabaseContainerExtension`, this module also provides a `ContainerExtension` extension which can
 wrap any container, not just databases.
 
 We can create the extension using either a docker image name, or a strongly typed container.
@@ -147,7 +147,7 @@ We can create the extension using either a docker image name, or a strongly type
 For example, using a docker image directly:
 
 ```kotlin
-val container = install(TestContainerExtension("redis:5.0.3-alpine")) {
+val container = install(ContainerExtension("redis:5.0.3-alpine")) {
   startupAttempts = 1
   withExposedPorts(6379)
 }
@@ -156,7 +156,7 @@ val container = install(TestContainerExtension("redis:5.0.3-alpine")) {
 And then using a strongly typed container:
 
 ```kotlin
-val elasticsearch = install(TestContainerExtension(ElasticsearchContainer(ELASTICSEARCH_IMAGE) )) {
+val elasticsearch = install(ContainerExtension(ElasticsearchContainer(ELASTICSEARCH_IMAGE) )) {
   withPassword(ELASTICSEARCH_PASSWORD)
 }
 ```
@@ -168,7 +168,7 @@ However, when a strongly typed container is not available, the former method all
 as a general container.
 
 :::tip
-This extension also supports the `LifecycleMode` flag to control when the container is started and stopped.
+This extension also supports the `ContainerLifecycleMode` flag to control when the container is started and stopped.
 See #lifecycle
 :::
 
@@ -178,7 +178,7 @@ See #lifecycle
 For Kafka, this module provides convenient extension methods to create a consumer, producer or admin client from the container.
 
 ```kotlin
-val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
+val kafka = install(ContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
   withEmbeddedZookeeper()
 }
 ```
@@ -187,7 +187,7 @@ Inside the configuration lambda, we can specify options for the Kafka container,
 or kafka broker properties through env vars. For example, to enable dynamic topic creation:
 
 ```kotlin
-val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
+val kafka = install(ContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
   withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "true")
 }
 ```
@@ -219,7 +219,7 @@ lambda to set max poll to 1.
 class KafkaTestContainerExtensionTest : FunSpec() {
   init {
 
-    val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
+    val kafka = install(ContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
       withEmbeddedZookeeper()
     }
 
@@ -253,22 +253,17 @@ a configuration lambda and specify your own group consumer group id.
 By default, the lifecycle of a container is per spec - so it will be started at the `install` command, and shutdown as
 the spec is completed. This can be changed to start/stop per test, per leaf test, or per root test.
 
-To do this, pass in a `LifecycleMode` parameter to the `TestContainerExtension` or `JdbcTestContainerExtension`.
+To do this, pass in a `ContainerLifecycleMode` parameter to the `ContainerExtension` or `JdbcDatabaseContainerExtension`.
 
 For example:
 
 ```kotlin
-val ds = install(JdbcTestContainerExtension(mysql, LifecycleMode.Root)) {
+val ds = install(JdbcDatabaseContainerExtension(mysql, ContainerLifecycleMode.Spec)) {
   poolName = "myconnectionpool"
   maximumPoolSize = 8
   idleTimeout = 10000
 }
 ```
-
-If you change the lifecycle mode from Spec then the container will not be started in the constructor, and so
-any operations that act on the container must be placed inside the test scopes.
-
-
 
 ### Startables
 
@@ -293,8 +288,8 @@ class DatabaseRepositoryTest : FunSpec({
 })
 ```
 
-In above example, the ```perTest()``` extension method converts the container into a ```TestListener```, which starts the
+In above example, the `perTest()` extension method converts the container into a `TestListener`, which starts the
 redis container before each test and stops it after test. Similarly if you want to reuse the container for all tests
-in a single spec class you can use ```perSpec()``` extension method, which converts the container into a ```TestListener```
+in a single spec class you can use `perSpec()` extension method, which converts the container into a `TestListener`
 which starts the container before running any test in the spec, and stops it after all tests, thus a single container is
 used by all tests in spec class.

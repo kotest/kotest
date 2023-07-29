@@ -8,7 +8,7 @@ sidebar_label: Advanced Extensions
 This table lists more advanced extensions that can be used to hook into the Engine itself to:
 
   * intercept tests, skipping them, and modify test results
-  * intercept specs specs skipping them if required
+  * intercept specs, skipping them if required
   * post process spec instances after instantiation
   * modify the coroutine context used by specs and tests
   * apply custom instantiation logic

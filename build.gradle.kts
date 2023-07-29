@@ -9,3 +9,13 @@ repositories {
    google()
    gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
+
+apiValidation {
+   ignoredPackages.addAll(
+      listOf(
+         "io.kotest.framework.multiplatform.embeddablecompiler",
+         "io.kotest.framework.multiplatform.gradle",
+         "io.kotest.framework.multiplatform.native"
+      )
+   )
+}

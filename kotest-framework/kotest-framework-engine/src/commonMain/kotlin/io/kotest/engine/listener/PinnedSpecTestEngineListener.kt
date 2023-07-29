@@ -68,13 +68,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specIgnored(kclass, reason)
-      } else {
-         queue {
-            specIgnored(kclass, reason)
-         }
-      }
+      listener.specIgnored(kclass, reason)
    }
 
    override suspend fun testStarted(testCase: TestCase) {

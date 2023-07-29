@@ -1,6 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
@@ -15,6 +17,8 @@ val kotestVersion: String by project
 val useNewNativeMemoryModel: String by project
 
 kotlin {
+   jvmToolchain(17)
+
    jvm()
 
    js(IR) {

@@ -52,3 +52,7 @@ kotlin {
       }
    }
 }
+
+tasks.withType<Test>().configureEach {
+   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}

@@ -11,6 +11,7 @@ import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.interceptors.TestEngineInitializedInterceptor
 import io.kotest.engine.interceptors.TestEngineStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
+import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 
 @KotestInternal
 internal actual fun testEngineInterceptors(): List<EngineInterceptor> {
@@ -28,4 +29,8 @@ internal actual fun testEngineInterceptors(): List<EngineInterceptor> {
 
 @KotestInternal
 internal actual fun specInterceptorsForPlatform(): List<SpecInterceptor> =
+   listOf()
+
+@KotestInternal
+internal actual fun testInterceptorsForPlatform(): List<TestExecutionInterceptor> =
    listOf()

@@ -7,7 +7,9 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
-
+* [How to Write a Spring Boot Test Using Kotest (2023)](https://www.baeldung.com/kotlin/kotest-spring-boot-test)
+* [How to Run Testcontainers Inside a Kotest Test (2023)](https://www.baeldung.com/kotlin/kotest-testcontainers)
+* [How to Assert the Type of an Object in Kotest (2023)](https://www.baeldung.com/kotlin/kotest-assert-object-type)
 * [Best Practices Unit Testing Kotlin by Phauer (2020)](https://phauer.com/2018/best-practices-unit-testing-kotlin/)
 * [Testing Koin applications with Kotest by LeoColman (2020)](https://dev.to/kotest/testing-koin-applications-with-kotlintest-1iip)
 * [Writing reusable tests with Kotest's test factory by LeoColman (2020)](https://dev.to/kotest/writing-reusable-tests-with-kotest-s-test-factory-5gi)
@@ -34,4 +36,4 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [How to improve the quality of tests using property-based testing](https://blog.devgenius.io/how-to-improve-the-quality-of-tests-using-property-based-testing-587b817ea82e)
 * [JUnit 5 vs Kotest. Part 1: Is it the new way we test?](https://test-architect.dev/junit-5-vs-kotest-part-1/)
 
-Please open a PR to add your blog or article here.
+Please open a PR to add your blog or article here, preferably at the top of the list.

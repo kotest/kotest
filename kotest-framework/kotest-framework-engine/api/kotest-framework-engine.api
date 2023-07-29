@@ -321,8 +321,25 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener : io/k
 	public final fun result (Ljava/lang/String;)Lio/kotest/core/test/TestResult;
 	public final fun setErrors (Z)V
 	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun toKey (Lio/kotest/core/test/TestCase;)Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;
+}
+
+public final class io/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey {
+	public fun <init> (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
+	public final fun component2 ()Lio/kotest/core/names/TestName;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lkotlin/reflect/KClass;)Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;
+	public static synthetic fun copy$default (Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDescriptor ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
+	public final fun getName ()Lio/kotest/core/names/TestName;
+	public final fun getSpecClass ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/engine/listener/CompositeTestEngineListener : io/kotest/engine/listener/TestEngineListener {

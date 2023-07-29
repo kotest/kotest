@@ -382,7 +382,7 @@ _(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
  test cases and specs. Test level extensions will be covered in the next section.
 
-For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
+For example, to extract logic for beforeAll and afterAll into a separate class you can implement the interface `ProjectExtension`.
 
 ```kotlin
 class TimerExtension: ProjectExtension {
