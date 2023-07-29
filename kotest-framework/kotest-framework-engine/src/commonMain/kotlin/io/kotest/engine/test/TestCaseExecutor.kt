@@ -32,6 +32,7 @@ import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.testInterceptorsForPlatform
 import io.kotest.mpp.Logger
 import kotlin.time.Duration
 
@@ -73,6 +74,7 @@ class TestCaseExecutor(
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
          ExpectExceptionTestInterceptor,
+         *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
             configuration.registry,
             timeMark,

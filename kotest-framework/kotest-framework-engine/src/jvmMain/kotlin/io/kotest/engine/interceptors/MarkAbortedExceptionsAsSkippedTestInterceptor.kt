@@ -1,11 +1,10 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.common.KotestInternal
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.interceptor.SpecInterceptor
+import io.kotest.core.test.TestScope
+import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 import org.opentest4j.TestAbortedException
 
 /**
@@ -15,19 +14,17 @@ import org.opentest4j.TestAbortedException
  * Note: This is a JVM only feature.
  */
 @JVMOnly
-internal object MarkAbortedExceptionsAsSkippedTestInterceptor : SpecInterceptor {
-
+internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
-      spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
-      return fn(spec).map { success ->
-         success.mapValues { (_, result) ->
-            if (result.errorOrNull is TestAbortedException) {
-               TestResult.Ignored
-            } else {
-               result
-            }
+      testCase: TestCase,
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): TestResult {
+      return test(testCase, scope).let { testResult ->
+         if (testResult.errorOrNull is TestAbortedException) {
+            TestResult.Ignored
+         } else {
+            testResult
          }
       }
    }
