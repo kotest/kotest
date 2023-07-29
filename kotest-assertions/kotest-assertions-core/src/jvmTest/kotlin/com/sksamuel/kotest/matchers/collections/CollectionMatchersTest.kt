@@ -313,6 +313,9 @@ class CollectionMatchersTest : WordSpec() {
                listOf(1, 2) shouldBe singleElement(2)
             }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]")
          }
+         "foo" {
+            listOf("bar").shouldHaveSingleElement("foo")
+         }
       }
 
       "singleElement with predicate" should {
