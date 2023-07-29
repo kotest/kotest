@@ -2824,6 +2824,14 @@ public final class io/kotest/core/test/Enabled$Companion {
 	public final fun getEnabled ()Lio/kotest/core/test/Enabled;
 }
 
+public final class io/kotest/core/test/ExpectFailureException : java/lang/Exception {
+	public static final field INSTANCE Lio/kotest/core/test/ExpectFailureException;
+}
+
+public final class io/kotest/core/test/ExpectFailureExceptionKt {
+	public static final fun expect (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/core/test/NamesKt {
 	public static final fun createTestName (Ljava/lang/String;)Lio/kotest/core/names/TestName;
 	public static final fun createTestName (Ljava/lang/String;Ljava/lang/String;Lio/kotest/core/names/TestNameCase;Z)Lio/kotest/core/names/TestName;

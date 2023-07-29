@@ -9,7 +9,7 @@ import io.kotest.core.test.TestScope
  * A [TestExecutionInterceptor] that detects thrown [io.kotest.core.test.ExpectFailureException]
  * and adjusts tests from error to ignored.
  */
-object ExpectExceptionTestInterceptor : TestExecutionInterceptor {
+internal object ExpectExceptionTestInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
