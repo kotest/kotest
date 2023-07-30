@@ -15,7 +15,29 @@ permissions:
    contents: read
 
 jobs:
+   api_check:
+      runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v3
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'temurin'
+               java-version: '17'
+
+         -  uses: gradle/gradle-build-action@v2
+
+         -  name: Run api check
+            run: ./gradlew apiCheck
+
    linux:
+      needs: api_check
       runs-on: ubuntu-latest
       if: github.repository == 'kotest/kotest'
       strategy:
@@ -33,6 +55,7 @@ jobs:
                java-version: 17
 
    mac:
+      needs: api_check
       runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       strategy:
@@ -60,6 +83,7 @@ jobs:
                java-version: 17
 
    windows:
+      needs: api_check
       runs-on: windows-latest
       if: github.repository == 'kotest/kotest'
       steps:
