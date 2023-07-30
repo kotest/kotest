@@ -16,18 +16,13 @@ class AssertionModeThreadTest : FunSpec() {
    init {
 
       test("assertions from another thread should be counted") {
-         println(Thread.currentThread().name)
          withContext(Dispatchers.Default.limitedParallelism(1)) {
-            println(Thread.currentThread().name)
             launch {
-               println(Thread.currentThread().name)
                1 shouldBe 1
                1 shouldBe 1
                1 shouldBe 1
             }
-            println(Thread.currentThread().name)
          }
-         println(Thread.currentThread().name)
       }
    }
 }
