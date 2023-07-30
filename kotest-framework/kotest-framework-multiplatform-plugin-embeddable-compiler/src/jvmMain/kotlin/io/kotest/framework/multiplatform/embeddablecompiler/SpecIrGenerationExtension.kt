@@ -12,7 +12,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
       val platform = pluginContext.platform
 
-      val transformer = when {
+      val transformer: Transformer = when {
          platform.isJs() -> JsTransformer(messageCollector, pluginContext)
          platform.isNative() -> NativeTransformer(messageCollector, pluginContext)
          else -> throw UnsupportedOperationException("Cannot use Kotest compiler plugin with platform: $platform")

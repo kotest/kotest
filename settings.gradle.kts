@@ -44,6 +44,9 @@ include(
    // no user should need to depend on this
    ":kotest-assertions:kotest-assertions-shared",
 
+   ":kotest-assertions:kotest-assertions-plugin-compiler",
+   ":kotest-assertions:kotest-assertions-plugin-gradle",
+
    // the core assertions that cover things like collections, strings, etc
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",

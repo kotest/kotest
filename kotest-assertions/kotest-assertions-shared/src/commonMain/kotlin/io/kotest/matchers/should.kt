@@ -12,6 +12,7 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
+import io.kotest.assertions.withClue
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(expected: U?): T {
@@ -24,6 +25,23 @@ infix fun <T, U : T> T.shouldBe(expected: U?): T {
       }
    }
    return this
+}
+
+fun <T> enhancedShouldBe(actual: T, expected: Any, actualRef: String): T {
+   println("actual $actual")
+   println("expected $expected")
+   println("actualRef2 $actualRef")
+
+   when (expected) {
+      is Matcher<*> -> actual.should(expected as Matcher<T>)
+      else -> {
+         withClue(actualRef) {
+            assertionCounter.inc()
+            eq(actual, expected)?.let(errorCollector::collectOrThrow)
+         }
+      }
+   }
+   return actual
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -52,6 +70,7 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
                result.failureMessage()
             )
          )
+
          else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
       }
    }
