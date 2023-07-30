@@ -297,6 +297,7 @@ public final class io/kotest/assertions/RetryKt {
 public final class io/kotest/assertions/ThreadLocalAssertionCounter : io/kotest/assertions/AssertionCounter {
 	public static final field INSTANCE Lio/kotest/assertions/ThreadLocalAssertionCounter;
 	public fun get ()I
+	public final fun getValues ()Ljava/lang/ThreadLocal;
 	public fun inc ()V
 	public fun reset ()V
 }

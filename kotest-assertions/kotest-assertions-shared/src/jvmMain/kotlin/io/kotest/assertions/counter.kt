@@ -5,11 +5,11 @@ actual val assertionCounter: AssertionCounter = ThreadLocalAssertionCounter
 
 object ThreadLocalAssertionCounter : AssertionCounter {
 
-   private val context = object : ThreadLocal<Int>() {
+   val values = object : ThreadLocal<Int>() {
       override fun initialValue(): Int = 0
    }
 
-   override fun get(): Int = context.get()
-   override fun reset() = context.set(0)
-   override fun inc() = context.set(context.get() + 1)
+   override fun get(): Int = values.get()
+   override fun reset() = values.set(0)
+   override fun inc() = values.set(values.get() + 1)
 }

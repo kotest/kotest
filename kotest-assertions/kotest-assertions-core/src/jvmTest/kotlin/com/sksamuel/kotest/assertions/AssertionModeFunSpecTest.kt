@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
-class AssertionCounterFunSpecTest : FunSpec() {
+class AssertionModeFunSpecTest : FunSpec() {
 
    override fun assertionMode() = AssertionMode.Error
 

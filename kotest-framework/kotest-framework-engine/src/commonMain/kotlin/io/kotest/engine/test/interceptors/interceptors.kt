@@ -32,3 +32,6 @@ internal expect fun blockedThreadTimeoutInterceptor(
  */
 @JVMOnly
 internal expect fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor
+
+@JVMOnly
+internal expect fun assertionModeThreadLocalContextInterceptor(): TestExecutionInterceptor

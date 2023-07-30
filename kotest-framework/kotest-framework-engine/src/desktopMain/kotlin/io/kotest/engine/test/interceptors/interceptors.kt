@@ -16,3 +16,6 @@ internal actual fun blockedThreadTimeoutInterceptor(
 
 internal actual fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor =
    error("Unsupported on $platform")
+
+internal actual fun assertionModeThreadLocalContextInterceptor(): TestExecutionInterceptor =
+   error("Unsupported on $platform")

@@ -28,6 +28,7 @@ import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TestPathContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
+import io.kotest.engine.test.interceptors.assertionModeThreadLocalContextInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
@@ -67,6 +68,7 @@ class TestCaseExecutor(
          TestCaseExtensionInterceptor(configuration.registry),
          EnabledCheckInterceptor(configuration),
          LifecycleInterceptor(listener, timeMark, configuration.registry),
+         if (platform == Platform.JVM) assertionModeThreadLocalContextInterceptor() else null,
          AssertionModeInterceptor,
          SoftAssertInterceptor(),
          CoroutineLoggingInterceptor(configuration),
