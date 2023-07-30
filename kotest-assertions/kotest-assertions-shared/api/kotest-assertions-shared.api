@@ -3013,6 +3013,7 @@ public final class io/kotest/inspectors/RunTestsKt {
 
 public final class io/kotest/matchers/ShouldKt {
 	public static final fun be (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun enhancedShouldBe (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 	public static final fun equalityMatcher (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun invokeMatcher (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)Ljava/lang/Object;
 	public static final fun should (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
