@@ -109,14 +109,16 @@ fun String.shouldEqualJson(expected: String, order: CompareOrder) =
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, legacyOptions(CompareMode.Strict, order))
 
-infix fun String.shouldEqualSpecifiedJson(expected: String) =
+infix fun String.shouldEqualSpecifiedJson(expected: String) {
    shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected
    }
+}
 
-infix fun String.shouldNotEqualSpecifiedJson(expected: String) =
+infix fun String.shouldNotEqualSpecifiedJson(expected: String) {
    shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected
    }
+}
