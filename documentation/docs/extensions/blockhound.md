@@ -19,7 +19,6 @@ To use this extension add the `io.kotest.extensions:kotest-extensions-blockhound
 Register the `BlockHound` extension in your test class:
 
 ```kotlin
-@DoNotParallelize
 class BlockHoundSpecTest : FunSpec({
    extension(BlockHound())
 
@@ -31,13 +30,23 @@ class BlockHoundSpecTest : FunSpec({
 
 The `BlockHound` extension can also be registered per [test case](../framework/testcaseconfig.html) or at the [project level](../framework/project-config.html).
 
-:::caution
-This code is sensitive to concurrency. There can only be one instance of this extension running at a time as it will take effect globally.
+If `BlockHound` is enabled project-wide or spec-wide, you can disable it for an individual test:
+```kotlin
+   test("allow blocking").config(extensions = listOf(BlockHound(BlockHoundMode.DISABLED))) {
+      blockInNonBlockingContext()
+   }
+```
 
-You cannot register the `BlockHound` extension multiple times at different levels.
-
-Use `@DoNotParallelize` for `BlockHound`-enabled tests.
-:::
+You can also change `BlockHoundMode` for a section of code:
+```kotlin
+   test("allow blocking section") {
+      // ...
+      withBlockHoundMode(BlockHoundMode.DISABLED) {
+        blockInNonBlockingContext()
+      }
+      // ...
+   }
+```
 
 ### Detection
 
