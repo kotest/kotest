@@ -70,7 +70,7 @@ class WordSpecCoroutineTest : WordSpec() {
 
          // we need enough invocation to ensure all the threads get used up
          "mutliple threads should use a thread pool for the coroutines".config(
-            invocations = 200, // needs to be big enough to ensure all 6 threads get used
+            invocations = 800, // needs to be big enough to ensure all 6 threads get used
             threads = 6
          ) {
             logThreadName()

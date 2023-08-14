@@ -1,8 +1,9 @@
 package io.kotest.mpp
 
-import kotlinx.coroutines.runBlocking
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicReference
 
 actual suspend fun replay(
@@ -15,21 +16,22 @@ actual suspend fun replay(
          action(it)
       }
    } else {
-      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("replay-%d"))
       val error = AtomicReference<Throwable>(null)
-      for (k in 0 until times) {
-         executor.submit {
-            runBlocking {
-               try {
-                  action(k)
-               } catch (t: Throwable) {
-                  error.compareAndSet(null, t)
+
+      @OptIn(DelicateCoroutinesApi::class)
+      newFixedThreadPoolContext(threads, "replay").use { dispatcher ->
+         withContext(dispatcher) {
+            for (k in 0 until times) {
+               launch {
+                  try {
+                     action(k)
+                  } catch (t: Throwable) {
+                     error.compareAndSet(null, t)
+                  }
                }
             }
          }
       }
-      executor.shutdown()
-      executor.awaitTermination(1, TimeUnit.DAYS)
 
       if (error.get() != null)
          throw error.get()

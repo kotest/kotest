@@ -8,7 +8,6 @@ import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext
 
@@ -46,15 +45,21 @@ internal class CoroutineDispatcherFactoryInterceptor(
 
          logger.log { Pair(testCase.name.testName, "userFactory=$userFactory; threads=$threads") }
 
-         val f = when {
-            userFactory != null -> userFactory
-            threads > 1 -> FixedThreadCoroutineDispatcherFactory(threads, false)
-            else -> defaultCoroutineDispatcherFactory
+         val (factory, factoryIsEphemeral) = when {
+            userFactory != null -> Pair(userFactory, false)
+            threads > 1 -> Pair(FixedThreadCoroutineDispatcherFactory(threads, false), true)
+            else -> Pair(defaultCoroutineDispatcherFactory, false)
          }
 
-         logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $f") }
-         f.withDispatcher(testCase) {
-            test(testCase, scope.withCoroutineContext(coroutineContext))
+         try {
+            logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $factory") }
+            factory.withDispatcher(testCase) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            }
+         } finally {
+            if (factoryIsEphemeral) {
+               factory.close()
+            }
          }
       }
    }
