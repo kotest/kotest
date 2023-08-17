@@ -35,12 +35,12 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     * the registry.
     */
    fun extensions(testCase: TestCase): List<Extension> {
-      return testCase.config.extensions +
+      return registry.all() + // globals
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.listeners() + // overriding the listeners function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
          testCase.spec.registeredExtensions() + // added to the spec via register
-         registry.all() // globals
+         testCase.config.extensions
    }
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
