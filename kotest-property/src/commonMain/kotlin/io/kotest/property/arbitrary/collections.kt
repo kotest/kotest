@@ -115,8 +115,7 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
    )
 }
 
-@JvmOverloads
-fun <A> Arb.Companion.list(gen: Gen<A>, range: Arb<IntRange> = intRange(0..100)): Arb<List<A>> {
+fun <A> Arb.Companion.list(gen: Gen<A>, range: Arb<IntRange>): Arb<List<A>> {
    return arbitrary {
       val domain = range.bind()
       list(gen, domain).bind()
