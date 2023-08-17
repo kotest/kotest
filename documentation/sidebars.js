@@ -42,13 +42,14 @@ module.exports = {
     "extensions/koin",
     "extensions/wiremock",
     "extensions/clock",
-    "extensions/pitest"
+    "extensions/pitest",
+    "extensions/blockhound"
   ],
   "assertions": [
     "assertions/index",
     "assertions/matchers",
     "assertions/custom_matchers",
-    "assertions/data_class_matchers",
+    "assertions/composed_matchers",
     "assertions/exceptions",
     "assertions/clues",
     "assertions/soft_assertions",
