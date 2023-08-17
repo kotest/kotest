@@ -22,6 +22,13 @@ fun Arb.Companion.intRange(domain: IntRange): Arb<IntRange> {
    }
 }
 
+/**
+ * A Shrinker for [IntRange]. The candidates at each step include:
+ *  - the empty range
+ *  - range with start edge move forward by 1
+ *  - range with end edge moved backward by 1
+ *  - range with end edge move backward by half of initial size
+ */
 class IntRangeShrinker : Shrinker<IntRange> {
 
    override fun shrink(value: IntRange): List<IntRange> {
