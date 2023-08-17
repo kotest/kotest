@@ -38,7 +38,7 @@ class IntRangeShrinker : Shrinker<IntRange> {
 
       return listOf(
          value.first until value.last,
-         value.first - 1..value.last,
+         value.first + 1..value.last,
          IntRange.EMPTY,
          value.first..value.last / 2
       ).distinct()
