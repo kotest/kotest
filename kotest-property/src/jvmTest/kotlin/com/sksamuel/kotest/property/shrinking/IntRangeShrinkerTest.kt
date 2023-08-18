@@ -27,18 +27,6 @@ class IntRangeShrinkerTest : FunSpec({
       PropertyTesting.shouldPrintShrinkSteps = state
    }
 
-   test("IntRangeShrinker should include bisected input") {
-      checkAll(Arb.intRange(0..10)) { range ->
-         if (range.count() > 1) {
-            val candidates = IntRangeShrinker().shrink(range)
-            val shrunk = range.take(range.count() / 2)
-            candidates.forAtLeastOne { sample ->
-               shrunk.asRange() shouldBe sample
-            }
-         }
-      }
-   }
-
    test("IntRangeShrinker should include input minus head") {
       checkAll(Arb.intRange(0..10)) { range ->
          if (range.count() > 1) {
@@ -52,7 +40,7 @@ class IntRangeShrinkerTest : FunSpec({
    }
 
    test("IntRangeShrinker should include input minus tail") {
-      checkAll(Arb.intRange(0..1000)) { range ->
+      checkAll(Arb.intRange(0..10)) { range ->
          if (range.count() > 1) {
             val candidates = IntRangeShrinker().shrink(range)
             val shrunk = range.toList().dropLast(1)

@@ -27,7 +27,6 @@ fun Arb.Companion.intRange(domain: IntRange): Arb<IntRange> {
  *  - the empty range
  *  - range with start edge move forward by 1
  *  - range with end edge moved backward by 1
- *  - range with end edge move backward by half of initial size
  */
 class IntRangeShrinker : Shrinker<IntRange> {
 
@@ -40,11 +39,6 @@ class IntRangeShrinker : Shrinker<IntRange> {
          value.first until value.last,
          value.first + 1..value.last,
          IntRange.EMPTY,
-         value.first..(value.first + value.domainSize() / 2)
       ).distinct()
-   }
-
-   private fun IntRange.domainSize(): Int {
-      return (last - first).coerceAtLeast(0)
    }
 }
