@@ -8,9 +8,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.contract
-import io.kotest.common.KotestLanguage
 
-inline fun <reified T> String?.shouldContainJsonKeyValue(@KotestLanguage("JSONPath") path: String, value: T) {
+inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T) {
    contract {
       returns() implies (this@shouldContainJsonKeyValue != null)
    }
@@ -18,10 +17,10 @@ inline fun <reified T> String?.shouldContainJsonKeyValue(@KotestLanguage("JSONPa
    this should containJsonKeyValue(path, value)
 }
 
-inline fun <reified T> String.shouldNotContainJsonKeyValue(@KotestLanguage("JSONPath") path: String, value: T) =
+inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: T) =
    this shouldNot containJsonKeyValue(path, value)
 
-inline fun <reified T> containJsonKeyValue(@KotestLanguage("JSONPath") path: String, t: T) = object : Matcher<String?> {
+inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val sub = when (value) {
          null -> value

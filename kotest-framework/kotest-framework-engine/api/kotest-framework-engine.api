@@ -321,6 +321,7 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener : io/k
 	public final fun result (Ljava/lang/String;)Lio/kotest/core/test/TestResult;
 	public final fun setErrors (Z)V
 	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun toKey (Lio/kotest/core/test/TestCase;)Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;

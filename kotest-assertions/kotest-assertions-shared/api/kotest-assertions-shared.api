@@ -251,11 +251,47 @@ public final class io/kotest/assertions/OneKt {
 	public static final fun one (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/assertions/RetryConfig {
+	public synthetic fun <init> (IJJILkotlin/reflect/KClass;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IJJILkotlin/reflect/KClass;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2-UwyO8pc ()J
+	public final fun component3-UwyO8pc ()J
+	public final fun component4 ()I
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun copy-jKevqZI (IJJILkotlin/reflect/KClass;)Lio/kotest/assertions/RetryConfig;
+	public static synthetic fun copy-jKevqZI$default (Lio/kotest/assertions/RetryConfig;IJJILkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/assertions/RetryConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDelay-UwyO8pc ()J
+	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
+	public final fun getMaxRetry ()I
+	public final fun getMultiplier ()I
+	public final fun getTimeout-UwyO8pc ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/RetryConfigBuilder {
+	public fun <init> ()V
+	public final fun getDelay-UwyO8pc ()J
+	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
+	public final fun getMaxRetry ()I
+	public final fun getMultiplier ()I
+	public final fun getTimeout-UwyO8pc ()J
+	public final fun setDelay-LRDsOJo (J)V
+	public final fun setExceptionClass (Lkotlin/reflect/KClass;)V
+	public final fun setMaxRetry (I)V
+	public final fun setMultiplier (I)V
+	public final fun setTimeout-LRDsOJo (J)V
+}
+
 public final class io/kotest/assertions/RetryKt {
+	public static final fun retry (Lio/kotest/assertions/RetryConfig;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun retry-FbhrOv8 (IJJILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun retry-FbhrOv8$default (IJJILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun retry-G6guFE4 (IJJILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun retry-G6guFE4$default (IJJILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun retryConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/RetryConfig;
 }
 
 public final class io/kotest/assertions/ThreadLocalAssertionCounter : io/kotest/assertions/AssertionCounter {
@@ -2835,16 +2871,18 @@ public final class io/kotest/equals/types/ObjectEqualsEqualityKt {
 }
 
 public final class io/kotest/inspectors/ElementFail : io/kotest/inspectors/ElementResult {
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Throwable;)V
+	public fun <init> (ILjava/lang/Object;Ljava/lang/Throwable;)V
 	public fun error ()Ljava/lang/Throwable;
+	public final fun getIndex ()I
 	public final fun getT ()Ljava/lang/Object;
 	public final fun getThrowable ()Ljava/lang/Throwable;
 	public fun value ()Ljava/lang/Object;
 }
 
 public final class io/kotest/inspectors/ElementPass : io/kotest/inspectors/ElementResult {
-	public fun <init> (Ljava/lang/Object;)V
+	public fun <init> (ILjava/lang/Object;)V
 	public fun error ()Ljava/lang/Throwable;
+	public final fun getIndex ()I
 	public final fun getT ()Ljava/lang/Object;
 	public fun value ()Ljava/lang/Object;
 }
@@ -2968,7 +3006,7 @@ public final class io/kotest/inspectors/InspectorsKt {
 }
 
 public final class io/kotest/inspectors/RunTestsKt {
-	public static final fun runTest (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/inspectors/ElementResult;
+	public static final fun runTest (ILjava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/inspectors/ElementResult;
 	public static final fun runTests (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun runTests (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }

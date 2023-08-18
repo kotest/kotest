@@ -1,6 +1,12 @@
 public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/core/NamedTag;
+	public static synthetic fun copy$default (Lio/kotest/core/NamedTag;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/NamedTag;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/StringTag : io/kotest/core/Tag {
@@ -48,6 +54,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterInvocation (Lkotlin/jvm/functions/Function3;)V
 	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun appliedTags ()Ljava/util/Set;
@@ -57,6 +64,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun beforeInvocation (Lkotlin/jvm/functions/Function3;)V
 	public final fun beforeSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun extension (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
