@@ -40,7 +40,11 @@ class IntRangeShrinker : Shrinker<IntRange> {
          value.first until value.last,
          value.first + 1..value.last,
          IntRange.EMPTY,
-         value.first..value.last / 2
+         value.first..(value.first + value.domainSize() / 2)
       ).distinct()
+   }
+
+   private fun IntRange.domainSize(): Int {
+      return (last - first).coerceAtLeast(0)
    }
 }
