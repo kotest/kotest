@@ -4,7 +4,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.withContext
-import java.util.concurrent.atomic.AtomicReference
 
 actual suspend fun replay(
    times: Int,
@@ -16,24 +15,15 @@ actual suspend fun replay(
          action(it)
       }
    } else {
-      val error = AtomicReference<Throwable>(null)
-
       @OptIn(DelicateCoroutinesApi::class)
       newFixedThreadPoolContext(threads, "replay").use { dispatcher ->
          withContext(dispatcher) {
-            for (k in 0 until times) {
+            repeat(times) {
                launch {
-                  try {
-                     action(k)
-                  } catch (t: Throwable) {
-                     error.compareAndSet(null, t)
-                  }
+                  action(it)
                }
             }
          }
       }
-
-      if (error.get() != null)
-         throw error.get()
    }
 }
