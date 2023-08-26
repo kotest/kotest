@@ -109,10 +109,24 @@ fun String.shouldEqualJson(expected: String, order: CompareOrder) =
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, legacyOptions(CompareMode.Strict, order))
 
-@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-infix fun String.shouldEqualSpecifiedJson(expected: String) =
-   shouldEqualJson(expected, compareJsonOptions { fieldComparison = FieldComparison.Lenient })
+infix fun String.shouldEqualSpecifiedJson(expected: String) {
+   shouldEqualJson {
+      fieldComparison = FieldComparison.Lenient
+      expected
+   }
+}
 
-@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-infix fun String.shouldNotEqualSpecifiedJson(expected: String) =
-   shouldNotEqualJson(expected, compareJsonOptions { fieldComparison = FieldComparison.Lenient })
+infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
+   shouldEqualJson {
+      fieldComparison = FieldComparison.Lenient
+      arrayOrder = ArrayOrder.Lenient
+      expected
+   }
+}
+
+infix fun String.shouldNotEqualSpecifiedJson(expected: String) {
+   shouldNotEqualJson {
+      fieldComparison = FieldComparison.Lenient
+      expected
+   }
+}
