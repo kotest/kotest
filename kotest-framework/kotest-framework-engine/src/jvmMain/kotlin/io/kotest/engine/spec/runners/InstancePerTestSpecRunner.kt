@@ -2,6 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
+import io.kotest.common.flatten
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
@@ -110,8 +111,8 @@ internal class InstancePerTestSpecRunner(
                   extensions.beforeSpec(spec)
                      .flatMap { run(it, test) }
                      .flatMap { extensions.afterSpec(it) }
-               }
-            }.map { spec }
+               } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
+            }.flatten()
          }
    }
 

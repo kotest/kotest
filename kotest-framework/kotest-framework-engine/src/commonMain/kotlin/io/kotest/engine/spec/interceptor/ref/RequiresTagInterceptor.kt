@@ -36,7 +36,7 @@ internal class RequiresTagInterceptor(
          else -> {
             val requiredTags = annotation.wrapper.map { NamedTag(it) }.toSet()
             val expr = configuration.runtimeTagExpression().parse()
-            if (requiredTags.isEmpty() || expr.isActive(requiredTags)) {
+            if (requiredTags.isEmpty() || (expr != null && expr.isActive(requiredTags))) {
                fn(ref)
             } else {
                runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresTag") }

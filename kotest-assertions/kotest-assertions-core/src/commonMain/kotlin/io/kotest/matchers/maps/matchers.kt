@@ -9,9 +9,8 @@ fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>) = MatcherResult(
       value[key] == v,
       { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
-      {
-         "Map should not contain mapping $key=$v but was $value"
-      })
+      { "Map should not contain mapping $key=$v but was $value" }
+   )
 
    private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
 }
@@ -66,7 +65,6 @@ fun beEmpty() = object : Matcher<Map<*, *>> {
 }
 
 
-
 fun <K, V> Map<K, V>.shouldMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this should matchAll(*matchers)
 fun <K, V> Map<K, V>.shouldMatchAll(expected: Map<K, (V) -> Unit>) = this should matchAll(expected)
 fun <K, V> Map<K, V>.shouldNotMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this shouldNot matchAll(*matchers)
@@ -75,4 +73,5 @@ fun <K, V> Map<K, V>.shouldMatchExactly(vararg matchers: Pair<K, (V) -> Unit>) =
 fun <K, V> Map<K, V>.shouldMatchExactly(expected: Map<K, (V) -> Unit>) = this should matchExactly(expected)
 fun <K, V> Map<K, V>.shouldNotMatchExactly(vararg matchers: Pair<K, (V) -> Unit>) = this shouldNot matchExactly(*matchers)
 fun <K, V> Map<K, V>.shouldNotMatchExactly(expected: Map<K, (V) -> Unit>) = this shouldNot matchExactly(expected)
+
 

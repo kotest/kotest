@@ -28,7 +28,7 @@ internal object WriteFailuresInterceptor : EngineInterceptor {
          val result = execute(context.mergeListener(collector))
          val failedSpecs = collector.tests
             .filterValues { it.isErrorOrFailure }
-            .map { it.key.spec::class }
+            .map { it.key.specClass }
             .toSet()
          writeSpecFailures(failedSpecs, context.configuration.specFailureFilePath)
          result

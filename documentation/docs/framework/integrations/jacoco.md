@@ -35,7 +35,7 @@ jacoco {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.isEnabled = true
+        xml.required.set(true)
     }
 }
 ```
@@ -49,7 +49,7 @@ tasks.test {
 }
 ```
 
-Now when you run `test`, the Jacoco report files should be generated in `$buildDir/reports/jacoco`. 
+Now when you run `test`, the Jacoco report files should be generated in `$buildDir/reports/jacoco`.
 
 :::note
 You may need to apply the jacoco plugin to each submodule if you have a multi module project.

@@ -70,8 +70,6 @@ class DurationShrinker(
       listOf(
          { d -> (d / 10).truncate(MILLISECONDS) },
          { d -> (d / 100).truncate(MILLISECONDS) },
-         { d -> d * 10 },
-         { d -> d * 100 },
       )
 
    private val componentsShrinker = Shrinker<Duration> { d ->
