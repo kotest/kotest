@@ -21,7 +21,10 @@ import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.Period
+import java.time.YearMonth
+import java.time.ZonedDateTime
 import kotlin.reflect.KClass
 
 class ReflectiveBindTest : StringSpec(
@@ -96,7 +99,10 @@ class ReflectiveBindTest : StringSpec(
             val a: LocalDate,
             val b: LocalDateTime,
             val c: LocalTime,
-            val d: Period
+            val d: Period,
+            val e: YearMonth,
+            val f: OffsetDateTime,
+            val g: ZonedDateTime
          )
 
          val arb = Arb.bind<DateContainer>()
@@ -108,7 +114,10 @@ class ReflectiveBindTest : StringSpec(
             val a: LocalDate?,
             val b: LocalDateTime?,
             val c: LocalTime?,
-            val d: Period?
+            val d: Period?,
+            val e: YearMonth?,
+            val f: OffsetDateTime?,
+            val g: ZonedDateTime?
          )
 
          val arb = Arb.bind<DateNullableContainer>()

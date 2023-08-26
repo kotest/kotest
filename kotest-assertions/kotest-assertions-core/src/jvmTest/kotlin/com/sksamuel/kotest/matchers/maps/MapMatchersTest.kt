@@ -427,6 +427,14 @@ expected:<{
          "extra keys in map are ignored" {
             mapOf("key1" to "value1", "key2" to "value2") should matchAll("key1" to {})
          }
+
+         "allow dynamic matchers" {
+            val map = mapOf("key1" to "value1", "key2" to "value2")
+            map should matchAll(mapOf("key1" to { it shouldBe "value1" }))
+            map should matchAll(buildMap {
+               put("key2") { it shouldBe "value2" }
+            })
+         }
       }
 
       include(matchMapTests("matchExactly"))
@@ -436,6 +444,15 @@ expected:<{
             shouldFail {
                mapOf("key1" to "value1", "key2" to "value2") should matchExactly("key1" to {})
             }
+         }
+
+         "allow dynamic matchers" {
+            val map = mapOf("key1" to "value1", "key2" to "value2")
+            map should matchExactly(mapOf("key1" to { it shouldBe "value1" }, "key2" to { it shouldBe "value2" }))
+            map should matchExactly(buildMap {
+               put("key1") { it shouldBe "value1" }
+               put("key2") { it shouldBe "value2" }
+            })
          }
       }
    }
