@@ -2829,7 +2829,7 @@ public final class io/kotest/core/test/ExpectFailureException : java/lang/Except
 }
 
 public final class io/kotest/core/test/ExpectFailureExceptionKt {
-	public static final fun expect (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
+	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class io/kotest/core/test/NamesKt {

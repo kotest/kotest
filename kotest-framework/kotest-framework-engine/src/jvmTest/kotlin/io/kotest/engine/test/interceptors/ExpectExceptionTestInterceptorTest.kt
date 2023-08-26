@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class ExpectExceptionTestInterceptorTest : FunSpec({
 
-   test("test should be ignored when expect block returns false") {
+   test("test should be ignored when runIf block returns false") {
       runIf { false }
       error("boom")
    }
