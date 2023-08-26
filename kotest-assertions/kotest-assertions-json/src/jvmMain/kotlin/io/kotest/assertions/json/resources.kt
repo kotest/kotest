@@ -22,9 +22,9 @@ fun matchJsonResource(resource: String) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
       val actualJson = value?.let(pretty::parseToJsonElement)
-      val expectedJson = this.javaClass.getResourceAsStream(resource).bufferedReader().use {
+      val expectedJson = this.javaClass.getResourceAsStream(resource)?.bufferedReader()?.use {
          pretty.parseToJsonElement(it.readText())
-      }
+      } ?: throw AssertionError("File should exist in resources: $resource")
 
       return ComparableMatcherResult(
          actualJson == expectedJson,
