@@ -41,11 +41,7 @@ class ContinuallyTest : FunSpec() {
          var invoked = 0
          val config = continuallyConfig<Unit> {
             duration = 500.milliseconds
-            listener = object : ContinuallyListener<Unit> {
-               override suspend fun invoke(iteration: Int, t: Unit) {
-                  listened++
-               }
-            }
+            listener = { _, _ -> listened++ }
          }
          continually(config) {
             (System.currentTimeMillis() > 0) shouldBe true
