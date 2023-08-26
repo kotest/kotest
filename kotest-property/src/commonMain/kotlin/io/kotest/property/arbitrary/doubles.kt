@@ -55,7 +55,7 @@ object DoubleShrinker : Shrinker<Double> {
 fun Arb.Companion.double(
    min: Double = -Double.MAX_VALUE,
    max: Double = Double.MAX_VALUE,
-   includeNonFiniteEdgeCases: Boolean = false
+   includeNonFiniteEdgeCases: Boolean = true
 ): Arb<Double> = double(min..max, includeNonFiniteEdgeCases)
 
 /**
@@ -68,7 +68,7 @@ fun Arb.Companion.double(
  */
 fun Arb.Companion.double(
    range: ClosedFloatingPointRange<Double> = -Double.MAX_VALUE..Double.MAX_VALUE,
-   includeNonFiniteEdgeCases: Boolean = false
+   includeNonFiniteEdgeCases: Boolean = true
 ): Arb<Double> = arbitrary(
    (numericEdgeCases.filter { it in range } + listOf(range.start, range.endInclusive)).distinct() + getNonFiniteEdgeCases(range, includeNonFiniteEdgeCases),
    DoubleShrinker
@@ -82,7 +82,7 @@ fun Arb.Companion.double(
  * The non-finite edge case is [Double.POSITIVE_INFINITY]
  * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = false): Arb<Double> = double(Double.MIN_VALUE, max, includeNonFiniteEdgeCases)
+fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(Double.MIN_VALUE, max, includeNonFiniteEdgeCases)
 
 @Deprecated("use positiveDouble. Deprecated in 5.0.", ReplaceWith("positiveDouble()"))
 fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
@@ -93,7 +93,7 @@ fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
  * The non-finite edge case is [Double.NEGATIVE_INFINITY]
  * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = false): Arb<Double> = double(min, -Double.MIN_VALUE, includeNonFiniteEdgeCases)
+fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(min, -Double.MIN_VALUE, includeNonFiniteEdgeCases)
 
 @Deprecated("use negativeDouble. Deprecated in 5.0.", ReplaceWith("negativeDouble()"))
 fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
