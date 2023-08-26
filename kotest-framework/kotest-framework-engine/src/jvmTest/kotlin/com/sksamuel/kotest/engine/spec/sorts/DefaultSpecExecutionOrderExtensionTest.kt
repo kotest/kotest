@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.sorts
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
@@ -89,6 +90,16 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
          val ext = DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, c)
          ext.sort(specs) shouldBe ext.sort(specs)
+      }
+
+      it("should error if mode is undefined and a spec is annotated") {
+         val specs = listOf(
+            SpecRef.Reference(ASpec::class),
+            SpecRef.Reference(ZSpec::class),
+         )
+         shouldThrowAny {
+            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfiguration()).sort(specs)
+         }
       }
    }
 
