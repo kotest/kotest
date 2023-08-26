@@ -828,6 +828,7 @@ public final class io/kotest/property/arbitrary/CollectionsKt {
 	public static final fun element (Lio/kotest/property/Arb$Companion;Ljava/util/Collection;)Lio/kotest/property/Arb;
 	public static final fun element (Lio/kotest/property/Arb$Companion;[Ljava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun list (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;)Lio/kotest/property/Arb;
+	public static final fun list (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static final fun list (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
 	public static synthetic fun list$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun of (Lio/kotest/property/Arb$Companion;Ljava/util/Collection;)Lio/kotest/property/Arb;
@@ -1011,6 +1012,12 @@ public final class io/kotest/property/arbitrary/GeoLocation {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/property/arbitrary/IntRangeShrinker : io/kotest/property/Shrinker {
+	public fun <init> ()V
+	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
+	public fun shrink (Lkotlin/ranges/IntRange;)Ljava/util/List;
+}
+
 public final class io/kotest/property/arbitrary/IntShrinker : io/kotest/property/Shrinker {
 	public fun <init> (Lkotlin/ranges/IntRange;)V
 	public final fun getRange ()Lkotlin/ranges/IntRange;
@@ -1133,6 +1140,10 @@ public final class io/kotest/property/arbitrary/NullKt {
 	public static final fun orNull (Lio/kotest/property/Arb;D)Lio/kotest/property/Arb;
 	public static final fun orNull (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;
 	public static synthetic fun orNull$default (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arbitrary/RangeKt {
+	public static final fun intRange (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/ReflectionKt {
