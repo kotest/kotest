@@ -39,7 +39,7 @@ suspend fun <T> eventually(
    val control = EventuallyControl(config)
 
    try {
-      while (control.attemptsRemaining() || control.isLongWait()) {
+      while (control.hasAttemptsRemaining()) {
          try {
             return test()
          } catch (e: Throwable) {
@@ -200,13 +200,7 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
       lastDelayPeriod = (timeInMillis() - delayMark).milliseconds
    }
 
-   fun attemptsRemaining() = timeInMillis() < end && iterations < config.retries
-
-   /**
-    * If we only executed once, and the last delay was > last interval,
-    * we didn't get a chance to run again so we run once more before exiting
-    */
-   fun isLongWait() = iterations == 1 && lastDelayPeriod > lastInterval
+   fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
 
    fun buildFailureMessage() = StringBuilder().apply {
       appendLine("Block failed after ${config.duration}; attempted $iterations time(s)")

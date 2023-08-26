@@ -188,39 +188,6 @@ class EventuallyTest : FunSpec() {
          count.shouldBeLessThan(3)
       }
 
-      test("do one final iteration if we never executed before interval expired") {
-         val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-         launch(dispatcher) {
-            Thread.sleep(250)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // we won't be able to run in here
-            eventually(1.seconds) {
-               counter.incrementAndGet()
-            }
-         }
-         counter.get().shouldBe(1)
-      }
-
-      test("do one final iteration if we only executed once and the last delay > interval") {
-         val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-         // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-         launch(dispatcher) {
-            delay(100.milliseconds)
-            Thread.sleep(500)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // this will execute once immediately, then the earlier async will steal the thread
-            // and then since the delay has been > interval and times == 1, we will execute once more
-            eventually(250.milliseconds) {
-               counter.incrementAndGet() shouldBe 2
-            }
-         }
-         counter.get().shouldBe(2)
-      }
-
       test("handle shouldNotBeNull") {
          val duration = measureTimeMillisCompat {
             shouldThrow<java.lang.AssertionError> {
@@ -321,11 +288,9 @@ class EventuallyTest : FunSpec() {
          val config = eventuallyConfig {
             duration = 5.seconds
             retries = 1
-            listener = object : EventuallyListener {
-               override suspend fun invoke(iteration: Int, error: Throwable) {
-                  k = iteration
-                  t = error
-               }
+            listener = { iteration, error ->
+               k = iteration
+               t = error
             }
          }
          shouldThrow<Throwable> {
@@ -333,7 +298,7 @@ class EventuallyTest : FunSpec() {
                withClue("1 should never be 2") { 1 shouldBe 2 }
             }
          }
-         k shouldBe 2
+         k shouldBe 1
          t.shouldNotBeNull()
       }
 
