@@ -270,7 +270,7 @@ internal fun compareArrays(
          fun findMatchingIndex(element: JsonNode): Int? {
             for (i in availableIndexes()) {
                // Comparison with no error -> matching element
-               val isMatch = compare(path + "[$i]", element, expected.elements[i], options) == null
+               val isMatch = compare(path + "[$i]", expected.elements[i], element, options) == null
 
                if (isMatch) {
                   return i
