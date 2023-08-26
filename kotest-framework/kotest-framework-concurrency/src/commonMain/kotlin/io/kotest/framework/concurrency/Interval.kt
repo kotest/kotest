@@ -1,6 +1,5 @@
 package io.kotest.framework.concurrency
 
-import io.kotest.common.ExperimentalKotest
 import kotlin.math.pow
 import kotlin.time.Duration
 
@@ -9,7 +8,7 @@ private const val hour = 3_600_000L
 /**
  * An [Interval] determines how often Kotest will invoke a predicate function for an [eventually], [until], or [continually] block.
  */
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 interface Interval {
 
    /**
@@ -23,7 +22,7 @@ interface Interval {
    fun next(count: Int): Long
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class FixedInterval(private val duration: Long) : Interval {
    override fun toString() = "FixedInterval(${::duration.name}=$duration)"
 
@@ -32,10 +31,10 @@ class FixedInterval(private val duration: Long) : Interval {
    }
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Long.fixed(): FixedInterval = FixedInterval(this)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.fixed() = this.inWholeMilliseconds.fixed()
 
 
@@ -50,7 +49,7 @@ fun Duration.fixed() = this.inWholeMilliseconds.fixed()
  * @param base The duration that is multiplied by the fibonacci value
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
  */
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class FibonacciInterval(private val base: Long, private val offset: Int, private val max: Long?) :
    Interval {
    init {
@@ -70,14 +69,14 @@ class FibonacciInterval(private val base: Long, private val offset: Int, private
    }
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Long.fibonacci(max: Long? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.fibonacci(max: Duration? = null) =
    this.inWholeMilliseconds.fibonacci(max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
       0 -> previous
@@ -98,7 +97,7 @@ fun fibonacci(n: Int): Int {
  * @param factor the factor to exponentiate by the current iteration value
  * @param max the maximum duration to clamp the resulting duration to defaults to [ExponentialInterval.defaultMax]
  */
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class ExponentialInterval(private val base: Long, private val factor: Double, private val max: Long?) :
    Interval {
    override fun toString() = "ExponentialInterval(${::base.name}=$base, ${::factor.name}=$factor, ${::max.name}=$max)"
@@ -115,11 +114,11 @@ class ExponentialInterval(private val base: Long, private val factor: Double, pr
    }
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Long.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Long? = ExponentialInterval.defaultMax) =
    ExponentialInterval(this, factor, max)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Duration? = null) =
    this.inWholeMilliseconds.exponential(factor, max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
