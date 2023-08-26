@@ -22,14 +22,14 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultFo
 
 fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type: KType): Arb<*>? {
    when (type) {
-      typeOf<Instant>() -> Arb.instant()
-      typeOf<Date>() -> Arb.javaDate()
-      typeOf<LocalDate>() -> Arb.localDate()
-      typeOf<LocalDateTime>() -> Arb.localDateTime()
-      typeOf<LocalTime>() -> Arb.localTime()
-      typeOf<Period>() -> Arb.period()
-      typeOf<BigDecimal>() -> Arb.bigDecimal()
-      typeOf<BigInteger>() -> Arb.bigInt(maxNumBits = 256)
+      typeOf<Instant>(), typeOf<Instant?>() -> Arb.instant()
+      typeOf<Date>(), typeOf<Date?>() -> Arb.javaDate()
+      typeOf<LocalDate>(), typeOf<LocalDate?>() -> Arb.localDate()
+      typeOf<LocalDateTime>(), typeOf<LocalDateTime?>() -> Arb.localDateTime()
+      typeOf<LocalTime>(), typeOf<LocalTime?>() -> Arb.localTime()
+      typeOf<Period>(), typeOf<Period?>() -> Arb.period()
+      typeOf<BigDecimal>(), typeOf<BigDecimal?>() -> Arb.bigDecimal()
+      typeOf<BigInteger>(), typeOf<BigInteger?>() -> Arb.bigInt(maxNumBits = 256)
       else -> null
    }?.let { return it }
 
