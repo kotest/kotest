@@ -1,7 +1,8 @@
 package io.kotest.assertions.nondeterministic
 
+import io.kotest.common.KotestInternal
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -32,11 +33,11 @@ class FibonacciIntervalFn(private val base: Duration, private val offset: Int, p
    }
 
    companion object {
-      val defaultMax = 2.hours
+      val defaultMax = 1.minutes
    }
 }
 
-fun Duration.fibonacci(max: Duration? = FibonacciIntervalFn.defaultMax) = FibonacciIntervalFn(this, 0, max)
+fun Duration.fibonacci(max: Duration = FibonacciIntervalFn.defaultMax) = FibonacciIntervalFn(this, 0, max)
 
 internal fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {

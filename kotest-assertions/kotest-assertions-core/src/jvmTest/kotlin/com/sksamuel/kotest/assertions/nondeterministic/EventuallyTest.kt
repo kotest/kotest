@@ -333,7 +333,7 @@ class EventuallyTest : FunSpec() {
                withClue("1 should never be 2") { 1 shouldBe 2 }
             }
          }
-         k shouldBe 1
+         k shouldBe 2
          t.shouldNotBeNull()
       }
 

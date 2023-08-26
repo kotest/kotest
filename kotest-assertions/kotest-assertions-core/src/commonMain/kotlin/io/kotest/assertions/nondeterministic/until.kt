@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Runs a function [test] until it returns true, as long as the specified duration hasn't passed.
@@ -78,7 +79,7 @@ class UntilConfigurationBuilder {
    /**
     * The total time that the test function can take to complete successfully.
     */
-   var duration: Duration = Duration.INFINITE
+   var duration: Duration = 5.seconds
 
    /**
     * A delay that is applied before the first invocation of the test function.
@@ -86,20 +87,20 @@ class UntilConfigurationBuilder {
    var initialDelay: Duration = Duration.ZERO
 
    /**
-    * The delay between invocations. This delay is overriden by the [intervalFn] if it is not null.
+    * The delay between invocations. This delay is overriden by the [intervalFn] if that is not null.
     */
    var interval: Duration = 25.milliseconds
 
    /**
     * A function that is invoked to calculate the next interval. This if this null, then the
-    * value of [interval] is used.
+    * fixed value of [interval] is used.
     *
     * This function can be used to implement [fibonacci] or [exponential] backoffs.
     */
    var intervalFn: DurationFn? = null
 
    /**
-    * The maximum number of invocations regardless of durations. By default this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default this is set to [Int.MAX_VALUE].
     */
    var retries: Int = Int.MAX_VALUE
 
@@ -135,6 +136,4 @@ class UntilConfigurationBuilder {
    var shortCircuit: (Throwable) -> Boolean = { false }
 }
 
-interface UntilListener {
-   suspend fun invoke(iteration: Int, error: Throwable)
-}
+typealias UntilListener = suspend (Int, Throwable) -> Unit

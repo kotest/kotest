@@ -154,9 +154,7 @@ class EventuallyConfigurationBuilder {
    var shortCircuit: (Throwable) -> Boolean = { false }
 }
 
-interface EventuallyListener {
-   suspend fun invoke(iteration: Int, error: Throwable)
-}
+typealias EventuallyListener = suspend (Int, Throwable) -> Unit
 
 object NoopEventuallyListener : EventuallyListener {
    override suspend fun invoke(iteration: Int, error: Throwable) {}

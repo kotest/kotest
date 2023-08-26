@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.nondeterministic.FibonacciIntervalFn
-import io.kotest.assertions.until.FibonacciInterval
-import io.kotest.assertions.until.fibonacci
+import io.kotest.assertions.nondeterministic.fibonacci
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 class FibonacciIntervalTest : FunSpec() {
@@ -26,7 +26,7 @@ class FibonacciIntervalTest : FunSpec() {
       test("fibonacci interval should have a reasonable default max") {
           val max = FibonacciIntervalFn.defaultMax
           val default = 10.minutes.fibonacci()
-          val unbounded = 10.minutes.fibonacci(null)
+          val unbounded = 10.minutes.fibonacci(2.hours)
 
           val first = 0
           val last = 20
@@ -48,9 +48,9 @@ class FibonacciIntervalTest : FunSpec() {
       }
 
       test("fibonacci interval should respect user specified max") {
-          val max = FibonacciInterval.defaultMax.plus(15.minutes)
+          val max = 15.minutes
           val bounded = 10.minutes.fibonacci(max)
-          val unbounded = 10.minutes.fibonacci(null)
+          val unbounded = 10.minutes.fibonacci(1.hours)
 
           val first = 0
           val last = 20
