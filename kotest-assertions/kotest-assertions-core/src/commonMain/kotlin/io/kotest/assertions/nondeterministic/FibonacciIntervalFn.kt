@@ -15,6 +15,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * @param base The duration that is multiplied by the fibonacci value
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciIntervalFn.defaultMax]
  */
+@KotestInternal
 class FibonacciIntervalFn(private val base: Duration, private val offset: Int, private val max: Duration?) : DurationFn {
 
    init {
