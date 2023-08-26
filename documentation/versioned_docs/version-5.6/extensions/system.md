@@ -10,10 +10,19 @@ slug: system_extensions.html
 
 ## System Extensions
 
-Sometimes your code might use some functionalities straight from the JVM, which are very hard to simulate. With Kotest System Extensions, these difficulties are made easy to mock and simulate, and your code can be tested correctly. After changing the system and using the extensions, the previous state will be restored.
+If you need to test code that uses `java.lang.System`, Kotest provides extensions that can alter the system and restore it after each test. This extension is only available on the JVM.
+
+To use this extension, add the dependency to your project:
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-jvm.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest/kotest-extensions-jvm)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-extensions-jvm.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest-extensions-jvm/)
+
+```kotlin
+io.kotest:kotest-extensions-jvm:${version}
+```
 
 :::caution
-This code is sensitive to concurrency. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is unknown.
+This extension does not support concurrent test execution. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is undefined.
 :::
 
 ### System Environment
@@ -179,7 +188,7 @@ withDefaultLocale(Locale.FRANCE) {
   println("My locale is now France! Très bien!")
 }
 
-withDefaultTimezone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
+withDefaultTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
   println("My timezone is now America/Sao_Paulo! Muito bem!")
 }
 

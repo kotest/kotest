@@ -17,6 +17,7 @@ import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -29,7 +30,7 @@ class ReflectiveBindTest : StringSpec(
 
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
       class WobbleWobble(val a: Wobble)
-      data class BubbleBobble(val a: String?, val b: Boolean?)
+      data class BubbleBobble(val a: String?, val b: Boolean?, val c: BigInteger?, val d: BigDecimal?)
 
       "binds enum parameters" {
          data class Hobble(val shape: Shape)
@@ -99,6 +100,18 @@ class ReflectiveBindTest : StringSpec(
          )
 
          val arb = Arb.bind<DateContainer>()
+         arb.take(10).toList().size shouldBe 10
+      }
+
+      "java.time types with nullable" {
+         data class DateNullableContainer(
+            val a: LocalDate?,
+            val b: LocalDateTime?,
+            val c: LocalTime?,
+            val d: Period?
+         )
+
+         val arb = Arb.bind<DateNullableContainer>()
          arb.take(10).toList().size shouldBe 10
       }
 

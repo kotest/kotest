@@ -179,7 +179,7 @@ withDefaultLocale(Locale.FRANCE) {
   println("My locale is now France! Très bien!")
 }
 
-withDefaultTimezone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
+withDefaultTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
   println("My timezone is now America/Sao_Paulo! Muito bem!")
 }
 
