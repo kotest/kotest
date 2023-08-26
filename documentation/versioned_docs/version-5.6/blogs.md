@@ -7,6 +7,10 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
+* [JUnit 5 vs. Kotest: A Comparison for Unit Testing (2023)](https://www.baeldung.com/kotlin/kotest-vs-junit-5)
+* [How to Use MockServer in a Kotest Test (2023)](https://www.baeldung.com/kotlin/kotest-mockserver)
+* [How to Run a Function Before Every Test Using Kotest (2023)](https://www.baeldung.com/kotlin/kotest-before-test)
+* [Kotest: Assert a List Has Elements with Specific Properties (2023)](https://www.baeldung.com/kotlin/kotest-list-check-item-properties)
 * [How to Write a Spring Boot Test Using Kotest (2023)](https://www.baeldung.com/kotlin/kotest-spring-boot-test)
 * [How to Run Testcontainers Inside a Kotest Test (2023)](https://www.baeldung.com/kotlin/kotest-testcontainers)
 * [How to Assert the Type of an Object in Kotest (2023)](https://www.baeldung.com/kotlin/kotest-assert-object-type)
