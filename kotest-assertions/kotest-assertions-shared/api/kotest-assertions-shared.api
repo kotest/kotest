@@ -1,3 +1,8 @@
+public final class PropertiesKt {
+	public static final fun shouldHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)V
+	public static final fun shouldMatch (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class io/kotest/assertions/Actual {
 	public fun <init> (Lio/kotest/assertions/print/Printed;)V
 	public final fun component1 ()Lio/kotest/assertions/print/Printed;

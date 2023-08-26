@@ -116,6 +116,14 @@ infix fun String.shouldEqualSpecifiedJson(expected: String) {
    }
 }
 
+infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
+   shouldEqualJson {
+      fieldComparison = FieldComparison.Lenient
+      arrayOrder = ArrayOrder.Lenient
+      expected
+   }
+}
+
 infix fun String.shouldNotEqualSpecifiedJson(expected: String) {
    shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient
