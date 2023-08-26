@@ -11,8 +11,8 @@ import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
@@ -32,6 +32,7 @@ import java.time.LocalTime
 import java.time.Period
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.hours
 
@@ -276,6 +277,30 @@ class DateTest : WordSpec({
       }
    }
 
+   "Arb.offsetDateTime(minInstant, maxInstant, zoneOffset)" should {
+      "generate OffsetDateTimes between 1970 and 2030 year" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val offsets = mutableSetOf<Int>()
+
+         checkAll(
+            5000, Arb.offsetDateTime(
+               LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+               LocalDateTime.of(2030, 12, 31, 23, 59).toInstant(ZoneOffset.UTC)
+            )
+         ) {
+            days.add(it.dayOfMonth)
+            months.add(it.monthValue)
+            offsets.add(it.offset.totalSeconds)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
+         offsets.min() shouldBeGreaterThanOrEqual -18.hours.inWholeSeconds.toInt()
+         offsets.max() shouldBeLessThanOrEqual 18.hours.inWholeSeconds.toInt()
+      }
+   }
+
    "Arb.zonedDateTime(minLocalDateTime, maxLocalDateTime, zoneId)" should {
       "generate ZonedDateTime between with default values" {
          val days = mutableSetOf<Int>()
@@ -309,7 +334,7 @@ class DateTest : WordSpec({
 
          days.sorted() shouldBe (1..31).toSet()
          months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970 .. 2050).toSet()
+         years.sorted() shouldBe (1970..2050).toSet()
       }
    }
 
@@ -335,7 +360,7 @@ class DateTest : WordSpec({
 
          days.sorted() shouldBe (1..31).toSet()
          months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970 .. 2050).toSet()
+         years.sorted() shouldBe (1970..2050).toSet()
       }
    }
 })
