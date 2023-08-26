@@ -1283,7 +1283,9 @@ public final class io/kotest/matchers/maps/MapMatchersKt {
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
 	public static final fun haveValue (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveValues ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun matchAll (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
 	public static final fun matchAll ([Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
+	public static final fun matchExactly (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
 	public static final fun matchExactly ([Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 }
 
@@ -1316,7 +1318,9 @@ public final class io/kotest/matchers/maps/MatchersKt {
 	public static final fun shouldHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)V
 	public static final fun shouldHaveSize (Ljava/util/Map;I)V
 	public static final fun shouldHaveValues (Ljava/util/Map;[Ljava/lang/Object;)V
+	public static final fun shouldMatchAll (Ljava/util/Map;Ljava/util/Map;)V
 	public static final fun shouldMatchAll (Ljava/util/Map;[Lkotlin/Pair;)V
+	public static final fun shouldMatchExactly (Ljava/util/Map;Ljava/util/Map;)V
 	public static final fun shouldMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)V
 	public static final fun shouldNotBeEmpty (Ljava/util/Map;)V
 	public static final fun shouldNotContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)V
@@ -1332,7 +1336,9 @@ public final class io/kotest/matchers/maps/MatchersKt {
 	public static final fun shouldNotHaveKey (Ljava/util/Map;Ljava/lang/Object;)V
 	public static final fun shouldNotHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)V
 	public static final fun shouldNotHaveValues (Ljava/util/Map;[Ljava/lang/Object;)V
+	public static final fun shouldNotMatchAll (Ljava/util/Map;Ljava/util/Map;)V
 	public static final fun shouldNotMatchAll (Ljava/util/Map;[Lkotlin/Pair;)V
+	public static final fun shouldNotMatchExactly (Ljava/util/Map;Ljava/util/Map;)V
 	public static final fun shouldNotMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)V
 }
 
