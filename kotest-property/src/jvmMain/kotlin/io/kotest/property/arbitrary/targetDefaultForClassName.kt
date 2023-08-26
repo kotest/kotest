@@ -9,7 +9,10 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.Period
+import java.time.YearMonth
+import java.time.ZonedDateTime
 import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -28,6 +31,9 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       typeOf<LocalDateTime>(), typeOf<LocalDateTime?>() -> Arb.localDateTime()
       typeOf<LocalTime>(), typeOf<LocalTime?>() -> Arb.localTime()
       typeOf<Period>(), typeOf<Period?>() -> Arb.period()
+      typeOf<YearMonth>(), typeOf<YearMonth?>() -> Arb.yearMonth()
+      typeOf<ZonedDateTime>(), typeOf<ZonedDateTime?>() -> Arb.zonedDateTime()
+      typeOf<OffsetDateTime>(), typeOf<OffsetDateTime?>() -> Arb.offsetDateTime()
       typeOf<BigDecimal>(), typeOf<BigDecimal?>() -> Arb.bigDecimal()
       typeOf<BigInteger>(), typeOf<BigInteger?>() -> Arb.bigInt(maxNumBits = 256)
       else -> null
