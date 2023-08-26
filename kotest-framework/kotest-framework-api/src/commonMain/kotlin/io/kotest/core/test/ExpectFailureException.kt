@@ -5,6 +5,6 @@ package io.kotest.core.test
  */
 object ExpectFailureException : Exception()
 
-fun TestScope.expect(thunk: () -> Boolean) {
+fun TestScope.runIf(thunk: () -> Boolean) {
    if (!thunk()) throw ExpectFailureException
 }

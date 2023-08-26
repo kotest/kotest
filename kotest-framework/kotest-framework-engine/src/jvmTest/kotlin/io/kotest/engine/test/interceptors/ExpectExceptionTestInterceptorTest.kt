@@ -9,7 +9,7 @@ import io.kotest.core.test.ExpectFailureException
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.expect
+import io.kotest.core.test.runIf
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import java.io.IOException
@@ -17,8 +17,9 @@ import kotlin.time.Duration.Companion.seconds
 
 class ExpectExceptionTestInterceptorTest : FunSpec({
 
-   test("test should be ignored when expect block fails") {
-      expect { false }
+   test("test should be ignored when expect block returns false") {
+      runIf { false }
+      error("boom")
    }
 
    test("ExpectExceptionTestInterceptor should adjust ExpectFailureException to Ignored") {
