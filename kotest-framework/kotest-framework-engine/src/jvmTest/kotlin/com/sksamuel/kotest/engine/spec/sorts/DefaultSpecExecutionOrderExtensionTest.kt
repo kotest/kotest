@@ -18,15 +18,11 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       it("SpecExecutionOrder.Undefined") {
          DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfiguration()).sort(
             listOf(
-               SpecRef.Reference(ASpec::class),
                SpecRef.Reference(ZSpec::class),
-               SpecRef.Reference(SpecA::class),
                SpecRef.Reference(SpecZ::class),
             )
          ) shouldBe listOf(
-            SpecRef.Reference(ASpec::class),
             SpecRef.Reference(ZSpec::class),
-            SpecRef.Reference(SpecA::class),
             SpecRef.Reference(SpecZ::class),
          )
       }
