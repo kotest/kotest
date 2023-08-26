@@ -183,6 +183,13 @@ expected:<{
 }>"""
             )
          }
+
+         test("extra fields ok with different order array") {
+            val a = """ { "wrapper": [{ "c" : "baz" }, { "a" : "foo", "b": "bar" } ] }"""
+            val b = """ { "wrapper": [{ "a" : "foo" }, { "c" : "baz" } ] }"""
+
+            a shouldEqualSpecifiedJsonIgnoringOrder b
+         }
       }
    }
 )
