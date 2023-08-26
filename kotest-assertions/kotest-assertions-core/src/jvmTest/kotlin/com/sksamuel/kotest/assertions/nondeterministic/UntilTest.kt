@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.nondeterministic.UntilListener
 import io.kotest.assertions.nondeterministic.until
 import io.kotest.assertions.nondeterministic.untilConfig
 import io.kotest.core.spec.style.FunSpec
@@ -48,11 +47,7 @@ class UntilTest : FunSpec({
       val config = untilConfig {
          duration = 2.seconds
          interval = 10.milliseconds
-         listener = object : UntilListener {
-            override suspend fun invoke(iteration: Int, error: Throwable) {
-               latch.countDown()
-            }
-         }
+         listener = { _, _ -> latch.countDown() }
       }
       var t = ""
       until(config) {
