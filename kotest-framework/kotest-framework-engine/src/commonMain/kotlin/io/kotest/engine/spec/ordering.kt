@@ -2,8 +2,10 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
+import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
+import io.kotest.mpp.annotation
 import kotlin.random.Random
 
 /**
@@ -17,7 +19,12 @@ internal class DefaultSpecExecutionOrderExtension(
 
    override fun sort(specs: List<SpecRef>): List<SpecRef> {
       return when (order) {
-         SpecExecutionOrder.Undefined -> specs
+
+         SpecExecutionOrder.Undefined -> {
+            checkAnnotatedStatus(specs)
+            specs
+         }
+
          SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(specs)
          SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(specs)
          SpecExecutionOrder.FailureFirst -> FailureFirstSorter().sort(specs)
@@ -29,5 +36,13 @@ internal class DefaultSpecExecutionOrderExtension(
             RandomSpecSorter(random).sort(specs)
          }
       }
+   }
+
+   /**
+    * If any specs have @Order and SpecExecutionOrder.Undefined is the sort mode, throw an error.
+    */
+   private fun checkAnnotatedStatus(specs: List<SpecRef>) {
+      val annotatedSpec = specs.find { it.kclass.annotation<Order>() != null }
+      if (annotatedSpec != null) error("Spec ${annotatedSpec.kclass} is annotated with @Order but SpecExecutionOrder is using the default Undefined. In order for @Order to be used, you must configure the SpecExecutionOrder inside project configuration.")
    }
 }
