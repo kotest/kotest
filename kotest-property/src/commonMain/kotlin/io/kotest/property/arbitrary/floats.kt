@@ -22,7 +22,7 @@ object FloatShrinker : Shrinker<Float> {
  * The edge cases are [min], -1.0, -[Float.MIN_VALUE], -0.0, 0.0, [Float.MIN_VALUE], 1.0 and [max]
  * which are only included if they are in the provided range.
  * The non-finite edge cases are [Float.NEGATIVE_INFINITY], [Float.POSITIVE_INFINITY] and [Float.NaN]
- * which are only included if includeNonFiniteEdgeCases flag is true.
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  *
  * @see numericFloat to only produce numeric [Float]s
  */
@@ -34,7 +34,7 @@ fun Arb.Companion.float(min: Float = -Float.MAX_VALUE, max: Float = Float.MAX_VA
  * 0.0, [Float.MIN_VALUE], 1.0 and [ClosedFloatingPointRange.endInclusive]
  * which are only included if they are in the provided range.
  * The non-finite edge cases are [Float.NEGATIVE_INFINITY], [Float.POSITIVE_INFINITY] and [Float.NaN]
- * which are only included if includeNonFiniteEdgeCases flag is true.
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  */
 fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALUE..Float.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = false): Arb<Float> =
    arbitrary(
@@ -47,14 +47,16 @@ fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALU
 /**
  * Returns an [Arb] that produces positive [Float]s from [Float.MIN_VALUE] to [max] (inclusive).
  * The numeric edge cases are [Float.MIN_VALUE], 1.0, and [max] which are only included if they are in the provided range.
- * The non-finite edge case is [Float.POSITIVE_INFINITY] which is only included if includeNonFiniteEdgeCases flag is true.
+ * The non-finite edge case is [Float.POSITIVE_INFINITY]
+ * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
 fun Arb.Companion.positiveFloat(includeNonFiniteEdgeCases: Boolean = false): Arb<Float> = float(Float.MIN_VALUE, Float.MAX_VALUE, includeNonFiniteEdgeCases)
 
 /**
  * Returns an [Arb] that produces negative [Float]s from [min] to -[Float.MIN_VALUE] (inclusive).
  * The numeric edge cases are [min], -1.0 and -[Float.MIN_VALUE] which are only included if they are in the provided range.
- * The non-finite edge case is [Float.NEGATIVE_INFINITY] which is only included if includeNonFiniteEdgeCases flag is true.
+ * The non-finite edge case is [Float.NEGATIVE_INFINITY]
+ * which is only included if it is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
 fun Arb.Companion.negativeFloat(includeNonFiniteEdgeCases: Boolean = false): Arb<Float> = float(-Float.MAX_VALUE, -Float.MIN_VALUE, includeNonFiniteEdgeCases)
 
