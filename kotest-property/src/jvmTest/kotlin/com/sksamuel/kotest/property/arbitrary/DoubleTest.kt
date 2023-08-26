@@ -19,7 +19,7 @@ class DoubleTest : FunSpec({
    }
 
    test("negativeDouble should include valid negative numeric double edgecases") {
-      Arb.negativeDouble().edgecases(1000) shouldContainExactly setOf(
+      Arb.negativeDouble(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          -1.0,
          -Double.MIN_VALUE,
          -Double.MAX_VALUE,
@@ -27,7 +27,7 @@ class DoubleTest : FunSpec({
    }
 
    test("negativeDouble should include valid negative all double edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.negativeDouble(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.negativeDouble().edgecases(1000) shouldContainExactly setOf(
          -1.0,
          Double.NEGATIVE_INFINITY,
          -Double.MIN_VALUE,
@@ -36,7 +36,7 @@ class DoubleTest : FunSpec({
    }
 
    test("positiveDouble should include valid positive numeric double edgecases") {
-      Arb.positiveDouble().edgecases(1000) shouldContainExactly setOf(
+      Arb.positiveDouble(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          1.0,
          Double.MIN_VALUE,
          Double.MAX_VALUE,
@@ -44,7 +44,7 @@ class DoubleTest : FunSpec({
    }
 
    test("posititveDouble should include valid positive all double edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.positiveDouble(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.positiveDouble().edgecases(1000) shouldContainExactly setOf(
          1.0,
          Double.MIN_VALUE,
          Double.MAX_VALUE,
@@ -53,7 +53,7 @@ class DoubleTest : FunSpec({
    }
 
    test("double should include numeric double edgecases") {
-      Arb.double().edgecases(1000) shouldContainExactly setOf(
+      Arb.double(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          0.0,
          -0.0,
          -1.0,
@@ -66,7 +66,7 @@ class DoubleTest : FunSpec({
    }
 
    test("double should include all double edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.double(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.double().edgecases(1000) shouldContainExactly setOf(
          0.0,
          -0.0,
          -1.0,

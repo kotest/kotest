@@ -21,7 +21,7 @@ class FloatTest : FunSpec({
    }
 
    test("negativeFloat should include valid negative numeric float edgecases") {
-      Arb.negativeFloat().edgecases(1000) shouldContainExactly setOf(
+      Arb.negativeFloat(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          -1.0F,
          -Float.MIN_VALUE,
          -Float.MAX_VALUE,
@@ -29,7 +29,7 @@ class FloatTest : FunSpec({
    }
 
    test("negativeFloat should include valid negative all float edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.negativeFloat(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.negativeFloat().edgecases(1000) shouldContainExactly setOf(
          -1.0F,
          Float.NEGATIVE_INFINITY,
          -Float.MIN_VALUE,
@@ -38,7 +38,7 @@ class FloatTest : FunSpec({
    }
 
    test("positiveFloat should include valid positive numeric float edgecases") {
-      Arb.positiveFloat().edgecases(1000) shouldContainExactly setOf(
+      Arb.positiveFloat(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          1.0F,
          Float.MIN_VALUE,
          Float.MAX_VALUE,
@@ -46,7 +46,7 @@ class FloatTest : FunSpec({
    }
 
    test("posititveFloat should include valid positive all float edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.positiveFloat(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.positiveFloat().edgecases(1000) shouldContainExactly setOf(
          1.0F,
          Float.MIN_VALUE,
          Float.MAX_VALUE,
@@ -55,7 +55,7 @@ class FloatTest : FunSpec({
    }
 
    test("float should include numeric float edgecases") {
-      Arb.float().edgecases(1000) shouldContainExactly setOf(
+      Arb.float(includeNonFiniteEdgeCases = false).edgecases(1000) shouldContainExactly setOf(
          0.0F,
          -0.0F,
          -1.0F,
@@ -68,7 +68,7 @@ class FloatTest : FunSpec({
    }
 
    test("float should include all float edgecases when includeNonFiniteEdgeCases is true") {
-      Arb.float(includeNonFiniteEdgeCases = true).edgecases(1000) shouldContainExactly setOf(
+      Arb.float().edgecases(1000) shouldContainExactly setOf(
          0.0F,
          -0.0F,
          -1.0F,
