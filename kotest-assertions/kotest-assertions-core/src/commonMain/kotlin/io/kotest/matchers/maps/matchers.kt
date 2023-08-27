@@ -66,8 +66,12 @@ fun beEmpty() = object : Matcher<Map<*, *>> {
 
 
 fun <K, V> Map<K, V>.shouldMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this should matchAll(*matchers)
+infix fun <K, V> Map<K, V>.shouldMatchAll(expected: Map<K, (V) -> Unit>) = this should matchAll(expected)
 fun <K, V> Map<K, V>.shouldNotMatchAll(vararg matchers: Pair<K, (V) -> Unit>) = this shouldNot matchAll(*matchers)
+infix fun <K, V> Map<K, V>.shouldNotMatchAll(expected: Map<K, (V) -> Unit>) = this shouldNot matchAll(expected)
 fun <K, V> Map<K, V>.shouldMatchExactly(vararg matchers: Pair<K, (V) -> Unit>) = this should matchExactly(*matchers)
-fun <K, V> Map<K, V>.shouldNotMatchExactly(vararg matchers: Pair<K, (V) -> Unit>) =
-   this shouldNot matchExactly(*matchers)
+infix fun <K, V> Map<K, V>.shouldMatchExactly(expected: Map<K, (V) -> Unit>) = this should matchExactly(expected)
+fun <K, V> Map<K, V>.shouldNotMatchExactly(vararg matchers: Pair<K, (V) -> Unit>) = this shouldNot matchExactly(*matchers)
+infix fun <K, V> Map<K, V>.shouldNotMatchExactly(expected: Map<K, (V) -> Unit>) = this shouldNot matchExactly(expected)
+
 
