@@ -93,10 +93,6 @@ gradlePlugin {
    }
 }
 
-kotlin {
-   jvmToolchain(11)
-}
-
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions {
       compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
