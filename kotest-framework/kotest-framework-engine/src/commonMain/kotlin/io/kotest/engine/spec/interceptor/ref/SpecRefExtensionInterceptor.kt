@@ -12,7 +12,7 @@ import io.kotest.mpp.bestName
 /**
  * A [SpecRefInterceptor] that will invoke any [SpecRefExtension]s.
  */
-class SpecRefExtensionInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
+internal class SpecRefExtensionInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    private val logger = Logger(SpecRefExtensionInterceptor::class)
 

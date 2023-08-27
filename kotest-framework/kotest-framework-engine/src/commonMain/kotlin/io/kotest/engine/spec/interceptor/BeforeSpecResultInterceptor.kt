@@ -10,8 +10,7 @@ import io.kotest.engine.extensions.MultipleExceptions
 /**
  * A [SpecInterceptor] that retrieves any before spec errors and returns those instead of test failures.
  */
-class BeforeSpecResultInterceptor(
-) : SpecInterceptor {
+internal object BeforeSpecResultInterceptor : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
       fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>

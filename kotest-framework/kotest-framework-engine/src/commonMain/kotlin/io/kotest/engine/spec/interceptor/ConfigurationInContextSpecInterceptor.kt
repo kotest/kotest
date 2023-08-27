@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
  * A [SpecInterceptor] that injects the [ProjectConfiguration] into the coroutine context
  * so it can be extracted in specs and tests.
  */
-class ConfigurationInContextSpecInterceptor(
+internal class ConfigurationInContextSpecInterceptor(
    private val projectConfiguration: ProjectConfiguration
 ) : SpecInterceptor {
 

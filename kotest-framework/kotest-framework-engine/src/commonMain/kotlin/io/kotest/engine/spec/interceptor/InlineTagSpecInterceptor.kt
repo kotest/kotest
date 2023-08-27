@@ -16,7 +16,7 @@ import io.kotest.engine.tags.runtimeTagExpression
  * A [SpecInterceptor] that skips this [Spec] if it contains inline tags which don't satisfy
  * the current tag expression.
  */
-class InlineTagSpecInterceptor(
+internal class InlineTagSpecInterceptor(
    private val listener: TestEngineListener,
    private val projectConfiguration: ProjectConfiguration,
 ) : SpecInterceptor {

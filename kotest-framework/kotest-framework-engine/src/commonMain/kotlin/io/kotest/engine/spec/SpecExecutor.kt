@@ -112,7 +112,7 @@ class SpecExecutor(
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextSpecInterceptor(context.configuration),
          InlineTagSpecInterceptor(listener, context.configuration),
-         BeforeSpecResultInterceptor(),
+         BeforeSpecResultInterceptor,
       ) + specInterceptorsForPlatform()
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {

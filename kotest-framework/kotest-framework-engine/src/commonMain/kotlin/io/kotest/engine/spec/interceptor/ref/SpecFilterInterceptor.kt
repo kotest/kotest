@@ -15,7 +15,7 @@ import io.kotest.mpp.bestName
 /**
  * Evaluates a spec against any registered [SpecFilter]s.
  */
-class SpecFilterInterceptor(
+internal class SpecFilterInterceptor(
    private val listener: TestEngineListener,
    private val registry: ExtensionRegistry
 ) : SpecRefInterceptor {

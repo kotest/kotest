@@ -527,16 +527,6 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
-public final class io/kotest/engine/spec/interceptor/BeforeSpecResultInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
-	public fun <init> ()V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/ConfigurationInContextSpecInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
-	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/interceptor/EngineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
 	public static final field Key Lio/kotest/engine/spec/interceptor/EngineContextElement$Key;
 	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
@@ -550,31 +540,6 @@ public final class io/kotest/engine/spec/interceptor/EngineContextElement : kotl
 }
 
 public final class io/kotest/engine/spec/interceptor/EngineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/engine/spec/interceptor/InlineTagSpecInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/PrepareSpecInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/SpecFilterInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ExtensionRegistry;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/SpecRefExtensionInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/TagsInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
