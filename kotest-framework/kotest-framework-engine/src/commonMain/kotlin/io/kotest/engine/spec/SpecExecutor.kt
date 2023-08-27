@@ -1,6 +1,5 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.DslDrivenSpec
@@ -20,8 +19,7 @@ import kotlin.reflect.KClass
  * First invokes the [SpecRef] against a [SpecRefInterceptorPipeline], then creates an instance
  * of the reference, then executes the spec instance via a [SpecExecutorDelegate].
  */
-@ExperimentalKotest
-class SpecExecutor(
+internal class SpecExecutor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) {
@@ -70,7 +68,6 @@ interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
-@ExperimentalKotest
 internal expect fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,

@@ -115,13 +115,8 @@ internal class InstancePerTestSpecRunner(
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
       return pipeline.execute(spec) {
-         runCatching {
-            SpecExtensions(context.configuration.registry).intercept(spec) {
-               val results = ConcurrentHashMap<TestCase, TestResult>()
-               run(spec, test, results)
-               results
-            } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
-         }
+         val results = ConcurrentHashMap<TestCase, TestResult>()
+         run(spec, test, results).map { results }
       }
    }
 
@@ -141,13 +136,14 @@ internal class InstancePerTestSpecRunner(
       }
    }
 
-   private suspend fun run(spec: Spec, test: TestCase, results: ConcurrentHashMap<TestCase, TestResult>) = runCatching {
-      log { "Created new spec instance $spec" }
-      // we need to find the same root test but in the newly created spec
-      val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
-      log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
-      run(root, test, results)
-   }
+   private suspend fun run(spec: Spec, test: TestCase, results: ConcurrentHashMap<TestCase, TestResult>): Result<Unit> =
+      runCatching {
+         log { "Created new spec instance $spec" }
+         // we need to find the same root test but in the newly created spec
+         val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
+         log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
+         run(root, test, results)
+      }
 
    private suspend fun run(test: TestCase, target: TestCase, results: ConcurrentHashMap<TestCase, TestResult>) {
       val isTarget = test.descriptor == target.descriptor

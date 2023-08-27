@@ -85,9 +85,7 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry).flatMap { spec ->
-         extensions.intercept(spec) {
-            locateAndRunRoot(spec, test)
-         } ?: Result.success(spec)
+         locateAndRunRoot(spec, test)
       }
    }
 

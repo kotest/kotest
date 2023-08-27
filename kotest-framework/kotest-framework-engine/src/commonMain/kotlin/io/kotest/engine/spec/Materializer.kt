@@ -13,7 +13,7 @@ import io.kotest.engine.test.names.DuplicateTestNameHandler
 /**
  * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
  */
-class Materializer(private val configuration: ProjectConfiguration) {
+internal class Materializer(private val configuration: ProjectConfiguration) {
 
    /**
     * Materializes [RootTest]s from a [Spec] and any [TestFactory]s into

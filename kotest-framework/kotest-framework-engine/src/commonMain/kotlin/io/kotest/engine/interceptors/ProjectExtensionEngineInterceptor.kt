@@ -1,6 +1,5 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
 import io.kotest.engine.EngineResult
@@ -12,7 +11,6 @@ import io.kotest.engine.EngineResult
  * the [EngineContext]. Any changes to the project context are reflected downstream in
  * the engine context passed to the execute function.
  */
-@KotestInternal
 internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
