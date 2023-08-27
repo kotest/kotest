@@ -269,7 +269,7 @@ public abstract class io/kotest/assertions/json/JsonNode {
 	public static final field Companion Lio/kotest/assertions/json/JsonNode$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public final fun type ()Ljava/lang/String;
-	public static final synthetic fun write$Self (Lio/kotest/assertions/json/JsonNode;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final fun write$Self (Lio/kotest/assertions/json/JsonNode;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class io/kotest/assertions/json/JsonNode$ArrayNode : io/kotest/assertions/json/JsonNode {
@@ -527,7 +527,7 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject : io/k
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public fun typeName ()Ljava/lang/String;
-	public static final synthetic fun write$Self (Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final fun write$Self (Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
