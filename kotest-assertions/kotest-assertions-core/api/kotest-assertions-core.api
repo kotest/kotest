@@ -407,26 +407,36 @@ public final class io/kotest/matchers/collections/DecreasingKt {
 	public static final fun monotonicallyDecreasingWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeMonotonicallyDecreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeMonotonicallyDecreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeMonotonicallyDecreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeMonotonicallyDecreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
 	public static final fun shouldBeMonotonicallyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldBeMonotonicallyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldBeMonotonicallyDecreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeMonotonicallyDecreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldBeStrictlyDecreasing (Ljava/lang/Iterable;)V
 	public static final fun shouldBeStrictlyDecreasing (Ljava/util/List;)V
-	public static final fun shouldBeStrictlyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)V
-	public static final fun shouldBeStrictlyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)V
+	public static final fun shouldBeStrictlyDecreasing (Lkotlin/sequences/Sequence;)V
+	public static final fun shouldBeStrictlyDecreasing ([Ljava/lang/Comparable;)V
+	public static final fun shouldBeStrictlyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldBeStrictlyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldBeStrictlyDecreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeStrictlyDecreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldNotBeMonotonicallyDecreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeMonotonicallyDecreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldNotBeMonotonicallyDecreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotBeMonotonicallyDecreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
 	public static final fun shouldNotBeMonotonicallyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeMonotonicallyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldNotBeMonotonicallyDecreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotBeMonotonicallyDecreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldNotBeStrictlyDecreasing (Ljava/lang/Iterable;)V
 	public static final fun shouldNotBeStrictlyDecreasing (Ljava/util/List;)V
-	public static final fun shouldNotBeStrictlyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)V
-	public static final fun shouldNotBeStrictlyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)V
-	public static final fun shouldNotBeStrictlyDecreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)V
+	public static final fun shouldNotBeStrictlyDecreasing (Lkotlin/sequences/Sequence;)V
+	public static final fun shouldNotBeStrictlyDecreasing ([Ljava/lang/Comparable;)V
+	public static final fun shouldNotBeStrictlyDecreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeStrictlyDecreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldNotBeStrictlyDecreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
+	public static final fun shouldNotBeStrictlyDecreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun strictlyDecreasing ()Lio/kotest/matchers/Matcher;
 	public static final fun strictlyDecreasingWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 }
@@ -461,28 +471,36 @@ public final class io/kotest/matchers/collections/IncreasingKt {
 	public static final fun monotonicallyIncreasingWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeMonotonicallyIncreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeMonotonicallyIncreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeMonotonicallyIncreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeMonotonicallyIncreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
 	public static final fun shouldBeMonotonicallyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldBeMonotonicallyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldBeMonotonicallyIncreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeMonotonicallyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldBeStrictlyIncreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeStrictlyIncreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeStrictlyIncreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldBeStrictlyIncreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
-	public static final fun shouldBeStrictlyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)V
-	public static final fun shouldBeStrictlyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)V
-	public static final fun shouldBeStrictlyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)V
+	public static final fun shouldBeStrictlyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldBeStrictlyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldBeStrictlyIncreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
+	public static final fun shouldBeStrictlyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldNotBeMonotonicallyIncreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeMonotonicallyIncreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldNotBeMonotonicallyIncreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotBeMonotonicallyIncreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
 	public static final fun shouldNotBeMonotonicallyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeMonotonicallyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldNotBeMonotonicallyIncreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotBeMonotonicallyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldNotBeStrictlyIncreasing (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeStrictlyIncreasing (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldNotBeStrictlyIncreasing (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotBeStrictlyIncreasing ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
-	public static final fun shouldNotBeStrictlyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)V
-	public static final fun shouldNotBeStrictlyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)V
-	public static final fun shouldNotBeStrictlyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)V
+	public static final fun shouldNotBeStrictlyIncreasingWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeStrictlyIncreasingWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
+	public static final fun shouldNotBeStrictlyIncreasingWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)Lkotlin/sequences/Sequence;
+	public static final fun shouldNotBeStrictlyIncreasingWith ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun strictlyIncreasing ()Lio/kotest/matchers/Matcher;
 	public static final fun strictlyIncreasingWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 }
