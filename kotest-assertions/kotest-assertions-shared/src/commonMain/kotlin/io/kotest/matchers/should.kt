@@ -47,9 +47,9 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
       when (result) {
          is ComparableMatcherResult -> errorCollector.collectOrThrow(
             failure(
-               Expected(Printed(result.expected())),
-               Actual(Printed(result.actual())),
-               result.failureMessage()
+               expected = Expected(Printed(result.expected())),
+               actual = Actual(Printed(result.actual())),
+               prependMessage = result.failureMessage() + "\n"
             )
          )
          else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
