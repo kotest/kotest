@@ -24,6 +24,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.specExecutionOrder?.let { configuration.specExecutionOrder = it }
    config.writeSpecFailureFile?.let { configuration.writeSpecFailureFile = it }
    config.projectWideFailFast?.let { configuration.projectWideFailFast = it }
+   config.allowOutOfOrderCallbacks?.let { configuration.allowOutOfOrderCallbacks = it }
 
    // concurrency
    config.parallelism?.let { configuration.parallelism = it }

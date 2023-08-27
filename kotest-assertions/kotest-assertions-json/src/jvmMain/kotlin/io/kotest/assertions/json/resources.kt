@@ -28,12 +28,8 @@ fun matchJsonResource(resource: String) = object : Matcher<String?> {
 
       return ComparableMatcherResult(
          actualJson == expectedJson,
-         {
-            "expected json to match, but they differed\n\n"
-         },
-         {
-            "expected not to match with: $expectedJson but match: $actualJson"
-         },
+         { "expected json to match, but they differed\n" },
+         { "expected not to match with: $expectedJson but match: $actualJson" },
          actualJson.toString(),
          expectedJson.toString(),
       )

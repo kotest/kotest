@@ -875,6 +875,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun extensions ()Ljava/util/List;
 	public fun filters ()Ljava/util/List;
+	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun getAutoScanEnabled ()Ljava/lang/Boolean;
 	public fun getAutoScanIgnoredClasses ()Ljava/util/List;
@@ -910,6 +911,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun listeners ()Ljava/util/List;
 	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
+	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
@@ -949,6 +951,7 @@ public final class io/kotest/core/config/DefaultExtensionRegistry : io/kotest/co
 
 public final class io/kotest/core/config/Defaults {
 	public static final field INSTANCE Lio/kotest/core/config/Defaults;
+	public static final field allowOutOfOrderCallbacks Z
 	public static final field blockingTest Z
 	public static final field concurrentTests I
 	public static final field coroutineDebugProbes Z
@@ -1051,6 +1054,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public static final field Sequential I
 	public fun <init> ()V
 	public final fun extensions ()Ljava/util/List;
+	public final fun getAllowOutOfOrderCallbacks ()Z
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public final fun getBlockingTest ()Z
 	public final fun getConcurrentSpecs ()Ljava/lang/Integer;
@@ -1088,6 +1092,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getTimeout ()Ljava/lang/Long;
 	public final fun getWriteSpecFailureFile ()Z
 	public final fun listeners ()Ljava/lang/Void;
+	public final fun setAllowOutOfOrderCallbacks (Z)V
 	public final fun setAssertionMode (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setBlockingTest (Z)V
 	public final fun setConcurrentSpecs (Ljava/lang/Integer;)V
