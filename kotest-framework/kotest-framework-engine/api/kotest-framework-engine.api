@@ -463,6 +463,10 @@ public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spe
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
+public final class io/kotest/engine/spec/SpecExecutorKt {
+	public static final fun testSpecExecutor (Lio/kotest/engine/concurrency/NoopCoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
@@ -715,6 +719,11 @@ public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : 
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/test/CreateResultKt {
+	public static final fun createTestResult-VtjQ1oo (JLjava/lang/Throwable;)Lio/kotest/core/test/TestResult;
+	public static final fun toTestResult-HG0u8IE (Ljava/lang/Throwable;J)Lio/kotest/core/test/TestResult;
 }
 
 public final class io/kotest/engine/test/NoopTestCaseExecutionListener : io/kotest/engine/test/AbstractTestCaseExecutionListener {

@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.DslDrivenSpec
@@ -7,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
 import io.kotest.mpp.Logger
@@ -76,3 +78,15 @@ internal expect fun createSpecExecutorDelegate(
    context: EngineContext,
 ): SpecExecutorDelegate
 
+/**
+ * Used to test a [SpecExecutor] from another module.
+ * Should not be used by user's code and is subject to change.
+ */
+@KotestInternal
+suspend fun testSpecExecutor(
+   dispatcherFactory: NoopCoroutineDispatcherFactory,
+   context: EngineContext,
+   ref: SpecRef.Reference
+) {
+   SpecExecutor(dispatcherFactory, context).execute(ref)
+}
