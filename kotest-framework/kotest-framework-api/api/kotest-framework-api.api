@@ -875,6 +875,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun extensions ()Ljava/util/List;
 	public fun filters ()Ljava/util/List;
+	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun getAutoScanEnabled ()Ljava/lang/Boolean;
 	public fun getAutoScanIgnoredClasses ()Ljava/util/List;
@@ -908,6 +909,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun listeners ()Ljava/util/List;
+	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
