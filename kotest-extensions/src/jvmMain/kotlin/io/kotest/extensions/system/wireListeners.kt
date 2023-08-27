@@ -13,9 +13,11 @@ import java.io.PrintStream
 inline fun captureStandardOut(fn: () -> Unit): String {
    val previous = System.out
    val buffer = ByteArrayOutputStream()
+   previous.flush()
    System.setOut(PrintStream(buffer))
    try {
       fn()
+      System.out.flush()
       return String(buffer.toByteArray())
    } finally {
       System.setOut(previous)
@@ -28,9 +30,11 @@ inline fun captureStandardOut(fn: () -> Unit): String {
 inline fun captureStandardErr(fn: () -> Unit): String {
    val previous = System.err
    val buffer = ByteArrayOutputStream()
+   previous.flush()
    System.setErr(PrintStream(buffer))
    try {
       fn()
+      System.err.flush()
       return String(buffer.toByteArray())
    } finally {
       System.setErr(previous)
@@ -56,6 +60,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.out
+      previous.flush()
       if (tee) {
          System.setOut(PrintStream(TeeOutputStream(previous, buffer)))
       } else {
@@ -84,6 +89,7 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.err
+      previous.flush()
       if (tee) {
          System.setErr(PrintStream(TeeOutputStream(previous, buffer)))
       } else {
