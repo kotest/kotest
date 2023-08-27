@@ -76,6 +76,11 @@ fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyIncreasing(): Array<T> 
    return this
 }
 
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeMonotonicallyIncreasing(): Sequence<T> {
+   asIterable().shouldNotBeMonotonicallyIncreasing()
+   return this
+}
+
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing(): List<T> {
    this shouldNot beMonotonicallyIncreasing()
    return this

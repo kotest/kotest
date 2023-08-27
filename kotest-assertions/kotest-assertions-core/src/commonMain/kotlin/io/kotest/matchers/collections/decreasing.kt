@@ -89,8 +89,13 @@ infix fun <T> Sequence<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Com
 
 fun <T : Comparable<T>> Iterable<T>.shouldBeStrictlyDecreasing() = toList().shouldBeStrictlyDecreasing()
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyDecreasing() = this should beStrictlyDecreasing()
+fun <T : Comparable<T>> Array<T>.shouldBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
+fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
+
 fun <T : Comparable<T>> Iterable<T>.shouldNotBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyDecreasing() = this shouldNot beStrictlyDecreasing()
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeStrictlyDecreasing() = this.asIterable().shouldNotBeStrictlyDecreasing()
+fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
 
 infix fun <T> List<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): List<T> {
    this should beStrictlyDecreasingWith(comparator)
