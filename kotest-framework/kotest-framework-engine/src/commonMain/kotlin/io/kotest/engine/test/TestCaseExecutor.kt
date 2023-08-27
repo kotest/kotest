@@ -43,8 +43,7 @@ import kotlin.time.Duration
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
-@OptIn(ExperimentalKotest::class)
-class TestCaseExecutor(
+internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
    private val context: EngineContext,
@@ -52,7 +51,6 @@ class TestCaseExecutor(
 
    private val logger = Logger(TestCaseExecutor::class)
 
-   @OptIn(ExperimentalStdlibApi::class)
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
 
