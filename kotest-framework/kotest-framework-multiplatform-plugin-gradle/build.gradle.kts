@@ -104,7 +104,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
+   options.release.set(11)
 }
 
 val updateKotestPluginConstants by tasks.registering(Sync::class) {
