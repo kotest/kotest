@@ -311,8 +311,6 @@ public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun matchInOrder (Ljava/util/List;Z)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrderSubset ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun singleElement (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun singleElement (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun sorted ()Lio/kotest/matchers/Matcher;
 	public static final fun sortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
@@ -536,12 +534,6 @@ public final class io/kotest/matchers/collections/MatchersKt {
 	public static final fun shouldHaveElementAt (Ljava/lang/Iterable;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt (Ljava/util/List;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt ([Ljava/lang/Object;ILjava/lang/Object;)V
-	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
-	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
-	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
-	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
-	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
-	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach (Ljava/util/List;Ljava/util/List;)V
@@ -574,9 +566,6 @@ public final class io/kotest/matchers/collections/MatchersKt {
 	public static final fun shouldNotHaveElementAt (Ljava/lang/Iterable;ILjava/lang/Object;)V
 	public static final fun shouldNotHaveElementAt (Ljava/util/List;ILjava/lang/Object;)V
 	public static final fun shouldNotHaveElementAt ([Ljava/lang/Object;ILjava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotMatchEach (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldNotMatchEach (Ljava/lang/Iterable;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldNotMatchEach (Ljava/util/List;Ljava/util/List;)V
@@ -627,6 +616,20 @@ public final class io/kotest/matchers/collections/OneofKt {
 	public static final fun shouldBeOneOf (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldNotBeOneOf (Ljava/lang/Object;Ljava/util/Collection;)Ljava/lang/Object;
 	public static final fun shouldNotBeOneOf (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class io/kotest/matchers/collections/SingleElementKt {
+	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
+	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
+	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
+	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldNotHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)V
+	public static final fun shouldNotHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
+	public static final fun shouldNotHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)V
+	public static final fun singleElement (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun singleElement (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/collections/SingletonKt {
