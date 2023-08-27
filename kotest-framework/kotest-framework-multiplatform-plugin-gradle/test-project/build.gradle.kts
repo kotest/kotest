@@ -17,7 +17,7 @@ val kotestVersion: String by project
 val useNewNativeMemoryModel: String by project
 
 kotlin {
-   jvmToolchain(17)
+   jvmToolchain(11)
 
    jvm()
 
