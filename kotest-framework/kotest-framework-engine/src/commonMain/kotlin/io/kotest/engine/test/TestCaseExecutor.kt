@@ -2,7 +2,6 @@
 
 package io.kotest.engine.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.Platform
 import io.kotest.common.platform
@@ -13,7 +12,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
-import io.kotest.engine.test.interceptors.BeforeSpecCallbackInterceptor
+import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
@@ -66,7 +65,7 @@ internal class TestCaseExecutor(
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestCaseExtensionInterceptor(context.configuration.registry),
          TestEnabledCheckInterceptor(context.configuration),
-         BeforeSpecCallbackInterceptor(context.configuration.registry, context),
+         BeforeSpecListenerInterceptor(context.configuration.registry, context),
          LifecycleInterceptor(listener, timeMark, context.configuration.registry),
          AssertionModeInterceptor,
          SoftAssertInterceptor(),

@@ -8,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.AfterSpecCallbackInterceptor
+import io.kotest.engine.spec.interceptor.instance.BeforeSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
@@ -57,6 +58,7 @@ internal class SpecInterceptorPipeline(
          SpecExtensionInterceptor(configuration.registry),
          ConfigurationInContextSpecInterceptor(configuration),
          InlineTagSpecInterceptor(listener, configuration),
+         BeforeSpecListenerSpecInterceptor(context),
          AfterSpecCallbackInterceptor(configuration.registry),
       ) + specInterceptorsForPlatform()
    }

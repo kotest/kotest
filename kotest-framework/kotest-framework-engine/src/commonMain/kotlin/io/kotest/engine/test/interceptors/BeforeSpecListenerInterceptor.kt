@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.seconds
  * there is at least one enabled test. And since tests can be disabled or enabled programatically,
  * we must defer execution until after the test configurations have executed.
  */
-internal class BeforeSpecCallbackInterceptor(
+internal class BeforeSpecListenerInterceptor(
    private val registry: ExtensionRegistry,
    private val context: EngineContext,
 ) : TestExecutionInterceptor {
@@ -28,7 +28,7 @@ internal class BeforeSpecCallbackInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
       val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
       return when {
