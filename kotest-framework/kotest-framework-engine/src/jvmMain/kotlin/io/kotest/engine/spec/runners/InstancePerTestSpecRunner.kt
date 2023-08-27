@@ -128,7 +128,7 @@ internal class InstancePerTestSpecRunner(
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
          Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
       } else {
-         createInstance(test.spec::class).flatMap { executeInGivenSpec(test, it) }
+         executeInCleanSpec(test)
       }
    }
 
