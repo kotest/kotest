@@ -451,11 +451,6 @@ public final class io/kotest/engine/spec/InstantiateSpecKt {
 	public static final fun createAndInitializeSpec (Lkotlin/reflect/KClass;Lio/kotest/core/config/ExtensionRegistry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/spec/JvmSpecExecutorDelegate : io/kotest/engine/spec/SpecExecutorDelegate {
-	public fun <init> (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
-	public fun execute (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/LexicographicSpecSorter : io/kotest/engine/spec/SpecSorter {
 	public static final field INSTANCE Lio/kotest/engine/spec/LexicographicSpecSorter;
 	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
@@ -720,12 +715,6 @@ public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : 
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/test/CreateResultKt {
-	public static final fun createTestResult-VtjQ1oo (JLjava/lang/Throwable;)Lio/kotest/core/test/TestResult;
-	public static final fun isFrameworkAssertionType (Ljava/lang/Throwable;)Z
-	public static final fun toTestResult-HG0u8IE (Ljava/lang/Throwable;J)Lio/kotest/core/test/TestResult;
 }
 
 public final class io/kotest/engine/test/NoopTestCaseExecutionListener : io/kotest/engine/test/AbstractTestCaseExecutionListener {
