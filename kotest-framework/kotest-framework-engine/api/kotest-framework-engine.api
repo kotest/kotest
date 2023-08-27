@@ -527,6 +527,11 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
+public final class io/kotest/engine/spec/interceptor/BeforeSpecResultInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
+	public fun <init> ()V
+	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/engine/spec/interceptor/ConfigurationInContextSpecInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
 	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
 	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
