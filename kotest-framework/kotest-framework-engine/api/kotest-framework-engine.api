@@ -828,13 +828,6 @@ public final class io/kotest/engine/test/scopes/DuplicateNameHandlingTestScope :
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/test/scopes/InOrderTestScope : io/kotest/core/test/TestScope {
-	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
-	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getTestCase ()Lio/kotest/core/test/TestCase;
-	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/test/scopes/NoopTestScope : io/kotest/core/test/TestScope {
 	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;

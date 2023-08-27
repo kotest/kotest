@@ -17,8 +17,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [TestScope] that executes nested tests as soon as they are discovered.
  */
-@ExperimentalKotest
-class InOrderTestScope(
+internal class InOrderTestScope(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext,
    private val mode: DuplicateTestNameMode,
