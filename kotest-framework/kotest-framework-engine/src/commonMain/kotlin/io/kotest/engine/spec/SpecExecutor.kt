@@ -64,7 +64,7 @@ internal class SpecExecutor(
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
 }
 
-interface SpecExecutorDelegate {
+internal interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 

@@ -1,6 +1,5 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
@@ -23,7 +22,6 @@ import kotlin.reflect.KClass
  * These work similarly to gradle filters in --tests described at:
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
  */
-@OptIn(KotestInternal::class)
 internal class SystemPropertySpecFilterInterceptor(
    private val listener: TestEngineListener,
    registry: ExtensionRegistry

@@ -21,7 +21,7 @@ import io.kotest.mpp.bestName
 /**
  * Executes [SpecInterceptor]s against a given spec instance.
  */
-class SpecInterceptorPipeline(
+internal class SpecInterceptorPipeline(
    private val context: EngineContext,
 ) {
 

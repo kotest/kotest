@@ -23,7 +23,7 @@ import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 
-class SpecRefInterceptorPipeline(
+internal class SpecRefInterceptorPipeline(
    private val context: EngineContext,
 ) {
 

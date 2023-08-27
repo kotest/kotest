@@ -32,9 +32,9 @@ internal class BeforeSpecStateInterceptor(private val context: EngineContext) : 
    }
 }
 
-fun KClass<*>.beforeSpecStateKey() = "before_spec_" + this::class.bestName()
+internal fun KClass<*>.beforeSpecStateKey() = "before_spec_" + this::class.bestName()
 
-data class BeforeSpecState(
+internal data class BeforeSpecState(
    val errors: MutableList<Throwable>,
    val success: MutableSet<Spec>,
    val failed: MutableSet<Spec>,

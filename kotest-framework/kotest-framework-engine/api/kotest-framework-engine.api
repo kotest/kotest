@@ -468,14 +468,6 @@ public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spe
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
-public final class io/kotest/engine/spec/ResolveConfigKt {
-	public static final fun toMillis (J)J
-}
-
-public abstract interface class io/kotest/engine/spec/SpecExecutorDelegate {
-	public abstract fun execute (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
@@ -509,16 +501,6 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
-public final class io/kotest/engine/spec/interceptor/SpecInterceptorPipeline {
-	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
-	public final fun execute-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/SpecRefInterceptorPipeline {
-	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
-	public final fun execute-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/interceptor/instance/AfterSpecCallbackInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
 	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
 	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -537,25 +519,6 @@ public final class io/kotest/engine/spec/interceptor/instance/EngineContextEleme
 }
 
 public final class io/kotest/engine/spec/interceptor/instance/EngineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/BeforeSpecState {
-	public fun <init> (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)V
-	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Ljava/util/Set;
-	public final fun component3 ()Ljava/util/Set;
-	public final fun copy (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;
-	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;Ljava/util/List;Ljava/util/Set;Ljava/util/Set;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getErrors ()Ljava/util/List;
-	public final fun getFailed ()Ljava/util/Set;
-	public final fun getSuccess ()Ljava/util/Set;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/spec/interceptor/ref/BeforeSpecStateInterceptorKt {
-	public static final fun beforeSpecStateKey (Lkotlin/reflect/KClass;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
