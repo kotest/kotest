@@ -42,8 +42,6 @@ class IncreasingDecreasingTest : WordSpec() {
             listOf(6, 5).shouldNotBeMonotonicallyIncreasing()
          }
          "test that a sequence is monotonically increasing" {
-            sequenceOf(1, 2, 2, 3) shouldBe monotonicallyIncreasing<Int>()
-            sequenceOf(6, 5) shouldNotBe monotonicallyIncreasing<Int>()
             sequenceOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
             sequenceOf(6, 5).shouldNotBeMonotonicallyIncreasing()
          }
@@ -56,8 +54,6 @@ class IncreasingDecreasingTest : WordSpec() {
          }
          "test that a sequence is monotonically increasing according to comparator" {
             val comparator = Comparator(desc)
-            sequenceOf(3, 2, 2, 1) shouldBe monotonicallyIncreasingWith(comparator)
-            sequenceOf(5, 6) shouldNotBe monotonicallyIncreasingWith(comparator)
             sequenceOf(3, 2, 2, 1).shouldBeMonotonicallyIncreasingWith(comparator)
             sequenceOf(5, 6).shouldNotBeMonotonicallyIncreasingWith(comparator)
          }
@@ -70,9 +66,6 @@ class IncreasingDecreasingTest : WordSpec() {
             listOf(6, 5).shouldNotBeStrictlyIncreasing()
          }
          "test that a sequence is strictly increasing" {
-            sequenceOf(1, 2, 3) shouldBe strictlyIncreasing<Int>()
-            sequenceOf(1, 2, 2, 3) shouldNotBe strictlyIncreasing<Int>()
-            sequenceOf(6, 5) shouldNotBe strictlyIncreasing<Int>()
             sequenceOf(1, 2, 3).shouldBeStrictlyIncreasing()
             sequenceOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasing()
             sequenceOf(6, 5).shouldNotBeStrictlyIncreasing()
@@ -88,9 +81,6 @@ class IncreasingDecreasingTest : WordSpec() {
          }
          "test that a sequence is strictly increasing according to comparator" {
             val comparator = Comparator(asc)
-            sequenceOf(1, 2, 3) shouldBe strictlyIncreasingWith(comparator)
-            sequenceOf(1, 2, 2, 3) shouldNotBe strictlyIncreasingWith(comparator)
-            sequenceOf(6, 5) shouldNotBe strictlyIncreasingWith(comparator)
             sequenceOf(1, 2, 3).shouldBeStrictlyIncreasingWith(comparator)
             sequenceOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyIncreasingWith(comparator)
@@ -105,8 +95,6 @@ class IncreasingDecreasingTest : WordSpec() {
             listOf(5, 6).shouldNotBeMonotonicallyDecreasing()
          }
          "test that a sequence is monotonically decreasing" {
-            sequenceOf(3, 2, 2, -4) shouldBe monotonicallyDecreasing<Int>()
-            sequenceOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
             sequenceOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
             sequenceOf(5, 6).shouldNotBeMonotonicallyDecreasing()
          }
@@ -119,8 +107,6 @@ class IncreasingDecreasingTest : WordSpec() {
          }
          "test that a sequence is monotonically decreasing according to comparator" {
             val comparator = Comparator(desc)
-            sequenceOf(-4, 2, 2, 3) shouldBe monotonicallyDecreasingWith(comparator)
-            sequenceOf(6, 5) shouldNotBe monotonicallyDecreasingWith(comparator)
             sequenceOf(-4, 2, 2, 3).shouldBeMonotonicallyDecreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeMonotonicallyDecreasingWith(comparator)
          }
@@ -133,9 +119,6 @@ class IncreasingDecreasingTest : WordSpec() {
             listOf(5, 6).shouldNotBeStrictlyDecreasing()
          }
          "test that a sequence is strictly decreasing" {
-            sequenceOf(3, 2, -4) shouldBe strictlyDecreasing<Int>()
-            sequenceOf(3, 2, 2, -4) shouldNotBe strictlyDecreasing<Int>()
-            sequenceOf(5, 6) shouldNotBe strictlyDecreasing<Int>()
             sequenceOf(3, 2, -4).shouldBeStrictlyDecreasing()
             sequenceOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
             sequenceOf(5, 6).shouldNotBeStrictlyDecreasing()
@@ -151,9 +134,6 @@ class IncreasingDecreasingTest : WordSpec() {
          }
          "test that a sequence is strictly decreasing according to comparator" {
             val comparator = Comparator(desc)
-            sequenceOf(-4, 2, 3) shouldBe strictlyDecreasingWith(comparator)
-            sequenceOf(-4, 2, 2, 3) shouldNotBe strictlyDecreasingWith(comparator)
-            sequenceOf(6, 5) shouldNotBe strictlyDecreasingWith(comparator)
             sequenceOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
             sequenceOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
