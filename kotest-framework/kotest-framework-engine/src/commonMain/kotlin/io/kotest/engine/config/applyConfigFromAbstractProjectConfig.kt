@@ -37,6 +37,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.invocationTimeout?.let { configuration.invocationTimeout = it }
    config.projectTimeout?.let { configuration.projectTimeout = it }
 
+   // discovery
+   config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
+
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
    config.testNameRemoveWhitespace?.let { configuration.removeTestNameWhitespace = it }

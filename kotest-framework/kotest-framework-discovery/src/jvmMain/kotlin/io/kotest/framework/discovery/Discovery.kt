@@ -4,6 +4,7 @@ package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
@@ -12,7 +13,6 @@ import io.kotest.mpp.syspropOrEnv
 import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-//import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * Contains the results of a discovery request scan.
@@ -36,7 +36,10 @@ data class DiscoveryResult(
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
  * optionally filter the returned classes.
  */
-class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = emptyList()) {
+class Discovery(
+   private val discoveryExtensions: List<DiscoveryExtension> = emptyList(),
+   private val configuration: ProjectConfiguration,
+) {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
@@ -188,26 +191,30 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
 
    private fun classgraph(): ClassGraph {
       @Suppress("DEPRECATION")
-      return ClassGraph()
+      val cg = ClassGraph()
          .enableClassInfo()
          .enableExternalClasses()
          .ignoreClassVisibility()
-         .disableNestedJarScanning()
-         // do not change this to use reject as it will break clients using older versions of classgraph
-         .blacklistPackages(
-            "java.*",
-            "javax.*",
-            "sun.*",
-            "com.sun.*",
-            "kotlin.*",
-            "kotlinx.*",
-            "androidx.*",
-            "org.jetbrains.kotlin.*",
-            "org.junit.*"
-         ).apply {
-            if (syspropOrEnv(KotestEngineProperties.disableJarDiscovery) == "true") {
-               disableJarScanning()
-            }
+
+      if (configuration.disableTestNestedJarScanning) {
+         cg.disableNestedJarScanning()
+      }
+
+      // do not change this to use reject as it will break clients using older versions of classgraph
+      return cg.blacklistPackages(
+         "java.*",
+         "javax.*",
+         "sun.*",
+         "com.sun.*",
+         "kotlin.*",
+         "kotlinx.*",
+         "androidx.*",
+         "org.jetbrains.kotlin.*",
+         "org.junit.*"
+      ).apply {
+         if (syspropOrEnv(KotestEngineProperties.disableJarDiscovery) == "true") {
+            disableJarScanning()
          }
+      }
    }
 }

@@ -11,6 +11,8 @@ import io.kotest.core.test.config.TestCaseConfig
 
 object Defaults {
 
+   const val disableTestNestedJarScanning: Boolean = true
+
    val assertionMode: AssertionMode = AssertionMode.None
    val testCaseConfig: TestCaseConfig = TestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
