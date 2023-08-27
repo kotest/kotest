@@ -131,7 +131,7 @@ interface MatcherResult {
          passed: Boolean,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String
-      ) = object : MatcherResult {
+      ): MatcherResult = object : MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
@@ -152,7 +152,7 @@ interface ComparableMatcherResult : MatcherResult {
          negatedFailureMessageFn: () -> String,
          actual: String,
          expected: String,
-      ) = object : ComparableMatcherResult {
+      ): ComparableMatcherResult = object : ComparableMatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
