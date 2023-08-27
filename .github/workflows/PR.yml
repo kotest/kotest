@@ -26,7 +26,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
-               java-version: '17'
+               java-version: '11'
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -55,7 +55,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
-               java-version: '17'
+               java-version: '11'
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -97,7 +97,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               java-version: '17'
+               java-version: '11'
                distribution: 'temurin'
 
          -  uses: gradle/gradle-build-action@v2
@@ -135,7 +135,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               java-version: '17'
+               java-version: '11'
                distribution: 'temurin'
 
          -  uses: gradle/gradle-build-action@v2
