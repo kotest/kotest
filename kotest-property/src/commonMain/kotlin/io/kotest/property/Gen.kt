@@ -24,11 +24,14 @@ import io.kotest.property.arbitrary.of
 sealed class Gen<out A> {
 
    /**
-    * Returns values from this generator as a lazily generated sequence.
+    * Returns values from this generator as a lazily generated sequence of [Sample]s.
+    * A [Sample] contains the value, along with an [RTree] of shrinks (if available).
     *
-    * If this gen is an [Arb], then each value will either be a sample or an edge case. The bias
-    * towards edge cases or samples is given by the value of [EdgeConfig.edgecasesGenerationProbability]
-    * inside the [edgeConfig] parameter.
+    * If this gen is an [Arb], then each value will either be a random value or a random edgecase.
+    * Note: Arbs are free to not define any edge cases.
+    *
+    * The bias towards edge cases or random values is given by the value of
+    * [EdgeConfig.edgecasesGenerationProbability] inside the [edgeConfig] parameter.
     *
     * If this gen is an [Exhaustive], then the returned values will iterate in turn, repeating
     * once exhausted as required.
@@ -42,12 +45,13 @@ sealed class Gen<out A> {
          is Arb -> {
             val samples = this.samples(rs).iterator()
             generateSequence {
-               val isEdgeCase = rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability
-               if (isEdgeCase) {
-                  this.edgecase(rs)?.asSample() ?: samples.next()
-               } else samples.next()
+               when (rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability) {
+                  true -> this.edgecase1(rs) ?: this.edgecase(rs)?.asSample() ?: samples.next()
+                  false -> samples.next()
+               }
             }
          }
+
          is Exhaustive -> {
             check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
             generateSequence { this.values.map { Sample(it) } }.flatten()
@@ -100,10 +104,18 @@ abstract class Arb<out A> : Gen<A>() {
     *
     * Can return null if this arb does not provide edge cases.
     */
+   @Deprecated("Implement edgecases")
    abstract fun edgecase(rs: RandomSource): A?
 
    /**
-    * Returns a single random [Sample] from this [Arb] using the supplied random source.
+    * Returns a single edge case from this [Arb] or null if no edge cases are defined.
+    * If this arb supports multiple edge cases, then one should be chosen randomly each
+    * time this function is invoked using the supplied [RandomSource].
+    */
+   open fun edgecase1(rs: RandomSource): Sample<A>? = null
+
+   /**
+    * Returns a single random value from this [Arb] using the supplied [RandomSource].
     */
    abstract fun sample(rs: RandomSource): Sample<A>
 
@@ -164,7 +176,10 @@ fun <A> A.asSample(): Sample<A> = Sample(this)
 /**
  * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].
  */
-fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
+fun <A> sampleOf(a: A, shrinker: Shrinker<A>): Sample<A> = Sample(a, shrinker.rtree(a))
+
+fun <A> optionalSampleOf(a: A?, shrinker: Shrinker<A>?): Sample<A>? =
+   if (a == null) null else if (shrinker == null) Sample(a) else Sample(a, shrinker.rtree(a))
 
 data class EdgeConfig(
    val edgecasesGenerationProbability: Double = PropertyTesting.defaultEdgecasesGenerationProbability

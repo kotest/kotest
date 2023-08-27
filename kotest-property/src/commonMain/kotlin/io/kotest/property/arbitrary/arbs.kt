@@ -32,6 +32,7 @@ fun <A> Arb.Companion.lazy(f: () -> Arb<A>): Arb<A> {
 
    return object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = arb.edgecase(rs)
+      override fun edgecase1(rs: RandomSource): Sample<A>? = arb.edgecase1(rs)
       override fun sample(rs: RandomSource): Sample<A> = arb.sample(rs)
    }
 }

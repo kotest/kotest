@@ -50,7 +50,7 @@ fun <A> Shrinker<A>.rtree(value: () -> A): RTree<A> =
       }
    )
 
-data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
+data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList() })
 
 fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    val b = { f(value()) }
@@ -68,6 +68,5 @@ fun <A> RTree<A>.filter(predicate: (A) -> Boolean): RTree<A>? {
 
 fun <A> RTree<A>.isEmpty() = this.children.value.isEmpty()
 
-fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> = object : Shrinker<B> {
-   override fun shrink(value: B): List<B> = this@bimap.shrink(f(value)).map(g)
-}
+fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> =
+   Shrinker { value -> this@bimap.shrink(f(value)).map(g) }

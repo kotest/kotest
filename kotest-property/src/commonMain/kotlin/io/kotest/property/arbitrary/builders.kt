@@ -5,6 +5,7 @@ import io.kotest.property.Classifier
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
+import io.kotest.property.optionalSampleOf
 import io.kotest.property.sampleOf
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -43,21 +44,18 @@ fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderContext
 fun <A> arbitrary(
    shrinker: Shrinker<A>,
    classifier: Classifier<A>,
-   fn: suspend ArbitraryBuilderContext.(RandomSource) -> A
+   sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> =
-   arbitraryBuilder(shrinker, classifier) { rs -> fn(rs) }
+   arbitraryBuilder(shrinker, classifier) { rs -> sampleFn(rs) }
 
 /**
  * Creates a new [Arb] that performs no shrinking, uses the given edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
-   object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
-      override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
-
-      private val delegate = arbitraryBuilder { rs -> fn(rs) }
-   }
+fun <A> arbitrary(
+   edgecases: List<A>,
+   sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
+): Arb<A> = arbitrary({ edgecases.random(it.random) }, null, sampleFn)
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], uses the given edge cases and
@@ -66,13 +64,8 @@ fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderContext.(Rando
 fun <A> arbitrary(
    edgecases: List<A>,
    shrinker: Shrinker<A>,
-   fn: suspend ArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> = object : Arb<A>() {
-   override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
-   override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
-
-   private val delegate = arbitraryBuilder(shrinker) { rs -> fn(rs) }
-}
+   sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
+): Arb<A> = arbitrary({ edgecases.random(it.random) }, shrinker, sampleFn)
 
 /**
  * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
@@ -81,13 +74,7 @@ fun <A> arbitrary(
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
    sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> =
-   object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
-      override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
-
-      private val delegate: Arb<A> = arbitraryBuilder { rs -> sampleFn(rs) }
-   }
+): Arb<A> = arbitrary(edgecaseFn, null, sampleFn)
 
 /**
  * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
@@ -95,15 +82,15 @@ fun <A> arbitrary(
  */
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
-   shrinker: Shrinker<A>,
+   shrinker: Shrinker<A>?,
    sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> =
-   object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
-      override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+): Arb<A> = object : Arb<A>() {
+   override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
+   override fun edgecase1(rs: RandomSource): Sample<A>? = optionalSampleOf(edgecaseFn(rs), shrinker)
+   override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
 
-      private val delegate: Arb<A> = arbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
-   }
+   private val delegate: Arb<A> = arbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
+}
 
 /**
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
@@ -148,10 +135,8 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    edgecases: List<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> = suspendArbitraryBuilder(null, null,
-   if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random) }
-) { rs -> fn(rs) }
+   crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
+): Arb<A> = generateArbitrary({ edgecases.random(it.random) }, null, sampleFn)
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], uses the given edge cases and
@@ -160,12 +145,8 @@ suspend inline fun <A> generateArbitrary(
 suspend inline fun <A> generateArbitrary(
    edgecases: List<A>,
    shrinker: Shrinker<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> = suspendArbitraryBuilder(
-   shrinker,
-   null,
-   if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random) }
-) { rs -> fn(rs) }
+   crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
+): Arb<A> = generateArbitrary({ edgecases.random(it.random) }, shrinker, sampleFn)
 
 /**
  * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
@@ -174,14 +155,7 @@ suspend inline fun <A> generateArbitrary(
 suspend inline fun <A> generateArbitrary(
    crossinline edgecaseFn: (RandomSource) -> A?,
    crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
-): Arb<A> {
-   val delegate: Arb<A> = suspendArbitraryBuilder { rs -> sampleFn(rs) }
-
-   return object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
-      override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
-   }
-}
+): Arb<A> = generateArbitrary(edgecaseFn, null, sampleFn)
 
 /**
  * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
@@ -189,13 +163,14 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    crossinline edgecaseFn: (RandomSource) -> A?,
-   shrinker: Shrinker<A>,
+   shrinker: Shrinker<A>?,
    crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> {
    val delegate: Arb<A> = suspendArbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
 
    return object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
+      override fun edgecase1(rs: RandomSource): Sample<A>? = optionalSampleOf(edgecaseFn(rs), shrinker)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
    }
 }
@@ -213,6 +188,7 @@ fun <A> arbitraryBuilder(
    builderFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
+   override fun edgecase1(rs: RandomSource): Sample<A>? = optionalSampleOf(edgecaseFn?.invoke(rs), shrinker)
    override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
    override val classifier: Classifier<out A>? = classifier
 
@@ -262,7 +238,9 @@ suspend fun <A> suspendArbitraryBuilder(
    fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendCoroutineUninterceptedOrReturn { cont ->
    val arb = object : Arb<A>() {
+
       override fun edgecase(rs: RandomSource): A? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
+      override fun edgecase1(rs: RandomSource): Sample<A>? = optionalSampleOf(edgecaseFn?.invoke(rs), shrinker)
       override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
       override val classifier: Classifier<out A>? = classifier
 
@@ -325,6 +303,7 @@ class ArbitraryBuilder<A>(
    fun build() = object : Arb<A>() {
       override val classifier: Classifier<out A>? = this@ArbitraryBuilder.classifier
       override fun edgecase(rs: RandomSource): A? = edgecaseFn?.invoke(rs)
+      override fun edgecase1(rs: RandomSource): Sample<A>? = optionalSampleOf(edgecaseFn?.invoke(rs), shrinker)
       override fun sample(rs: RandomSource): Sample<A> {
          val sample = sampleFn(rs)
          return if (shrinker == null) Sample(sample) else sampleOf(sample, shrinker)
