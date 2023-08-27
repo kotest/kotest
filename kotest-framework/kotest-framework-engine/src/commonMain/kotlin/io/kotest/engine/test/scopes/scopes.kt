@@ -5,7 +5,6 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.TestEngineListener
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -32,7 +31,6 @@ fun createSingleInstanceTestScope(
    testCase: TestCase,
    coroutineContext: CoroutineContext,
    mode: DuplicateTestNameMode,
-   listener: TestEngineListener,
    dispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): TestScope {
@@ -42,7 +40,6 @@ fun createSingleInstanceTestScope(
          testCase,
          coroutineContext,
          mode,
-         listener,
          dispatcherFactory,
          context,
       )

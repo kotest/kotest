@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
@@ -13,6 +13,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 

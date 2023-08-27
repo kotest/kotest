@@ -6,21 +6,18 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scopes.InOrderTestScope
-import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
-   listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
-): SpecExecutorDelegate =
-   DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
+): SpecExecutorDelegate = DefaultSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
 
 /**
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
@@ -28,7 +25,6 @@ internal actual fun createSpecExecutorDelegate(
  */
 @ExperimentalKotest
 internal class DefaultSpecExecutorDelegate(
-   private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext
 ) : SpecExecutorDelegate {
@@ -46,13 +42,12 @@ internal class DefaultSpecExecutorDelegate(
                   testCase,
                   coroutineContext,
                   context.configuration.duplicateTestNameMode,
-                  listener,
                   coroutineDispatcherFactory,
                   context
                )
             )
             TestCaseExecutor(
-               TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
+               TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
                coroutineDispatcherFactory,
                context,
             ).execute(testCase, scope)

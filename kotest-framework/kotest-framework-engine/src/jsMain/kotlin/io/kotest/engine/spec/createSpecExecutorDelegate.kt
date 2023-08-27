@@ -10,11 +10,10 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.describe
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.it
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.engine.xit
 import io.kotest.mpp.bestName
@@ -24,7 +23,6 @@ import kotlin.coroutines.coroutineContext
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
-   listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(context)

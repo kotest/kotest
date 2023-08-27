@@ -458,7 +458,7 @@ public final class io/kotest/engine/spec/InstantiateSpecKt {
 }
 
 public final class io/kotest/engine/spec/JvmSpecExecutorDelegate : io/kotest/engine/spec/SpecExecutorDelegate {
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
+	public fun <init> (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
 	public fun execute (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -527,19 +527,53 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
-public final class io/kotest/engine/spec/interceptor/EngineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
-	public static final field Key Lio/kotest/engine/spec/interceptor/EngineContextElement$Key;
+public final class io/kotest/engine/spec/interceptor/SpecInterceptorPipeline {
+	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
+	public final fun execute-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/spec/interceptor/SpecRefInterceptorPipeline {
+	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
+	public final fun execute-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/spec/interceptor/instance/AfterSpecCallbackInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
+	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
+	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/spec/interceptor/instance/EngineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
+	public static final field Key Lio/kotest/engine/spec/interceptor/instance/EngineContextElement$Key;
 	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
 	public final fun component1 ()Lio/kotest/engine/interceptors/EngineContext;
-	public final fun copy (Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/engine/spec/interceptor/EngineContextElement;
-	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/EngineContextElement;Lio/kotest/engine/interceptors/EngineContext;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/EngineContextElement;
+	public final fun copy (Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;
+	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;Lio/kotest/engine/interceptors/EngineContext;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContext ()Lio/kotest/engine/interceptors/EngineContext;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/engine/spec/interceptor/EngineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+public final class io/kotest/engine/spec/interceptor/instance/EngineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/engine/spec/interceptor/ref/BeforeSpecState {
+	public fun <init> (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Set;
+	public final fun component3 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;
+	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;Ljava/util/List;Ljava/util/Set;Ljava/util/Set;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/ref/BeforeSpecState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrors ()Ljava/util/List;
+	public final fun getFailed ()Ljava/util/Set;
+	public final fun getSuccess ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/interceptor/ref/BeforeSpecStateInterceptorKt {
+	public static final fun beforeSpecStateKey (Lkotlin/reflect/KClass;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
@@ -785,7 +819,7 @@ public final class io/kotest/engine/test/TestCaseExecutor {
 	public final fun execute (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/test/interceptors/BeforeSpecTestInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
+public final class io/kotest/engine/test/interceptors/BeforeSpecCallbackInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
 	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;Lio/kotest/engine/interceptors/EngineContext;)V
 	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -883,7 +917,7 @@ public final class io/kotest/engine/test/scopes/DuplicateNameHandlingTestScope :
 }
 
 public final class io/kotest/engine/test/scopes/InOrderTestScope : io/kotest/core/test/TestScope {
-	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
+	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getTestCase ()Lio/kotest/core/test/TestCase;
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -920,7 +954,7 @@ public final class io/kotest/engine/test/scopes/RegistrationKt {
 }
 
 public final class io/kotest/engine/test/scopes/ScopesKt {
-	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
+	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
 }
 
 public final class io/kotest/engine/test/scopes/TerminalTestScope : io/kotest/core/test/TestScope {

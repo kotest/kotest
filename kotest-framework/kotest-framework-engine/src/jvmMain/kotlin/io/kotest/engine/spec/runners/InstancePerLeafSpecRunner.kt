@@ -11,30 +11,30 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
-import java.util.*
+import java.util.PriorityQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
-   listener: TestEngineListener,
-   scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
-) : SpecRunner(listener, scheduler, context.configuration) {
+) : SpecRunner {
 
    private val logger = Logger(InstancePerLeafSpecRunner::class)
+   private val listener = context.listener
+   private val pipeline = SpecInterceptorPipeline(context)
+   private val materializer = Materializer(context.configuration)
 
    private val extensions = SpecExtensions(context.configuration.registry)
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -84,7 +84,7 @@ internal class InstancePerLeafSpecRunner(
       }
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      return createInstance(test.spec::class).flatMap { spec ->
+      return createAndInitializeSpec(test.spec::class, context.configuration.registry).flatMap { spec ->
          extensions.intercept(spec) {
             locateAndRunRoot(spec, test)
          } ?: Result.success(spec)
@@ -100,9 +100,7 @@ internal class InstancePerLeafSpecRunner(
          ?: error("Unable to locate root test ${test.descriptor.path()}")
 
       logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
-      extensions.beforeSpec(spec).getOrThrow()
       locateAndRunRoot(root, test)
-      extensions.afterSpec(spec).getOrThrow()
       spec
    }
 

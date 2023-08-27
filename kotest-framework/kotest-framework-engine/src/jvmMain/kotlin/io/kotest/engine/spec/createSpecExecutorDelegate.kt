@@ -9,7 +9,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
@@ -21,14 +20,12 @@ import kotlin.math.max
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
-   listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
-): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
+): SpecExecutorDelegate = JvmSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
 
 @ExperimentalKotest
 class JvmSpecExecutorDelegate(
-   private val listener: TestEngineListener,
    private val dispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) : SpecExecutorDelegate {
@@ -50,22 +47,18 @@ class JvmSpecExecutorDelegate(
 
       val runner = when (isolation) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(
-            listener,
             scheduler,
             dispatcherFactory,
             context
          )
 
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(
-            listener,
             scheduler,
             dispatcherFactory,
             context,
          )
 
          IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(
-            listener,
-            scheduler,
             dispatcherFactory,
             context,
          )

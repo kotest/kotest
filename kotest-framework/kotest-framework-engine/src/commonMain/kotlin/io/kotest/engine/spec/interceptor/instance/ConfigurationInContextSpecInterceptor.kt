@@ -1,10 +1,11 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.config.ConfigurationContextElement
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.spec.interceptor.SpecInterceptor
 import kotlinx.coroutines.withContext
 
 /**

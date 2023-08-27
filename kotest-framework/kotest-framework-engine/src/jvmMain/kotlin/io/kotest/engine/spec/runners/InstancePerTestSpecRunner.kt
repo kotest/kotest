@@ -2,7 +2,6 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
-import io.kotest.common.flatten
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -11,14 +10,16 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -62,15 +63,17 @@ import kotlin.coroutines.CoroutineContext
  */
 @ExperimentalKotest
 internal class InstancePerTestSpecRunner(
-   listener: TestEngineListener,
-   schedule: TestScheduler,
+   private val scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
-) : SpecRunner(listener, schedule, context.configuration) {
+) : SpecRunner {
 
-   private val extensions = SpecExtensions(context.configuration.registry)
-   private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val logger = Logger(InstancePerTestSpecRunner::class)
    private val defaultInstanceUsed = AtomicBoolean(false)
+   private val materializer = Materializer(context.configuration)
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val pipeline = SpecInterceptorPipeline(context)
+   private val listener = context.listener
 
    /**
     * The intention of this runner is that each [TestCase] executes in its own instance
@@ -84,13 +87,14 @@ internal class InstancePerTestSpecRunner(
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
-      runCatching {
-         launch(spec) {
-            executeInCleanSpecIfRequired(it, spec).getOrThrow()
-         }
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
+      return runCatching {
+         val rootTests = materializer.materialize(spec)
+         logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+         scheduler.schedule({ executeInCleanSpecIfRequired(it, spec).getOrThrow() }, rootTests)
          results
       }
+   }
 
    /**
     * The intention of this runner is that each [TestCase] executes in its own instance
@@ -104,19 +108,21 @@ internal class InstancePerTestSpecRunner(
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      return createInstance(test.spec::class)
-         .flatMap { executeInGivenSpec(test, it) }
+   private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
+      return createAndInitializeSpec(test.spec::class, context.configuration.registry)
+         .flatMap { spec -> executeInGivenSpec(test, spec) }
    }
 
-   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Spec> {
-      return runCatching {
-         extensions.intercept(spec) {
-            extensions.beforeSpec(spec)
-               .flatMap { run(it, test) }
-               .flatMap { extensions.afterSpec(it) }
-         } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
-      }.flatten()
+   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
+      return pipeline.execute(spec) {
+         runCatching {
+            SpecExtensions(context.configuration.registry).intercept(spec) {
+               val results = ConcurrentHashMap<TestCase, TestResult>()
+               run(spec, test, results)
+               results
+            } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
+         }
+      }
    }
 
    /**
@@ -124,7 +130,10 @@ internal class InstancePerTestSpecRunner(
     * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
     * Eg, see https://github.com/kotest/kotest/issues/3490
     */
-   private suspend fun executeInCleanSpecIfRequired(test: TestCase, defaultSpec: Spec): Result<Spec> {
+   private suspend fun executeInCleanSpecIfRequired(
+      test: TestCase,
+      defaultSpec: Spec
+   ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
          Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
       } else {
@@ -132,16 +141,15 @@ internal class InstancePerTestSpecRunner(
       }
    }
 
-   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
+   private suspend fun run(spec: Spec, test: TestCase, results: ConcurrentHashMap<TestCase, TestResult>) = runCatching {
       log { "Created new spec instance $spec" }
       // we need to find the same root test but in the newly created spec
       val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
       log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
-      run(root, test)
-      spec
+      run(root, test, results)
    }
 
-   private suspend fun run(test: TestCase, target: TestCase) {
+   private suspend fun run(test: TestCase, target: TestCase, results: ConcurrentHashMap<TestCase, TestResult>) {
       val isTarget = test.descriptor == target.descriptor
       coroutineScope {
          val context = object : TestScope {
@@ -158,7 +166,7 @@ internal class InstancePerTestSpecRunner(
                if (isTarget) {
                   executeInCleanSpec(t).getOrThrow()
                } else if (t.descriptor.isOnPath(target.descriptor)) {
-                  run(t, target)
+                  run(t, target, results)
                }
             }
          }
