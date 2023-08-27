@@ -8,6 +8,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.test.createTestResult
+import io.kotest.mpp.bestName
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -25,23 +26,24 @@ class BeforeSpecTestInterceptor(
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
 
-      return when (context.state[specKey(testCase.spec)] as? Boolean?) {
-         true -> test(testCase, scope)
-         false -> TestResult.Ignored("Skipped due to beforeSpec failure")
-         null -> SpecExtensions(registry)
+      return when {
+         context.state.containsKey(specSuccessKey(testCase.spec)) -> test(testCase, scope)
+         context.state.containsKey(specErrorKey(testCase.spec)) -> TestResult.Ignored("Skipped due to beforeSpec failure")
+         else -> SpecExtensions(registry)
             .beforeSpec(testCase.spec)
             .fold(
                {
-                  context.state[specKey(testCase.spec)] = true
+                  context.state[specSuccessKey(testCase.spec)] = true
                   test.invoke(testCase, scope)
                },
                {
-                  context.state[specKey(testCase.spec)] = false
+                  context.state[specErrorKey(testCase.spec)] = it
                   createTestResult(0.seconds, it)
                }
             )
       }
    }
 
-   private fun specKey(spec: Spec) = "spec_" + spec.hashCode()
+   private fun specSuccessKey(spec: Spec) = "before_spec_success_" + spec::class.bestName() + spec.hashCode()
+   private fun specErrorKey(spec: Spec) = "before_spec_success_" + spec::class.bestName() + spec.hashCode()
 }

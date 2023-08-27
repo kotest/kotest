@@ -5,7 +5,6 @@ import io.kotest.common.Platform
 import io.kotest.common.flatMap
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -14,6 +13,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.BeforeSpecResultInterceptor
 import io.kotest.engine.spec.interceptor.ConfigurationInContextSpecInterceptor
 import io.kotest.engine.spec.interceptor.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
@@ -77,7 +77,11 @@ class SpecExecutor(
          SpecFilterInterceptor(listener, context.configuration.registry),
          SystemPropertySpecFilterInterceptor(listener, context.configuration.registry),
          TagsInterceptor(listener, context.configuration),
-         if (platform == Platform.JVM) RequiresTagInterceptor(listener, context.configuration, context.configuration.registry) else null,
+         if (platform == Platform.JVM) RequiresTagInterceptor(
+            listener,
+            context.configuration,
+            context.configuration.registry
+         ) else null,
          SpecRefExtensionInterceptor(context.configuration.registry),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
@@ -99,12 +103,16 @@ class SpecExecutor(
    private suspend fun specInterceptors(spec: Spec): Result<Map<TestCase, TestResult>> {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.configuration.registry) else null,
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(
+            listener,
+            context.configuration.registry
+         ) else null,
          EngineContextInterceptor(context),
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextSpecInterceptor(context.configuration),
          InlineTagSpecInterceptor(listener, context.configuration),
+         BeforeSpecResultInterceptor(),
       ) + specInterceptorsForPlatform()
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {

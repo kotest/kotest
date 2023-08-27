@@ -8,7 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.spec.SpecExtensions
 
 /**
- * A [SpecInterceptor] that executes all [SpecExtension]s.
+ * A [SpecInterceptor] that executes all [SpecExtension]s, which allows for interception.
  */
 internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInterceptor {
 
