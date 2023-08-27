@@ -1,7 +1,8 @@
-package io.kotest.assertions.until
+package io.kotest.assertions.nondeterministic
 
+import io.kotest.common.KotestInternal
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -13,10 +14,10 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
- * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
+ * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciIntervalFn.defaultMax]
  */
-@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
-class FibonacciInterval(private val base: Duration, private val offset: Int, private val max: Duration?) : Interval {
+@KotestInternal
+class FibonacciIntervalFn(private val base: Duration, private val offset: Int, private val max: Duration?) : DurationFn {
 
    init {
       require(offset >= 0) { "Offset must be greater than or equal to 0" }
@@ -32,15 +33,13 @@ class FibonacciInterval(private val base: Duration, private val offset: Int, pri
    }
 
    companion object {
-      val defaultMax = 2.hours
+      val defaultMax = 1.minutes
    }
 }
 
-@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
-fun Duration.fibonacci(max: Duration? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
+fun Duration.fibonacci(max: Duration = FibonacciIntervalFn.defaultMax) = FibonacciIntervalFn(this, 0, max)
 
-@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
-fun fibonacci(n: Int): Int {
+internal fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
       0 -> previous
       1 -> current

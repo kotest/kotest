@@ -4,6 +4,188 @@ public final class PropertiesKt {
 	public static final fun shouldMatch (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class io/kotest/assertions/nondeterministic/ContinuallyConfiguration {
+	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-UwyO8pc ()J
+	public final fun component2-UwyO8pc ()J
+	public final fun component3 ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun component4 ()Lkotlin/jvm/functions/Function3;
+	public final fun copy-O4J4VbY (JJLio/kotest/assertions/nondeterministic/DurationFn;Lkotlin/jvm/functions/Function3;)Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;
+	public static synthetic fun copy-O4J4VbY$default (Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/nondeterministic/ContinuallyConfigurationBuilder {
+	public fun <init> ()V
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getInterval-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun setDuration-LRDsOJo (J)V
+	public final fun setInitialDelay-LRDsOJo (J)V
+	public final fun setInterval-LRDsOJo (J)V
+	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
+	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
+}
+
+public final class io/kotest/assertions/nondeterministic/ContinuallyKt {
+	public static final fun continually (Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun continually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun continuallyConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;
+}
+
+public abstract interface class io/kotest/assertions/nondeterministic/DurationFn {
+	public abstract fun next-5sfh64U (I)J
+}
+
+public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration {
+	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-UwyO8pc ()J
+	public final fun component2-UwyO8pc ()J
+	public final fun component3 ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun component4 ()I
+	public final fun component5 ()Lkotlin/jvm/functions/Function1;
+	public final fun component6 ()Lkotlin/jvm/functions/Function3;
+	public final fun component7 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-jecXKW4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+	public static synthetic fun copy-jecXKW4$default (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun getRetries ()I
+	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder {
+	public fun <init> ()V
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getExpectedExceptions ()Ljava/util/Set;
+	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getInterval-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun getRetries ()I
+	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public final fun setDuration-LRDsOJo (J)V
+	public final fun setExpectedExceptions (Ljava/util/Set;)V
+	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setInitialDelay-LRDsOJo (J)V
+	public final fun setInterval-LRDsOJo (J)V
+	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
+	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
+	public final fun setRetries (I)V
+	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/kotest/assertions/nondeterministic/EventuallyKt {
+	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun eventually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun eventuallyConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+}
+
+public final class io/kotest/assertions/nondeterministic/ExponentialIntervalFn : io/kotest/assertions/nondeterministic/DurationFn {
+	public static final field Companion Lio/kotest/assertions/nondeterministic/ExponentialIntervalFn$Companion;
+	public static final field defaultFactor D
+	public synthetic fun <init> (JDLkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun next-5sfh64U (I)J
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/nondeterministic/ExponentialIntervalFn$Companion {
+	public final fun getDefaultMax-UwyO8pc ()J
+}
+
+public final class io/kotest/assertions/nondeterministic/ExponentialIntervalFnKt {
+	public static final fun exponential-4_FzEXg (JDLkotlin/time/Duration;)Lio/kotest/assertions/nondeterministic/ExponentialIntervalFn;
+	public static synthetic fun exponential-4_FzEXg$default (JDLkotlin/time/Duration;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/ExponentialIntervalFn;
+}
+
+public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFn : io/kotest/assertions/nondeterministic/DurationFn {
+	public static final field Companion Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn$Companion;
+	public synthetic fun <init> (JILkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun next-5sfh64U (I)J
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFn$Companion {
+	public final fun getDefaultMax-UwyO8pc ()J
+}
+
+public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFnKt {
+	public static final fun fibonacci-QTBD994 (JJ)Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn;
+	public static synthetic fun fibonacci-QTBD994$default (JJILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn;
+}
+
+public final class io/kotest/assertions/nondeterministic/NoopEventuallyListener : kotlin/coroutines/jvm/internal/SuspendFunction, kotlin/jvm/functions/Function3 {
+	public static final field INSTANCE Lio/kotest/assertions/nondeterministic/NoopEventuallyListener;
+	public fun invoke (ILjava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class io/kotest/assertions/nondeterministic/UntilConfiguration {
+	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-UwyO8pc ()J
+	public final fun component2-UwyO8pc ()J
+	public final fun component3 ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun component4 ()I
+	public final fun component5 ()Lkotlin/jvm/functions/Function1;
+	public final fun component6 ()Lkotlin/jvm/functions/Function3;
+	public final fun component7 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-jecXKW4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
+	public static synthetic fun copy-jecXKW4$default (Lio/kotest/assertions/nondeterministic/UntilConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun getRetries ()I
+	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/nondeterministic/UntilConfigurationBuilder {
+	public fun <init> ()V
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getExpectedExceptions ()Ljava/util/Set;
+	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getInterval-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun getRetries ()I
+	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public final fun setDuration-LRDsOJo (J)V
+	public final fun setExpectedExceptions (Ljava/util/Set;)V
+	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setInitialDelay-LRDsOJo (J)V
+	public final fun setInterval-LRDsOJo (J)V
+	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
+	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
+	public final fun setRetries (I)V
+	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/kotest/assertions/nondeterministic/UntilKt {
+	public static final fun until (Lio/kotest/assertions/nondeterministic/UntilConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun until-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun untilConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
+}
+
 public final class io/kotest/equals/ReflectionIgnoringFieldsEquality : io/kotest/equals/Equality {
 	public fun <init> (Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;Z)V
 	public synthetic fun <init> (Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V

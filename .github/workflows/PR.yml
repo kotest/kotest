@@ -38,7 +38,6 @@ jobs:
       runs-on: ubuntu-latest
       if: github.repository == 'kotest/kotest'
       strategy:
-         fail-fast: false
          matrix:
             target:
                - jvmTest
@@ -79,6 +78,7 @@ jobs:
       runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       strategy:
+         fail-fast: true
          matrix:
             target:
                - macosX64Test
@@ -121,6 +121,7 @@ jobs:
       runs-on: windows-latest
       if: github.repository == 'kotest/kotest'
       strategy:
+         fail-fast: true
          matrix:
             target:
                - mingwX64Test
