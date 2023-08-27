@@ -8,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.isIsolate
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
@@ -22,24 +23,24 @@ import kotlin.math.max
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
-): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+   context: EngineContext,
+): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
 
 @ExperimentalKotest
 class JvmSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val dispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
+   private val context: EngineContext,
 ) : SpecExecutorDelegate {
 
    private val logger = Logger(JvmSpecExecutorDelegate::class)
 
    private fun Spec.resolvedIsolationMode() =
-      this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
+      this.isolationMode() ?: this.isolationMode ?: context.configuration.isolationMode
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
-      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(configuration.concurrentTests)) {
+      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(context.configuration.concurrentTests)) {
          ProjectConfiguration.Sequential -> SequentialTestScheduler
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
@@ -52,19 +53,21 @@ class JvmSpecExecutorDelegate(
             listener,
             scheduler,
             dispatcherFactory,
-            configuration
+            context
          )
+
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(
             listener,
             scheduler,
             dispatcherFactory,
-            configuration
+            context,
          )
+
          IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(
             listener,
             scheduler,
             dispatcherFactory,
-            configuration
+            context,
          )
       }
 

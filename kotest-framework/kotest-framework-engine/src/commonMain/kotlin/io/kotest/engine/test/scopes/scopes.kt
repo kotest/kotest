@@ -1,10 +1,10 @@
 package io.kotest.engine.test.scopes
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import kotlin.coroutines.CoroutineContext
 
@@ -12,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
  * Returns a new [TestScope] which uses the given [coroutineContext] with the other methods
  * delegating to the receiver context.
  */
-internal fun TestScope.withCoroutineContext(coroutineContext: CoroutineContext): TestScope = when  {
+internal fun TestScope.withCoroutineContext(coroutineContext: CoroutineContext): TestScope = when {
    this.coroutineContext == coroutineContext -> this
    this is TestScopeWithCoroutineContext -> TestScopeWithCoroutineContext(delegate, coroutineContext)
    else -> TestScopeWithCoroutineContext(this, coroutineContext)
@@ -34,17 +34,17 @@ fun createSingleInstanceTestScope(
    mode: DuplicateTestNameMode,
    listener: TestEngineListener,
    dispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
+   context: EngineContext,
 ): TestScope {
    return DuplicateNameHandlingTestScope(
-      testCase.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+      testCase.spec.duplicateTestNameMode ?: context.configuration.duplicateTestNameMode,
       InOrderTestScope(
          testCase,
          coroutineContext,
          mode,
          listener,
          dispatcherFactory,
-         configuration,
+         context,
       )
    )
 }

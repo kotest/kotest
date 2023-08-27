@@ -28,6 +28,7 @@ data class EngineContext(
    val tags: TagExpression,
    val configuration: ProjectConfiguration,
    val platform: Platform,
+   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
    constructor(configuration: ProjectConfiguration, platform: Platform) : this(
@@ -36,6 +37,7 @@ data class EngineContext(
       TagExpression.Empty,
       configuration,
       platform,
+      mutableMapOf(),
    )
 
    companion object {
@@ -44,7 +46,8 @@ data class EngineContext(
          NoopTestEngineListener,
          TagExpression.Empty,
          ProjectConfiguration(),
-         Platform.JVM
+         Platform.JVM,
+         mutableMapOf(),
       )
    }
 
@@ -57,14 +60,19 @@ data class EngineContext(
          CompositeTestEngineListener(listOf(this.listener, listener)),
          tags,
          configuration,
-         platform
+         platform,
+         state,
       )
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
       return EngineContext(
-         suite, listener, tags, configuration,
-         platform
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+         state,
       )
    }
 
@@ -75,6 +83,7 @@ data class EngineContext(
          tags,
          configuration,
          platform,
+         state,
       )
    }
 
@@ -85,6 +94,7 @@ data class EngineContext(
          tags,
          conf,
          platform,
+         state,
       )
    }
 
@@ -95,17 +105,19 @@ data class EngineContext(
          tags,
          configuration,
          platform,
+         state,
       )
    }
 }
 
-fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform): EngineContext {
+fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform, state: MutableMap<String, Any>): EngineContext {
    return EngineContext(
       suite,
       context.listener,
       tags,
       configuration,
       platform,
+      state,
    )
 }
 

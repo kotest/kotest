@@ -4,13 +4,13 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.common.flatten
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -65,10 +65,10 @@ internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
-) : SpecRunner(listener, schedule, configuration) {
+   private val context: EngineContext,
+) : SpecRunner(listener, schedule, context.configuration) {
 
-   private val extensions = SpecExtensions(configuration.registry)
+   private val extensions = SpecExtensions(context.configuration.registry)
    private val results = ConcurrentHashMap<TestCase, TestResult>()
    private val defaultInstanceUsed = AtomicBoolean(false)
 
@@ -150,7 +150,7 @@ internal class InstancePerTestSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = Materializer(configuration).materialize(nested, testCase)
+               val t = Materializer(context.configuration).materialize(nested, testCase)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
@@ -162,7 +162,12 @@ internal class InstancePerTestSpecRunner(
                }
             }
          }
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+
+         val context2 = DuplicateNameHandlingTestScope(
+            this@InstancePerTestSpecRunner.context.configuration.duplicateTestNameMode,
+            context
+         )
+
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
@@ -178,7 +183,7 @@ internal class InstancePerTestSpecRunner(
                }
             },
             defaultCoroutineDispatcherFactory,
-            configuration
+            this@InstancePerTestSpecRunner.context
          )
 
          val result = testExecutor.execute(test, context2)

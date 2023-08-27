@@ -10,7 +10,7 @@ data class ProjectContext(val suite: TestSuite, val tags: TagExpression, val con
    constructor(configuration: ProjectConfiguration) : this(TestSuite.empty, TagExpression.Empty, configuration)
 }
 
-data class ProjectContextElement(val projectContext: ProjectContext) :
+data class ProjectContextElement(val context: ProjectContext) :
    AbstractCoroutineContextElement(ProjectContextElement) {
    companion object Key : CoroutineContext.Key<ProjectContextElement>
 }
@@ -22,5 +22,5 @@ val TestScope.projectContext: ProjectContext
    get() = coroutineContext.projectContext
 
 val CoroutineContext.projectContext: ProjectContext
-   get() = get(ProjectContextElement)?.projectContext
+   get() = get(ProjectContextElement)?.context
       ?: error("projectContext is not injected into this CoroutineContext")

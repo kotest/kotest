@@ -10,6 +10,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -35,11 +36,10 @@ internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
-) : SpecRunner(listener, scheduler, configuration) {
+   private val context: EngineContext,
+) : SpecRunner(listener, scheduler, context.configuration) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
-   private val extensions = SpecExtensions(configuration.registry)
    private val logger = Logger(SingleInstanceSpecRunner::class)
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
@@ -54,9 +54,8 @@ internal class SingleInstanceSpecRunner(
 
       try {
          return coroutineScope {
-            extensions.beforeSpec(spec)
-               .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration.registry).afterSpec(spec) }
+            interceptAndRun(coroutineContext)
+               .flatMap { SpecExtensions(context.configuration.registry).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {
@@ -83,7 +82,7 @@ internal class SingleInstanceSpecRunner(
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
 
-         val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
+         val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
          if (skipRemaining) {
             logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
             listener.testIgnored(nestedTestCase, "Skipping test due to fail fast")
@@ -91,7 +90,7 @@ internal class SingleInstanceSpecRunner(
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)
             if (result.isErrorOrFailure) {
-               if (testCase.config.failfast || configuration.projectWideFailFast) {
+               if (testCase.config.failfast || context.configuration.projectWideFailFast) {
                   logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
                   skipRemaining = true
                   parentScope?.skipRemaining = true
@@ -110,11 +109,11 @@ internal class SingleInstanceSpecRunner(
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory,
-         configuration,
+         context,
       )
 
       val scope = DuplicateNameHandlingTestScope(
-         configuration.duplicateTestNameMode,
+         context.configuration.duplicateTestNameMode,
          SingleInstanceTestScope(testCase, coroutineContext, parentScope)
       )
 

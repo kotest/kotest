@@ -2,10 +2,10 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
@@ -18,9 +18,9 @@ import kotlin.coroutines.coroutineContext
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
+   context: EngineContext,
 ): SpecExecutorDelegate =
-   DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+   DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
 
 /**
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
@@ -30,32 +30,32 @@ internal actual fun createSpecExecutorDelegate(
 internal class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration
+   private val context: EngineContext
 ) : SpecExecutorDelegate {
 
-   private val materializer = Materializer(configuration)
+   private val materializer = Materializer(context.configuration)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
       materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
-            val context = DuplicateNameHandlingTestScope(
-               configuration.duplicateTestNameMode,
+            val scope = DuplicateNameHandlingTestScope(
+               context.configuration.duplicateTestNameMode,
                InOrderTestScope(
                   testCase,
                   coroutineContext,
-                  configuration.duplicateTestNameMode,
+                  context.configuration.duplicateTestNameMode,
                   listener,
                   coroutineDispatcherFactory,
-                  configuration
+                  context.configuration
                )
             )
             TestCaseExecutor(
                TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
-               configuration
-            ).execute(testCase, context)
+               context,
+            ).execute(testCase, scope)
          }
       return emptyMap()
    }

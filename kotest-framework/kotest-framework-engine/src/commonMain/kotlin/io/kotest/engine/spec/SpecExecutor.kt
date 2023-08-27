@@ -14,22 +14,23 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.EngineContextInterceptor
+import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
+import io.kotest.engine.spec.interceptor.InlineTagSpecInterceptor
+import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
+import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.FinalizeSpecInterceptor
-import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
-import io.kotest.engine.spec.interceptor.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.PrepareSpecInterceptor
-import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
+import io.kotest.engine.spec.interceptor.ref.RequiresPlatformInterceptor
 import io.kotest.engine.spec.interceptor.ref.RequiresTagInterceptor
-import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.RequiresPlatformInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
@@ -99,6 +100,7 @@ class SpecExecutor(
 
       val interceptors = listOfNotNull(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.configuration.registry) else null,
+         EngineContextInterceptor(context),
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextSpecInterceptor(context.configuration),
@@ -107,7 +109,7 @@ class SpecExecutor(
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          try {
-            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context.configuration)
+            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
             logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
             Result.success(delegate.execute(spec))
          } catch (t: Throwable) {
@@ -143,6 +145,6 @@ interface SpecExecutorDelegate {
 internal expect fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
+   context: EngineContext,
 ): SpecExecutorDelegate
 

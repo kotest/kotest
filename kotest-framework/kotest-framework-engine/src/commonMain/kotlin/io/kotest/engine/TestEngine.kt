@@ -72,7 +72,7 @@ class TestEngine(private val config: TestEngineConfig) {
       val tags = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform))
+      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform, mutableMapOf()))
    }
 }
 
