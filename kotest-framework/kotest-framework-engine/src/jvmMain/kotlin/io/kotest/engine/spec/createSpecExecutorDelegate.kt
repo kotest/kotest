@@ -1,6 +1,5 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
@@ -18,14 +17,12 @@ import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.math.max
 
-@ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): SpecExecutorDelegate = JvmSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
 
-@ExperimentalKotest
-class JvmSpecExecutorDelegate(
+internal class JvmSpecExecutorDelegate(
    private val dispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) : SpecExecutorDelegate {
@@ -84,7 +81,6 @@ class JvmSpecExecutorDelegate(
  * spec.concurrency ?: configuration.concurrentTests
  * ```
  */
-@OptIn(ExperimentalKotest::class)
 internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {

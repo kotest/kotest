@@ -9,19 +9,19 @@ import kotlin.time.Duration
  * a [TestResult.failure] if the supplied error is an assertion failure, or a [TestResult.error]
  * if the exception is any other type.
  */
-fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
+internal fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
    error == null -> TestResult.Success(duration)
    error.isFrameworkAssertionType() -> TestResult.Failure(duration, error as AssertionError)
    error is AssertionError -> TestResult.Failure(duration, error)
    else -> TestResult.Error(duration, error)
 }
 
-fun Throwable.toTestResult(duration: Duration): TestResult = createTestResult(duration, this)
+internal fun Throwable.toTestResult(duration: Duration): TestResult = createTestResult(duration, this)
 
 /**
  * Returns true if the receiver is one of the supported assertion failure exception types.
  */
-fun Throwable.isFrameworkAssertionType(): Boolean =
+internal fun Throwable.isFrameworkAssertionType(): Boolean =
    listOf(
       "org.opentest4j.AssertionFailedError",
       "AssertionFailedError",
