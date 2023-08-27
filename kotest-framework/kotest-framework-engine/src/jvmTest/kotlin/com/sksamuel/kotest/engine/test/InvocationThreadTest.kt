@@ -16,7 +16,7 @@ class InvocationThreadTest : FunSpec({
    afterSpec {
       singleThreadSingleInvocationCallCount.get() shouldBe 1
       singleThreadMultipleInvocationCallCount.get() shouldBe 5
-      multipleThreadMultipleInvocationCallCount.get() shouldBe 400
+      multipleThreadMultipleInvocationCallCount.get() shouldBe 3
       multipleThreadMultipleInvocationThreadIds.shouldHaveSize(3)
    }
 
@@ -28,11 +28,9 @@ class InvocationThreadTest : FunSpec({
       singleThreadMultipleInvocationCallCount.incrementAndGet()
    }
 
-   test("multiple threads / multiple invocations").config(
-      invocations = 400, // needs to be big enough to ensure all 3 threads get used
-      threads = 3
-   ) {
+   test("multiple threads / multiple invocations").config(invocations = 3, threads = 3) {
       multipleThreadMultipleInvocationCallCount.incrementAndGet()
       multipleThreadMultipleInvocationThreadIds[Thread.currentThread().id] = Unit
+      Thread.sleep(50) // Keep the coroutine around long enough to make the dispatcher start jobs on other threads.
    }
 })
