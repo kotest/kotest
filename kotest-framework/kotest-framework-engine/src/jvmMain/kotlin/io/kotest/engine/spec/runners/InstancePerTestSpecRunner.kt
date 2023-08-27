@@ -69,7 +69,10 @@ internal class InstancePerTestSpecRunner(
 ) : SpecRunner {
 
    private val logger = Logger(InstancePerTestSpecRunner::class)
+
+   // set to true once the initially supplied spec has been used for a test
    private val defaultInstanceUsed = AtomicBoolean(false)
+
    private val materializer = Materializer(context.configuration)
    private val results = ConcurrentHashMap<TestCase, TestResult>()
    private val pipeline = SpecInterceptorPipeline(context)
@@ -115,7 +118,6 @@ internal class InstancePerTestSpecRunner(
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
       return pipeline.execute(spec) {
-         val results = ConcurrentHashMap<TestCase, TestResult>()
          run(spec, test, results).map { results }
       }
    }

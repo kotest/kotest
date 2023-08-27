@@ -22,6 +22,8 @@ import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -36,8 +38,10 @@ internal class InstancePerLeafSpecRunner(
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.configuration)
 
-   private val extensions = SpecExtensions(context.configuration.registry)
    private val results = mutableMapOf<TestCase, TestResult>()
+
+   // set to true once the initially supplied spec has been used for a test
+   private val defaultInstanceUsed = AtomicBoolean(false)
 
    /** keeps track of tests we've already discovered */
    private val seen = mutableSetOf<Descriptor>()
@@ -64,7 +68,7 @@ internal class InstancePerLeafSpecRunner(
    }
 
    /**
-    * The intention of this runner is that each leaf [TestCase] executes in its own instance
+    * The intention of this runner is that each **leaf** [TestCase] executes in its own instance
     * of the containing [Spec] class.
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
@@ -78,14 +82,36 @@ internal class InstancePerLeafSpecRunner(
          // new is left to be found to be added to the queue
          while (queue.isNotEmpty()) {
             val (testCase, _) = queue.remove()
-            executeInCleanSpec(testCase).getOrThrow()
+            executeInCleanSpecIfRequired(testCase, spec).getOrThrow()
          }
          results
       }
 
-   private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      return createAndInitializeSpec(test.spec::class, context.configuration.registry).flatMap { spec ->
+   /**
+    * The first time we run a root test, we can use the already instantiated spec as the instance.
+    * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
+    * Eg, see https://github.com/kotest/kotest/issues/3490
+    */
+   private suspend fun executeInCleanSpecIfRequired(
+      test: TestCase,
+      defaultSpec: Spec
+   ): Result<Map<TestCase, TestResult>> {
+      return if (defaultInstanceUsed.compareAndSet(false, true)) {
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+      } else {
+         executeInCleanSpec(test)
+      }
+   }
+
+   private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
+      return createAndInitializeSpec(test.spec::class, context.configuration.registry)
+         .flatMap { spec -> executeInGivenSpec(test, spec) }
+   }
+
+   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
+      return pipeline.execute(spec) {
          locateAndRunRoot(spec, test)
+         Result.success(emptyMap())
       }
    }
 

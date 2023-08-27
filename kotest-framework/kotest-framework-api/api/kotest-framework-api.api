@@ -1837,7 +1837,7 @@ public final class io/kotest/core/project/ProjectContextElement : kotlin/corouti
 	public final fun copy (Lio/kotest/core/project/ProjectContext;)Lio/kotest/core/project/ProjectContextElement;
 	public static synthetic fun copy$default (Lio/kotest/core/project/ProjectContextElement;Lio/kotest/core/project/ProjectContext;ILjava/lang/Object;)Lio/kotest/core/project/ProjectContextElement;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContext ()Lio/kotest/core/project/ProjectContext;
+	public final fun getProjectContext ()Lio/kotest/core/project/ProjectContext;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
