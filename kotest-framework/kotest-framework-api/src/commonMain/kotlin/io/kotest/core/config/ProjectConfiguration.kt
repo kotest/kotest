@@ -348,6 +348,8 @@ class ProjectConfiguration {
 
    var displayFullTestPath: Boolean = Defaults.displayFullTestPath
 
+   var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
+
    /**
     * Returns all globally registered [Listener]s.
     */
