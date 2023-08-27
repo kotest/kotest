@@ -22,6 +22,7 @@ interface EngineInterceptor {
    suspend fun intercept(context: EngineContext, execute: suspend (EngineContext) -> EngineResult): EngineResult
 }
 
+@KotestInternal
 data class EngineContext(
    val suite: TestSuite,
    val listener: TestEngineListener,
@@ -110,7 +111,11 @@ data class EngineContext(
    }
 }
 
-fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform, state: MutableMap<String, Any>): EngineContext {
+internal fun ProjectContext.toEngineContext(
+   context: EngineContext,
+   platform: Platform,
+   state: MutableMap<String, Any>
+): EngineContext {
    return EngineContext(
       suite,
       context.listener,
@@ -121,7 +126,7 @@ fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform, s
    )
 }
 
-fun EngineContext.toProjectContext(): ProjectContext {
+internal fun EngineContext.toProjectContext(): ProjectContext {
    return ProjectContext(
       suite,
       tags,

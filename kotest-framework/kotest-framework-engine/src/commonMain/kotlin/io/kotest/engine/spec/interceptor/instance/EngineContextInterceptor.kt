@@ -26,5 +26,5 @@ internal class EngineContextInterceptor(
 }
 
 internal val CoroutineContext.engineContext: ProjectContext
-   get() = get(EngineContextElement)?.context
+   get() = get(EngineContextElement)?.projectContext
       ?: error("engineContext is not injected into this CoroutineContext")

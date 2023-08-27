@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.seconds
  * there is at least one enabled test. And since tests can be disabled or enabled programatically,
  * we must defer execution until after the test configurations have executed.
  */
-class BeforeSpecCallbackInterceptor(
+internal class BeforeSpecCallbackInterceptor(
    private val registry: ExtensionRegistry,
    private val context: EngineContext,
 ) : TestExecutionInterceptor {
