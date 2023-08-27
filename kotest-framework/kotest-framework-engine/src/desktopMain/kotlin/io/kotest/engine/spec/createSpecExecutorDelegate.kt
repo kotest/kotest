@@ -48,7 +48,7 @@ internal class DefaultSpecExecutorDelegate(
                   context.configuration.duplicateTestNameMode,
                   listener,
                   coroutineDispatcherFactory,
-                  context.configuration
+                  context
                )
             )
             TestCaseExecutor(
