@@ -48,4 +48,6 @@ object Defaults {
 
    const val concurrentTests = ProjectConfiguration.Sequential
    const val dispatcherAffinity = true
+
+   const val allowOutOfOrderCallbacks = false
 }
