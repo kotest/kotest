@@ -22,6 +22,7 @@ import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -69,6 +70,7 @@ internal class InstancePerTestSpecRunner(
 
    private val extensions = SpecExtensions(configuration.registry)
    private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val defaultInstanceUsed = AtomicBoolean(false)
 
    /**
     * The intention of this runner is that each [TestCase] executes in its own instance
@@ -85,8 +87,7 @@ internal class InstancePerTestSpecRunner(
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       runCatching {
          launch(spec) {
-            executeInCleanSpec(it)
-               .getOrThrow()
+            executeInCleanSpecIfRequired(it, spec).getOrThrow()
          }
          results
       }
@@ -105,15 +106,30 @@ internal class InstancePerTestSpecRunner(
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { spec ->
-            runCatching {
-               extensions.intercept(spec) {
-                  extensions.beforeSpec(spec)
-                     .flatMap { run(it, test) }
-                     .flatMap { extensions.afterSpec(it) }
-               } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
-            }.flatten()
-         }
+         .flatMap { executeInGivenSpec(test, it) }
+   }
+
+   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Spec> {
+      return runCatching {
+         extensions.intercept(spec) {
+            extensions.beforeSpec(spec)
+               .flatMap { run(it, test) }
+               .flatMap { extensions.afterSpec(it) }
+         } ?: error("Failed to initialize spec ${test.spec::class.simpleName}")
+      }.flatten()
+   }
+
+   /**
+    * The first time we run a root test, we can use the already instantiated spec as the instance.
+    * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
+    * Eg, see https://github.com/kotest/kotest/issues/3490
+    */
+   private suspend fun executeInCleanSpecIfRequired(test: TestCase, defaultSpec: Spec): Result<Spec> {
+      return if (defaultInstanceUsed.compareAndSet(false, true)) {
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+      } else {
+         executeInCleanSpec(test)
+      }
    }
 
    private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {

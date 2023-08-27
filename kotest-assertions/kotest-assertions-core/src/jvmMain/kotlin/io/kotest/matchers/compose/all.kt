@@ -14,7 +14,7 @@ fun <T : Any?> Matcher.Companion.all(
    vararg pairs: Pair<Matcher<*>, KProperty1<T, *>>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val results = pairs.mapIndexed {i , (matcher, prop) ->
+      val results = pairs.mapIndexed { i, (matcher, prop) ->
          runCatching {
             (matcher as Matcher<Any?>).test(prop(value))
          }.onFailure {
@@ -24,8 +24,8 @@ fun <T : Any?> Matcher.Companion.all(
 
       return MatcherResult(
          results.all { it.passed() },
-         { results.joinToString(separator = "\n") { it.failureMessage() } },
-         { results.joinToString(separator = "\n") { it.negatedFailureMessage() } },
+         { results.filterNot { it.passed() }.joinToString(separator = "\n") { it.failureMessage() } },
+         { results.filter { it.passed() }.joinToString(separator = "\n") { it.negatedFailureMessage() } },
       )
    }
 }
@@ -38,12 +38,11 @@ fun <T : Any?> Matcher.Companion.all(
    vararg matchers: Matcher<T>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val results = matchers.map { matcher -> matcher.test(value) }
-
+      val results: List<MatcherResult> = matchers.map { matcher -> matcher.test(value) }
       return MatcherResult(
          results.all { it.passed() },
-         { results.joinToString(separator = "\n") { it.failureMessage() } },
-         { results.joinToString(separator = "\n") { it.negatedFailureMessage() } },
+         { results.filterNot { it.passed() }.joinToString(separator = "\n") { it.failureMessage() } },
+         { results.filter { it.passed() }.joinToString(separator = "\n") { it.negatedFailureMessage() } },
       )
    }
 }

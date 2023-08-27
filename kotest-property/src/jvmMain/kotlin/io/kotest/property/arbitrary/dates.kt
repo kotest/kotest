@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.Date
+import java.util.*
 import kotlin.random.Random
 
 /**
@@ -235,6 +235,18 @@ fun Arb.Companion.offsetDateTime(
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
+   zoneOffset
+) { time, offset -> time.atOffset(offset) }
+
+/**
+ * Arberates a stream of random [OffsetDateTime]
+ */
+fun Arb.Companion.offsetDateTime(
+   minValue: Instant,
+   maxValue: Instant,
+   zoneOffset: Arb<ZoneOffset> = zoneOffset()
+): Arb<OffsetDateTime> = Arb.bind(
+   instant(minValue, maxValue),
    zoneOffset
 ) { time, offset -> time.atOffset(offset) }
 

@@ -56,11 +56,7 @@ class ComposeAllTest : StringSpec() {
             ).test(Person("John", 10, Address("Warsaw", "Test", "1/1")))
 
             matcherResult.passed() shouldBe true
-            matcherResult.failureMessage() shouldBe """
-            Name John should be John
-            Age 10 should be 10
-            Address ${Address("Warsaw", "Test", "1/1")} should be Test 1/1 Warsaw
-         """.trimIndent()
+            matcherResult.failureMessage() shouldBe ""
             matcherResult.negatedFailureMessage() shouldBe """
             Name John should not be John
             Age 10 should not be 10
@@ -91,11 +87,7 @@ class ComposeAllTest : StringSpec() {
             val matcherResult = passwordMatcher.test("StrongPassword123")
 
             matcherResult.passed() shouldBe true
-            matcherResult.failureMessage() shouldBe """
-            "StrongPassword123" should contain at least one digit
-            "StrongPassword123" should contain regex [a-z]
-            "StrongPassword123" should contain regex [A-Z]
-         """.trimIndent()
+            matcherResult.failureMessage() shouldBe ""
             matcherResult.negatedFailureMessage() shouldBe """
             "StrongPassword123" should not contain any digits
             "StrongPassword123" should not contain regex [a-z]
