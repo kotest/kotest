@@ -501,26 +501,6 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
-public final class io/kotest/engine/spec/interceptor/instance/AfterSpecCallbackInterceptor : io/kotest/engine/spec/interceptor/SpecInterceptor {
-	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/interceptor/instance/EngineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
-	public static final field Key Lio/kotest/engine/spec/interceptor/instance/EngineContextElement$Key;
-	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
-	public final fun component1 ()Lio/kotest/engine/interceptors/EngineContext;
-	public final fun copy (Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;
-	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;Lio/kotest/engine/interceptors/EngineContext;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/instance/EngineContextElement;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContext ()Lio/kotest/engine/interceptors/EngineContext;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/spec/interceptor/instance/EngineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
-}
-
 public final class io/kotest/engine/tags/ActiveKt {
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Lio/kotest/core/Tag;)Z
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Ljava/util/Set;)Z

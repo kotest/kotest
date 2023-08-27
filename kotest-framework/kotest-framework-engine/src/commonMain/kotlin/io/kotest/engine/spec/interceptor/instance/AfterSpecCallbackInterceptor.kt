@@ -11,7 +11,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
 /**
  * Invokes any [AfterSpecListener] callbacks for the given spec.
  */
-class AfterSpecCallbackInterceptor(private val registry: ExtensionRegistry) : SpecInterceptor {
+internal class AfterSpecCallbackInterceptor(private val registry: ExtensionRegistry) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
       fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>

@@ -27,7 +27,7 @@ internal class ProjectContextInterceptor(
    }
 }
 
-data class EngineContextElement(val context: EngineContext) :
+internal data class EngineContextElement(val context: EngineContext) :
    AbstractCoroutineContextElement(ProjectContextElement) {
    companion object Key : CoroutineContext.Key<ProjectContextElement>
 }
