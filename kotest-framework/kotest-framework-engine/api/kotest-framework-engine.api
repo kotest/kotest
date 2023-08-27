@@ -457,6 +457,12 @@ public final class io/kotest/engine/spec/LexicographicSpecSorter : io/kotest/eng
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
+public final class io/kotest/engine/spec/Materializer {
+	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
+	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
+	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
+}
+
 public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spec/SpecSorter {
 	public fun <init> (Lkotlin/random/Random;)V
 	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
