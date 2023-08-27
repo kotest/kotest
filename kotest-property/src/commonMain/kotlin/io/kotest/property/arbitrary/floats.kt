@@ -19,25 +19,26 @@ object FloatShrinker : Shrinker<Float> {
 
 /**
  * Returns an [Arb] that produces [Float]s from [min] to [max] (inclusive).
- * The edge cases are [Float.NEGATIVE_INFINITY], [min], -1.0, -[Float.MIN_VALUE], -0.0, 0.0, [Float.MIN_VALUE], 1.0,
- * [max], [Float.POSITIVE_INFINITY] and [Float.NaN] which are only included if they are in the provided range.
+ * The edge cases are [min], -1.0, -[Float.MIN_VALUE], -0.0, 0.0, [Float.MIN_VALUE], 1.0 and [max]
+ * which are only included if they are in the provided range.
+ * The non-finite edge cases are [Float.NEGATIVE_INFINITY], [Float.POSITIVE_INFINITY] and [Float.NaN]
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  *
  * @see numericFloat to only produce numeric [Float]s
  */
-fun Arb.Companion.float(min: Float = -Float.MAX_VALUE, max: Float = Float.MAX_VALUE): Arb<Float> = float(min..max)
+fun Arb.Companion.float(min: Float = -Float.MAX_VALUE, max: Float = Float.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Float> = float(min..max, includeNonFiniteEdgeCases)
 
 /**
  * Returns an [Arb] that produces [Float]s in [range].
- * The edge cases are [Float.NEGATIVE_INFINITY], [ClosedFloatingPointRange.start], -1.0, -[Float.MIN_VALUE], -0.0,
- * 0.0, [Float.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive], [Float.POSITIVE_INFINITY] and [Float.NaN] which
- * are only included if they are in the provided range.
+ * The numeric edge cases are [ClosedFloatingPointRange.start], -1.0, -[Float.MIN_VALUE], -0.0,
+ * 0.0, [Float.MIN_VALUE], 1.0 and [ClosedFloatingPointRange.endInclusive]
+ * which are only included if they are in the provided range.
+ * The non-finite edge cases are [Float.NEGATIVE_INFINITY], [Float.POSITIVE_INFINITY] and [Float.NaN]
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALUE..Float.MAX_VALUE): Arb<Float> =
+fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALUE..Float.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Float> =
    arbitrary(
-      (numericEdgeCases.filter { it in range } +
-         listOf(-1.0F, -0.0F, 0.0F, 1.0F).filter { it in range }.map { it / 0.0F } +
-         listOf(range.start, range.endInclusive)
-         ).distinct(),
+      (numericEdgeCases.filter { it in range } + listOf(range.start, range.endInclusive)).distinct() + getNonFiniteEdgeCases(range, includeNonFiniteEdgeCases),
       FloatShrinker
    ) {
       it.random.nextDouble(range.start.toDouble(), range.endInclusive.toDouble()).toFloat()
@@ -45,17 +46,19 @@ fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALU
 
 /**
  * Returns an [Arb] that produces positive [Float]s from [Float.MIN_VALUE] to [max] (inclusive).
- * The edge cases are [Float.MIN_VALUE], 1.0, [max] and [Float.POSITIVE_INFINITY] which are only included if they are
- * in the provided range.
+ * The numeric edge cases are [Float.MIN_VALUE], 1.0, and [max] which are only included if they are in the provided range.
+ * The non-finite edge case is [Float.POSITIVE_INFINITY]
+ * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.positiveFloat(): Arb<Float> = float(Float.MIN_VALUE, Float.MAX_VALUE)
+fun Arb.Companion.positiveFloat(includeNonFiniteEdgeCases: Boolean = true): Arb<Float> = float(Float.MIN_VALUE, Float.MAX_VALUE, includeNonFiniteEdgeCases)
 
 /**
  * Returns an [Arb] that produces negative [Float]s from [min] to -[Float.MIN_VALUE] (inclusive).
- * The edge cases are [Float.NEGATIVE_INFINITY], [min], -1.0 and -[Float.MIN_VALUE] which are only included if they
- * are in the provided range.
+ * The numeric edge cases are [min], -1.0 and -[Float.MIN_VALUE] which are only included if they are in the provided range.
+ * The non-finite edge case is [Float.NEGATIVE_INFINITY]
+ * which is only included if it is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.negativeFloat(): Arb<Float> = float(-Float.MAX_VALUE, -Float.MIN_VALUE)
+fun Arb.Companion.negativeFloat(includeNonFiniteEdgeCases: Boolean = true): Arb<Float> = float(-Float.MAX_VALUE, -Float.MIN_VALUE, includeNonFiniteEdgeCases)
 
 /**
  * Returns an [Arb] that produces numeric [Float]s from [min] to [max] (inclusive).
@@ -81,3 +84,12 @@ fun Arb.Companion.numericFloats(from: Float = -Float.MAX_VALUE, to: Float = Floa
  */
 fun Arb.Companion.floatArray(length: Gen<Int>, content: Arb<Float>): Arb<FloatArray> =
    toPrimitiveArray(length, content, Collection<Float>::toFloatArray)
+
+private fun getNonFiniteEdgeCases(range: ClosedFloatingPointRange<Float>, includeNonFiniteEdgeCases: Boolean) : List<Float> {
+   return if (includeNonFiniteEdgeCases) {
+      if (range == -Float.MAX_VALUE..Float.MAX_VALUE) nonFiniteEdgeCases
+      else if (range.start == -Float.MAX_VALUE) nonFiniteEdgeCases.filter { it <= range.endInclusive }
+      else if (range.endInclusive == Float.MAX_VALUE) nonFiniteEdgeCases.filter { it >= range.start }
+      else emptyList()
+   } else emptyList()
+}

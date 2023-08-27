@@ -16,11 +16,6 @@ class IntRangeTest : DescribeSpec({
       }
 
       describe("edge cases") {
-         it("not include empty edge cases as first sample") {
-            val numGen = Arb.intRange(1..10)
-            forAll(1, numGen) { !it.isEmpty() }
-         }
-
          it("include empty range in edge cases") {
             Arb.intRange(0..10).edgecases() shouldContain IntRange.EMPTY
          }

@@ -906,20 +906,20 @@ public final class io/kotest/property/arbitrary/DoubleShrinker : io/kotest/prope
 }
 
 public final class io/kotest/property/arbitrary/DoublesKt {
-	public static final fun double (Lio/kotest/property/Arb$Companion;DD)Lio/kotest/property/Arb;
-	public static final fun double (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;)Lio/kotest/property/Arb;
-	public static synthetic fun double$default (Lio/kotest/property/Arb$Companion;DDILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static synthetic fun double$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun double (Lio/kotest/property/Arb$Companion;DDZ)Lio/kotest/property/Arb;
+	public static final fun double (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;Z)Lio/kotest/property/Arb;
+	public static synthetic fun double$default (Lio/kotest/property/Arb$Companion;DDZILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static synthetic fun double$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;ZILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun doubleArray (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
-	public static final fun negativeDouble (Lio/kotest/property/Arb$Companion;D)Lio/kotest/property/Arb;
-	public static synthetic fun negativeDouble$default (Lio/kotest/property/Arb$Companion;DILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun negativeDouble (Lio/kotest/property/Arb$Companion;DZ)Lio/kotest/property/Arb;
+	public static synthetic fun negativeDouble$default (Lio/kotest/property/Arb$Companion;DZILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun negativeDoubles (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 	public static final fun numericDouble (Lio/kotest/property/Arb$Companion;DD)Lio/kotest/property/Arb;
 	public static synthetic fun numericDouble$default (Lio/kotest/property/Arb$Companion;DDILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun numericDoubles (Lio/kotest/property/Arb$Companion;DD)Lio/kotest/property/Arb;
 	public static synthetic fun numericDoubles$default (Lio/kotest/property/Arb$Companion;DDILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static final fun positiveDouble (Lio/kotest/property/Arb$Companion;D)Lio/kotest/property/Arb;
-	public static synthetic fun positiveDouble$default (Lio/kotest/property/Arb$Companion;DILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun positiveDouble (Lio/kotest/property/Arb$Companion;DZ)Lio/kotest/property/Arb;
+	public static synthetic fun positiveDouble$default (Lio/kotest/property/Arb$Companion;DZILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun positiveDoubles (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 }
 
@@ -976,17 +976,19 @@ public final class io/kotest/property/arbitrary/FloatShrinker : io/kotest/proper
 }
 
 public final class io/kotest/property/arbitrary/FloatsKt {
-	public static final fun float (Lio/kotest/property/Arb$Companion;FF)Lio/kotest/property/Arb;
-	public static final fun float (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;)Lio/kotest/property/Arb;
-	public static synthetic fun float$default (Lio/kotest/property/Arb$Companion;FFILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static synthetic fun float$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun float (Lio/kotest/property/Arb$Companion;FFZ)Lio/kotest/property/Arb;
+	public static final fun float (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;Z)Lio/kotest/property/Arb;
+	public static synthetic fun float$default (Lio/kotest/property/Arb$Companion;FFZILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static synthetic fun float$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedFloatingPointRange;ZILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun floatArray (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
-	public static final fun negativeFloat (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
+	public static final fun negativeFloat (Lio/kotest/property/Arb$Companion;Z)Lio/kotest/property/Arb;
+	public static synthetic fun negativeFloat$default (Lio/kotest/property/Arb$Companion;ZILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun numericFloat (Lio/kotest/property/Arb$Companion;FF)Lio/kotest/property/Arb;
 	public static synthetic fun numericFloat$default (Lio/kotest/property/Arb$Companion;FFILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun numericFloats (Lio/kotest/property/Arb$Companion;FF)Lio/kotest/property/Arb;
 	public static synthetic fun numericFloats$default (Lio/kotest/property/Arb$Companion;FFILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static final fun positiveFloat (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
+	public static final fun positiveFloat (Lio/kotest/property/Arb$Companion;Z)Lio/kotest/property/Arb;
+	public static synthetic fun positiveFloat$default (Lio/kotest/property/Arb$Companion;ZILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public abstract interface class io/kotest/property/arbitrary/GenerateArbitraryBuilderContext : io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax {

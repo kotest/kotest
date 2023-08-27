@@ -16,6 +16,7 @@ import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
+import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
@@ -72,6 +73,7 @@ class TestCaseExecutor(
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
+         ExpectExceptionTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
             configuration.registry,

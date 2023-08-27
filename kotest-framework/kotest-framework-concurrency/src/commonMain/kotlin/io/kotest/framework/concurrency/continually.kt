@@ -1,15 +1,14 @@
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.failure
-import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 
-@OptIn(ExperimentalKotest::class)
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias ContinuallyListener<T> = (ContinuallyState<T>) -> Unit
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class ContinuallyConfig<T>(
    val duration: Long = defaultDuration,
    val interval: Interval = defaultInterval,
@@ -17,7 +16,7 @@ data class ContinuallyConfig<T>(
    val listener: ContinuallyListener<T>? = null,
 )
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class ContinuallyBuilder<T> {
    var duration: Long = defaultDuration
    var interval: Interval = defaultInterval
@@ -38,10 +37,10 @@ class ContinuallyBuilder<T> {
    }
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class ContinuallyState<T>(val result: T, val start: Long, val end: Long, val times: Int)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    delay(initialDelay)
 
@@ -69,9 +68,7 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    return result
 }
 
-// region continually
-
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> continually(
    config: ContinuallyConfig<T>, configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T? {
@@ -79,7 +76,7 @@ suspend fun <T> continually(
    return builder.toConfig().invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> continually(
    configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T? {
@@ -87,11 +84,9 @@ suspend fun <T> continually(
    return builder.toConfig().invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? =
    continually(duration.inWholeMilliseconds, test)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> continually(duration: Long, test: suspend () -> T): T? = continually({ this.duration = duration }, test)
-
-// endregion
