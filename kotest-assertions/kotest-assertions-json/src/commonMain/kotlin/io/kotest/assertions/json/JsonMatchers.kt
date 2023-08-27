@@ -38,9 +38,8 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
          return MatcherResult(
             false,
             { "expected: actual json to be valid json: $value" },
-            {
-               "expected: actual json to be invalid json: $value"
-            })
+            { "expected: actual json to be invalid json: $value" }
+         )
       }
 
       val expectedJson = try {
@@ -55,7 +54,7 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
 
       return ComparableMatcherResult(
          actualJson == expectedJson,
-         { "expected json to match, but they differed\n\n" },
+         { "expected json to match, but they differed\n" },
          { "expected not to match with: $expectedJson but match: $actualJson" },
          actualJson.toString(),
          expectedJson.toString()
