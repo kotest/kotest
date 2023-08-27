@@ -1,21 +1,23 @@
 package io.kotest.common
 
+@KotestInternal
 inline fun <A, B> Result<A>.flatMap(fn: (A) -> Result<B>): Result<B> {
    return fold({ fn(it) }, { Result.failure(it) })
 }
 
 @KotestInternal
-inline fun <A> Result<Result<A>>.flatten(): Result<A> {
+fun <A> Result<Result<A>>.flatten(): Result<A> {
    return when {
       isSuccess -> getOrThrow()
       else -> Result.failure(exceptionOrNull()!!)
    }
 }
 
-
+@KotestInternal
 fun <A> Result<A>.mapError(f: (Throwable) -> Throwable): Result<A> =
    fold({ Result.success(it) }, { Result.failure(f(this.exceptionOrNull()!!)) })
 
+@KotestInternal
 fun <A> List<Result<A>>.collect(f: (List<Throwable>) -> Throwable): Result<List<A>> {
    val (errors, successes) = this.partition { it.isFailure }
    return if (errors.isNotEmpty()) Result.failure(f(errors.map { it.exceptionOrNull()!! }))

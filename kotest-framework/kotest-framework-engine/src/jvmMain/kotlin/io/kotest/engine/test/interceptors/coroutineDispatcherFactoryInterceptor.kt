@@ -8,7 +8,6 @@ import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext
 

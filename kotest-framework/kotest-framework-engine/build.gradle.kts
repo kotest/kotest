@@ -1,5 +1,7 @@
 plugins {
    id("kotest-multiplatform-library-conventions")
+   // must be a published version and not one in the current build
+   id("io.kotest.multiplatform").version("5.6.2")
 }
 
 kotlin {
@@ -55,4 +57,9 @@ kotlin {
 
 tasks.withType<Test>().configureEach {
    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}
+
+// must be a published version and not one in the current build
+configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
+   kotestCompilerPluginVersion.set("5.6.2")
 }

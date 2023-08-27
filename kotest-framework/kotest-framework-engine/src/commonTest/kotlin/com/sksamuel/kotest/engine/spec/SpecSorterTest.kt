@@ -8,12 +8,10 @@ import io.kotest.matchers.shouldBe
 import kotlin.random.Random
 
 class SpecSorterTest : FunSpec({
-   context("random spec sorter") {
-      test("should not throw 'Comparison method violates its general contract' with consistent ordering") {
-         val seed = 2342731194744841942L
-         val specRefs: List<SpecRef> = generateSequence { SpecRef.Reference(FunSpec::class) }.take(100).toList()
-         val ordered = shouldNotThrowAny { RandomSpecSorter(Random(seed)).sort(specRefs) }
-         ordered shouldBe specRefs.shuffled(Random(seed))
-      }
+   test("random spec sorter should not throw 'Comparison method violates its general contract' with consistent ordering") {
+      val seed = 2342731194744841942L
+      val specRefs: List<SpecRef> = generateSequence { SpecRef.Reference(FunSpec::class) }.take(100).toList()
+      val ordered = shouldNotThrowAny { RandomSpecSorter(Random(seed)).sort(specRefs) }
+      ordered shouldBe specRefs.shuffled(Random(seed))
    }
 })
