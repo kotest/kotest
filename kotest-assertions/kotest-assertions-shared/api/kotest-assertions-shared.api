@@ -48,12 +48,18 @@ public final class io/kotest/assertions/AssertionFailedError : org/opentest4j/As
 
 public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
+	public final fun getDisableNaNEquality ()Z
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
+}
+
+public final class io/kotest/assertions/AssertionsConfigSystemProperties {
+	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
+	public static final field disableNaNEquality Ljava/lang/String;
 }
 
 public class io/kotest/assertions/BasicAssertionCounter : io/kotest/assertions/AssertionCounter {
