@@ -12,7 +12,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 /**
  * A [SpecRefInterceptor] that invokes any [PrepareSpecListener.prepareSpec] callbacks.
  */
-class PrepareSpecInterceptor(registry: ExtensionRegistry) : SpecRefInterceptor {
+internal class PrepareSpecInterceptor(registry: ExtensionRegistry) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
 

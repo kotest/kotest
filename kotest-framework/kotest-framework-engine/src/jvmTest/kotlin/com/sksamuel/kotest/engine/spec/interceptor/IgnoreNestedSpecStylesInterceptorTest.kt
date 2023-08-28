@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
+import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 
 class IgnoreNestedSpecStylesInterceptorTest : FunSpec({
    test("IgnoreNestedSpecStylesInterceptor should skip any nested spec style") {

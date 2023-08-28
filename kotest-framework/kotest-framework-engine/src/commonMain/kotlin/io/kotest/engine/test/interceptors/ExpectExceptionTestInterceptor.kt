@@ -16,7 +16,6 @@ internal object ExpectExceptionTestInterceptor : TestExecutionInterceptor {
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
       val result = test(testCase, scope)
-      println(result)
       return when (result) {
          is TestResult.Error -> if (result.cause is ExpectFailureException) TestResult.Ignored("Ignored due to failed expectation") else result
          else -> result

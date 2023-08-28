@@ -93,18 +93,14 @@ gradlePlugin {
    }
 }
 
-kotlin {
-   jvmToolchain(17)
-}
-
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions {
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+      compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
    }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
+   options.release.set(11)
 }
 
 val updateKotestPluginConstants by tasks.registering(Sync::class) {

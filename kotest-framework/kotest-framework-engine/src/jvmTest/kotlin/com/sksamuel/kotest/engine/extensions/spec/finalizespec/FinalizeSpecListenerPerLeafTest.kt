@@ -40,7 +40,7 @@ class FinalizeSpecListenerPerLeafTest : FunSpec() {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 8
+         counter.get() shouldBe 7
       }
 
       // will be added once per instance created

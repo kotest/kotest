@@ -1,6 +1,5 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.Spec
@@ -13,13 +12,13 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
  */
-@KotestInternal
 internal class IgnoreNestedSpecStylesInterceptor(
    private val listener: TestEngineListener,
    registry: ExtensionRegistry,
