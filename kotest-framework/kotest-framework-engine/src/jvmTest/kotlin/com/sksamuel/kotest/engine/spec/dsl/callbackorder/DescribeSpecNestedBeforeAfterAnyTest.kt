@@ -1,9 +1,9 @@
-package com.sksamuel.kotest.specs.behavior
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
-class BehaviorSpecNestedBeforeAfterAnyTest : BehaviorSpec({
+class DescribeSpecNestedBeforeAfterAnyTest : DescribeSpec({
     var a = ""
 
     beforeSpec {
@@ -19,7 +19,7 @@ class BehaviorSpecNestedBeforeAfterAnyTest : BehaviorSpec({
         a = "afterAnyRoot"
     }
 
-    given("foo") {
+    describe("foo") {
         a shouldBe "beforeAnyRoot"
 
         beforeAny {
@@ -31,31 +31,31 @@ class BehaviorSpecNestedBeforeAfterAnyTest : BehaviorSpec({
             a = "afterAnyFoo"
         }
 
-        then("b") {
+        it("b") {
             a shouldBe "beforeAnyFoo"
             a = "testB"
         }
 
-        then("e") {
+        it("e") {
             a shouldBe "beforeAnyFoo"
             a = "testE"
         }
 
-        `when`("bar") {
+        describe("bar") {
             a shouldBe "beforeAnyFoo"
 
-            then("f") {
+            it("f") {
                 a shouldBe "beforeAnyFoo"
                 a = "testF"
             }
 
-            then("g") {
+            it("g") {
                 a shouldBe "beforeAnyFoo"
                 a = "testG"
             }
         }
 
-        then("h") {
+        it("h") {
             a shouldBe "beforeAnyFoo"
             a = "testH"
         }

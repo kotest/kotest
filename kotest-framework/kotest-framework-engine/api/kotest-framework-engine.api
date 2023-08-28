@@ -165,10 +165,6 @@ public final class io/kotest/engine/extensions/ExtensionException$AfterSpecExcep
 	public fun <init> (Ljava/lang/Throwable;)V
 }
 
-public final class io/kotest/engine/extensions/ExtensionException$AfterTestException : io/kotest/engine/extensions/ExtensionException {
-	public fun <init> (Ljava/lang/Throwable;)V
-}
-
 public final class io/kotest/engine/extensions/ExtensionException$BeforeAnyException : io/kotest/engine/extensions/ExtensionException {
 	public fun <init> (Ljava/lang/Throwable;)V
 }
@@ -190,10 +186,6 @@ public final class io/kotest/engine/extensions/ExtensionException$BeforeProjectE
 }
 
 public final class io/kotest/engine/extensions/ExtensionException$BeforeSpecException : io/kotest/engine/extensions/ExtensionException {
-	public fun <init> (Ljava/lang/Throwable;)V
-}
-
-public final class io/kotest/engine/extensions/ExtensionException$BeforeTestException : io/kotest/engine/extensions/ExtensionException {
 	public fun <init> (Ljava/lang/Throwable;)V
 }
 

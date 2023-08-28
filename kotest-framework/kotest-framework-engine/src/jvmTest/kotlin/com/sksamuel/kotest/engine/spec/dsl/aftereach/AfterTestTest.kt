@@ -1,16 +1,17 @@
-package com.sksamuel.kotest.listeners.testlistener.instancepertest
+package com.sksamuel.kotest.engine.spec.dsl.aftereach
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class AfterSpecTest : FunSpec() {
+class AfterTestTest : FunSpec() {
 
    val listener = object : TestListener {
-      override suspend fun afterSpec(spec: Spec) {
+      override suspend fun afterTest(testCase: TestCase, result: TestResult) {
          counter.incrementAndGet()
       }
    }
@@ -26,7 +27,7 @@ class AfterSpecTest : FunSpec() {
       register(listener)
 
       afterProject {
-         counter.get() shouldBe 5
+         counter.get() shouldBe 4
       }
 
       test("ignored test").config(enabled = false) {}
