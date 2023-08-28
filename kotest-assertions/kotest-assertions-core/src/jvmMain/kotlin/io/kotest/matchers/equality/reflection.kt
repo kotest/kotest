@@ -569,7 +569,7 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
    }
 }
 
-private fun <T> checkEqualityOfFieldsRecursively(
+internal fun <T> checkEqualityOfFieldsRecursively(
    value: T,
    other: T,
    config: FieldsEqualityCheckConfig,
