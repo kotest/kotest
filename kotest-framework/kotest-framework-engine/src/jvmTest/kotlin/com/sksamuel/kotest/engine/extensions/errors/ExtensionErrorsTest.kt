@@ -78,7 +78,7 @@ class ExtensionErrorsTest : FunSpec() {
             .withClasses(BeforeTestFunctionOverrideError::class)
             .launch()
          val error = collector.tests.values.first().errorOrNull
-         error.shouldBeInstanceOf<ExtensionException.BeforeTestException>()
+         error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
       }
 
       test("beforeTest DSL errors should be wrapped") {
@@ -87,7 +87,7 @@ class ExtensionErrorsTest : FunSpec() {
             .withClasses(BeforeTestDSLError::class)
             .launch()
          val error = collector.tests.values.first().errorOrNull
-         error.shouldBeInstanceOf<ExtensionException.BeforeTestException>()
+         error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
       }
 
       test("multiple beforeTest errors should be collected") {
@@ -98,7 +98,7 @@ class ExtensionErrorsTest : FunSpec() {
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
          error.causes.shouldHaveSize(3)
-         error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.BeforeTestException>() }
+         error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.BeforeAnyException>() }
       }
 
       test("afterTest function overrides should be wrapped") {
@@ -107,7 +107,7 @@ class ExtensionErrorsTest : FunSpec() {
             .withClasses(AfterTestFunctionOverrideError::class)
             .launch()
          val error = collector.tests.values.first().errorOrNull
-         error.shouldBeInstanceOf<ExtensionException.AfterTestException>()
+         error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       }
 
       test("afterTest DSL errors should be wrapped") {
@@ -116,7 +116,7 @@ class ExtensionErrorsTest : FunSpec() {
             .withClasses(AfterTestDSLError::class)
             .launch()
          val error = collector.tests.values.first().errorOrNull
-         error.shouldBeInstanceOf<ExtensionException.AfterTestException>()
+         error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       }
 
       test("multiple afterTest errors should be collected") {
@@ -127,7 +127,7 @@ class ExtensionErrorsTest : FunSpec() {
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
          error.causes.shouldHaveSize(3)
-         error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.AfterTestException>() }
+         error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.AfterAnyException>() }
       }
    }
 }

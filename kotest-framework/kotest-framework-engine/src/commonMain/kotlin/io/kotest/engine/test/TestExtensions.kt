@@ -82,11 +82,8 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       } + bt.mapNotNull {
          runCatching {
             it.beforeAny(testCase)
-         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
-      } + bt.mapNotNull {
-         runCatching {
             it.beforeTest(testCase)
-         }.mapError { ExtensionException.BeforeTestException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
       }
 
       return when {
@@ -109,9 +106,6 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val errors = at.mapNotNull {
          runCatching {
             it.afterTest(testCase, result)
-         }.mapError { ExtensionException.AfterTestException(it) }.exceptionOrNull()
-      } + at.mapNotNull {
-         runCatching {
             it.afterAny(testCase, result)
          }.mapError { ExtensionException.AfterAnyException(it) }.exceptionOrNull()
       } + ac.mapNotNull {
