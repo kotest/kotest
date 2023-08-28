@@ -4,64 +4,59 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
 class BehaviorSpecNestedBeforeAfterEachTest : BehaviorSpec({
-    var a = ""
 
-    beforeSpec {
-        a shouldBe ""
-        a = "beforeSpec"
-    }
+   var before = ""
+   var after = ""
 
-    beforeEach {
-        a = "beforeEachRoot"
-    }
+   afterSpec {
+      before shouldBe "aceacgaciackacm"
+      after shouldBe "fdbhdbjdbldbndb"
+   }
 
-    afterEach {
-        a = "afterEachRoot"
-    }
+   beforeEach {
+      before += "a"
+   }
 
-    given("foo") {
-        a shouldBe "beforeSpec"
+   afterEach {
+      after += "b"
+   }
 
-        beforeEach {
-            a shouldBe "beforeEachRoot"
-            a = "beforeEachFoo"
-        }
+   given("foo") {
 
-        afterEach {
-            a = "afterEachFoo"
-        }
+      beforeEach {
+         before += "c"
+      }
 
-        then("b") {
-            a shouldBe "beforeEachFoo"
-            a = "testB"
-        }
+      afterEach {
+         after += "d"
+      }
 
-        then("e") {
-            a shouldBe "beforeEachFoo"
-            a = "testE"
-        }
+      then("b") {
+         before += "e"
+         after += "f"
+      }
 
-        `when`("bar") {
-            a shouldBe "afterEachFoo"
+      then("e") {
+         before += "g"
+         after += "h"
+      }
 
-            then("f") {
-                a shouldBe "beforeEachFoo"
-                a = "testF"
-            }
+      `when`("bar") {
 
-            then("g") {
-                a shouldBe "beforeEachFoo"
-                a = "testG"
-            }
-        }
+         then("f") {
+            before += "i"
+            after += "j"
+         }
 
-        then("h") {
-            a shouldBe "beforeEachFoo"
-            a = "testH"
-        }
-    }
+         then("g") {
+            before += "k"
+            after += "l"
+         }
+      }
 
-    afterSpec {
-        a shouldBe "afterEachFoo"
-    }
+      then("h") {
+         before += "m"
+         after += "n"
+      }
+   }
 })

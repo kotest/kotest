@@ -4,63 +4,59 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
 class DescribeSpecNestedBeforeAfterContainerTest : DescribeSpec({
-    var a = ""
 
-    beforeSpec {
-        a shouldBe ""
-        a = "beforeSpec"
-    }
+   var before = ""
+   var after = ""
 
-    beforeContainer {
-        a = "beforeFooContainer"
-    }
+   afterSpec {
+      before shouldBe "aegacikm"
+      after shouldBe "fhjldbnb"
+   }
 
-    afterContainer {
-        a = "afterFooContainer"
-    }
+   beforeContainer {
+      before += "a"
+   }
 
-    describe("foo") {
-        a shouldBe "beforeFooContainer"
+   afterContainer {
+      after += "b"
+   }
 
-        beforeContainer {
-            a = "beforeBarContainer"
-        }
+   describe("foo") {
 
-        afterContainer {
-            a = "afterBarContainer"
-        }
+      beforeContainer {
+         before += "c"
+      }
 
-        it("b") {
-            a shouldBe "beforeFooContainer"
-            a = "testB"
-        }
+      afterContainer {
+         after += "d"
+      }
 
-        it("e") {
-            a shouldBe "testB"
-            a = "testE"
-        }
+      it("b") {
+         before += "e"
+         after += "f"
+      }
 
-        describe("bar") {
-            a shouldBe "beforeBarContainer"
+      it("e") {
+         before += "g"
+         after += "h"
+      }
 
-            it("f") {
-                a shouldBe "beforeBarContainer"
-                a = "testF"
-            }
+      describe("bar") {
 
-            it("g") {
-                a shouldBe "testF"
-                a = "testG"
-            }
-        }
+         it("f") {
+            before += "i"
+            after += "j"
+         }
 
-        it("h") {
-            a shouldBe "afterBarContainer"
-            a = "testH"
-        }
-    }
+         it("g") {
+            before += "k"
+            after += "l"
+         }
+      }
 
-    afterSpec {
-        a shouldBe "afterFooContainer"
-    }
+      it("h") {
+         before += "m"
+         after += "n"
+      }
+   }
 })

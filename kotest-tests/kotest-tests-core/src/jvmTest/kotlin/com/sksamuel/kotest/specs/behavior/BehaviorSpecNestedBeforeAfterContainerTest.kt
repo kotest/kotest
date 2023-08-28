@@ -3,64 +3,60 @@ package com.sksamuel.kotest.specs.behavior
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
-class BehaviorSpecNestedBeforeAfterContainerTest: BehaviorSpec({
-    var a = ""
+class BehaviorSpecNestedBeforeAfterContainerTest : BehaviorSpec({
 
-    beforeSpec {
-        a shouldBe ""
-        a = "beforeSpec"
-    }
+   var before = ""
+   var after = ""
 
-    beforeContainer {
-        a = "beforeFooContainer"
-    }
+   afterSpec {
+      before shouldBe "aegacikm"
+      after shouldBe "fhjldbnb"
+   }
 
-    afterContainer {
-        a = "afterFooContainer"
-    }
+   beforeContainer {
+      before += "a"
+   }
 
-    given("foo") {
-        a shouldBe "beforeFooContainer"
+   afterContainer {
+      after += "b"
+   }
 
-        beforeContainer {
-            a = "beforeBarContainer"
-        }
+   given("foo") {
 
-        afterContainer {
-            a = "afterBarContainer"
-        }
+      beforeContainer {
+         before += "c"
+      }
 
-        then("b") {
-            a shouldBe "beforeFooContainer"
-            a = "testB"
-        }
+      afterContainer {
+         after += "d"
+      }
 
-        then("e") {
-            a shouldBe "testB"
-            a = "testE"
-        }
+      then("b") {
+         before += "e"
+         after += "f"
+      }
 
-        `when`("bar") {
-            a shouldBe "beforeBarContainer"
+      then("e") {
+         before += "g"
+         after += "h"
+      }
 
-            then("f") {
-                a shouldBe "beforeBarContainer"
-                a = "testF"
-            }
+      `when`("bar") {
 
-            then("g") {
-                a shouldBe "testF"
-                a = "testG"
-            }
-        }
+         then("f") {
+            before += "i"
+            after += "j"
+         }
 
-        then("h") {
-            a shouldBe "afterBarContainer"
-            a = "testH"
-        }
-    }
+         then("g") {
+            before += "k"
+            after += "l"
+         }
+      }
 
-    afterSpec {
-        a shouldBe "afterFooContainer"
-    }
+      then("h") {
+         before += "m"
+         after += "n"
+      }
+   }
 })
