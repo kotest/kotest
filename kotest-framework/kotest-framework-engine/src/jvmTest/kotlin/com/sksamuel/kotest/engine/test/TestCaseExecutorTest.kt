@@ -24,8 +24,6 @@ import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
-@ExperimentalKotest
-@DelicateCoroutinesApi
 class TestCaseExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestScope {
@@ -139,7 +137,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Materializer(ProjectConfiguration()).materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       started shouldBe true
       finished shouldBe true
    }
