@@ -25,18 +25,18 @@ class SpecExtensionIsolationModePerTestTest : WordSpec() {
       isolationMode = IsolationMode.InstancePerTest
 
       afterProject {
-         beforeInstancePerTest shouldBe 6
-         afterInstancePerTest shouldBe 6
+         beforeInstancePerTest shouldBe 5
+         afterInstancePerTest shouldBe 5
       }
 
       "SpecExtensions" should {
          "fire first for this instance" {
          }
-         "fire again for this instance" {
+         "fire again for this 2nd instance" {
          }
-         "fire again for this instance 2" {
+         "fire again for this 3rd instance" {
          }
-         "fire again for this instance 3" {
+         "fire again for this 4th instance" {
          }
       }
    }

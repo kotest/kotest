@@ -45,10 +45,13 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
-      val errors = extensions(spec).filterIsInstance<BeforeSpecListener>().mapNotNull { ext ->
-         runCatching { ext.beforeSpec(spec) }
-            .mapError { ExtensionException.BeforeSpecException(it) }.exceptionOrNull()
-      }
+      val errors = extensions(spec)
+         .filterIsInstance<BeforeSpecListener>()
+         .mapNotNull { ext ->
+            runCatching { ext.beforeSpec(spec) }
+               .mapError { ExtensionException.BeforeSpecException(it) }
+               .exceptionOrNull()
+         }
 
       return when {
          errors.isEmpty() -> Result.success(spec)
@@ -67,7 +70,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       spec.registeredAutoCloseables().let { closeables ->
          logger.log { Pair(spec::class.bestName(), "Closing ${closeables.size} autocloseables [$closeables]") }
          closeables.forEach {
-            if(it.isInitialized()) it.value.close() else Unit
+            if (it.isInitialized()) it.value.close() else Unit
          }
       }
 

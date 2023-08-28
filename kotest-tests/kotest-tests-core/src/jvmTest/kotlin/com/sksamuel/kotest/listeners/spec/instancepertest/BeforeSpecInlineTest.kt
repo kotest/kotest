@@ -23,10 +23,12 @@ class BeforeSpecInlineTest : FunSpec() {
       }
 
       afterProject {
-         counter.get() shouldBe 5
+         counter.get() shouldBe 4
       }
 
+      // this shouldn't trigger the after spec as its in an isolated instance
       test("ignored test").config(enabled = false) {}
+
       test("a") { }
       test("b") { }
       test("c") { }
