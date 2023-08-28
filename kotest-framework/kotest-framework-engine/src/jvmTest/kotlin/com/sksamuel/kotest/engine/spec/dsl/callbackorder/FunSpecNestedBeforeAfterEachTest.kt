@@ -10,7 +10,7 @@ class FunSpecNestedBeforeAfterEachTest : FunSpec({
 
    afterSpec {
       before shouldBe "aceacgacikacimaco"
-      after shouldBe "fdbhdbljdbnjdbpdb"
+      after shouldBe "fdbhdbldbjndbjdbpdbb"
    }
 
    beforeEach {
