@@ -4,64 +4,67 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class FunSpecNestedBeforeAfterEachTest : FunSpec({
-    var a = ""
 
-    beforeSpec {
-        a shouldBe ""
-        a = "beforeSpec"
-    }
+   var before = ""
+   var after = ""
 
-    beforeEach {
-        a = "beforeEachRoot"
-    }
+   afterSpec {
+      before shouldBe "aceacgacikacimaco"
+      after shouldBe "fdbhdbljdbnjdbpdb"
+   }
 
-    afterEach {
-        a = "afterEachRoot"
-    }
+   beforeEach {
+      before += "a"
+   }
 
-    context("foo") {
-        a shouldBe "beforeSpec"
+   afterTest {
+      after += "b"
+   }
 
-        beforeEach {
-            a shouldBe "beforeEachRoot"
-            a = "beforeEachFoo"
-        }
+   context("foo") {
 
-        afterEach {
-            a = "afterEachFoo"
-        }
+      beforeEach {
+         before += "c"
+      }
 
-        test("b") {
-            a shouldBe "beforeEachFoo"
-            a = "testB"
-        }
+      afterAny {
+         after += "d"
+      }
 
-        test("e") {
-            a shouldBe "beforeEachFoo"
-            a = "testE"
-        }
+      test("b") {
+         before += "e"
+         after += "f"
+      }
 
-        context("bar") {
-            a shouldBe "afterEachFoo"
+      test("e") {
+         before += "g"
+         after += "h"
+      }
 
-            test("f") {
-                a shouldBe "beforeEachFoo"
-                a = "testF"
-            }
+      context("bar") {
 
-            test("g") {
-                a shouldBe "beforeEachFoo"
-                a = "testG"
-            }
-        }
+         beforeEach {
+            before += "i"
+         }
 
-        test("h") {
-            a shouldBe "beforeEachFoo"
-            a = "testH"
-        }
-    }
+         afterEach {
+            after += "j"
+         }
 
-    afterSpec {
-        a shouldBe "afterEachFoo"
-    }
+         test("f") {
+            before += "k"
+            after += "l"
+         }
+
+         test("g") {
+            before += "m"
+            after += "n"
+         }
+      }
+
+      test("h") {
+         before += "o"
+         after += "p"
+      }
+   }
 })

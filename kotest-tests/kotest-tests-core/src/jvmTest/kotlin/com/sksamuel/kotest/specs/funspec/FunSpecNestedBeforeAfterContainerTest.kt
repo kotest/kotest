@@ -4,63 +4,67 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class FunSpecNestedBeforeAfterContainerTest : FunSpec({
-    var a = ""
 
-    beforeSpec {
-        a shouldBe ""
-        a = "beforeSpec"
-    }
+   var before = ""
+   var after = ""
 
-    beforeContainer {
-        a = "beforeFooContainer"
-    }
+   afterSpec {
+      before shouldBe "aegackmo"
+      after shouldBe "fhlndbpb"
+   }
 
-    afterContainer {
-        a = "afterFooContainer"
-    }
+   beforeContainer {
+      before += "a"
+   }
 
-    context("foo") {
-        a shouldBe "beforeFooContainer"
+   afterContainer {
+      after += "b"
+   }
 
-        beforeContainer {
-            a = "beforeBarContainer"
-        }
+   context("foo") {
 
-        afterContainer {
-            a = "afterBarContainer"
-        }
+      beforeContainer {
+         before += "c"
+      }
 
-        test("b") {
-            a shouldBe "beforeFooContainer"
-            a = "testB"
-        }
+      afterContainer {
+         after += "d"
+      }
 
-        test("e") {
-            a shouldBe "testB"
-            a = "testE"
-        }
+      test("b") {
+         before += "e"
+         after += "f"
+      }
 
-        context("bar") {
-            a shouldBe "beforeBarContainer"
+      test("e") {
+         before += "g"
+         after += "h"
+      }
 
-            test("f") {
-                a shouldBe "beforeBarContainer"
-                a = "testF"
-            }
+      context("bar") {
 
-            test("g") {
-                a shouldBe "testF"
-                a = "testG"
-            }
-        }
+         beforeContainer {
+            error("should never be invoked as no further nested containers")
+         }
 
-        test("h") {
-            a shouldBe "afterBarContainer"
-            a = "testH"
-        }
-    }
+         afterContainer {
+            error("should never be invoked as no further nested containers")
+         }
 
-    afterSpec {
-        a shouldBe "afterFooContainer"
-    }
+         test("f") {
+            before += "k"
+            after += "l"
+         }
+
+         test("g") {
+            before += "m"
+            after += "n"
+         }
+      }
+
+      test("h") {
+         before += "o"
+         after += "p"
+      }
+   }
 })

@@ -196,8 +196,7 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed before every [TestCase]
-    * with type [TestType.Container].
+    * Registers a callback to be executed before every [TestCase] with type [TestType.Container].
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
@@ -210,8 +209,7 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed after every [TestCase]
-    * with type [TestType.Container].
+    * Registers a callback to be executed after every [TestCase] with type [TestType.Container].
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
@@ -229,13 +227,12 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed before every [TestCase]
-    * with type [TestType.Test].
+    * Registers a callback to be executed before every [TestCase] with type [TestType.Test].
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      register(object : TestListener {
+      extension(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -243,8 +240,7 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed after every [TestCase]
-    * with type [TestType.Test].
+    * Registers a callback to be executed after every [TestCase] with type [TestType.Test].
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.

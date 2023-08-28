@@ -89,13 +89,7 @@ interface ContainerScope : TestScope {
     * Only affects tests registered after a call to this function.
     */
    fun beforeTest(f: BeforeTest) {
-      if (hasChildren()) throw outOfOrderCallbacksException
-      val thisTestCase = this.testCase
-      appendExtension(object : TestListener {
-         override suspend fun beforeTest(testCase: TestCase) {
-            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(testCase)
-         }
-      })
+      beforeAny(f)
    }
 
    /**
@@ -103,10 +97,34 @@ interface ContainerScope : TestScope {
     * Only affects tests registered after a call to this function.
     */
    fun afterTest(f: AfterTest) {
+      afterTest(f)
+   }
+
+   /**
+    * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
+    */
+   fun beforeAny(f: BeforeAny) {
+      if (hasChildren()) throw outOfOrderCallbacksException
+      val thisTestCase = this.testCase
+      appendExtension(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(testCase)
+         }
+      })
+   }
+
+   /**
+    * Registers an [AfterAny] function that executes after every test with any [TestType] in this scope.
+    *
+    * After-any callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
+    */
+   fun afterAny(f: AfterAny) {
       if (hasChildren()) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       prependExtension(object : TestListener {
-         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(Tuple2(testCase, result))
          }
       })
@@ -154,6 +172,7 @@ interface ContainerScope : TestScope {
 
    /**
     * Registers a [BeforeEach] function that executes before every test with type [TestType.Test] in this scope.
+    * Only applies to tests registered after this callback is added.
     */
    fun beforeEach(f: BeforeEach) {
       if (hasChildren()) throw outOfOrderCallbacksException
@@ -171,6 +190,8 @@ interface ContainerScope : TestScope {
     * Registers an [AfterEach] function that executes after every test with type [TestType.Test] in this scope.
     * In other words, this callback is only invoked for outer or leaf test blocks.
     *
+    * Only applies to tests registered after this callback is added.
+    *
     * After-each callbacks are executed in reverse order. That is callbacks registered
     * first are executed last, which allows for nested test blocks to add callbacks that run before
     * top level callbacks.
@@ -183,36 +204,6 @@ interface ContainerScope : TestScope {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
                f(Tuple2(testCase, result))
             }
-         }
-      })
-   }
-
-   /**
-    * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
-    */
-   fun beforeAny(f: BeforeAny) {
-      if (hasChildren()) throw outOfOrderCallbacksException
-      val thisTestCase = this.testCase
-      appendExtension(object : TestListener {
-         override suspend fun beforeAny(testCase: TestCase) {
-            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(testCase)
-         }
-      })
-   }
-
-   /**
-    * Registers an [AfterAny] function that executes after every test with any [TestType] in this scope.
-    *
-    * After-any callbacks are executed in reverse order. That is callbacks registered
-    * first are executed last, which allows for nested test blocks to add callbacks that run before
-    * top level callbacks.
-    */
-   fun afterAny(f: AfterAny) {
-      if (hasChildren()) throw outOfOrderCallbacksException
-      val thisTestCase = this.testCase
-      prependExtension(object : TestListener {
-         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(Tuple2(testCase, result))
          }
       })
    }
