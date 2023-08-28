@@ -119,6 +119,13 @@ public final class io/kotest/property/GenKt {
 	public static final fun sampleOf (Ljava/lang/Object;Lio/kotest/property/Shrinker;)Lio/kotest/property/Sample;
 }
 
+public final class io/kotest/property/LabelOrder : java/lang/Enum {
+	public static final field Lexicographic Lio/kotest/property/LabelOrder;
+	public static final field Quantity Lio/kotest/property/LabelOrder;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/LabelOrder;
+	public static fun values ()[Lio/kotest/property/LabelOrder;
+}
+
 public final class io/kotest/property/MaxDiscardPercentageException : java/lang/Exception {
 	public fun <init> (II)V
 }
@@ -546,6 +553,7 @@ public final class io/kotest/property/PropertyTesting {
 	public final fun getDefaultShrinkingMode ()Lio/kotest/property/ShrinkingMode;
 	public final fun getEdgecasesBindDeterminism ()D
 	public final fun getFailOnSeed ()Z
+	public final fun getLabelOrder ()Lio/kotest/property/LabelOrder;
 	public final fun getMaxFilterAttempts ()I
 	public final fun getShouldPrintGeneratedValues ()Z
 	public final fun getShouldPrintShrinkSteps ()Z
@@ -562,6 +570,7 @@ public final class io/kotest/property/PropertyTesting {
 	public final fun setDefaultShrinkingMode (Lio/kotest/property/ShrinkingMode;)V
 	public final fun setEdgecasesBindDeterminism (D)V
 	public final fun setFailOnSeed (Z)V
+	public final fun setLabelOrder (Lio/kotest/property/LabelOrder;)V
 	public final fun setMaxFilterAttempts (I)V
 	public final fun setShouldPrintGeneratedValues (Z)V
 	public final fun setShouldPrintShrinkSteps (Z)V

@@ -2,18 +2,15 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
-import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
@@ -26,38 +23,33 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [Spec] instance. In other words, only a single instance of the spec class
- * is instantiated for all the test cases.
+ * same [Spec] instance. In other words, the provided instance of the spec class
+ * is used for all test cases.
  */
 @ExperimentalKotest
 @OptIn(KotestInternal::class)
 internal class SingleInstanceSpecRunner(
-   listener: TestEngineListener,
-   scheduler: TestScheduler,
+   private val scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
-) : SpecRunner(listener, scheduler, configuration) {
+   private val context: EngineContext,
+) : SpecRunner {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
-   private val extensions = SpecExtensions(configuration.registry)
    private val logger = Logger(SingleInstanceSpecRunner::class)
+   private val pipeline = SpecInterceptorPipeline(context)
+   private val materializer = Materializer(context.configuration)
+   private val listener = context.listener
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
-
-      suspend fun interceptAndRun(context: CoroutineContext) = runCatching {
-         launch(spec) {
-            logger.log { Pair(it.name.testName, "Executing test $it") }
-            runTest(it, context, null)
-         }
-      }
-
       try {
          return coroutineScope {
-            extensions.beforeSpec(spec)
-               .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration.registry).afterSpec(spec) }
-               .map { results }
+            pipeline.execute(spec) {
+               val rootTests = materializer.materialize(spec)
+               logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+               scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
+               Result.success(results)
+            }
          }
       } catch (e: Exception) {
          e.printStackTrace()
@@ -83,7 +75,7 @@ internal class SingleInstanceSpecRunner(
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
 
-         val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
+         val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
          if (skipRemaining) {
             logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
             listener.testIgnored(nestedTestCase, "Skipping test due to fail fast")
@@ -91,7 +83,7 @@ internal class SingleInstanceSpecRunner(
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)
             if (result.isErrorOrFailure) {
-               if (testCase.config.failfast || configuration.projectWideFailFast) {
+               if (testCase.config.failfast || context.configuration.projectWideFailFast) {
                   logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
                   skipRemaining = true
                   parentScope?.skipRemaining = true
@@ -110,11 +102,11 @@ internal class SingleInstanceSpecRunner(
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory,
-         configuration,
+         context,
       )
 
       val scope = DuplicateNameHandlingTestScope(
-         configuration.duplicateTestNameMode,
+         context.configuration.duplicateTestNameMode,
          SingleInstanceTestScope(testCase, coroutineContext, parentScope)
       )
 

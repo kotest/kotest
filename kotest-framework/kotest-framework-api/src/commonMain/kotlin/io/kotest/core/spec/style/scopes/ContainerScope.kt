@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
+import io.kotest.core.project.projectContext
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -104,7 +105,7 @@ interface ContainerScope : TestScope {
     * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
     */
    fun beforeAny(f: BeforeAny) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       appendExtension(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
@@ -121,7 +122,7 @@ interface ContainerScope : TestScope {
     * top level callbacks.
     */
    fun afterAny(f: AfterAny) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       prependExtension(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
@@ -137,7 +138,7 @@ interface ContainerScope : TestScope {
     * Only affects test containers registered after a call to this function.
     */
    fun beforeContainer(f: BeforeContainer) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       appendExtension(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
@@ -159,7 +160,7 @@ interface ContainerScope : TestScope {
     * top level callbacks.
     */
    fun afterContainer(f: AfterContainer) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       prependExtension(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
@@ -175,7 +176,7 @@ interface ContainerScope : TestScope {
     * Only applies to tests registered after this callback is added.
     */
    fun beforeEach(f: BeforeEach) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       appendExtension(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
@@ -197,7 +198,7 @@ interface ContainerScope : TestScope {
     * top level callbacks.
     */
    fun afterEach(f: AfterEach) {
-      if (hasChildren()) throw outOfOrderCallbacksException
+      if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
       prependExtension(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {

@@ -7,6 +7,9 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.config.detectAbstractProjectConfigsJVM
+import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
@@ -24,7 +27,9 @@ import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.launcher.EngineFilter
 import org.junit.platform.launcher.LauncherDiscoveryRequest
+import org.junit.platform.launcher.PostDiscoveryFilter
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -44,7 +49,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
    override fun execute(request: ExecutionRequest) {
-      logger.log { Pair(null, "ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]") }
+      logger.log {
+         Pair(
+            null,
+            "ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]"
+         )
+      }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
          null -> execute(request, root)
@@ -72,7 +82,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       )
 
       TestEngineLauncher(listener)
-         .withConfiguration(root.configuration)
+         .withInitializedConfiguration(root.configuration)
          .withExtensions(root.testFilters)
          .withClasses(root.classes)
          .launch()
@@ -95,7 +105,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { Pair(null, "JUnit discovery request [uniqueId=$uniqueId]") }
       logger.log { Pair(null, request.string()) }
 
-      val configuration = ProjectConfiguration()
+      val configuration = ConfigManager.initialize(ProjectConfiguration()) {
+         detectAbstractProjectConfigsJVM() +
+            listOfNotNull(loadProjectConfigFromClassnameJVM())
+      }
 
       // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
@@ -105,7 +118,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
       val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-         val discovery = Discovery(emptyList())
+         val discovery = Discovery(emptyList(), configuration)
          val result = discovery.discover(discoveryRequest)
 
          if (result.specs.isNotEmpty()) {
@@ -142,7 +155,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
    // therefore, no detected selectors and the presence of a MethodSelector or UniqueIdSelector means we must run no tests in KT.
    private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest) =
       discoveryRequest.selectors.isNotEmpty()
-         || (request.getSelectorsByType(MethodSelector::class.java).isEmpty() && request.getSelectorsByType(UniqueIdSelector::class.java).isEmpty())
+         || (request.getSelectorsByType(MethodSelector::class.java).isEmpty() && request.getSelectorsByType(
+         UniqueIdSelector::class.java
+      ).isEmpty())
 }
 
 class KotestEngineDescriptor(
@@ -174,12 +189,12 @@ class KotestEngineDescriptor(
    override fun mayRegisterTests(): Boolean = children.isNotEmpty()
 }
 
-fun EngineDiscoveryRequest.engineFilters() = when (this) {
+fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
    is LauncherDiscoveryRequest -> engineFilters.toList()
    else -> emptyList()
 }
 
-fun EngineDiscoveryRequest.postFilters() = when (this) {
+fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
    is LauncherDiscoveryRequest -> postDiscoveryFilters.toList()
    else -> emptyList()
 }

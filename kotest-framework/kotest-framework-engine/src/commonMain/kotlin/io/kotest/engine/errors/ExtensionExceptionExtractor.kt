@@ -1,5 +1,6 @@
 package io.kotest.engine.errors
 
+import io.kotest.common.KotestInternal
 import io.kotest.engine.extensions.ExtensionException
 
 /**
@@ -13,6 +14,7 @@ import io.kotest.engine.extensions.ExtensionException
  * callback was to fail, we cannot display the failure. The workaround is to add a dummy test
  * to the test suite, with some name like 'afterSpecFailure' and attach the exception there.
  */
+@KotestInternal
 object ExtensionExceptionExtractor {
 
    fun resolve(t: Throwable): Pair<String, Throwable> {

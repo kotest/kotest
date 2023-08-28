@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor
+package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.common.flatMap
 import io.kotest.core.config.ProjectConfiguration
@@ -7,6 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
@@ -16,7 +17,7 @@ import io.kotest.engine.tags.runtimeTagExpression
  * A [SpecInterceptor] that skips this [Spec] if it contains inline tags which don't satisfy
  * the current tag expression.
  */
-class InlineTagSpecInterceptor(
+internal class InlineTagSpecInterceptor(
    private val listener: TestEngineListener,
    private val projectConfiguration: ProjectConfiguration,
 ) : SpecInterceptor {

@@ -338,6 +338,8 @@ class ProjectConfiguration {
     */
    var tagInheritance: Boolean = false
 
+   var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
+
    /**
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
@@ -347,6 +349,8 @@ class ProjectConfiguration {
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
    var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+
+   var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
    /**
     * Returns all globally registered [Listener]s.
