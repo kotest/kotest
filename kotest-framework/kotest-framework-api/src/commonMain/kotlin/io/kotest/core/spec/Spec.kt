@@ -359,7 +359,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)

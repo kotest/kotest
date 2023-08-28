@@ -8,29 +8,29 @@ class AfterTestOrderTest : DescribeSpec({
    var trail = ""
 
    afterSpec {
-      trail shouldBe "1452345455"
+      trail shouldBe "3215421211"
    }
 
    afterTest {
-      trail += "5"
+      trail += "1"
    }
 
    describe("nested level 1") {
       afterTest {
-         trail += "4"
+         trail += "2"
       }
 
       it("test level 1") {
-         trail += "1"
+         trail += "3"
       }
 
       describe("nested level 2") {
          afterTest {
-            trail += "3"
+            trail += "4"
          }
 
          it("test level 2") {
-            trail += "2"
+            trail += "5"
          }
       }
    }
