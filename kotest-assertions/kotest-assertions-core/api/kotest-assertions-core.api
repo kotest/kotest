@@ -1116,6 +1116,26 @@ public final class io/kotest/matchers/doubles/ZeroKt {
 	public static final fun shouldNotBeZero (D)D
 }
 
+public final class io/kotest/matchers/equality/EqualToComparingFieldsKt {
+	public static final fun beEqualToComparingFields (Ljava/lang/Object;Lio/kotest/matchers/equality/FieldEqualityConfig;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeEqualUsingFields (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldBeEqualUsingFields (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun shouldNotBeEqualUsingFields (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeEqualUsingFields (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class io/kotest/matchers/equality/FieldEqualityConfig {
+	public fun <init> ()V
+	public final fun getIgnoreComputedFields ()Z
+	public final fun getIgnorePrivateFields ()Z
+	public final fun getPropertiesToExclude ()Ljava/util/List;
+	public final fun getUseDefaultShouldBeForFields ()Ljava/util/List;
+	public final fun setIgnoreComputedFields (Z)V
+	public final fun setIgnorePrivateFields (Z)V
+	public final fun setPropertiesToExclude (Ljava/util/List;)V
+	public final fun setUseDefaultShouldBeForFields (Ljava/util/List;)V
+}
+
 public final class io/kotest/matchers/equality/FieldsEqualityCheckConfig {
 	public fun <init> ()V
 	public fun <init> (ZZLjava/util/List;Ljava/util/List;)V
