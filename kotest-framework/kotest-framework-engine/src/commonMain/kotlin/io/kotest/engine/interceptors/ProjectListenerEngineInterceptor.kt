@@ -1,13 +1,11 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
 import io.kotest.engine.project.ProjectExtensions
 
 /**
  * An [EngineInterceptor] that invokes any before and after project listeners.
  */
-@KotestInternal
 internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(

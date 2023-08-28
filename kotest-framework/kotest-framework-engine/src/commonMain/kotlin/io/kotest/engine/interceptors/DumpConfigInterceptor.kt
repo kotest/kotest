@@ -1,6 +1,5 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.EngineResult
@@ -10,7 +9,6 @@ import io.kotest.mpp.syspropOrEnv
 /**
  * Outputs a given [ProjectConfiguration] to the console.
  */
-@OptIn(KotestInternal::class)
 internal object DumpConfigInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
@@ -23,7 +21,7 @@ internal object DumpConfigInterceptor : EngineInterceptor {
       return execute(context)
    }
 
-   fun syspropEnabled() =
+   private fun syspropEnabled() =
       syspropOrEnv(KotestEngineProperties.dumpConfig).toBoolean()
 
 }

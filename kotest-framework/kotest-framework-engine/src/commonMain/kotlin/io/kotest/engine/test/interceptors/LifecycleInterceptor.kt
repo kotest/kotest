@@ -9,7 +9,6 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.Logger
-import kotlin.time.TimeMark
 
 /**
  * Executes a test taking care of invoking user level listeners.
