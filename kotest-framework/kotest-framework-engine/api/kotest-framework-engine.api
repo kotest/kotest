@@ -66,7 +66,7 @@ public final class io/kotest/engine/TestEngineConfig {
 
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;)V
+	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;Z)V
 	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun launch ()Lio/kotest/engine/EngineResult;
@@ -79,6 +79,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withConfiguration (Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withInitializedConfiguration (Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
@@ -115,9 +116,17 @@ public final class io/kotest/engine/config/ConfigurationException : java/lang/Ex
 	public fun <init> (Ljava/lang/Throwable;)V
 }
 
+public final class io/kotest/engine/config/DetectAbstractProjectConfigsKt {
+	public static final fun detectAbstractProjectConfigsJVM ()Ljava/util/List;
+}
+
 public final class io/kotest/engine/config/DumpKt {
 	public static final fun createConfigSummary (Lio/kotest/core/config/ProjectConfiguration;)Ljava/lang/String;
 	public static final fun dumpProjectConfig (Lio/kotest/core/config/ProjectConfiguration;)V
+}
+
+public final class io/kotest/engine/config/LoadProjectConfigFromClassnameKt {
+	public static final fun loadProjectConfigFromClassnameJVM ()Lio/kotest/core/config/AbstractProjectConfig;
 }
 
 public final class io/kotest/engine/errors/ExtensionExceptionExtractor {
