@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.spec.interceptor.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import kotlin.coroutines.coroutineContext

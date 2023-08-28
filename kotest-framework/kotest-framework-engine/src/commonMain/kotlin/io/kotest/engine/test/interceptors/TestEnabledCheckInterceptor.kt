@@ -15,9 +15,9 @@ import io.kotest.mpp.Logger
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-internal class EnabledCheckInterceptor(private val configuration: ProjectConfiguration) : TestExecutionInterceptor {
+internal class TestEnabledCheckInterceptor(private val configuration: ProjectConfiguration) : TestExecutionInterceptor {
 
-   private val logger = Logger(EnabledCheckInterceptor::class)
+   private val logger = Logger(TestEnabledCheckInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,

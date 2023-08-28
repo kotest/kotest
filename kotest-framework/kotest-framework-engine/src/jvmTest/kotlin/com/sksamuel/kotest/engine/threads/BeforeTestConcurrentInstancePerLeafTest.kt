@@ -37,14 +37,11 @@ class SpecThreadBeforeTestConcurrentInstancePerLeafTest : FunSpec({
    }
 
    test("test 1 should run before/after test concurrently and independent") {
-      "void"
    }
 
    test("test 2 should run before/after test concurrently and independent") {
-      "void"
    }
 
    test("test 3 should run before/after test concurrently and independent") {
-      "void"
    }
 })

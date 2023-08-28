@@ -7,7 +7,6 @@ import io.kotest.engine.EngineResult
 /**
  * Checks that we didn't have any partially constructed tests.
  */
-@KotestInternal
 internal object TestDslStateInterceptor : EngineInterceptor {
    override suspend fun intercept(
       context: EngineContext,

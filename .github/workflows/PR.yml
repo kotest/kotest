@@ -26,7 +26,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
-               java-version: '17'
+               java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -55,7 +55,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
-               java-version: '17'
+               java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -81,8 +81,7 @@ jobs:
          fail-fast: true
          matrix:
             target:
-               - macosX64Test
-               - macosArm64Test
+               - macosX64Test macosArm64Test
                - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary
                - tvosX64Test tvosArm64TestKlibrary
                - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test
@@ -97,8 +96,8 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               java-version: '17'
                distribution: 'temurin'
+               java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -135,8 +134,8 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               java-version: '17'
                distribution: 'temurin'
+               java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
 

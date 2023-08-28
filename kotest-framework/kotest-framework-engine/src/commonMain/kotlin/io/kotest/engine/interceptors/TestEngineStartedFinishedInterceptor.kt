@@ -9,7 +9,6 @@ import io.kotest.mpp.Logger
  * and the final [TestSuite] is ready to be used, and that all tests
  * have completed, with any unexpected errors.
  */
-@KotestInternal
 internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
 
    private val logger = Logger(TestEngineStartedFinishedInterceptor::class)

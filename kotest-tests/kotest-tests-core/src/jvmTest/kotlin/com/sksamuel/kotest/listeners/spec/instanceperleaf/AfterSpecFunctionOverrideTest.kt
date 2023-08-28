@@ -25,7 +25,9 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
          counter.get() shouldBe 5
       }
 
+      // this shouldn't trigger the after spec as its in an isolated instance
       test("ignored test").config(enabled = false) {}
+
       test("a") { }
       test("b") { }
       test("c") { }
@@ -52,6 +54,7 @@ class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
          counter.get() shouldBe 5
       }
 
+      // this shouldn't trigger the after spec as its in an isolated instance
       test("ignored test").config(enabled = false) {}
 
       context("context 1") {
