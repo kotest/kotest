@@ -7,8 +7,6 @@ sealed class ExtensionException(val t: Throwable) : Exception(t) {
    class BeforeProjectException(cause: Throwable) : ExtensionException(cause)
    class BeforeInvocationException(cause: Throwable) : ExtensionException(cause)
    class AfterInvocationException(cause: Throwable) : ExtensionException(cause)
-   class BeforeTestException(cause: Throwable) : ExtensionException(cause)
-   class AfterTestException(cause: Throwable) : ExtensionException(cause)
    class BeforeEachException(cause: Throwable) : ExtensionException(cause)
    class AfterEachException(cause: Throwable) : ExtensionException(cause)
    class BeforeContainerException(cause: Throwable) : ExtensionException(cause)

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.shouldspec
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.IsolationMode

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.behavior
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
