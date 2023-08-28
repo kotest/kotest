@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
+import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -31,6 +32,6 @@ class InvocationThreadTest : FunSpec({
    test("multiple threads / multiple invocations").config(invocations = 3, threads = 3) {
       multipleThreadMultipleInvocationCallCount.incrementAndGet()
       multipleThreadMultipleInvocationThreadIds[Thread.currentThread().id] = Unit
-      Thread.sleep(50) // Keep the coroutine around long enough to make the dispatcher start jobs on other threads.
+      provokeThreadSwitch()
    }
 })
