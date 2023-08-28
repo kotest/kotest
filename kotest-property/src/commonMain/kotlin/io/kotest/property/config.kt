@@ -55,6 +55,7 @@ object PropertyTesting {
    var writeFailedSeed: Boolean by AtomicProperty {
       sysprop("kotest.proptest.seed.write-failed", true)
    }
+   var labelOrder: LabelOrder by AtomicProperty { LabelOrder.Quantity }
 
    @ExperimentalKotest
    var statisticsReporter: StatisticsReporter by AtomicProperty {
@@ -65,6 +66,11 @@ object PropertyTesting {
    var statisticsReportMode: StatisticsReportMode by AtomicProperty {
       StatisticsReportMode.ON
    }
+}
+
+enum class LabelOrder {
+   Quantity,
+   Lexicographic,
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
