@@ -324,8 +324,9 @@ public final class io/kotest/matchers/collections/ContainAllIgnoringFieldsKt {
 }
 
 public final class io/kotest/matchers/collections/ContainAllKt {
-	public static final fun containAll (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun containAll (Ljava/util/Collection;Lio/kotest/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static final fun containAll ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static synthetic fun containAll$default (Ljava/util/Collection;Lio/kotest/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)V
 	public static final fun shouldContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainAll (Ljava/util/Collection;Ljava/util/Collection;)V
@@ -341,8 +342,9 @@ public final class io/kotest/matchers/collections/ContainAllKt {
 }
 
 public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {
-	public static final fun containExactlyInAnyOrder (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun containExactlyInAnyOrder (Ljava/util/Collection;Lio/kotest/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactlyInAnyOrder ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static synthetic fun containExactlyInAnyOrder$default (Ljava/util/Collection;Lio/kotest/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainExactlyInAnyOrder (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainExactlyInAnyOrder (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
 	public static final fun shouldContainExactlyInAnyOrder ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
@@ -352,8 +354,10 @@ public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {
 }
 
 public final class io/kotest/matchers/collections/ContainExactlyKt {
-	public static final fun containExactly (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun appendMissingAndExtra (Ljava/lang/StringBuilder;Ljava/util/Collection;Ljava/util/Collection;)V
+	public static final fun containExactly (Ljava/util/Collection;Lio/kotest/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactly ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static synthetic fun containExactly$default (Ljava/util/Collection;Lio/kotest/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainExactly (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainExactly (Ljava/util/Collection;Ljava/util/Collection;)V
 	public static final fun shouldContainExactly (Ljava/util/Collection;[Ljava/lang/Object;)V
@@ -382,8 +386,9 @@ public final class io/kotest/matchers/collections/ContainKt {
 }
 
 public final class io/kotest/matchers/collections/ContainOnlyKt {
-	public static final fun containOnly (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun containOnly (Ljava/util/Collection;Lio/kotest/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static final fun containOnly ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static synthetic fun containOnly$default (Ljava/util/Collection;Lio/kotest/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainOnly (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainOnly (Ljava/util/Collection;Ljava/util/Collection;)V
 	public static final fun shouldContainOnly (Ljava/util/Collection;[Ljava/lang/Object;)V
