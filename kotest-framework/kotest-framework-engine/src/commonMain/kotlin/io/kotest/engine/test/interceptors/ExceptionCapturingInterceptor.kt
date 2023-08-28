@@ -6,7 +6,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.Logger
-import kotlin.time.TimeMark
 
 /**
  * Captures exceptions from downstream interceptors and converts to a failed test result.

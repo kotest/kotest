@@ -74,6 +74,8 @@ object KotestEngineProperties {
     */
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
+   const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
+
    const val concurrentSpecs = "kotest.framework.spec.concurrent"
 
    const val concurrentTests = "kotest.framework.test.concurrent"

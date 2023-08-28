@@ -1,8 +1,3 @@
-public final class PropertiesKt {
-	public static final fun shouldHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)V
-	public static final fun shouldMatch (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class io/kotest/assertions/Actual {
 	public fun <init> (Lio/kotest/assertions/print/Printed;)V
 	public final fun component1 ()Lio/kotest/assertions/print/Printed;
@@ -53,12 +48,18 @@ public final class io/kotest/assertions/AssertionFailedError : org/opentest4j/As
 
 public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
+	public final fun getDisableNaNEquality ()Z
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
+}
+
+public final class io/kotest/assertions/AssertionsConfigSystemProperties {
+	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
+	public static final field disableNaNEquality Ljava/lang/String;
 }
 
 public class io/kotest/assertions/BasicAssertionCounter : io/kotest/assertions/AssertionCounter {
@@ -653,7 +654,6 @@ public final class io/kotest/assertions/timing/Continually {
 }
 
 public final class io/kotest/assertions/timing/ContinuallyKt {
-	public static final fun continually-O4J4VbY (JJLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun continually-rnQQ1Ag (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun continually-rnQQ1Ag$default (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
@@ -803,21 +803,13 @@ public final class io/kotest/assertions/until/UntilKt {
 	public static final fun until (Lio/kotest/assertions/until/PatienceConfig;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until (Lio/kotest/assertions/until/PatienceConfig;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until-bz6L7rs (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/until/UntilListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun until-bz6L7rs$default (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/until/UntilListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun until-gRj5Bb8 (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until-rnQQ1Ag (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until-rnQQ1Ag (JLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun untilListener (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/until/UntilListener;
 }
 
 public abstract interface class io/kotest/assertions/until/UntilListener {
-	public static final field Companion Lio/kotest/assertions/until/UntilListener$Companion;
 	public abstract fun onEval (Ljava/lang/Object;)V
-}
-
-public final class io/kotest/assertions/until/UntilListener$Companion {
-	public final fun getNoop ()Lio/kotest/assertions/until/UntilListener;
 }
 
 public final class io/kotest/data/ErrorCollector {

@@ -2,6 +2,10 @@ package io.kotest.assertions
 
 import io.kotest.mpp.sysprop
 
+object AssertionsConfigSystemProperties {
+   const val disableNaNEquality = "kotest.assertions.nan.equality.disable"
+}
+
 object AssertionsConfig {
 
    val showDataClassDiff: Boolean
@@ -19,7 +23,11 @@ object AssertionsConfig {
    val maxCollectionEnumerateSize: Int
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 
-   val maxCollectionPrintSize: ConfigValue<Int> = EnvironmentConfigValue<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
+   val disableNaNEquality: Boolean
+      get() = sysprop(AssertionsConfigSystemProperties.disableNaNEquality)?.toBoolean() ?: false
+
+   val maxCollectionPrintSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
 }
 
 interface ConfigValue<T> {
@@ -31,7 +39,7 @@ class EnvironmentConfigValue<T>(
    private val name: String,
    private val defaultValue: T,
    val converter: (String) -> T
-): ConfigValue<T> {
+) : ConfigValue<T> {
    override val sourceDescription: String? = ConfigurationLoader.getSourceDescription(name)
    override val value: T = loadValue()
 

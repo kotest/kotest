@@ -39,6 +39,7 @@ class TestEngineLauncher(
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
+   private val configurationIsInitialized: Boolean,
 ) {
 
    constructor() : this(
@@ -48,6 +49,7 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    constructor(listener: TestEngineListener) : this(
@@ -57,6 +59,7 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    /**
@@ -77,6 +80,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -88,6 +92,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -100,6 +105,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -112,7 +118,8 @@ class TestEngineLauncher(
    }
 
    /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
+    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin,
+    * and sets [configurationIsInitialized] to false.
     */
    fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
@@ -122,6 +129,7 @@ class TestEngineLauncher(
          configs = configs + projectConfig,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = false,
       )
    }
 
@@ -133,6 +141,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = expression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -163,6 +172,19 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = false,
+      )
+   }
+
+   fun withInitializedConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
+      return TestEngineLauncher(
+         platform = platform,
+         listener = listener,
+         projectConfiguration = configuration,
+         configs = configs,
+         refs = refs,
+         tagExpression = tagExpression,
+         configurationIsInitialized = true,
       )
    }
 
@@ -178,6 +200,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -186,6 +209,14 @@ class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
 
+      val configuration = if (configurationIsInitialized) projectConfiguration else {
+         ConfigManager.initialize(projectConfiguration) {
+            configs +
+               detectAbstractProjectConfigs() +
+               listOfNotNull(loadProjectConfigFromClassname())
+         }
+      }
+
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -193,9 +224,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         configuration = ConfigManager.initialize(
-            projectConfiguration
-         ) { configs + detectAbstractProjectConfigs() + listOfNotNull(loadProjectConfigFromClassname()) },
+         configuration = configuration,
          tagExpression,
          platform,
       )

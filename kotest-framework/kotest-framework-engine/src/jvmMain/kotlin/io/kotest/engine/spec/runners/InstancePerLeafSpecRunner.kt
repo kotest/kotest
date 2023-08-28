@@ -3,7 +3,6 @@ package io.kotest.engine.spec.runners
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.root
 import io.kotest.core.spec.Spec
@@ -11,33 +10,38 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
-import java.util.*
+import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
-   listener: TestEngineListener,
-   scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
-) : SpecRunner(listener, scheduler, configuration) {
+   private val context: EngineContext,
+) : SpecRunner {
 
    private val logger = Logger(InstancePerLeafSpecRunner::class)
+   private val listener = context.listener
+   private val pipeline = SpecInterceptorPipeline(context)
+   private val materializer = Materializer(context.configuration)
 
-   private val extensions = SpecExtensions(configuration.registry)
    private val results = mutableMapOf<TestCase, TestResult>()
+
+   // set to true once the initially supplied spec has been used for a test
+   private val defaultInstanceUsed = AtomicBoolean(false)
 
    /** keeps track of tests we've already discovered */
    private val seen = mutableSetOf<Descriptor>()
@@ -64,7 +68,7 @@ internal class InstancePerLeafSpecRunner(
    }
 
    /**
-    * The intention of this runner is that each leaf [TestCase] executes in its own instance
+    * The intention of this runner is that each **leaf** [TestCase] executes in its own instance
     * of the containing [Spec] class.
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
@@ -78,16 +82,36 @@ internal class InstancePerLeafSpecRunner(
          // new is left to be found to be added to the queue
          while (queue.isNotEmpty()) {
             val (testCase, _) = queue.remove()
-            executeInCleanSpec(testCase).getOrThrow()
+            executeInCleanSpecIfRequired(testCase, spec).getOrThrow()
          }
          results
       }
 
-   private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      return createInstance(test.spec::class).flatMap { spec ->
-         extensions.intercept(spec) {
-            locateAndRunRoot(spec, test)
-         } ?: Result.success(spec)
+   /**
+    * The first time we run a root test, we can use the already instantiated spec as the instance.
+    * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
+    * Eg, see https://github.com/kotest/kotest/issues/3490
+    */
+   private suspend fun executeInCleanSpecIfRequired(
+      test: TestCase,
+      defaultSpec: Spec
+   ): Result<Map<TestCase, TestResult>> {
+      return if (defaultInstanceUsed.compareAndSet(false, true)) {
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+      } else {
+         executeInCleanSpec(test)
+      }
+   }
+
+   private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
+      return createAndInitializeSpec(test.spec::class, context.configuration.registry)
+         .flatMap { spec -> executeInGivenSpec(test, spec) }
+   }
+
+   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
+      return pipeline.execute(spec) {
+         locateAndRunRoot(spec, test)
+         Result.success(emptyMap())
       }
    }
 
@@ -100,9 +124,7 @@ internal class InstancePerLeafSpecRunner(
          ?: error("Unable to locate root test ${test.descriptor.path()}")
 
       logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
-      extensions.beforeSpec(spec).getOrThrow()
       locateAndRunRoot(root, test)
-      extensions.afterSpec(spec).getOrThrow()
       spec
    }
 
@@ -118,7 +140,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = Materializer(configuration).materialize(nested, testCase)
+               val t = Materializer(context.configuration).materialize(nested, testCase)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {
@@ -140,7 +162,10 @@ internal class InstancePerLeafSpecRunner(
             }
          }
 
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+         val context2 = DuplicateNameHandlingTestScope(
+            this@InstancePerLeafSpecRunner.context.configuration.duplicateTestNameMode,
+            context
+         )
 
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
@@ -165,7 +190,7 @@ internal class InstancePerLeafSpecRunner(
                }
             },
             defaultCoroutineDispatcherFactory,
-            configuration,
+            this@InstancePerLeafSpecRunner.context,
          )
 
          val result = testExecutor.execute(test, context2)

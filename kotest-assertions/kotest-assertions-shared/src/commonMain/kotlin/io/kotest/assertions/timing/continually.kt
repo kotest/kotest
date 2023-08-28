@@ -12,8 +12,10 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @KotestInternal
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class ContinuallyState(val start: TimeMarkCompat, val end: TimeMarkCompat, val times: Int)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface ContinuallyListener<in T> {
    fun onEval(t: T, state: ContinuallyState)
 
@@ -22,6 +24,7 @@ fun interface ContinuallyListener<in T> {
    }
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class Continually<T>(
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
@@ -53,13 +56,7 @@ data class Continually<T>(
    }
 }
 
-@Deprecated(
-   "Use continually with an interval, using Duration based poll is deprecated",
-   ReplaceWith("continually(duration, poll.fixed(), f = f)", "io.kotest.assertions.until.fixed")
-)
-suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T) =
-   continually(duration, poll.fixed(), f = f)
-
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> continually(
    duration: Duration,
    interval: Interval = 10.milliseconds.fixed(),

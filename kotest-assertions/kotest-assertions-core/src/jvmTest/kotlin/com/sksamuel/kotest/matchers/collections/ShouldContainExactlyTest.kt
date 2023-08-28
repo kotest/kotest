@@ -104,6 +104,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |Collection should contain exactly: [1, 2] based on object equality but was: [1L, 2L]
                   |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
+                  |
                   |expected:<[1, 2]> but was:<[1L, 2L]>
                """.trimMargin()
          }
@@ -122,6 +123,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
                """.trimMargin()
          }
@@ -138,6 +140,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
+                  |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
                """.trimMargin()
          }
@@ -155,6 +158,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
                """.trimMargin()
          }
@@ -172,6 +176,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
                """.trimMargin()
          }

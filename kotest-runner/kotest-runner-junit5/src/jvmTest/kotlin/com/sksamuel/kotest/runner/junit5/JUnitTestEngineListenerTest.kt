@@ -286,9 +286,9 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val conf = ProjectConfiguration()
       conf.displayFullTestPath = true
- 
+
       val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter(conf))
-      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf, Platform.JVM))
+      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf, Platform.JVM, mutableMapOf()))
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testStarted(tc2)
