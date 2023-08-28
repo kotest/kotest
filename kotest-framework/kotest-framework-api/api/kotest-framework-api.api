@@ -910,8 +910,8 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun listeners ()Ljava/util/List;
-	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
+	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
