@@ -3,9 +3,9 @@ package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
-private var trail = ""
-
 class AfterTestOrderTest : DescribeSpec({
+
+   var trail = ""
 
    afterSpec {
       trail shouldBe "1452345455"

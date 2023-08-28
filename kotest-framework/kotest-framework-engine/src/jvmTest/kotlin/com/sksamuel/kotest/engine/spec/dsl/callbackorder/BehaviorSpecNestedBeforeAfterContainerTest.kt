@@ -1,33 +1,33 @@
-package com.sksamuel.kotest.specs.behavior
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
-class BehaviorSpecNestedBeforeAfterEachTest : BehaviorSpec({
+class BehaviorSpecNestedBeforeAfterContainerTest : BehaviorSpec({
 
    var before = ""
    var after = ""
 
    afterSpec {
-      before shouldBe "aceacgaciackacm"
-      after shouldBe "fdbhdbjdbldbndb"
+      before shouldBe "aegacikm"
+      after shouldBe "fhjldbnb"
    }
 
-   beforeEach {
+   beforeContainer {
       before += "a"
    }
 
-   afterEach {
+   afterContainer {
       after += "b"
    }
 
    given("foo") {
 
-      beforeEach {
+      beforeContainer {
          before += "c"
       }
 
-      afterEach {
+      afterContainer {
          after += "d"
       }
 

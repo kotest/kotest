@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.describe
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe

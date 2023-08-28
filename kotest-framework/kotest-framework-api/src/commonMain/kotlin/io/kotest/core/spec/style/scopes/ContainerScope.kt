@@ -86,7 +86,7 @@ interface ContainerScope : TestScope {
    }
 
    /**
-    * Registers a [BeforeTest] function that executes before every test in this context.
+    * Registers a [BeforeTest] function that executes before every test with any [TestType] in this scope.
     * Only affects tests registered after a call to this function.
     */
    fun beforeTest(f: BeforeTest) {
@@ -94,11 +94,11 @@ interface ContainerScope : TestScope {
    }
 
    /**
-    * Registers an [AfterTest] function that executes after every test in this context.
+    * Registers an [AfterTest] function that executes after every test with any [TestType] in this scope.
     * Only affects tests registered after a call to this function.
     */
    fun afterTest(f: AfterTest) {
-      afterTest(f)
+      afterAny(f)
    }
 
    /**

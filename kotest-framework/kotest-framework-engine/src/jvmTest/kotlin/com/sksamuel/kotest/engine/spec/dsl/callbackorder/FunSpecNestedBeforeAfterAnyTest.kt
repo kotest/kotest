@@ -1,9 +1,9 @@
-package com.sksamuel.kotest.specs.describe
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
-import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class DescribeSpecNestedBeforeAfterAnyTest : DescribeSpec({
+class FunSpecNestedBeforeAfterAnyTest : FunSpec({
     var a = ""
 
     beforeSpec {
@@ -19,7 +19,7 @@ class DescribeSpecNestedBeforeAfterAnyTest : DescribeSpec({
         a = "afterAnyRoot"
     }
 
-    describe("foo") {
+    context("foo") {
         a shouldBe "beforeAnyRoot"
 
         beforeAny {
@@ -31,31 +31,31 @@ class DescribeSpecNestedBeforeAfterAnyTest : DescribeSpec({
             a = "afterAnyFoo"
         }
 
-        it("b") {
+        test("b") {
             a shouldBe "beforeAnyFoo"
             a = "testB"
         }
 
-        it("e") {
+        test("e") {
             a shouldBe "beforeAnyFoo"
             a = "testE"
         }
 
-        describe("bar") {
+        context("bar") {
             a shouldBe "beforeAnyFoo"
 
-            it("f") {
+            test("f") {
                 a shouldBe "beforeAnyFoo"
                 a = "testF"
             }
 
-            it("g") {
+            test("g") {
                 a shouldBe "beforeAnyFoo"
                 a = "testG"
             }
         }
 
-        it("h") {
+        test("h") {
             a shouldBe "beforeAnyFoo"
             a = "testH"
         }
