@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.compose.all
+import io.kotest.matchers.reflection.havingProperty
 import io.kotest.matchers.shouldBe
 
 class ComposeTest : StringSpec() {
@@ -47,9 +48,9 @@ class ComposeTest : StringSpec() {
       "Person matcher compose test" {
 
          val matcherResult = Matcher.all(
-            nameMatcher to Person::name,
-            ageMatcher to Person::age,
-            addressMatcher to Person::address
+            havingProperty(nameMatcher to Person::name),
+            havingProperty(ageMatcher to Person::age),
+            havingProperty(addressMatcher to Person::address)
          ).test(Person("John", 10, Address("Warsaw", "Test", "1/1")))
 
          matcherResult.passed() shouldBe true
@@ -64,9 +65,9 @@ class ComposeTest : StringSpec() {
       "should filter out successful matchers when using properties" {
 
          val matcherResult = Matcher.all(
-            nameMatcher to Person::name,
-            ageMatcher to Person::age,
-            addressMatcher to Person::address
+            havingProperty(nameMatcher to Person::name),
+            havingProperty(ageMatcher to Person::age),
+            havingProperty(addressMatcher to Person::address)
          ).test(Person("John2", 10, Address("Warsaw2", "Test2", "1/1")))
 
          matcherResult.passed() shouldBe false

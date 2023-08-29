@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.matchers.doubles
 
+import io.kotest.assertions.AssertionsConfigSystemProperties
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.doubles.exactly
 import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.doubles.shouldNotBeExactly
@@ -42,24 +44,27 @@ class DoubleExactlyTest : FreeSpec() {
       }
 
       "For non-numeric doubles" - {
+
          "NaN" - {
+            "should be exactly NaN" {
+               Double.NaN shouldBeExactly Double.NaN
+            }
 
-            "Should not be exactly" - {
-
-               "Any number" {
-                  checkAll(100, numericDoubles) {
-                     Double.NaN shouldNotMatchExactly it
-                  }
-               }
-
-               "NaN" {
+            "should not be exactly NaN when NaN equality is disabled" {
+               withSystemProperty(AssertionsConfigSystemProperties.disableNaNEquality, "true") {
                   Double.NaN shouldNotMatchExactly Double.NaN
                }
+            }
 
-               "The infinities" {
-                  Double.Companion.NaN shouldNotMatchExactly Double.Companion.POSITIVE_INFINITY
-                  Double.Companion.NaN shouldNotMatchExactly Double.Companion.NEGATIVE_INFINITY
+            "Should not be exactly any non-NaN" - {
+               checkAll(100, numericDoubles) {
+                  Double.NaN shouldNotMatchExactly it
                }
+            }
+
+            "should not be exactly infinity" {
+               Double.Companion.NaN shouldNotMatchExactly Double.Companion.POSITIVE_INFINITY
+               Double.Companion.NaN shouldNotMatchExactly Double.Companion.NEGATIVE_INFINITY
             }
          }
 

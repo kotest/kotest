@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.funspec
+package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

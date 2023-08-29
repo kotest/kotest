@@ -2,6 +2,8 @@ package io.kotest.property.statistics
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
+import io.kotest.property.LabelOrder
+import io.kotest.property.PropertyTesting
 import kotlin.coroutines.coroutineContext
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -31,7 +33,11 @@ object DefaultStatisticsReporter : StatisticsReporter {
 
    private fun stats(stats: Map<Any?, Int>, iterations: Int) {
       val countPad = iterations.toString().length
-      stats.toList().sortedByDescending { it.second }.forEach { (classification, count) ->
+      val sorted = when (PropertyTesting.labelOrder) {
+         LabelOrder.Quantity -> stats.toList().sortedByDescending { it.second }
+         LabelOrder.Lexicographic -> stats.toList().sortedBy { it.first.toString() }
+      }
+      sorted.forEach { (classification, count) ->
          row(classification, count, iterations, countPad)
       }
    }

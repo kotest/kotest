@@ -23,8 +23,6 @@ object ExtensionExceptionExtractor {
          is ExtensionException -> when (t) {
             is ExtensionException.BeforeProjectException -> "Before Project Error"
             is ExtensionException.AfterProjectException -> "After Project Error"
-            is ExtensionException.BeforeTestException -> "Before Test Error"
-            is ExtensionException.AfterTestException -> "After Test Error"
             is ExtensionException.BeforeEachException -> "Before Each Error"
             is ExtensionException.AfterEachException -> "After Each Error"
             is ExtensionException.BeforeContainerException -> "Before Container Error"
