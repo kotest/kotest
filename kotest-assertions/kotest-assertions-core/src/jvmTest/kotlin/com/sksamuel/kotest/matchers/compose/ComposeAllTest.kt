@@ -67,7 +67,7 @@ class ComposeAllTest : StringSpec() {
 
       "Person matcher compose test, should fail on mismatching types" {
          shouldFailWithMessage(
-            "Mismatching types in argument 1 for composed matcher: " +
+            "Mismatching type of matcher for property name: " +
                "class java.lang.String cannot be cast to class java.lang.Number " +
                "(java.lang.String and java.lang.Number are in module java.base of loader 'bootstrap')"
          ) {
