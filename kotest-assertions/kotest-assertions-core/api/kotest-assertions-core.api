@@ -803,7 +803,6 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 
 public final class io/kotest/matchers/compose/AllKt {
 	public static final fun all (Lio/kotest/matchers/Matcher$Companion;[Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
-	public static final fun all (Lio/kotest/matchers/Matcher$Companion;[Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/concurrent/ConcurrentKt {
@@ -1738,6 +1737,10 @@ public final class io/kotest/matchers/reflection/FunctionMatchersKt {
 	public static final fun shouldNotBeInline (Lkotlin/reflect/KFunction;)V
 	public static final fun shouldNotHaveAnnotations (Lkotlin/reflect/KFunction;)V
 	public static final fun shouldNotHaveAnnotations (Lkotlin/reflect/KFunction;I)V
+}
+
+public final class io/kotest/matchers/reflection/HavingPropertyKt {
+	public static final fun havingProperty (Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/reflection/PropertyMatchersKt {
