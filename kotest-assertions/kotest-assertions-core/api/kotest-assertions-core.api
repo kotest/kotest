@@ -805,6 +805,10 @@ public final class io/kotest/matchers/compose/AllKt {
 	public static final fun all (Lio/kotest/matchers/Matcher$Companion;[Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/compose/AnyKt {
+	public static final fun any (Lio/kotest/matchers/Matcher$Companion;[Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
+}
+
 public final class io/kotest/matchers/concurrent/ConcurrentKt {
 	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)V

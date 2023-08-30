@@ -48,7 +48,7 @@ class ComposeAllTest : StringSpec() {
    }
 
    init {
-      "Person matcher compose test" {
+      "Person Matcher.all test" {
 
          val matcherResult = Matcher.all(
             havingProperty(nameMatcher to Person::name),
@@ -65,7 +65,43 @@ class ComposeAllTest : StringSpec() {
          """.trimIndent()
       }
 
-      "Person matcher compose test, should fail on mismatching types" {
+      "Matcher.all should filter out successful matchers when using properties" {
+
+         val matcherResult = Matcher.all(
+            havingProperty(nameMatcher to Person::name),
+            havingProperty(ageMatcher to Person::age),
+            havingProperty(addressMatcher to Person::address)
+         ).test(Person("John2", 10, Address("Warsaw2", "Test2", "1/1")))
+
+         matcherResult.passed() shouldBe false
+         matcherResult.failureMessage() shouldBe """
+            Name John2 should be John
+            Address ${Address("Warsaw2", "Test2", "1/1")} should be Test 1/1 Warsaw
+         """.trimIndent()
+         matcherResult.negatedFailureMessage() shouldBe """
+            Age 10 should not be 10
+         """.trimIndent()
+      }
+
+      "Matcher.all should filter out successful matchers when using matchers" {
+
+         val matcherResult = Matcher.all<Person>(
+            nameMatcher.contramap { it.name },
+            ageMatcher.contramap { it.age },
+            addressMatcher.contramap { it.address },
+         ).test(Person("John2", 10, Address("Warsaw2", "Test2", "1/1")))
+
+         matcherResult.passed() shouldBe false
+         matcherResult.failureMessage() shouldBe """
+            Name John2 should be John
+            Address ${Address("Warsaw2", "Test2", "1/1")} should be Test 1/1 Warsaw
+         """.trimIndent()
+         matcherResult.negatedFailureMessage() shouldBe """
+            Age 10 should not be 10
+         """.trimIndent()
+      }
+
+      "Person Matcher.all test, should fail on mismatching types" {
          shouldFailWithMessage(
             "Mismatching type of matcher for property name: " +
                "class java.lang.String cannot be cast to class java.lang.Number " +
@@ -79,7 +115,7 @@ class ComposeAllTest : StringSpec() {
          }
       }
 
-      "password matcher test" {
+      "password Matcher.all test" {
 
          val passwordMatcher = Matcher.all(
             containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
