@@ -310,13 +310,17 @@ public abstract class io/kotest/engine/listener/AbstractTestEngineListener : io/
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/listener/CollectingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
+public final class io/kotest/engine/listener/CollectingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener, kotlinx/coroutines/sync/Mutex {
 	public fun <init> ()V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getErrors ()Z
 	public final fun getNames ()Ljava/util/List;
+	public fun getOnLock ()Lkotlinx/coroutines/selects/SelectClause2;
 	public final fun getSpecs ()Ljava/util/Map;
 	public final fun getTests ()Ljava/util/Map;
+	public fun holdsLock (Ljava/lang/Object;)Z
+	public fun isLocked ()Z
+	public fun lock (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun result (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;)Lio/kotest/core/test/TestResult;
 	public final fun result (Ljava/lang/String;)Lio/kotest/core/test/TestResult;
 	public final fun setErrors (Z)V
@@ -325,6 +329,8 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener : io/k
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun toKey (Lio/kotest/core/test/TestCase;)Lio/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey;
+	public fun tryLock (Ljava/lang/Object;)Z
+	public fun unlock (Ljava/lang/Object;)V
 }
 
 public final class io/kotest/engine/listener/CollectingTestEngineListener$TestCaseKey {
