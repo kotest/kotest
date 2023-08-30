@@ -803,7 +803,10 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 
 public final class io/kotest/matchers/compose/AllKt {
 	public static final fun all (Lio/kotest/matchers/Matcher$Companion;[Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
-	public static final fun all (Lio/kotest/matchers/Matcher$Companion;[Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
+}
+
+public final class io/kotest/matchers/compose/AnyKt {
+	public static final fun any (Lio/kotest/matchers/Matcher$Companion;[Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/concurrent/ConcurrentKt {
@@ -1016,6 +1019,7 @@ public final class io/kotest/matchers/doubles/BetweenKt {
 
 public final class io/kotest/matchers/doubles/ExactlyKt {
 	public static final fun exactly (D)Lio/kotest/matchers/Matcher;
+	public static final fun exactlyByBits (D)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeExactly (DD)D
 	public static final fun shouldNotBeExactly (DD)D
 }
@@ -1320,17 +1324,18 @@ public final class io/kotest/matchers/floats/MatchersKt {
 	public static final fun beLessThanOrEqualTo (F)Lio/kotest/matchers/Matcher;
 	public static final fun beWithinPercentageOf (FD)Lio/kotest/matchers/Matcher;
 	public static final fun exactly (F)Lio/kotest/matchers/Matcher;
+	public static final fun exactlyByBits (F)Lio/kotest/matchers/Matcher;
 	public static final fun gt (F)Lio/kotest/matchers/Matcher;
 	public static final fun gte (F)Lio/kotest/matchers/Matcher;
 	public static final fun lt (F)Lio/kotest/matchers/Matcher;
 	public static final fun lte (F)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeExactly (FF)Ljava/lang/Object;
+	public static final fun shouldBeExactly (FF)F
 	public static final fun shouldBeGreaterThan (FF)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEqual (FF)Ljava/lang/Object;
 	public static final fun shouldBeLessThan (FF)Ljava/lang/Object;
 	public static final fun shouldBeLessThanOrEqual (FF)Ljava/lang/Object;
 	public static final fun shouldBeWithinPercentageOf (FFD)V
-	public static final fun shouldBeZero (F)Ljava/lang/Object;
+	public static final fun shouldBeZero (F)F
 	public static final fun shouldNotBeExactly (FF)F
 	public static final fun shouldNotBeGreaterThan (FF)F
 	public static final fun shouldNotBeGreaterThanOrEqual (FF)F
@@ -1756,6 +1761,10 @@ public final class io/kotest/matchers/reflection/FunctionMatchersKt {
 	public static final fun shouldNotBeInline (Lkotlin/reflect/KFunction;)V
 	public static final fun shouldNotHaveAnnotations (Lkotlin/reflect/KFunction;)V
 	public static final fun shouldNotHaveAnnotations (Lkotlin/reflect/KFunction;I)V
+}
+
+public final class io/kotest/matchers/reflection/HavingPropertyKt {
+	public static final fun havingProperty (Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/reflection/PropertyMatchersKt {

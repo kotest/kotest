@@ -5,8 +5,9 @@ slug: composed-matchers.html
 sidebar_label: Composed Matchers
 ---
 
-Composed matchers can be created for any type by composing one or more other matchers. This allows us to
-build up complex matchers from simpler ones.
+Composed matchers can be created for any type by composing one or more matchers. This allows to
+build up complex matchers from simpler ones. There are two logical operations, using which we can compose matchers:
+logical sum (`Matcher.any`) and logical product (`Matcher.all`).
 
 Let's say we'd like to define a password `Matcher`, which will `containADigit()`, `contain(Regex("[a-z]"))` and
 `contain(Regex("[A-Z]"))`. We can compose these matchers this way:
@@ -27,6 +28,15 @@ So it can be invoked like this:
 ```kotlin
 "StrongPassword123".shouldBeStrongPassword()
 "WeakPassword".shouldBeStrongPassword() // would fail
+```
+
+By analogy, we can build a composed matcher using `Matcher.any`.
+In this case, `passwordMatcher` will fail only if all matchers fail, otherwise it will pass.
+
+```kotlin
+val passwordMatcher = Matcher.any(
+   containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
+)
 ```
 
 Composed matchers can also be created for any `class` or `interface` by composing one or more other matchers along with
@@ -82,9 +92,9 @@ extract to pass to each matcher in turn.
 
 ```kotlin
 fun personMatcher(name: String, age: Int) = Matcher.all(
-  nameMatcher(name) to Person::name,
-  ageMatcher(age) to Person::age,
-  addressMatcher to Person::address
+  havingProperty(nameMatcher(name) to Person::name),
+  havingProperty(ageMatcher(age) to Person::age),
+  havingProperty(addressMatcher to Person::address)
 )
 ```
 
