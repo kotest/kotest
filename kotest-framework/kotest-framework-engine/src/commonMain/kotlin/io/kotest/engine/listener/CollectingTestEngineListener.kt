@@ -16,6 +16,9 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    val names = mutableListOf<String>()
    var errors = false
 
+   fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
+   fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
+
    override suspend fun specFinished(kclass: KClass<*>, result: TestResult) = withLock {
       specs[kclass] = result
       if (result.isErrorOrFailure) errors = true
