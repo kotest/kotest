@@ -100,6 +100,7 @@ module.exports = {
   ],
   "framework": [
     "framework/index",
+    "framework/setup",
     "framework/writing_tests",
     "framework/styles",
     {

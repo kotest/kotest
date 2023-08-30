@@ -82,9 +82,9 @@ extract to pass to each matcher in turn.
 
 ```kotlin
 fun personMatcher(name: String, age: Int) = Matcher.all(
-  nameMatcher(name) to Person::name,
-  ageMatcher(age) to Person::age,
-  addressMatcher to Person::address
+  havingProperty(nameMatcher(name) to Person::name),
+  havingProperty(ageMatcher(age) to Person::age),
+  havingProperty(addressMatcher to Person::address)
 )
 ```
 
