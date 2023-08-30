@@ -15,7 +15,7 @@ class AssertionCounterMultithreadingTests : FunSpec({
          val threadIds = mutableSetOf<Long>()
          assertionCounter.inc()
          threadIds.add(Thread.currentThread().id)
-         delay(10)
+         delay(50)
          assertionCounter.inc()
          threadIds.add(Thread.currentThread().id)
          assertionCounter.get() shouldBe 2
