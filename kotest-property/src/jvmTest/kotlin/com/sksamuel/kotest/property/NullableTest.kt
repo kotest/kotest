@@ -2,6 +2,8 @@ package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import io.kotest.property.forNone
@@ -40,7 +42,7 @@ class NullableTest : FunSpec({
    test("checkAll with implicit nullable arbitraries with should not be null Assumption") {
       checkAll<Int?> { num ->
          withAssumptions(num != null) {
-            num != null
+            num shouldNotBe null
          }
       }
    }
@@ -48,7 +50,7 @@ class NullableTest : FunSpec({
    test("checkAll with implicit nullable arbitraries with should be null Assumption") {
       checkAll<Int?> { num ->
          withAssumptions(num == null) {
-            num == null
+            num shouldBe null
          }
       }
    }
