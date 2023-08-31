@@ -102,7 +102,7 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
 
    return object : Matcher<T> {
       override fun test(value: T): MatcherResult {
-         return runCatching { compareFields(value, expected, config) }.fold(
+         return runCatching { compareUsingFields(value, expected, config) }.fold(
             { result ->
                MatcherResult(
                   result.errors.isEmpty(),
@@ -110,10 +110,10 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                      """Expected ${value.print().value} to equal ${expected.print().value}
                   |
                   |Using fields:
-                  |${result.fieldsIncluded.joinToString("\n") { " - $it" }}
+                  |${result.fields.joinToString("\n") { " - $it" }}
                   |
                   |Fields that differ:
-                  |${result.errors.joinToString("\n") { " - ${it.first}  =>  ${it.second.message}" }}
+                  |${result.errors.entries.joinToString("\n") { " - ${it.key}  =>  ${it.value.message}" }}
                   |
                """.trimMargin()
                   },
@@ -121,7 +121,7 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                      """Expected ${value.print().value} to not equal ${expected.print().value}
                   |
                   |Using fields:
-                  |${result.fieldsIncluded.joinToString("\n") { " - $it" }}
+                  |${result.fields.joinToString("\n") { " - $it" }}
                   |
                """.trimMargin()
                   }

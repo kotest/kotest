@@ -45,6 +45,7 @@ class EqualToComparingFieldsTest : FunSpec() {
    enum class EnumWithProperties(val value: String) { ONE("one"), TWO("two"), }
 
    class Box(val id: Long)
+   class FooContainer(val list: List<Foo>)
    class ListContainer(val list: List<Box>)
    class MapContainer(val map: Map<String, Box>)
 
@@ -124,8 +125,13 @@ Fields that differ:
                useDefaultShouldBeForFields = listOf(Doctor::class)
                city2
             }
-         }.message shouldContain """Fields that differ:
- - mainHospital.mainDoctor"""
+         }.message shouldContain """Using fields:
+ - mainHospital.mainDoctor
+ - mainHospital.name
+ - name
+
+Fields that differ:
+ - mainHospital.mainDoctor  =>"""
       }
 
       test("error messages with nested fields") {
@@ -141,13 +147,13 @@ Fields that differ:
                city2
             }
          }.message shouldContain """Using fields:
- - mainDoctor.age
- - mainDoctor.name
+ - mainHospital.mainDoctor.age
+ - mainHospital.mainDoctor.name
  - mainHospital.name
  - name
 
 Fields that differ:
- - mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
+ - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
  - mainHospital.name  =>  expected:<"test-hospital2"> but was:<"test-hospital1">
  - name  =>  expected:<"test2"> but was:<"test1">"""
       }
@@ -330,6 +336,27 @@ Fields that differ:
          a shouldBeEqualUsingFields b
       }
 
+      test("should compare lists using shouldBe for elements") {
+         val a = FooContainer(listOf(Foo("a", 1, true)))
+         val b = FooContainer(listOf(Foo("a", 1, true)))
+         a shouldBeEqualUsingFields {
+            useDefaultShouldBeForFields = setOf(Foo::class)
+            b
+         }
+      }
+
+      test("should fail on different list elements") {
+         val a = ListContainer(listOf(Box(0)))
+         val b = ListContainer(listOf(Box(1)))
+         shouldFail {
+            a shouldBeEqualUsingFields b
+         }.message shouldContain """Using fields:
+ - list[0].id
+
+Fields that differ:
+ - list[0].id  =>  expected:<1L> but was:<0L>"""
+      }
+
       test("should pass on empty lists") {
          val a = ListContainer(emptyList())
          val b = ListContainer(emptyList())
@@ -348,6 +375,30 @@ Fields that differ:
          val a = MapContainer(mapOf("foo" to Box(0)))
          val b = MapContainer(mapOf("foo" to Box(0)))
          a shouldBeEqualUsingFields b
+      }
+
+      test("should fail on different map elements") {
+         val a = MapContainer(mapOf("foo" to Box(0)))
+         val b = MapContainer(mapOf("foo" to Box(1)))
+         shouldFail {
+            a shouldBeEqualUsingFields b
+         }.message shouldContain """Using fields:
+ - map[foo].id
+
+Fields that differ:
+ - map[foo].id  =>  expected:<1L> but was:<0L>"""
+      }
+
+      test("should fail on different map keys") {
+         val a = MapContainer(mapOf("foo" to Box(0)))
+         val b = MapContainer(mapOf("bar" to Box(0)))
+         shouldFail {
+            a shouldBeEqualUsingFields b
+         }.message shouldContain """Using fields:
+ - map[foo]
+
+Fields that differ:
+ - map[foo]  =>  Expected null but actual was"""
       }
 
       test("should pass on empty maps") {
