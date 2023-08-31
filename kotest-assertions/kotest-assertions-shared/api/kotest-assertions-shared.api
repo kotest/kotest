@@ -324,8 +324,10 @@ public final class io/kotest/assertions/eq/Eq$DefaultImpls {
 }
 
 public final class io/kotest/assertions/eq/EqKt {
+	public static final fun actualIsNull (Ljava/lang/Object;)Ljava/lang/AssertionError;
 	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
 	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public static final fun expectedIsNull (Ljava/lang/Object;)Ljava/lang/AssertionError;
 }
 
 public final class io/kotest/assertions/eq/IsOrderedSetKt {
