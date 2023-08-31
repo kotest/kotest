@@ -4,7 +4,9 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.eq.actualIsNull
 import io.kotest.assertions.eq.eq
+import io.kotest.assertions.eq.expectedIsNull
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.intellijFormatError
@@ -67,9 +69,9 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       val t = if (value == null && expected == null) {
          null
       } else if (value == null && expected != null) {
-         failure("Expected ${expected.print().value} but actual was null")
+         actualIsNull(expected)
       } else if (value != null && expected == null) {
-         failure("Expected null but actual was ${value.print().value}")
+         expectedIsNull(value)
       } else {
          eq(value, expected)
       }

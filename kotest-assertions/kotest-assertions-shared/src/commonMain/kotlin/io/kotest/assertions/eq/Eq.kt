@@ -25,8 +25,8 @@ object NullEq : Eq<Any?> {
    override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? {
       return when {
          actual == null && expected == null -> null
-         actual == null -> failure("Expected ${expected.print().value} but actual was null")
-         expected == null -> failure("Expected null but actual was ${actual.print().value}")
+         actual == null && expected != null -> actualIsNull(expected)
+         actual != null && expected == null -> expectedIsNull(actual)
          else -> error("[$NullEq] should not be used when both values are not null")
       }
    }
@@ -67,3 +67,11 @@ fun <T : Any?> eq(actual: T, expected: T): Throwable? {
 
 private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
    AssertionsConfig.showDataClassDiff && isDataClassInstance(actual) && isDataClassInstance(expected)
+
+fun actualIsNull(expected: Any): AssertionError {
+   return failure("Expected ${expected.print().value} but actual was null")
+}
+
+fun expectedIsNull(actual: Any): AssertionError {
+   return failure("Expected null but actual was ${actual.print().value}")
+}
