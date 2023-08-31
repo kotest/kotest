@@ -2,15 +2,17 @@ package com.sksamuel.kotest.matchers.equality
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.shouldBeEqualUsingFields
-import io.kotest.matchers.equality.shouldNotBeEqualToComparingFields
 import io.kotest.matchers.equality.shouldNotBeEqualUsingFields
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import kotlin.random.Random
 
 class EqualToComparingFieldsTest : FunSpec() {
+
+   data class Foo(val a: String, val b: Int, val c: Boolean)
 
    class HasComputedField(val name: String) {
       val random: Int get() = Random.nextInt()
@@ -42,19 +44,73 @@ class EqualToComparingFieldsTest : FunSpec() {
 
    enum class EnumWithProperties(val value: String) { ONE("one"), TWO("two"), }
 
+   class Box(val id: Long)
+   class ListContainer(val list: List<Box>)
+   class MapContainer(val map: Map<String, Box>)
+
+   data class CompletelyDifferent1(val field1: String, val field2: String)
+   class CompletelyDifferent2(numberField: Int) {
+      private val numberField: Int = numberField;
+   }
+
+   data class BasicDataClass(val a: String, val b: Boolean, val c: Long)
+
    init {
 
-      test("shouldBeEqualUsingFields check equality comparing field by field") {
-         Person("foo") shouldBeEqualUsingFields Person("foo")
+      test("check equality comparing field by field") {
+         Foo("sammy", 1, true) shouldBeEqualUsingFields {
+            includedProperties = setOf(Foo::a, Foo::b)
+            Foo("sammy", 1, false)
+         }
+         Foo("sammy", 13, true) shouldBeEqualUsingFields {
+            includedProperties = setOf(Foo::a)
+            Foo("sammy", 345435, false)
+         }
+         Foo("sammy", 13, true) shouldBeEqualUsingFields {
+            includedProperties = setOf(Foo::a, Foo::c)
+            Foo("sammy", 345435, true)
+         }
+         Foo("sammy", 42, true) shouldBeEqualUsingFields {
+            Foo("sammy", 42, true)
+         }
       }
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively") {
+      test("excluded properties") {
+
+         Foo("sammy", 1, true) shouldBeEqualUsingFields {
+            excludedProperties = setOf(Foo::c)
+            Foo("sammy", 1, false)
+         }
+
+         Foo("sammy", 13, true) shouldBeEqualUsingFields {
+            excludedProperties = setOf(Foo::b, Foo::c)
+            Foo("sammy", 345435, false)
+         }
+      }
+
+      test("check equality comparing field by field recursively") {
          val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
          val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
          city shouldBeEqualUsingFields city2
       }
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively using default shouldBe for given types") {
+      test("error message for multiple failed fields") {
+         shouldThrowAny {
+            Foo("sammy", 1, true) shouldBeEqualUsingFields {
+               Foo("terry", 2, false)
+            }
+         }.message shouldContain """Using fields:
+ - a
+ - b
+ - c
+
+Fields that differ:
+ - a  =>  expected:<"terry"> but was:<"sammy">
+ - b  =>  expected:<2> but was:<1>
+ - c  =>  expected:<false> but was:<true>"""
+      }
+
+      test("check equality comparing field by field recursively using default shouldBe for given types") {
 
          val doctor1 = Doctor("billy", 22, emptyList())
          val doctor2 = Doctor("billy", 22, emptyList())
@@ -62,13 +118,41 @@ class EqualToComparingFieldsTest : FunSpec() {
          val city = City("test", Hospital("test-hospital", doctor1))
          val city2 = City("test", Hospital("test-hospital", doctor2))
 
-         city.shouldBeEqualUsingFields {
-            useDefaultShouldBeForFields = listOf(Doctor::class)
-            city2
-         }
+         // default shouldBe for doctor will fail as it is a not a data class
+         shouldFail {
+            city.shouldBeEqualUsingFields {
+               useDefaultShouldBeForFields = listOf(Doctor::class)
+               city2
+            }
+         }.message shouldContain """Fields that differ:
+ - mainHospital.mainDoctor"""
       }
 
-      test("shouldNotBeEqualUsingFields check equality comparing field by field recursively handling nullable fields") {
+      test("error messages with nested fields") {
+
+         val doctor1 = Doctor("billy", 23, emptyList())
+         val doctor2 = Doctor("barry", 23, emptyList())
+
+         val city = City("test1", Hospital("test-hospital1", doctor1))
+         val city2 = City("test2", Hospital("test-hospital2", doctor2))
+
+         shouldThrowAny {
+            city.shouldBeEqualUsingFields {
+               city2
+            }
+         }.message shouldContain """Using fields:
+ - mainDoctor.age
+ - mainDoctor.name
+ - mainHospital.name
+ - name
+
+Fields that differ:
+ - mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
+ - mainHospital.name  =>  expected:<"test-hospital2"> but was:<"test-hospital1">
+ - name  =>  expected:<"test2"> but was:<"test1">"""
+      }
+
+      test("check equality comparing field by field recursively handling nullable fields") {
 
          val jasmineSociety = Society(
             "Jasmine",
@@ -85,14 +169,14 @@ class EqualToComparingFieldsTest : FunSpec() {
          jasmineSociety.shouldNotBeEqualUsingFields(roseSociety)
       }
 
-      test("shouldNotBeEqualUsingFields check equality comparing field by field recursively ignoring java or kotlin builtin types") {
+      test("check equality comparing field by field recursively ignoring java or kotlin builtin types") {
          val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf(DocMetadata("f1")))))
          val city2 = City("test", Hospital("test-hospital", Doctor("doc", 51, listOf(DocMetadata("f1")))))
 
          city.shouldNotBeEqualUsingFields(city2)
       }
 
-      test("shouldBeEqualUsingFields check equality comparing field by field including private fields") {
+      test("check equality comparing field by field including private fields") {
          val person = Person("foo")
          person.setAddress("new address")
 
@@ -103,44 +187,62 @@ class EqualToComparingFieldsTest : FunSpec() {
             }
          }.message
 
-         errorMessage shouldContain "Using fields: address, isExhausted, name"
-         errorMessage shouldContain "Value differ at:"
-         errorMessage shouldContain "1) address"
-         errorMessage shouldContain "expected:<<empty string>> but was:<\"new address\">"
+         errorMessage shouldContain """Using fields:
+ - address
+ - isExhausted
+ - name
+
+Fields that differ:
+ - address  =>  expected:<<empty string>> but was:<"new address">"""
       }
 
-      test("shouldBeEqualUsingFields check equality comparing field by field excluding given fields and private fields") {
+      test("check equality comparing field by field excluding given fields and private fields") {
          val person = Person("foo")
          person.isExhausted = true
          person.setAddress("new address")
 
          person.shouldBeEqualUsingFields {
-            propertiesToExclude = listOf(Person::isExhausted)
+            excludedProperties = listOf(Person::isExhausted)
             Person("foo")
          }
          person.shouldBeEqualUsingFields {
             ignorePrivateFields = true
-            propertiesToExclude = listOf(Person::isExhausted)
+            excludedProperties = listOf(Person::isExhausted)
             Person("foo")
          }
       }
 
-      test("shouldBeEqualUsingFields check equality comparing field by field excluding given fields and without ignoring private fields") {
+      test("should ignore private fields by default") {
+         val person = Person("foo")
+         person.setAddress("new address")
+
+         person.shouldBeEqualUsingFields {
+            Person("foo")
+         }
+      }
+
+      test("should consider private fields when enabled") {
+
          val person = Person("foo")
          person.isExhausted = true
          person.setAddress("new address")
 
-         val message = shouldThrow<AssertionError> {
+         val person2 = Person("foo")
+         person2.isExhausted = false
+         person2.setAddress("new address")
+
+         shouldThrow<AssertionError> {
             person.shouldBeEqualUsingFields {
                ignorePrivateFields = false
-               propertiesToExclude = listOf(Person::isExhausted)
-               Person("foo")
+               person2
             }
-         }.message
-         message shouldContain "Using fields: address, name"
-         message shouldContain "Value differ at"
-         message shouldContain "1) address"
-         message shouldContain "expected:<<empty string>> but was:<\"new address\">"
+         }.message shouldContain """Using fields:
+ - address
+ - isExhausted
+ - name
+
+Fields that differ:
+ - isExhausted  =>  expected:<false> but was:<true>"""
       }
 
       test("shouldNotBeEqualUsingFields check all fields of expected and actual are not equal") {
@@ -152,48 +254,135 @@ class EqualToComparingFieldsTest : FunSpec() {
       test("shouldNotBeEqualUsingFields fails when expected and actual have equal fields") {
          shouldThrow<AssertionError> {
             Person("foo") shouldNotBeEqualUsingFields Person("foo")
-         }.message shouldContain "Using fields: isExhausted, name"
+         }.message shouldContain """Using fields:
+ - isExhausted
+ - name"""
       }
 
-      test("shouldNotBeEqualUsingFields should consider private fields") {
-         shouldThrow<AssertionError> {
-            Person("foo").shouldNotBeEqualUsingFields {
-               ignorePrivateFields = false
-               Person("foo")
-            }
-         }.message shouldContain "Using fields: address, isExhausted, name"
-      }
-
-      test("shouldBeEqualUsingFields handles arrays") {
+      test("handles arrays") {
          val students = arrayOf(Person("foo"), Person("bar"))
          Teacher("bar", students) shouldBeEqualUsingFields Teacher("bar", students)
       }
 
-      test("shouldBeEqualUsingFields can include computed field") {
+      test("using included properties setting") {
+         BasicDataClass("foo", true, 2) shouldBeEqualUsingFields {
+            includedProperties = listOf(BasicDataClass::a)
+            BasicDataClass("foo", false, 3)
+         }
+      }
+
+      test("using excluded properties setting") {
+         BasicDataClass("foo", true, 1) shouldBeEqualUsingFields {
+            excludedProperties = listOf(BasicDataClass::a)
+            BasicDataClass("bar", true, 1)
+         }
+      }
+
+      test("can include computed fields") {
          shouldFail {
             HasComputedField("foo").shouldBeEqualUsingFields {
                ignoreComputedFields = false
                HasComputedField("foo")
             }
-         }.message shouldContain "Using fields: name, random"
+         }.message shouldContain """Using fields:
+ - name
+ - random
+
+Fields that differ:
+ - random  =>  """
       }
 
-      test("shouldBeEqualUsingFields includes internal fields") {
-         shouldFail {
-            Teacher("foo", age = 100) shouldBeEqualUsingFields Teacher("foo", age = 200)
-         }.message shouldContain "Using fields: age, isExhausted, name, students"
-      }
-
-      test("shouldBeEqualUsingFields includes fields from superclasses") {
-         shouldFail {
-            Teacher("foo") shouldBeEqualUsingFields Teacher("bar")
-         }.message shouldContain "Using fields: age, isExhausted, name, students"
-      }
-
-      test("shouldBeEqualUsingFields ignores synthetic fields") {
+      test("ignore computed fields by default") {
          shouldFail {
             HasComputedField("foo") shouldBeEqualUsingFields HasComputedField("bar")
          }.message shouldNotContain "random"
+      }
+
+      test("include internal fields") {
+         shouldFail {
+            Teacher("foo", age = 100) shouldBeEqualUsingFields Teacher("foo", age = 200)
+         }.message shouldContain """Using fields:
+ - age
+ - students
+ - isExhausted
+ - name
+
+Fields that differ:
+ - age  =>  expected:<200> but was:<100>"""
+      }
+
+      test("include fields from superclasses") {
+         shouldFail {
+            Teacher("foo") shouldBeEqualUsingFields Teacher("bar")
+         }.message shouldContain """Using fields:
+ - age
+ - students
+ - isExhausted
+ - name
+
+Fields that differ:
+ - name  =>  expected:<"bar"> but was:<"foo">"""
+      }
+
+      test("should compare lists") {
+         val a = ListContainer(listOf(Box(0)))
+         val b = ListContainer(listOf(Box(0)))
+         a shouldBeEqualUsingFields b
+      }
+
+      test("should pass on empty lists") {
+         val a = ListContainer(emptyList())
+         val b = ListContainer(emptyList())
+         a shouldBeEqualUsingFields b
+      }
+
+      test("should fail on different length lists") {
+         val a = ListContainer(listOf(Box(0)))
+         val b = ListContainer(listOf(Box(0), Box(0)))
+         shouldThrow<java.lang.AssertionError> {
+            a shouldBeEqualUsingFields b
+         }
+      }
+
+      test("should compare maps") {
+         val a = MapContainer(mapOf("foo" to Box(0)))
+         val b = MapContainer(mapOf("foo" to Box(0)))
+         a shouldBeEqualUsingFields b
+      }
+
+      test("should pass on empty maps") {
+         val a = MapContainer(emptyMap())
+         val b = MapContainer(emptyMap())
+         a shouldBeEqualUsingFields b
+      }
+
+      test("should fail on different map lengths") {
+         val a = MapContainer(mapOf("foo" to Box(0)))
+         val b = MapContainer(mapOf("foo" to Box(0), "bar" to Box(1)))
+         shouldThrow<java.lang.AssertionError> {
+            a shouldBeEqualUsingFields b
+         }
+      }
+
+      test("should check property lists are equal") {
+         val a = CompletelyDifferent2(1)
+         val b = CompletelyDifferent1("a", "b")
+         shouldFail {
+            a shouldBeEqualUsingFields {
+               excludedProperties = listOf(CompletelyDifferent1::field1)
+               b
+            }
+         }.message shouldContain """with mismatched properties"""
+      }
+
+      test("setting both include and excluded property lists should error") {
+         shouldThrowAny {
+            BasicDataClass("foo", true, 1) shouldBeEqualUsingFields {
+               includedProperties = listOf(BasicDataClass::a)
+               excludedProperties = listOf(BasicDataClass::b)
+               BasicDataClass("foo", true, 1)
+            }
+         }
       }
    }
 }

@@ -10,13 +10,13 @@ import kotlin.reflect.KProperty
 
 infix fun <T : Any> T.shouldBeEqualUsingFields(other: T): T {
    val config = FieldEqualityConfig()
-   this should beEqualToComparingFields(other, config)
+   this should beEqualUsingFields(other, config)
    return this
 }
 
 infix fun <T : Any> T.shouldNotBeEqualUsingFields(other: T): T {
    val config = FieldEqualityConfig()
-   this shouldNot beEqualToComparingFields(other, config)
+   this shouldNot beEqualUsingFields(other, config)
    return this
 }
 
@@ -49,7 +49,7 @@ infix fun <T : Any> T.shouldNotBeEqualUsingFields(other: T): T {
  *
  *  class SomeClass(val name: String, val randomId: UUID ,val nestedField: ANestedClass)
  *
- *  someClass.shouldBeEqualUsingFields {
+ *  someClass shouldBeEqualUsingFields {
  *
  *    ignorePrivateFields = true
  *    ignoreComputedFields = true
@@ -63,59 +63,83 @@ infix fun <T : Any> T.shouldNotBeEqualUsingFields(other: T): T {
 infix fun <T : Any> T.shouldBeEqualUsingFields(block: FieldEqualityConfig.() -> T): T {
    val config = FieldEqualityConfig()
    val other = block.invoke(config)
-   this should beEqualToComparingFields(other, config)
+   this should beEqualUsingFields(other, config)
    return this
 }
 
 infix fun <T : Any> T.shouldNotBeEqualUsingFields(block: FieldEqualityConfig.() -> T): T {
    val config = FieldEqualityConfig()
    val other = block.invoke(config)
-   this shouldNot beEqualToComparingFields(other, config)
+   this shouldNot beEqualUsingFields(other, config)
    return this
 }
 
 /**
- * A config for controlling the way shouldBeEqualToComparingFields compares fields.
+ * Config for controlling the way shouldBeEqualUsingFields compares fields.
+ *
+ * Note: If both [includedProperties] and [excludedProperties] are not empty, an error will be thrown.
+ *
  *
  * @property ignorePrivateFields specify whether to exclude private fields in comparison. Default true.
  * @property ignoreComputedFields specify whether to exclude computed fields in comparison. Default true.
- * @property propertiesToExclude specify which fields to exclude in comparison. Default emptyList.
- * @property useDefaultShouldBeForFields fully qualified name of data type for which we need to use default shouldBe
- *                                       matcher instead of recursive field by field comparison.
+ * @property includedProperties specify which fields to include. Default empty list.
+ * @property excludedProperties specify which fields to exclude in comparison. Default emptyList.
+ * @property useDefaultShouldBeForFields data types for which to use the standard shouldBe comparision
+ *                                       instead of recursive field by field comparison.
  * */
 class FieldEqualityConfig {
    var ignorePrivateFields: Boolean = true
    var ignoreComputedFields: Boolean = true
-   var propertiesToExclude: List<KProperty<*>> = emptyList()
-   var useDefaultShouldBeForFields: List<KClass<*>> = emptyList()
+   var includedProperties: Collection<KProperty<*>> = emptySet()
+   var excludedProperties: Collection<KProperty<*>> = emptySet()
+   var useDefaultShouldBeForFields: Collection<KClass<*>> = emptySet()
 }
 
-fun <T : Any> beEqualToComparingFields(other: T, config: FieldEqualityConfig): Matcher<T> {
+fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matcher<T> {
+
+   if (config.includedProperties.isNotEmpty() && config.excludedProperties.isNotEmpty())
+      error("Cannot set both includedProperties and excludedProperties")
+
    return object : Matcher<T> {
       override fun test(value: T): MatcherResult {
-         val (failed, fieldsToCompare) = checkEqualityOfFieldsRecursively(
-            value,
-            other,
-            FieldsEqualityCheckConfig(
-               ignorePrivateFields = config.ignorePrivateFields,
-               ignoreComputedFields = config.ignoreComputedFields,
-               propertiesToExclude = config.propertiesToExclude,
-               useDefaultShouldBeForFields = config.useDefaultShouldBeForFields.map { it.java.name },
-            ),
-         )
-         return MatcherResult(
-            failed.isEmpty(),
-            {
-               """Expected ${value.print().value} to equal ${other.print().value}
-            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
-            | Value differ at:
-            | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
-         """.trimMargin()
+         return runCatching { compareFields(value, expected, config) }.fold(
+            { result ->
+               MatcherResult(
+                  result.errors.isEmpty(),
+                  {
+                     """Expected ${value.print().value} to equal ${expected.print().value}
+                  |
+                  |Using fields:
+                  |${result.fieldsIncluded.joinToString("\n") { " - $it" }}
+                  |
+                  |Fields that differ:
+                  |${result.errors.joinToString("\n") { " - ${it.first}  =>  ${it.second.message}" }}
+                  |
+               """.trimMargin()
+                  },
+                  {
+                     """Expected ${value.print().value} to not equal ${expected.print().value}
+                  |
+                  |Using fields:
+                  |${result.fieldsIncluded.joinToString("\n") { " - $it" }}
+                  |
+               """.trimMargin()
+                  }
+               )
             },
             {
-               """Expected ${value.print().value} to not equal ${other.print().value}
-            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
-         """.trimMargin()
+               MatcherResult(
+                  false,
+                  {
+                     """Error using shouldBeEqualUsingFields matcher
+                     |${it.message}
+                  """.trimMargin()
+                  },
+                  {
+                     """Error using shouldBeEqualUsingFields matcher
+                     |${it.message}
+                  """.trimMargin()
+                  })
             }
          )
       }
