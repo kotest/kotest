@@ -5,7 +5,6 @@ import io.kotest.equals.Equality
 import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.*
 import kotlin.jvm.JvmName
-import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
 
 /**
  * Assert that a collection contains only the given elements.
@@ -87,9 +86,15 @@ fun <T> containOnly(vararg expected: T): Matcher<Collection<T>?> = containOnly(e
 /**
  * Assert that a collection contains only the given elements.
  */
+fun <T, C : Collection<T>> containOnly(expectedCollection: C) =
+   containOnly(expectedCollection, Equality.byObjectEquality(strictNumberEquality = true))
+
+/**
+ * Assert that a collection contains only the given elements.
+ */
 fun <T, C : Collection<T>> containOnly(
    expectedCollection: C,
-   verifier: Equality<T> = Equality.byObjectEquality(strictNumberEquality = true),
+   verifier: Equality<T>,
 ): Matcher<C?> = neverNullMatcher { actualCollection ->
    val actualSet = actualCollection.toSet()
    val expectedSet = expectedCollection.toSet()

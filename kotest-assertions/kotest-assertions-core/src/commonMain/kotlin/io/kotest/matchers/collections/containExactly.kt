@@ -58,9 +58,15 @@ fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExa
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
+fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> =
+   containExactly(expected, Equality.byObjectEquality(strictNumberEquality = true))
+
+/**
+ * Assert that a collection contains exactly, and only, the given elements, in the same order.
+ */
 fun <T, C : Collection<T>> containExactly(
    expected: C,
-   verifier: Equality<T> = Equality.byObjectEquality(strictNumberEquality = true),
+   verifier: Equality<T>,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(IterableEq.trigger) == true
@@ -134,9 +140,17 @@ fun StringBuilder.appendMissingAndExtra(missing: Collection<Any?>, extra: Collec
       append("Some elements were missing: ${missing.take(AssertionsConfig.maxCollectionPrintSize.value).print().value}")
    }
    if (missing.isNotEmpty() && extra.isNotEmpty()) {
-      append(" and some elements were unexpected: ${extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value}")
+      append(
+         " and some elements were unexpected: ${
+            extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value
+         }"
+      )
    }
    if (missing.isEmpty() && extra.isNotEmpty()) {
-      append("Some elements were unexpected: ${extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value}")
+      append(
+         "Some elements were unexpected: ${
+            extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value
+         }"
+      )
    }
 }

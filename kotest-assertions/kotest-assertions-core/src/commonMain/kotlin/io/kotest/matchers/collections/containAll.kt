@@ -23,9 +23,13 @@ infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>) = asList().shouldN
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)
 
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
+
+fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> =
+   containAll(ts, Equality.byObjectEquality(strictNumberEquality = true))
+
 fun <T> containAll(
    ts: Collection<T>,
-   verifier: Equality<T> = Equality.byObjectEquality(strictNumberEquality = true),
+   verifier: Equality<T>,
 ): Matcher<Collection<T>> =
    object : Matcher<Collection<T>> {
       override fun test(value: Collection<T>): MatcherResult {

@@ -107,9 +107,13 @@ fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected:
 }
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
+fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C) =
+   containExactlyInAnyOrder(expected, Equality.byObjectEquality(strictNumberEquality = true))
+
+/** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(
    expected: C,
-   verifier: Equality<T> = Equality.byObjectEquality(strictNumberEquality = true),
+   verifier: Equality<T>,
 ): Matcher<C?> = neverNullMatcher { actual ->
    val valueGroupedCounts: Map<T, Int> = actual.groupBy { it }.mapValues { it.value.size }
    val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
