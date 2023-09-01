@@ -3,11 +3,22 @@ package com.sksamuel.kotest.matchers.future
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.future.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
 
 class FutureMatcherTest : StringSpec({
+   suspend fun runOnSeparateThread(block: () -> Unit) {
+      @OptIn(DelicateCoroutinesApi::class)
+      newSingleThreadContext("separate").use {
+         withContext(it) {
+            block()
+         }
+      }
+   }
+
    "test future is completed" {
       val completableFuture = CompletableFuture<Int>()
       completableFuture.complete(2)
@@ -28,7 +39,7 @@ class FutureMatcherTest : StringSpec({
    }
    "test future is completed exceptionally" {
       val completableFuture = CompletableFuture<Int>()
-      Executors.newFixedThreadPool(1).submit {
+      runOnSeparateThread {
          completableFuture.cancel(false)
       }
       delay(200)
@@ -39,11 +50,11 @@ class FutureMatcherTest : StringSpec({
       completableFuture.complete(2)
       completableFuture.shouldNotBeCompletedExceptionally()
    }
-   "test future completes exceptionally with the given exception"{
+   "test future completes exceptionally with the given exception" {
       val completableFuture = CompletableFuture<Int>()
       val exception = RuntimeException("Boom Boom")
 
-      Executors.newFixedThreadPool(1).submit {
+      runOnSeparateThread {
          completableFuture.completeExceptionally(exception)
       }
 
@@ -52,7 +63,7 @@ class FutureMatcherTest : StringSpec({
    "test future does not completes exceptionally with given exception " {
       val completableFuture = CompletableFuture<Int>()
 
-      Executors.newFixedThreadPool(1).submit {
+      runOnSeparateThread {
          completableFuture.completeExceptionally(RuntimeException("Boom Boom"))
       }
 

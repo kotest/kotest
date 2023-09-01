@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.coroutine
 
+import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -60,8 +61,8 @@ class WordSpecCoroutineTest : WordSpec() {
          }
 
          "multiple invocations and parallelism".config(invocations = 20, threads = 10) {
-            delay(5)
             count.incrementAndGet()
+            provokeThreadSwitch()
          }
 
          "previous test result 2" {
@@ -70,10 +71,11 @@ class WordSpecCoroutineTest : WordSpec() {
 
          // we need enough invocation to ensure all the threads get used up
          "mutliple threads should use a thread pool for the coroutines".config(
-            invocations = 200, // needs to be big enough to ensure all 6 threads get used
+            invocations = 6,
             threads = 6
          ) {
             logThreadName()
+            provokeThreadSwitch()
          }
 
          "previous test result 3" {

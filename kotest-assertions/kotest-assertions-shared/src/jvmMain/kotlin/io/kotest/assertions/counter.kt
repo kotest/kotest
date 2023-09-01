@@ -1,15 +1,36 @@
 @file:JvmName("jvmcounter")
+
 package io.kotest.assertions
 
-actual val assertionCounter: AssertionCounter = ThreadLocalAssertionCounter
+import kotlinx.coroutines.asContextElement
+import kotlin.coroutines.CoroutineContext
 
-object ThreadLocalAssertionCounter : AssertionCounter {
+actual val assertionCounter: AssertionCounter get() = threadLocalAssertionCounter.get()
 
-   private val context = object : ThreadLocal<Int>() {
-      override fun initialValue(): Int = 0
+/**
+ * A [CoroutineContext.Element] which keeps the [assertionCounter] synchronized with thread-switching coroutines.
+ *
+ * When using [assertionCounter] without the Kotest framework, this context element should be added to a
+ * coroutine context, e.g. via
+ * - `runBlocking(assertionCounterContextElement) { ... }`
+ * - `runTest(Dispatchers.IO + assertionCounterContextElement) { ... }`
+ */
+val assertionCounterContextElement: CoroutineContext.Element
+   get() = threadLocalAssertionCounter.asContextElement()
+
+private val threadLocalAssertionCounter: ThreadLocal<CoroutineLocalAssertionCounter> =
+   ThreadLocal.withInitial { CoroutineLocalAssertionCounter() }
+
+private class CoroutineLocalAssertionCounter : AssertionCounter {
+   private var value = 0
+
+   override fun get(): Int = value
+
+   override fun reset() {
+      value = 0
    }
 
-   override fun get(): Int = context.get()
-   override fun reset() = context.set(0)
-   override fun inc() = context.set(context.get() + 1)
+   override fun inc() {
+      value++
+   }
 }

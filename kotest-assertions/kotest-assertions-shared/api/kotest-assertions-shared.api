@@ -300,13 +300,6 @@ public final class io/kotest/assertions/RetryKt {
 	public static final fun retryConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/RetryConfig;
 }
 
-public final class io/kotest/assertions/ThreadLocalAssertionCounter : io/kotest/assertions/AssertionCounter {
-	public static final field INSTANCE Lio/kotest/assertions/ThreadLocalAssertionCounter;
-	public fun get ()I
-	public fun inc ()V
-	public fun reset ()V
-}
-
 public final class io/kotest/assertions/async/TimeoutKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldTimeout (Ljava/time/Duration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -389,6 +382,7 @@ public final class io/kotest/assertions/eq/ThrowableEq : io/kotest/assertions/eq
 
 public final class io/kotest/assertions/jvmcounter {
 	public static final fun getAssertionCounter ()Lio/kotest/assertions/AssertionCounter;
+	public static final fun getAssertionCounterContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
 }
 
 public final class io/kotest/assertions/jvmerrorcollector {

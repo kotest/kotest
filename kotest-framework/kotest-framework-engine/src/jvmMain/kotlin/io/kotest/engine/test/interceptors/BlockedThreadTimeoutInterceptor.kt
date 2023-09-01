@@ -7,20 +7,24 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
-import io.kotest.mpp.NamedThreadFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 
-// this scheduler is used to issue the interrupts after timeouts
-// we only need one in the JVM
-private val scheduler =
-   Executors.newScheduledThreadPool(1, NamedThreadFactory("BlockedThreadTimeoutInterceptor-%d", daemon = true))
+// Dispatcher used for jobs to issue the interrupts after timeouts.
+// All such jobs share a single daemon thread on the JVM.
+@OptIn(DelicateCoroutinesApi::class)
+private val timeoutDispatcher = newSingleThreadContext("blocking-thread-timeout")
 
 /**
- * If [io.kotest.core.test.TestCaseConfig.blockingTest] is enabled, then switches the execution
+ * If [io.kotest.core.test.config.ResolvedTestConfig.blockingTest] is enabled, then switches the execution
  * to a new thread, so it can be interrupted if the test times out.
  */
 internal actual fun blockedThreadTimeoutInterceptor(
@@ -39,23 +43,30 @@ internal class BlockedThreadTimeoutInterceptor(
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      return if (testCase.config.blockingTest) {
-
-         // we must switch execution onto a throwaway thread so the interruption task
-         // doesn't play havok with a thread in use elsewhere
+     return if (testCase.config.blockingTest) {
+         // we must switch execution onto a throwaway thread so an interruption
+         // doesn't play havoc with a thread in use elsewhere
          val executor = Executors.newSingleThreadExecutor()
 
-         // we schedule a task that will interrupt the coroutine after the timeout has expired
-         // this task will use the values in the coroutine status element to know which thread to interrupt
-         logger.log { Pair(testCase.name.testName, "Scheduler will interrupt this test in ${testCase.config.timeout}") }
-         val task = scheduler.schedule({
-            logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
-            executor.shutdownNow()
-         }, testCase.config.timeout?.inWholeMilliseconds ?: 10000000000L, TimeUnit.MILLISECONDS)
+         val timeoutJob = testCase.config.timeout?.let { timeout ->
+            logger.log { Pair(testCase.name.testName, "this test will time out in $timeout") }
+
+            CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
+               delay(timeout)
+               logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
+               executor.shutdownNow()
+            }
+         }
 
          try {
-            withContext(executor.asCoroutineDispatcher()) {
-               test(testCase, scope.withCoroutineContext(coroutineContext))
+            executor.asCoroutineDispatcher().use { dispatcher ->
+               withContext(dispatcher) {
+                  try {
+                     test(testCase, scope.withCoroutineContext(coroutineContext))
+                  } finally {
+                     timeoutJob?.cancel()
+                  }
+               }
             }
          } catch (t: InterruptedException) {
             logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
@@ -63,12 +74,6 @@ internal class BlockedThreadTimeoutInterceptor(
                start.elapsedNow(),
                BlockedThreadTestTimeoutException(testCase.config.timeout ?: Duration.INFINITE, testCase.name.testName)
             )
-         } finally {
-            // we should stop the scheduled task from running just to be tidy
-            if (!task.isDone) {
-               logger.log { Pair(testCase.name.testName, "Cancelling scheduled task ${System.identityHashCode(task)}") }
-               task.cancel(false)
-            }
          }
       } else {
          test(testCase, scope)

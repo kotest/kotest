@@ -2,7 +2,6 @@ package io.kotest.extensions.blockhound
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -39,7 +38,6 @@ class BlockHoundCaseTest : FunSpec({
    }
 })
 
-@DoNotParallelize
 class BlockHoundSpecTest : FunSpec({
    extension(BlockHound())
 
@@ -63,5 +61,14 @@ class BlockHoundSpecTest : FunSpec({
 
    test("nested configuration").config(extensions = listOf(BlockHound(BlockHoundMode.DISABLED))) {
       shouldNotThrow<BlockingOperationError> { blockInNonBlockingContext() }
+   }
+
+   test("parallelism").config(invocations = 2, threads = 2) {
+      shouldThrow<BlockingOperationError> {
+         withContext(Dispatchers.Default) {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            Thread.sleep(2)
+         }
+      }
    }
 })
