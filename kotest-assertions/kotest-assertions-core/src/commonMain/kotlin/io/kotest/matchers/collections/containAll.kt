@@ -1,6 +1,8 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.equals.Equality
+import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -21,16 +23,29 @@ infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>) = asList().shouldN
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)
 
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
-fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>): MatcherResult {
 
-      val missing = ts.filterNot { value.contains(it) }
-      val passed = missing.isEmpty()
+fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> =
+   containAll(ts, Equality.byObjectEquality(strictNumberEquality = true))
 
-      val failure =
-         { "Collection should contain all of ${ts.print().value} but was missing ${missing.print().value}" }
-      val negFailure = { "Collection should not contain all of ${ts.print().value}" }
+fun <T> containAll(
+   ts: Collection<T>,
+   verifier: Equality<T>,
+): Matcher<Collection<T>> =
+   object : Matcher<Collection<T>> {
+      override fun test(value: Collection<T>): MatcherResult {
 
-      return MatcherResult(passed, failure, negFailure)
+         val missing = ts.filterNot { t ->
+            value.any { verifier.verify(it, t).areEqual() }
+         }
+         val passed = missing.isEmpty()
+
+         val failure =
+            {
+               "Collection should contain all of ${ts.print().value} based on ${verifier.name()} " +
+                  "but was missing ${missing.print().value}"
+            }
+         val negFailure = { "Collection should not contain all of ${ts.print().value} based on ${verifier.name()}" }
+
+         return MatcherResult(passed, failure, negFailure)
+      }
    }
-}
