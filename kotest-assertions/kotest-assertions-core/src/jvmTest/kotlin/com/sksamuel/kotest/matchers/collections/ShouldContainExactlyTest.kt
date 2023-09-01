@@ -53,7 +53,7 @@ class ShouldContainExactlyTest : WordSpec() {
             }.shouldHaveMessage("Expecting actual not to be null")
          }
 
-         "test that a collection contains given elements exactly"  {
+         "test that a collection contains given elements exactly" {
             val actual = listOf(1, 2, 3)
             emptyList<Int>() should containExactly()
             actual should containExactly(1, 2, 3)
@@ -81,7 +81,6 @@ class ShouldContainExactlyTest : WordSpec() {
                Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
                HashSet does not provide a stable iteration order and was compared with ArrayList which is not a Set
 
-
             """.trimIndent()
 
             shouldFailWithMessage(expectedMessage) {
@@ -98,12 +97,12 @@ class ShouldContainExactlyTest : WordSpec() {
             listOf("helloworld".toByteArray()) shouldNotContainExactly listOf("hello".toByteArray())
          }
 
-         "print errors unambiguously"  {
+         "print errors unambiguously" {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
             } shouldHaveMessage
                """
-                  |Expecting: [1, 2] but was: [1L, 2L]
+                  |Collection should contain exactly: [1, 2] based on object equality but was: [1L, 2L]
                   |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                   |
                   |expected:<[1, 2]> but was:<[1L, 2L]>
@@ -122,7 +121,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Expecting: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
@@ -139,7 +138,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Expecting: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
@@ -157,7 +156,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Expecting: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
@@ -175,7 +174,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Expecting: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
@@ -184,7 +183,7 @@ class ShouldContainExactlyTest : WordSpec() {
       }
 
       "containExactlyInAnyOrder" should {
-         "test that a collection contains given elements exactly in any order"  {
+         "test that a collection contains given elements exactly in any order" {
             val actual = listOf(1, 2, 3)
             actual should containExactlyInAnyOrder(1, 2, 3)
             actual.shouldContainExactlyInAnyOrder(3, 2, 1)
@@ -223,10 +222,15 @@ class ShouldContainExactlyTest : WordSpec() {
             }
          }
 
-         "print errors unambiguously"  {
+         "print errors unambiguously" {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
-            }.shouldHaveMessage("Collection should contain [1, 2] in any order, but was [1L, 2L]")
+            }.shouldHaveMessage(
+               """
+                  Collection should contain [1, 2] based on object equality in any order, but was [1L, 2L]
+                  Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
+               """.trimIndent()
+            )
          }
 
          "disambiguate when using optional expected value" {
