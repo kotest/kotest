@@ -7,6 +7,7 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
+* [Data-Driven Testing with Kotest (2023)](https://www.baeldung.com/kotlin/kotest-data-driven-testing)
 * [JUnit 5 vs Kotest. Part 2: Parameterise ‘Em All](https://test-architect.dev/junit-5-vs-kotest-part-2-parameterisation/)
 * [JUnit 5 vs Kotest. Part 1: Is it the new way we test?](https://test-architect.dev/junit-5-vs-kotest-part-1/)
 * [JUnit 5 vs. Kotest: A Comparison for Unit Testing (2023)](https://www.baeldung.com/kotlin/kotest-vs-junit-5)
