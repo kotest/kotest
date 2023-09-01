@@ -866,7 +866,16 @@ public final class io/kotest/core/annotation/requirestag/WrapperKt {
 }
 
 public abstract interface class io/kotest/core/concurrency/CoroutineDispatcherFactory {
+	public abstract fun close ()V
 	public abstract fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/concurrency/CoroutineDispatcherFactory$DefaultImpls {
+	public static fun close (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;)V
+}
+
+public final class io/kotest/core/concurrency/CoroutineDispatcherFactoryKt {
+	public static final fun use (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public abstract class io/kotest/core/config/AbstractProjectConfig {

@@ -1,7 +1,3 @@
-public final class io/kotest/common/ConcurrentHashMapKt {
-	public static final fun concurrentHashMap ()Ljava/util/Map;
-}
-
 public abstract interface annotation class io/kotest/common/DelicateKotest : java/lang/annotation/Annotation {
 }
 
