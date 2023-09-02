@@ -4,11 +4,11 @@ import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.Closeable
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
@@ -36,8 +36,7 @@ class FixedThreadCoroutineDispatcherFactory(
 
    private val logger = Logger(FixedThreadCoroutineDispatcherFactory::class)
 
-   @OptIn(DelicateCoroutinesApi::class)
-   private val dispatcherPool = List(threads) { newSingleThreadContext("fixed-${it + 1}/$threads") }
+   private val dispatcherPool = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
    private val requestCount = AtomicInteger(0)
 
