@@ -5,7 +5,6 @@ import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.equals.Equality
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -59,14 +58,14 @@ fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExa
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> =
-   containExactly(expected, Equality.byObjectEquality(strictNumberEquality = true))
+   containExactly(expected, null)
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
 fun <T, C : Collection<T>> containExactly(
    expected: C,
-   verifier: Equality<T>,
+   verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(IterableEq.trigger) == true
@@ -74,10 +73,10 @@ fun <T, C : Collection<T>> containExactly(
    val failureReason = eq(actual, expected, strictNumberEq = true)
 
    val missing = expected.filterNot { t ->
-      actual.any { verifier.verify(it, t).areEqual() }
+      actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
    }
    val extra = actual.filterNot { t ->
-      expected.any { verifier.verify(it, t).areEqual() }
+      expected.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
    }
    val passed = failureReason == null
 
@@ -87,8 +86,7 @@ fun <T, C : Collection<T>> containExactly(
             append(failureReason?.message)
          } else {
             append(
-               "Collection should contain exactly: ${expected.print().value} based on ${verifier.name()}" +
-                  " but was: ${actual.print().value}"
+               "Collection should contain exactly: ${expected.print().value} but was: ${actual.print().value}"
             )
             appendLine()
          }
@@ -99,7 +97,7 @@ fun <T, C : Collection<T>> containExactly(
    }
 
    val negatedFailureMessage =
-      { "Collection should not contain exactly: ${expected.print().value} based on ${verifier.name()}" }
+      { "Collection should not contain exactly: ${expected.print().value}" }
 
    if (
       actual.size <= AssertionsConfig.maxCollectionEnumerateSize &&
