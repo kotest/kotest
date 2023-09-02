@@ -13,9 +13,13 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.shuffle
+import io.kotest.property.checkAll
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.time.Duration.Companion.seconds
 
 
 class ShouldContainExactlyTest : WordSpec() {
@@ -102,7 +106,7 @@ class ShouldContainExactlyTest : WordSpec() {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
             } shouldHaveMessage
                """
-                  |Collection should contain exactly: [1, 2] based on object equality but was: [1L, 2L]
+                  |Collection should contain exactly: [1, 2] but was: [1L, 2L]
                   |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                   |
                   |expected:<[1, 2]> but was:<[1L, 2L]>
@@ -121,7 +125,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
@@ -138,7 +142,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
@@ -156,7 +160,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
@@ -174,7 +178,7 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] based on object equality but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
@@ -227,7 +231,7 @@ class ShouldContainExactlyTest : WordSpec() {
                listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
             }.shouldHaveMessage(
                """
-                  Collection should contain [1, 2] based on object equality in any order, but was [1L, 2L]
+                  Collection should contain [1, 2] in any order, but was [1L, 2L]
                   Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                """.trimIndent()
             )
@@ -237,6 +241,12 @@ class ShouldContainExactlyTest : WordSpec() {
             val actual: List<String> = listOf("A", "B", "C")
             val expected: List<String>? = listOf("A", "B", "C")
             actual.shouldContainExactlyInAnyOrder(expected)
+         }
+
+         "maintain performance".config(timeout = 1.seconds) {
+            checkAll(1000, Arb.shuffle(listOf("1", "2", "3", "4", "5", "6", "7"))) {
+               it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
+            }
          }
       }
    }

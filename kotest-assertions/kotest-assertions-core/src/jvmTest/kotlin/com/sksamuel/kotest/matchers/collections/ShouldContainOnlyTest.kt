@@ -22,7 +22,7 @@ class ShouldContainOnlyTest : WordSpec() {
                actual.shouldContainOnly(3, 2, 3, 2)
             }.shouldHaveMessage(
                """
-                  Collection should contain only: [3, 2, 3, 2] based on object equality but was: [1, 1, 2, 2, 3]
+                  Collection should contain only: [3, 2, 3, 2] but was: [1, 1, 2, 2, 3]
                   Some elements were unexpected: [1]
                    """.trimIndent()
             )
@@ -31,7 +31,7 @@ class ShouldContainOnlyTest : WordSpec() {
                actual shouldContainOnly arrayOf(3, 2, 4, 3)
             }.shouldHaveMessage(
                """
-                  Collection should contain only: [3, 2, 4, 3] based on object equality but was: [1, 1, 2, 2, 3]
+                  Collection should contain only: [3, 2, 4, 3] but was: [1, 1, 2, 2, 3]
                   Some elements were missing: [4] and some elements were unexpected: [1]
                    """.trimIndent()
             )
@@ -40,7 +40,7 @@ class ShouldContainOnlyTest : WordSpec() {
                actual shouldContainOnly arrayOf(1, 3, 2, 4, 1)
             }.shouldHaveMessage(
                """
-                  Collection should contain only: [1, 3, 2, 4, 1] based on object equality but was: [1, 1, 2, 2, 3]
+                  Collection should contain only: [1, 3, 2, 4, 1] but was: [1, 1, 2, 2, 3]
                   Some elements were missing: [4]
                    """.trimIndent()
             )
@@ -60,7 +60,7 @@ class ShouldContainOnlyTest : WordSpec() {
                actual shouldContainOnly listOf(3, 2, 4)
             }.shouldHaveMessage(
                """
-                  Collection should contain only: [3, 2, 4] based on object equality but was: [1, 1, 2, 2, 3]
+                  Collection should contain only: [3, 2, 4] but was: [1, 1, 2, 2, 3]
                   Some elements were missing: [4] and some elements were unexpected: [1]
                """.trimIndent()
             )
@@ -69,7 +69,7 @@ class ShouldContainOnlyTest : WordSpec() {
                actual shouldContainOnly listOf(1, 3, 2, 4)
             }.shouldHaveMessage(
                """
-                  Collection should contain only: [1, 3, 2, 4] based on object equality but was: [1, 1, 2, 2, 3]
+                  Collection should contain only: [1, 3, 2, 4] but was: [1, 1, 2, 2, 3]
                   Some elements were missing: [4]
                """.trimIndent()
             )
@@ -88,11 +88,11 @@ class ShouldContainOnlyTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                actual.shouldNotContainOnly(1, 2, 3)
-            }.shouldHaveMessage("Collection should not contain only [1, 2, 3] based on object equality")
+            }.shouldHaveMessage("Collection should not contain only [1, 2, 3]")
 
             shouldThrow<AssertionError> {
                actual shouldNotContainOnly arrayOf(1, 2, 3)
-            }.shouldHaveMessage("Collection should not contain only [1, 2, 3] based on object equality")
+            }.shouldHaveMessage("Collection should not contain only [1, 2, 3]")
 
             val actualNull: Array<Int>? = null
             shouldThrow<AssertionError> {
@@ -108,7 +108,7 @@ class ShouldContainOnlyTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                actual shouldNotContainOnly listOf(1, 2, 3)
-            }.shouldHaveMessage("Collection should not contain only [1, 2, 3] based on object equality")
+            }.shouldHaveMessage("Collection should not contain only [1, 2, 3]")
 
             val actualNull: Collection<Int>? = null
             shouldThrow<AssertionError> {
