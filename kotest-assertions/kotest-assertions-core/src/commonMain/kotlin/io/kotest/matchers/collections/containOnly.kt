@@ -2,7 +2,6 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
 import io.kotest.equals.Equality
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.*
 import kotlin.jvm.JvmName
 
@@ -87,32 +86,32 @@ fun <T> containOnly(vararg expected: T): Matcher<Collection<T>?> = containOnly(e
  * Assert that a collection contains only the given elements.
  */
 fun <T, C : Collection<T>> containOnly(expectedCollection: C) =
-   containOnly(expectedCollection, Equality.byObjectEquality(strictNumberEquality = true))
+   containOnly(expectedCollection, null)
 
 /**
  * Assert that a collection contains only the given elements.
  */
 fun <T, C : Collection<T>> containOnly(
    expectedCollection: C,
-   verifier: Equality<T>,
+   verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actualCollection ->
    val actualSet = actualCollection.toSet()
    val expectedSet = expectedCollection.toSet()
 
    val notExpectedSet = actualSet.filterNot { actual ->
-      expectedSet.any { verifier.verify(it, actual).areEqual() }
+      expectedSet.any { verifier?.verify(it, actual )?.areEqual() ?: (it == actual) }
    }
    val missingSet = expectedSet.filterNot { expected ->
-      actualSet.any { verifier.verify(it, expected).areEqual() }
+      actualSet.any { verifier?.verify(it, expected)?.areEqual() ?: (it == expected) }
    }
 
    val passed = notExpectedSet.isEmpty() && missingSet.isEmpty()
    val negatedFailureMessageSupplier =
-      { "Collection should not contain only ${expectedCollection.print().value} based on ${verifier.name()}" }
+      { "Collection should not contain only ${expectedCollection.print().value}" }
    val failureMessageSupplier = {
       buildString {
          append(
-            "Collection should contain only: ${expectedCollection.print().value} based on ${verifier.name()}" +
+            "Collection should contain only: ${expectedCollection.print().value}" +
                " but was: ${actualCollection.print().value}"
          )
          appendLine()
