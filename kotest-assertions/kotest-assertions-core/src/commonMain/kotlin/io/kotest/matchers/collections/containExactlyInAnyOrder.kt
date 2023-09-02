@@ -2,7 +2,6 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
 import io.kotest.equals.Equality
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -108,30 +107,32 @@ fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected:
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C) =
-   containExactlyInAnyOrder(expected, Equality.byObjectEquality(strictNumberEquality = true))
+   containExactlyInAnyOrder(expected, null)
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(
    expected: C,
-   verifier: Equality<T>,
+   verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
+
    val valueGroupedCounts: Map<T, Int> = actual.groupBy { it }.mapValues { it.value.size }
    val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
+
    val passed = expectedGroupedCounts.size == valueGroupedCounts.size
       && expectedGroupedCounts.all { (k, v) ->
-      valueGroupedCounts.filterKeys { verifier.verify(k, it).areEqual() }[k] == v
+      valueGroupedCounts.filterKeys { verifier?.verify(k, it)?.areEqual() ?: (k == it) }[k] == v
    }
 
    val missing = expected.filterNot { t ->
-      actual.any { verifier.verify(it, t).areEqual() }
+      actual.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
    }
    val extra = actual.filterNot { t ->
-      expected.any { verifier.verify(it, t).areEqual() }
+      expected.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
    }
 
    val failureMessage = {
       buildString {
-         append("Collection should contain ${expected.print().value} based on ${verifier.name()} in any order, but was ${actual.print().value}")
+         append("Collection should contain ${expected.print().value} in any order, but was ${actual.print().value}")
          appendLine()
          appendMissingAndExtra(missing, extra)
          appendLine()
