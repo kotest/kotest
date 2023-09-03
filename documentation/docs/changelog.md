@@ -34,7 +34,7 @@ slug: changelog.html
 * `Arb.list` implementation supporting `Arb<IntRange>` and `Arb.intRange` (#3618)
 * Added config options for retry (#3600)
 * implemented beforeInvocation and afterInvocation hooks (#3589)
-* add Arb<Date> support (#3554)
+* add `Arb<Date>` support (#3554)
 * Adding support for partial permutations (#3523)
 * add exhaustive enumsExcept (#3552)
 
