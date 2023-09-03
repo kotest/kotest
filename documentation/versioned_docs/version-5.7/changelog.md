@@ -15,6 +15,7 @@ slug: changelog.html
 
 #### Improvements
 
+* Refactor concurrency #3623
 * Add support of Equality to all contain* matchers (#3662)
 * Added shouldBeEqualUsingFields (#3652)
 * Add nullable type support to test functions (#3665)
@@ -80,38 +81,38 @@ slug: changelog.html
 
 Thank you to all contributors since the 5.6.0 release
 
-AJ Alt
-Alexey Yakovlev
-Alphonse Bendt
-aSemy
-Ayushi Gupta
-Charles Korn
-Claudenir Freitas
-Cory Thomas
-David Weber
-Dmitry Spikhalskiy
-Emil Kantis
-Erik Huizinga
-hughlunnon
-Israel José Boiko
-Just.Viktor
-Karl-Philipp Richter
-ktrueda
-Leonardo Colman Lopes
-Łukasz Pięta
-Łukasz Wasylkowski
-Matej Drobnič
-Mikael Elm
-Mitchell Yuwono
-OliverO2
-Paolo Simonazzi
-Rafał Prominski
-SEONGILKIM
-sksamuel
-Thom
-Viktors Garkavijs
-Vladislav Krasov
-Zak Henry
+* AJ Alt
+* Alexey Yakovlev
+* Alphonse Bendt
+* aSemy
+* Ayushi Gupta
+* Charles Korn
+* Claudenir Freitas
+* Cory Thomas
+* David Weber
+* Dmitry Spikhalskiy
+* Emil Kantis
+* Erik Huizinga
+* hughlunnon
+* Israel José Boiko
+* Just.Viktor
+* Karl-Philipp Richter
+* ktrueda
+* Leonardo Colman Lopes
+* Łukasz Pięta
+* Łukasz Wasylkowski
+* Matej Drobnič
+* Mikael Elm
+* Mitchell Yuwono
+* OliverO2
+* Paolo Simonazzi
+* Rafał Prominski
+* SEONGILKIM
+* sksamuel
+* Thom
+* Viktors Garkavijs
+* Vladislav Krasov
+* Zak Henry
 
 
 ## 5.6.2 May 2023

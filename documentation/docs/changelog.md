@@ -15,6 +15,7 @@ slug: changelog.html
 
 #### Improvements
 
+* Refactor concurrency #3623
 * Add support of Equality to all contain* matchers (#3662)
 * Added shouldBeEqualUsingFields (#3652)
 * Add nullable type support to test functions (#3665)
