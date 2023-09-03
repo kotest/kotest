@@ -28,7 +28,7 @@ slug: changelog.html
 * Add expect block to skip tests (#3596)
 * Add includeNonFiniteEdgeCases flag for double and float arbitrary (#3638)
 * Arb.offsetDateTime based on Instant (#3632)
-* Reimplement KProperty0<T>.shouldHaveValue as matcher (#3637)
+* Reimplement `KProperty0<T>.shouldHaveValue` as matcher (#3637)
 * Add more java.time supports for reflective bind (#3636)
 * Add KProperty0 assertions (#3621)
 * `Arb.list` implementation supporting `Arb<IntRange>` and `Arb.intRange` (#3618)
