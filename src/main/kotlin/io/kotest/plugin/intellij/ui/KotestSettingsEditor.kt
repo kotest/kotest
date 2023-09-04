@@ -57,14 +57,14 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
    private val specClassTextField = EditorTextFieldWithBrowseButton(project, true)
    private val specClassField = LabeledComponent.create(
       specClassTextField,
-      KotestBundle.getMessage("spec.class.label"),
+      KotestBundle().getMessage("spec.class.label"),
       BorderLayout.WEST
    )
 
    private val specClassFragment =
       SettingsEditorFragment<KotestConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
          "specClass",
-         KotestBundle.getMessage("spec.class.name"),
+         KotestBundle().getMessage("spec.class.name"),
          "Kotest",
          specClassField,
          { config, field -> field.component.text = config.getSpecName() ?: "" },
@@ -74,14 +74,14 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
 
    private val testPathField = LabeledComponent.create(
       TextFieldWithHistory(),
-      KotestBundle.getMessage("test.path.label"),
+      KotestBundle().getMessage("test.path.label"),
       BorderLayout.WEST
    )
 
    private val testPathFragment =
       SettingsEditorFragment<KotestConfiguration, LabeledComponent<TextFieldWithHistory>>(
          "testPath",
-         KotestBundle.getMessage("test.path.name"),
+         KotestBundle().getMessage("test.path.name"),
          "Kotest",
          testPathField,
          { config, field -> field.component.text = config.getTestPath() },
@@ -92,14 +92,14 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
    private val packageNameTextField = EditorTextFieldWithBrowseButton(project, false)
    private val packageNameField = LabeledComponent.create(
       packageNameTextField,
-      KotestBundle.getMessage("package.label"),
+      KotestBundle().getMessage("package.label"),
       BorderLayout.WEST
    )
 
    private val packageNameFragment =
       SettingsEditorFragment<KotestConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
          "kotestPackageName",
-         KotestBundle.getMessage("package.name"),
+         KotestBundle().getMessage("package.name"),
          "Kotest",
          packageNameField,
          { configuration, field -> field.component.text = configuration.getPackageName() ?: "" },

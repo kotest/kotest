@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.6.21"
+kotlin = "1.9.10"
 runtime-kotest = "4.2.0"
 # We separate these from the actual runtime dependencies
 test-kotest = "5.6.2"
@@ -17,4 +17,4 @@ javax-activation = { module = "javax.activation:activation", version = "1.1.1" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-intellij = { id = "org.jetbrains.intellij", version = "1.12.0" }
+intellij = { id = "org.jetbrains.intellij", version = "1.15.0" }

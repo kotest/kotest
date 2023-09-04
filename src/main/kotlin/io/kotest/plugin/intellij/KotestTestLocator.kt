@@ -23,7 +23,7 @@ import io.kotest.plugin.intellij.psi.toPsiLocation
  *
  * Kotest 4 reported it's located hints as kotest://class:linenumber
  */
-object KotestTestLocator : SMTestLocator {
+class KotestTestLocator : SMTestLocator {
 
    /**
     * Returns the PSI file that contains the class indicated by the fully qualified name.
@@ -57,9 +57,9 @@ object KotestTestLocator : SMTestLocator {
       scope: GlobalSearchScope
    ): List<Location<PsiElement>> {
       return when (protocol) {
-         Constants.FileLocatorProtocol -> parseFile(project, scope, path)
-         Constants.ClassLocatorProtocol -> parseClass(project, scope, path)
-         Constants.OldLocatorProtocol -> parseClass(project, scope, path)
+         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
          else -> emptyList()
       }
    }

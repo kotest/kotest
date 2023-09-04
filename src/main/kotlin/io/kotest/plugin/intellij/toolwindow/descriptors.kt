@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 class KotestRootNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
    init {
-      templatePresentation.presentableText = Constants.FrameworkName
+      templatePresentation.presentableText = Constants().FrameworkName
    }
 
    override fun update(presentation: PresentationData) {
@@ -64,7 +64,7 @@ class TestFileNodeDescriptor(
 
    init {
       templatePresentation.presentableText = file.name
-      templatePresentation.setIcon(Icons.Kotest16Grey)
+      templatePresentation.setIcon(Icons().Kotest16Grey)
    }
 
    override fun update(presentation: PresentationData) {

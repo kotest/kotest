@@ -11,6 +11,6 @@ class KotestDebuggerRunner : JavaTestFrameworkDebuggerRunner() {
       return profile is KotestConfiguration
    }
 
-   override fun getThreadName(): String = Constants.FrameworkName
+   override fun getThreadName(): String = Constants().FrameworkName
    override fun getRunnerId(): String = "KotestDebug"
 }

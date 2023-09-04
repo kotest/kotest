@@ -17,8 +17,8 @@ class KotestRunnableState(
 ) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
    override fun getForkMode(): String = "none"
-   override fun getFrameworkId(): String = Constants.FrameworkId
-   override fun getFrameworkName(): String = Constants.FrameworkName
+   override fun getFrameworkId(): String = Constants().FrameworkId
+   override fun getFrameworkName(): String = Constants().FrameworkName
    override fun getConfiguration(): KotestConfiguration = config
 
    override fun passForkMode(forkMode: String?, tempFile: File?, parameters: JavaParameters?) {}
@@ -33,17 +33,17 @@ class KotestRunnableState(
       params.mainClass = launcherConfig.mainClass
 
       val packageName = configuration.getPackageName()
-      if (packageName != null && packageName.isNotBlank())
+      if (!packageName.isNullOrBlank())
          params.programParametersList.add("--package", packageName)
 
       // spec can be omitted if you want to run all tests in a module
       val specName = configuration.getSpecName()
-      if (specName != null && specName.isNotBlank())
+      if (!specName.isNullOrBlank())
          params.programParametersList.add("--spec", specName)
 
       // test can be omitted if you want to run the entire spec or package
       val testPath = configuration.getTestPath()
-      if (testPath != null && testPath.isNotBlank())
+      if (!testPath.isNullOrBlank())
          params.programParametersList.add("--testpath", testPath)
 
       // we want to specify to output in intellij compatible format

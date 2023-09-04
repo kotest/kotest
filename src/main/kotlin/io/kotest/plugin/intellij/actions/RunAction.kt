@@ -55,7 +55,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
    val name = node.test.test.name.displayName()
-   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType()))
    val run = config.configuration as KotestConfiguration
 
    run.setTestPath(node.test.test.testPath())
@@ -73,7 +73,7 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
    val name = node.fqn.shortName().asString()
-   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType()))
    val run = config.configuration as KotestConfiguration
 
    run.setTestPath(null)
@@ -92,7 +92,7 @@ fun runModule(module: Module, executorId: String) {
    val manager = RunManager.getInstance(module.project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
-   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType()))
    val run = config.configuration as KotestConfiguration
 
    run.setTestPath(null)

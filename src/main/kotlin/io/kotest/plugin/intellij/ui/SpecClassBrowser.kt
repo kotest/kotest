@@ -12,13 +12,13 @@ import javax.swing.JComponent
 class SpecClassBrowser<T : JComponent>(
    project: Project,
    private val moduleSelector: ConfigurationModuleSelector,
-) : ClassBrowser<T>(project, KotestBundle.getMessage("spec.class.selector")) {
+) : ClassBrowser<T>(project, KotestBundle().getMessage("spec.class.selector")) {
    override fun getFilter(): ClassFilter.ClassFilterWithScope {
       return object : ClassFilter.ClassFilterWithScope {
          override fun isAccepted(aClass: PsiClass?) =
             aClass?.extendsListTypes?.any { it.name.endsWith("Spec") } ?: false
 
-//         override fun getScope() = project.allScope()
+         //         override fun getScope() = project.allScope()
          override fun getScope() = GlobalSearchScope.allScope(project)
       }
    }

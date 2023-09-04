@@ -10,12 +10,12 @@ import com.intellij.psi.search.GlobalSearchScope
 class KotestTestConsoleProperties(
    config: KotestConfiguration,
    executor: Executor
-) : JavaAwareTestConsoleProperties<KotestConfiguration>(Constants.FrameworkName, config, executor) {
+) : JavaAwareTestConsoleProperties<KotestConfiguration>(Constants().FrameworkName, config, executor) {
    init {
       isPrintTestingStartedTime = true
    }
 
-   override fun getTestLocator(): SMTestLocator = KotestTestLocator
+   override fun getTestLocator(): SMTestLocator = KotestTestLocator()
 
    override fun initScope(): GlobalSearchScope {
       val sourceScope = configuration.testSearchScope.getSourceScope(configuration)

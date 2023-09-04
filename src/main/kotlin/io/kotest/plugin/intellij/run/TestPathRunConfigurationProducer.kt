@@ -26,7 +26,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConf
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestConfiguration]s.
     */
-   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
+   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
    /**
     * Returns true if the given context is applicable to this run producer.

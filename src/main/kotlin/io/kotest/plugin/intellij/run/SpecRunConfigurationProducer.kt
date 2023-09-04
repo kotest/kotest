@@ -19,7 +19,7 @@ import io.kotest.plugin.intellij.psi.getSpecEntryPoint
  */
 class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
 
-   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
+   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
    override fun setupConfigurationFromContext(configuration: KotestConfiguration,
                                               context: ConfigurationContext,

@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.name.FqName
@@ -39,6 +40,9 @@ fun PsiFile.classes(): List<KtClass> {
  * Returns the first [KtClass] parent of this element.
  */
 fun PsiElement.enclosingKtClass(): KtClass? = getStrictParentOfType()
+
+fun PsiElement.enclosingKtClassOrObject(): KtClassOrObject? =
+   PsiTreeUtil.getParentOfType(this, KtClassOrObject::class.java)
 
 /**
  * Recursively returns the list of classes and interfaces extended or implemented by the class.

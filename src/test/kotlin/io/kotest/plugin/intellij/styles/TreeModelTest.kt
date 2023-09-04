@@ -40,7 +40,7 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
 
       val root = model.root as DefaultMutableTreeNode
       val kotest = root.userObject as KotestRootNodeDescriptor
-      kotest.presentation.presentableText shouldBe Constants.FrameworkName
+      kotest.presentation.presentableText shouldBe Constants().FrameworkName
 
       val children = root.children().toList() as List<DefaultMutableTreeNode>
       children.size shouldBe 3
