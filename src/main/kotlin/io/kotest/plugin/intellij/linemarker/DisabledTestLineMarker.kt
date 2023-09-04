@@ -1,18 +1,16 @@
 package io.kotest.plugin.intellij.linemarker
 
-import com.intellij.codeInsight.TestFrameworks
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.diff.util.DiffUtil
 import com.intellij.icons.AllIcons
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
+import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
-import org.jetbrains.kotlin.j2k.getContainingClass
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
@@ -42,11 +40,9 @@ class DisabledTestLineMarker : LineMarkerProvider {
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-      println("Marker2222 for test $element")
 
       val ktclass = element.enclosingKtClassOrObject() ?: return null
-      val psiClass = ktclass.getContainingClass() ?: return null
-      if (!isTestClass(psiClass)) return null
+      if (!ktclass.containingFile.isTestFile()) return null
 
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
@@ -54,12 +50,5 @@ class DisabledTestLineMarker : LineMarkerProvider {
          null
       else
          MainEditorLineMarkerInfo(element, "Disabled - ${test.readableTestPath()}", icon)
-   }
-
-   private fun isTestClass(psiClass: PsiClass): Boolean {
-      println("Detecting test class for $psiClass")
-      val framework = TestFrameworks.detectFramework(psiClass)
-      println("Framework $framework")
-      return framework != null && framework.isTestClass(psiClass)
    }
 }

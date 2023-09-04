@@ -118,8 +118,3 @@ fun createTreeModel(
 }
 
 fun Module.isKotlin(): Boolean = FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().isNotEmpty()
-
-fun Module.isTestModule(): Boolean {
-   return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>()
-      .any { it.configuration.settings.isTestModule }
-}
