@@ -9,7 +9,7 @@ import io.kotest.plugin.intellij.psi.StringArg
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
-import io.kotest.plugin.intellij.psi.ifBinaryExpressionOperationIdent
+import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
@@ -129,7 +129,7 @@ object WordSpecStyle : SpecStyle {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
       if (ktcall != null) return test(ktcall)
 
-      val ktbinary = element.ifBinaryExpressionOperationIdent()
+      val ktbinary = element.ifMinusOperator()
       if (ktbinary != null) return test(ktbinary)
 
       val ktdot = element.ifDotExpressionSeparator()

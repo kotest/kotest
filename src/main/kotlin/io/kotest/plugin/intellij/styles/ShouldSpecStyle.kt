@@ -7,8 +7,8 @@ import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
-import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -24,6 +24,8 @@ object ShouldSpecStyle : SpecStyle {
    }
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
+
+   private val fnNames = setOf("should", "xshould", "context", "xcontext")
 
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
@@ -114,12 +116,24 @@ object ShouldSpecStyle : SpecStyle {
    }
 
    override fun possibleLeafElements(): Set<String> {
-      return setOf("OPEN_QUOTE")
+      return setOf("OPEN_QUOTE", "DOT")
    }
 
+   /**
+    * For a FunSpec we consider the following scenarios:
+    *
+    * should("test name") { }
+    * xshould("test name") { }
+    * should("test name").config(...) {}
+    * xshould("test name").config(...) {}
+    * context("test name") {}
+    * xcontext("test name") {}
+    * context("test name").config(...) {}
+    * xcontext("test name").config(...) {}
+    */
    override fun test(element: LeafPsiElement): Test? {
-      val ktcall = element.ifCallExpressionLambdaOpenBrace()
-      if (ktcall != null) return test(ktcall)
+      val call = element.ifOpenQuoteOfFunctionName(fnNames)
+      if (call != null) return test(call)
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)

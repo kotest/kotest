@@ -61,7 +61,7 @@ object StringSpecStyle : SpecStyle {
    }
 
    override fun possibleLeafElements(): Set<String> {
-      return setOf("OPEN_QUOTE")
+      return setOf("OPEN_QUOTE", "LBRACE", "DOT")
    }
 
    /**

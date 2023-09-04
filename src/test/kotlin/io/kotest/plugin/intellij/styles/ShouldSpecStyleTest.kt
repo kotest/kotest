@@ -27,20 +27,20 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
       val expected = listOf(
          Gutter("Run ShouldSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
-         Gutter("Run top level test", 173),
+         Gutter("Run top level test", 155),
          Gutter("Run top level test with config", 247),
-         Gutter("Run some context", 333),
-         Gutter("Run some context top level test", 369),
+         Gutter("Run some context", 317),
+         Gutter("Run some context top level test", 351),
          Gutter("Run some context top level test with config", 452),
-         Gutter("Run some context 2", 554),
-         Gutter("Run some context 2 some nested context", 596),
-         Gutter("Run some context 2 some nested context top level test", 635),
+         Gutter("Run some context 2", 536),
+         Gutter("Run some context 2 some nested context", 573),
+         Gutter("Run some context 2 some nested context top level test", 617),
          Gutter("Run some context 2 some nested context top level test with config", 727),
          Gutter("Run a context with config", 852),
-         Gutter("Run a context with config a should", 906),
+         Gutter("Run a context with config a should", 894),
          Gutter("Disabled - an xcontext with config", 958, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - an xcontext with config a should", 1012, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdisabled should", 1056, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext with config a should", 1000, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdisabled should", 1037, AllIcons.RunConfigurations.TestIgnored),
       )
 
       gutters.size shouldBe expected.size

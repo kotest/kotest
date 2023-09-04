@@ -128,7 +128,8 @@ fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
  * If this [LeafPsiElement] is the identifer used by the operation on a binary expression,
  * then returns that expression.
  */
-fun LeafPsiElement.ifBinaryExpressionOperationIdent(): KtBinaryExpression? {
+fun LeafPsiElement.ifMinusOperator(): KtBinaryExpression? {
+   if (this.elementType.toString() != "MINUS") return null
    val maybeOperationReferenceExpression = parent
    if (maybeOperationReferenceExpression is KtOperationReferenceExpression) {
       val maybeBinaryExpression = maybeOperationReferenceExpression.parent

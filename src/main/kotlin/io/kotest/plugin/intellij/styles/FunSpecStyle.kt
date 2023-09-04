@@ -7,8 +7,8 @@ import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
-import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -25,11 +25,14 @@ object FunSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
+   private val fnNames = setOf("test", "xtest", "context", "xcontext")
+
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
       val p = element.parent ?: return null
       fun tryKtDotQualifiedExpression() =
          if (p is KtDotQualifiedExpression) p.tryContextWithConfig() ?: p.tryXContextWithConfig() else null
+
       fun tryKtCallExpression() =
          if (p is KtCallExpression) p.tryContext() ?: p.tryXContext() else null
       return tryKtDotQualifiedExpression() ?: tryKtCallExpression() ?: locateParent(p)
@@ -131,13 +134,14 @@ object FunSpecStyle : SpecStyle {
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression -> element.tryContext() ?: element.tryXContext() ?: element.tryTest() ?: element.tryXTest()
-         is KtDotQualifiedExpression -> element.tryContextWithConfig() ?: element.tryXContextWithConfig() ?: element.tryTestWithConfig() ?: element.tryXTestWithConfig()
+         is KtDotQualifiedExpression -> element.tryContextWithConfig() ?: element.tryXContextWithConfig()
+         ?: element.tryTestWithConfig() ?: element.tryXTestWithConfig()
          else -> null
       }
    }
 
    override fun possibleLeafElements(): Set<String> {
-      return setOf("OPEN_QUOTE")
+      return setOf("OPEN_QUOTE", "DOT")
    }
 
    /**
@@ -153,15 +157,11 @@ object FunSpecStyle : SpecStyle {
     * xcontext("test name").config(...) {}
     */
    override fun test(element: LeafPsiElement): Test? {
-      val ktcall = element.ifCallExpressionLambdaOpenBrace()
-      if (ktcall != null) {
-         return test(ktcall)
-      }
+      val call = element.ifOpenQuoteOfFunctionName(fnNames)
+      if (call != null) return test(call)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) {
-         return test(ktdot)
-      }
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

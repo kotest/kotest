@@ -8,7 +8,7 @@ import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
-import io.kotest.plugin.intellij.psi.ifBinaryExpressionOperationIdent
+import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
@@ -82,7 +82,7 @@ object FreeSpecStyle : SpecStyle {
    }
 
    override fun possibleLeafElements(): Set<String> {
-      return setOf("OPEN_QUOTE")
+      return setOf("OPEN_QUOTE", "DOT", "MINUS")
    }
 
    /**
@@ -98,7 +98,7 @@ object FreeSpecStyle : SpecStyle {
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)
 
-      val ktbinary = element.ifBinaryExpressionOperationIdent()
+      val ktbinary = element.ifMinusOperator()
       if (ktbinary != null) return test(ktbinary)
 
       return null
