@@ -136,6 +136,10 @@ object FunSpecStyle : SpecStyle {
       }
    }
 
+   override fun possibleLeafElements(): Set<String> {
+      return setOf("OPEN_QUOTE")
+   }
+
    /**
     * For a FunSpec we consider the following scenarios:
     *

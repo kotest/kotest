@@ -60,6 +60,10 @@ object StringSpecStyle : SpecStyle {
       }
    }
 
+   override fun possibleLeafElements(): Set<String> {
+      return setOf("OPEN_QUOTE")
+   }
+
    /**
     * For a StringSpec we consider the following scenarios:
     *

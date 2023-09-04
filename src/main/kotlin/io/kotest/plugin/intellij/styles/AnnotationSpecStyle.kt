@@ -39,6 +39,10 @@ object AnnotationSpecStyle : SpecStyle {
       }
    }
 
+   override fun possibleLeafElements(): Set<String> {
+      return emptySet()
+   }
+
    override fun test(element: LeafPsiElement): Test? {
       return if (element.parent is KtNamedFunction && element.text == "fun") {
          test(element.parent)

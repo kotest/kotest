@@ -61,6 +61,10 @@ object ExpectSpecStyle : SpecStyle {
       }
    }
 
+   override fun possibleLeafElements(): Set<String> {
+      return setOf("OPEN_QUOTE")
+   }
+
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLambdaOpenBrace()
       if (ktcall != null) return test(ktcall)

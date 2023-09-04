@@ -71,6 +71,16 @@ interface SpecStyle {
    fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
+    * Returns true if this element could be the canoncial leaf element for a test in this spec style.
+    */
+   fun isMaybeCanoncialTestLeafElement(element: LeafPsiElement): Boolean = false
+
+   /**
+    * Returns a set of the leaf element types that could be the canoncial leaf of a test
+    */
+   fun possibleLeafElements(): Set<String>
+
+   /**
     * Returns all tests located in the given [PsiElement] as a tree of elements.
     * Nested tests are associated with their parent TestElement.
     *

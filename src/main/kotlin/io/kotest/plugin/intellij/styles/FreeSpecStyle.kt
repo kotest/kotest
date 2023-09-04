@@ -81,6 +81,10 @@ object FreeSpecStyle : SpecStyle {
       }
    }
 
+   override fun possibleLeafElements(): Set<String> {
+      return setOf("OPEN_QUOTE")
+   }
+
    /**
     * For a FreeSpec we consider the following scenarios:
     *

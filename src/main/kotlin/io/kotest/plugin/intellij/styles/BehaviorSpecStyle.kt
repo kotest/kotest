@@ -7,8 +7,8 @@ import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
-import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -36,10 +36,13 @@ object BehaviorSpecStyle : SpecStyle {
    private val thens = listOf("then", "Then", "`then`", "`Then`")
    private val xthens = thens.map { "x$it" }
 
+   private val fnNames = (givens + xgivens + ands + xands + whens + xwhens + thens + xthens).toSet()
+
    private fun PsiElement.locateParent(): Test? {
       return when (val p = parent) {
          null -> null
-         is KtCallExpression -> p.tryWhen() ?: p.tryXWhen() ?: p.tryAnd() ?: p.tryXAnd() ?: p.tryGiven() ?: p.tryXGiven()
+         is KtCallExpression -> p.tryWhen() ?: p.tryXWhen() ?: p.tryAnd() ?: p.tryXAnd() ?: p.tryGiven()
+         ?: p.tryXGiven()
          else -> p.locateParent()
       }
    }
@@ -123,7 +126,6 @@ object BehaviorSpecStyle : SpecStyle {
       }
    }
 
-
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression ->
@@ -135,9 +137,22 @@ object BehaviorSpecStyle : SpecStyle {
       }
    }
 
+   // for behavior specs we care about an identifier located inside a function
+   // with one of the behavior spec names
+   override fun isMaybeCanoncialTestLeafElement(element: LeafPsiElement): Boolean {
+      if (element.elementType.toString() != "OPEN_QUOTE") return false
+      val context = element.context
+      println(context)
+      return false
+   }
+
+   override fun possibleLeafElements(): Set<String> {
+      return setOf("OPEN_QUOTE", "DOT")
+   }
+
    override fun test(element: LeafPsiElement): Test? {
-      val ktcall = element.ifCallExpressionLambdaOpenBrace()
-      if (ktcall != null) return test(ktcall)
+      val ktcall1 = element.ifOpenQuoteOfFunctionName(fnNames)
+      if (ktcall1 != null) return test(ktcall1)
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)

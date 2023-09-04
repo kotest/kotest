@@ -30,6 +30,9 @@ fun KtCallExpression.extractStringFromStringInvokeWithLambda(): StringArg? {
    return null
 }
 
+/**
+ * Returns the name of the given function [KtCallExpression].
+ */
 fun KtCallExpression.functionName(): String? {
    val a = children[0]
    return if (a is KtNameReferenceExpression) a.text else null
@@ -149,6 +152,32 @@ fun LeafPsiElement.ifCallExpressionLhsStringOpenQuote(): KtCallExpression? {
       val maybeCallExpression = maybeStringTemplateExpression.parent
       if (maybeCallExpression is KtCallExpression) {
          return maybeCallExpression
+      }
+   }
+   return null
+}
+
+/**
+ * If this [LeafPsiElement] is the opening quote of a string literal used inside
+ * a function with one of the given names, then returns that function.
+ *
+ * This should be used to detect expressions of the form fn("some test") {}
+ */
+fun LeafPsiElement.ifOpenQuoteOfFunctionName(fnNames: Set<String>): KtCallExpression? {
+   if (this.elementType.toString() != "OPEN_QUOTE") return null
+   val maybeStringTemplateExpression = parent
+   if (maybeStringTemplateExpression is KtStringTemplateExpression) {
+      val maybeValueArgument = maybeStringTemplateExpression.parent
+      if (maybeValueArgument is KtValueArgument) {
+         val maybeValueArgumentList = maybeValueArgument.parent
+         if (maybeValueArgumentList is KtValueArgumentList) {
+            val maybeCallExpression = maybeValueArgumentList.parent
+            if (maybeCallExpression is KtCallExpression) {
+               val name = maybeCallExpression.functionName()
+               if (name != null && fnNames.contains(name))
+                  return maybeCallExpression
+            }
+         }
       }
    }
    return null

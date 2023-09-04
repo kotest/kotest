@@ -9,13 +9,8 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
-import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
-import org.jetbrains.kotlin.psi.KtAnnotationEntry
-import org.jetbrains.kotlin.psi.KtDeclarationModifierList
-import org.jetbrains.kotlin.psi.KtImportDirective
-import org.jetbrains.kotlin.psi.KtImportList
-import org.jetbrains.kotlin.psi.KtPackageDirective
+import io.kotest.plugin.intellij.styles.SpecStyle
 
 /**
  * Adds an icon to the gutter for tests which are disabled.
@@ -25,17 +20,19 @@ class DisabledTestLineMarker : LineMarkerProvider {
    // icons list https://jetbrains.design/intellij/resources/icons_list/
    private val icon = AllIcons.RunConfigurations.TestIgnored
 
+   private val possibleLeafElements = SpecStyle.styles.flatMap { it.possibleLeafElements() }
+
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
       // the docs say to only run a line marker for a leaf
       if (element !is LeafPsiElement) return null
+
       // we don't show these line markers inside a diff
       val editor = element.existingEditor() ?: return null
       if (DiffUtil.isDiffEditor(editor)) return null
 
-      return when (element.elementType.toString()) {
-         "WHITE_SPACE", "CLOSING_QUOTE", "LPAR", "RPAR", "REGULAR_STRING_PART", "EQ", "OPEN_QUOTE", "EOL_COMMENT", "IDENTIFIER" -> null
-         else -> markerForTest(element)
-      }
+      // if the element is not one of the possible types our spec styles care about, then we can skip
+      return if (possibleLeafElements.contains(element.elementType.toString())) markerForTest(element)
+      else null
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
