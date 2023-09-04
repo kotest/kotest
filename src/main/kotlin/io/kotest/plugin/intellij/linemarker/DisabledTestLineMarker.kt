@@ -32,17 +32,17 @@ class DisabledTestLineMarker : LineMarkerProvider {
       val editor = element.existingEditor() ?: return null
       if (DiffUtil.isDiffEditor(editor)) return null
 
-      return when (element.context) {
-         // rule out some common entries that can't possibly be test markers for performance
-         is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
+      return when (element.elementType.toString()) {
+         "WHITE_SPACE", "CLOSING_QUOTE", "LPAR", "RPAR", "REGULAR_STRING_PART", "EQ", "OPEN_QUOTE", "EOL_COMMENT", "IDENTIFIER" -> null
          else -> markerForTest(element)
       }
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-
+      println(element.toString() + " = " + element.name + "; " + element.elementType.toString())
       val ktclass = element.enclosingKtClassOrObject() ?: return null
-      if (!ktclass.containingFile.isTestFile()) return null
+//      println(ktclass.containingFile.isTestFile())
+//      if (!ktclass.containingFile.isTestFile()) return null
 
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null

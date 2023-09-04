@@ -19,8 +19,6 @@ import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.KtTypeParameterList
 import org.jetbrains.kotlin.psi.KtTypeReference
 
-val specStyleFqns = SpecStyle.styles.map { it.fqn() }
-
 interface SpecStyle {
 
    companion object {

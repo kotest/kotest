@@ -78,7 +78,8 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: L
    if (children.size == 3
       && children[0].isNameReference(names)
       && children[1] is KtValueArgumentList
-      && children[2] is KtLambdaArgument) {
+      && children[2] is KtLambdaArgument
+   ) {
       return (children[1] as KtValueArgumentList).getSingleStringArgOrNull()
    }
    return null
@@ -102,20 +103,18 @@ fun LeafPsiElement.ifDotExpressionSeparator(): KtDotQualifiedExpression? {
 /**
  * If this [LeafPsiElement] is the open brace of a function lambda arg, then returns that function name.
  * Eg, test("my function") {}
- *
  */
 fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
-   if (text == "{") {
-      val maybeFunctionLiteral = context
-      if (maybeFunctionLiteral is KtFunctionLiteral) {
-         val maybeLambdaExpression = maybeFunctionLiteral.context
-         if (maybeLambdaExpression is KtLambdaExpression) {
-            val maybeLambdaArg = maybeLambdaExpression.context
-            if (maybeLambdaArg is KtLambdaArgument) {
-               val maybeCallExpression = maybeLambdaArg.context
-               if (maybeCallExpression is KtCallExpression)
-                  return maybeCallExpression
-            }
+   if (this.elementType.toString() != "LBRACE") return null
+   val maybeFunctionLiteral = context
+   if (maybeFunctionLiteral is KtFunctionLiteral) {
+      val maybeLambdaExpression = maybeFunctionLiteral.context
+      if (maybeLambdaExpression is KtLambdaExpression) {
+         val maybeLambdaArg = maybeLambdaExpression.context
+         if (maybeLambdaArg is KtLambdaArgument) {
+            val maybeCallExpression = maybeLambdaArg.context
+            if (maybeCallExpression is KtCallExpression)
+               return maybeCallExpression
          }
       }
    }
