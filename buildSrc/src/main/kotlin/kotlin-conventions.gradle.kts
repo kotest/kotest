@@ -34,7 +34,7 @@ tasks.withType<KotlinCompile>().configureEach {
       )
       apiVersion = "1.8"
       languageVersion = "1.8"
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
+      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
    }
 }
 
@@ -49,5 +49,5 @@ kotlin {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-   options.release.set(11)
+   options.release.set(8)
 }
