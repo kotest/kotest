@@ -150,14 +150,14 @@
     },
     {
       "type": "category",
-      "label": "Non-deterministic Testing",
-      "collapsed": true,
-      "items": [
-        "framework/concurrency/eventually",
-        "assertions/continually",
-        "assertions/until",
-        "assertions/retry"
-      ]
+       "label": "Non-deterministic Testing",
+       "collapsed": true,
+       "items": [
+          "assertions/eventually",
+          "assertions/continually",
+          "assertions/until",
+          "assertions/retry"
+       ]
     },
     {
       "type": "category",
