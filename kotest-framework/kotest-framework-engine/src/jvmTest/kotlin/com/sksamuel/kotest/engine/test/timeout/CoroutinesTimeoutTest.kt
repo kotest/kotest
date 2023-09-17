@@ -71,7 +71,7 @@ class TimeoutTest : FunSpec() {
          timeout = 10000.milliseconds,
          invocations = 1
       ) {
-         delay(50)
+         delay(1.hours)
       }
 
       test("a testcase timeout should apply if the cumulative sum of invocations is greater than the timeout value").config(

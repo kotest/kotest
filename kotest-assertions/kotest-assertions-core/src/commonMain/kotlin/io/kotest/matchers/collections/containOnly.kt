@@ -1,9 +1,9 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.equals.Equality
 import io.kotest.matchers.*
 import kotlin.jvm.JvmName
-import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
 
 /**
  * Assert that a collection contains only the given elements.
@@ -16,7 +16,7 @@ import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
  */
 @JvmName("shouldContainOnly_iterable")
 infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
-    this?.toList() should containOnly(expected.toList())
+   this?.toList() should containOnly(expected.toList())
 
 /**
  * Assert that an array contains only the given elements.
@@ -29,7 +29,7 @@ infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
  */
 @JvmName("shouldContainOnly_array")
 infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>) =
-    this?.asList() should containOnly(*expected)
+   this?.asList() should containOnly(*expected)
 
 /**
  * Assert that a collection contains only the given elements.
@@ -41,7 +41,7 @@ infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 fun <T> Iterable<T>?.shouldContainOnly(vararg expected: T) =
-    this?.toList() should containOnly(*expected)
+   this?.toList() should containOnly(*expected)
 
 /**
  * Assert that an array contains only the given elements.
@@ -53,7 +53,7 @@ fun <T> Iterable<T>?.shouldContainOnly(vararg expected: T) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 fun <T> Array<T>?.shouldContainOnly(vararg expected: T) =
-    this?.asList() should containOnly(*expected)
+   this?.asList() should containOnly(*expected)
 
 /**
  * Assert that a collection contains only the given elements.
@@ -85,30 +85,42 @@ fun <T> containOnly(vararg expected: T): Matcher<Collection<T>?> = containOnly(e
 /**
  * Assert that a collection contains only the given elements.
  */
-fun <T, C : Collection<T>> containOnly(expectedCollection: C): Matcher<C?> = neverNullMatcher { actualCollection ->
-    val actualSet = actualCollection.toSet()
-    val expectedSet = expectedCollection.toSet()
-    val notExpectedSet = actualSet.minus(expectedSet)
-    val missingSet = expectedSet.minus(actualSet)
+fun <T, C : Collection<T>> containOnly(expectedCollection: C) =
+   containOnly(expectedCollection, null)
 
-    val passed = notExpectedSet.isEmpty() && missingSet.isEmpty()
-    val negatedFailureMessageSupplier = { "Collection should not have just ${expectedCollection.print().value}" }
-    val failureMessageSupplier = {
-        buildString {
-            if (missingSet.isNotEmpty()) {
-                append("Some elements were missing: ${missingSet.take(printSize.value).print().value}")
-            }
-            if (missingSet.isNotEmpty() && notExpectedSet.isNotEmpty()) {
-                append(" and some elements were unexpected: ${notExpectedSet.take(printSize.value).print().value}")
-            }
-            if (missingSet.isEmpty() && notExpectedSet.isNotEmpty()) {
-                append("Some elements were unexpected: ${notExpectedSet.take(printSize.value).print().value}")
-            }
-            appendLine()
-        }
-    }
+/**
+ * Assert that a collection contains only the given elements.
+ */
+fun <T, C : Collection<T>> containOnly(
+   expectedCollection: C,
+   verifier: Equality<T>?,
+): Matcher<C?> = neverNullMatcher { actualCollection ->
+   val actualSet = actualCollection.toSet()
+   val expectedSet = expectedCollection.toSet()
 
-    MatcherResult(passed, failureMessageSupplier, negatedFailureMessageSupplier)
+   val notExpectedSet = actualSet.filterNot { actual ->
+      expectedSet.any { verifier?.verify(it, actual )?.areEqual() ?: (it == actual) }
+   }
+   val missingSet = expectedSet.filterNot { expected ->
+      actualSet.any { verifier?.verify(it, expected)?.areEqual() ?: (it == expected) }
+   }
+
+   val passed = notExpectedSet.isEmpty() && missingSet.isEmpty()
+   val negatedFailureMessageSupplier =
+      { "Collection should not contain only ${expectedCollection.print().value}" }
+   val failureMessageSupplier = {
+      buildString {
+         append(
+            "Collection should contain only: ${expectedCollection.print().value}" +
+               " but was: ${actualCollection.print().value}"
+         )
+         appendLine()
+         appendMissingAndExtra(missingSet, notExpectedSet)
+         appendLine()
+      }
+   }
+
+   MatcherResult(passed, failureMessageSupplier, negatedFailureMessageSupplier)
 }
 
 /**
@@ -122,7 +134,7 @@ fun <T, C : Collection<T>> containOnly(expectedCollection: C): Matcher<C?> = nev
  */
 @JvmName("shouldNotContainOnly_iterable")
 infix fun <T> Iterable<T>?.shouldNotContainOnly(expected: Iterable<T>) =
-    this?.toList() shouldNot containOnly(expected.toList())
+   this?.toList() shouldNot containOnly(expected.toList())
 
 /**
  * Assert that an array should not have only the given elements

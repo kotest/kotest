@@ -1,1 +1,3 @@
-git log --format='%aN' v5.1.0..v5.2.0 | sort -u
+git log --format='* %aN' v5.1.0..v5.2.0 | sort -u
+
+git log --format='* %s' v5.6.0..v5.7.0 | xclip -selection c
