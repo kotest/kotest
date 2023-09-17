@@ -28,7 +28,7 @@ suspend fun until(
 ) {
    val eventuallyConfiguration = EventuallyConfiguration(
       duration = config.duration,
-      initialDelay = config.duration,
+      initialDelay = config.initialDelay,
       intervalFn = config.intervalFn,
       retries = config.retries,
       expectedExceptionsFn = config.expectedExceptionsFn,
