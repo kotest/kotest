@@ -18,7 +18,7 @@ class KotestStructureViewExtension : StructureViewExtension {
    override fun getType(): Class<out PsiElement> {
       return KtClassOrObject::class.java
    }
-w
+
    override fun getChildren(parent: PsiElement): Array<StructureViewTreeElement> {
       val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
       val spec = ktClassOrObject.specStyle() ?: return emptyArray()
