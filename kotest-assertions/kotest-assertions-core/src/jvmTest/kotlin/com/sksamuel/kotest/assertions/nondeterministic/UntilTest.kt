@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -18,6 +19,12 @@ class UntilTest : FunSpec({
          System.currentTimeMillis() > 0
       }
       attempts shouldBe 1
+   }
+
+   test("until should exit as soon as predicate passes") {
+      until(1.days) {
+         System.currentTimeMillis() > 0
+      }
    }
 
    test("until with boolean predicate that resolves before time duration") {
