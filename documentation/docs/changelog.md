@@ -4,6 +4,13 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+## 5.7.2 September 2023
+
+#### Fixes
+
+* Revert to build against JDK 1.8
+* Removed autoscan warning
+
 ## 5.7.1 September 2023
 
 #### Fixes
