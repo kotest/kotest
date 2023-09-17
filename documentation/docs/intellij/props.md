@@ -10,7 +10,8 @@ When running tests via the intellij runner, properties set using `gradle.propert
 picked up because the runner is not set to use Gradle.
 
 To support runtime system properties, the Kotest framework will always look for key value pairs inside
-a `kotest.properties` file located on the classpath.
+a `kotest.properties` file located on the classpath (eg, in src/main/resources).
+
 Any key value pairs located in this file will be set as a system property before any tests execute.
 
 :::tip
