@@ -3,7 +3,6 @@ package io.kotest.mpp
 import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.TimeMarkCompat
 import kotlin.reflect.KClass
-import kotlin.time.ExperimentalTime
 
 val start by lazy { MonotonicTimeSourceCompat.markNow() }
 
@@ -37,5 +36,4 @@ fun log(t: Throwable?, f: () -> String) {
    }
 }
 
-@ExperimentalTime
 expect fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String)

@@ -6,7 +6,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-
 fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyDecreasing(): Iterable<T> {
    toList().shouldBeMonotonicallyDecreasing()
    return this
