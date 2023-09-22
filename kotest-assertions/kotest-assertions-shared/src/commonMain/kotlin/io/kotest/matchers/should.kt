@@ -52,6 +52,13 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
                prependMessage = result.failureMessage() + "\n"
             )
          )
+         is EqualityMatcherResult -> errorCollector.collectOrThrow(
+            failure(
+               expected = Expected(result.expected().print()),
+               actual = Actual(result.actual().print()),
+               prependMessage = result.failureMessage() + "\n"
+            )
+         )
          else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
       }
    }
@@ -86,6 +93,3 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       )
    }
 }
-
-
-
