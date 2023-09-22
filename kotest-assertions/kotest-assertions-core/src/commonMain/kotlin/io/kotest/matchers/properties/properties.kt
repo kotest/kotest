@@ -1,4 +1,5 @@
 import io.kotest.assertions.withClue
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -13,14 +14,23 @@ infix fun <T> KProperty0<T>.shouldHaveValue(t: T) = this should haveValue(t)
 
 fun <T> haveValue(t: T) = object : Matcher<KProperty0<T>> {
    override fun test(value: KProperty0<T>): MatcherResult {
-      val equals = runCatching {
-         value.get() shouldBe t
-         true
-      }.getOrElse { false }
-      return MatcherResult(
-         equals,
-         { "Property '${value.name}' should have value $t" },
-         { "Property '${value.name}' should not have value $t" },
+      val actual = value.get()
+      val res = runCatching {
+         actual shouldBe t
+      }
+
+      return EqualityMatcherResult(
+         res.isSuccess,
+         actual,
+         t,
+         {
+            val detailedMessage = res.exceptionOrNull()?.message
+            "Property '${value.name}' should have value $t\n$detailedMessage"
+         },
+         {
+            val detailedMessage = res.exceptionOrNull()?.message
+            "Property '${value.name}' should not have value $t\n$detailedMessage"
+         },
       )
    }
 }
