@@ -214,6 +214,10 @@ class ReflectiveBindTest : StringSpec(
 
       }
 
+      "Arb.bind for set of enum should not fail target size requirement" {
+         val arb = Arb.bind<Set<Shape>>()
+         arb.take(100).toList()
+      }
    }
 ) {
    companion object {
