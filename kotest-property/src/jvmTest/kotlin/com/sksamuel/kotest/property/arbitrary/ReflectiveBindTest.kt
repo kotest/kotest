@@ -218,6 +218,11 @@ class ReflectiveBindTest : StringSpec(
          val arb = Arb.bind<Set<Shape>>()
          arb.take(100).toList()
       }
+
+      "Arb.bind for set of sealed type should not fail target size requirement" {
+         val arb = Arb.bind<Set<Shape3d>>()
+         arb.take(100).toList()
+      }
    }
 ) {
    companion object {

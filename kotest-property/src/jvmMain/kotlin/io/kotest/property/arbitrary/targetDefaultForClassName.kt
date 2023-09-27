@@ -51,6 +51,9 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
          if (upperBoundKClass.isSubclassOf(Enum::class)) {
             val maxElements = Class.forName(upperBoundKClass.java.name).enumConstants.size
             Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>, 0..maxElements)
+         } else if(upperBoundKClass.isSealed) {
+            val maxElements = upperBoundKClass.sealedSubclasses.size
+            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>, 0..maxElements)
          } else {
             Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>)
          }
