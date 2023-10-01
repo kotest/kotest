@@ -37,7 +37,7 @@ data class PluginDescriptor(
 //    https://jb.gg/intellij-platform-builds-list
 // json output but restricted to IDEA ultimate:
 //    https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
-// when releasing for an EAP, look at snapshots
+// when releasing for an EAP, look at snapshots and see the column called build number
 //    https://www.jetbrains.com/intellij-repository/snapshots
 
 // for the sdk version we can use IC-2021.1 if the product is released
@@ -104,9 +104,9 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "233.6745.305", // this version is 2023.3
-      until = "250.*",
-      sdkVersion = "IC-233-EAP-SNAPSHOT",
+      since = "233.8264.8", // this version is 2023.3
+      until = "233.*",
+      sdkVersion = "233.8264-EAP-CANDIDATE-SNAPSHOT",
       sourceFolder = "IC-233",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
