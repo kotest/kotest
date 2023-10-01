@@ -2,7 +2,6 @@ package io.kotest.core.coroutines
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.test.TestScope
-import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
