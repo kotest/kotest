@@ -3,14 +3,18 @@ package com.sksamuel.kotest.engine.extensions.spec
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
@@ -84,6 +88,16 @@ class BeforeSpecListenerTest : FunSpec() {
             .launch()
 
          a shouldBe "spectest1test2spectestinner"
+      }
+
+      test("BeforeSpecListener inline should be triggered before user level test interceptors") {
+
+         val listener = CollectingTestEngineListener()
+         TestEngineLauncher(listener)
+            .withClasses(BeforeSpecInlineWithTestInterceptor::class)
+            .launch()
+
+         b shouldBe "beforeSpecintercepttest"
       }
 
       test("BeforeSpecListener registered by overriding extensions should be triggered for a spec with tests") {
@@ -197,6 +211,21 @@ private class BeforeSpecInlineOrderFunSpecTest : FunSpec() {
       beforeSpec { a += "spec" }
       test("test1") { a += "test1" }
       test("test2") { a += "test2" }
+   }
+}
+
+private var b = ""
+
+private class BeforeSpecInlineWithTestInterceptor : FunSpec() {
+   init {
+      extension(object : TestCaseExtension {
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            b += "intercept"
+            return execute(testCase)
+         }
+      })
+      beforeSpec { b += "beforeSpec" }
+      test("test") { b += "test" }
    }
 }
 
