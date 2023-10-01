@@ -47,7 +47,16 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       }
       clazz.isSubclassOf(Set::class) -> {
          val upperBound = type.arguments.first().type ?: error("No bound for Set")
-         Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>)
+         val upperBoundKClass = (upperBound.classifier as? KClass<*>)
+         if (upperBoundKClass != null && upperBoundKClass.isSubclassOf(Enum::class)) {
+            val maxElements = Class.forName(upperBoundKClass.java.name).enumConstants.size
+            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>, 0..maxElements)
+         } else if(upperBoundKClass != null && upperBoundKClass.isSealed) {
+            val maxElements = upperBoundKClass.sealedSubclasses.size
+            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>, 0..maxElements)
+         } else {
+            Arb.set(Arb.forType(providedArbs, upperBound) as Arb<*>)
+         }
       }
       clazz.isSubclassOf(Pair::class) -> {
          val first = type.arguments[0].type ?: error("No bound for first type parameter of Pair")
