@@ -14,7 +14,6 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
