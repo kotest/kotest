@@ -36,7 +36,7 @@ class DisabledTestLineMarker : LineMarkerProvider {
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-      println(element.toString() + " = " + element.name + "; " + element.elementType.toString())
+//      println(element.toString() + " = " + element.name + "; " + element.elementType.toString())
       val ktclass = element.enclosingKtClassOrObject() ?: return null
 //      println(ktclass.containingFile.isTestFile())
 //      if (!ktclass.containingFile.isTestFile()) return null
