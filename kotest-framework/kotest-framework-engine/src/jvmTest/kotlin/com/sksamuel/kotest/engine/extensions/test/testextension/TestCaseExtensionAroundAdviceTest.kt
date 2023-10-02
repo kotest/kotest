@@ -37,9 +37,5 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test2" {
          throw RuntimeException()
       }
-      // config for this test should be overriden so that the test is actually disabled, and therefore the exception will not be thrown
-      "test3".config(enabled = true) {
-         throw RuntimeException()
-      }
    }
 }

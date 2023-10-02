@@ -10,6 +10,7 @@ import io.kotest.core.listeners.AfterInvocationListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeInvocationListener
+import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -323,7 +324,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun beforeSpec(f: BeforeSpec) {
-      register(object : TestListener {
+      register(object : BeforeSpecListener {
          override suspend fun beforeSpec(spec: Spec) {
             f(spec)
          }

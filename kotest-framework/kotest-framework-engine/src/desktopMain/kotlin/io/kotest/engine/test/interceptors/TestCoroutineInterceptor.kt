@@ -14,15 +14,15 @@ actual class TestCoroutineInterceptor : TestExecutionInterceptor {
    private val logger = Logger(TestCoroutineInterceptor::class)
 
    override suspend fun intercept(
-      testCase: TestCase,
-      scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+     testCase: TestCase,
+     scope: TestScope,
+     test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
       var result: TestResult = TestResult.Ignored
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }
-      runTest {
-         result = test(testCase, scope.withCoroutineContext(this.coroutineContext))
-      }
+     runTest {
+       result = test(testCase, scope.withCoroutineContext(this.coroutineContext))
+     }
       return result
    }
 }
