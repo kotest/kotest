@@ -34,9 +34,9 @@ jobs:
                -  product: "IC-232"
                   java: "17"
                   distribution: "temurin"
-               -  product: "IC-233"
-                  java: "17"
-                  distribution: "temurin"
+#               -  product: "IC-233"
+#                  java: "17"
+#                  distribution: "temurin"
          max-parallel: 1
 
       runs-on: ubuntu-latest
