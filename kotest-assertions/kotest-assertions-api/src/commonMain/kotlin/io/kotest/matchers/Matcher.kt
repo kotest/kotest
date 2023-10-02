@@ -161,3 +161,26 @@ interface ComparableMatcherResult : MatcherResult {
       }
    }
 }
+
+interface EqualityMatcherResult : MatcherResult {
+
+   fun actual(): Any?
+
+   fun expected(): Any?
+
+   companion object {
+      operator fun invoke(
+         passed: Boolean,
+         actual: Any?,
+         expected: Any?,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String,
+         ): EqualityMatcherResult = object : EqualityMatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+         override fun actual(): Any? = actual
+         override fun expected(): Any? = expected
+      }
+   }
+}
