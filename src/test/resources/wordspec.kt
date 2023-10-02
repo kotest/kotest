@@ -18,6 +18,14 @@ class WordSpecExample : WordSpec() {
         "test something with config".config(invocations = 2) {
         }
       }
+       "!disabled should" should {
+
+       }
     }
+
+    "!disabled when" When {
+
+    }
+
   }
 }

@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
+import io.kotest.plugin.intellij.testMode
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -32,8 +33,8 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
 
       // only consider tests
-      if (!ModuleUtil.hasTestSourceRoots(element.project)) return null
-      if (!element.containingFile.isTestFile()) return null
+      if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
+      if (!testMode && !element.containingFile.isTestFile()) return null
 
       // the docs say to only run a line marker for a leaf
       return when (element) {

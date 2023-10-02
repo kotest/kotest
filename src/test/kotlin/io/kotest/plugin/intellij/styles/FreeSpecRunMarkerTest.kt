@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
+import io.kotest.plugin.intellij.testMode
 import java.nio.file.Paths
 
 class FreeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
@@ -14,6 +15,7 @@ class FreeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
    }
 
    fun testGutterIcons() {
+      testMode = true
 
       myFixture.configureByFiles(
          "/freespec.kt",

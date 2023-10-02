@@ -9,3 +9,6 @@ class Constants {
    val OldLocatorProtocol = "kotest"
    val FrameworkId = "ioKotest"
 }
+
+// flip this bit in tests
+var testMode = false

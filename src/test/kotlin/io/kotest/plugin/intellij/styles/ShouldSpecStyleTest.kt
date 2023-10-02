@@ -5,6 +5,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
+import io.kotest.plugin.intellij.testMode
 import java.nio.file.Paths
 
 class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
@@ -15,6 +16,7 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
    }
 
    fun testGutterIcons() {
+      testMode = true
 
       myFixture.configureByFiles(
          "/shouldspec.kt",

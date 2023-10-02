@@ -5,6 +5,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
+import io.kotest.plugin.intellij.testMode
 import java.nio.file.Paths
 
 class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
@@ -15,6 +16,8 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
    }
 
    fun testGutterIcons() {
+
+      testMode = true
 
       myFixture.configureByFiles(
          "/funspec.kt",
@@ -72,7 +75,11 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run context with config", 1238),
          Gutter("Run context with config a test inside a context with config", 1275),
          Gutter("Disabled - xcontext with config", 1365, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xcontext with config a test inside an xcontext with config", 1402, AllIcons.RunConfigurations.TestIgnored),
+         Gutter(
+            "Disabled - xcontext with config a test inside an xcontext with config",
+            1402,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
 
          // Previously the PSI text was fetched which contains the raw text entered, not parsed string, which means it would include the backslashes as well.
          // See https://github.com/kotest/kotest/issues/3078

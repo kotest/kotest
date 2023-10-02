@@ -9,12 +9,14 @@ import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
+import io.kotest.plugin.intellij.testMode
 
 /**
  * Adds an icon to the gutter for tests which are disabled.
@@ -30,9 +32,9 @@ class DisabledTestLineMarker : LineMarkerProvider {
       // the docs say to only run a line marker for a leaf
       if (element !is LeafPsiElement) return null
 
-      // only consider tests
-      if (!ModuleUtil.hasTestSourceRoots(element.project)) return null
-      if (!element.containingFile.isTestFile()) return null
+      // only consider tests unless we are in fact testing
+      if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
+      if (!testMode && !element.containingFile.isTestFile()) return null
 
       // we don't show these line markers inside a diff
       val editor = element.existingEditor() ?: return null

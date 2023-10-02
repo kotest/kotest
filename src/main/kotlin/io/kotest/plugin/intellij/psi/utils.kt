@@ -185,6 +185,26 @@ fun LeafPsiElement.ifOpenQuoteOfFunctionName(fnNames: Set<String>): KtCallExpres
 }
 
 /**
+ * If this [LeafPsiElement] is the opening quote of a string literal on the LHS
+ * of an infix function call, and the function has one of the given names, then
+ * returns that function
+ *
+ * This should be used to detect expressions of the form fn("some test") {}
+ */
+fun LeafPsiElement.ifOpenQuoteOfLhsArgOfIndexFunction(fnNames: Set<String>): KtBinaryExpression? {
+   if (this.elementType.toString() != "OPEN_QUOTE") return null
+   val maybeStringTemplateExpression = parent
+   if (maybeStringTemplateExpression is KtStringTemplateExpression) {
+      val maybeBinaryExpression = maybeStringTemplateExpression.parent
+      if (maybeBinaryExpression is KtBinaryExpression) {
+         if (maybeBinaryExpression.right is KtLambdaExpression && fnNames.contains(maybeBinaryExpression.operationReference.text))
+            return maybeBinaryExpression
+      }
+   }
+   return null
+}
+
+/**
  * If this [KtCallExpression] has a single arg in it's value list, returns that string, otherwise null.
  */
 fun KtCallExpression.getSingleStringArgOrNull(): StringArg? {

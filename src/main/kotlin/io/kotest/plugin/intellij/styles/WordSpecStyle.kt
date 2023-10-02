@@ -12,6 +12,7 @@ import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
 import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.ifOpenQuoteOfLhsArgOfIndexFunction
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -22,6 +23,8 @@ object WordSpecStyle : SpecStyle {
    override fun fqn() = FqName("io.kotest.core.spec.style.WordSpec")
 
    override fun specStyleName(): String = "Word Spec"
+
+   private val fnNames = setOf("should", "Should", "when", "When")
 
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" should { }"
@@ -128,6 +131,9 @@ object WordSpecStyle : SpecStyle {
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
       if (ktcall != null) return test(ktcall)
+
+      val binaryExpression = element.ifOpenQuoteOfLhsArgOfIndexFunction(fnNames)
+      if (binaryExpression != null) return test(binaryExpression)
 
       val ktbinary = element.ifMinusOperator()
       if (ktbinary != null) return test(ktbinary)
