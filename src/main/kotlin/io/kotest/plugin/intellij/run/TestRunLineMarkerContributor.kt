@@ -8,6 +8,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.psi.enclosingKtClass
+import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
@@ -27,6 +28,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       // the docs say to only run a line marker for a leaf
       return when (element) {
          is LeafPsiElement -> {
+            if (!element.containingFile.isTestFile()) return null
             when (element.context) {
                // rule out some common entries that can't possibly be test markers for performance
                is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null

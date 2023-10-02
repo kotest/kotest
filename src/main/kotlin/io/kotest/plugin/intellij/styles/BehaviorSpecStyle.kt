@@ -141,8 +141,8 @@ object BehaviorSpecStyle : SpecStyle {
    // with one of the behavior spec names
    override fun isMaybeCanoncialTestLeafElement(element: LeafPsiElement): Boolean {
       if (element.elementType.toString() != "OPEN_QUOTE") return false
-      val context = element.context
-      println(context)
+//      val context = element.context
+//      println(context)
       return false
    }
 

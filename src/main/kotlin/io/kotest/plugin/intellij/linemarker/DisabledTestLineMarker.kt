@@ -4,11 +4,15 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.diff.util.DiffUtil
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
+import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 
@@ -26,6 +30,10 @@ class DisabledTestLineMarker : LineMarkerProvider {
       // the docs say to only run a line marker for a leaf
       if (element !is LeafPsiElement) return null
 
+      // only consider tests
+      if (!ModuleUtil.hasTestSourceRoots(element.project)) return null
+      if (!element.containingFile.isTestFile()) return null
+
       // we don't show these line markers inside a diff
       val editor = element.existingEditor() ?: return null
       if (DiffUtil.isDiffEditor(editor)) return null
@@ -36,10 +44,7 @@ class DisabledTestLineMarker : LineMarkerProvider {
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-//      println(element.toString() + " = " + element.name + "; " + element.elementType.toString())
       val ktclass = element.enclosingKtClassOrObject() ?: return null
-//      println(ktclass.containingFile.isTestFile())
-//      if (!ktclass.containingFile.isTestFile()) return null
 
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
