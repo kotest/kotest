@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -25,7 +24,7 @@ class SpecImplicitUsageProvider : ImplicitUsageProvider {
          is KtClassOrObject -> element
          is KtUltraLightClass -> element
          is KtLightClass -> when (val origin = element.kotlinOrigin) {
-            is KtClass -> origin
+            is KtClassOrObject -> origin
             else -> null
          }
          else -> null
