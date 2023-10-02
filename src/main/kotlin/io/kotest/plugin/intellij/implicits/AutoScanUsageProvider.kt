@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
  * Allows to disable highlighting of certain elements as unused when such elements are not referenced
@@ -20,7 +21,7 @@ class AutoScanUsageProvider : ImplicitUsageProvider {
       val ktclass = when (element) {
          is KtClass -> element
          is KtLightClass -> when (val origin = element.kotlinOrigin) {
-            is KtClass -> origin
+            is KtClassOrObject -> origin
             else -> null
          }
          else -> null

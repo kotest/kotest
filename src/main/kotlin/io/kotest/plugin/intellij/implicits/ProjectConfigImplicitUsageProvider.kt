@@ -3,7 +3,6 @@ package io.kotest.plugin.intellij.implicits
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isSubclass
-import io.kotest.plugin.intellij.psi.toKtClass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
