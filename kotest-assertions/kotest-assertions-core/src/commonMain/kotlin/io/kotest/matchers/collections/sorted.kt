@@ -41,6 +41,21 @@ fun <T : Comparable<T>> List<T>.shouldBeSorted(): List<T> {
    return this
 }
 
+fun <T : Comparable<T>> Iterable<T>.shouldBeSortedDescending(): Iterable<T> {
+   toList().shouldBeSortedDescending()
+   return this
+}
+
+fun <T : Comparable<T>> Array<T>.shouldBeSortedDescending(): Array<T> {
+   asList().shouldBeSortedDescending()
+   return this
+}
+
+fun <T : Comparable<T>> List<T>.shouldBeSortedDescending(): List<T> {
+   this should beSortedDescending()
+   return this
+}
+
 fun <T : Comparable<T>> Iterable<T>.shouldNotBeSorted(): Iterable<T> {
    toList().shouldNotBeSorted()
    return this
@@ -68,6 +83,21 @@ fun <T, E : Comparable<E>> Array<T>.shouldBeSortedBy(transform: (T) -> E): Array
 
 fun <T, E : Comparable<E>> List<T>.shouldBeSortedBy(transform: (T) -> E): List<T> {
    this should beSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> Iterable<T>.shouldBeSortedDescendingBy(transform: (T) -> E): Iterable<T> {
+   toList().shouldBeSortedDescendingBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> Array<T>.shouldBeSortedDescendingBy(transform: (T) -> E): Array<T> {
+   asList().shouldBeSortedDescendingBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> List<T>.shouldBeSortedDescendingBy(transform: (T) -> E): List<T> {
+   this should beSortedDescendingBy(transform)
    return this
 }
 
