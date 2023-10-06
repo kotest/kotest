@@ -1,7 +1,5 @@
-package com.sksamuel.kotest.assertions.nondeterministic
+package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.nondeterministic.until
-import io.kotest.assertions.nondeterministic.untilConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
