@@ -1,14 +1,9 @@
 @file:Suppress("BlockingMethodInNonBlockingContext")
 
-package com.sksamuel.kotest.assertions.nondeterministic
+package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
-import io.kotest.assertions.nondeterministic.EventuallyListener
-import io.kotest.assertions.nondeterministic.ShortCircuitControlException
-import io.kotest.assertions.nondeterministic.eventually
-import io.kotest.assertions.nondeterministic.eventuallyConfig
-import io.kotest.assertions.nondeterministic.fibonacci
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
