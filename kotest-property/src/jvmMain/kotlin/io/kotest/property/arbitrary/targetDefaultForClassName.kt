@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.mpp.bestName
 import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -17,6 +18,8 @@ import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.javaType
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
@@ -44,6 +47,17 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
       clazz.isSubclassOf(List::class) -> {
          val upperBound = type.arguments.first().type ?: error("No bound for List")
          Arb.list(Arb.forType(providedArbs, upperBound) as Arb<*>)
+      }
+      clazz.java.isArray -> {
+         val upperBound = type.arguments.first().type ?: error("No bound for Array")
+         Arb.array(Arb.forType(providedArbs, upperBound) as Arb<*>) {
+            val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
+            val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
+            for ((i, item) in this.withIndex()) {
+               java.lang.reflect.Array.set(array, i, item)
+            }
+            array
+         }
       }
       clazz.isSubclassOf(Set::class) -> {
          val upperBound = type.arguments.first().type ?: error("No bound for Set")
