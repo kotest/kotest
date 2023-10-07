@@ -1,11 +1,6 @@
 package io.kotest.property.resolution
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.array
-import io.kotest.property.arbitrary.bind
-import io.kotest.property.arbitrary.forClass
-import io.kotest.property.arbitrary.list
-import io.kotest.property.arbitrary.map
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 

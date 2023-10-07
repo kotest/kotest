@@ -28,7 +28,7 @@ import kotlin.reflect.typeOf
  * - Collections (Set, List, Map) of types that fall into this category
  * - Classes for which an [Arb] has been provided through [providedArbs]
  */
-inline fun <reified T : Any> Arb.Companion. bind(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
+inline fun <reified T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
    bind(providedArbs, T::class, typeOf<T>())
 
 /**
