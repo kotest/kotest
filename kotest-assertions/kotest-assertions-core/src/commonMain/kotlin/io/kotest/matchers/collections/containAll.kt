@@ -14,7 +14,7 @@ infix fun <T> Iterable<T>.shouldContainAll(ts: Collection<T>) = toList().shouldC
 infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>) = asList().shouldContainAll(ts)
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
 
-fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T) = toList().shouldNotContainAll(ts)
+fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T) = toList().shouldNotContainAll(*ts)
 fun <T> Array<T>.shouldNotContainAll(vararg ts: T) = asList().shouldNotContainAll(ts)
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
 infix fun <T> Iterable<T>.shouldNotContainAll(ts: Collection<T>) = toList().shouldNotContainAll(ts)
