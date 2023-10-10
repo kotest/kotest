@@ -7,7 +7,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(ts)
+fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(*ts)
 fun <T> Array<T>.shouldContainAll(vararg ts: T) = asList().shouldContainAll(ts)
 fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*ts)
 infix fun <T> Iterable<T>.shouldContainAll(ts: Collection<T>) = toList().shouldContainAll(ts)
