@@ -8,14 +8,14 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(*ts)
-fun <T> Array<T>.shouldContainAll(vararg ts: T) = asList().shouldContainAll(ts)
+fun <T> Array<T>.shouldContainAll(vararg ts: T) = asList().shouldContainAll(*ts)
 fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*ts)
 infix fun <T> Iterable<T>.shouldContainAll(ts: Collection<T>) = toList().shouldContainAll(ts)
 infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>) = asList().shouldContainAll(ts)
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
 
 fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T) = toList().shouldNotContainAll(*ts)
-fun <T> Array<T>.shouldNotContainAll(vararg ts: T) = asList().shouldNotContainAll(ts)
+fun <T> Array<T>.shouldNotContainAll(vararg ts: T) = asList().shouldNotContainAll(*ts)
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
 infix fun <T> Iterable<T>.shouldNotContainAll(ts: Collection<T>) = toList().shouldNotContainAll(ts)
 infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>) = asList().shouldNotContainAll(ts)
