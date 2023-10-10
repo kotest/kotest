@@ -47,6 +47,35 @@ class ShouldContainAllTest : WordSpec() {
                col should containAll(3, 2, 0)
             }
          }
+
+         "test that a iterable contains all the elements but in any order" {
+            val col = listOf(1, 2, 3, 4, 5).asIterable()
+
+            col.shouldContainAll(1, 2, 3)
+            col.shouldContainAll(3, 1)
+            col.shouldContainAll(3)
+
+            col.shouldNotContainAll(6)
+            col.shouldNotContainAll(1, 6)
+            col.shouldNotContainAll(6, 1)
+
+            shouldThrow<AssertionError> {
+               col.shouldContainAll(1, 2, 6)
+            }
+
+            shouldThrow<AssertionError> {
+               col.shouldContainAll(6)
+            }
+
+            shouldThrow<AssertionError> {
+               col.shouldContainAll(0, 1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               col.shouldContainAll(3, 2, 0)
+            }
+         }
+
          "print missing elements" {
             shouldThrow<AssertionError> {
                listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
