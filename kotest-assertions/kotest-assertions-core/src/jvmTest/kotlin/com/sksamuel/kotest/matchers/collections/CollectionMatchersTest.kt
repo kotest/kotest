@@ -857,6 +857,14 @@ class CollectionMatchersTest : WordSpec() {
             listOf(1, 2, 3).shouldContainAnyOf(1)
          }
 
+         "Pass when one element is in the iterable" {
+            listOf(1, 2, 3).asIterable().shouldContainAnyOf(1)
+         }
+
+         "Pass when one element is in the array" {
+            arrayOf(1, 2, 3).shouldContainAnyOf(1)
+         }
+
          "Pass when all elements are in the list" {
             listOf(1, 2, 3).shouldContainAnyOf(1, 2, 3)
          }
@@ -864,6 +872,18 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when no element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldContainAnyOf(4)
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
+         }
+
+         "Fail when no element is in the iterable" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).asIterable().shouldContainAnyOf(4)
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
+         }
+
+         "Fail when no element is in the array" {
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2, 3).shouldContainAnyOf(4)
             }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
          }
       }
@@ -882,6 +902,18 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when one element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1)
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+         }
+
+         "Fail when one element is in the iterable" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).asIterable().shouldNotContainAnyOf(1)
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+         }
+
+         "Fail when one element is in the array" {
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2, 3).shouldNotContainAnyOf(1)
             }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
          }
 
