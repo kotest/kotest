@@ -30,6 +30,8 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
 import io.kotest.matchers.collections.shouldBeSorted
 import io.kotest.matchers.collections.shouldBeSortedBy
+import io.kotest.matchers.collections.shouldBeSortedDescending
+import io.kotest.matchers.collections.shouldBeSortedDescendingBy
 import io.kotest.matchers.collections.shouldBeSortedWith
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainDuplicates
@@ -61,6 +63,7 @@ import io.kotest.matchers.collections.shouldNotMatchInOrder
 import io.kotest.matchers.collections.shouldNotMatchInOrderSubset
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.collections.sorted
+import io.kotest.matchers.collections.sortedDescending
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.should
@@ -174,6 +177,22 @@ class CollectionMatchersTest : WordSpec() {
             }.shouldHaveMessage("List [1, 2, 3] should not be sorted")
          }
 
+         "test that a collection is sorted descending" {
+            emptyList<Int>() shouldBe sortedDescending<Int>()
+            listOf(1) shouldBe sortedDescending<Int>()
+            listOf(4, 3, 2, 1) shouldBe sortedDescending<Int>()
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2) shouldBe sortedDescending<Int>()
+            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+
+            listOf(9, 6, 2, 1).shouldBeSortedDescending()
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2).shouldBeSortedDescending()
+            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+         }
+
          "restrict items at the error message" {
             val longList = (1..1000).toList()
 
@@ -197,6 +216,10 @@ class CollectionMatchersTest : WordSpec() {
          "compare by the tranformed value" {
             items.shouldBeSortedBy { it.first }
             items.shouldNotBeSortedBy { it.second }
+         }
+
+         "compare by the tranformed value in descending order" {
+            items.shouldBeSortedDescendingBy { it.first * -1 }
          }
       }
 
