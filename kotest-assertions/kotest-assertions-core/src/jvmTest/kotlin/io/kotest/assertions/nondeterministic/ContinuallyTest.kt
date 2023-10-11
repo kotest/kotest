@@ -1,9 +1,5 @@
-package com.sksamuel.kotest.assertions.nondeterministic
+package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.nondeterministic.ContinuallyListener
-import io.kotest.assertions.nondeterministic.DurationFn
-import io.kotest.assertions.nondeterministic.continually
-import io.kotest.assertions.nondeterministic.continuallyConfig
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly

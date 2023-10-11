@@ -184,6 +184,61 @@ class ShouldContainExactlyTest : WordSpec() {
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
                """.trimMargin()
          }
+
+         "exclude full print with warning on large collections" {
+            shouldThrow<AssertionError> {
+               listOf(
+                  Blonde("foo", true, 1, inputPath),
+                  Blonde("foo", true, 2, inputPath),
+                  Blonde("foo", true, 3, inputPath),
+                  Blonde("foo", true, 4, inputPath),
+                  Blonde("foo", true, 5, inputPath),
+                  Blonde("foo", true, 6, inputPath),
+                  Blonde("foo", true, 7, inputPath),
+                  Blonde("foo", true, 8, inputPath),
+                  Blonde("foo", true, 9, inputPath),
+                  Blonde("foo", true, 10, inputPath),
+                  Blonde("foo", true, 11, inputPath),
+                  Blonde("foo", true, 12, inputPath),
+                  Blonde("foo", true, 13, inputPath),
+                  Blonde("foo", true, 14, inputPath),
+                  Blonde("foo", true, 15, inputPath),
+                  Blonde("foo", true, 16, inputPath),
+                  Blonde("foo", true, 17, inputPath),
+                  Blonde("foo", true, 18, inputPath),
+                  Blonde("foo", true, 19, inputPath),
+                  Blonde("foo", true, 20, inputPath),
+                  Blonde("foo", true, 21, inputPath),
+               ).shouldContainExactly(
+                  Blonde("foo", true, 77, inputPath),
+                  Blonde("foo", true, 2, inputPath),
+                  Blonde("foo", true, 3, inputPath),
+                  Blonde("foo", true, 4, inputPath),
+                  Blonde("foo", true, 5, inputPath),
+                  Blonde("foo", true, 6, inputPath),
+                  Blonde("foo", true, 7, inputPath),
+                  Blonde("foo", true, 8, inputPath),
+                  Blonde("foo", true, 9, inputPath),
+                  Blonde("foo", true, 10, inputPath),
+                  Blonde("foo", true, 11, inputPath),
+                  Blonde("foo", true, 12, inputPath),
+                  Blonde("foo", true, 13, inputPath),
+                  Blonde("foo", true, 14, inputPath),
+                  Blonde("foo", true, 15, inputPath),
+                  Blonde("foo", true, 16, inputPath),
+                  Blonde("foo", true, 17, inputPath),
+                  Blonde("foo", true, 18, inputPath),
+                  Blonde("foo", true, 19, inputPath),
+                  Blonde("foo", true, 20, inputPath),
+                  Blonde("foo", true, 21, inputPath),
+               )
+            }.message?.trim() shouldBe
+               """
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
+                  |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=a/b/c)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=a/b/c)]
+                  |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)
+               """.trimMargin()
+         }
       }
 
       "containExactlyInAnyOrder" should {

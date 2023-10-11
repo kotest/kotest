@@ -55,6 +55,26 @@ fun <T, E : Comparable<E>> sortedBy(transform: (T) -> E): Matcher<List<T>> = obj
    }
 }
 
+fun <T : Comparable<T>> beSortedDescending(): Matcher<List<T>> = sortedDescending()
+fun <T : Comparable<T>> sortedDescending(): Matcher<List<T>> = sortedDescendingBy { it }
+
+fun <T, E : Comparable<E>> beSortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = sortedDescendingBy(transform)
+fun <T, E : Comparable<E>> sortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = object : Matcher<List<T>> {
+   override fun test(value: List<T>): MatcherResult {
+      val failure =
+         value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && transform(it) < transform(value[i + 1]) }
+      val elementMessage = when (failure) {
+         null -> ""
+         else -> ". Element ${failure.value} at index ${failure.index} was less than element ${value[failure.index + 1]}"
+      }
+      return MatcherResult(
+         failure == null,
+         { "List ${value.print().value} should be sorted$elementMessage" },
+         { "List ${value.print().value} should not be sorted" }
+      )
+   }
+}
+
 fun <T> matchEach(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchEach(fns.asList())
 fun <T> matchInOrder(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchInOrder(fns.asList(), allowGaps = false)
 fun <T> matchInOrderSubset(vararg fns: (T) -> Unit): Matcher<Collection<T>?> =
