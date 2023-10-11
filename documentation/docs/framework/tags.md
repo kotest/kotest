@@ -190,7 +190,7 @@ Kotlin Gradle DSL:
 ```kotlin
 val test by tasks.getting(Test::class) {
     // ... Other configurations ...
-    systemProperties = System.getProperties().associate { it.key.toString() to it.value }
+    systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
 }
 ```
 
