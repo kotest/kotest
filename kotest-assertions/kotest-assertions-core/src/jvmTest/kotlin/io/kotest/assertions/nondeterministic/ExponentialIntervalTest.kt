@@ -1,8 +1,6 @@
-package com.sksamuel.kotest.assertions.nondeterministic
+package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.nondeterministic.ExponentialIntervalFn
-import io.kotest.assertions.nondeterministic.exponential
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo

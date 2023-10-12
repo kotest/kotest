@@ -47,6 +47,71 @@ class ShouldContainAllTest : WordSpec() {
                col should containAll(3, 2, 0)
             }
          }
+
+         "test that a iterable contains all the elements but in any order" {
+            val iter = listOf(1, 2, 3, 4, 5).asIterable()
+
+            iter.shouldContainAll(1, 2, 3)
+            iter.shouldContainAll(3, 1)
+            iter.shouldContainAll(3)
+
+            iter.shouldNotContainAll(6)
+            iter.shouldNotContainAll(1, 6)
+            iter.shouldNotContainAll(6, 1)
+
+            shouldThrow<AssertionError> {
+               iter.shouldContainAll(1, 2, 6)
+            }
+
+            shouldThrow<AssertionError> {
+               iter.shouldContainAll(6)
+            }
+
+            shouldThrow<AssertionError> {
+               iter.shouldContainAll(0, 1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               iter.shouldContainAll(3, 2, 0)
+            }
+
+            shouldThrow<AssertionError> {
+               iter.shouldNotContainAll(1, 2)
+            }
+         }
+
+         "test that a array contains all the elements but in any order" {
+            val arr = arrayOf(1, 2, 3, 4, 5)
+
+            arr.shouldContainAll(1, 2, 3)
+            arr.shouldContainAll(3, 1)
+            arr.shouldContainAll(3)
+
+            arr.shouldNotContainAll(6)
+            arr.shouldNotContainAll(1, 6)
+            arr.shouldNotContainAll(6, 1)
+
+            shouldThrow<AssertionError> {
+               arr.shouldContainAll(1, 2, 6)
+            }
+
+            shouldThrow<AssertionError> {
+               arr.shouldContainAll(6)
+            }
+
+            shouldThrow<AssertionError> {
+               arr.shouldContainAll(0, 1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               arr.shouldContainAll(3, 2, 0)
+            }
+
+            shouldThrow<AssertionError> {
+               arr.shouldNotContainAll(1, 2)
+            }
+         }
+
          "print missing elements" {
             shouldThrow<AssertionError> {
                listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
