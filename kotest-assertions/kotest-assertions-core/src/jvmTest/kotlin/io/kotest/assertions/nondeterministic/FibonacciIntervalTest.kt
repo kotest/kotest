@@ -1,7 +1,5 @@
-package com.sksamuel.kotest.assertions.nondeterministic
+package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.nondeterministic.FibonacciIntervalFn
-import io.kotest.assertions.nondeterministic.fibonacci
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan

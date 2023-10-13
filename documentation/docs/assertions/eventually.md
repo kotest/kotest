@@ -6,7 +6,7 @@ slug: eventually.html
 
 :::note New improved module
 Starting with Kotest 5.7, the non-deterministic testing functions have moved to the `kotest-assertions-core` module, and
-are available under the new package `com.sksamuel.kotest.assertions.nondeterministic`. The previous iterations of these
+are available under the new package `io.kotest.assertions.nondeterministic`. The previous iterations of these
 functions are still available, but deprecated.
 :::
 

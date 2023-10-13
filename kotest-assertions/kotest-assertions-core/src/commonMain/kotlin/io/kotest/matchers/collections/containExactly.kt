@@ -99,23 +99,32 @@ fun <T, C : Collection<T>> containExactly(
    val negatedFailureMessage =
       { "Collection should not contain exactly: ${expected.print().value}" }
 
-   if (
-      actual.size <= AssertionsConfig.maxCollectionEnumerateSize &&
-      expected.size <= AssertionsConfig.maxCollectionEnumerateSize &&
-      !failureReason.isDisallowedIterableComparisonFailure()
+   if (failureReason.isDisallowedIterableComparisonFailure()) {
+      MatcherResult(
+         passed,
+         failureMessage,
+         negatedFailureMessage,
+      )
+   } else if (
+      actual.size > AssertionsConfig.maxCollectionEnumerateSize &&
+      expected.size > AssertionsConfig.maxCollectionEnumerateSize
    ) {
+      MatcherResult(
+         passed,
+         {
+            failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
+         },
+         {
+            negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
+         },
+      )
+   } else {
       ComparableMatcherResult(
          passed,
          failureMessage,
          negatedFailureMessage,
          actual.print().value,
          expected.print().value,
-      )
-   } else {
-      MatcherResult(
-         passed,
-         failureMessage,
-         negatedFailureMessage,
       )
    }
 }
