@@ -51,7 +51,7 @@ infix fun <T: Comparable<T>> T.shouldNotBeIn(range: ClosedRange<T>): T {
  */
 fun <T: Comparable<T>> beIn(range: ClosedRange<T>) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      if (range.isEmpty())    throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
+      if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
 
       val match = value in range
 
