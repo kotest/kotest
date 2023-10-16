@@ -58,8 +58,7 @@ fun <T: Comparable<T>> beIn(range: ClosedRange<T>) = object : Matcher<T> {
       return MatcherResult(
          match,
          { "Range should contain ${value.print().value}, but doesn't. Possible values: ${range.print().value}" },
-         {
-            "Range should not contain ${value.print().value}, but does. Forbidden values: ${range.print().value}"
-         })
+         { "Range should not contain ${value.print().value}, but does. Forbidden values: ${range.print().value}" }
+     )
    }
 }
