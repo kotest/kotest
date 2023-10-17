@@ -8,8 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger
 class AutoCloseableTestFactoryTest : ShouldSpec({
    include(
       shouldSpec {
+         include(
+            shouldSpec {
+               should("close is called in nested test factory") {
+                  autoClose(FirstAutoClose)
+               }
+            }
+         )
          should("close is called in test factory") {
-            autoClose(FirstAutoClose)
             autoClose(SecondAutoClose)
          }
       }
