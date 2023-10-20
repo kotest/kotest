@@ -53,6 +53,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    fun include(factory: TestFactory) {
       factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
+      factory.configuration.setParentConfiguration(this)
       register(factory.extensions)
    }
 

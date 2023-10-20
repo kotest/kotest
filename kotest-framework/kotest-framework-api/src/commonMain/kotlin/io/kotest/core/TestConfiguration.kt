@@ -48,6 +48,8 @@ abstract class TestConfiguration {
 
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
+   private var _parentConfiguration: TestConfiguration? = null
+
    /**
     * Config applied to each test case if not overridden per test case.
     * If null, then defaults to the project level default.
@@ -165,6 +167,7 @@ abstract class TestConfiguration {
     * Registers a lazy [AutoCloseable] to be closed when the spec is completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
+      _parentConfiguration?.autoClose(closeable)
       _autoCloseables = listOf(closeable) + _autoCloseables
       return closeable
    }
@@ -369,5 +372,9 @@ abstract class TestConfiguration {
     */
    fun registeredExtensions(): List<Extension> {
       return _extensions.toList()
+   }
+
+   fun setParentConfiguration(configuration: TestConfiguration) {
+      _parentConfiguration = configuration
    }
 }

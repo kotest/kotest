@@ -20,4 +20,5 @@ data class TestFactory(
    val tags: Set<Tag>,
    val assertionMode: AssertionMode?,
    val extensions: List<Extension>,
+   val configuration: TestFactoryConfiguration
 )
