@@ -29,6 +29,14 @@ class BeEmptyTest : WordSpec() {
             arrayOf<Int>().shouldBeEmpty()
          }
 
+         "succeed for empty range" {
+            (1..0).shouldBeEmpty()
+         }
+
+         "succeed for empty open range" {
+            (1 until 1).shouldBeEmpty()
+         }
+
          "fail for single element list" {
             shouldThrowAny {
                listOf(0).shouldBeEmpty()
@@ -51,6 +59,18 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                sequenceOf(0).shouldBeEmpty()
             }.message shouldBe "Sequence should be empty"
+         }
+
+         "fail for single element range" {
+            shouldThrowAny {
+               (1..1).shouldBeEmpty()
+            }.message shouldBe "Collection should be empty but contained 1"
+         }
+
+         "fail for single element open range" {
+            shouldThrowAny {
+               (1 until 2).shouldBeEmpty()
+            }.message shouldBe "Collection should be empty but contained 1"
          }
 
          "fail for sequence of nulls" {
