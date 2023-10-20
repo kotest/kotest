@@ -1728,6 +1728,12 @@ public final class io/kotest/matchers/property/MatchersKt {
 	public static final fun shouldBeNullable (Lkotlin/reflect/KProperty;)V
 }
 
+public final class io/kotest/matchers/ranges/BeinKt {
+	public static final fun beIn (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+}
+
 public final class io/kotest/matchers/reflection/CallableMatchersKt {
 	public static final fun acceptParametersOfType (Ljava/util/List;)Lio/kotest/matchers/Matcher;
 	public static final fun beAbstract ()Lio/kotest/matchers/Matcher;
