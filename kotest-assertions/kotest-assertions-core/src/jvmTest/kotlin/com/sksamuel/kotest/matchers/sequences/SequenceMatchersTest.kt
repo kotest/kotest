@@ -3,7 +3,9 @@ package com.sksamuel.kotest.matchers.sequences
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.sequences.shouldContainExactly
+import io.kotest.matchers.sequences.shouldHaveSingleElement
 import io.kotest.matchers.sequences.shouldNotContainExactly
+import io.kotest.matchers.sequences.shouldNotHaveSingleElement
 import io.kotest.matchers.shouldBe
 
 class SequenceMatchersTest : StringSpec({
@@ -40,5 +42,29 @@ class SequenceMatchersTest : StringSpec({
       shouldThrow<AssertionError> {
          sequenceOf(1, 2, 3).shouldNotContainExactly(1, 2, 3)
       }.message shouldBe "Sequence should not contain exactly 1, 2, 3"
+   }
+
+   "single element" {
+      sequenceOf(1).shouldHaveSingleElement(1)
+
+      shouldThrow<AssertionError> {
+         emptySequence<Int>().shouldHaveSingleElement(1)
+      }.message shouldBe "Sequence should have a single element of 1 but is empty."
+
+      shouldThrow<AssertionError> {
+         sequenceOf(2).shouldHaveSingleElement(1)
+      }.message shouldBe "Sequence should have a single element of 1 but has 2 as first element."
+
+      shouldThrow<AssertionError> {
+         sequenceOf(1, 2).shouldHaveSingleElement(1)
+      }.message shouldBe "Sequence should have a single element of 1 but has more than one element."
+
+      shouldThrow<AssertionError> {
+         generateSequence(1) { it + 1 }.shouldHaveSingleElement(1)
+      }.message shouldBe "Sequence should have a single element of 1 but has more than one element."
+
+      shouldThrow<AssertionError> {
+         sequenceOf(1).shouldNotHaveSingleElement(1)
+      }.message shouldBe "Sequence should not have a single element of 1."
    }
 })

@@ -276,14 +276,22 @@ infix fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shoul
 infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 
-fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
+fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val valueAsList = value.toList()
-      val actualCount = valueAsList.count()
+      var failureMessage: String? = null
+      val iterator = value.iterator()
+      var actualElement: T?
+      if (!iterator.hasNext()) {
+         failureMessage = "Sequence should have a single element of $expectedElement but is empty."
+      } else if (eq(iterator.next().also { actualElement = it }, expectedElement) != null) {
+         failureMessage = "Sequence should have a single element of $expectedElement but has $actualElement as first element."
+      } else if (iterator.hasNext()) {
+         failureMessage = "Sequence should have a single element of $expectedElement but has more than one element."
+      }
       return MatcherResult(
-         actualCount == 1 && valueAsList.first() == t,
-         { "Sequence should be a single element of $t but has $actualCount elements" },
-         { "Sequence should not be a single element of $t" }
+         failureMessage == null,
+         { failureMessage ?: "" },
+         { "Sequence should not have a single element of $expectedElement." }
       )
    }
 }
