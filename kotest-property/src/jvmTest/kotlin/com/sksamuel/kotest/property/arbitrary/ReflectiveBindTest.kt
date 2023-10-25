@@ -159,6 +159,12 @@ class ReflectiveBindTest : StringSpec(
          val listArb = Arb.bind<List<Int>>()
          listArb.next().shouldBeInstanceOf<List<Int>>()
 
+         val arrayArb = Arb.bind<Array<Int>>()
+         arrayArb.next().shouldBeInstanceOf<Array<Int>>()
+
+         val arrayArbWithClass = Arb.bind<Array<Wobble>>()
+         arrayArbWithClass.next().shouldBeInstanceOf<Array<Wobble>>()
+
          val bigDecimalArb = Arb.bind<BigDecimal>()
          bigDecimalArb.next().shouldBeInstanceOf<BigDecimal>()
       }
