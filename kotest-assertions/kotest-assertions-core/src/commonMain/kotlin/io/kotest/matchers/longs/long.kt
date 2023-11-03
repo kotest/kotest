@@ -24,6 +24,19 @@ fun positiveL() = object : Matcher<Long> {
          { "$value should not be > 0" })
 }
 
+fun Long.shouldBeNonNegative(): Long {
+   this shouldBe nonNegativeL()
+   return this
+}
+
+fun nonNegativeL() = object : Matcher<Long> {
+   override fun test(value: Long) =
+      MatcherResult(
+         value >= 0,
+         { "$value should be >= 0" },
+         { "$value should not be >= 0" })
+}
+
 fun Long.shouldBeNegative(): Long {
    this shouldBe negativeL()
    return this
@@ -35,6 +48,19 @@ fun negativeL() = object : Matcher<Long> {
          value < 0,
          { "$value should be < 0" },
          { "$value should not be < 0" })
+}
+
+fun Long.shouldBeNonPositive(): Long {
+   this shouldBe nonPositiveL()
+   return this
+}
+
+fun nonPositiveL() = object : Matcher<Long> {
+   override fun test(value: Long) =
+      MatcherResult(
+         value <= 0,
+         { "$value should be <= 0" },
+         { "$value should not be <= 0" })
 }
 
 fun Long.shouldBeEven(): Long {
