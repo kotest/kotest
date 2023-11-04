@@ -1095,6 +1095,10 @@ public final class io/kotest/property/arbitrary/LongsKt {
 	public static final fun longArray (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static final fun negativeLong (Lio/kotest/property/Arb$Companion;J)Lio/kotest/property/Arb;
 	public static synthetic fun negativeLong$default (Lio/kotest/property/Arb$Companion;JILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun nonNegativeLong (Lio/kotest/property/Arb$Companion;J)Lio/kotest/property/Arb;
+	public static synthetic fun nonNegativeLong$default (Lio/kotest/property/Arb$Companion;JILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun nonPositiveLong (Lio/kotest/property/Arb$Companion;J)Lio/kotest/property/Arb;
+	public static synthetic fun nonPositiveLong$default (Lio/kotest/property/Arb$Companion;JILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun positiveLong (Lio/kotest/property/Arb$Companion;J)Lio/kotest/property/Arb;
 	public static synthetic fun positiveLong$default (Lio/kotest/property/Arb$Companion;JILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun uLong (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ULongRange;)Lio/kotest/property/Arb;
