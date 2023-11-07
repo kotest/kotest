@@ -199,7 +199,7 @@ class MyTests : DescribeSpec({
 
 ## Behavior Spec
 
-Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `container`, `given`, `when`, `then`.
+Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `context`, `given`, `when`, `then`.
 
 ```kotlin
 class MyTests : BehaviorSpec({
