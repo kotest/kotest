@@ -15,13 +15,13 @@ class ShouldBeInTest : WordSpec() {
          "fail before left end of closed range" {
             shouldThrowAny {
                0 shouldBeIn closedRange
-            }.message shouldBe "Range should contain 0, but doesn't. Possible values: [1, 2, 3]"
+            }.message shouldBe "Range should contain 0, but doesn't. Possible values: 1..3"
          }
 
          "fail before left end of open end range" {
             shouldThrowAny {
                0 shouldBeIn openEndRange
-            }.message shouldBe "Range should contain 0, but doesn't. Possible values: [1, 2]"
+            }.message shouldBe "Range should contain 0, but doesn't. Possible values: 1..2"
          }
 
          "succeed on left end of closed range" {
@@ -47,19 +47,19 @@ class ShouldBeInTest : WordSpec() {
          "fail on right end of open end range" {
             shouldThrowAny {
                3 shouldBeIn openEndRange
-            }.message shouldBe "Range should contain 3, but doesn't. Possible values: [1, 2]"
+            }.message shouldBe "Range should contain 3, but doesn't. Possible values: 1..2"
          }
 
          "fail after right end of closed range" {
             shouldThrowAny {
                4 shouldBeIn closedRange
-            }.message shouldBe "Range should contain 4, but doesn't. Possible values: [1, 2, 3]"
+            }.message shouldBe "Range should contain 4, but doesn't. Possible values: 1..3"
          }
 
          "fail after right end of open end range" {
             shouldThrowAny {
                4 shouldBeIn openEndRange
-            }.message shouldBe "Range should contain 4, but doesn't. Possible values: [1, 2]"
+            }.message shouldBe "Range should contain 4, but doesn't. Possible values: 1..2"
          }
       }
 
@@ -75,31 +75,31 @@ class ShouldBeInTest : WordSpec() {
          "fail on left end of closed range" {
             shouldThrowAny {
                1 shouldNotBeIn closedRange
-            }.message shouldBe "Range should not contain 1, but does. Forbidden values: [1, 2, 3]"
+            }.message shouldBe "Range should not contain 1, but does. Forbidden values: 1..3"
          }
 
          "fail on left end of open end range" {
             shouldThrowAny {
                1 shouldNotBeIn openEndRange
-            }.message shouldBe "Range should not contain 1, but does. Forbidden values: [1, 2]"
+            }.message shouldBe "Range should not contain 1, but does. Forbidden values: 1..2"
          }
 
          "fail inside closed range" {
             shouldThrowAny {
                2 shouldNotBeIn closedRange
-            }.message shouldBe "Range should not contain 2, but does. Forbidden values: [1, 2, 3]"
+            }.message shouldBe "Range should not contain 2, but does. Forbidden values: 1..3"
          }
 
          "fail inside open end range" {
             shouldThrowAny {
                2 shouldNotBeIn openEndRange
-            }.message shouldBe "Range should not contain 2, but does. Forbidden values: [1, 2]"
+            }.message shouldBe "Range should not contain 2, but does. Forbidden values: 1..2"
          }
 
          "fail on right end of closed range" {
             shouldThrowAny {
                3 shouldNotBeIn closedRange
-            }.message shouldBe "Range should not contain 3, but does. Forbidden values: [1, 2, 3]"
+            }.message shouldBe "Range should not contain 3, but does. Forbidden values: 1..3"
          }
 
          "succeed on right end of open end range" {
