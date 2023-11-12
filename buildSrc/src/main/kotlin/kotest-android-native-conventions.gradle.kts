@@ -8,6 +8,8 @@ kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
       androidNativeX86()
       androidNativeX64()
+      androidNativeArm32()
+      androidNativeArm64()
       sourceSets {
 
          // Main source sets
