@@ -20,6 +20,9 @@ object AssertionsConfig {
    val maxErrorsOutput: Int
       get() = sysprop("kotest.assertions.output.max")?.toIntOrNull() ?: 10
 
+   val mapDiffLimit: Int
+      get() = sysprop("kotest.assertions.map.diff.limit", 100)
+
    val maxCollectionEnumerateSize: Int
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 
