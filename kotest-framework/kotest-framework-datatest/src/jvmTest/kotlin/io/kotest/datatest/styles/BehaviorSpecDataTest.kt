@@ -21,7 +21,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 189
+         count shouldBe 199
       }
 
       given("inside a given") {
@@ -52,6 +52,18 @@ class BehaviorSpecDataTest : BehaviorSpec() {
             When("e") {
                Then("f") {
                   a shouldBe a
+               }
+            }
+         }
+      }
+
+      withData(nameFn = { "$it" }, 300, 301) { a ->
+         Context("n") {
+            Given("o") {
+               When("p") {
+                  Then("q") {
+                     a shouldBe a
+                  }
                }
             }
          }
