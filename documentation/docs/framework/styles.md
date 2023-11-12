@@ -199,19 +199,21 @@ class MyTests : DescribeSpec({
 
 ## Behavior Spec
 
-Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `given`, `when`, `then`.
+Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `context`, `given`, `when`, `then`.
 
 ```kotlin
 class MyTests : BehaviorSpec({
-    given("a broomstick") {
-        `when`("I sit on it") {
-            then("I should be able to fly") {
-                // test code
+    context("a broomstick should be able to be fly and come back on it's own") {
+        given("a broomstick") {
+            `when`("I sit on it") {
+                then("I should be able to fly") {
+                    // test code
+                }
             }
-        }
-        `when`("I throw it away") {
-            then("it should come back") {
-                // test code
+            `when`("I throw it away") {
+                then("it should come back") {
+                    // test code
+                }
             }
         }
     }
@@ -219,7 +221,7 @@ class MyTests : BehaviorSpec({
 ```
 
 :::note
-Because `when` is a keyword in Kotlin, we must enclose it with backticks. Alternatively, there are title case versions available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
+Because `when` is a keyword in Kotlin, we must enclose it with backticks. Alternatively, there are title case versions available if you don't like the use of backticks, eg, `Context`, `Given`, `When`, `Then`.
 :::
 
 
@@ -246,7 +248,7 @@ Note: `Then` scope doesn't have an `and` scope due to a Gradle bug. For more inf
 
 
 
-Tests can be disabled using the `xgiven`, `xwhen`, and `xthen` variants (in addition to the [usual ways](conditional_evaluation.md))
+Tests can be disabled using the `xcontext`, `xgiven`, `xwhen`, and `xthen` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
 class MyTests : BehaviorSpec({

@@ -6,6 +6,7 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecWhenContainerScope
@@ -29,6 +30,29 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    init {
       body()
    }
+
+   /**
+    * Adds a [BehaviorSpecContextContainerScope] to this container.
+    */
+   @Suppress("FunctionName")
+   @ExperimentalKotest
+   suspend fun ContainerScope.Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      registerContainer(
+         TestName("Context: ", name, true),
+         disabled = false,
+         null,
+      ) { BehaviorSpecContextContainerScope(this).test() }
+
+   /**
+    * Adds a [BehaviorSpecContextContainerScope] to this container.
+    */
+   @ExperimentalKotest
+   suspend fun ContainerScope.context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      registerContainer(
+         TestName("Context: ", name, true),
+         disabled = false,
+         null,
+      ) { BehaviorSpecContextContainerScope(this).test() }
 
    /**
     * Adds a [BehaviorSpecGivenContainerScope] to this container.
