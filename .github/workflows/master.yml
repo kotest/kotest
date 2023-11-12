@@ -48,6 +48,8 @@ jobs:
                - jsTest publishJsPublicationToDeployRepository
                - linuxX64Test publishLinuxX64PublicationToDeployRepository
                - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
+               - androidNativeX86TestKlibrary androidNativeX64TestKlibrary
+               - androidNativeArm32Klibrary androidNativeArm64TestKlibrary
       steps:
          -  uses: kotest/kotest-action@master
             with:
