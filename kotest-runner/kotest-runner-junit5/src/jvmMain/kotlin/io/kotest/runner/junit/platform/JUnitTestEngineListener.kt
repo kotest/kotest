@@ -12,8 +12,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import org.junit.platform.engine.EngineExecutionListener
@@ -75,7 +74,7 @@ import kotlin.time.Duration
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
-   private val formatter: DisplayNameFormatter,
+   private val formatter: FallbackDisplayNameFormatter,
 ) : AbstractTestEngineListener() {
 
    private val logger = Logger(JUnitTestEngineListener::class)
