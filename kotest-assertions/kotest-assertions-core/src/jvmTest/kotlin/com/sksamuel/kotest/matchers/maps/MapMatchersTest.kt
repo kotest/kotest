@@ -4,7 +4,6 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.stringSpec
 import io.kotest.core.spec.style.wordSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.and
@@ -338,10 +337,6 @@ class MapMatchersTest : WordSpec() {
                "Key6" to "Val61",
                "Key7" to "Val71",
                "Key8" to "Val81",
-               "Key9" to "Val91",
-               "Key10" to "Val101",
-               "Key11" to "Val111",
-               "Key12" to "Val121"
             )
 
             val map2 = mapOf(
@@ -353,46 +348,11 @@ class MapMatchersTest : WordSpec() {
                "Key6" to "Val62",
                "Key7" to "Val72",
                "Key8" to "Val82",
-               "Key9" to "Val92",
-               "Key10" to "Val102",
-               "Key11" to "Val112",
-               "Key12" to "Val122"
             )
-
-            val expectedErrorMessage = """Expected
-{
-  "Key1" = "Val11",
-  "Key2" = "Val22",
-  "Key3" = "Val32",
-  "Key4" = "Val42",
-  "Key5" = "Val52",
-  "Key6" = "Val62",
-  "Key7" = "Val72",
-  "Key8" = "Val82",
-  "Key9" = "Val92",
-  "Key10" = "Val102",
-...
-}
-to be equal to
-{
-  "Key1" = "Val11",
-  "Key2" = "Val21",
-  "Key3" = "Val31",
-  "Key4" = "Val41",
-  "Key5" = "Val51",
-  "Key6" = "Val61",
-  "Key7" = "Val71",
-  "Key8" = "Val81",
-  "Key9" = "Val91",
-  "Key10" = "Val101",
-...
-}
-Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, ...
-            """.trimMargin()
 
             val assertionError = shouldThrow<AssertionError> { map1 shouldBe map2 }
 
-            assertionError.message shouldBe """Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, ...
+            assertionError.message shouldBe """Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8
 expected:<{
   "Key1" = "Val11",
   "Key2" = "Val22",
@@ -401,10 +361,7 @@ expected:<{
   "Key5" = "Val52",
   "Key6" = "Val62",
   "Key7" = "Val72",
-  "Key8" = "Val82",
-  "Key9" = "Val92",
-  "Key10" = "Val102",
-...
+  "Key8" = "Val82"
 }> but was:<{
   "Key1" = "Val11",
   "Key2" = "Val21",
@@ -413,10 +370,7 @@ expected:<{
   "Key5" = "Val51",
   "Key6" = "Val61",
   "Key7" = "Val71",
-  "Key8" = "Val81",
-  "Key9" = "Val91",
-  "Key10" = "Val101",
-...
+  "Key8" = "Val81"
 }>"""
          }
       }

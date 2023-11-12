@@ -21,11 +21,20 @@ object ConfigManager {
    }
 
    fun compile(configuration: ProjectConfiguration, projectConfigs: () -> List<AbstractProjectConfig>) = runCatching {
-      log { "ConfigManager: compiling config projectConfigs=$projectConfigs" }
+      log { "ConfigManager: compiling configs" }
+
+      log { "ConfigManager: Applying platform defaults" }
       applyPlatformDefaults(configuration)
+
+      log { "ConfigManager: Applying configs from system properties" }
       applyConfigFromSystemProperties(configuration)
+
+      log { "ConfigManager: Applying configs from auto scan" }
       applyConfigFromAutoScan(configuration)
+
+      log { "ConfigManager: Applying configs from compiled lamdas" }
       projectConfigs().forEach { applyConfigFromProjectConfig(it, configuration) }
+
    }.mapError { ConfigurationException(it) }
 }
 

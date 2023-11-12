@@ -9,7 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(KotestInternal::class)
 val TestScope.backgroundScope: CoroutineScope
    get() {
-      val testScopeContainer: TestScopeContainer = this.coroutineContext[TestScopeContainer]
+      val testScopeContainer: TestScopeElement = this.coroutineContext[TestScopeElement]
          ?: error("Test scope not available. You need to set coroutineTestScope = true to enable it")
 
       return testScopeContainer.testScope.backgroundScope
