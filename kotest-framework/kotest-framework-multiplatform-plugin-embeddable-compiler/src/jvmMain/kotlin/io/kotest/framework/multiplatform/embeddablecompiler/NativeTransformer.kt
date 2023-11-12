@@ -43,15 +43,16 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
             name = Name.identifier(EntryPoint.LauncherValName)
          }.also { field ->
             field.correspondingPropertySymbol = this@apply.symbol
-            field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
-               this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
+            field.initializer = pluginContext.irFactory.createExpressionBody(
+               startOffset,
+               endOffset,
+               DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                   +callLauncher(launchFn, specs, configs) {
                      irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
                         withTeamCity.dispatchReceiver = irCall(launcherConstructor)
                      }
                   }
-               }
-            }
+               })
          }
 
          addGetter {

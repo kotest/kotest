@@ -87,6 +87,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun setAssertSoftly (Ljava/lang/Boolean;)V
 	public final fun setAssertions (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/TestCaseConfig;)V
+	public final fun setParentConfiguration (Lio/kotest/core/TestConfiguration;)V
 	public final fun tags ([Lio/kotest/core/Tag;)V
 }
 
@@ -1474,16 +1475,18 @@ public final class io/kotest/core/factory/FactoryId$Companion {
 }
 
 public final class io/kotest/core/factory/TestFactory {
-	public fun <init> (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;)V
+	public fun <init> (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;)V
 	public final fun component1 ()Lio/kotest/core/factory/FactoryId;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/Set;
 	public final fun component4 ()Lio/kotest/core/test/AssertionMode;
 	public final fun component5 ()Ljava/util/List;
-	public final fun copy (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;)Lio/kotest/core/factory/TestFactory;
-	public static synthetic fun copy$default (Lio/kotest/core/factory/TestFactory;Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/core/factory/TestFactory;
+	public final fun component6 ()Lio/kotest/core/factory/TestFactoryConfiguration;
+	public final fun copy (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;)Lio/kotest/core/factory/TestFactory;
+	public static synthetic fun copy$default (Lio/kotest/core/factory/TestFactory;Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;ILjava/lang/Object;)Lio/kotest/core/factory/TestFactory;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
+	public final fun getConfiguration ()Lio/kotest/core/factory/TestFactoryConfiguration;
 	public final fun getExtensions ()Ljava/util/List;
 	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
 	public final fun getTags ()Ljava/util/Set;
