@@ -118,8 +118,8 @@ class Discovery(
 
       log { "After discovery extensions there are ${afterExtensions.size} spec classes" }
 
-      val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
-         System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
+//      val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
+//         System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
 
 //      val scripts = when {
 //         scriptsEnabled -> discoverScripts()
@@ -190,14 +190,16 @@ class Discovery(
    }
 
    private fun classgraph(): ClassGraph {
-      @Suppress("DEPRECATION")
+
       val cg = ClassGraph()
          .enableClassInfo()
          .enableExternalClasses()
          .ignoreClassVisibility()
 
       if (configuration.disableTestNestedJarScanning) {
+         log { "Nested jar scanning is disabled" }
          cg.disableNestedJarScanning()
+         cg.disableModuleScanning()
       }
 
       // do not change this to use reject as it will break clients using older versions of classgraph

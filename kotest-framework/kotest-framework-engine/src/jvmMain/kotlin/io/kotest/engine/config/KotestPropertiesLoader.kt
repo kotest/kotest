@@ -30,7 +30,11 @@ internal object KotestPropertiesLoader {
     */
    private fun loadSystemProps(filename: String): Properties {
       val props = Properties()
-      val input = object {}::class.java.getResourceAsStream(filename) ?: return props
+      val input = object {}::class.java.getResourceAsStream(filename)
+      if (input == null) {
+         log { "Kotest properties file was not detected" }
+         return props
+      }
       props.load(input)
       return props
    }
