@@ -34,6 +34,8 @@ kotlin {
       iosArm32()
       iosSimulatorArm64()
 
+      wasm32()
+
       sourceSets {
 
          // Main source sets
@@ -50,6 +52,11 @@ kotlin {
 
          val linuxX64Main by getting { dependsOn(desktopMain) }
          val linuxArm64Main by getting { dependsOn(desktopMain) }
+
+         val androidNativeArm32Main by getting { dependsOn(desktopMain) }
+         val androidNativeArm64Main by getting { dependsOn(desktopMain) }
+         val androidNativeX86Main by getting { dependsOn(desktopMain) }
+         val androidNativeX64Main by getting { dependsOn(desktopMain) }
 
          val iosX64Main by getting { dependsOn(desktopMain) }
          val iosArm64Main by getting { dependsOn(desktopMain) }
@@ -78,6 +85,11 @@ kotlin {
 
          val linuxX64Test by getting { dependsOn(nativeTest) }
          val linuxArm64Test by getting { dependsOn(nativeTest) }
+
+         val androidNativeArm32Test by getting { dependsOn(nativeTest) }
+         val androidNativeArm64Test by getting { dependsOn(nativeTest) }
+         val androidNativeX86Test by getting { dependsOn(nativeTest) }
+         val androidNativeX64Test by getting { dependsOn(nativeTest) }
 
          val iosX64Test by getting { dependsOn(nativeTest) }
          val iosArm64Test by getting { dependsOn(nativeTest) }
