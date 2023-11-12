@@ -11,6 +11,8 @@ class FallbackDisplayNameFormatter(
 ) {
 
    companion object {
+      fun default() = default(ProjectConfiguration())
+
       fun default(configuration: ProjectConfiguration) =
          FallbackDisplayNameFormatter(DefaultDisplayNameFormatter(configuration))
    }
