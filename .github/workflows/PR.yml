@@ -84,7 +84,7 @@ jobs:
                - macosX64Test macosArm64Test
                - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary
                - tvosX64Test tvosArm64TestKlibrary tvosSimulatorArm64Test
-               - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64Test
+               - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64TestKlibrary
 
       steps:
          -  name: Checkout the repo
