@@ -74,7 +74,6 @@ kotlin {
 
          val watchosArm32Test by getting { dependsOn(nativeTest) }
          val watchosArm64Test by getting { dependsOn(nativeTest) }
-         val watchosX86Test by getting { dependsOn(nativeTest) }
          val watchosX64Test by getting { dependsOn(nativeTest) }
          val watchosSimulatorArm64Test by getting { dependsOn(nativeTest) }
 
