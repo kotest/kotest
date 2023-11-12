@@ -10,7 +10,11 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.ref.BeforeSpecState
 import io.kotest.engine.spec.interceptor.ref.beforeSpecStateKey
 import io.kotest.engine.test.createTestResult
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration.Companion.seconds
+
+val mutex = Semaphore(1)
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
@@ -30,24 +34,27 @@ internal class BeforeSpecListenerInterceptor(
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
-      val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
-      return when {
-         state == null -> test(testCase, scope) // skip when not defined, ie in tests
-         state.success.contains(testCase.spec) -> test(testCase, scope)
-         state.failed.contains(testCase.spec) -> TestResult.Ignored("Skipped due to beforeSpec failure")
-         else -> SpecExtensions(registry)
-            .beforeSpec(testCase.spec)
-            .fold(
-               {
-                  state.success.add(testCase.spec)
-                  test.invoke(testCase, scope)
-               },
-               {
-                  state.failed.add(testCase.spec)
-                  state.errors.add(it)
-                  createTestResult(0.seconds, it)
-               }
-            )
+      mutex.withPermit {
+         val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
+         println(state.toString() + " " + state.hashCode())
+         return when {
+            state == null -> test(testCase, scope) // skip when not defined, ie in tests
+            state.success.contains(testCase.spec) -> test(testCase, scope)
+            state.failed.contains(testCase.spec) -> TestResult.Ignored("Skipped due to beforeSpec failure")
+            else -> SpecExtensions(registry)
+               .beforeSpec(testCase.spec)
+               .fold(
+                  {
+                     state.success.add(testCase.spec)
+                     test.invoke(testCase, scope)
+                  },
+                  {
+                     state.failed.add(testCase.spec)
+                     state.errors.add(it)
+                     createTestResult(0.seconds, it)
+                  }
+               )
+         }
       }
    }
 }

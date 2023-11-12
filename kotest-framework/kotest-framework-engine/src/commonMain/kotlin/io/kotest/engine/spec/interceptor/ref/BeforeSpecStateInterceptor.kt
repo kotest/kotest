@@ -23,11 +23,6 @@ internal class BeforeSpecStateInterceptor(private val context: EngineContext) : 
       val state = BeforeSpecState(mutableListOf(), mutableSetOf(), mutableSetOf())
       context.state[ref.kclass.beforeSpecStateKey()] = state
       return fn(ref)
-//      return fn(ref).flatMap { results ->
-//         if (state.errors.isEmpty()) Result.success(results)
-//         else if (state.errors.size == 1) Result.failure(state.errors.single())
-//         else Result.failure(MultipleExceptions(state.errors))
-//      }
    }
 }
 
