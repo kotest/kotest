@@ -14,8 +14,6 @@ kotlin {
       macosX64()
       macosArm64()
 
-      androidNativeArm32()
-      androidNativeArm64()
       androidNativeX86()
       androidNativeX64()
 
@@ -51,8 +49,6 @@ kotlin {
          val linuxX64Main by getting { dependsOn(desktopMain) }
          val linuxArm64Main by getting { dependsOn(desktopMain) }
 
-         val androidNativeArm32Main by getting { dependsOn(desktopMain) }
-         val androidNativeArm64Main by getting { dependsOn(desktopMain) }
          val androidNativeX86Main by getting { dependsOn(desktopMain) }
          val androidNativeX64Main by getting { dependsOn(desktopMain) }
 
@@ -84,8 +80,6 @@ kotlin {
          val linuxX64Test by getting { dependsOn(nativeTest) }
          val linuxArm64Test by getting { dependsOn(nativeTest) }
 
-         val androidNativeArm32Test by getting { dependsOn(nativeTest) }
-         val androidNativeArm64Test by getting { dependsOn(nativeTest) }
          val androidNativeX86Test by getting { dependsOn(nativeTest) }
          val androidNativeX64Test by getting { dependsOn(nativeTest) }
 
