@@ -10,11 +10,12 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.ref.BeforeSpecState
 import io.kotest.engine.spec.interceptor.ref.beforeSpecStateKey
 import io.kotest.engine.test.createTestResult
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration.Companion.seconds
 
-private val mutex = Semaphore(1)
+private val mutex = Mutex()
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
@@ -34,7 +35,7 @@ internal class BeforeSpecListenerInterceptor(
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
-      mutex.withPermit {
+      mutex.withLock {
          val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
          println(state.toString() + " " + state.hashCode())
          return when {
