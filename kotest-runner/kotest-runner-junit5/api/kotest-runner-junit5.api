@@ -4,7 +4,7 @@ public final class io/kotest/runner/junit/platform/DescriptorsKt {
 }
 
 public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
-	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/core/names/DisplayNameFormatter;)V
+	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -27,7 +27,6 @@ public final class io/kotest/runner/junit/platform/KotestEngineDescriptor : org/
 
 public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngine : org/junit/platform/engine/TestEngine {
 	public static final field Companion Lio/kotest/runner/junit/platform/KotestJunitPlatformTestEngine$Companion;
-	public static final field EngineId Ljava/lang/String;
 	public fun <init> ()V
 	public fun discover (Lorg/junit/platform/engine/EngineDiscoveryRequest;Lorg/junit/platform/engine/UniqueId;)Lio/kotest/runner/junit/platform/KotestEngineDescriptor;
 	public synthetic fun discover (Lorg/junit/platform/engine/EngineDiscoveryRequest;Lorg/junit/platform/engine/UniqueId;)Lorg/junit/platform/engine/TestDescriptor;
