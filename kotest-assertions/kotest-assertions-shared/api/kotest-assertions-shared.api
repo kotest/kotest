@@ -50,6 +50,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
 	public final fun getDisableNaNEquality ()Z
 	public final fun getLargeStringDiffMinSize ()I
+	public final fun getMapDiffLimit ()I
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
