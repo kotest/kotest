@@ -35,7 +35,7 @@ internal object KotestPropertiesLoader {
       return props
    }
 
-   fun loadAndApplySystemProps() {
+   fun loadAndApplySystemPropsFile() {
       val filename = systemPropsFilename()
       log { "Loading kotest properties from $filename" }
       loadSystemProps(filename).forEach { (key, value) ->

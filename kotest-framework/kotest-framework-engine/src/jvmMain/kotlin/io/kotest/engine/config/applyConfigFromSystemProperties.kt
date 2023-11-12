@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
 internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {
 
    // before applying system props, we should detect the kotest.properties file and apply defaults from that
-   KotestPropertiesLoader.loadAndApplySystemProps()
+   KotestPropertiesLoader.loadAndApplySystemPropsFile()
 
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
