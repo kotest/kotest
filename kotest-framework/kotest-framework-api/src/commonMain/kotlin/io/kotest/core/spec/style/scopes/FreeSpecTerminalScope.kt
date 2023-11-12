@@ -12,6 +12,7 @@ class FreeSpecTerminalScope(val testScope: TestScope) : TerminalScope() {
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
 
    // exists to stop nesting
+   @Suppress("UNUSED_PARAMETER")
    @Deprecated("Cannot nest leaf test inside another leaf test", level = DeprecationLevel.ERROR)
    suspend infix operator fun String.invoke(test: suspend TestScope.() -> Unit) {
    }

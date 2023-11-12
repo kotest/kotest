@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.test
+package io.kotest.engine.js
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.test.interceptors.testNameEscape

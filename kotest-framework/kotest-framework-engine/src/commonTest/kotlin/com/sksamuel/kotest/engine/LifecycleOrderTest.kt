@@ -45,18 +45,18 @@ private class LifecycleTests : FunSpec() {
    }
 }
 
-private enum class Lifecycle {
+enum class Lifecycle {
    PROJECT,
    SPEC,
    TEST_CASE
 }
 
-private enum class Phase {
+enum class Phase {
    ENTRY,
    EXIT
 }
 
-private class LifecycleExtension(val name: String) : ProjectExtension, SpecExtension, TestCaseExtension {
+class LifecycleExtension(val name: String) : ProjectExtension, SpecExtension, TestCaseExtension {
 
    companion object {
       val state = mutableListOf<Triple<String, Lifecycle, Phase>>()
