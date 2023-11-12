@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration.Companion.seconds
 
-val mutex = Semaphore(1)
+private val mutex = Semaphore(1)
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
