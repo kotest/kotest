@@ -27,7 +27,6 @@ kotlin {
       watchosArm64()
       watchosX86()
       watchosX64()
-      watchosDeviceArm64()
       watchosSimulatorArm64()
 
       iosX64()
@@ -61,7 +60,6 @@ kotlin {
          val watchosArm64Main by getting { dependsOn(desktopMain) }
          val watchosX86Main by getting { dependsOn(desktopMain) }
          val watchosX64Main by getting { dependsOn(desktopMain) }
-         val watchosDeviceArm64Main by getting { dependsOn(desktopMain) }
          val watchosSimulatorArm64Main by getting { dependsOn(desktopMain) }
 
          val tvosX64Main by getting { dependsOn(desktopMain) }
@@ -90,7 +88,6 @@ kotlin {
          val watchosArm64Test by getting { dependsOn(nativeTest) }
          val watchosX86Test by getting { dependsOn(nativeTest) }
          val watchosX64Test by getting { dependsOn(nativeTest) }
-         val watchosDeviceArm64Test by getting { dependsOn(nativeTest) }
          val watchosSimulatorArm64Test by getting { dependsOn(nativeTest) }
 
          val tvosX64Test by getting { dependsOn(nativeTest) }
