@@ -6,22 +6,18 @@ plugins {
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
-      androidNativeX86()
-      androidNativeX64()
-      androidNativeArm32()
-      androidNativeArm64()
+      watchosDeviceArm64()
       sourceSets {
 
          // Main source sets
          val commonMain by getting {}
          val desktopMain by getting { dependsOn(commonMain) }
-         val androidNativeX86Main by getting { dependsOn(desktopMain) }
-         val androidNativeX64Main by getting { dependsOn(desktopMain) }
+         val watchosDeviceArm64Main by getting { dependsOn(desktopMain) }
 
+         // Test sourcesets
          val commonTest by getting
          val nativeTest by getting { dependsOn(commonTest) }
-         val androidNativeX86Test by getting { dependsOn(nativeTest) }
-         val androidNativeX64Test by getting { dependsOn(nativeTest) }
+         val watchosDeviceArm64Test by getting { dependsOn(nativeTest) }
       }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
