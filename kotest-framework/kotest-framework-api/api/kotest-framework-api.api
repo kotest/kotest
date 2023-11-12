@@ -1163,6 +1163,10 @@ public final class io/kotest/core/coroutines/TestScopeContainer : kotlin/corouti
 public final class io/kotest/core/coroutines/TestScopeContainer$Companion : kotlin/coroutines/CoroutineContext$Key {
 }
 
+public final class io/kotest/core/coroutines/TestScopeContainerKt {
+	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
+}
+
 public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public static final field Companion Lio/kotest/core/descriptors/Descriptor$Companion;
 	public static final field SpecDelimiter Ljava/lang/String;
