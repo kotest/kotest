@@ -12,7 +12,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.it
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.engine.xit
@@ -32,7 +32,7 @@ internal actual fun createSpecExecutorDelegate(
 @ExperimentalKotest
 internal class JavascriptSpecExecutorDelegate(private val context: EngineContext) : SpecExecutorDelegate {
 
-   private val formatter = getDisplayNameFormatter(
+   private val formatter = getFallbackDisplayNameFormatter(
       context.configuration.registry,
       context.configuration,
    )

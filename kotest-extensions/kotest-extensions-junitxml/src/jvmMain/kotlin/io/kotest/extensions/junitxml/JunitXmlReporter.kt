@@ -8,7 +8,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.formatTestPath
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import org.jdom2.Document
 import org.jdom2.Element
 import org.jdom2.output.Format
@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.absolute
 import kotlin.reflect.KClass
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
@@ -58,7 +57,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
-   private val formatter = getDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
+   private val formatter = getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
 
    private fun outputDir(): Path {
