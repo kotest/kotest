@@ -34,8 +34,6 @@ kotlin {
       iosArm32()
       iosSimulatorArm64()
 
-      wasm32()
-
       sourceSets {
 
          // Main source sets

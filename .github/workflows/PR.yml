@@ -42,7 +42,6 @@ jobs:
             target:
                - jvmTest
                - jsTest
-               - wasm32TestKlibrary
                - linuxX64Test linuxArm64TestKlibrary
                - androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary
                - androidNativeX86TestKlibrary androidNativeX64TestKlibrary
