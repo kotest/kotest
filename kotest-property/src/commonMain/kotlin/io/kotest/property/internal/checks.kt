@@ -10,7 +10,11 @@ internal fun PropTestConfig.checkFailOnSeed() {
       error("A seed is specified on this property-test and failOnSeed is true")
 }
 
-fun PropertyContext.checkMaxSuccess(config: PropTestConfig, seed: Long) {
+/**
+ * Checks that the number of times this property text has passed is at least the
+ * configured min success rate.
+ */
+fun PropertyContext.checkMinSuccess(config: PropTestConfig, seed: Long) {
    val min = min(config.minSuccess, attempts())
    if (successes() < min) {
       val error = "Property passed ${successes()} times (minSuccess rate was $min)\n"
