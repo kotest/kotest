@@ -14,7 +14,8 @@ kotlin {
       macosX64()
       macosArm64()
 
-      tvos()
+      tvosX64()
+      tvosArm64()
       tvosSimulatorArm64()
 
       watchosArm32()
@@ -56,7 +57,8 @@ kotlin {
          val watchosX64Main by getting { dependsOn(desktopMain) }
          val watchosSimulatorArm64Main by getting { dependsOn(desktopMain) }
 
-         val tvosMain by getting { dependsOn(desktopMain) }
+         val tvosX64Main by getting { dependsOn(desktopMain) }
+         val tvosArm64Main by getting { dependsOn(desktopMain) }
          val tvosSimulatorArm64Main by getting { dependsOn(desktopMain) }
 
          // Test sourcesets
@@ -83,7 +85,8 @@ kotlin {
          val watchosX64Test by getting { dependsOn(nativeTest) }
          val watchosSimulatorArm64Test by getting { dependsOn(nativeTest) }
 
-         val tvosTest by getting { dependsOn(nativeTest) }
+         val tvosX64Test by getting { dependsOn(nativeTest) }
+         val tvosArm64Test by getting { dependsOn(nativeTest) }
          val tvosSimulatorArm64Test by getting { dependsOn(nativeTest) }
       }
    } else {
