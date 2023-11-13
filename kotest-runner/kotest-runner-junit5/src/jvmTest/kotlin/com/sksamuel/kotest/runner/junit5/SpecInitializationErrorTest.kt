@@ -8,6 +8,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.testSpecExecutor
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -42,7 +43,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
       testSpecExecutor(
          NoopCoroutineDispatcherFactory,
          EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener),
@@ -78,7 +79,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
       testSpecExecutor(
          NoopCoroutineDispatcherFactory,
          EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener),

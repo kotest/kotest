@@ -4,7 +4,6 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.TestFilter
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
@@ -12,7 +11,8 @@ import io.kotest.engine.config.detectAbstractProjectConfigsJVM
 import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.mpp.Logger
@@ -41,7 +41,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    private val logger = Logger(KotestJunitPlatformTestEngine::class)
 
    companion object {
-      const val EngineId = "kotest"
+      internal const val EngineId = "kotest"
    }
 
    override fun getId(): String = EngineId
@@ -169,8 +169,8 @@ class KotestEngineDescriptor(
    val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, "Kotest") {
 
-   internal val formatter: DisplayNameFormatter by lazy {
-      getDisplayNameFormatter(configuration.registry, configuration)
+   internal val formatter: FallbackDisplayNameFormatter by lazy {
+      getFallbackDisplayNameFormatter(configuration.registry, configuration)
    }
 
    internal val classes: List<KClass<out Spec>>

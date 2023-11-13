@@ -1,7 +1,9 @@
 package io.kotest.core.config
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.Extension
 
+@KotestInternal
 interface ExtensionRegistry {
    fun all(): List<Extension>
    fun add(extension: Extension)
@@ -11,6 +13,7 @@ interface ExtensionRegistry {
    fun isNotEmpty(): Boolean
 }
 
+@KotestInternal
 class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Extension>()
@@ -33,6 +36,7 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    override fun isNotEmpty(): Boolean = extensions.isNotEmpty()
 }
 
+@KotestInternal
 object EmptyExtensionRegistry : ExtensionRegistry {
 
    override fun all(): List<Extension> = emptyList()
@@ -53,6 +57,7 @@ object EmptyExtensionRegistry : ExtensionRegistry {
    override fun isNotEmpty(): Boolean = false
 }
 
+@KotestInternal
 class FixedExtensionRegistry(private vararg val extensions: Extension) : ExtensionRegistry {
 
    override fun all(): List<Extension> = extensions.toList()

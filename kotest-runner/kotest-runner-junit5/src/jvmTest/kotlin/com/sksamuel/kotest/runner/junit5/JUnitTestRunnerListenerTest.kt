@@ -11,6 +11,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.createTestResult
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -69,7 +70,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
             parent = test1,
          )
 
-         val listener = JUnitTestEngineListener(engineListener, root, DefaultDisplayNameFormatter())
+         val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
          listener.engineStarted()
          listener.specStarted(JUnitTestRunnerListenerTest::class)
          listener.specStarted(JUnitTestRunnerListenerTest::class)
