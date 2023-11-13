@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testIntegration.createTest.CreateTestDialog
+import com.intellij.testIntegration.createTest.JavaTestGenerator
 import com.intellij.testIntegration.createTest.TestGenerator
 import io.kotest.plugin.intellij.styles.FunSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
@@ -23,73 +24,79 @@ import java.util.*
 /**
  * Used to create "Template" test class files.
  */
-class KotestTestGenerator : TestGenerator {
+class KotestTestGenerator : JavaTestGenerator() {
 
-  override fun toString(): String = KotlinLanguage.INSTANCE.displayName
+   override fun toString(): String = KotlinLanguage.INSTANCE.displayName
 
-  override fun generateTest(project: Project, d: CreateTestDialog): PsiElement? {
-    return PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(Computable {
-      ApplicationManager.getApplication().runWriteAction(Computable<PsiElement?> {
-        val file = generateTestFile(project, d)
-        if (file != null) {
-          // without this the file is created but the caret stays in the original file
-          CodeInsightUtil.positionCursor(project, file, file)
-        }
-        file
+   override fun generateTest(project: Project, d: CreateTestDialog): PsiElement? {
+      // I do not currently know how to limit the test generator to only kotest, therefore we can check
+      // the framework name and delegate to the JavaTestGenerator one. But this only works while JavaTestGenerator
+      // is public, and has a zero arg constructor, so I would like to find a better long term solution:
+      // https://intellij-support.jetbrains.com/hc/en-us/community/posts/15040678418450-How-to-choose-when-to-apply-TestGenerator
+      if (d.selectedTestFrameworkDescriptor.name != Constants().FrameworkName)
+         return super.generateTest(project, d)
+      return PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(Computable {
+         ApplicationManager.getApplication().runWriteAction(Computable<PsiElement?> {
+            val file = generateTestFile(project, d)
+            if (file != null) {
+               // without this the file is created but the caret stays in the original file
+               CodeInsightUtil.positionCursor(project, file, file)
+            }
+            file
+         })
       })
-    })
-  }
+   }
 
-  private fun styleForSuperClass(fqn: FqName): SpecStyle =
+   private fun styleForSuperClass(fqn: FqName): SpecStyle =
       SpecStyle.styles.find { it.fqn() == fqn } ?: FunSpecStyle
 
-  private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
+   private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 
-     val result = when (val framework = d.selectedTestFrameworkDescriptor) {
-      is KotestTestFramework -> {
-        IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
+      val result = when (val framework = d.selectedTestFrameworkDescriptor) {
+         is KotestTestFramework -> {
+            IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
-        val fileTemplate = FileTemplateManager.getInstance(project).getCodeTemplate("Kotest Class")
-        val defaultProperties = FileTemplateManager.getInstance(project).defaultProperties
-        val props = Properties(defaultProperties)
-        props.setProperty(FileTemplate.ATTRIBUTE_NAME, d.className)
+            val fileTemplate = FileTemplateManager.getInstance(project).getCodeTemplate("Kotest Class")
+            val defaultProperties = FileTemplateManager.getInstance(project).defaultProperties
+            val props = Properties(defaultProperties)
+            props.setProperty(FileTemplate.ATTRIBUTE_NAME, d.className)
 
-        val targetClass = d.targetClass
-        if (targetClass != null && targetClass.isValid) {
-          props.setProperty(FileTemplate.ATTRIBUTE_CLASS_NAME, targetClass.qualifiedName)
-        }
+            val targetClass = d.targetClass
+            if (targetClass != null && targetClass.isValid) {
+               props.setProperty(FileTemplate.ATTRIBUTE_CLASS_NAME, targetClass.qualifiedName)
+            }
 
-        val superClass = d.superClassName ?: framework.defaultSuperClass
-        val simpleName = superClass.split('.').last()
-        props.setProperty("SUPERCLASS_FQ", superClass)
-        props.setProperty("SUPERCLASS", simpleName)
+            val superClass = d.superClassName ?: framework.defaultSuperClass
+            val simpleName = superClass.split('.').last()
+            props.setProperty("SUPERCLASS_FQ", superClass)
+            props.setProperty("SUPERCLASS", simpleName)
 
-        if (d.shouldGeneratedBefore()) {
-          props.setProperty("BEFORE_TEST", "true")
-        }
+            if (d.shouldGeneratedBefore()) {
+               props.setProperty("BEFORE_TEST", "true")
+            }
 
-        if (d.shouldGeneratedAfter()) {
-          props.setProperty("AFTER_TEST", "true")
-        }
+            if (d.shouldGeneratedAfter()) {
+               props.setProperty("AFTER_TEST", "true")
+            }
 
-        if (d.selectedMethods.isNotEmpty()) {
-          val style = styleForSuperClass(FqName(superClass))
-          val tests = d.selectedMethods.mapNotNull {
-            it.toKotlinMemberInfo()?.member?.name
-          }.map { methodName ->
-            style.generateTest(targetClass.name ?: "SpecName", methodName)
-          }
-          val testBodies = tests.joinToString("\n\n")
-          props.setProperty("TEST_METHODS", testBodies)
-        }
+            if (d.selectedMethods.isNotEmpty()) {
+               val style = styleForSuperClass(FqName(superClass))
+               val tests = d.selectedMethods.mapNotNull {
+                  it.toKotlinMemberInfo()?.member?.name
+               }.map { methodName ->
+                  style.generateTest(targetClass.name ?: "SpecName", methodName)
+               }
+               val testBodies = tests.joinToString("\n\n")
+               props.setProperty("TEST_METHODS", testBodies)
+            }
 
-        FileTemplateUtil.createFromTemplate(fileTemplate, d.className, props, d.targetDirectory)
+            FileTemplateUtil.createFromTemplate(fileTemplate, d.className, props, d.targetDirectory)
+         }
+         else -> null
       }
-      else -> null
-    }
-    return when (result) {
-      is PsiFile -> result
-      else -> null
-    }
-  }
+      return when (result) {
+         is PsiFile -> result
+         else -> null
+      }
+   }
 }
