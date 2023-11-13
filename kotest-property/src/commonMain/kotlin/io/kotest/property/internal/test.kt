@@ -50,8 +50,7 @@ internal suspend fun test(
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
       clearFailedSeed()
-      // a failed assumption does not contribute towards the counts
-   } catch (e: AssumptionFailedException) {
+   } catch (e: AssumptionFailedException) { // we don't mark failed assumptions as errors
    } catch (e: Throwable) {  // we track any throwables and try to shrink them
       context.markFailure()
       outputStatistics(context, inputs.size, false)

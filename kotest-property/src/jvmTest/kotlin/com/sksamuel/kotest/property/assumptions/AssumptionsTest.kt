@@ -14,10 +14,13 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
 import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.withAssumptions
+import kotlinx.coroutines.yield
+import kotlin.time.Duration.Companion.seconds
 
 class AssumptionsTest : FunSpec() {
    init {
@@ -36,19 +39,27 @@ class AssumptionsTest : FunSpec() {
             withAssumptions(a != b) {
                a.compareTo(b) shouldNotBe 0
             }
-         }.attempts() shouldBe 10000
+         }.evals() shouldBe 10000
       }
 
-      test("withAssumptions(predicate) that fail should not count towards iterations") {
-         var count = 0
-         val context = checkAll(23423, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
-            withAssumptions(a != b) {
-               count++
-            }
+      test("withAssumptions(predicate) that always fail should not deadlock").config(
+         timeout = 5.seconds,
+         blockingTest = true
+      ) {
+         checkAll(10, Arb.positiveInt()) {
+            assume(false)
+            yield()
          }
-         context.evals().shouldBeGreaterThan(23423) // at least one will have been thrown away
-         context.attempts().shouldBe(23423)
-         count.shouldBe(23423)
+      }
+
+      test("assume(predicate) that always fail should not deadlock").config(
+         timeout = 5.seconds,
+         blockingTest = true
+      ) {
+         checkAll(10, Arb.positiveInt()) {
+            assume(false)
+            yield()
+         }
       }
 
       test("assume(predicate) should filter failing inputs") {
@@ -64,18 +75,7 @@ class AssumptionsTest : FunSpec() {
          checkAll(10000, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
             assume(a != b)
             a.compareTo(b) shouldNotBe 0
-         }.attempts() shouldBe 10000
-      }
-
-      test("assume(predicate) that fail should not count towards iterations") {
-         var count = 0
-         val context = checkAll(34123, Arb.string(2, Codepoint.az()), Arb.string(2, Codepoint.az())) { a, b ->
-            assume(a != b)
-            count++
-         }
-         context.evals().shouldBeGreaterThan(34123) // at least one will have been thrown away
-         context.attempts().shouldBe(34123)
-         count.shouldBe(34123)
+         }.evals() shouldBe 10000
       }
 
       test("withAssumptions(fn) should support assertions") {
