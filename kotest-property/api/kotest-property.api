@@ -1441,10 +1441,6 @@ public final class io/kotest/property/exhaustive/ZipKt {
 	public static final fun zip (Lio/kotest/property/Exhaustive;Lio/kotest/property/Exhaustive;)Lio/kotest/property/Exhaustive;
 }
 
-public final class io/kotest/property/internal/ChecksKt {
-	public static final fun checkMaxSuccess (Lio/kotest/property/PropertyContext;Lio/kotest/property/PropTestConfig;J)V
-}
-
 public final class io/kotest/property/internal/Counter {
 	public fun <init> ()V
 	public final fun getCount ()I
