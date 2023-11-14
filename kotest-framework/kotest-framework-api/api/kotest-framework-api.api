@@ -1791,6 +1791,7 @@ public final class io/kotest/core/names/DuplicateTestNameMode : java/lang/Enum {
 	public static final field Error Lio/kotest/core/names/DuplicateTestNameMode;
 	public static final field Silent Lio/kotest/core/names/DuplicateTestNameMode;
 	public static final field Warn Lio/kotest/core/names/DuplicateTestNameMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/names/DuplicateTestNameMode;
 	public static fun values ()[Lio/kotest/core/names/DuplicateTestNameMode;
 }
@@ -1828,6 +1829,7 @@ public final class io/kotest/core/names/TestNameCase : java/lang/Enum {
 	public static final field InitialLowercase Lio/kotest/core/names/TestNameCase;
 	public static final field Lowercase Lio/kotest/core/names/TestNameCase;
 	public static final field Sentence Lio/kotest/core/names/TestNameCase;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/names/TestNameCase;
 	public static fun values ()[Lio/kotest/core/names/TestNameCase;
 }
@@ -1953,6 +1955,7 @@ public final class io/kotest/core/spec/IsolationMode : java/lang/Enum {
 	public static final field InstancePerLeaf Lio/kotest/core/spec/IsolationMode;
 	public static final field InstancePerTest Lio/kotest/core/spec/IsolationMode;
 	public static final field SingleInstance Lio/kotest/core/spec/IsolationMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/spec/IsolationMode;
 	public static fun values ()[Lio/kotest/core/spec/IsolationMode;
 }
@@ -2059,6 +2062,7 @@ public final class io/kotest/core/spec/SpecExecutionOrder : java/lang/Enum {
 	public static final field Lexicographic Lio/kotest/core/spec/SpecExecutionOrder;
 	public static final field Random Lio/kotest/core/spec/SpecExecutionOrder;
 	public static final field Undefined Lio/kotest/core/spec/SpecExecutionOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/spec/SpecExecutionOrder;
 	public static fun values ()[Lio/kotest/core/spec/SpecExecutionOrder;
 }
@@ -2853,6 +2857,7 @@ public final class io/kotest/core/test/AssertionMode : java/lang/Enum {
 	public static final field Error Lio/kotest/core/test/AssertionMode;
 	public static final field None Lio/kotest/core/test/AssertionMode;
 	public static final field Warn Lio/kotest/core/test/AssertionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/AssertionMode;
 	public static fun values ()[Lio/kotest/core/test/AssertionMode;
 }
@@ -2958,6 +2963,7 @@ public final class io/kotest/core/test/TestCaseOrder : java/lang/Enum {
 	public static final field Lexicographic Lio/kotest/core/test/TestCaseOrder;
 	public static final field Random Lio/kotest/core/test/TestCaseOrder;
 	public static final field Sequential Lio/kotest/core/test/TestCaseOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestCaseOrder;
 	public static fun values ()[Lio/kotest/core/test/TestCaseOrder;
 }
@@ -2968,6 +2974,7 @@ public final class io/kotest/core/test/TestCaseSeverityLevel : java/lang/Enum {
 	public static final field MINOR Lio/kotest/core/test/TestCaseSeverityLevel;
 	public static final field NORMAL Lio/kotest/core/test/TestCaseSeverityLevel;
 	public static final field TRIVIAL Lio/kotest/core/test/TestCaseSeverityLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getLevel ()I
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestCaseSeverityLevel;
 	public static fun values ()[Lio/kotest/core/test/TestCaseSeverityLevel;
@@ -3102,6 +3109,7 @@ public final class io/kotest/core/test/TestStatus : java/lang/Enum {
 	public static final field Failure Lio/kotest/core/test/TestStatus;
 	public static final field Ignored Lio/kotest/core/test/TestStatus;
 	public static final field Success Lio/kotest/core/test/TestStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestStatus;
 	public static fun values ()[Lio/kotest/core/test/TestStatus;
 }
@@ -3110,6 +3118,7 @@ public final class io/kotest/core/test/TestType : java/lang/Enum {
 	public static final field Container Lio/kotest/core/test/TestType;
 	public static final field Dynamic Lio/kotest/core/test/TestType;
 	public static final field Test Lio/kotest/core/test/TestType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestType;
 	public static fun values ()[Lio/kotest/core/test/TestType;
 }
