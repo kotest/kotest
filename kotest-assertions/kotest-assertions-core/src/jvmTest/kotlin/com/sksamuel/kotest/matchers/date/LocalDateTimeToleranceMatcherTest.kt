@@ -2,11 +2,13 @@ package com.sksamuel.kotest.matchers.date
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.date.and
 import io.kotest.matchers.date.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class LocalDateTimeToleranceMatcherTest : WordSpec() {
    init {
@@ -38,6 +40,16 @@ class LocalDateTimeToleranceMatcherTest : WordSpec() {
                LocalDateTime.of(2023, 11, 14, 2, 1) shouldBe
                   (LocalDateTime.of(2023, 11, 14, 1, 30) plusOrMinus 30.minutes)
             }.message shouldBe "2023-11-14T02:01 should be equal to 2023-11-14T01:30 with tolerance 30m (between 2023-11-14T01:00 and 2023-11-14T02:00)"
+         }
+
+         "handle negative duration" {
+            LocalDateTime.of(2023, 11, 14, 2, 1) shouldBe
+               (LocalDateTime.of(2023, 11, 14, 1, 31) plusOrMinus (-30.minutes))
+         }
+
+         "handle duration with multiple components" {
+            LocalDateTime.of(2023, 11, 14, 1, 29, 30) shouldBe
+               (LocalDateTime.of(2023, 11, 14, 1, 31) plusOrMinus (1.minutes and 30.seconds))
          }
       }
 

@@ -203,7 +203,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `date.shouldHaveMinute(Minute)`               | Asserts that the date have correct minute.                                                                                           |
 | `date.shouldHaveSecond(second)`               | Asserts that the date have correct second.                                                                                           |
 | `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                                                                      |
-| `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration. |
+| `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration.                                              |
 
 | ZonedDateTime                                                 ||
 |---------------------------------------------------------------| ---- |
