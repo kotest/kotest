@@ -1,5 +1,4 @@
 plugins {
-   `java-library`
    id("kotest-jvm-conventions")
    application
    alias(libs.plugins.shadowjar)
