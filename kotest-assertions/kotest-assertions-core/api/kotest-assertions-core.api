@@ -679,20 +679,60 @@ public final class io/kotest/matchers/collections/SizeKt {
 	public static final fun shouldBeSameSizeAs (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeSameSizeAs (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/lang/Iterable;
 	public static final fun shouldBeSameSizeAs (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldBeSameSizeAs ([B[B)[B
+	public static final fun shouldBeSameSizeAs ([C[C)[C
+	public static final fun shouldBeSameSizeAs ([D[D)[D
+	public static final fun shouldBeSameSizeAs ([F[F)[F
+	public static final fun shouldBeSameSizeAs ([I[I)[I
+	public static final fun shouldBeSameSizeAs ([J[J)[J
 	public static final fun shouldBeSameSizeAs ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldBeSameSizeAs ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeSameSizeAs ([S[S)[S
+	public static final fun shouldBeSameSizeAs ([Z[Z)[Z
 	public static final fun shouldHaveAtLeastSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveAtLeastSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveAtLeastSize ([BI)[B
+	public static final fun shouldHaveAtLeastSize ([CI)[C
+	public static final fun shouldHaveAtLeastSize ([DI)[D
+	public static final fun shouldHaveAtLeastSize ([FI)[F
+	public static final fun shouldHaveAtLeastSize ([II)[I
+	public static final fun shouldHaveAtLeastSize ([JI)[J
 	public static final fun shouldHaveAtLeastSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveAtLeastSize ([SI)[S
+	public static final fun shouldHaveAtLeastSize ([ZI)[Z
 	public static final fun shouldHaveAtMostSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveAtMostSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveAtMostSize ([BI)[B
+	public static final fun shouldHaveAtMostSize ([CI)[C
+	public static final fun shouldHaveAtMostSize ([DI)[D
+	public static final fun shouldHaveAtMostSize ([FI)[F
+	public static final fun shouldHaveAtMostSize ([II)[I
+	public static final fun shouldHaveAtMostSize ([JI)[J
 	public static final fun shouldHaveAtMostSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveAtMostSize ([SI)[S
+	public static final fun shouldHaveAtMostSize ([ZI)[Z
 	public static final fun shouldHaveSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveSize ([BI)[B
+	public static final fun shouldHaveSize ([CI)[C
+	public static final fun shouldHaveSize ([DI)[D
+	public static final fun shouldHaveSize ([FI)[F
+	public static final fun shouldHaveSize ([II)[I
+	public static final fun shouldHaveSize ([JI)[J
 	public static final fun shouldHaveSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveSize ([SI)[S
+	public static final fun shouldHaveSize ([ZI)[Z
 	public static final fun shouldNotHaveSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldNotHaveSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldNotHaveSize ([BI)[B
+	public static final fun shouldNotHaveSize ([CI)[C
+	public static final fun shouldNotHaveSize ([DI)[D
+	public static final fun shouldNotHaveSize ([FI)[F
+	public static final fun shouldNotHaveSize ([II)[I
+	public static final fun shouldNotHaveSize ([JI)[J
 	public static final fun shouldNotHaveSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldNotHaveSize ([SI)[S
+	public static final fun shouldNotHaveSize ([ZI)[Z
 }
 
 public final class io/kotest/matchers/collections/SmallerKt {

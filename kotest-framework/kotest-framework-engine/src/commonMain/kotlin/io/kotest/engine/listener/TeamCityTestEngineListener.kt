@@ -1,9 +1,9 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -12,8 +12,8 @@ import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
@@ -21,6 +21,7 @@ import kotlin.reflect.KClass
 /**
  * A [TestEngineListener] that logs events to the console using a [TeamCityMessageBuilder].
  */
+@KotestInternal
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
    private val details: Boolean = true,
@@ -28,7 +29,7 @@ class TeamCityTestEngineListener(
 
    private val logger = Logger(TeamCityTestEngineListener::class)
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private var formatter = FallbackDisplayNameFormatter.default(ProjectConfiguration())
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -73,7 +74,7 @@ class TeamCityTestEngineListener(
    override suspend fun engineStarted() {}
 
    override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
+      formatter = getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

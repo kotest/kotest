@@ -59,14 +59,14 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
    fun failures() = failures
 
    /**
-    * Returns the number of invocations of the test.
-    * Any values bypassed due to assumptions are not included here.
+    * Returns the number of invocations of the test function was invoked after checking for assumptions.
+    * This is the count post-assumptions.
     */
    fun attempts(): Int = successes + failures
 
    /**
-    * Returns the number of times the checkAll/forAll function was invoked.
-    * This is the count pre-assumption checks.
+    * Returns the number of times the test function was invoked beore checking for assumptions.
+    * This is the count pre-assumptions.
     */
    fun evals(): Int = evals
 

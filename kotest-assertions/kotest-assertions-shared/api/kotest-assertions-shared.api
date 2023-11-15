@@ -50,6 +50,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
 	public final fun getDisableNaNEquality ()Z
 	public final fun getLargeStringDiffMinSize ()I
+	public final fun getMapDiffLimit ()I
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
@@ -421,6 +422,14 @@ public final class io/kotest/assertions/print/CharPrint : io/kotest/assertions/p
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 }
 
+public final class io/kotest/assertions/print/CharRangePrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/CharRangePrint;
+	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/CharRange;)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/CharRange;I)Lio/kotest/assertions/print/Printed;
+}
+
 public final class io/kotest/assertions/print/DataClassPrintJvm : io/kotest/assertions/print/Print {
 	public fun <init> ()V
 	public fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
@@ -463,6 +472,14 @@ public final class io/kotest/assertions/print/IntPrint : io/kotest/assertions/pr
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 }
 
+public final class io/kotest/assertions/print/IntRangePrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/IntRangePrint;
+	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/IntRange;)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/IntRange;I)Lio/kotest/assertions/print/Printed;
+}
+
 public final class io/kotest/assertions/print/IterablePrint : io/kotest/assertions/print/Print {
 	public fun <init> ()V
 	public fun print (Ljava/lang/Iterable;)Lio/kotest/assertions/print/Printed;
@@ -495,6 +512,14 @@ public final class io/kotest/assertions/print/LongPrint : io/kotest/assertions/p
 	public fun print (JI)Lio/kotest/assertions/print/Printed;
 	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+}
+
+public final class io/kotest/assertions/print/LongRangePrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/LongRangePrint;
+	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/LongRange;)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/LongRange;I)Lio/kotest/assertions/print/Printed;
 }
 
 public final class io/kotest/assertions/print/MapPrint : io/kotest/assertions/print/Print {
@@ -607,12 +632,28 @@ public final class io/kotest/assertions/print/UIntPrint : io/kotest/assertions/p
 	public fun print-qim9Vi0 (II)Lio/kotest/assertions/print/Printed;
 }
 
+public final class io/kotest/assertions/print/UIntRangePrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/UIntRangePrint;
+	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/UIntRange;)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/UIntRange;I)Lio/kotest/assertions/print/Printed;
+}
+
 public final class io/kotest/assertions/print/ULongPrint : io/kotest/assertions/print/Print {
 	public static final field INSTANCE Lio/kotest/assertions/print/ULongPrint;
 	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 	public fun print-4PLdz1A (JI)Lio/kotest/assertions/print/Printed;
 	public fun print-VKZWuLQ (J)Lio/kotest/assertions/print/Printed;
+}
+
+public final class io/kotest/assertions/print/ULongRangePrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/ULongRangePrint;
+	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/ULongRange;)Lio/kotest/assertions/print/Printed;
+	public fun print (Lkotlin/ranges/ULongRange;I)Lio/kotest/assertions/print/Printed;
 }
 
 public final class io/kotest/assertions/print/UShortPrint : io/kotest/assertions/print/Print {

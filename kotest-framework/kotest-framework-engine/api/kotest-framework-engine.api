@@ -826,15 +826,31 @@ public final class io/kotest/engine/test/names/DefaultDisplayNameFormatter : io/
 
 public final class io/kotest/engine/test/names/DefaultDisplayNameFormatterKt {
 	public static final fun appendTagsInDisplayName (Lio/kotest/core/test/TestCase;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun getDisplayNameFormatter (Lio/kotest/core/config/ExtensionRegistry;Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/core/names/DisplayNameFormatter;
 }
 
 public final class io/kotest/engine/test/names/DuplicateTestNameException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter {
+	public static final field Companion Lio/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion;
+	public fun <init> (Lio/kotest/core/names/DisplayNameFormatter;Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
+	public fun <init> (Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
+	public final fun format (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
+	public final fun format (Lkotlin/reflect/KClass;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion {
+	public final fun default ()Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
+	public final fun default (Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
+}
+
+public final class io/kotest/engine/test/names/GetDisplayNameFormatterKt {
+	public static final fun getFallbackDisplayNameFormatter (Lio/kotest/core/config/ExtensionRegistry;Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
+}
+
 public final class io/kotest/engine/test/names/PathsKt {
-	public static final fun formatTestPath (Lio/kotest/core/names/DisplayNameFormatter;Lio/kotest/core/test/TestCase;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun formatTestPath (Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;Lio/kotest/core/test/TestCase;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/test/scopes/DuplicateNameHandlingTestScope : io/kotest/core/test/TestScope {
