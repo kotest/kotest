@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import java.time.Instant
+import java.time.LocalDateTime
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 
@@ -100,3 +101,5 @@ fun Instant.shouldBeCloseTo(anotherInstant: Instant, duration: Duration) =
  * */
 fun Instant.shouldNotBeCloseTo(anotherInstant: Instant, duration: Duration) =
    this shouldNotBe closeTo(anotherInstant, duration)
+
+infix fun Instant.plusOrMinus(tolerance: Duration) = closeTo(this, tolerance)

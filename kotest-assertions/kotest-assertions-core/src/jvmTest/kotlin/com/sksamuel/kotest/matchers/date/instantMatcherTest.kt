@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.date
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.date.plusOrMinus
 import io.kotest.matchers.date.shouldBeAfter
 import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.date.shouldBeBetween
@@ -94,10 +95,12 @@ class InstantMatcherTest : FreeSpec() {
 
       "current instant and 5 nanos ago instant should be close to 5 nanoseconds each other" {
          val currentInstant = Instant.now()
-         val hundredNanosAgoInstant = currentInstant.minusNanos(5L)
+         val fiveNanosAgoInstant = currentInstant.minusNanos(5L)
 
-         currentInstant.shouldBeCloseTo(hundredNanosAgoInstant, 5L.nanoseconds)
-         hundredNanosAgoInstant.shouldBeCloseTo(currentInstant, 5L.nanoseconds)
+         currentInstant.shouldBeCloseTo(fiveNanosAgoInstant, 5L.nanoseconds)
+         fiveNanosAgoInstant.shouldBeCloseTo(currentInstant, 5L.nanoseconds)
+         currentInstant shouldBe (fiveNanosAgoInstant plusOrMinus 5L.nanoseconds)
+         fiveNanosAgoInstant shouldBe (currentInstant plusOrMinus 5L.nanoseconds)
       }
 
       "current instant and 1500 millis ago instant should not be close to 1000 millis each other" {
@@ -106,6 +109,8 @@ class InstantMatcherTest : FreeSpec() {
 
          currentInstant.shouldNotBeCloseTo(someMillisAgoInstant, 1000L.milliseconds)
          someMillisAgoInstant.shouldNotBeCloseTo(currentInstant, 1000L.milliseconds)
+         currentInstant shouldNotBe (someMillisAgoInstant plusOrMinus 1000L.nanoseconds)
+         someMillisAgoInstant shouldNotBe (currentInstant plusOrMinus 1000L.nanoseconds)
       }
 
    }

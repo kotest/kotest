@@ -899,6 +899,7 @@ public final class io/kotest/matchers/date/InstantKt {
 	public static final fun before (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun between (Ljava/time/Instant;Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun closeTo-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
