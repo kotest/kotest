@@ -890,6 +890,10 @@ public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/date/DurationKt {
+	public static final fun and-QTBD994 (JJ)J
+}
+
 public final class io/kotest/matchers/date/InstantKt {
 	public static final fun after (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun before (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
@@ -905,9 +909,21 @@ public final class io/kotest/matchers/date/InstantKt {
 	public static final fun shouldNotBeCloseTo-SxA4cEA (Ljava/time/Instant;Ljava/time/Instant;J)Ljava/time/Instant;
 }
 
+public final class io/kotest/matchers/date/LocalDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/LocalDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/LocalDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/LocaldatetimeKt {
 	public static final fun beInToday ()Lio/kotest/matchers/Matcher;
 	public static final fun beToday ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalDateTime;J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/LocalDate;)V
 	public static final fun shouldBeToday (Ljava/time/LocalDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/LocalDate;)V
