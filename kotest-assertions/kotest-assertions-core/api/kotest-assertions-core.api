@@ -1038,9 +1038,21 @@ public final class io/kotest/matchers/date/MatchersKt {
 	public static final fun within (Ljava/time/temporal/TemporalAmount;Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/date/OffsetDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/OffsetDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/OffsetdatetimeKt {
 	public static final fun beInTodayODT ()Lio/kotest/matchers/Matcher;
 	public static final fun haveSameInstantAs (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/OffsetDateTime;J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/OffsetDateTime;)V
 	public static final fun shouldHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/OffsetDateTime;)V
