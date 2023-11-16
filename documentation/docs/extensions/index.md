@@ -39,3 +39,5 @@ maintained and hosted by third parties.
 | [Result4s](https://github.com/MrBergin/result4k-kotest-matchers)                                 | Result4s matchers                                                                  |
 | [Sniffy](https://www.sniffy.io/docs/latest/#_integration_with_kotest)                            | Network connectivity testing                                                       |
 | [TestFiles](https://github.com/jGleitz/testfiles)                                                | Creates organized files and directories for testing                                |
+| [FixtureMonkey](https://github.com/naver/fixture-monkey)                                         | generate a complex type and customize it within Kotest                             |
+
