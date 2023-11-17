@@ -47,5 +47,30 @@ Reflective binding is supported for:
 * `LocalDate`, `LocalDateTime`, `LocalTime`, `Period`, `Instant` from `java.time`
 * `BigDecimal`, `BigInteger`
 * Collections (`Set`, `List`, `Map`)
-* Classes for which an Arb has been provided through `providedArbs`
+* Properties and types for which an Arb has been provided through `providedArbs`, see below
 
+## Provided Arbs
+
+When doing reflective binding, Kotest supports a builder API to provide `Arb`s for specific types (classes) and properties.
+Binding specific properties allow greater control in cases where types might be more widely used, like primitives for instance.
+
+Example:
+
+```kotlin
+data class User(
+  val name: String,
+  val password: String,
+  val age: Int,
+)
+
+// in some spec
+context("Some tests with an arbitrary user") {
+  checkAll(Arb.bind<User> {
+    bind(User::name to Arb.string(1..10))
+    bind(User::password to Arb.string(24..80)) // binds a specific property to an arb
+    bind(Int::class to Arb.int(0..100))  // binds a type to an arb
+  }) { user ->
+    // ...
+  }
+}
+```
