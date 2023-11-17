@@ -1087,9 +1087,21 @@ public final class io/kotest/matchers/date/TimestampKt {
 	public static final fun shouldNotBeBetween (Ljava/sql/Timestamp;Ljava/sql/Timestamp;Ljava/sql/Timestamp;)V
 }
 
+public final class io/kotest/matchers/date/ZonedDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/ZonedDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/ZoneddatetimeKt {
 	public static final fun atSameZone (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun beInTodayZDT ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/ZonedDateTime;J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/ZonedDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/ZonedDateTime;)V
 }
