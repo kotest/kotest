@@ -35,25 +35,30 @@ suspend fun <T> continually(
    val start = timeInMillis()
    val end = start + config.duration.inWholeMilliseconds
    var iterations = 0
-   var result: T? = null
+   var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
 
    while (timeInMillis() < end) {
-      try {
-         result = test()
-         config.listener.invoke(iterations, result)
-      } catch (e: AssertionError) {
-         // if this is the first time the check was executed then just rethrow the underlying error
-         if (iterations == 0) throw e
-         // if not the first attempt then include how many times/for how long the test passed
-         throw failure(
-            "Test failed after ${start}ms; expected to pass for ${config.duration}; attempted $iterations times\nUnderlying failure was: ${e.message}",
-            e
-         )
+      runCatching {
+         test()
+      }.onSuccess {
+         result = Result.success(it)
+         config.listener.invoke(iterations, it)
+      }.onFailure {
+         when (it) {
+            is AssertionError -> {
+               if (iterations == 0) throw it
+               throw failure(
+                  "Test failed after ${start}ms; expected to pass for ${config.duration}; attempted $iterations times\nUnderlying failure was: ${it.message}",
+                  it
+               )
+            }
+            else -> throw it
+         }
       }
       delay(config.intervalFn.next(++iterations))
    }
 
-   return result ?: error("No successful result")
+   return result.getOrThrow()
 }
 
 /**
