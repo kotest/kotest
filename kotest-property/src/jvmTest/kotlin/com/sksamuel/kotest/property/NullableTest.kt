@@ -17,8 +17,8 @@ class NullableTest : FunSpec({
          classify(num == null, "null", "non-null")
          true
       }.classifications()
-      classifications["null"] shouldBe 496
-      classifications["non-null"] shouldBe 504
+      classifications["null"] shouldBe 493
+      classifications["non-null"] shouldBe 507
    }
 
    test("forNone with implicit nullable arbitraries") {
@@ -27,8 +27,8 @@ class NullableTest : FunSpec({
          classify(num == null, "null", "non-null")
          false
       }.classifications()
-      classifications["null"] shouldBe 496
-      classifications["non-null"] shouldBe 504
+      classifications["null"] shouldBe 493
+      classifications["non-null"] shouldBe 507
    }
 
    test("checkAll with implicit nullable arbitraries") {
@@ -36,8 +36,8 @@ class NullableTest : FunSpec({
       val classifications = checkAll<Int?>(iterations, PropTestConfig(seed = 1)) { num ->
          classify(num == null, "null", "non-null")
       }.classifications()
-      classifications["null"] shouldBe 496
-      classifications["non-null"] shouldBe 504
+      classifications["null"] shouldBe 493
+      classifications["non-null"] shouldBe 507
    }
 
    test("checkAll with implicit nullable arbitraries with should not be null Assumption") {
