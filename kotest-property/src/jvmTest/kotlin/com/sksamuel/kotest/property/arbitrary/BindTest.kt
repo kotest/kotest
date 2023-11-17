@@ -11,8 +11,10 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
@@ -20,6 +22,7 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.map
@@ -38,38 +41,6 @@ class BindTest : StringSpec({
    data class FooC(val a: String, val b: Int, val c: Double)
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
-
-   "Bind using properties" {
-      data class Person(val id: Int, val name: String)
-      data class Family(val name: String, val persons: List<Person>)
-
-//      println("Family constructor \n ${Family::class.primaryConstructor!!.parameters.joinToString(separator = "\n")}")
-//      println("Person constructor \n ${Person::class.primaryConstructor!!.parameters.joinToString(separator = "\n")}")
-//      println("Family name: ${Family::name}")
-//      println("Person name: ${Person::name}")
-//
-//      println("Family constrcutor param types")
-//      println(Family::class.primaryConstructor!!.returnType)
-//
-//
-//      val someProp: KProperty1<*, *> = Family::name
-//      println(someProp.typeParameters)
-//      println(someProp.valueParameters)
-//      println(someProp.returnType)
-//      println(someProp.parameters)
-
-
-      checkAll(Arb.bind<Family> {
-         bind(Family::name to Arb.string().map { s -> "Flanders-$s" })
-         bind(Person::id to Arb.positiveInt())
-      }) { family ->
-         family.name.shouldStartWith("Flanders-")
-         family.persons.forAll {
-            it.name.shouldNotStartWith("Flanders-")
-            it.id shouldBeGreaterThan 0
-         }
-      }
-   }
 
    "Arb.bind(a,b) should generate distinct values" {
       val arbA = Arb.string()
@@ -660,4 +631,45 @@ class BindTest : StringSpec({
       stdout shouldContain "Shrink result"
       stdout shouldContain "Person(name=, age=-1)"
    }
+
+   "Bind using properties" {
+      checkAll(Arb.bind<User> {
+         bind(User::email to Arb.string().map { s -> "$s@yahoo.com" })
+      }) { user ->
+         user.email shouldEndWith "@yahoo.com"
+      }
+   }
+
+   "Binding properties in a nested structure should work" {
+      data class Person(val id: Int, val name: String)
+      data class Family(val name: String, val persons: List<Person>)
+
+      checkAll(Arb.bind<Family> {
+         bind(Family::name to Arb.string().map { s -> "Flanders-$s" })
+         bind(Person::id to Arb.positiveInt())
+      }) { family ->
+         family.name shouldStartWith "Flanders-"
+         family.persons.forAll {
+            it.name shouldNotStartWith "Flanders-"
+            it.id shouldBeGreaterThan 0
+         }
+      }
+   }
+
+   "When binding using properties and classes, properties should take precedence no matter the order of binding" {
+      checkAll(Arb.bind<User> {
+         bind(Int::class to Arb.constant(3))
+         bind(User::id to Arb.constant(7))
+      }) {
+         it.id shouldBe 7
+      }
+
+      checkAll(Arb.bind<User> {
+         bind(User::id to Arb.constant(7))
+         bind(Int::class to Arb.constant(3))
+      }) {
+         it.id shouldBe 7
+      }
+   }
+
 })
