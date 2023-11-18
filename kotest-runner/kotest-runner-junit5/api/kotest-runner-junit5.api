@@ -3,6 +3,11 @@ public final class io/kotest/runner/junit/platform/DescriptorsKt {
 	public static final fun getSpecDescriptor (Lorg/junit/platform/engine/TestDescriptor;Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;Ljava/lang/String;)Lorg/junit/platform/engine/TestDescriptor;
 }
 
+public final class io/kotest/runner/junit/platform/DiscoveryRequestKt {
+	public static final fun engineFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
+	public static final fun postFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
+}
+
 public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -19,6 +24,7 @@ public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/
 
 public final class io/kotest/runner/junit/platform/KotestEngineDescriptor : org/junit/platform/engine/support/descriptor/EngineDescriptor {
 	public fun <init> (Lorg/junit/platform/engine/UniqueId;Lio/kotest/core/config/ProjectConfiguration;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/Throwable;)V
+	public final fun getClasses ()Ljava/util/List;
 	public final fun getError ()Ljava/lang/Throwable;
 	public final fun getScripts ()Ljava/util/List;
 	public final fun getTestFilters ()Ljava/util/List;
@@ -36,11 +42,6 @@ public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngine
 }
 
 public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngine$Companion {
-}
-
-public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngineKt {
-	public static final fun engineFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-	public static final fun postFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
 }
 
 public final class io/kotest/runner/junit/platform/ResultsKt {
