@@ -154,11 +154,20 @@ class KotestJunitPlatformTestEngine : TestEngine {
    // this happens for example, when trying to run a junit test alongside kotest tests,
    // and kotest will then run all other tests.
    // therefore, no detected selectors and the presence of a MethodSelector or UniqueIdSelector means we must run no tests in KT.
-   private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest) =
-      discoveryRequest.selectors.isNotEmpty()
-         || (request.getSelectorsByType(MethodSelector::class.java).isEmpty() && request.getSelectorsByType(
-         UniqueIdSelector::class.java
-      ).isEmpty())
+   private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest): Boolean {
+
+      if (discoveryRequest.selectors.isNotEmpty()) {
+         logger.log { "selectors are non-empty" }
+         return true
+      }
+
+      if (request.getSelectorsByType(MethodSelector::class.java).isEmpty() && request.getSelectorsByType(UniqueIdSelector::class.java).isEmpty()) {
+         logger.log { "No method selector and no unique id specified" }
+         return true
+      }
+
+      return false
+   }
 }
 
 class KotestEngineDescriptor(

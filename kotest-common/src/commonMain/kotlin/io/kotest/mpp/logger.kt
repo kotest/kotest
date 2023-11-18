@@ -2,6 +2,7 @@ package io.kotest.mpp
 
 import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.TimeMarkCompat
+import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
 val start by lazy { MonotonicTimeSourceCompat.markNow() }
@@ -25,6 +26,7 @@ class Logger(private val kclass: KClass<*>) {
    }
 
    @OverloadResolutionByLambdaReturnType
+   @JvmName("logsimple")
    fun log(f: () -> String): Unit = log { Pair(null, f()) }
 }
 
