@@ -146,6 +146,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       }
 
       logger.log { Pair(null, "JUnit discovery completed [descriptor=$descriptor]") }
+      logger.log { Pair(null, "Final specs [${descriptor.classes.joinToString(", ")}]") }
       return descriptor
    }
 
@@ -169,6 +170,8 @@ class KotestEngineDescriptor(
    val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, "Kotest") {
 
+   private val logger = Logger(KotestEngineDescriptor::class)
+
    internal val formatter: FallbackDisplayNameFormatter by lazy {
       getFallbackDisplayNameFormatter(configuration.registry, configuration)
    }
@@ -180,6 +183,7 @@ class KotestEngineDescriptor(
       }
 
    init {
+      logger.log { "Adding ${children.size} as children of the descriptor" }
       classes.forEach {
          addChild(getSpecDescriptor(this, it.toDescriptor(), formatter.format(it)))
       }

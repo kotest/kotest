@@ -11,6 +11,8 @@ internal fun isLoggingEnabled() =
    syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 class Logger(private val kclass: KClass<*>) {
+
+   @OverloadResolutionByLambdaReturnType
    fun log(f: () -> Pair<String?, String>) {
       log(null) {
          val (testName, message) = f()
@@ -21,6 +23,9 @@ class Logger(private val kclass: KClass<*>) {
          ).joinToString("  ")
       }
    }
+
+   @OverloadResolutionByLambdaReturnType
+   fun log(f: () -> String): Unit = log { Pair(null, f()) }
 }
 
 @OverloadResolutionByLambdaReturnType

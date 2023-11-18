@@ -1,17 +1,16 @@
 package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.mpp.Logger
-import org.junit.platform.launcher.PostDiscoveryFilter
 import java.util.regex.Pattern
 
 /**
  * JUnit has this concept of 'PostDiscoveryFilter's which can be applied after test discovery.
  * Gradle implements --tests Foo.mytest by passing a ClassMethodNameFilter which is an implementation
- * of PostDiscoveryFilter.
+ * of PostDiscoveryFilter. It is also used by the test retry plugin.
  *
  * But ClassMethodNameFilter, as the name implies, only handles clases and methods.
  * Kotest is more advanced, and JUnit5 Platform allows for hierarchical tests, so this is a limitation
- * of Gradle not implementing the spec fully.
+ * of Gradle not implementing the spec fully. See https://github.com/gradle/gradle/issues/4912
  *
  * Since ClassMethodNameFilter is private, we can't get access to the underlying patterns, so we resort
  * to this reflection bullshit to get the raw strings out, so we can parse and apply the patterns ourselves,
@@ -22,7 +21,7 @@ object GradlePostDiscoveryFilterExtractor {
 
    private val logger = Logger(GradlePostDiscoveryFilterExtractor::class)
 
-   fun extract(filters: List<PostDiscoveryFilter>): List<String> {
+   fun extract(filters: List<Any>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
       return classMethodFilters.flatMap { extract(it) }
    }
