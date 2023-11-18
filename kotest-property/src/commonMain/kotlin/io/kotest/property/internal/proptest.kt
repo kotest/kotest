@@ -72,7 +72,7 @@ suspend fun <A> proptest(
 
    outputStatistics(context, 1, true)
    context.outputClassifications(1, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    return context
 }
 
@@ -136,7 +136,7 @@ suspend fun <A, B> proptest(
 
    outputStatistics(context, 2, true)
    context.outputClassifications(2, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -206,7 +206,7 @@ suspend fun <A, B, C> proptest(
 
    outputStatistics(context, 3, true)
    context.outputClassifications(3, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -276,7 +276,7 @@ suspend fun <A, B, C, D> proptest(
 
    outputStatistics(context, 4, true)
    context.outputClassifications(4, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -368,7 +368,7 @@ suspend fun <A, B, C, D, E> proptest(
 
    outputStatistics(context, 5, true)
    context.outputClassifications(5, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -467,7 +467,7 @@ suspend fun <A, B, C, D, E, F> proptest(
 
    outputStatistics(context, 6, true)
    context.outputClassifications(6, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -573,7 +573,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
 
    outputStatistics(context, 7, true)
    context.outputClassifications(7, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -686,7 +686,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
 
    outputStatistics(context, 8, true)
    context.outputClassifications(8, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -806,7 +806,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
 
    outputStatistics(context, 9, true)
    context.outputClassifications(9, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -944,7 +944,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
 
    outputStatistics(context, 10, true)
    context.outputClassifications(10, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -1102,7 +1102,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
 
    outputStatistics(context, 11, true)
    context.outputClassifications(11, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -1269,7 +1269,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
 
    outputStatistics(context, 12, true)
    context.outputClassifications(12, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -1445,7 +1445,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
 
    outputStatistics(context, 13, true)
    context.outputClassifications(13, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -1630,7 +1630,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
 
    outputStatistics(context, 14, true)
    context.outputClassifications(14, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -1824,7 +1824,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
 
    outputStatistics(context, 15, true)
    context.outputClassifications(15, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -2044,7 +2044,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
 
    outputStatistics(context, 16, true)
    context.outputClassifications(16, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -2274,7 +2274,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
 
    outputStatistics(context, 17, true)
    context.outputClassifications(17, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -2533,7 +2533,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
 
    outputStatistics(context, 18, true)
    context.outputClassifications(18, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -2803,7 +2803,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
 
    outputStatistics(context, 19, true)
    context.outputClassifications(19, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -3084,7 +3084,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
 
    outputStatistics(context, 20, true)
    context.outputClassifications(20, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -3376,7 +3376,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
 
    outputStatistics(context, 21, true)
    context.outputClassifications(21, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }
@@ -3679,7 +3679,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
 
    outputStatistics(context, 22, true)
    context.outputClassifications(22, config, random.seed)
-   context.checkMaxSuccess(config, random.seed)
+   context.checkMinSuccess(config, random.seed)
    context.checkMaxDiscards()
    return context
 }

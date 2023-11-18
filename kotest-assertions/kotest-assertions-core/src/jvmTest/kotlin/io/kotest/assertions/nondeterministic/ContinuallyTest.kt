@@ -19,6 +19,12 @@ class ContinuallyTest : FunSpec() {
          }
       }
 
+      test("pass tests with null values") {
+         val test = continually(500.milliseconds) {
+            null shouldBe null
+         }
+      }
+
       test("use interval function") {
          val config = continuallyConfig<Unit> {
             duration = 700.milliseconds

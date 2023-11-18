@@ -4,14 +4,13 @@ import com.github.ajalt.mordant.TermColors
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,7 +31,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
 
-   private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private var formatter = FallbackDisplayNameFormatter.default(ProjectConfiguration())
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)
@@ -75,7 +74,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
 
    override suspend fun engineInitialized(context: EngineContext) {
 
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
+      formatter = getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
 
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
@@ -209,6 +208,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
             testsFailed = testsFailed + Pair(testCase, result)
             specsFailed = specsFailed + testCase.descriptor.spec()
          }
+
          else -> Unit
       }
 

@@ -6,6 +6,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.time.Duration
 
 /**
  * Matcher that checks if a LocalDateTime has a Date component of today
@@ -101,4 +102,26 @@ fun LocalDateTime.shouldNotBeToday() = this shouldNot beInToday()
  */
 fun LocalDate.shouldNotBeToday() = this shouldNot beToday()
 
+infix fun LocalDateTime.plusOrMinus(tolerance: Duration): LocalDateTimeToleranceMatcher =
+   LocalDateTimeToleranceMatcher(this, tolerance)
+
+class LocalDateTimeToleranceMatcher(
+   private val expected: LocalDateTime,
+   private val tolerance: Duration
+): Matcher<LocalDateTime> {
+   override fun test(value: LocalDateTime): MatcherResult {
+      val positiveTolerance = tolerance.absoluteValue
+      val lowerBound = expected.minusNanos(positiveTolerance.inWholeNanoseconds)
+      val upperBound = expected.plusNanos(positiveTolerance.inWholeNanoseconds)
+      val insideToleranceInterval = (lowerBound <= value) && (value <= upperBound)
+      return MatcherResult(
+         insideToleranceInterval,
+         { "$value should be equal to $expected with tolerance $tolerance (between $lowerBound and $upperBound)" },
+         { "$value should not be equal to $expected with tolerance $tolerance (not between $lowerBound and $upperBound)" }
+      )
+   }
+
+   infix fun plusOrMinus(tolerance: Duration): LocalDateTimeToleranceMatcher =
+      LocalDateTimeToleranceMatcher(expected, tolerance)
+}
 

@@ -8,6 +8,6 @@ internal actual fun platformArbResolver(): ArbResolver = JvmArbResolver
 
 object JvmArbResolver : ArbResolver {
    override fun resolve(type: KType): Arb<*>? {
-      return targetDefaultForType(emptyMap(), type)
+      return targetDefaultForType(emptyMap(), emptyMap(),  type)
    }
 }

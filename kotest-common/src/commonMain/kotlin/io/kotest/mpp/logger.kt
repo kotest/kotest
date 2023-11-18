@@ -31,7 +31,7 @@ fun log(f: () -> String) {
 fun log(t: Throwable?, f: () -> String) {
    if (isLoggingEnabled()) {
       writeLog(start, t, f)
-      println(start.elapsedNow().inWholeMicroseconds.toString() + "  " + f())
+      println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
       if (t != null) println(t)
    }
 }

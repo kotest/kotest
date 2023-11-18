@@ -679,20 +679,60 @@ public final class io/kotest/matchers/collections/SizeKt {
 	public static final fun shouldBeSameSizeAs (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeSameSizeAs (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/lang/Iterable;
 	public static final fun shouldBeSameSizeAs (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldBeSameSizeAs ([B[B)[B
+	public static final fun shouldBeSameSizeAs ([C[C)[C
+	public static final fun shouldBeSameSizeAs ([D[D)[D
+	public static final fun shouldBeSameSizeAs ([F[F)[F
+	public static final fun shouldBeSameSizeAs ([I[I)[I
+	public static final fun shouldBeSameSizeAs ([J[J)[J
 	public static final fun shouldBeSameSizeAs ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldBeSameSizeAs ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeSameSizeAs ([S[S)[S
+	public static final fun shouldBeSameSizeAs ([Z[Z)[Z
 	public static final fun shouldHaveAtLeastSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveAtLeastSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveAtLeastSize ([BI)[B
+	public static final fun shouldHaveAtLeastSize ([CI)[C
+	public static final fun shouldHaveAtLeastSize ([DI)[D
+	public static final fun shouldHaveAtLeastSize ([FI)[F
+	public static final fun shouldHaveAtLeastSize ([II)[I
+	public static final fun shouldHaveAtLeastSize ([JI)[J
 	public static final fun shouldHaveAtLeastSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveAtLeastSize ([SI)[S
+	public static final fun shouldHaveAtLeastSize ([ZI)[Z
 	public static final fun shouldHaveAtMostSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveAtMostSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveAtMostSize ([BI)[B
+	public static final fun shouldHaveAtMostSize ([CI)[C
+	public static final fun shouldHaveAtMostSize ([DI)[D
+	public static final fun shouldHaveAtMostSize ([FI)[F
+	public static final fun shouldHaveAtMostSize ([II)[I
+	public static final fun shouldHaveAtMostSize ([JI)[J
 	public static final fun shouldHaveAtMostSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveAtMostSize ([SI)[S
+	public static final fun shouldHaveAtMostSize ([ZI)[Z
 	public static final fun shouldHaveSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldHaveSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldHaveSize ([BI)[B
+	public static final fun shouldHaveSize ([CI)[C
+	public static final fun shouldHaveSize ([DI)[D
+	public static final fun shouldHaveSize ([FI)[F
+	public static final fun shouldHaveSize ([II)[I
+	public static final fun shouldHaveSize ([JI)[J
 	public static final fun shouldHaveSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldHaveSize ([SI)[S
+	public static final fun shouldHaveSize ([ZI)[Z
 	public static final fun shouldNotHaveSize (Ljava/lang/Iterable;I)Ljava/lang/Iterable;
 	public static final fun shouldNotHaveSize (Ljava/util/Collection;I)Ljava/util/Collection;
+	public static final fun shouldNotHaveSize ([BI)[B
+	public static final fun shouldNotHaveSize ([CI)[C
+	public static final fun shouldNotHaveSize ([DI)[D
+	public static final fun shouldNotHaveSize ([FI)[F
+	public static final fun shouldNotHaveSize ([II)[I
+	public static final fun shouldNotHaveSize ([JI)[J
 	public static final fun shouldNotHaveSize ([Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldNotHaveSize ([SI)[S
+	public static final fun shouldNotHaveSize ([ZI)[Z
 }
 
 public final class io/kotest/matchers/collections/SmallerKt {
@@ -850,11 +890,16 @@ public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/date/DurationKt {
+	public static final fun and-QTBD994 (JJ)J
+}
+
 public final class io/kotest/matchers/date/InstantKt {
 	public static final fun after (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun before (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun between (Ljava/time/Instant;Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun closeTo-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
@@ -865,9 +910,21 @@ public final class io/kotest/matchers/date/InstantKt {
 	public static final fun shouldNotBeCloseTo-SxA4cEA (Ljava/time/Instant;Ljava/time/Instant;J)Ljava/time/Instant;
 }
 
+public final class io/kotest/matchers/date/LocalDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/LocalDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/LocalDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/LocaldatetimeKt {
 	public static final fun beInToday ()Lio/kotest/matchers/Matcher;
 	public static final fun beToday ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalDateTime;J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/LocalDate;)V
 	public static final fun shouldBeToday (Ljava/time/LocalDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/LocalDate;)V
@@ -998,9 +1055,21 @@ public final class io/kotest/matchers/date/MatchersKt {
 	public static final fun within (Ljava/time/temporal/TemporalAmount;Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/date/OffsetDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/OffsetDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/OffsetdatetimeKt {
 	public static final fun beInTodayODT ()Lio/kotest/matchers/Matcher;
 	public static final fun haveSameInstantAs (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/OffsetDateTime;J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/OffsetDateTime;)V
 	public static final fun shouldHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/OffsetDateTime;)V
@@ -1019,9 +1088,21 @@ public final class io/kotest/matchers/date/TimestampKt {
 	public static final fun shouldNotBeBetween (Ljava/sql/Timestamp;Ljava/sql/Timestamp;Ljava/sql/Timestamp;)V
 }
 
+public final class io/kotest/matchers/date/ZonedDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/ZonedDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/ZoneddatetimeKt {
 	public static final fun atSameZone (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun beInTodayZDT ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/ZonedDateTime;J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/ZonedDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/ZonedDateTime;)V
 }
