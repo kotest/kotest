@@ -189,5 +189,5 @@ class KotestEngineDescriptor(
    }
 
    // Only reports dynamic children (see ExtensionExceptionExtractor) if there are any test classes to run
-   override fun mayRegisterTests(): Boolean = children.isNotEmpty()
+   override fun mayRegisterTests(): Boolean = classes.isNotEmpty()
 }

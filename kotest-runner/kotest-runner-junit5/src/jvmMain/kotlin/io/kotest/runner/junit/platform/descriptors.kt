@@ -42,8 +42,7 @@ private fun createAndRegisterSpecDescription(
 }
 
 /**
- * Creates a [TestDescriptor] for the given [testCase] and attaches it to the [parent].
- * The created descriptor will have segment type [Segment.Test] and will use [displayName].
+ * Creates a [TestDescriptor] for the given [id] and [displayName].
  */
 fun createTestDescriptor(
    id: UniqueId,
