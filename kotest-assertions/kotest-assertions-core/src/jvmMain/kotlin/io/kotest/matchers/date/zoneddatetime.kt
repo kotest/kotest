@@ -5,7 +5,9 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import java.time.OffsetDateTime
 import java.time.ZonedDateTime
+import kotlin.time.Duration
 
 fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
    override fun test(value: ZonedDateTime): MatcherResult {
@@ -49,3 +51,29 @@ fun ZonedDateTime.shouldBeToday() = this should beInTodayZDT()
 fun ZonedDateTime.atSameZone() = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): MatcherResult = equalityMatcher(withZoneSameInstant(value.zone)).test(value)
 }
+
+
+infix fun ZonedDateTime.plusOrMinus(tolerance: Duration): ZonedDateTimeToleranceMatcher =
+   ZonedDateTimeToleranceMatcher(this, tolerance)
+
+class ZonedDateTimeToleranceMatcher(
+   private val expected: ZonedDateTime,
+   private val tolerance: Duration
+): Matcher<ZonedDateTime> {
+   override fun test(value: ZonedDateTime): MatcherResult {
+      val positiveTolerance = tolerance.absoluteValue
+      val lowerBound = expected.minusNanos(positiveTolerance.inWholeNanoseconds)
+      val upperBound = expected.plusNanos(positiveTolerance.inWholeNanoseconds)
+      val valueAsInstant = value.toInstant()
+      val insideToleranceInterval = (lowerBound.toInstant() <= valueAsInstant) && (valueAsInstant <= upperBound.toInstant())
+      return MatcherResult(
+         insideToleranceInterval,
+         { "$value should be equal to $expected with tolerance $tolerance (between $lowerBound and $upperBound)" },
+         { "$value should not be equal to $expected with tolerance $tolerance (not between $lowerBound and $upperBound)" }
+      )
+   }
+
+   infix fun plusOrMinus(tolerance: Duration): ZonedDateTimeToleranceMatcher =
+      ZonedDateTimeToleranceMatcher(expected, tolerance)
+}
+

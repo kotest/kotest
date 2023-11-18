@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -10,15 +11,21 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldNotStartWith
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
@@ -624,4 +631,45 @@ class BindTest : StringSpec({
       stdout shouldContain "Shrink result"
       stdout shouldContain "Person(name=, age=-1)"
    }
+
+   "Bind using properties" {
+      checkAll(Arb.bind<User> {
+         bind(User::email to Arb.string().map { s -> "$s@yahoo.com" })
+      }) { user ->
+         user.email shouldEndWith "@yahoo.com"
+      }
+   }
+
+   "Binding properties in a nested structure should work" {
+      data class Person(val id: Int, val name: String)
+      data class Family(val name: String, val persons: List<Person>)
+
+      checkAll(Arb.bind<Family> {
+         bind(Family::name to Arb.string().map { s -> "Flanders-$s" })
+         bind(Person::id to Arb.positiveInt())
+      }) { family ->
+         family.name shouldStartWith "Flanders-"
+         family.persons.forAll {
+            it.name shouldNotStartWith "Flanders-"
+            it.id shouldBeGreaterThan 0
+         }
+      }
+   }
+
+   "When binding using properties and classes, properties should take precedence no matter the order of binding" {
+      checkAll(Arb.bind<User> {
+         bind(Int::class to Arb.constant(3))
+         bind(User::id to Arb.constant(7))
+      }) {
+         it.id shouldBe 7
+      }
+
+      checkAll(Arb.bind<User> {
+         bind(User::id to Arb.constant(7))
+         bind(Int::class to Arb.constant(3))
+      }) {
+         it.id shouldBe 7
+      }
+   }
+
 })

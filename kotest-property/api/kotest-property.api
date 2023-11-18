@@ -1066,8 +1066,8 @@ public final class io/kotest/property/arbitrary/IntsKt {
 }
 
 public final class io/kotest/property/arbitrary/JvmbindKt {
+	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KClass;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
 	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Lkotlin/reflect/KClass;)Lio/kotest/property/Arb;
-	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Lkotlin/reflect/KClass;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/property/Shrinker {
@@ -1157,6 +1157,14 @@ public final class io/kotest/property/arbitrary/NullKt {
 	public static final fun orNull (Lio/kotest/property/Arb;D)Lio/kotest/property/Arb;
 	public static final fun orNull (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;
 	public static synthetic fun orNull$default (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arbitrary/ProvidedArbsBuilder {
+	public fun <init> ()V
+	public final fun bindClass (Lkotlin/Pair;)V
+	public final fun bindProperty (Lkotlin/Pair;)V
+	public final fun getClassArbs ()Ljava/util/Map;
+	public final fun getPropertyArbs ()Ljava/util/Map;
 }
 
 public final class io/kotest/property/arbitrary/RangeKt {
@@ -1251,8 +1259,8 @@ public final class io/kotest/property/arbitrary/StringsjvmKt {
 }
 
 public final class io/kotest/property/arbitrary/TargetDefaultForClassNameKt {
-	public static final fun targetDefaultForType (Ljava/util/Map;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
-	public static synthetic fun targetDefaultForType$default (Ljava/util/Map;Lkotlin/reflect/KType;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun targetDefaultForType (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
+	public static synthetic fun targetDefaultForType$default (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;ILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/TimezoneKt {

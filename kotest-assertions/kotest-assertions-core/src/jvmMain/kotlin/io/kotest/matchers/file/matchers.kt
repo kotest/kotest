@@ -20,12 +20,20 @@ fun File.shouldBeEmptyDirectory() = this should beEmptyDirectory()
 fun File.shouldNotBeEmptyDirectory() = this shouldNot beEmptyDirectory()
 fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult {
-      val contents = if (value.isDirectory) value.safeList() else emptyList()
-      return MatcherResult(
-         contents.isEmpty(),
-         { "$value should be an empty directory but contained ${contents.size} file(s) [${contents.joinToString(", ")}]" },
-         { "$value should not be a non empty directory" }
-      )
+      return if (value.isDirectory) {
+         val contents = value.safeList()
+         MatcherResult(
+            contents.isEmpty(),
+            { "$value should be an empty directory but contained ${contents.size} file(s) [${contents.joinToString(", ")}]" },
+            { "$value should not be a non empty directory" }
+         )
+      } else {
+         MatcherResult(
+            false,
+            { "$value should be an empty directory but was a file" },
+            { "$value should not be a non empty directory" }
+         )
+      }
    }
 }
 
@@ -271,6 +279,7 @@ fun File.shouldHaveSameStructureAs(
             expect.path.removePrefix(expectParentPath)
                .shouldBe(actual.path.removePrefix(actualParentPath))
          }
+
          else -> error("There is an unexpected error analyzing file trees")
       }
    }
@@ -311,6 +320,7 @@ fun File.shouldHaveSameStructureAndContentAs(
                .shouldBe(actual.path.removePrefix(actualParentPath))
             expect.shouldHaveSameContentAs(actual)
          }
+
          else -> error("There is an unexpected error analyzing file trees")
       }
    }
