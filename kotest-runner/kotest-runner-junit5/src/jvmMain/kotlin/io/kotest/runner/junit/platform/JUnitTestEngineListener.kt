@@ -1,10 +1,8 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -15,6 +13,7 @@ import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
+import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -168,6 +167,7 @@ class JUnitTestEngineListener(
    private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
       return try {
 
+         log { "Getting TestDescriptor for $kclass" }
          val descriptor = getSpecDescriptor(kclass)
 
          logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
@@ -177,7 +177,7 @@ class JUnitTestEngineListener(
          descriptor
 
       } catch (t: Throwable) {
-         logger.log { Pair(kclass.bestName(), "Error in JUnit Platform listener $t") }
+         logger.log { Pair(kclass.bestName(), "Error marking spec as started $t") }
          throw t
       }
    }

@@ -1,6 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.mpp.log
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -19,6 +20,7 @@ fun getSpecDescriptor(
    displayName: String,
 ): TestDescriptor {
    val id = engine.uniqueId.append(Segment.Spec.value, descriptor.id.value)
+   log { "Looking for $id in ${engine.children.map { it.uniqueId }.joinToString(", ")}" }
    return engine.findByUniqueId(id).orElseGet { null }
       ?: createAndRegisterSpecDescription(engine, descriptor, displayName)
 }
@@ -34,6 +36,7 @@ private fun createAndRegisterSpecDescription(
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
       override fun mayRegisterTests(): Boolean = true
    }
+   log { "Registering spec level TestDescriptor for $id" }
    engine.addChild(testDescriptor)
    return testDescriptor
 }
