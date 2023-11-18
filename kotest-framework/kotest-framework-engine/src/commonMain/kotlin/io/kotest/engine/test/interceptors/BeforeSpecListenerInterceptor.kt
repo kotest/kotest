@@ -10,7 +10,11 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.ref.BeforeSpecState
 import io.kotest.engine.spec.interceptor.ref.beforeSpecStateKey
 import io.kotest.engine.test.createTestResult
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration.Companion.seconds
+
+private val mutex = Mutex()
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
@@ -30,24 +34,29 @@ internal class BeforeSpecListenerInterceptor(
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
-      val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
-      return when {
-         state == null -> test(testCase, scope) // skip when not defined, ie in tests
-         state.success.contains(testCase.spec) -> test(testCase, scope)
-         state.failed.contains(testCase.spec) -> TestResult.Ignored("Skipped due to beforeSpec failure")
-         else -> SpecExtensions(registry)
-            .beforeSpec(testCase.spec)
-            .fold(
-               {
-                  state.success.add(testCase.spec)
-                  test.invoke(testCase, scope)
-               },
-               {
-                  state.failed.add(testCase.spec)
-                  state.errors.add(it)
-                  createTestResult(0.seconds, it)
-               }
-            )
+      // check if we need to run beforeSpec and if so do inside the mutex to avoid race conditions
+      // the actual test invocation should be outside of the lock
+      val runTest: suspend () -> TestResult = mutex.withLock {
+         val state = context.state[testCase.spec::class.beforeSpecStateKey()] as? BeforeSpecState
+         when {
+            state == null -> suspend { test(testCase, scope) }
+            state.success.contains(testCase.spec) -> suspend { test(testCase, scope) }
+            state.failed.contains(testCase.spec) -> suspend { TestResult.Ignored("Skipped due to beforeSpec failure") }
+            else -> SpecExtensions(registry)
+               .beforeSpec(testCase.spec)
+               .fold(
+                  {
+                     state.success.add(testCase.spec);
+                     suspend { test(testCase, scope) }
+                  },
+                  {
+                     state.failed.add(testCase.spec)
+                     state.errors.add(it);
+                     { createTestResult(0.seconds, it) }
+                  }
+               )
+         }
       }
+      return runTest()
    }
 }
