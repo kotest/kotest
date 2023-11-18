@@ -16,6 +16,18 @@ import kotlin.time.Duration.Companion.milliseconds
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
  */
 suspend fun <T> eventually(
+   test: suspend () -> T,
+): T {
+   val config = eventuallyConfig { }
+   return eventually(config, test)
+}
+
+/**
+ * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
+ *
+ * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
+ */
+suspend fun <T> eventually(
    duration: Duration,
    test: suspend () -> T,
 ): T {
@@ -92,22 +104,34 @@ data class EventuallyConfiguration(
    val shortCircuit: (Throwable) -> Boolean,
 )
 
+object EventuallyConfigurationDefaults {
+   var duration: Duration = Duration.INFINITE
+   var initialDelay: Duration = Duration.ZERO
+   var interval: Duration = 25.milliseconds
+   var intervalFn: DurationFn? = null
+   var retries: Int = Int.MAX_VALUE
+   var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
+   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   var listener: EventuallyListener? = null
+   var shortCircuit: (Throwable) -> Boolean = { false }
+}
+
 class EventuallyConfigurationBuilder {
 
    /**
     * The total time that the eventually function can take to complete successfully.
     */
-   var duration: Duration = Duration.INFINITE
+   var duration: Duration = EventuallyConfigurationDefaults.duration
 
    /**
     * A delay that is applied before the first invocation of the eventually function.
     */
-   var initialDelay: Duration = Duration.ZERO
+   var initialDelay: Duration = EventuallyConfigurationDefaults.initialDelay
 
    /**
     * The delay between invocations. This delay is overriden by the [intervalFn] if it is not null.
     */
-   var interval: Duration = 25.milliseconds
+   var interval: Duration = EventuallyConfigurationDefaults.interval
 
    /**
     * A function that is invoked to calculate the next interval. This if this null, then the
@@ -115,12 +139,12 @@ class EventuallyConfigurationBuilder {
     *
     * This function can be used to implement [fibonacci] or [exponential] backoffs.
     */
-   var intervalFn: DurationFn? = null
+   var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
     * The maximum number of invocations regardless of durations. By default this is set to max retries.
     */
-   var retries: Int = Int.MAX_VALUE
+   var retries: Int = EventuallyConfigurationDefaults.retries
 
    /**
     * A set of exceptions, which if thrown, will cause the test function to be retried.
@@ -128,7 +152,7 @@ class EventuallyConfigurationBuilder {
     *
     * This set is applied in addition to the values specified by [expectedExceptionsFn].
     */
-   var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
+   var expectedExceptions: Set<KClass<out Throwable>> = EventuallyConfigurationDefaults.expectedExceptions
 
    /**
     * A function that is invoked to determine if a thrown exception is expected and the test
@@ -137,13 +161,13 @@ class EventuallyConfigurationBuilder {
     *
     * This function is applied in addition to the values specified by [expectedExceptions].
     */
-   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   var expectedExceptionsFn: (Throwable) -> Boolean = EventuallyConfigurationDefaults.expectedExceptionsFn
 
    /**
     * A listener that is invoked after each failed invocation, with the iteration count,
     * and the failing cause.
     */
-   var listener: EventuallyListener? = null
+   var listener: EventuallyListener? = EventuallyConfigurationDefaults.listener
 
    /**
     * A function that is invoked after each failed invocation which causes no further
@@ -151,7 +175,7 @@ class EventuallyConfigurationBuilder {
     *
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
-   var shortCircuit: (Throwable) -> Boolean = { false }
+   var shortCircuit: (Throwable) -> Boolean = EventuallyConfigurationDefaults.shortCircuit
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
