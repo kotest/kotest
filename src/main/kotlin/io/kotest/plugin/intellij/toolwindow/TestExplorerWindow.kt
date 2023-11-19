@@ -11,9 +11,9 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiTreeAnyChangeAbstractAdapter
+import com.intellij.ui.JBColor
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.actions.runNode
-import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
@@ -36,7 +36,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          }
       })
 
-      background = Color.WHITE
+      background = JBColor.WHITE
       toolbar = createToolbar(tree, project)
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
@@ -55,7 +55,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   val files = events.mapNotNull { it.file }
                   val modified = files.firstOrNull { it.name == selectedFile.name }
                   if (modified != null)
-                     tree.offerVirtualFile(modified)
+                     tree.setVirtualFile(modified)
                }
             }
          }
@@ -73,7 +73,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
             override fun selectionChanged(event: FileEditorManagerEvent) {
                val file = fileEditorManager.selectedEditor?.file
                if (file != null) {
-                  tree.offerVirtualFile(file)
+                  tree.setVirtualFile(file)
                }
             }
          }
@@ -87,7 +87,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                val selectedFile = fileEditorManager.selectedEditor?.file
                if (selectedFile != null) {
                   if (file.virtualFile.name == selectedFile.name) {
-                     tree.offerVirtualFile(file.virtualFile)
+                     tree.setVirtualFile(file.virtualFile)
                   }
                }
             }

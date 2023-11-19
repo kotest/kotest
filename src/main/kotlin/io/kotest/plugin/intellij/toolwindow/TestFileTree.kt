@@ -8,6 +8,7 @@ import com.intellij.openapi.project.NoAccessDuringPsiEvents
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
+import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specs
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
@@ -38,31 +39,6 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    }
 
    /**
-    * Offers the given file. If the file is a test file (contains one or more specs) then accepts it
-    * and refreshes the model. Otherwise the existing file (if any) is kept.
-    */
-   fun offerVirtualFile(file: VirtualFile, retries: Int = 10) {
-      ApplicationManager.getApplication().runReadAction {
-         val module = ModuleUtilCore.findModuleForFile(file, project)
-         if (module != null) {
-            val psi = PsiManager.getInstance(project).findFile(file)
-            if (psi != null) {
-               if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
-                  DumbService.getInstance(project).runWhenSmart {
-                     if (retries > 0)
-                        offerVirtualFile(file, retries - 1)
-                  }
-               } else {
-                  if (psi.specs().isNotEmpty()) {
-                     setVirtualFile(file)
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   /**
     * Reloads the model based on the currently set file (if any).
     */
    fun reloadModel() {
@@ -73,19 +49,23 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    }
 
    private fun reloadModel(file: VirtualFile, retries: Int = 10) {
-      val module = ModuleUtilCore.findModuleForFile(file, project) ?: return
-      val psi = PsiManager.getInstance(project).findFile(file) ?: return
-      if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
-         DumbService.getInstance(project).runWhenSmart {
-            if (retries > 0)
-               reloadModel(file, retries - 1)
-         }
+      if (!file.isTestFile(project)) {
+         model = noFileModel()
       } else {
-         val specs = psi.specs()
-         val expanded = isExpanded(0)
-         model = createTreeModel(file, project, specs, module)
-         expandAllNodes()
-         setModuleGroupNodeExpandedState(expanded)
+         val module = ModuleUtilCore.findModuleForFile(file, project) ?: return
+         val psi = PsiManager.getInstance(project).findFile(file) ?: return
+         if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
+            DumbService.getInstance(project).runWhenSmart {
+               if (retries > 0)
+                  reloadModel(file, retries - 1)
+            }
+         } else {
+            val specs = psi.specs()
+            val expanded = isExpanded(0)
+            model = createTreeModel(file, project, specs, module)
+            expandAllNodes()
+            setModuleGroupNodeExpandedState(expanded)
+         }
       }
    }
 
