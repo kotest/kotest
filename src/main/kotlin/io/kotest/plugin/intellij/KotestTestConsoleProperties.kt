@@ -8,9 +8,9 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.psi.search.GlobalSearchScope
 
 class KotestTestConsoleProperties(
-   config: KotestConfiguration,
+   config: KotestRunConfiguration,
    executor: Executor
-) : JavaAwareTestConsoleProperties<KotestConfiguration>(Constants().FrameworkName, config, executor) {
+) : JavaAwareTestConsoleProperties<KotestRunConfiguration>(Constants().FrameworkName, config, executor) {
    init {
       isPrintTestingStartedTime = true
    }

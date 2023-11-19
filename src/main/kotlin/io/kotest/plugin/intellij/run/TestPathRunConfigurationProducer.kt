@@ -6,7 +6,7 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.KotestConfiguration
+import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 import io.kotest.plugin.intellij.psi.enclosingKtClass
@@ -16,15 +16,15 @@ import io.kotest.plugin.intellij.Test
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
  *
- * A Run producer is called to create a [KotestConfiguration] from the [KotestConfigurationFactory]
+ * A Run producer is called to create a [KotestRunConfiguration] from the [KotestConfigurationFactory]
  * and then again to configure it with a context.
  *
  * This producer creates run configurations for individual tests.
  */
-class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
+class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
-    * Returns the [KotestConfigurationFactory] used to create [KotestConfiguration]s.
+    * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
@@ -32,7 +32,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConf
     * Returns true if the given context is applicable to this run producer.
     * This implementation will return true if the source element is a test in any of the [SpecStyle]s.
     */
-   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
+   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
@@ -56,7 +56,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConf
 
    // compares the existing configurations to the context in question
    // if one of the configurations matches then this should return true
-   override fun isConfigurationFromContext(configuration: KotestConfiguration,
+   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null) {

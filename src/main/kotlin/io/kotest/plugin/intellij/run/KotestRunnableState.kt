@@ -8,18 +8,18 @@ import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
 import com.intellij.util.PathUtil
 import io.kotest.plugin.intellij.Constants
-import io.kotest.plugin.intellij.KotestConfiguration
+import io.kotest.plugin.intellij.KotestRunConfiguration
 import java.io.File
 
 class KotestRunnableState(
    private val env: ExecutionEnvironment,
-   private val config: KotestConfiguration
-) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
+   private val config: KotestRunConfiguration
+) : JavaTestFrameworkRunnableState<KotestRunConfiguration>(env) {
 
    override fun getForkMode(): String = "none"
    override fun getFrameworkId(): String = Constants().FrameworkId
    override fun getFrameworkName(): String = Constants().FrameworkName
-   override fun getConfiguration(): KotestConfiguration = config
+   override fun getConfiguration(): KotestRunConfiguration = config
 
    override fun passForkMode(forkMode: String?, tempFile: File?, parameters: JavaParameters?) {}
 

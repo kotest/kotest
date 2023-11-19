@@ -10,20 +10,20 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
-import io.kotest.plugin.intellij.KotestConfiguration
+import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 
-class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
+class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
-    * Returns the [KotestConfigurationFactory] used to create [KotestConfiguration]s.
+    * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
-   override fun isConfigurationFromContext(configuration: KotestConfiguration, context: ConfigurationContext): Boolean = false
+   override fun isConfigurationFromContext(configuration: KotestRunConfiguration, context: ConfigurationContext): Boolean = false
 
-   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
+   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val index = ProjectRootManager.getInstance(context.project).fileIndex
@@ -43,7 +43,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfi
       return false
    }
 
-   private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestConfiguration): Boolean {
+   private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestRunConfiguration): Boolean {
       val template = context.runManager.getConfigurationTemplate(configurationFactory)
       val contextModule = context.module
       val predefinedModule = (template.configuration as ModuleBasedConfiguration<*, *>).configurationModule.module
@@ -59,7 +59,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfi
       return false
    }
 
-   private fun findModule(configuration: KotestConfiguration, contextModule: Module?): Module? {
+   private fun findModule(configuration: KotestRunConfiguration, contextModule: Module?): Module? {
       if (configuration.configurationModule.module == null && contextModule != null) {
          return contextModule
       }

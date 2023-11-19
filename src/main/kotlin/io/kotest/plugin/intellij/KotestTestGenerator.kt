@@ -13,7 +13,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testIntegration.createTest.CreateTestDialog
 import com.intellij.testIntegration.createTest.JavaTestGenerator
-import com.intellij.testIntegration.createTest.TestGenerator
 import io.kotest.plugin.intellij.styles.FunSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.kotlin.idea.KotlinLanguage

@@ -6,7 +6,8 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.psi.asSpecEntryPoint
+import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
+import io.kotest.plugin.intellij.psi.isRunnableSpec
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.testMode
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -30,8 +31,8 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
             // only consider tests
             if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
             if (!testMode && !element.containingFile.isTestFile()) return null
-            val spec = element.asSpecEntryPoint()
-            if (spec != null) {
+            val spec = element.asKtClassOrObjectOrNull()
+            if (spec != null && spec.isRunnableSpec()) {
                return Info(
                   icon,
                   com.intellij.util.Function<PsiElement, String> { "Run ${spec.fqName?.shortName()}" },

@@ -55,28 +55,28 @@ class SpecTests : LightJavaCodeInsightFixtureTestCase() {
       }
    }
 
-   fun testasSpecEntryPoint() {
+   fun testasKtClassOrObjectOrNull() {
 
       val psiFile = myFixture.configureByFiles(
          "/io/kotest/plugin/intellij/subclasses.kt",
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      (psiFile[0].findElementAt(626) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec1"
-      (psiFile[0].findElementAt(657) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec2"
-      (psiFile[0].findElementAt(693) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec3"
-      (psiFile[0].findElementAt(717) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec4"
-      (psiFile[0].findElementAt(743) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec5"
-      (psiFile[0].findElementAt(773) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec6"
-      (psiFile[0].findElementAt(803) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec7"
-      (psiFile[0].findElementAt(826) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec8"
-      (psiFile[0].findElementAt(852) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec9"
-      (psiFile[0].findElementAt(879) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec10"
-      (psiFile[0].findElementAt(909) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec11"
-      (psiFile[0].findElementAt(947) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec12"
-      (psiFile[0].findElementAt(975) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString().shouldBeNull()
-      (psiFile[0].findElementAt(1007) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString().shouldBeNull()
-      (psiFile[0].findElementAt(1035) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString().shouldBeNull()
-      (psiFile[0].findElementAt(1060) as LeafPsiElement).asSpecEntryPoint()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(626) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec1"
+      (psiFile[0].findElementAt(657) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec2"
+      (psiFile[0].findElementAt(693) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec3"
+      (psiFile[0].findElementAt(717) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec4"
+      (psiFile[0].findElementAt(743) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec5"
+      (psiFile[0].findElementAt(773) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec6"
+      (psiFile[0].findElementAt(803) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec7"
+      (psiFile[0].findElementAt(826) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec8"
+      (psiFile[0].findElementAt(852) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec9"
+      (psiFile[0].findElementAt(879) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec10"
+      (psiFile[0].findElementAt(909) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec11"
+      (psiFile[0].findElementAt(947) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec12"
+      (psiFile[0].findElementAt(975) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1007) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1035) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1060) as LeafPsiElement).asKtClassOrObjectOrNull()?.takeIfRunnableSpec()?.fqName?.asString().shouldBeNull()
    }
 }

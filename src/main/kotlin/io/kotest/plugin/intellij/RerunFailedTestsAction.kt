@@ -13,7 +13,7 @@ class RerunFailedTestsAction(consoleView: ConsoleView,
                              props: KotestTestConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
 
    override fun getRunProfile(env: ExecutionEnvironment): MyRunProfile {
-      val configuration = myConsoleProperties.configuration as KotestConfiguration
+      val configuration = myConsoleProperties.configuration as KotestRunConfiguration
       val run = KotestRunnableState(env, configuration)
       return object : MyRunProfile(configuration) {
 

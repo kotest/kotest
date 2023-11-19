@@ -12,17 +12,17 @@ import com.intellij.openapi.ui.LabeledComponent
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import com.intellij.ui.TextFieldWithHistory
-import io.kotest.plugin.intellij.KotestConfiguration
+import io.kotest.plugin.intellij.KotestRunConfiguration
 import java.awt.BorderLayout
 import java.util.function.BiConsumer
 
-class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
-   JavaSettingsEditorBase<KotestConfiguration>(runConfiguration) {
+class KotestSettingsEditor(runConfiguration: KotestRunConfiguration) :
+   JavaSettingsEditorBase<KotestRunConfiguration>(runConfiguration) {
 
    override fun customizeFragments(
-      fragments: MutableList<SettingsEditorFragment<KotestConfiguration, *>>,
-      moduleClasspath: SettingsEditorFragment<KotestConfiguration, ModuleClasspathCombo>,
-      unused: CommonParameterFragments<KotestConfiguration>?,
+      fragments: MutableList<SettingsEditorFragment<KotestRunConfiguration, *>>,
+      moduleClasspath: SettingsEditorFragment<KotestRunConfiguration, ModuleClasspathCombo>,
+      unused: CommonParameterFragments<KotestRunConfiguration>?,
    ) {
       SpecClassBrowser<EditorTextField>(
          project,
@@ -41,7 +41,7 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
             ExecutionBundle.message("do.not.use.module.path.tag"),
             "Java",
             { !it.isUseModulePath },
-            BiConsumer<KotestConfiguration, Boolean> { config, value -> config.isUseModulePath = !value }
+            BiConsumer<KotestRunConfiguration, Boolean> { config, value -> config.isUseModulePath = !value }
          )
          fragments.add(fragment)
       }
@@ -49,7 +49,7 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
       fragments.add(moduleClasspath)
 
       val jreSelector = DefaultJreSelector.fromModuleDependencies(moduleClasspath.component(), false)
-      val jrePath = CommonJavaFragments.createJrePath<KotestConfiguration>(jreSelector)
+      val jrePath = CommonJavaFragments.createJrePath<KotestRunConfiguration>(jreSelector)
       fragments.add(createShortenClasspath(moduleClasspath.component(), jrePath, false))
       fragments.add(jrePath)
    }
@@ -62,7 +62,7 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
    )
 
    private val specClassFragment =
-      SettingsEditorFragment<KotestConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
+      SettingsEditorFragment<KotestRunConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
          "specClass",
          KotestBundle().getMessage("spec.class.name"),
          "Kotest",
@@ -79,7 +79,7 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
    )
 
    private val testPathFragment =
-      SettingsEditorFragment<KotestConfiguration, LabeledComponent<TextFieldWithHistory>>(
+      SettingsEditorFragment<KotestRunConfiguration, LabeledComponent<TextFieldWithHistory>>(
          "testPath",
          KotestBundle().getMessage("test.path.name"),
          "Kotest",
@@ -97,7 +97,7 @@ class KotestSettingsEditor(runConfiguration: KotestConfiguration) :
    )
 
    private val packageNameFragment =
-      SettingsEditorFragment<KotestConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
+      SettingsEditorFragment<KotestRunConfiguration, LabeledComponent<EditorTextFieldWithBrowseButton>>(
          "kotestPackageName",
          KotestBundle().getMessage("package.name"),
          "Kotest",

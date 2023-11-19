@@ -32,7 +32,7 @@ import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
+class KotestRunConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
    JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory),
    TargetEnvironmentAwareRunProfile {
 

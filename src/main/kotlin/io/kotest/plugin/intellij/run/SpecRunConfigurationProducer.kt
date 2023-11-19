@@ -6,31 +6,47 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.asSpecEntryPoint
+import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
+import io.kotest.plugin.intellij.psi.isRunnableSpec
+import org.jetbrains.kotlin.lexer.KtKeywordToken
+import org.jetbrains.kotlin.lexer.KtToken
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * A run configuration contains the details of a particular run (in the drop down run box).
- * A Run producer is called to configure a [KotestConfiguration] after it has been created.
+ * A run configuration supports creating run configurations from context (by right-clicking a code element in the source editor or the project view).
  *
  * This producer creates run configurations for spec classes (run all).
  */
-class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
+class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
-   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
-                                              context: ConfigurationContext,
-                                              sourceElement: Ref<PsiElement>): Boolean {
+   /**
+    * Determines if the context is applicable to this run configuration producer,
+    * false if the context is not applicable and the configuration should be discarded.
+    */
+   override fun setupConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext,
+      sourceElement: Ref<PsiElement>
+   ): Boolean {
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
-         val spec = element.asSpecEntryPoint()
-         if (spec != null) {
-            configuration.setSpec(spec)
+
+         // we are interested in either the class/object keyword or the identifier associated with it
+         val classOrObject: KtClassOrObject = when (element.elementType) {
+            is KtKeywordToken -> element.asKtClassOrObjectOrNull()
+            is KtToken -> element.parent.asKtClassOrObjectOrNull()
+            else -> null
+         } ?: return false
+
+         if (classOrObject.isRunnableSpec()) {
+            configuration.setSpec(classOrObject)
             configuration.setModule(context.module)
-            configuration.name = generateName(spec, null)
+            configuration.name = generateName(classOrObject, null)
             return true
          }
       }
@@ -39,12 +55,14 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
 
    // compares the existing configurations to the context in question
    // if one of the configurations matches then this should return true
-   override fun isConfigurationFromContext(configuration: KotestConfiguration,
-                                           context: ConfigurationContext): Boolean {
+   override fun isConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext
+   ): Boolean {
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {
-         val spec = element.asSpecEntryPoint()
-         if (spec != null) {
+         val spec = element.asKtClassOrObjectOrNull() ?: return false
+         if (spec.isRunnableSpec()) {
             return configuration.getTestPath().isNullOrBlank()
                && configuration.getPackageName().isNullOrBlank()
                && configuration.getSpecName() == spec.fqName?.asString()
