@@ -36,9 +36,9 @@ fun generateName(ktclass: KtClassOrObject, test: Test?): String {
 @Deprecated("Set names manually")
 fun RunData.suggestedName(): String? {
    return when {
-      packageName != null && packageName.isNotBlank() -> "All tests in '$packageName'"
-      specName == null || specName.isBlank() -> null
-      testPath == null || testPath.isBlank() -> specName.split('.').last()
+      !packageName.isNullOrBlank() -> "All tests in '$packageName'"
+      specName.isNullOrBlank() -> null
+      testPath.isNullOrBlank() -> specName.split('.').last()
       else -> {
          val simpleName = specName.split('.').last()
          val readableTestPath = testPath.replace(" -- ", " ")

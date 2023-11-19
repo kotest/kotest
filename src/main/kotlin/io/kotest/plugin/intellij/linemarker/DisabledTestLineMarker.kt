@@ -5,11 +5,8 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.diff.util.DiffUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleUtil
-import com.intellij.openapi.module.ModuleUtilCore
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.existingEditor
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject

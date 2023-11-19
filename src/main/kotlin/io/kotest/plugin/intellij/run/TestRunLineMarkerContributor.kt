@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.run
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
@@ -29,6 +30,8 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       // the docs say to only run a line marker for a leaf
       return when (element) {
          is LeafPsiElement -> {
+            // only consider tests
+            if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
             if (!testMode && !element.containingFile.isTestFile()) return null
             when (element.context) {
                // rule out some common entries that can't possibly be test markers for performance

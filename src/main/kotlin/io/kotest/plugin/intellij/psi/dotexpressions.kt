@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
@@ -11,8 +12,10 @@ import org.jetbrains.kotlin.psi.KtStringTemplateExpression
  *
  * returns the single string arg passed to the first function.
  */
-fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: String,
-                                                                                   rhs: String): StringArg? =
+fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(
+   lhs: String,
+   rhs: String
+): StringArg? =
    extractLhsStringArgForDotExpressionWithRhsFinalLambda(listOf(lhs), listOf(rhs))
 
 /**
@@ -22,8 +25,10 @@ fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLamb
  *
  * returns the single string arg passed to the first function.
  */
-fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: List<String>,
-                                                                                   rhs: List<String>): StringArg? {
+fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(
+   lhs: List<String>,
+   rhs: List<String>
+): StringArg? {
    if (children.size != 2)
       return null
 
@@ -57,5 +62,18 @@ fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalL
       }
    }
 
+   return null
+}
+
+/**
+ * If this [LeafPsiElement] is the dot between two calls in a dot expression, returns that dot expression.
+ */
+fun LeafPsiElement.ifDotExpressionSeparator(): KtDotQualifiedExpression? {
+   if (text == ".") {
+      val maybeDotQualifiedExpression = parent
+      if (maybeDotQualifiedExpression is KtDotQualifiedExpression) {
+         return maybeDotQualifiedExpression
+      }
+   }
    return null
 }

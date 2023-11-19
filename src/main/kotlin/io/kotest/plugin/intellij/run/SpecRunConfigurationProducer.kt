@@ -9,7 +9,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.getSpecEntryPoint
+import io.kotest.plugin.intellij.psi.asSpecEntryPoint
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
@@ -26,7 +26,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
-         val spec = element.getSpecEntryPoint()
+         val spec = element.asSpecEntryPoint()
          if (spec != null) {
             configuration.setSpec(spec)
             configuration.setModule(context.module)
@@ -43,7 +43,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {
-         val spec = element.getSpecEntryPoint()
+         val spec = element.asSpecEntryPoint()
          if (spec != null) {
             return configuration.getTestPath().isNullOrBlank()
                && configuration.getPackageName().isNullOrBlank()
