@@ -96,8 +96,3 @@ public final class io/kotest/runner/junit/platform/gradle/GradlePostDiscoveryFil
 	public final fun extract (Ljava/util/List;)Ljava/util/List;
 }
 
-public final class io/kotest/runner/junit/platform/gradle/PostDiscoveryFilterAdapter : io/kotest/core/filter/TestFilter {
-	public fun <init> (Lorg/junit/platform/launcher/PostDiscoveryFilter;Lorg/junit/platform/engine/UniqueId;)V
-	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/filter/TestFilterResult;
-}
-
