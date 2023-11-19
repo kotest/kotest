@@ -6,7 +6,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.mpp.Logger
 
-class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : TestFilter {
+internal class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : TestFilter {
 
    private val logger = Logger(GradleClassMethodRegexTestFilter::class)
 
