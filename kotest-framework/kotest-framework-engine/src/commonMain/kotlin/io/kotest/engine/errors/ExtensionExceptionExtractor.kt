@@ -12,7 +12,7 @@ import io.kotest.engine.extensions.ExtensionException
  *
  * For example, on intellij, a "TestSuite" cannot have a state attached, so if an 'afterSpec'
  * callback was to fail, we cannot display the failure. The workaround is to add a dummy test
- * to the test suite, with some name like 'afterSpecFailure' and attach the exception there.
+ * to the test suite, with some name like 'After Spec Error' and attach the exception there.
  */
 @KotestInternal
 object ExtensionExceptionExtractor {
@@ -21,21 +21,21 @@ object ExtensionExceptionExtractor {
       val cause = t.cause ?: t
       val name = when (t) {
          is ExtensionException -> when (t) {
-            is ExtensionException.BeforeProjectException -> "Before Project Error"
-            is ExtensionException.AfterProjectException -> "After Project Error"
-            is ExtensionException.BeforeEachException -> "Before Each Error"
-            is ExtensionException.AfterEachException -> "After Each Error"
-            is ExtensionException.BeforeContainerException -> "Before Container Error"
-            is ExtensionException.AfterContainerException -> "After Container Error"
-            is ExtensionException.BeforeAnyException -> "Before Any Error"
             is ExtensionException.AfterAnyException -> "After Any Error"
-            is ExtensionException.BeforeInvocationException -> "Before Invocation Error"
+            is ExtensionException.AfterContainerException -> "After Container Error"
+            is ExtensionException.AfterEachException -> "After Each Error"
             is ExtensionException.AfterInvocationException -> "After Invocation Error"
-            is ExtensionException.BeforeSpecException -> "Before Spec Error"
+            is ExtensionException.AfterProjectException -> "After Project Error"
             is ExtensionException.AfterSpecException -> "After Spec Error"
-            is ExtensionException.PrepareSpecException -> "Prepare Spec Error"
+            is ExtensionException.BeforeAnyException -> "Before Any Error"
+            is ExtensionException.BeforeContainerException -> "Before Container Error"
+            is ExtensionException.BeforeEachException -> "Before Each Error"
+            is ExtensionException.BeforeInvocationException -> "Before Invocation Error"
+            is ExtensionException.BeforeProjectException -> "Before Project Error"
+            is ExtensionException.BeforeSpecException -> "Before Spec Error"
             is ExtensionException.FinalizeSpecException -> "Finalize Spec Error"
             is ExtensionException.IgnoredSpecException -> "Ignored Spec Error"
+            is ExtensionException.PrepareSpecException -> "Prepare Spec Error"
          }
          else -> t::class.simpleName ?: "<error>"
       }
