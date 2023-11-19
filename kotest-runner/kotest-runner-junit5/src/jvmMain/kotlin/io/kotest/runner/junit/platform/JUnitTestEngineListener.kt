@@ -97,7 +97,7 @@ class JUnitTestEngineListener(
    private val dummies = hashSetOf<String>()
 
    override suspend fun engineStarted() {
-      logger.log { Pair(null, "Engine started") }
+      logger.log { "Engine started" }
       listener.executionStarted(root)
    }
 
@@ -106,7 +106,7 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      logger.log { Pair(null, "Engine finished; throwables=[${t}]") }
+      logger.log { "Engine finished; throwables=[${t}]" }
 
       registerExceptionPlaceholders(t)
 
@@ -116,7 +116,7 @@ class JUnitTestEngineListener(
          TestExecutionResult.successful()
       }
 
-      logger.log { Pair(null, "Notifying junit that engine completed $root") }
+      logger.log { "Notifying junit that engine completed $root" }
       listener.executionFinished(root, result)
    }
 
