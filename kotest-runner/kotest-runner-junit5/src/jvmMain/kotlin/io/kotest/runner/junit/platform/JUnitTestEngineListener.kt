@@ -118,6 +118,7 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {
+      logger.log { "specStarted $kclass" }
       try {
 
          val descriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
@@ -132,6 +133,8 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+      logger.log { "specFinished $kclass $result" }
+
       val t = result.errorOrNull
       when {
 
