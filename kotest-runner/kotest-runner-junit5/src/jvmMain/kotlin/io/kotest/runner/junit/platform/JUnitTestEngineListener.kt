@@ -217,17 +217,17 @@ class JUnitTestEngineListener(
       // We want to wait to notify junit, this is because gradle doesn't work properly with the junit test types.
       // Ideally, we'd just set everything to CONTAINER_AND_TEST, which is supposed to mean a test can contain
       // other tests as well as being a test itself, which is exactly how Kotest views tests, but unfortunately
-      // it doesn't work properly.
+      // it's not supported by gradle :(
       //
       // So we need to not start tests until we can determine if they are a TEST or a CONTAINER.
       // Once a nested test starts, we can start the parent, since we know the parent is definitely a CONTAINER
       // at that point.
       //
-      // Leaf tests must wait until they complete.
+      // Leaf tests must wait until they complete so we know there were no child tests.
       //
       // Further annoyance is that junit doesn't give us a way to specify test duration
       // (instead it just calculates it itself from the time between marking a test as started and marking
-      // it as finished), so this approach works but ends up having all leaf tests as 0ms
+      // it as finished), so we end up having all leaf tests as 0ms
       //
       // Therefore, our workaround is to just add the execution time into the test name.
 
@@ -281,7 +281,7 @@ class JUnitTestEngineListener(
       startParents(testCase)
 
       // like all tests, an ignored test should be registered first
-      // ignored test should be a TEST type, because an ignored test will never have nested tests.
+      // ignored test should be a TEST type, because an ignored test will never have child tests.
       val descriptor = createTestTestDescriptor(root, testCase, formatter.format(testCase), TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
@@ -289,9 +289,6 @@ class JUnitTestEngineListener(
 
       logger.log { Pair(testCase.name.testName, "test ignored $reason") }
       results[testCase.descriptor] = TestResult.Ignored(reason)
-
-      // we need to ensure all parents have been started first
-
 
       logger.log { Pair(testCase.name.testName, "executionSkipped: $descriptor") }
       listener.executionSkipped(descriptor, reason)
@@ -301,7 +298,7 @@ class JUnitTestEngineListener(
       val parent = testCase.parent
       if (parent != null) {
          startParents(parent)
-         // when starting parents, we know the type must be CONTAINER
+         // when starting parents, type must be CONTAINER
          startTestIfNotStarted(parent, TestDescriptor.Type.CONTAINER)
       }
    }
