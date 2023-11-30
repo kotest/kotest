@@ -24,6 +24,9 @@ object BehaviorSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
+   private val contexts = listOf("Context", "context", "`Context`", "`context`")
+   private val xcontexts = contexts.map { "x$it" }
+
    private val givens = listOf("given", "Given", "`given`", "`Given`")
    private val xgivens = givens.map { "x$it" }
 
@@ -36,14 +39,30 @@ object BehaviorSpecStyle : SpecStyle {
    private val thens = listOf("then", "Then", "`then`", "`Then`")
    private val xthens = thens.map { "x$it" }
 
-   private val fnNames = (givens + xgivens + ands + xands + whens + xwhens + thens + xthens).toSet()
+   private val fnNames = (contexts + xcontexts + givens + xgivens + ands + xands + whens + xwhens + thens + xthens).toSet()
 
    private fun PsiElement.locateParent(): Test? {
       return when (val p = parent) {
          null -> null
          is KtCallExpression -> p.tryWhen() ?: p.tryXWhen() ?: p.tryAnd() ?: p.tryXAnd() ?: p.tryGiven()
-         ?: p.tryXGiven()
+         ?: p.tryXGiven() ?: p.tryContext() ?: p.tryXContext()
          else -> p.locateParent()
+      }
+   }
+
+   private fun KtCallExpression.tryContext(): Test? {
+      val context = this.extractStringArgForFunctionWithStringAndLambdaArgs(contexts)
+      return if (context == null) null else {
+         val name = TestName("Context: ", context.text, context.interpolated)
+         Test(name, null, TestType.Container, xdisabled = false, psi = this)
+      }
+   }
+
+   private fun KtCallExpression.tryXContext(): Test? {
+      val context = this.extractStringArgForFunctionWithStringAndLambdaArgs(xcontexts)
+      return if (context == null) null else {
+         val name = TestName("Context: ", context.text, context.interpolated)
+         Test(name, null, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
@@ -51,7 +70,8 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = TestName("Given: ", given.text, given.interpolated)
-         Test(name, null, TestType.Container, xdisabled = false, psi = this)
+         val parents = locateParent()
+         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
@@ -59,7 +79,8 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(xgivens)
       return if (given == null) null else {
          val name = TestName("Given: ", given.text, given.interpolated)
-         Test(name, null, TestType.Container, xdisabled = true, psi = this)
+         val parents = locateParent()
+         Test(name, parents, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
@@ -129,7 +150,7 @@ object BehaviorSpecStyle : SpecStyle {
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression ->
-            element.tryGiven() ?: element.tryXGiven() ?: element.tryAnd() ?: element.tryXAnd() ?: element.tryWhen()
+            element.tryContext() ?: element.tryXContext() ?: element.tryGiven() ?: element.tryXGiven() ?: element.tryAnd() ?: element.tryXAnd() ?: element.tryWhen()
             ?: element.tryXWhen()
             ?: element.tryThen() ?: element.tryXThen()
          is KtDotQualifiedExpression -> element.tryThenWithConfig()

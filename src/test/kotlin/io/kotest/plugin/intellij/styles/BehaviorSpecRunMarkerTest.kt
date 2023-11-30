@@ -25,7 +25,7 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))
-      gutters.size shouldBe 27
+      gutters.size shouldBe 34
 
       val expected = listOf(
          Gutter("Run BehaviorSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
@@ -75,6 +75,13 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Disabled - disabled given disabled and a test", 1337, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - disabled given", 1395, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - disabled given a nested then", 1429, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run a context", 1472),
+         Gutter("Run a context a nested given", 1499),
+         Gutter("Run a context a nested given a when", 1535),
+         Gutter("Run a context a nested given a when a test", 1564),
+         Gutter("Disabled - a context disabled given", 1622, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a context disabled given a disabled when", 1656, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a context disabled given a disabled when a disabled test", 1694, AllIcons.RunConfigurations.TestIgnored),
       )
 
       expected.size shouldBe gutters.size

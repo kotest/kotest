@@ -57,4 +57,18 @@ class BehaviorSpecExample : BehaviorSpec() {
          then("a nested then") {
       }
    }
+   context("a context") {
+      given("a nested given") {
+         `when`("a when") {
+            then("a test") {
+            }
+         }
+      }
+      xgiven("disabled given") {
+         When("a disabled when") {
+            then("a disabled test") {
+            }
+         }
+      }
+   }
 }
