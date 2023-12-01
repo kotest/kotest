@@ -854,6 +854,306 @@ public final class io/kotest/matchers/collections/UniqueKt {
 	public static final fun shouldNotBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/collections/detailed/BestMatchKt {
+	public static final fun bestMatch (Ljava/util/List;)Ljava/util/List;
+	public static final fun bestTwoMatches (Ljava/util/List;)Ljava/util/List;
+	public static final fun countMatchedItems (Ljava/util/List;)I
+	public static final fun countMatchedRanges (Ljava/util/List;)I
+	public static final fun getDefaultMismatch ()Ljava/util/List;
+	public static final fun maxLengthOfMatchedRange (Ljava/util/List;)I
+}
+
+public final class io/kotest/matchers/collections/detailed/BranchDirection : java/lang/Enum {
+	public static final field CHANGE_BOTH_TAILS Lio/kotest/matchers/collections/detailed/BranchDirection;
+	public static final field CHANGE_LEFT_TAIL Lio/kotest/matchers/collections/detailed/BranchDirection;
+	public static final field CHANGE_RIGHT_TAIL Lio/kotest/matchers/collections/detailed/BranchDirection;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/collections/detailed/BranchDirection;
+	public static fun values ()[Lio/kotest/matchers/collections/detailed/BranchDirection;
+}
+
+public final class io/kotest/matchers/collections/detailed/IndexedElement {
+	public fun <init> (ILjava/lang/Object;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun copy (ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/IndexedElement;ILjava/lang/Object;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getElement ()Ljava/lang/Object;
+	public final fun getIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/ItemsMatch {
+	public fun <init> (ZLio/kotest/matchers/collections/detailed/MatchResultType;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public final fun copy (ZLio/kotest/matchers/collections/detailed/MatchResultType;)Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/ItemsMatch;ZLio/kotest/matchers/collections/detailed/MatchResultType;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMatch ()Z
+	public final fun getMatchType ()Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public fun hashCode ()I
+	public final fun leftItemPresent ()Z
+	public final fun rightItemPresent ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/ListClosestMatchesFinderKt {
+	public static final fun findClosestMatchesForLists (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+}
+
+public final class io/kotest/matchers/collections/detailed/ListMatcher {
+	public fun <init> ()V
+	public final fun addItemsMatchToMatchesForTail (Lio/kotest/matchers/collections/detailed/ItemsMatch;Ljava/util/List;)Ljava/util/List;
+	public final fun addItemsMatchToOneTail (Lio/kotest/matchers/collections/detailed/ItemsMatch;Ljava/util/List;)Ljava/util/List;
+	public final fun match (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun match$default (Lio/kotest/matchers/collections/detailed/ListMatcher;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun matches (Lio/kotest/matchers/collections/detailed/TailOfList;Lio/kotest/matchers/collections/detailed/TailOfList;Ljava/util/Set;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun matches$default (Lio/kotest/matchers/collections/detailed/ListMatcher;Lio/kotest/matchers/collections/detailed/TailOfList;Lio/kotest/matchers/collections/detailed/TailOfList;Ljava/util/Set;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+}
+
+public final class io/kotest/matchers/collections/detailed/ListsKt {
+	public static final fun matchList (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
+	public static synthetic fun matchList$default (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldMatchList (Ljava/util/List;Ljava/util/List;)V
+	public static final fun shouldMatchList (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun shouldMatchList$default (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class io/kotest/matchers/collections/detailed/MatchResultType : java/lang/Enum {
+	public static final field BOTH_ELEMENTS_PRESENT Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public static final field LEFT_ELEMENT_ONLY Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public static final field RIGHT_ELEMENT_ONLY Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public final fun getLeftItemPresent ()Z
+	public final fun getRightItemPresent ()Z
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/collections/detailed/MatchResultType;
+	public static fun values ()[Lio/kotest/matchers/collections/detailed/MatchResultType;
+}
+
+public final class io/kotest/matchers/collections/detailed/MatchResultsOfSubLists {
+	public fun <init> (ZLkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lkotlin/ranges/ClosedRange;
+	public final fun component3 ()Lkotlin/ranges/ClosedRange;
+	public final fun copy (ZLkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;ZLkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun extendBothRangesBack ()Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public final fun extendLeftRangeBack ()Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public final fun extendRightRangeBack ()Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public final fun getLeftIndexes ()Ljava/util/List;
+	public final fun getLeftRange ()Lkotlin/ranges/ClosedRange;
+	public final fun getMatch ()Z
+	public final fun getRightIndexes ()Ljava/util/List;
+	public final fun getRightRange ()Lkotlin/ranges/ClosedRange;
+	public fun hashCode ()I
+	public final fun spawnNewRange (Lio/kotest/matchers/collections/detailed/ItemsMatch;)Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/MatchResultsOfSubListsKt {
+	public static final fun getLEFT_ITEM_ONLY ()Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public static final fun getMATCH ()Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public static final fun getMISMATCH ()Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public static final fun getRIGHT_ITEM_ONLY ()Lio/kotest/matchers/collections/detailed/ItemsMatch;
+	public static final fun toSequence (Lkotlin/ranges/ClosedRange;)Lkotlin/sequences/Sequence;
+}
+
+public final class io/kotest/matchers/collections/detailed/PossibleMatch {
+	public fun <init> (Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;)V
+	public final fun component1 ()Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public final fun component2 ()Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public final fun component3 ()Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+	public final fun copy (Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;)Lio/kotest/matchers/collections/detailed/PossibleMatch;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/PossibleMatch;Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/IndexedElement;Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/PossibleMatch;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public final fun getComparisonResult ()Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+	public final fun getMatchInExpected ()Lio/kotest/matchers/collections/detailed/IndexedElement;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/PrintMatchKt {
+	public static final fun joinNotEmptyToString (Ljava/lang/Iterable;Ljava/lang/CharSequence;)Ljava/lang/String;
+	public static final fun printMatch (Ljava/util/List;Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;)Ljava/lang/String;
+	public static final fun printMatches (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ljava/lang/String;
+	public static final fun printMismatch (Ljava/util/List;Ljava/util/List;Lio/kotest/matchers/collections/detailed/MatchResultsOfSubLists;)Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/TailOfList {
+	public fun <init> (Ljava/util/List;I)V
+	public synthetic fun <init> (Ljava/util/List;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun copy (Ljava/util/List;I)Lio/kotest/matchers/collections/detailed/TailOfList;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/TailOfList;Ljava/util/List;IILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/TailOfList;
+	public final fun currentElement ()Ljava/lang/Object;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getItems ()Ljava/util/List;
+	public final fun getOffset ()I
+	public fun hashCode ()I
+	public final fun isOver ()Z
+	public final fun onLastItem ()Z
+	public final fun rangeOfIndexes ()Lkotlin/ranges/IntRange;
+	public final fun tail ()Lio/kotest/matchers/collections/detailed/TailOfList;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/AtomicMismatch : io/kotest/matchers/collections/detailed/distance/ComparisonResult {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/collections/detailed/distance/Distance;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/collections/detailed/distance/Distance;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun component4 ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/collections/detailed/distance/Distance;)Lio/kotest/matchers/collections/detailed/distance/AtomicMismatch;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/AtomicMismatch;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/collections/detailed/distance/Distance;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/AtomicMismatch;
+	public fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()Ljava/lang/Object;
+	public final fun getDistance ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun getExpected ()Ljava/lang/Object;
+	public final fun getField ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/BestMatchFinderKt {
+	public static final fun findBestMatches (Ljava/lang/Object;Ljava/util/List;)Ljava/util/List;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/ComparisonKt {
+	public static final fun comparisonResultDescription (Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;)Ljava/lang/String;
+	public static final fun possibleMatchDescription (Lio/kotest/matchers/collections/detailed/PossibleMatch;)Ljava/lang/String;
+	public static final fun possibleMismatchByFieldDescription (Lio/kotest/matchers/collections/detailed/PossibleMatch;)Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/matchers/collections/detailed/distance/ComparisonResult {
+	public abstract fun description ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/Distance {
+	public static final field Companion Lio/kotest/matchers/collections/detailed/distance/Distance$Companion;
+	public fun <init> (Ljava/math/BigDecimal;)V
+	public final fun component1 ()Ljava/math/BigDecimal;
+	public final fun copy (Ljava/math/BigDecimal;)Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/Distance;Ljava/math/BigDecimal;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDistance ()Ljava/math/BigDecimal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/Distance$Companion {
+	public final fun getCOMPLETE_MATCH_VALUE ()Ljava/math/BigDecimal;
+	public final fun getCOMPLETE_MISMATCH_VALUE ()Ljava/math/BigDecimal;
+	public final fun getCompleteMatch ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun getCompleteMismatch ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/FieldAndValue {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/FieldAndValue;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/FieldAndValue;Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/FieldAndValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/FieldsReader {
+	public fun <init> ()V
+	public final fun fieldsOf (Ljava/lang/Object;)Ljava/util/List;
+	public final fun getFields (Ljava/lang/Object;)Ljava/util/Collection;
+}
+
+public abstract interface class io/kotest/matchers/collections/detailed/distance/IDistanceCalculator {
+	public abstract fun compare (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/IndexedComparisonResult {
+	public fun <init> (ILio/kotest/matchers/collections/detailed/distance/ComparisonResult;)V
+	public final fun component1 ()I
+	public final fun component2 ()Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+	public final fun copy (ILio/kotest/matchers/collections/detailed/distance/ComparisonResult;)Lio/kotest/matchers/collections/detailed/distance/IndexedComparisonResult;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/IndexedComparisonResult;ILio/kotest/matchers/collections/detailed/distance/ComparisonResult;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/IndexedComparisonResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComparisonResult ()Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+	public final fun getIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/IndexedMismatchByField {
+	public fun <init> (ILio/kotest/matchers/collections/detailed/distance/MismatchByField;)V
+	public final fun component1 ()I
+	public final fun component2 ()Lio/kotest/matchers/collections/detailed/distance/MismatchByField;
+	public final fun copy (ILio/kotest/matchers/collections/detailed/distance/MismatchByField;)Lio/kotest/matchers/collections/detailed/distance/IndexedMismatchByField;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/IndexedMismatchByField;ILio/kotest/matchers/collections/detailed/distance/MismatchByField;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/IndexedMismatchByField;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComparisonResult ()Lio/kotest/matchers/collections/detailed/distance/MismatchByField;
+	public final fun getIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/Match : io/kotest/matchers/collections/detailed/distance/ComparisonResult {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/Match;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/Match;Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/Match;
+	public fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDistance ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun getField ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/MatchByFieldsKt {
+	public static final fun matchByFields (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/MismatchByField : io/kotest/matchers/collections/detailed/distance/ComparisonResult {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/List;Lio/kotest/matchers/collections/detailed/distance/Distance;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/List;Lio/kotest/matchers/collections/detailed/distance/Distance;)Lio/kotest/matchers/collections/detailed/distance/MismatchByField;
+	public static synthetic fun copy$default (Lio/kotest/matchers/collections/detailed/distance/MismatchByField;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/List;Lio/kotest/matchers/collections/detailed/distance/Distance;ILjava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/MismatchByField;
+	public fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()Ljava/lang/Object;
+	public final fun getComparisonResults ()Ljava/util/List;
+	public final fun getDistance ()Lio/kotest/matchers/collections/detailed/distance/Distance;
+	public final fun getExpected ()Ljava/lang/Object;
+	public final fun getField ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/TopByWithTiesKt {
+	public static final fun topWithTiesBy (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/VanillaDistanceCalculator : io/kotest/matchers/collections/detailed/distance/IDistanceCalculator {
+	public static final field INSTANCE Lio/kotest/matchers/collections/detailed/distance/VanillaDistanceCalculator;
+	public fun compare (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+}
+
+public final class io/kotest/matchers/collections/detailed/distance/VanillaDistanceCalculatorKt {
+	public static final fun matchNotNull (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/collections/detailed/distance/ComparisonResult;
+}
+
 public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun beEqualComparingTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThan (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
