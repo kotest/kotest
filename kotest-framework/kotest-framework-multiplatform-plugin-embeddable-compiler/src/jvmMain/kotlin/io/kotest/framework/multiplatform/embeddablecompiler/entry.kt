@@ -12,7 +12,7 @@ object EntryPoint {
    const val PromiseMethodName = "promise"
 
    // the FQN for the class used to launch the MPP engine
-   const val TestEngineClassName = "io.kotest.engine.TestEngineLauncher"
+   const val TestEngineClassName = "io/kotest/engine/TestEngineLauncher"
 
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
