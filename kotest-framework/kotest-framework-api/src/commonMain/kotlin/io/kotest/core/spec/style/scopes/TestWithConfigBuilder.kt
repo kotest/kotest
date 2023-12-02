@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
-import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
@@ -33,7 +32,7 @@ class TestWithConfigBuilder(
       test: suspend TestScope.() -> Unit
    ) {
 
-      TestDslState.clear(context.testCase.descriptor.append(name))
+      TestDslState.clear(name.originalName)
 
       val config = UnresolvedTestConfig(
          enabled = enabled,
