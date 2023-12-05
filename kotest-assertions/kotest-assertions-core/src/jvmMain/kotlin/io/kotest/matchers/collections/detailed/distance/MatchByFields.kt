@@ -3,7 +3,7 @@ package io.kotest.matchers.collections.detailed.distance
 import java.math.BigDecimal
 import java.math.MathContext
 
-fun matchByFields(field: String, expected: Any, actual: Any): ComparisonResult {
+internal fun matchByFields(field: String, expected: Any, actual: Any): ComparisonResult {
     require(expected::class == actual::class) {
         "Expected and Actual should be of same type, were ${expected::class.qualifiedName} and ${actual::class.qualifiedName}"
     }

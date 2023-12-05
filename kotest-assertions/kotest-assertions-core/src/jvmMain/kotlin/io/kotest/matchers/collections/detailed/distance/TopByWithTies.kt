@@ -7,7 +7,7 @@ package io.kotest.matchers.collections.detailed.distance
  *
  * The operation is _stateful_ and  _terminal_.
  */
-public inline fun<T, R: Comparable<R>> Sequence<T>.topWithTiesBy(rankingTransform: (T) -> R ): List<T> {
+internal inline fun<T, R: Comparable<R>> Sequence<T>.topWithTiesBy(rankingTransform: (T) -> R ): List<T> {
     val ret = mutableListOf<T>()
     var maxRanking: R? = null
     this.forEach { element ->

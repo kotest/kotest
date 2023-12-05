@@ -5,7 +5,7 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.isAccessible
 
-class FieldsReader {
+internal class FieldsReader {
     fun fieldsOf(instance: Any): List<FieldAndValue> {
         require(instance::class.isData) {
             "Data classes expected, was: ${instance::class.qualifiedName}"
@@ -29,7 +29,7 @@ class FieldsReader {
     }
 }
 
-data class FieldAndValue(
+internal data class FieldAndValue(
     val name: String,
     val value: Any?
 )

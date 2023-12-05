@@ -3,7 +3,7 @@ package io.kotest.matchers.collections.detailed
 import io.kotest.matchers.collections.detailed.distance.ComparisonResult
 import io.kotest.matchers.collections.detailed.distance.findBestMatches
 
-fun<T> findClosestMatchesForLists(expected: List<T>,
+internal fun<T> findClosestMatchesForLists(expected: List<T>,
                                actual: List<T>,
                                   elementMatches:  List<MatchResultsOfSubLists>
 ): List<PossibleMatch> {
@@ -44,12 +44,12 @@ internal fun <T> actualListElementsToMatch(
     }
 }
 
-data class IndexedElement(
+internal data class IndexedElement(
     val index: Int,
     val element: Any?
 )
 
-data class PossibleMatch(
+internal data class PossibleMatch(
    val matchInExpected: IndexedElement,
    val actual: IndexedElement,
    val comparisonResult: ComparisonResult

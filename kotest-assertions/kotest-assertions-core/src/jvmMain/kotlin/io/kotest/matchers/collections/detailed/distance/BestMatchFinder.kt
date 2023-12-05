@@ -2,7 +2,7 @@ package io.kotest.matchers.collections.detailed.distance
 
 import java.math.BigDecimal
 
-fun findBestMatches(element: Any?, candidates: List<Any?>): List<IndexedComparisonResult> {
+internal fun findBestMatches(element: Any?, candidates: List<Any?>): List<IndexedComparisonResult> {
     val comparisonResults = candidates.mapIndexed { index, candidate ->
         IndexedComparisonResult(
             index,
@@ -31,12 +31,12 @@ fun findBestMatches(element: Any?, candidates: List<Any?>): List<IndexedComparis
         }
 }
 
-data class IndexedComparisonResult(
+internal data class IndexedComparisonResult(
     val index: Int,
     val comparisonResult: ComparisonResult
 )
 
-data class IndexedMismatchByField(
+internal data class IndexedMismatchByField(
     val index: Int,
     val comparisonResult: MismatchByField
 )

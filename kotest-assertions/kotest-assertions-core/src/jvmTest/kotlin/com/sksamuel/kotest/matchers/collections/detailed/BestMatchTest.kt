@@ -11,17 +11,17 @@ import io.kotest.matchers.collections.detailed.countMatchedRanges
 import io.kotest.matchers.collections.detailed.maxLengthOfMatchedRange
 
 class BestMatchTest: StringSpec() {
-    val matches1 = listOf(
+    private val matches1 = listOf(
             MatchResultsOfSubLists(true, 1..3, 3..5),
             MatchResultsOfSubLists(false, 4..5, 6..5),
             MatchResultsOfSubLists(true, 6..9, 6..9)
     )
 
-    val noMatches = listOf(
+    private val noMatches = listOf(
             MatchResultsOfSubLists(false, 0..2, 0..3)
     )
 
-    val matches2 = listOf(
+    private val matches2 = listOf(
             MatchResultsOfSubLists(true, 1..3, 3..5),
             MatchResultsOfSubLists(false, 4..4, 6..5),
             MatchResultsOfSubLists(true, 5..5, 6..6),
@@ -29,13 +29,13 @@ class BestMatchTest: StringSpec() {
             MatchResultsOfSubLists(true, 6..7, 9..10)
     )
 
-    val matches3 = listOf(
+    private val matches3 = listOf(
             MatchResultsOfSubLists(true, 1..2, 3..4),
             MatchResultsOfSubLists(false, 3..4, 5..5),
             MatchResultsOfSubLists(true, 5..9, 6..10)
     )
 
-    val matches4 = listOf(
+    private val matches4 = listOf(
             MatchResultsOfSubLists(true, 1..2, 3..4),
             MatchResultsOfSubLists(false, 3..4, 5..5),
             MatchResultsOfSubLists(true, 5..5, 6..6),
@@ -43,14 +43,14 @@ class BestMatchTest: StringSpec() {
             MatchResultsOfSubLists(true, 6..9, 9..12)
     )
 
-    val matches5 = listOf(
+    private val matches5 = listOf(
             MatchResultsOfSubLists(false, 1..0, 3..2),
             MatchResultsOfSubLists(true, 1..3, 3..5),
             MatchResultsOfSubLists(false, 4..5, 6..5),
             MatchResultsOfSubLists(true, 6..9, 6..9)
     )
 
-    val matches6 = listOf(
+    private val matches6 = listOf(
             MatchResultsOfSubLists(false, 1..0, 3..2),
             MatchResultsOfSubLists(true, 1..2, 3..4),
             MatchResultsOfSubLists(false, 3..4, 5..5),

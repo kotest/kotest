@@ -2,11 +2,11 @@ package io.kotest.matchers.collections.detailed.distance
 
 import java.math.BigDecimal
 
-interface IDistanceCalculator {
+internal interface IDistanceCalculator {
     fun compare(field: String, expected: Any?, actual: Any?): ComparisonResult
 }
 
-data class Distance(
+internal data class Distance(
     val distance: BigDecimal
 ) {
     init {

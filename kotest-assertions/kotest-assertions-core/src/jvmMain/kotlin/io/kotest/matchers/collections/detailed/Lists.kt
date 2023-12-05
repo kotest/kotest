@@ -46,8 +46,7 @@ internal fun <T : Any> compareLists(expected: List<T>, actual: List<T>,
     }
 }
 
-
-data class TailOfList<T : Any>(val items: List<T>, val offset: Int = 0){
+internal data class TailOfList<T : Any>(val items: List<T>, val offset: Int = 0){
    init {
       require(0 <= offset && offset <= items.size) {
          "Offset should be between 0 and ${items.size}, was $offset"
@@ -68,11 +67,11 @@ data class TailOfList<T : Any>(val items: List<T>, val offset: Int = 0){
     fun currentElement(): T = if(isOver()) throw IllegalStateException("IsOver, no current item") else items[offset]
 }
 
-enum class BranchDirection { CHANGE_LEFT_TAIL, CHANGE_BOTH_TAILS, CHANGE_RIGHT_TAIL }
+internal enum class BranchDirection { CHANGE_LEFT_TAIL, CHANGE_BOTH_TAILS, CHANGE_RIGHT_TAIL }
 
 private val BRANCH_IN_ALL_DIRECTIONS = BranchDirection.values().toSet()
 
-class ListMatcher {
+internal class ListMatcher {
     fun <T : Any> match(expected: List<T>,
                      actual: List<T>,
                      matcher: (left: T, right: T) -> Boolean = {left, right -> left == right}): List<MatchResultsOfSubLists> {

@@ -8,7 +8,7 @@ private fun sortByCriteria(matches: List<List<MatchResultsOfSubLists>>): List<Li
     )
 }
 
-fun bestTwoMatches(matches: List<List<MatchResultsOfSubLists>>): List<List<MatchResultsOfSubLists>> {
+internal fun bestTwoMatches(matches: List<List<MatchResultsOfSubLists>>): List<List<MatchResultsOfSubLists>> {
     val sortedMatches = sortByCriteria(matches)
     return listOf(sortedMatches.firstOrNull { it[0].match },
             sortedMatches.firstOrNull { !it[0].match })
@@ -16,17 +16,17 @@ fun bestTwoMatches(matches: List<List<MatchResultsOfSubLists>>): List<List<Match
             .map { it!! }
 }
 
-fun countMatchedItems(matches: List<MatchResultsOfSubLists>): Int = matches.filter { it.match }.sumOf { it.leftRange.length() }
+internal fun countMatchedItems(matches: List<MatchResultsOfSubLists>): Int = matches.filter { it.match }.sumOf { it.leftRange.length() }
 
-fun maxLengthOfMatchedRange(matches: List<MatchResultsOfSubLists>): Int {
+internal fun maxLengthOfMatchedRange(matches: List<MatchResultsOfSubLists>): Int {
     @Suppress("DEPRECATION")
     val maxLength = matches.filter { it.match }.maxOfOrNull { it.leftRange.length() }
     return maxLength ?: 0
 }
 
-fun countMatchedRanges(matches: List<MatchResultsOfSubLists>): Int = matches.count {it.match}
+internal fun countMatchedRanges(matches: List<MatchResultsOfSubLists>): Int = matches.count {it.match}
 
-val defaultMismatch = listOf(MatchResultsOfSubLists(false, 0..-1, 0..-1))
+internal val defaultMismatch = listOf(MatchResultsOfSubLists(false, 0..-1, 0..-1))
 
-fun bestMatch(matches: List<List<MatchResultsOfSubLists>>) =
+internal fun bestMatch(matches: List<List<MatchResultsOfSubLists>>) =
         sortByCriteria(matches).firstOrNull() ?: defaultMismatch

@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections.detailed
 
-data class MatchResultsOfSubLists(val match: Boolean, val leftRange: ClosedRange<Int>, val rightRange: ClosedRange<Int>){
+internal data class MatchResultsOfSubLists(val match: Boolean, val leftRange: ClosedRange<Int>, val rightRange: ClosedRange<Int>){
     init{
         require(!match || (leftRange.length() == rightRange.length())){
             "For a match, both ranges must have same length: $this"
@@ -34,7 +34,7 @@ data class MatchResultsOfSubLists(val match: Boolean, val leftRange: ClosedRange
         get() = rightRange.toSequence().toList()
 }
 
-fun ClosedRange<Int>.toSequence(): Sequence<Int> {
+internal fun ClosedRange<Int>.toSequence(): Sequence<Int> {
     var next = this.start
     val end = this.endInclusive
     return sequence {
@@ -44,13 +44,13 @@ fun ClosedRange<Int>.toSequence(): Sequence<Int> {
     }
 }
 
-enum class MatchResultType(val leftItemPresent: Boolean, val rightItemPresent: Boolean){
+internal enum class MatchResultType(val leftItemPresent: Boolean, val rightItemPresent: Boolean){
     LEFT_ELEMENT_ONLY(true, false),
     RIGHT_ELEMENT_ONLY(false, true),
     BOTH_ELEMENTS_PRESENT(true, true)
 }
 
-data class ItemsMatch(val match: Boolean, val matchType: MatchResultType) {
+internal data class ItemsMatch(val match: Boolean, val matchType: MatchResultType) {
     init {
         require (!match || (matchType == MatchResultType.BOTH_ELEMENTS_PRESENT)) {
             "Both sides must be present for a match: $this"
@@ -62,10 +62,10 @@ data class ItemsMatch(val match: Boolean, val matchType: MatchResultType) {
     fun rightItemPresent() = matchType.rightItemPresent
 }
 
-val MATCH = ItemsMatch(true, MatchResultType.BOTH_ELEMENTS_PRESENT)
-val MISMATCH = ItemsMatch(false, MatchResultType.BOTH_ELEMENTS_PRESENT)
-val LEFT_ITEM_ONLY = ItemsMatch(false, MatchResultType.LEFT_ELEMENT_ONLY)
-val RIGHT_ITEM_ONLY = ItemsMatch(false, MatchResultType.RIGHT_ELEMENT_ONLY)
+internal val MATCH = ItemsMatch(true, MatchResultType.BOTH_ELEMENTS_PRESENT)
+internal val MISMATCH = ItemsMatch(false, MatchResultType.BOTH_ELEMENTS_PRESENT)
+internal val LEFT_ITEM_ONLY = ItemsMatch(false, MatchResultType.LEFT_ELEMENT_ONLY)
+internal val RIGHT_ITEM_ONLY = ItemsMatch(false, MatchResultType.RIGHT_ELEMENT_ONLY)
 
 internal fun ClosedRange<Int>.isNotEmpty() = this.start <= this.endInclusive
 
