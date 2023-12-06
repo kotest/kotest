@@ -588,10 +588,10 @@ fun between(a: LocalTime, b: LocalTime): Matcher<LocalTime> = object : Matcher<L
  * @see LocalTime.shouldBeBetween
  * @see LocalTime.shouldNotBeBetween
  */
-infix fun LocalTime.plusOrMinus(tolerance: Duration): LocalTimeToleranceMatcher =
+infix fun LocalTime.plusOrMinus(tolerance: Duration): Matcher<LocalTime> =
    LocalTimeToleranceMatcher(this, tolerance)
 
-class LocalTimeToleranceMatcher(
+internal class LocalTimeToleranceMatcher(
    private val expected: LocalTime,
    private val tolerance: Duration
 ): Matcher<LocalTime> {
