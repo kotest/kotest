@@ -962,6 +962,7 @@ public final class io/kotest/matchers/date/LocaltimeKt {
 	public static final fun haveSameMinutes (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSameNanos (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSameSeconds (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalTime;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldBeBefore (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldBeBetween (Ljava/time/LocalTime;Ljava/time/LocalTime;Ljava/time/LocalTime;)Ljava/lang/Object;
