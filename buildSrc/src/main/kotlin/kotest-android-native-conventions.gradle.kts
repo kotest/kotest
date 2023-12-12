@@ -1,5 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE")
 
+import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
+
+
 plugins {
    id("kotlin-conventions")
 }
@@ -10,22 +13,15 @@ kotlin {
       androidNativeX64()
       androidNativeArm32()
       androidNativeArm64()
-      sourceSets {
 
-         // Main source sets
-         val commonMain by getting {}
-         val desktopMain by getting { dependsOn(commonMain) }
-         val androidNativeX86Main by getting { dependsOn(desktopMain) }
-         val androidNativeX64Main by getting { dependsOn(desktopMain) }
-         val androidNativeArm32Main by getting { dependsOn(desktopMain) }
-         val androidNativeArm64Main by getting { dependsOn(desktopMain) }
-
-         val commonTest by getting
-         val nativeTest by getting { dependsOn(commonTest) }
-         val androidNativeX86Test by getting { dependsOn(nativeTest) }
-         val androidNativeX64Test by getting { dependsOn(nativeTest) }
-         val androidNativeArm32Test by getting { dependsOn(nativeTest) }
-         val androidNativeArm64Test by getting { dependsOn(nativeTest) }
+      // TODO: The "desktop" intermediate source set can be integrated into "native". In this case
+      //     the following block can be replaced with `applyDefaultHierarchyTemplate()`.
+      applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
+         group("common") {
+            group("desktop") {
+               withNative()
+            }
+         }
       }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain

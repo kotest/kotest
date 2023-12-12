@@ -20,7 +20,7 @@ kotlin {
 
    jvm()
 
-   js(IR) {
+   js {
       // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
       // browser()
       nodejs()

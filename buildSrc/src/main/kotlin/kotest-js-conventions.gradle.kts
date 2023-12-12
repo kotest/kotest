@@ -4,7 +4,7 @@ plugins {
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
-      js(IR) {
+      js {
          browser()
          nodejs()
       }
