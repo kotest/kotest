@@ -9,13 +9,13 @@ import io.kotest.engine.PromiseTestCaseExecutionListener
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.describe
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.it
+import io.kotest.engine.jasmineIt
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
-import io.kotest.engine.xit
+import io.kotest.engine.jasmineXit
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
@@ -52,28 +52,28 @@ internal class JavascriptSpecExecutorDelegate(private val context: EngineContext
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
                // before we invoke our callback. This also gives us the handle to the done callback.
-               val test = it(testDisplayName) { done ->
-                  // ideally we'd just launch the executor and have the listener setup the test
-                  // but we can't launch a promise inside the describe and have it resolve the "it"
-                  // this means we must duplicate the isEnabled check outside of the executor
-                  GlobalScope.promise {
-                     TestCaseExecutor(
-                        PromiseTestCaseExecutionListener(done),
-                        NoopCoroutineDispatcherFactory,
-                        context
-                     ).execute(root, TerminalTestScope(root, cc))
-                  }
-
-                  // we don't want to return the promise as the js frameworks will use that for test resolution
-                  // instead of the done callback, and we prefer the callback as it allows for custom timeouts
-                  Unit
-               }
-               // some frameworks default to a 2000 timeout,
-               // here we set to a high number and use the timeout support kotest provides via coroutines
-               test.timeout(Int.MAX_VALUE)
-               Unit
+               jasmineIt(
+                  testDisplayName,
+                  fn = { done ->
+                     // ideally we'd just launch the executor and have the listener set up the test,
+                     // but we can't launch a promise inside the describe and have it resolve the "it"
+                     // this means we must duplicate the isEnabled check outside the executor
+                     GlobalScope.promise {
+                        TestCaseExecutor(
+                           PromiseTestCaseExecutionListener(done),
+                           NoopCoroutineDispatcherFactory,
+                           context
+                        ).execute(root, TerminalTestScope(root, cc))
+                     }
+                     // we don't want to return the promise as the js frameworks will use that for test resolution
+                     // instead of the done callback, and we prefer the callback as it allows for custom timeouts
+                  },
+                  // some frameworks default to a 2000 timeout,
+                  // here we set to a high number and use the timeout support kotest provides via coroutines
+                  timeout = Int.MAX_VALUE
+               )
             } else {
-               xit(testDisplayName) {}
+               jasmineXit(testDisplayName) {}
             }
          }
       }

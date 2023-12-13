@@ -10,6 +10,6 @@ actual fun <T> runBlocking(f: suspend () -> T): T = error("runBlocking is not av
 actual fun runPromise(f: suspend () -> Unit) {
    GlobalScope.promise { f() }.catch {
       console.log(it)
-      throw it
+      throw it as Throwable
    }
 }

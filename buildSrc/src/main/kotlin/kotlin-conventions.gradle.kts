@@ -10,6 +10,7 @@ plugins {
 repositories {
    mavenCentral()
    mavenLocal()
+   maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
    maven("https://oss.sonatype.org/content/repositories/snapshots/")
    google()
    gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin

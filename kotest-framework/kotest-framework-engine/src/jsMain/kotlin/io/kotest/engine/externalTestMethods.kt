@@ -1,12 +1,10 @@
 package io.kotest.engine
 
-/**
- * Defines the jasmine/mocha/karma style test function names as external functions.
- * Then we can invoke them from the test engine.
- *
- * Note: At runtime, one of the supported JS test frameworks must make these functions available.
- */
-external fun describe(name: String, fn: () -> Unit)
-external fun xdescribe(name: String, fn: () -> Unit)
-external fun it(name: String, fn: (dynamic) -> Any?): dynamic
-external fun xit(name: String, fn: () -> Any?)
+actual fun jasmineIt(name: String, fn: (done: (errorOrNull: Throwable?) -> Unit) -> Any?, timeout: Int): Unit =
+   it(name, fn, timeout)
+
+actual fun jasmineXit(name: String, fn: () -> Any?): Unit = xit(name, fn)
+
+private external fun it(name: String, fn: dynamic, timeout: Int): Unit
+
+private external fun xit(name: String, fn: dynamic): Unit

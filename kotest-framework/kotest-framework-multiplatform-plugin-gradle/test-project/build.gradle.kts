@@ -26,6 +26,16 @@ kotlin {
       nodejs()
    }
 
+   wasmJs {
+      nodejs()
+   }
+
+/* TODO: wasmWasi
+   wasmWasi {
+      nodejs()
+   }
+*/
+
    linuxX64()
    macosX64()
    macosArm64()

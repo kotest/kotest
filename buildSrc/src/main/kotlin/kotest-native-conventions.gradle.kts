@@ -39,6 +39,16 @@ kotlin {
             }
          }
       }
+
+      // WORKAROUND https://github.com/Kotlin/kotlinx.coroutines/issues/3968
+      //     The following block can be removed when the issue is resolved.
+      sourceSets {
+         val nativeMain by getting {
+            dependencies {
+               implementation("org.jetbrains.kotlinx:atomicfu:0.23.1")
+            }
+         }
+      }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
       jvm()
