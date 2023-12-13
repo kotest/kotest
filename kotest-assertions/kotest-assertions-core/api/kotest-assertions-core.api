@@ -2346,6 +2346,7 @@ public final class io/kotest/matchers/string/UUIDVersion : java/lang/Enum {
 	public static final field V3 Lio/kotest/matchers/string/UUIDVersion;
 	public static final field V4 Lio/kotest/matchers/string/UUIDVersion;
 	public static final field V5 Lio/kotest/matchers/string/UUIDVersion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getUuidRegex ()Lkotlin/text/Regex;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/string/UUIDVersion;
 	public static fun values ()[Lio/kotest/matchers/string/UUIDVersion;
