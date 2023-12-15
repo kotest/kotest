@@ -4,7 +4,7 @@ package io.kotest.engine
 
 import io.kotest.common.Platform
 import io.kotest.common.runBlocking
-import io.kotest.common.runPromise
+import io.kotest.common.runPromiseCatching
 import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
@@ -22,7 +22,6 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.mpp.Logger
-import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
 /**
@@ -262,7 +261,7 @@ class TestEngineLauncher(
     */
    fun promise() {
       logger.log { "Launching Test Engine in Javascript promise" }
-      runPromise {
+      runPromiseCatching {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
       }

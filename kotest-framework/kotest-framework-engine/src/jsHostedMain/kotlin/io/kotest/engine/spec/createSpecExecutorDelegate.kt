@@ -63,7 +63,6 @@ internal class JavascriptSpecExecutorDelegate(private val context: EngineContext
                            NoopCoroutineDispatcherFactory,
                            context
                         ).execute(root, TerminalTestScope(root, cc))
-                        Unit
                      }
                      // we don't want to return the promise as the js frameworks will use that for test resolution
                      // instead of the done callback, and we prefer the callback as it allows for custom timeouts
