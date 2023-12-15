@@ -45,6 +45,7 @@ public final class io/kotest/common/ResultsKt {
 public final class io/kotest/common/RunBlockingKt {
 	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
+	public static final fun runPromiseCatching (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
