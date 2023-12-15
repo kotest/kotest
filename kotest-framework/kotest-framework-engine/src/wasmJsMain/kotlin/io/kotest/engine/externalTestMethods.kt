@@ -1,12 +1,21 @@
 package io.kotest.engine
 
 @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-actual fun jasmineIt(name: String, fn: (done: (errorOrNull: Throwable?) -> Unit) -> Any?, timeout: Int): Unit =
-   it(name, fn as JsAny, timeout)
+actual fun jsTestIt(
+   description: String,
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   timeout: Int
+) {
+   it(description, testFunction as JsAny, timeout)
+}
 
 @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-actual fun jasmineXit(name: String, fn: () -> Any?): Unit = xit(name, fn as JsAny)
+actual fun jsTestXit(description: String, testFunction: () -> Any?) {
+   xit(description, testFunction as JsAny)
+}
 
-private external fun it(name: String, fn: JsAny, timeout: Int)
+// Jasmine/Mocha test framework functions
 
-private external fun xit(name: String, fn: JsAny)
+private external fun it(description: String, testFunction: JsAny, timeout: Int)
+
+private external fun xit(description: String, testFunction: JsAny)

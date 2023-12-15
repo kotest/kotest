@@ -42,6 +42,7 @@ jobs:
             target:
                - jvmTest
                - jsTest
+               - wasmJTest
                - linuxX64Test linuxArm64TestKlibrary
                - androidNativeX86TestKlibrary androidNativeX64TestKlibrary androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary
                - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test

@@ -46,6 +46,7 @@ jobs:
             target:
                - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
                - jsTest publishJsPublicationToDeployRepository
+               - wasmJsTest publishWasmJsPublicationToDeployRepository
                - linuxX64Test publishLinuxX64PublicationToDeployRepository
                - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
                - androidNativeX86TestKlibrary androidNativeX64TestKlibrary publishAndroidNativeX64PublicationToDeployRepository publishAndroidNativeX86PublicationToDeployRepository

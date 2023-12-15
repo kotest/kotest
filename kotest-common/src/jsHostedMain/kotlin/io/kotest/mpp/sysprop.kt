@@ -7,5 +7,4 @@ actual fun env(name: String): String? = try {
    null
 }
 
-private fun jsProcessEnv(name: String): String? = js("process.env[name]")
-// For Wasm compatibility, js() invocations must be a single expression within a top-level function.
+expect internal fun jsProcessEnv(name: String): String?

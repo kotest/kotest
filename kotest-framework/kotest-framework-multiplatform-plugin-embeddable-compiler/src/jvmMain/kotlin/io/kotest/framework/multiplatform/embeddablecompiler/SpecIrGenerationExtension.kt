@@ -4,7 +4,8 @@ import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.platform.js.isJs
+import org.jetbrains.kotlin.platform.isJs
+import org.jetbrains.kotlin.platform.isWasm
 import org.jetbrains.kotlin.platform.konan.isNative
 
 class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
@@ -13,7 +14,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
       val platform = pluginContext.platform
 
       val transformer = when {
-         platform.isJs() -> JsTransformer(messageCollector, pluginContext)
+         platform.isJs() || platform.isWasm() -> JsTransformer(messageCollector, pluginContext)
          platform.isNative() -> NativeTransformer(messageCollector, pluginContext)
          else -> throw UnsupportedOperationException("Cannot use Kotest compiler plugin with platform: $platform")
       }

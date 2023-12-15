@@ -5,14 +5,6 @@ plugins {
 }
 
 kotlin {
-   wasmJs {
-      nodejs {
-         testTask {
-            enabled = false // TODO: fails with "CompileError: WebAssembly.Module(): Compiling function #15691:"io.kotest.common.runPromise$lambda.invoke" failed: Invalid types for ref.test: local.get of type externref has to be in the same reference type hierarchy as (ref 2241) @+1417742"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {

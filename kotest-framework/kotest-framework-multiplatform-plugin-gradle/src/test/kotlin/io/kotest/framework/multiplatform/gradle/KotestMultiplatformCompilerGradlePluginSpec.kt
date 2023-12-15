@@ -1,6 +1,7 @@
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.inspectors.forAtLeastOne
@@ -42,26 +43,29 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             """.trimIndent()
          }
 
-         should("be able to compile and run tests for the JVM and JS targets") {
+         should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
+            val taskNames = listOf(
+               "jvmTest",
+               "jsBrowserTest",
+               "jsNodeTest",
+               "wasmJsBrowserTest",
+               "wasmJsNodeTest"
+            )
+
             val invocation = GradleInvocation(
                testProjectPath,
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
                   "-PkotestVersion=$kotestVersion",
                   "-PuseNewNativeMemoryModel=false",
-                  "jvmTest",
-                  // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-                  // "jsBrowserTest",
-                  "jsNodeTest",
-               )
+               ) + taskNames
             )
 
             invocation.run()
 
-            shouldHavePassingTestResultsFor("jvmTest")
-            // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-            // shouldHavePassingTestResultsFor("jsBrowserTest")
-            shouldHavePassingTestResultsFor("jsNodeTest")
+            taskNames.forAll {
+               shouldHavePassingTestResultsFor(it)
+            }
          }
 
          setOf(

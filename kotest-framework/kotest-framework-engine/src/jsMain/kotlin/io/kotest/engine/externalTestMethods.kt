@@ -1,10 +1,19 @@
 package io.kotest.engine
 
-actual fun jasmineIt(name: String, fn: (done: (errorOrNull: Throwable?) -> Unit) -> Any?, timeout: Int): Unit =
-   it(name, fn, timeout)
+actual fun jsTestIt(
+   description: String,
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   timeout: Int
+) {
+   it(description, testFunction, timeout)
+}
 
-actual fun jasmineXit(name: String, fn: () -> Any?): Unit = xit(name, fn)
+actual fun jsTestXit(description: String, testFunction: () -> Any?) {
+   xit(description, testFunction)
+}
 
-private external fun it(name: String, fn: dynamic, timeout: Int): Unit
+// Jasmine/Mocha test framework functions
 
-private external fun xit(name: String, fn: dynamic): Unit
+private external fun it(description: String, testFunction: dynamic, timeout: Int)
+
+private external fun xit(description: String, testFunction: dynamic)

@@ -10,24 +10,27 @@ kotlin {
          browser()
          nodejs()
       }
+
       wasmJs {
          browser {
             testTask {
-               enabled = false // TODO: fails with "Disconnected (0 times) , because no message in 30000 ms."
+               enabled = false // FIXME: fails with "Disconnected (0 times) , because no message in 30000 ms."
             }
          }
          nodejs()
       }
-/* TODO: wasmWasi
+
+      /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
       wasmWasi {
          nodejs()
       }
- */
+      */
+
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
             group("jsHosted") {
                withJs()
-               withWasm() // TODO: KT-63417 – to be split into `withWasmJs` and `withWasmWasi`
+               withWasm() // FIXME: KT-63417 – to be split into `withWasmJs` and `withWasmWasi`
             }
          }
       }

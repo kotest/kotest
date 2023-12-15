@@ -21,20 +21,20 @@ kotlin {
    jvm()
 
    js {
-      // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-      // browser()
+      browser()
       nodejs()
    }
 
    wasmJs {
+      browser()
       nodejs()
    }
 
-/* TODO: wasmWasi
+   /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
    wasmWasi {
       nodejs()
    }
-*/
+   */
 
    linuxX64()
    macosX64()
@@ -77,4 +77,20 @@ if (useNewNativeMemoryModel.toBoolean()) {
          binaryOptions["memoryModel"] = "experimental"
       }
    }
+}
+
+// Use a Node.js version current enough to support Kotlin/Wasm
+
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
+   rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+//      nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+      nodeVersion = "22.0.0-v8-canary20231213fc7703246e"
+      println("Using Node.js $nodeVersion to support Kotlin/Wasm")
+      nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+      System.setProperty("nodeJsCanaryConfigured", "true")
+   }
+}
+
+rootProject.tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
+   args.add("--ignore-engines") // Prevent Yarn from complaining about newer Node.js versions.
 }

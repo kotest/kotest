@@ -30,7 +30,7 @@ kotlin {
       iosArm64()
       iosSimulatorArm64()
 
-      // TODO: The "desktop" intermediate source set can be integrated into "native". In this case
+      // FIXME: The "desktop" intermediate source set can be integrated into "native". In this case
       //     the following block can be replaced with `applyDefaultHierarchyTemplate()`.
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
