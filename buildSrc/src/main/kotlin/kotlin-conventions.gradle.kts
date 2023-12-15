@@ -34,8 +34,6 @@ tasks.withType<KotlinCompile>().configureEach {
          "-opt-in=io.kotest.common.KotestInternal",
          "-opt-in=io.kotest.common.ExperimentalKotest",
       )
-      apiVersion = "1.9"
-      languageVersion = "1.9"
       compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
    }
 }

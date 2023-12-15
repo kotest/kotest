@@ -22,7 +22,7 @@ interface SpecSorter {
 /**
  * An implementation of [SpecExecutionOrder] which will order specs in lexicographic order.
  */
-object LexicographicSpecSorter : SpecSorter {
+val LexicographicSpecSorter = object : SpecSorter {
    override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = a.bestName().compareTo(b.bestName())
 }
 
@@ -42,7 +42,7 @@ class RandomSpecSorter(private val random: Random) : SpecSorter {
  * Note: Runtime annotations are not supported on Native or JS so on those platforms
  * this sort order is a no-op.
  */
-expect object AnnotatedSpecSorter : SpecSorter
+expect val AnnotatedSpecSorter: SpecSorter
 
 /**
  * An implementation of [SpecExecutionOrder] which will order specs that failed on the last run,
@@ -50,4 +50,4 @@ expect object AnnotatedSpecSorter : SpecSorter
  *
  * Note: This is a JVM sort only.
  */
-expect class FailureFirstSorter() : SpecSorter
+expect val FailureFirstSorter: SpecSorter
