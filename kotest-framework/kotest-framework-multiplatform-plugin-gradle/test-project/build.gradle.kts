@@ -24,11 +24,7 @@ kotlin {
    }
 
    wasmJs {
-      browser {
-         testTask {
-            enabled = false // FIXME: fails with "Disconnected (0 times) , because no message in 30000 ms."
-         }
-      }
+      browser()
       nodejs()
    }
 
