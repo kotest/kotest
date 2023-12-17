@@ -89,6 +89,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withSpecs ([Lio/kotest/core/spec/Spec;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/core/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
+	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
 }
 
 public final class io/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory {

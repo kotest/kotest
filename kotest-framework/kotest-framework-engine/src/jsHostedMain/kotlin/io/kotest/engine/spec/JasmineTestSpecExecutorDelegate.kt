@@ -2,34 +2,27 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.runPromise
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.PromiseTestCaseExecutionListener
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
-import io.kotest.engine.describe
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.jsTestIt
+import io.kotest.engine.jasmineTestIt
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
-import io.kotest.engine.jsTestXit
+import io.kotest.engine.jasmineTestXit
 import io.kotest.mpp.bestName
 import kotlin.coroutines.coroutineContext
 
-internal actual fun createSpecExecutorDelegate(
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   context: EngineContext,
-): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(context)
-
 /**
- * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
+ * A [SpecExecutorDelegate] running tests via a Jasmine-like JavaScript test framework (Jasmine/Mocha/Jest).
  */
 @ExperimentalKotest
-internal class JavascriptSpecExecutorDelegate(private val context: EngineContext) : SpecExecutorDelegate {
+internal class JasmineTestSpecExecutorDelegate(private val context: EngineContext) : SpecExecutorDelegate {
 
    private val formatter = getFallbackDisplayNameFormatter(
       context.configuration.registry,
@@ -51,7 +44,7 @@ internal class JavascriptSpecExecutorDelegate(private val context: EngineContext
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
                // before we invoke our callback. This also gives us the handle to the done callback.
-               jsTestIt(
+               jasmineTestIt(
                   description = testDisplayName,
                   testFunction = { done ->
                      // ideally we'd just launch the executor and have the listener set up the test,
@@ -72,10 +65,12 @@ internal class JavascriptSpecExecutorDelegate(private val context: EngineContext
                   timeout = Int.MAX_VALUE
                )
             } else {
-               jsTestXit(description = testDisplayName, testFunction = {})
+               jasmineTestXit(description = testDisplayName, testFunction = {})
             }
          }
       }
       return emptyMap()
    }
 }
+
+private external fun describe(description: String, specDefinitions: () -> Unit)

@@ -1,6 +1,9 @@
 package io.kotest.engine
 
-actual fun jsTestIt(
+actual fun jasmineTestFrameworkAvailable(): Boolean =
+   js("typeof describe === 'function' && typeof it === 'function'") as Boolean
+
+actual fun jasmineTestIt(
    description: String,
    testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
    timeout: Int
@@ -8,11 +11,11 @@ actual fun jsTestIt(
    it(description, testFunction, timeout)
 }
 
-actual fun jsTestXit(description: String, testFunction: () -> Any?) {
+actual fun jasmineTestXit(description: String, testFunction: () -> Any?) {
    xit(description, testFunction)
 }
 
-// Jasmine/Mocha test framework functions
+// Jasmine test framework functions
 
 private external fun it(description: String, testFunction: dynamic, timeout: Int)
 

@@ -191,6 +191,7 @@ class TestEngineLauncher(
    }
 
    fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
+   fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs).withTeamCityListener()
    fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
    fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
 
