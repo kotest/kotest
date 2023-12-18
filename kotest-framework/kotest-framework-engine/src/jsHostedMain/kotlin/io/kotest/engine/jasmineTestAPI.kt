@@ -6,11 +6,11 @@ expect fun jasmineTestFrameworkAvailable(): Boolean
 
 expect fun jasmineTestIt(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
    timeout: Int
 )
 
 expect fun jasmineTestXit(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
 )

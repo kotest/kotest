@@ -5,7 +5,7 @@ actual fun jasmineTestFrameworkAvailable(): Boolean =
 
 actual fun jasmineTestIt(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
    timeout: Int
 ) {
    it(description, testFunction, timeout)
@@ -13,7 +13,7 @@ actual fun jasmineTestIt(
 
 actual fun jasmineTestXit(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
 ) {
    xit(description, testFunction)
 }

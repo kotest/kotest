@@ -6,33 +6,33 @@ actual fun jasmineTestFrameworkAvailable(): Boolean = js("typeof describe === 'f
 
 actual fun jasmineTestIt(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
    timeout: Int
 ) {
-   it(description, { implementationCallback ->
+   it(description, { done ->
       callTest(testFunction) {
-         callImplementationCallback(implementationCallback, it)
+         callImplementationCallback(done, it)
       }
    }, timeout)
 }
 
 actual fun jasmineTestXit(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
 ) {
-   xit(description) { implementationCallback ->
+   xit(description) { done ->
       callTest(testFunction) {
-         callImplementationCallback(implementationCallback, it)
+         callImplementationCallback(done, it)
       }
    }
 }
 
 private fun callTest(
-   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?,
-   implementationCallback: (errorOrNull: Throwable?) -> Unit
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   done: (errorOrNull: Throwable?) -> Unit
 ): JsAny? =
    try {
-      (testFunction(implementationCallback) as? Promise<*>)?.catch { exception ->
+      (testFunction(done) as? Promise<*>)?.catch { exception ->
          val jsException = exception
             .toThrowableOrNull()
             ?.toJsError()
@@ -44,10 +44,10 @@ private fun callTest(
    }
 
 private fun callImplementationCallback(
-   implementationCallback: (errorOrNull: JsAny?) -> Unit,
+   done: (errorOrNull: JsAny?) -> Unit,
    errorOrNull: Throwable?
 ) {
-   implementationCallback(errorOrNull?.toJsError())
+   done(errorOrNull?.toJsError())
 }
 
 private fun jsThrow(jsException: JsAny): Nothing =
@@ -63,11 +63,11 @@ private fun Throwable.toJsError(): JsAny =
 
 private external fun it(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: JsAny?) -> Unit) -> JsAny?,
+   testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?,
    timeout: Int
 )
 
 private external fun xit(
    description: String,
-   testFunction: (implementationCallback: (errorOrNull: JsAny?) -> Unit) -> JsAny?
+   testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?
 )
