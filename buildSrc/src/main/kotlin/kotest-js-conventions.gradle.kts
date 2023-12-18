@@ -12,11 +12,7 @@ kotlin {
       }
 
       wasmJs {
-         browser {
-            testTask {
-               enabled = false // FIXME: fails with "Disconnected (0 times) , because no message in 30000 ms."
-            }
-         }
+         browser()
          nodejs()
       }
 
@@ -47,7 +43,6 @@ rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJ
       // Initialize once in a multi-project build.
       // Otherwise, Gradle would complain "Configuration already finalized for previous property values".
       if (!System.getProperty("nodeJsCanaryConfigured").toBoolean()) {
-//         nodeVersion = "21.0.0-v8-canary202309143a48826a08"
          nodeVersion = "22.0.0-v8-canary20231213fc7703246e"
          println("Using Node.js $nodeVersion to support Kotlin/Wasm")
          nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"

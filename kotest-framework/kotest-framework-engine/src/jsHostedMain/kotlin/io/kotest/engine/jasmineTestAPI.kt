@@ -10,4 +10,7 @@ expect fun jasmineTestIt(
    timeout: Int
 )
 
-expect fun jasmineTestXit(description: String, testFunction: () -> Any?)
+expect fun jasmineTestXit(
+   description: String,
+   testFunction: (implementationCallback: (errorOrNull: Throwable?) -> Unit) -> Any?
+)

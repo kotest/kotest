@@ -81,11 +81,9 @@ if (useNewNativeMemoryModel.toBoolean()) {
 
 rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
    rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-//      nodeVersion = "21.0.0-v8-canary202309143a48826a08"
       nodeVersion = "22.0.0-v8-canary20231213fc7703246e"
       println("Using Node.js $nodeVersion to support Kotlin/Wasm")
       nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-      System.setProperty("nodeJsCanaryConfigured", "true")
    }
 }
 

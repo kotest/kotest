@@ -50,6 +50,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                "jsBrowserTest",
                "jsNodeTest",
                // "wasmJsBrowserTest", // FIXME: fails with "Disconnected (0 times) , because no message in 30000 ms."
+               "wasmJsBrowserTest",
                "wasmJsNodeTest"
             )
 
