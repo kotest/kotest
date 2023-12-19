@@ -4,7 +4,7 @@ package io.kotest.engine
 
 import io.kotest.common.Platform
 import io.kotest.common.runBlocking
-import io.kotest.common.runPromiseCatching
+import io.kotest.common.runPromise
 import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
@@ -262,7 +262,7 @@ class TestEngineLauncher(
     */
    fun promise() {
       logger.log { "Launching Test Engine in Javascript promise" }
-      runPromiseCatching {
+      runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
       }

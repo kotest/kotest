@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.runPromise
+import io.kotest.common.runPromiseIgnoringErrors
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -50,7 +50,7 @@ internal class JasmineTestSpecExecutorDelegate(private val context: EngineContex
                      // ideally we'd just launch the executor and have the listener set up the test,
                      // but we can't launch a promise inside the describe and have it resolve the "it"
                      // this means we must duplicate the isEnabled check outside the executor
-                     runPromise {
+                     runPromiseIgnoringErrors {
                         TestCaseExecutor(
                            PromiseTestCaseExecutionListener(done),
                            NoopCoroutineDispatcherFactory,

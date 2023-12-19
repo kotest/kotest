@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
 
 
@@ -40,7 +38,7 @@ kotlin {
          }
       }
 
-      // WORKAROUND https://github.com/Kotlin/kotlinx.coroutines/issues/3968
+      // FIXME: WORKAROUND https://github.com/Kotlin/kotlinx.coroutines/issues/3968
       //     The following block can be removed when the issue is resolved.
       sourceSets {
          val nativeMain by getting {
