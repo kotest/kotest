@@ -21,7 +21,7 @@ xs.forAtLeast(2) {
 }
 ```
 
-Similarly, if we wanted to asset that *no* elements in a collection passed the assertions, we could do something like:
+Similarly, if we wanted to assert that *no* elements in a collection passed the assertions, we could do something like:
 
 ```kotlin
 xs.forNone {
