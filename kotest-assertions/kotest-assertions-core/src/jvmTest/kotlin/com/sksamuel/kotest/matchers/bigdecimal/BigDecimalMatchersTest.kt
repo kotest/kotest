@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.bigdecimal
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThan
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldBeInRange
@@ -47,15 +48,21 @@ class BigDecimalMatchersTest : StringSpec() {
     }
     "shouldBePositive" {
       BigDecimal(10).shouldBePositive()
-      BigDecimal.ZERO.shouldBePositive()
+      BigDecimal.ONE.shouldBePositive()
       BigDecimal(0.1).shouldBePositive()
       0.1.toBigDecimal().shouldBePositive()
+
+      shouldThrowAny { BigDecimal(-1).shouldBePositive() }
+      shouldThrowAny { BigDecimal.ZERO.shouldBePositive() }
     }
     "shouldBeNegative" {
       BigDecimal(-1).shouldBeNegative()
       (-1).toBigDecimal().shouldBeNegative()
       BigDecimal(-0.1).shouldBeNegative()
       BigDecimal(1).minus(BigDecimal(2)).shouldBeNegative()
+
+      shouldThrowAny { BigDecimal(1).shouldBeNegative() }
+      shouldThrowAny { BigDecimal.ZERO.shouldBeNegative() }
     }
     "shouldBeGreaterThan" {
       BigDecimal.ONE shouldBeGreaterThan BigDecimal.ZERO
