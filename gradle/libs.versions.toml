@@ -2,7 +2,7 @@
 kotlin = "1.9.10"
 runtime-kotest = "4.2.0"
 # We separate these from the actual runtime dependencies
-test-kotest = "5.7.2"
+test-kotest = "5.8.0"
 
 [libraries]
 runtime-kotest-framework-launcher = { module = "io.kotest:kotest-framework-launcher", version.ref = "runtime-kotest" }
