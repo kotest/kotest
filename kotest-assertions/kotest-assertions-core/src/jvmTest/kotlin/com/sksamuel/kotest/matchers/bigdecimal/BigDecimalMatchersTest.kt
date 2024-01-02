@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.bigdecimal
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThan
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldBeInRange
@@ -16,8 +17,9 @@ import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldNotBeInRange
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThan
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldNotBeNegative
+import io.kotest.matchers.bigdecimal.shouldNotBePositive
 import io.kotest.matchers.bigdecimal.shouldNotHaveScale
-import io.kotest.core.spec.style.StringSpec
 import java.math.BigDecimal
 
 class BigDecimalMatchersTest : StringSpec() {
@@ -63,6 +65,18 @@ class BigDecimalMatchersTest : StringSpec() {
 
       shouldThrowAny { BigDecimal(1).shouldBeNegative() }
       shouldThrowAny { BigDecimal.ZERO.shouldBeNegative() }
+    }
+    "shouldNotBePositive" {
+       BigDecimal(-1).shouldNotBePositive()
+       BigDecimal.ZERO.shouldNotBePositive()
+
+       shouldThrowAny { BigDecimal(1).shouldNotBePositive() }
+    }
+    "shouldNotBeNegative" {
+       BigDecimal(1).shouldNotBeNegative()
+       BigDecimal.ZERO.shouldNotBeNegative()
+
+       shouldThrowAny { BigDecimal(-1).shouldNotBeNegative() }
     }
     "shouldBeGreaterThan" {
       BigDecimal.ONE shouldBeGreaterThan BigDecimal.ZERO

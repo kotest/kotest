@@ -127,6 +127,8 @@ Matchers provided by the `kotest-assertions-core` module.
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
 | `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative |
+| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive |
+| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
 | `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
 | `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
 | `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equ|
