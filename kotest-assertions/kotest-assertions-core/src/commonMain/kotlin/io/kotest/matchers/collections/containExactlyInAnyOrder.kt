@@ -120,7 +120,9 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
 
    val passed = expectedGroupedCounts.size == valueGroupedCounts.size
       && expectedGroupedCounts.all { (k, v) ->
-      valueGroupedCounts.filterKeys { verifier?.verify(k, it)?.areEqual() ?: (k == it) }[k] == v
+      // account for the case when a key might pass verifier equality but not default equality
+      val key = valueGroupedCounts.keys.find { verifier?.verify(k, it)?.areEqual() ?: (k == it) }
+      valueGroupedCounts.filterKeys { key == it }[key] == v
    }
 
    val missing = expected.filterNot { t ->
