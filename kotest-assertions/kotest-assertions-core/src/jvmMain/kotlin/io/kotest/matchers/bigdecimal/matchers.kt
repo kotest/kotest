@@ -15,6 +15,8 @@ import java.math.BigDecimal
 fun BigDecimal.shouldBeZero() = this shouldBe BigDecimal.ZERO
 fun BigDecimal.shouldBePositive() = this shouldBe gt(BigDecimal.ZERO)
 fun BigDecimal.shouldBeNegative() = this shouldBe lt(BigDecimal.ZERO)
+fun BigDecimal.shouldNotBePositive() = this shouldNotBe gt(BigDecimal.ZERO)
+fun BigDecimal.shouldNotBeNegative() = this shouldNotBe lt(BigDecimal.ZERO)
 
 infix fun BigDecimal.shouldHavePrecision(precision: Int) = this.precision() shouldBe precision
 

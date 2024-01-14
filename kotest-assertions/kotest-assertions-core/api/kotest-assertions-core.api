@@ -259,6 +259,8 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotHaveScale (Ljava/math/BigDecimal;I)I
 }
 
