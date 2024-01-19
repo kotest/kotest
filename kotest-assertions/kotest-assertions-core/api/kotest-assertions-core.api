@@ -1845,6 +1845,15 @@ public final class io/kotest/matchers/ranges/BeinKt {
 	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
 }
 
+public final class io/kotest/matchers/ranges/BewithinKt {
+	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+}
+
 public final class io/kotest/matchers/ranges/IntersectKt {
 	public static final fun intersect (Lio/kotest/matchers/ranges/Range;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
@@ -1862,6 +1871,8 @@ public final class io/kotest/matchers/ranges/Range {
 	public fun <init> (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)V
 	public final fun component1 ()Lio/kotest/matchers/ranges/RangeEdge;
 	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun contains (Lio/kotest/matchers/ranges/Range;)Z
+	public final fun contains (Lio/kotest/matchers/ranges/RangeEdge;)Z
 	public final fun copy (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)Lio/kotest/matchers/ranges/Range;
 	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/Range;Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;ILjava/lang/Object;)Lio/kotest/matchers/ranges/Range;
 	public fun equals (Ljava/lang/Object;)Z
