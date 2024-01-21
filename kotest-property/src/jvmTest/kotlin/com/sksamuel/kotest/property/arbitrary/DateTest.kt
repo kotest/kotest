@@ -20,6 +20,7 @@ import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.offsetDateTime
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.year
 import io.kotest.property.arbitrary.yearMonth
 import io.kotest.property.arbitrary.zonedDateTime
 import io.kotest.property.checkAll
@@ -30,6 +31,7 @@ import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import java.time.Year
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -226,6 +228,24 @@ class DateTest : WordSpec({
 
       "Be the default generator for Duration" {
          checkAll(10) { _: Period -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.year(minYear, maxYear)" should {
+      "generate valid years (no exceptions)" {
+         shouldNotThrowAny {
+            Arb.year().take(10_000).toList()
+         }
+      }
+
+      "generate years between minYear and maxYear" {
+         val years = mutableSetOf<Year>()
+
+         checkAll(10_000, Arb.year(Year.of(1998), Year.of(1999))) {
+            years += it
+         }
+
+         years shouldBe setOf(Year.of(1998), Year.of(1999))
       }
    }
 
