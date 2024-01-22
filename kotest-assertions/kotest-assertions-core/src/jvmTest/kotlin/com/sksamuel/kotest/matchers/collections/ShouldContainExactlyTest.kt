@@ -3,8 +3,11 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.CountMismatch
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
+import io.kotest.matchers.collections.countMismatch
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainExactly
@@ -292,6 +295,17 @@ class ShouldContainExactlyTest : WordSpec() {
             )
          }
 
+         "print count mismatches" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 2, 3).shouldContainExactlyInAnyOrder(listOf(1, 2, 3, 3))
+            }.shouldHaveMessage(
+               """
+                  Collection should contain [1, 2, 3, 3] in any order, but was [1, 2, 2, 3]
+                  CountMismatches: Key="2", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
+               """.trimIndent()
+            )
+         }
+
          "disambiguate when using optional expected value" {
             val actual: List<String> = listOf("A", "B", "C")
             val expected: List<String>? = listOf("A", "B", "C")
@@ -302,6 +316,21 @@ class ShouldContainExactlyTest : WordSpec() {
             checkAll(1000, Arb.shuffle(listOf("1", "2", "3", "4", "5", "6", "7"))) {
                it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
             }
+         }
+      }
+
+      "countMismatch" should {
+         "return empty list for a complete match" {
+            val counts = mapOf("apple" to 1, "orange" to 2)
+            countMismatch(counts, counts).shouldBeEmpty()
+         }
+         "return differences" {
+            countMismatch(
+               mapOf("apple" to 1, "orange" to 2, "banana" to 3),
+               mapOf("apple" to 2, "orange" to 2, "peach" to 1)
+            ) shouldBe listOf(
+               CountMismatch("apple", 1, 2)
+            )
          }
       }
    }
