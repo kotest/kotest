@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.Period
+import java.time.Year
 import java.time.Year.isLeap
 import java.time.YearMonth
 import java.time.ZoneId
@@ -18,6 +19,7 @@ import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
 import java.util.*
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 /**
  * Arberates a random [Period]s.
@@ -167,6 +169,20 @@ fun Arb.Companion.localDateTime(
          }.first { !it.isBefore(minLocalDateTime) && !it.isAfter(maxLocalDateTime) }
       }
    )
+}
+
+/**
+ * Arberates a stream of random Year
+ *
+ * This generator creates randomly generated Year, in the range [[minYear, maxYear]].
+ */
+fun Arb.Companion.year(
+   minYear: Year = Year.of(1970),
+   maxYear: Year = Year.of(2030)
+): Arb<Year> {
+   return arbitrary(listOf(minYear, maxYear)) {
+      Year.of(it.random.nextInt(minYear.value..maxYear.value))
+   }
 }
 
 /**
