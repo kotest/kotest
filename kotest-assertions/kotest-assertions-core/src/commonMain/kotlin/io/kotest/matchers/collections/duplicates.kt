@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -35,10 +36,20 @@ fun <T> Collection<T>.shouldNotContainDuplicates(): Collection<T> {
 }
 
 fun <T> containDuplicates() = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>) = MatcherResult(
-      value.toSet().size < value.size,
-      { "Collection should contain duplicates" },
-      {
-         "Collection should not contain duplicates"
-      })
+   override fun test(value: Collection<T>): MatcherResult {
+      val duplicates = value.duplicates()
+      return MatcherResult(
+         duplicates.isNotEmpty(),
+         { "Collection should contain duplicates" },
+         {
+            "Collection should not contain duplicates, but has some: ${duplicates.print().value}"
+         })
+   }
 }
+
+internal fun<T> Collection<T>.duplicates(): Collection<T> = this.groupingBy { it }
+   .eachCount().entries
+   .mapNotNull { when(it.value) {
+      1 -> null
+      else -> it.key
+   } }
