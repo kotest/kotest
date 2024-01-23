@@ -8,10 +8,15 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 class DuplicatesTest : StringSpec(){
    init {
        "return empty list" {
-          listOf(1, 2, 3, 4).duplicates().shouldBeEmpty()
+          listOf(1, 2, 3, 4, null).duplicates().shouldBeEmpty()
        }
-      "return duplicates" {
+
+      "return not null duplicates" {
          listOf(1, 2, 3, 4, 3, 2).duplicates() shouldContainExactlyInAnyOrder listOf(2, 3)
+      }
+
+      "return null duplicates" {
+         listOf(1, 2, 3, null, 4, 3, null, 2).duplicates() shouldContainExactlyInAnyOrder listOf(2, 3, null)
       }
    }
 }
