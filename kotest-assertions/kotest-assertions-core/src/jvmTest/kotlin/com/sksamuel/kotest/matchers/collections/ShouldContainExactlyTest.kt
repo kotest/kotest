@@ -295,13 +295,24 @@ class ShouldContainExactlyTest : WordSpec() {
             )
          }
 
-         "print count mismatches" {
+         "print count mismatches for not null keys" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 2, 3).shouldContainExactlyInAnyOrder(listOf(1, 2, 3, 3))
             }.shouldHaveMessage(
                """
                   Collection should contain [1, 2, 3, 3] in any order, but was [1, 2, 2, 3]
                   CountMismatches: Key="2", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
+               """.trimIndent()
+            )
+         }
+
+         "print count mismatches for nullable keys" {
+            shouldThrow<AssertionError> {
+               listOf(1, null, null, 3).shouldContainExactlyInAnyOrder(listOf(1, null, 3, 3))
+            }.shouldHaveMessage(
+               """
+                  Collection should contain [1, <null>, 3, 3] in any order, but was [1, <null>, <null>, 3]
+                  CountMismatches: Key="null", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
                """.trimIndent()
             )
          }
@@ -324,12 +335,20 @@ class ShouldContainExactlyTest : WordSpec() {
             val counts = mapOf("apple" to 1, "orange" to 2)
             countMismatch(counts, counts).shouldBeEmpty()
          }
-         "return differences" {
+         "return differences for not null key" {
             countMismatch(
                mapOf("apple" to 1, "orange" to 2, "banana" to 3),
                mapOf("apple" to 2, "orange" to 2, "peach" to 1)
             ) shouldBe listOf(
                CountMismatch("apple", 1, 2)
+            )
+         }
+         "return differences for null key" {
+            countMismatch(
+               mapOf(null to 1, "orange" to 2, "banana" to 3),
+               mapOf(null to 2, "orange" to 2, "peach" to 1)
+            ) shouldBe listOf(
+               CountMismatch(null, 1, 2)
             )
          }
       }
