@@ -3,6 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.equals.Equality
+import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldContainExactly
@@ -278,6 +280,40 @@ class ShouldContainExactlyTest : WordSpec() {
             }
             shouldThrow<AssertionError> {
                actualDuplicates should containExactlyInAnyOrder(1, 2, 2)
+            }
+         }
+
+         "test that a collection contains given elements exactly in any order based on a custom verifier" {
+            val verifier = Equality.byObjectEquality<Number>(strictNumberEquality = false)
+
+            val actual = listOf(1, 2, 3.0)
+
+            actual should containExactlyInAnyOrder(listOf(1, 2, 3), verifier)
+            actual should containExactlyInAnyOrder(listOf(3, 2, 1), verifier)
+            actual should containExactlyInAnyOrder(linkedSetOf(2, 1, 3), verifier)
+
+            actual should containExactlyInAnyOrder(listOf(1, 2, 3.0), verifier)
+            actual should containExactlyInAnyOrder(listOf(3, 2.0, 1), verifier)
+            actual should containExactlyInAnyOrder(linkedSetOf(2, 1.0, 3), verifier)
+
+            actual shouldNot containExactlyInAnyOrder(listOf(1, 2), verifier)
+            actual shouldNot containExactlyInAnyOrder(listOf(1.0, 2, 3.0, 4), verifier)
+            actual shouldNot containExactlyInAnyOrder(listOf(5.0, 6, 7), verifier)
+            actual shouldNot containExactlyInAnyOrder(listOf(1, 1.0, 1.0), verifier)
+            actual shouldNot containExactlyInAnyOrder(listOf(2.0, 2.0, 3.0), verifier)
+            actual shouldNot containExactlyInAnyOrder(listOf(1.0, 1, 2, 3), verifier)
+
+            shouldThrow<AssertionError> {
+               actual should containExactlyInAnyOrder(listOf(1, 2.0), verifier)
+            }
+            shouldThrow<AssertionError> {
+               actual should containExactlyInAnyOrder(listOf(1, 2, 3.0, 4), verifier)
+            }
+            shouldThrow<AssertionError> {
+               actual should containExactlyInAnyOrder(listOf(1.0, 1, 1), verifier)
+            }
+            shouldThrow<AssertionError> {
+               actual should containExactlyInAnyOrder(listOf(1, 1.0, 2, 3.0), verifier)
             }
          }
 
