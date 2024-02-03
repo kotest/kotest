@@ -173,11 +173,18 @@ And then add the Kotest JUnit5 runner to your dependencies section.
 ```xml
 <dependency>
    <groupId>io.kotest</groupId>
-   <artifactId>kotest-runner-junit5-jvm</artifactId>
+   <artifactId>kotest-runner-junit5</artifactId>
    <version>{version}</version>
    <scope>test</scope>
 </dependency>
 ```
+
+:::info
+Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on.
+Since version 5.9.0, Kotest includes a workaround so that the `kotest-runner-junit5` module can be used directly, but
+for older versions you need to explicitly depend on the modules that end with -JVM, such as `kotest-property-jvm`_
+:::
 
    </TabItem>
    <TabItem value="Android">
