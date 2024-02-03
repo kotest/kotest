@@ -82,6 +82,13 @@ class DateTest : WordSpec({
       }
    }
 
+   "Arb.localDate(minDate, maxDate)" should {
+      "Work when min date == max date" {
+         val date = of(2021, 1, 1)
+         Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }
+      }
+   }
+
    "Arb.localTime()" should {
       "generate N valid LocalTimes(no exceptions)" {
          Arb.localTime().generate(RandomSource.default()).take(10_000).toList()

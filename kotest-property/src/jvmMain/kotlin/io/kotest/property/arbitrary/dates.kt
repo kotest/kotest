@@ -56,6 +56,7 @@ fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
 ): Arb<LocalDate> {
+   if (minDate == maxDate) return Arb.constant(minDate)
 
    val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
 
