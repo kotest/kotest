@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
@@ -79,6 +80,20 @@ class DateTest : WordSpec({
 
       "Be the default generator for LocalDate" {
          checkAll(10) { _: LocalDate -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.localDate(minDate, maxDate)" should {
+      "Work when min date == max date" {
+         val date = of(2021, 1, 1)
+         Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }
+      }
+
+      "Throw when min date > max date" {
+         shouldThrow<IllegalArgumentException> {
+            val minDate = of(2021, 1, 1)
+            Arb.localDate(minDate, minDate.minusDays(1))
+         }.message shouldBe "minDate must be before maxDate"
       }
    }
 
