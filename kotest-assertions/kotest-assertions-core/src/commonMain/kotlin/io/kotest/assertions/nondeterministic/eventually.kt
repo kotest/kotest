@@ -69,6 +69,12 @@ suspend fun <T> eventually(
       }
    } catch (e : ShortCircuitControlException) {
       // Short-circuited out from retries, will throw below
+
+      // If we terminated due to an exception, we are missing an iteration in the counter
+      // since the step function is not invoked when terminating early
+      control.iterations++
+   } catch (e: Throwable) {
+      control.iterations++
    } finally {
       errorCollector.setCollectionMode(originalAssertionMode)
    }
@@ -229,7 +235,10 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
    fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
 
    fun buildFailureMessage() = StringBuilder().apply {
-      appendLine("Block failed after ${config.duration}; attempted $iterations time(s)")
+      val totalDuration = timeInMillis() - start
+      val printedDuration = if (totalDuration >= 1000) "${totalDuration / 1000}s" else "${totalDuration}ms"
+
+      appendLine("Block failed after $printedDuration; attempted $iterations time(s)")
 
       firstError?.run {
          appendLine("The first error was caused by: ${this.message}")

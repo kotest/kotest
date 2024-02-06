@@ -147,17 +147,46 @@ class EventuallyTest : FunSpec() {
          var count = 0
          val message = shouldThrow<AssertionError> {
             eventually(100.milliseconds) {
-               if (count == 0) {
-                  count = 1
+               if (count++ == 0) {
                   fail("first")
                } else {
                   fail("last")
                }
             }
          }.message
-         message.shouldContain("Block failed after 100ms; attempted \\d+ time\\(s\\)".toRegex())
-         message.shouldContain("The first error was caused by: first")
-         message.shouldContain("The last error was caused by: last")
+         message shouldContain """Block failed after \d+ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain "The first error was caused by: first"
+         message shouldContain "The last error was caused by: last"
+      }
+
+      test("non-suppressible exception is not retried, but still printed with eventually-info") {
+         val config = eventuallyConfig {
+            duration = 100.milliseconds
+            expectedExceptionsFn = { it is AssertionError }
+         }
+
+         var count = 0
+         val message = shouldFail {
+            eventually(config) {
+               if (count++ == 0) {
+                  fail("first")
+               } else {
+                  error("last")
+               }
+            }
+         }.message
+         count shouldBe 2
+         message shouldContain """Block failed after \d+ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain "The first error was caused by: first"
+         message shouldContain "The last error was caused by: last"
+      }
+
+      test("duration is displayed in whole seconds once past 1000ms") {
+         shouldFail {
+            eventually(1100.milliseconds) {
+               fail("")
+            }
+         }.message shouldContain "Block failed after 1s"
       }
 
       test("allow suspendable functions") {
@@ -247,8 +276,7 @@ class EventuallyTest : FunSpec() {
             }
          }.message
 
-         message.shouldContain("Block failed after 5s")
-         message.shouldContain("attempted 2 time(s)")
+         message shouldContain """Block failed after \d{1,3}ms; attempted 2 time\(s\)""".toRegex()
       }
 
       test("override assertion to hard assertion before executing assertion and reset it after executing") {
