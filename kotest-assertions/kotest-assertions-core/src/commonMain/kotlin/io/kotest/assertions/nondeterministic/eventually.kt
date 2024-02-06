@@ -67,6 +67,8 @@ suspend fun <T> eventually(
 
          control.step()
       }
+   } catch (e : ShortCircuitControlException) {
+      // Short-circuited out from retries, will throw below
    } finally {
       errorCollector.setCollectionMode(originalAssertionMode)
    }

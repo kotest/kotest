@@ -4,6 +4,7 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
@@ -312,8 +313,8 @@ class EventuallyTest : FunSpec() {
          i shouldBe exceptions.size + 1
       }
 
-      test("short circuit happy path") {
-         shouldThrow<ShortCircuitControlException> {
+      test("short-circuited exceptions are not retried") {
+         shouldFail {
             val config = eventuallyConfig {
                duration = 5.seconds
                shortCircuit = { true }
