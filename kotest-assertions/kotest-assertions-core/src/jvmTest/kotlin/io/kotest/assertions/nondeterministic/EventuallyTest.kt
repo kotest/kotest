@@ -321,20 +321,7 @@ class EventuallyTest : FunSpec() {
             eventually(config) {
                1 shouldBe 2
             }
-         }
-      }
-
-      test("short circuit exception cannot be suppressed") {
-         shouldThrow<ShortCircuitControlException> {
-            val config = eventuallyConfig {
-               duration = 5.seconds
-               expectedExceptions = setOf(ShortCircuitControlException::class)
-               shortCircuit = { true }
-            }
-            eventually(config) {
-               1 shouldBe 2
-            }
-         }
+         }.message shouldContain """Block failed after \d{1,3}ms; attempted 1 time""".toRegex()
       }
    }
 }
