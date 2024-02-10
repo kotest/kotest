@@ -10,8 +10,10 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.listeners.AfterListener
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
@@ -363,6 +365,33 @@ abstract class Spec : TestConfiguration() {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
+         }
+      })
+   }
+
+   open suspend fun before(testCase: TestCase) {}
+
+   /**
+    * Registers a callback to be executed before every [TestCase] in this [Spec].
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun before(f: Before) {
+      register(object : BeforeListener {
+         override suspend fun before(testCase: TestCase) {
+            if (testCase.spec::class == this@Spec::class)
+               f(testCase)
+         }
+      })
+   }
+
+   open suspend fun after(testCase: TestCase, result: TestResult) {}
+
+   override fun after(f: After) {
+      register(object : AfterListener {
+         override suspend fun after(testCase: TestCase, result: TestResult) {
+            if (testCase.spec::class == this@Spec::class)
+               f(Tuple2(testCase, result))
          }
       })
    }
