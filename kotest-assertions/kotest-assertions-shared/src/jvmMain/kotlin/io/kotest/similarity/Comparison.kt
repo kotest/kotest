@@ -3,6 +3,7 @@ package io.kotest.similarity
 import io.kotest.assertions.print.print
 import io.kotest.similarity.Distance.Companion.CompleteMatch
 import io.kotest.similarity.Distance.Companion.CompleteMismatch
+import java.math.BigDecimal
 
 internal sealed interface ComparisonResult {
     fun description(): String
@@ -35,7 +36,7 @@ internal data class MismatchByField(
 ): ComparisonResult {
     override fun description() = """$field expected: $expected,
         |  but was: $actual,
-        |  distance: ${distance.distance},
+        |  similarity: ${distance.distance * BigDecimal(100)}%,
         |  fields:
         |${comparisonResults.joinToString("\n") { it.description() }}""".trimMargin()
 }
