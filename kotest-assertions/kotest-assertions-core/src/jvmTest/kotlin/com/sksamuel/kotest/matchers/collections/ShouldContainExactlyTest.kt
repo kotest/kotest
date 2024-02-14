@@ -81,6 +81,36 @@ class ShouldContainExactlyTest : WordSpec() {
             }
          }
 
+         "test that it supports LinkedHashSet" {
+            val actual = linkedSetOf(1, 2, 3)
+
+            actual should containExactly(1, 2, 3)
+            actual.shouldContainExactly(1, 2, 3)
+
+            actual shouldNot containExactly(1, 2)
+            actual.shouldNotContainExactly(1, 2)
+
+            actual shouldNot containExactly(3, 2, 1)
+            actual.shouldNotContainExactly(3, 2, 1)
+            actual.shouldContainExactly(linkedSetOf(3, 2, 1))
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(3, 2, 1)
+            }
+         }
+
+         "test that is supports TreeSet" {
+
+         }
+
+         "test that is supports ConcurrentSkipListSet" {
+
+         }
+
          "Iterable with non-stable iteration order gives an informative message" {
 
             // Ideally the last two newlines shouldn't be there, IMO.
@@ -242,6 +272,7 @@ class ShouldContainExactlyTest : WordSpec() {
                   |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)
                """.trimMargin()
          }
+
       }
 
       "containExactlyInAnyOrder" should {
