@@ -17,8 +17,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.of
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -83,69 +85,35 @@ class ShouldContainExactlyTest : WordSpec() {
             }
          }
 
-         "test that it supports LinkedHashSet" {
-            val actual = linkedSetOf(1, 2, 3)
 
-            actual should containExactly(1, 2, 3)
-            actual.shouldContainExactly(1, 2, 3)
+         "Supports all sorted set types" {
+            /**
+             * Generates an [Exhaustive] for all (supported) sorted set implementations of the given elements.
+             */
+            fun <T> Exhaustive.Companion.sortedSetOf(vararg elements: T): Exhaustive<Set<T>> = Exhaustive.of(
+               TreeSet(elements.asList()),
+               ConcurrentSkipListSet(elements.asList()),
+               linkedSetOf(*elements),
+            )
 
-            actual shouldNot containExactly(1, 2)
-            actual.shouldNotContainExactly(1, 2)
+            checkAll(Exhaustive.sortedSetOf(1,2,3)) { actual ->
+               actual should containExactly(1, 2, 3)
+               actual.shouldContainExactly(1, 2, 3)
 
-            actual shouldNot containExactly(3, 2, 1)
-            actual.shouldNotContainExactly(3, 2, 1)
-            actual.shouldContainExactly(linkedSetOf(3, 2, 1))
+               actual shouldNot containExactly(1, 2)
+               actual.shouldNotContainExactly(1, 2)
 
-            shouldThrow<AssertionError> {
-               actual should containExactly(1, 2)
-            }
+               actual shouldNot containExactly(3, 2, 1)
+               actual.shouldNotContainExactly(3, 2, 1)
+               actual.shouldContainExactly(linkedSetOf(3, 2, 1))
 
-            shouldThrow<AssertionError> {
-               actual should containExactly(3, 2, 1)
-            }
-         }
+               shouldThrow<AssertionError> {
+                  actual should containExactly(1, 2)
+               }
 
-         "test that is supports TreeSet" {
-            val actual = TreeSet(listOf(3, 2, 1))
-
-            actual should containExactly(1, 2, 3)
-            actual.shouldContainExactly(1, 2, 3)
-            actual.shouldContainExactly(TreeSet(listOf(3, 2, 1)))
-
-            actual shouldNot containExactly(1, 2)
-            actual.shouldNotContainExactly(1, 2)
-
-            actual shouldNot containExactly(3, 2, 1)
-            actual.shouldNotContainExactly(3, 2, 1)
-
-            shouldThrow<AssertionError> {
-               actual should containExactly(1, 2)
-            }
-
-            shouldThrow<AssertionError> {
-               actual should containExactly(3, 2, 1)
-            }
-         }
-
-         "test that is supports ConcurrentSkipListSet" {
-            val actual = ConcurrentSkipListSet(listOf(3, 2, 1))
-
-            actual should containExactly(1, 2, 3)
-            actual.shouldContainExactly(1, 2, 3)
-            actual.shouldContainExactly(ConcurrentSkipListSet(listOf(3, 2, 1)))
-
-            actual shouldNot containExactly(1, 2)
-            actual.shouldNotContainExactly(1, 2)
-
-            actual shouldNot containExactly(3, 2, 1)
-            actual.shouldNotContainExactly(3, 2, 1)
-
-            shouldThrow<AssertionError> {
-               actual should containExactly(1, 2)
-            }
-
-            shouldThrow<AssertionError> {
-               actual should containExactly(3, 2, 1)
+               shouldThrow<AssertionError> {
+                  actual should containExactly(3, 2, 1)
+               }
             }
          }
 
