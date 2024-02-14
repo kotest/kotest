@@ -22,6 +22,8 @@ import io.kotest.property.checkAll
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
+import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -104,11 +106,47 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "test that is supports TreeSet" {
+            val actual = TreeSet(listOf(3, 2, 1))
 
+            actual should containExactly(1, 2, 3)
+            actual.shouldContainExactly(1, 2, 3)
+            actual.shouldContainExactly(TreeSet(listOf(3, 2, 1)))
+
+            actual shouldNot containExactly(1, 2)
+            actual.shouldNotContainExactly(1, 2)
+
+            actual shouldNot containExactly(3, 2, 1)
+            actual.shouldNotContainExactly(3, 2, 1)
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(3, 2, 1)
+            }
          }
 
          "test that is supports ConcurrentSkipListSet" {
+            val actual = ConcurrentSkipListSet(listOf(3, 2, 1))
 
+            actual should containExactly(1, 2, 3)
+            actual.shouldContainExactly(1, 2, 3)
+            actual.shouldContainExactly(ConcurrentSkipListSet(listOf(3, 2, 1)))
+
+            actual shouldNot containExactly(1, 2)
+            actual.shouldNotContainExactly(1, 2)
+
+            actual shouldNot containExactly(3, 2, 1)
+            actual.shouldNotContainExactly(3, 2, 1)
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(1, 2)
+            }
+
+            shouldThrow<AssertionError> {
+               actual should containExactly(3, 2, 1)
+            }
          }
 
          "Iterable with non-stable iteration order gives an informative message" {
