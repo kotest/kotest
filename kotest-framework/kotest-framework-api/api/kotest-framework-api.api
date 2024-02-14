@@ -51,6 +51,7 @@ public final class io/kotest/core/TagExpression$Companion {
 
 public abstract class io/kotest/core/TestConfiguration {
 	public fun <init> ()V
+	public fun after (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterEach (Lkotlin/jvm/functions/Function2;)V
@@ -61,6 +62,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun aroundTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun autoClose (Ljava/lang/AutoCloseable;)Ljava/lang/AutoCloseable;
 	public final fun autoClose (Lkotlin/Lazy;)Lkotlin/Lazy;
+	public fun before (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeEach (Lkotlin/jvm/functions/Function2;)V
@@ -1445,12 +1447,14 @@ public final class io/kotest/core/factory/FactoryConstrainedBeforeTestListener :
 
 public final class io/kotest/core/factory/FactoryConstrainedTestListener : io/kotest/core/listeners/TestListener {
 	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/TestListener;)V
+	public fun after (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun before (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1618,6 +1622,14 @@ public final class io/kotest/core/listeners/AfterInvocationListener$DefaultImpls
 	public static fun getName (Lio/kotest/core/listeners/AfterInvocationListener;)Ljava/lang/String;
 }
 
+public abstract interface class io/kotest/core/listeners/AfterListener : io/kotest/core/extensions/Extension {
+	public abstract fun after (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/listeners/AfterListener$DefaultImpls {
+	public static fun after (Lio/kotest/core/listeners/AfterListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class io/kotest/core/listeners/AfterProjectListener : io/kotest/core/listeners/Listener {
 	public abstract fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1671,6 +1683,14 @@ public abstract interface class io/kotest/core/listeners/BeforeInvocationListene
 public final class io/kotest/core/listeners/BeforeInvocationListener$DefaultImpls {
 	public static fun beforeInvocation (Lio/kotest/core/listeners/BeforeInvocationListener;Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun getName (Lio/kotest/core/listeners/BeforeInvocationListener;)Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/core/listeners/BeforeListener : io/kotest/core/extensions/Extension {
+	public abstract fun before (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/listeners/BeforeListener$DefaultImpls {
+	public static fun before (Lio/kotest/core/listeners/BeforeListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/core/listeners/BeforeProjectListener : io/kotest/core/listeners/Listener {
@@ -1760,17 +1780,19 @@ public final class io/kotest/core/listeners/SpecInstantiationListener$DefaultImp
 	public static fun specInstantiationError (Lio/kotest/core/listeners/SpecInstantiationListener;Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
 }
 
-public abstract interface class io/kotest/core/listeners/TestListener : io/kotest/core/listeners/AfterContainerListener, io/kotest/core/listeners/AfterEachListener, io/kotest/core/listeners/AfterInvocationListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeContainerListener, io/kotest/core/listeners/BeforeEachListener, io/kotest/core/listeners/BeforeInvocationListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener, io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/Listener, io/kotest/core/listeners/PrepareSpecListener {
+public abstract interface class io/kotest/core/listeners/TestListener : io/kotest/core/listeners/AfterContainerListener, io/kotest/core/listeners/AfterEachListener, io/kotest/core/listeners/AfterInvocationListener, io/kotest/core/listeners/AfterListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeContainerListener, io/kotest/core/listeners/BeforeEachListener, io/kotest/core/listeners/BeforeInvocationListener, io/kotest/core/listeners/BeforeListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener, io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/Listener, io/kotest/core/listeners/PrepareSpecListener {
 	public abstract fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/listeners/TestListener$DefaultImpls {
+	public static fun after (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterAny (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterContainer (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterEach (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterInvocation (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterSpec (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterTest (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun before (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeAny (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeContainer (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeEach (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1993,6 +2015,8 @@ public final class io/kotest/core/spec/RootTest {
 
 public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguration {
 	public fun <init> ()V
+	public fun after (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun after (Lkotlin/jvm/functions/Function2;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2001,6 +2025,8 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public fun assertionMode ()Lio/kotest/core/test/AssertionMode;
+	public fun before (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun before (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2404,10 +2430,12 @@ public final class io/kotest/core/spec/style/WordSpecTestFactoryConfiguration : 
 
 public class io/kotest/core/spec/style/scopes/AbstractContainerScope : io/kotest/core/spec/style/scopes/ContainerScope {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
+	public fun after (Lkotlin/jvm/functions/Function2;)V
 	public fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public fun afterEach (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
+	public fun before (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeEach (Lkotlin/jvm/functions/Function2;)V
@@ -2495,10 +2523,12 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerSco
 }
 
 public abstract interface class io/kotest/core/spec/style/scopes/ContainerScope : io/kotest/core/test/TestScope {
+	public abstract fun after (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterEach (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterTest (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun before (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun beforeEach (Lkotlin/jvm/functions/Function2;)V
@@ -2510,10 +2540,12 @@ public abstract interface class io/kotest/core/spec/style/scopes/ContainerScope 
 }
 
 public final class io/kotest/core/spec/style/scopes/ContainerScope$DefaultImpls {
+	public static fun after (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterAny (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterEach (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
+	public static fun before (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeAny (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeEach (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
