@@ -23,7 +23,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.UnresolvedTestConfig
-import io.kotest.core.test.parents
 import kotlin.coroutines.CoroutineContext
 
 @Deprecated("Renamed to ContainerScope in 5.0")
@@ -196,11 +195,9 @@ interface ContainerScope : TestScope {
 
       prependExtension(object : TestListener {
          override suspend fun after(testCase: TestCase, result: TestResult) {
-            if (!hasRun && thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
-               if (thisTestCase.parents().isEmpty()) {
-                  hasRun = true
-                  f(Tuple2(testCase, result))
-               }
+            if (!hasRun && thisTestCase == testCase) {
+               hasRun = true
+               f(Tuple2(testCase, result))
             }
          }
       })
