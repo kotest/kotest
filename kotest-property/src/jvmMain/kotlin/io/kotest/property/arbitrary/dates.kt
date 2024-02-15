@@ -47,7 +47,8 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  * This generator creates randomly generated LocalDates, in the range [[minDate, maxDate]].
  *
  * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
- * generator.
+ * generator. For exceptional years that are not leap years but can be divided by four, also the date [01/03/YEAR] will
+ * be a constant value.
  *
  * @see [localDateTime]
  * @see [localTime]
@@ -59,12 +60,20 @@ fun Arb.Companion.localDate(
    minDate > maxDate -> throw IllegalArgumentException("minDate must be before maxDate")
    minDate == maxDate -> Arb.constant(minDate)
    else -> {
-      val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
+      val firstPotentialLeapYear = (minDate.year + 3) and (0.inv() shl 2)
+      val potentialLeapYears = when {
+         maxDate.year < firstPotentialLeapYear -> 0
+         else -> (maxDate.year - firstPotentialLeapYear) / 4 + 1
+      }
 
-      val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
-      val february29s = february28s.map { it.plusDays(1) }
-
-      arbitrary(february28s + february29s + minDate + maxDate) {
+      arbitrary(edgecaseFn = { rs ->
+         val r = rs.random.nextInt(potentialLeapYears + 1)
+         when {
+            r == 0 -> if (rs.random.nextBoolean()) minDate else maxDate
+            else -> LocalDate.of(firstPotentialLeapYear + (r - 1) * 4, 2, 28)
+               .plusDays(rs.random.nextLong(2))
+         }
+      }) {
          minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
       }.filter { it in minDate..maxDate }
    }
