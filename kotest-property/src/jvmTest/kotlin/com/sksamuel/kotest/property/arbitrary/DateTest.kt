@@ -94,7 +94,7 @@ class DateTest : WordSpec({
          shouldThrow<IllegalArgumentException> {
             val minDate = of(2021, 1, 1)
             Arb.localDate(minDate, minDate.minusDays(1))
-         }.message shouldBe "minDate must be before maxDate"
+         }.message shouldBe "minDate must be before or equal to maxDate"
       }
 
       "generate LocalDates from minDate to (including) maxDate" {
