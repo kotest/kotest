@@ -65,7 +65,7 @@ fun Arb.Companion.localDate(
       val february29s = february28s.map { it.plusDays(1) }
 
       arbitrary(february28s + february29s + minDate + maxDate) {
-         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
+         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
       }.filter { it in minDate..maxDate }
    }
 }
