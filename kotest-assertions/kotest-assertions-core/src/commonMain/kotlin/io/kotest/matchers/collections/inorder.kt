@@ -21,9 +21,12 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
       if (actualIterator.next() == subsequence[subsequenceIndex]) subsequenceIndex += 1
    }
 
+   val mismatchDescription = if(subsequenceIndex == subsequence.size) "" else
+      ", could not match element ${subsequence.elementAt(subsequenceIndex).print().value} at index $subsequenceIndex"
+
    MatcherResult(
       subsequenceIndex == subsequence.size,
-      { "${actual.print().value} did not contain the elements ${subsequence.print().value} in order" },
+      { "${actual.print().value} did not contain the elements ${subsequence.print().value} in order$mismatchDescription" },
       { "${actual.print().value} should not contain the elements ${subsequence.print().value} in order" }
    )
 }
