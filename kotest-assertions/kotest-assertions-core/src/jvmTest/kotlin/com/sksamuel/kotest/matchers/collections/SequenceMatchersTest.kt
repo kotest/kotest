@@ -40,6 +40,8 @@ import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 class SequenceMatchersTest : WordSpec() {
 
@@ -786,6 +788,12 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for overlapping sequence") {
             sampleData.countup.shouldContainInOrder((5..15).asSequence())
+         }
+
+         "describe first unmatched element" {
+            shouldThrowAny {
+               sequenceOf(1, 2, 3).shouldContainInOrder(sequenceOf(2, 3, 4, 5))
+            }.message shouldContain "did not contain the elements [[2, 3, 4, 5]] in order, could not match element 4 at index 2"
          }
 
          fail("for overlapping sequence (variadic)") {
