@@ -428,9 +428,12 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
       if (actualIterator.next() == subsequenceAsList.elementAt(subsequenceIndex)) subsequenceIndex += 1
    }
 
+   val mismatchDescription = if(subsequenceIndex == subsequenceAsList.size) "" else
+      ", could not match element ${subsequenceAsList.elementAt(subsequenceIndex)} at index $subsequenceIndex"
+
    MatcherResult(
       subsequenceIndex == subsequenceAsList.size,
-      { "[$actual] did not contain the elements [$subsequenceAsList] in order" },
+      { "[$actual] did not contain the elements [$subsequenceAsList] in order$mismatchDescription" },
       { "[$actual] should not contain the elements [$subsequenceAsList] in order" }
    )
 }
