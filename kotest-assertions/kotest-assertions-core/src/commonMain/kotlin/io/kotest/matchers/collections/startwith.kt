@@ -30,13 +30,51 @@ infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot 
 
 fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
-      val valueSlice = value.take(expectedSlice.size)
+      val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.START)
 
       return MatcherResult(
-         valueSlice == expectedSlice,
-         { "List should start with ${expectedSlice.print().value} but was ${valueSlice.print().value}" },
+         comparison.match,
+         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}" },
          { "List should not start with ${expectedSlice.print().value}" }
       )
+   }
+}
+
+private data class SliceComparison<T>(
+   val match: Boolean,
+   val mismatchDescription: String,
+   val valueSlice: List<T>
+) {
+   companion object {
+      fun <T> of(expectedSlice: List<T>, value: List<T>, sliceType: SliceType): SliceComparison<T> {
+         val valueSlice = when (sliceType) {
+            SliceType.START -> value.take(expectedSlice.size)
+            SliceType.END -> value.takeLast(expectedSlice.size)
+         }
+         val indexOffset = when (sliceType) {
+            SliceType.START -> 0
+            SliceType.END -> value.size - expectedSlice.size
+         }
+         return when {
+            (valueSlice == expectedSlice) -> SliceComparison(true, "", valueSlice)
+            (valueSlice.size != expectedSlice.size) -> SliceComparison(
+               false,
+               "Actual collection is shorter than expected slice",
+               valueSlice
+            )
+            else -> SliceComparison(
+               false,
+               "Mismatched elements: " +
+                  valueSlice.mapIndexedNotNull { index: Int, t: T ->
+                     if (t != expectedSlice[index]) "value[${index + indexOffset}] != ${expectedSlice[index].print().value}"
+                     else null
+                  }.joinToString(", "),
+               valueSlice
+            )
+         }
+      }
+
+      internal enum class SliceType { START, END }
    }
 }
 
@@ -65,12 +103,13 @@ infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot en
 
 fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
-      val valueSlice = value.takeLast(expectedSlice.size)
+      val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.END)
 
       return MatcherResult(
-         valueSlice == expectedSlice,
-         { "List should end with ${expectedSlice.print().value} but was ${valueSlice.print().value}" },
+         comparison.match,
+         { "List should end with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}" },
          { "List should not end with ${expectedSlice.print().value}" }
       )
    }
 }
+
