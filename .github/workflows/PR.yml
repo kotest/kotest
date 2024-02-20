@@ -1,6 +1,12 @@
 name: PR-Test
 
 on:
+   merge_group:
+      paths-ignore:
+         - 'doc/**'
+         - 'documentation/**'
+         - '*.md'
+         - '*.yml'
    pull_request:
       paths-ignore:
          - 'doc/**'

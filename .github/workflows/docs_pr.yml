@@ -1,6 +1,9 @@
 name: docs-test
 
 on:
+   merge_group:
+      paths:
+         - 'documentation/**'
    pull_request:
       paths:
          - 'documentation/**'
