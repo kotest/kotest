@@ -217,7 +217,7 @@ Matchers provided by the `kotest-assertions-core` module.
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
 | `offsetDateTime.shouldBeToday()`                                         | Asserts that the OffsetDateTime has the same day as today.                                           |
 | `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
-| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within duration of other OffsetDateTime.                          |
+| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
 
 | Times                                               ||
 |-----------------------------------------------------| ---- |
