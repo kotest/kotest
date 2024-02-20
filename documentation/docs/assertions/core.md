@@ -211,7 +211,7 @@ Matchers provided by the `kotest-assertions-core` module.
 |----------------------------------------------------------------------| ---- |
 | `zonedDateTime.shouldBeToday()`                                      | Asserts that the ZonedDateTime has the same day as the today. |
 | `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`        | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
-| `zonedDateTime.shouldBe(other: ZonedDateTime plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within duration of other ZonedDateTime. |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime. |
 
 | OffsetDateTime                                                           |                                                                                                      |
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
