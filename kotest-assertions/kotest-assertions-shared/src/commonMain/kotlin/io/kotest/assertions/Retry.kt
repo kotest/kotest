@@ -85,6 +85,7 @@ suspend fun <T> retry(
          // else ignore and continue
       }
       retrySoFar++
+      if (retrySoFar >= config.maxRetry) break
       delay(nextAwaitDuration)
       nextAwaitDuration *= config.multiplier
    }
