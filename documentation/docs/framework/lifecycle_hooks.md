@@ -80,7 +80,7 @@ The second, related, method is to override the callback functions in the Spec. T
 
 ```kotlin
 class TestSpec : WordSpec() {
-    override fun beforeTest(testCase: TestCase) {
+    override suspend fun beforeTest(testCase: TestCase) {
         println("Starting a test $testCase")
     }
 
