@@ -44,13 +44,6 @@ jobs:
                    echo "run_docs=true" >> $GITHUB_OUTPUT
                  fi
                done < files.txt
-   run-tests:
-      name: Run tests
-      needs: determine-workflows-to-run
-      if: ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
-      uses: ./.github/workflows/PR.yml
-      with:
-         ref: ${{ github.event.inputs.ref }}
    run-docs:
       name: Run docs
       needs: determine-workflows-to-run
@@ -58,4 +51,10 @@ jobs:
       uses: ./.github/workflows/docs_pr.yml
       with:
          ref: ${{ github.event.inputs.ref }}
-
+   run-tests:
+      name: Run tests
+      needs: determine-workflows-to-run
+      if: ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      uses: ./.github/workflows/PR.yml
+      with:
+         ref: ${{ github.event.inputs.ref }}
