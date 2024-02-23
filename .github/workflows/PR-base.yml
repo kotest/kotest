@@ -1,0 +1,57 @@
+name: PR-base
+# Triggers Docs PR workflow on changes to documentation
+# Triggers tests on non-docs PRs
+
+on:
+   merge_group:
+   pull_request:
+
+jobs:
+   determine-workflows-to-run:
+      runs-on: ubuntu-latest
+      outputs:
+         run_docs: ${{ steps.check_files.outputs.run_docs }}
+         run_tests: ${{ steps.check_files.outputs.run_tests }}
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 2
+
+         -  name: check modified files
+            id: check_files
+            run: |
+               echo "::set-output name=run_docs::false"
+               echo "::set-output name=run_tests::false"
+
+               echo "=============== list modified files ==============="
+               git diff --name-only HEAD^ HEAD
+
+               echo "========== check paths of modified files =========="
+               git diff --name-only HEAD^ HEAD &gt; files.txt
+               while IFS= read -r file
+               do
+                 echo $file
+                 if [[ $file != documentation/* ]]; then
+                   echo "This modified file is not under the 'documentation' folder. Will run tests."
+                   echo "::set-output name=run_tests::true"
+                 else
+                   echo "This modified file is under the 'documentation' folder. Will run docs workflow."
+                   echo "::set-output name=run_docs::true"
+                 fi
+               done &lt; files.txt
+   run-tests:
+      name: Run tests
+      needs: determine-workflows-to-run
+      if: ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      uses: ./.github/workflows/PR.yml
+      with:
+         ref: ${{ github.event.inputs.ref }}
+   run-docs:
+      name: Run docs
+      needs: determine-workflows-to-run
+      if: ${{ needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
+      uses: ./.github/workflows/docs_pr.yml
+      with:
+         ref: ${{ github.event.inputs.ref }}
+

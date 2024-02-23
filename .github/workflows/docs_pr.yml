@@ -1,12 +1,12 @@
 name: docs-test
 
 on:
-   merge_group:
-      paths:
-         - 'documentation/**'
-   pull_request:
-      paths:
-         - 'documentation/**'
+   workflow_call:
+      inputs:
+         ref:
+            description: "The git branch, tag or SHA to checkout"
+            required: false
+            type: string
 
 permissions:
    contents: read
@@ -18,6 +18,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v3
+            with:
+               fetch-depth: 0
+               ref: ${{ inputs.ref }}
          -  uses: actions/setup-node@v3
             with:
                node-version: '18.4.0'
