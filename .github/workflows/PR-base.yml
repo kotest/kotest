@@ -6,6 +6,9 @@ on:
    merge_group:
    pull_request:
 
+permissions:
+   contents: read
+
 jobs:
    determine-workflows-to-run:
       runs-on: ubuntu-latest
