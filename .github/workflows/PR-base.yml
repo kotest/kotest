@@ -11,6 +11,7 @@ permissions:
 
 jobs:
    determine-workflows-to-run:
+      name: Determine workflows to run
       runs-on: ubuntu-latest
       outputs:
          run_docs: ${{ steps.check_files.outputs.run_docs }}
@@ -24,8 +25,8 @@ jobs:
          -  name: check modified files
             id: check_files
             run: |
-               echo "::set-output name=run_docs::false"
-               echo "::set-output name=run_tests::false"
+               echo "run_docs=false" >> $GITHUB_OUTPUT
+               echo "run_tests=false" >> $GITHUB_OUTPUT
 
                echo "=============== list modified files ==============="
                git diff --name-only HEAD^ HEAD
@@ -37,10 +38,10 @@ jobs:
                  echo $file
                  if [[ $file != documentation/* ]]; then
                    echo "This modified file is not under the 'documentation' folder. Will run tests."
-                   echo "::set-output name=run_tests::true"
+                   echo "run_tests=true" >> $GITHUB_OUTPUT
                  else
                    echo "This modified file is under the 'documentation' folder. Will run docs workflow."
-                   echo "::set-output name=run_docs::true"
+                   echo "run_docs=true" >> $GITHUB_OUTPUT
                  fi
                done < files.txt
    run-tests:
