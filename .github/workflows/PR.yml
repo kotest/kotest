@@ -1,18 +1,12 @@
 name: PR-Test
 
 on:
-   merge_group:
-      paths-ignore:
-         - 'doc/**'
-         - 'documentation/**'
-         - '*.md'
-         - '*.yml'
-   pull_request:
-      paths-ignore:
-         - 'doc/**'
-         - 'documentation/**'
-         - '*.md'
-         - '*.yml'
+   workflow_call:
+      inputs:
+         ref:
+            description: "The git branch, tag or SHA to checkout"
+            required: false
+            type: string
 
 permissions:
   contents: read
@@ -26,7 +20,7 @@ jobs:
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
+               ref: ${{ inputs.ref }}
 
          -  name: Setup JDK
             uses: actions/setup-java@v3
