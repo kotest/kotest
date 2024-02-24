@@ -5,6 +5,7 @@ package io.kotest.matchers.sequences
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.*
+import io.kotest.matchers.collections.duplicates
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -211,10 +212,10 @@ fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val valueAsList = value.toList()
+      val duplicates = value.toList().duplicates()
       return MatcherResult(
-         valueAsList.toSet().size == valueAsList.size,
-         { "Sequence should be Unique" },
+         duplicates.isEmpty(),
+         { "Sequence should be Unique, but has duplicates: ${duplicates.print().value}" },
          { "Sequence should contain at least one duplicate element" }
       )
    }
@@ -224,11 +225,11 @@ fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val valueAsList = value.toList()
+      val duplicates = value.toList().duplicates()
       return MatcherResult(
-         valueAsList.toSet().size < valueAsList.size,
+         duplicates.isNotEmpty(),
          { "Sequence should contain duplicates" },
-         { "Sequence should not contain duplicates" }
+         { "Sequence should not contain duplicates, but has some: ${duplicates.print().value}" }
       )
    }
 }
