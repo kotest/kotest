@@ -924,16 +924,20 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldHaveUpperBound(0)
          }
 
-         fail("for single with wrong bound") {
-            sampleData.single.shouldHaveUpperBound(-1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveUpperBound(-1)
+            }.shouldHaveMessage("Sequence should have upper bound -1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
             sampleData.countup.shouldHaveUpperBound(sampleData.countup.maxOrNull() ?: Int.MAX_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            sampleData.countup.shouldHaveUpperBound((sampleData.countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveUpperBound((sampleData.countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+            }.shouldHaveMessage("Sequence should have upper bound 9, but element at index 10 was: 10")
          }
       }
 
@@ -946,16 +950,20 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldHaveLowerBound(0)
          }
 
-         fail("for single with wrong bound") {
-            sampleData.single.shouldHaveLowerBound(1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveLowerBound(1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
             sampleData.countup.shouldHaveLowerBound(sampleData.countup.minOrNull() ?: Int.MIN_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            sampleData.countup.shouldHaveLowerBound((sampleData.countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveLowerBound((sampleData.countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
       }
 
