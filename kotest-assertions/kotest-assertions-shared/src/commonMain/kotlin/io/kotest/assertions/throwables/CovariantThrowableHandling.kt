@@ -63,7 +63,7 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
    shouldThrowUnit<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure("Expected exception message '$message' but was '${it.message}' instead.", it)
       }
    }
 
@@ -212,7 +212,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
    shouldThrow<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure("Expected exception message '$message' but was '${it.message}' instead.", it)
       }
    }
 
