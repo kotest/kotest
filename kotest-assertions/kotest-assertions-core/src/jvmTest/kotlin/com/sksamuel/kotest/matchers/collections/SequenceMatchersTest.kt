@@ -34,6 +34,7 @@ import io.kotest.matchers.sequences.shouldNotBeSortedWith
 import io.kotest.matchers.sequences.shouldNotBeUnique
 import io.kotest.matchers.sequences.shouldNotContain
 import io.kotest.matchers.sequences.shouldNotContainAllInAnyOrder
+import io.kotest.matchers.sequences.shouldNotContainDuplicates
 import io.kotest.matchers.sequences.shouldNotContainExactly
 import io.kotest.matchers.sequences.shouldNotContainNoNulls
 import io.kotest.matchers.sequences.shouldNotContainNull
@@ -42,6 +43,7 @@ import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.throwable.shouldHaveMessage
 
 class SequenceMatchersTest : WordSpec() {
 
@@ -844,12 +846,16 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldBeUnique()
          }
 
-         fail("with repeated nulls") {
-            sampleData.sparse.shouldBeUnique()
+         "fail with repeated nulls" {
+            shouldThrowAny {
+               sampleData.sparse.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [<null>]")
          }
 
-         fail("with repeats") {
-            sampleData.repeating.shouldBeUnique()
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [1, 2, 3]")
          }
 
          succeed("for multiple unique") {
@@ -898,6 +904,12 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for multiple unique") {
             sampleData.countup.shouldContainDuplicates()
+         }
+
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldNotContainDuplicates()
+            }.shouldHaveMessage("Sequence should not contain duplicates, but has some: [1, 2, 3]")
          }
       }
 

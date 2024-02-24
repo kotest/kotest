@@ -57,7 +57,7 @@ fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
 ): Arb<LocalDate> = when {
-   minDate > maxDate -> throw IllegalArgumentException("minDate must be before maxDate")
+   minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
    minDate == maxDate -> Arb.constant(minDate)
    else -> {
       val firstPotentialLeapYear = (minDate.year + 3) and (0.inv() shl 2)
@@ -74,7 +74,7 @@ fun Arb.Companion.localDate(
                .plusDays(rs.random.nextLong(2))
          }
       }) {
-         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
+         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
       }.filter { it in minDate..maxDate }
    }
 }
