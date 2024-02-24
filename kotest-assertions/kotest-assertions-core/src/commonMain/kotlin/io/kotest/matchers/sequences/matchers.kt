@@ -5,6 +5,7 @@ package io.kotest.matchers.sequences
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.*
+import io.kotest.matchers.collections.duplicates
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -178,31 +179,43 @@ fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverN
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      (value.maxOrNull() ?: t) <= t,
-      { "Sequence should have upper bound $t" },
-      { "Sequence should not have upper bound $t" }
-   )
+   override fun test(value: C): MatcherResult {
+      val elementAboveUpperBound = value.withIndex().firstOrNull { it.value > t }
+      val elementAboveUpperBoundStr = elementAboveUpperBound?.let {
+         ", but element at index ${it.index} was: ${it.value.print().value}"
+      } ?: ""
+      return MatcherResult(
+         elementAboveUpperBound == null,
+         { "Sequence should have upper bound $t$elementAboveUpperBoundStr" },
+         { "Sequence should not have upper bound $t" }
+      )
+   }
 }
 
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      (value.minOrNull() ?: t) >= t,
-      { "Sequence should have lower bound $t" },
-      { "Sequence should not have lower bound $t" }
-   )
+   override fun test(value: C): MatcherResult {
+      val elementBelowLowerBound = value.withIndex().firstOrNull { it.value < t }
+      val elementBelowLowerBoundStr = elementBelowLowerBound?.let {
+         ", but element at index ${it.index} was: ${it.value.print().value}"
+      } ?: ""
+      return MatcherResult(
+         elementBelowLowerBound == null,
+         { "Sequence should have lower bound $t$elementBelowLowerBoundStr" },
+         { "Sequence should not have lower bound $t" }
+      )
+   }
 }
 
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val valueAsList = value.toList()
+      val duplicates = value.toList().duplicates()
       return MatcherResult(
-         valueAsList.toSet().size == valueAsList.size,
-         { "Sequence should be Unique" },
+         duplicates.isEmpty(),
+         { "Sequence should be Unique, but has duplicates: ${duplicates.print().value}" },
          { "Sequence should contain at least one duplicate element" }
       )
    }
@@ -212,11 +225,11 @@ fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val valueAsList = value.toList()
+      val duplicates = value.toList().duplicates()
       return MatcherResult(
-         valueAsList.toSet().size < valueAsList.size,
+         duplicates.isNotEmpty(),
          { "Sequence should contain duplicates" },
-         { "Sequence should not contain duplicates" }
+         { "Sequence should not contain duplicates, but has some: ${duplicates.print().value}" }
       )
    }
 }
