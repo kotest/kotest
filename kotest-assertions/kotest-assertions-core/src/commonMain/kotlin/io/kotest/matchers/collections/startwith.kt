@@ -66,7 +66,7 @@ private data class SliceComparison<T>(
                false,
                "The following elements failed:\n" +
                   valueSlice.mapIndexedNotNull { index: Int, t: T ->
-                     if (t != expectedSlice[index]) "  at index[${index + indexOffset}] => expected: <${expectedSlice[index].print().value}>, but was: <${valueSlice[index].print().value}>"
+                     if (t != expectedSlice[index]) "  [${index + indexOffset}] ${valueSlice[index].print().value} => expected: <${expectedSlice[index].print().value}>, but was: <${valueSlice[index].print().value}>"
                      else null
                   }.joinToString("\n"),
                valueSlice
