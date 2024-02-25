@@ -6,6 +6,7 @@ import io.kotest.similarity.Distance.Companion.CompleteMismatch
 import java.math.BigDecimal
 
 internal sealed interface ComparisonResult {
+    val match: Boolean
     fun description(): String
 }
 
@@ -16,6 +17,8 @@ internal data class Match(
     val distance
        get() = CompleteMatch
     override fun description() = "  $field = ${value.print().value}"
+    override val match: Boolean
+      get() = true
 }
 
 internal data class AtomicMismatch(
@@ -24,7 +27,9 @@ internal data class AtomicMismatch(
     val actual: Any?,
     val distance: Distance = CompleteMismatch
 ): ComparisonResult {
-    override fun description() = "  $field expected: ${expected.print().value}, but was: ${actual.print().value}"
+    override fun description() = "    \"$field\" expected: <${expected.print().value}>, but was: <${actual.print().value}>"
+    override val match: Boolean
+      get() = false
 }
 
 internal data class MismatchByField(
@@ -36,9 +41,10 @@ internal data class MismatchByField(
 ): ComparisonResult {
     override fun description() = """$field expected: $expected,
         |  but was: $actual,
-        |  similarity: ${distance.distance * BigDecimal(100)}%,
-        |  fields:
-        |${comparisonResults.joinToString("\n") { it.description() }}""".trimMargin()
+        |  The following fields did not match:
+        |${comparisonResults.filter{ !it.match }.joinToString("\n    ") { it.description() }}""".trimMargin()
+    override val match: Boolean
+      get() = comparisonResults.all { it.match }
 }
 
 internal fun possibleMatchDescription(possibleMatch: PossibleMatch): String = when(possibleMatch.comparisonResult) {
@@ -58,6 +64,6 @@ internal fun possibleMismatchByFieldDescription(possibleMatch: PossibleMatch): S
 
 internal fun comparisonResultDescription(comparisonResult: ComparisonResult): String = when(comparisonResult) {
     is Match -> "\"${comparisonResult.field}\" = ${comparisonResult.value}"
-    is AtomicMismatch -> "\"${comparisonResult.field}\" expected: ${comparisonResult.expected},\n but was: ${comparisonResult.actual}"
+    is AtomicMismatch -> "\"${comparisonResult.field}\" expected: <${comparisonResult.expected}>,\n but was: <${comparisonResult.actual}>"
     else -> "Unknown $comparisonResult"
 }

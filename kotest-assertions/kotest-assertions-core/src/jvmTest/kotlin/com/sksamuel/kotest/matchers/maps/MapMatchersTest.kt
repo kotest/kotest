@@ -291,11 +291,8 @@ class MapMatchersTest : WordSpec() {
             |
             | expected: Fruit(name=pear, color=green, taste=sweet),
             |  but was: Fruit(name=apple, color=green, taste=sweet),
-            |  similarity: 67.00%,
-            |  fields:
-            |  name expected: "pear", but was: "apple"
-            |  color = "green"
-            |  taste = "sweet"
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
               """.trimMargin()
          }
          "test shouldNot assertion" {
