@@ -27,7 +27,8 @@ class StartWithEndWithTest : WordSpec() {
                listOf(1L, 2L) should startWith(listOf(1L, 3L))
             }.shouldHaveMessage("""
                |List should start with [1L, 3L] but was [1L, 2L]
-               |Mismatched elements: value[1] != 3L
+               |The following elements failed:
+               |  at index[1] => expected: <3L>, but was: <2L>
             """.trimMargin())
          }
          "print errors unambiguously when the actual value is empty"  {
@@ -54,7 +55,9 @@ class StartWithEndWithTest : WordSpec() {
                listOf(1L, 2L, 3L, 4L) should endWith(listOf(1L, 3L))
             }.shouldHaveMessage("""
                |List should end with [1L, 3L] but was [3L, 4L]
-               |Mismatched elements: value[2] != 1L, value[3] != 3L
+               |The following elements failed:
+               |  at index[2] => expected: <1L>, but was: <3L>
+               |  at index[3] => expected: <3L>, but was: <4L>
                """.trimMargin())
          }
          "print errors unambiguously when the actual value is empty"  {
