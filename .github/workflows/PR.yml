@@ -2,41 +2,59 @@ name: PR-Test
 
 on:
    pull_request:
-      paths-ignore:
-         - 'doc/**'
-         - 'documentation/**'
-         - '*.md'
-         - '*.yml'
+   merge_group:
 
 permissions:
-  contents: read
+   contents: read
 
 jobs:
-   api_check:
+   determine-workflows-to-run:
+      name: Determine workflows to run
       runs-on: ubuntu-latest
-      if: github.repository == 'kotest/kotest'
+      outputs:
+         run_docs: ${{ steps.check_files.outputs.run_docs }}
+         run_tests: ${{ steps.check_files.outputs.run_tests }}
       steps:
-         -  name: Checkout the repo
+         -  name: Checkout code
             uses: actions/checkout@v3
             with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
+               fetch-depth: 2
 
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'temurin'
-               java-version: "17"
+         -  name: check modified files
+            id: check_files
+            run: |
+               echo "run_docs=false" >> $GITHUB_OUTPUT
+               echo "run_tests=false" >> $GITHUB_OUTPUT
 
-         -  uses: gradle/gradle-build-action@v2
+               echo "=============== list modified files ==============="
+               git diff --name-only HEAD^ HEAD
 
-         -  name: Run api check
-            run: ./gradlew apiCheck
+               echo "========== check paths of modified files =========="
+               git diff --name-only HEAD^ HEAD > files.txt
+               while IFS= read -r file
+               do
+                 echo $file
+                 if [[ $file != documentation/* ]]; then
+                   echo "This modified file is not under the 'documentation' folder. Will run tests."
+                   echo "run_tests=true" >> $GITHUB_OUTPUT
+                 else
+                   echo "This modified file is under the 'documentation' folder. Will run docs workflow."
+                   echo "run_docs=true" >> $GITHUB_OUTPUT
+                 fi
+               done < files.txt
+
+   api_check:
+      needs: [ determine-workflows-to-run ]
+      if: github.repository == 'kotest/kotest' && ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: ubuntu-latest
+         ref: ${{ inputs.ref }}
+         task: apiCheck
 
    test_linux:
-      needs: api_check
-      runs-on: ubuntu-latest
-      if: github.repository == 'kotest/kotest'
+      needs: [ api_check, determine-workflows-to-run ]
+      if: github.repository == 'kotest/kotest' && ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       strategy:
          matrix:
             target:
@@ -45,39 +63,15 @@ jobs:
                - linuxX64Test linuxArm64TestKlibrary
                - androidNativeX86TestKlibrary androidNativeX64TestKlibrary androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary
                - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'temurin'
-               java-version: "17"
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run tests
-            run: ./gradlew ${{ matrix.target }} --scan
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
-            with:
-               name: error-report
-               path: build-reports.zip
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: ubuntu-latest
+         ref: ${{ inputs.ref }}
+         task: ${{ matrix.target }}
 
    test_mac:
-      needs: test_linux
-      runs-on: macos-latest
-      if: github.repository == 'kotest/kotest'
+      needs: [ test_linux, determine-workflows-to-run ]
+      if: github.repository == 'kotest/kotest' && ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       strategy:
          fail-fast: true
          matrix:
@@ -86,72 +80,53 @@ jobs:
                - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary
                - tvosX64Test tvosArm64TestKlibrary tvosSimulatorArm64Test
                - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64TestKlibrary
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: macos-latest
+         ref: ${{ inputs.ref }}
+         task: ${{ matrix.target }}
 
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'temurin'
-               java-version: "17"
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run tests
-            run: ./gradlew ${{ matrix.target }} --scan
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
-            with:
-               name: error-report
-               path: build-reports.zip
 
    test_windows:
-      needs: api_check
-      runs-on: windows-latest
-      if: github.repository == 'kotest/kotest'
-      strategy:
-         fail-fast: true
-         matrix:
-            target:
-               - mingwX64Test
+      needs: [ api_check, determine-workflows-to-run ]
+      if: github.repository == 'kotest/kotest' && ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: windows-latest
+         ref: ${{ inputs.ref }}
+         task: mingwX64Test
+
+   test_docs:
+      needs: [ determine-workflows-to-run ]
+      if: github.repository == 'kotest/kotest' && ${{ needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
+      runs-on: ubuntu-latest
       steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
+         -  uses: actions/checkout@v3
             with:
                fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
+               ref: ${{ inputs.ref }}
+         -  uses: actions/setup-node@v3
             with:
-               distribution: 'temurin'
-               java-version: "17"
+               node-version: '18.4.0'
+         -  name: Build static docusaurus pages
+            run: |
+               npm --prefix documentation ci
+               npm --prefix documentation run build
 
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run tests
-            run: ./gradlew ${{ matrix.target }} --scan
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
-            with:
-               name: error-report
-               path: build-reports.zip
-env:
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   finalize:
+      # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
+      name: Final PR results
+      needs: [ api_check, test_linux, test_mac, test_windows, test_docs ]
+      if: ${{ always() }}
+      runs-on: ubuntu-latest
+      steps:
+         -  name: Check all job status
+            # see https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#needs-context
+            # see https://stackoverflow.com/a/67532120/4907315
+            # Note: skipped results are OK in our case, we don't run code tests if there's only docs changes
+            if: >-
+               ${{
+                    contains(needs.*.result, 'failure')
+                 || contains(needs.*.result, 'cancelled')
+               }}
+            run: exit 1

@@ -20,6 +20,7 @@ import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.offsetDateTime
 import io.kotest.property.arbitrary.period
+import io.kotest.property.arbitrary.removeEdgecases
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.year
 import io.kotest.property.arbitrary.yearMonth
@@ -93,7 +94,19 @@ class DateTest : WordSpec({
          shouldThrow<IllegalArgumentException> {
             val minDate = of(2021, 1, 1)
             Arb.localDate(minDate, minDate.minusDays(1))
-         }.message shouldBe "minDate must be before maxDate"
+         }.message shouldBe "minDate must be before or equal to maxDate"
+      }
+
+      "generate LocalDates from minDate to (including) maxDate" {
+         val dates = mutableSetOf<LocalDate>()
+         val minDate = of(1998, 12, 30)
+         val maxDate = of(1999, 1, 3)
+
+         checkAll(10_000, Arb.localDate(minDate, maxDate).removeEdgecases()) {
+            dates += it
+         }
+
+         dates shouldBe generateSequence(minDate) { it.plusDays(1) }.takeWhile { it <= maxDate }.toSet()
       }
    }
 
