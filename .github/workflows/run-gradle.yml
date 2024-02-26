@@ -1,0 +1,50 @@
+on:
+   workflow_call:
+      inputs:
+         runs-on:
+            description: "The platform to run tests on"
+            required: true
+            type: string
+         ref:
+            description: "The git branch, tag or SHA to checkout"
+            required: false
+            type: string
+         task:
+            description: "The Gradle task to run"
+            required: true
+            type: string
+
+jobs:
+   run-tests:
+      runs-on: ${{ inputs.runs-on }}
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v3
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.ref }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'temurin'
+               java-version: "17"
+
+         -  uses: gradle/gradle-build-action@v2
+
+         -  name: Run tests
+            run: ./gradlew ${{ inputs.task }} --scan
+
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@v3
+            with:
+               name: error-report
+               path: build-reports.zip
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
