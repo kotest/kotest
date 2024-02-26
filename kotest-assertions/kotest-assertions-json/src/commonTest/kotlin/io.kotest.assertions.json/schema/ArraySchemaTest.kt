@@ -99,7 +99,7 @@ class ArraySchemaTest : FunSpec(
          }
          array shouldNotMatchSchema uniqueArray
          shouldFail { array shouldMatchSchema uniqueArray }.message shouldBe """
-            $ => Sequence should be Unique
+            $ => Sequence should be Unique, but has duplicates: [NumberNode(content=1)]
          """.trimIndent()
       }
 

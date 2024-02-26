@@ -26,7 +26,7 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
 
    MatcherResult(
       subsequenceIndex == predicates.size,
-      { "${actual.print().value} did not match the predicates ${predicates.print().value} in order" },
+      { "${actual.print().value} did not match the predicates ${predicates.print().value} in order. Predicate at index $subsequenceIndex did not match." },
       { "${actual.print().value} should not match the predicates ${predicates.print().value} in order" }
    )
 }
