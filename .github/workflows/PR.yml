@@ -7,6 +7,10 @@ on:
             description: "The git branch, tag or SHA to checkout"
             required: false
             type: string
+         run_tests:
+            description: "Run tests"
+            required: true
+            type: boolean
 
 permissions:
   contents: read
@@ -47,20 +51,24 @@ jobs:
                - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
       steps:
          -  name: Checkout the repo
+            if: ${{ inputs.run_tests }}
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
 
          -  name: Setup JDK
+            if: ${{ inputs.run_tests }}
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
                java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
+            if: ${{ inputs.run_tests }}
 
          -  name: Run tests
+            if: ${{ inputs.run_tests }}
             run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
@@ -89,20 +97,24 @@ jobs:
 
       steps:
          -  name: Checkout the repo
+            if: ${{ inputs.run_tests }}
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
 
          -  name: Setup JDK
+            if: ${{ inputs.run_tests }}
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
                java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
+            if: ${{ inputs.run_tests }}
 
          -  name: Run tests
+            if: ${{ inputs.run_tests }}
             run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
@@ -127,20 +139,24 @@ jobs:
                - mingwX64Test
       steps:
          -  name: Checkout the repo
+            if: ${{ inputs.run_tests }}
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
 
          -  name: Setup JDK
+            if: ${{ inputs.run_tests }}
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
                java-version: "17"
 
          -  uses: gradle/gradle-build-action@v2
+            if: ${{ inputs.run_tests }}
 
          -  name: Run tests
+            if: ${{ inputs.run_tests }}
             run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
