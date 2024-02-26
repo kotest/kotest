@@ -54,7 +54,7 @@ jobs:
    run-tests:
       name: Run tests
       needs: determine-workflows-to-run
-      if: ${{ needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       uses: ./.github/workflows/PR.yml
       with:
          ref: ${{ github.event.inputs.ref }}
+         run_tests: ${{ needs.determine-workflows-to-run.outputs.run_tests }}
