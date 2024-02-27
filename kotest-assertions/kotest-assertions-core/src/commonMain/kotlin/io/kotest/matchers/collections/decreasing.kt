@@ -6,7 +6,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-
 fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyDecreasing(): Iterable<T> {
    toList().shouldBeMonotonicallyDecreasing()
    return this
@@ -14,6 +13,11 @@ fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyDecreasing(): Iterable<
 
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyDecreasing(): Array<T> {
    asList().shouldBeMonotonicallyDecreasing()
+   return this
+}
+
+fun <T : Comparable<T>> Sequence<T>.shouldBeMonotonicallyDecreasing(): Sequence<T> {
+   asIterable().shouldBeMonotonicallyDecreasing()
    return this
 }
 
@@ -32,65 +36,105 @@ fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyDecreasing(): Array<T> 
    return this
 }
 
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeMonotonicallyDecreasing(): Sequence<T> {
+   asIterable().shouldNotBeMonotonicallyDecreasing()
+   return this
+}
+
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyDecreasing(): List<T> {
    this shouldNot beMonotonicallyDecreasing<T>()
    return this
 }
 
-fun <T> List<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): List<T> {
+infix fun <T> List<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): List<T> {
    this should beMonotonicallyDecreasingWith(comparator)
    return this
 }
 
-fun <T> Iterable<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T> Iterable<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldBeMonotonicallyDecreasingWith(comparator)
    return this
 }
 
-fun <T> Array<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Array<T> {
+infix fun <T> Array<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeMonotonicallyDecreasingWith(comparator)
    return this
 }
 
-fun <T> List<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): List<T> {
+infix fun <T> Sequence<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldBeMonotonicallyDecreasingWith(comparator)
+   return this
+}
+
+infix fun <T> List<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beMonotonicallyDecreasingWith(comparator)
    return this
 }
 
-fun <T> Iterable<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T> Iterable<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldNotBeMonotonicallyDecreasingWith(comparator)
    return this
 }
 
-fun <T> Array<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Array<T> {
+infix fun <T> Array<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeMonotonicallyDecreasingWith(comparator)
    return this
 }
 
+infix fun <T> Sequence<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldNotBeMonotonicallyDecreasingWith(comparator)
+   return this
+}
 
 fun <T : Comparable<T>> Iterable<T>.shouldBeStrictlyDecreasing() = toList().shouldBeStrictlyDecreasing()
-fun <T : Comparable<T>> List<T>.shouldBeStrictlyDecreasing() = this should beStrictlyDecreasing<T>()
+fun <T : Comparable<T>> List<T>.shouldBeStrictlyDecreasing() = this should beStrictlyDecreasing()
+fun <T : Comparable<T>> Array<T>.shouldBeStrictlyDecreasing() = toList().shouldBeStrictlyDecreasing()
+fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyDecreasing() = toList().shouldBeStrictlyDecreasing()
+
 fun <T : Comparable<T>> Iterable<T>.shouldNotBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
-fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyDecreasing() = this shouldNot beStrictlyDecreasing<T>()
-fun <T> List<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyDecreasing() = this shouldNot beStrictlyDecreasing()
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeStrictlyDecreasing() = this.asIterable().shouldNotBeStrictlyDecreasing()
+fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyDecreasing() = toList().shouldNotBeStrictlyDecreasing()
+
+infix fun <T> List<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): List<T> {
    this should beStrictlyDecreasingWith(comparator)
+   return this
+}
 
-fun <T> Iterable<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Iterable<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldBeStrictlyDecreasingWith(comparator)
+   return this
+}
 
-fun <T> Array<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): Array<T> {
+infix fun <T> Array<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeStrictlyDecreasingWith(comparator)
    return this
 }
 
-fun <T> List<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Sequence<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldBeStrictlyDecreasingWith(comparator)
+   return this
+}
+
+infix fun <T> List<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beStrictlyDecreasingWith(comparator)
+   return this
+}
 
-fun <T> Iterable<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Iterable<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldNotBeStrictlyDecreasingWith(comparator)
+   return this
+}
 
-fun <T> Array<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Array<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeStrictlyDecreasingWith(comparator)
+   return this
+}
+
+infix fun <T> Sequence<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldNotBeStrictlyDecreasingWith(comparator)
+   return this
+}
 
 fun <T : Comparable<T>> beMonotonicallyDecreasing(): Matcher<List<T>> = monotonicallyDecreasing()
 fun <T : Comparable<T>> monotonicallyDecreasing(): Matcher<List<T>> = object : Matcher<List<T>> {

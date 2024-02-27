@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
+import org.jetbrains.kotlin.backend.common.serialization.proto.IrExpression
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
@@ -82,8 +83,10 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   name = Name.identifier(EntryPoint.LauncherValName)
                }.also { field ->
                   field.correspondingPropertySymbol = this@apply.symbol
-                  field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
-                     this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
+                  field.initializer = pluginContext.irFactory.createExpressionBody(
+                     startOffset,
+                     endOffset,
+                     DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(launchFn).also { launch ->
                            launch.dispatchReceiver = irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
                               withTeamCity.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
@@ -99,7 +102,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                            }
                         }
                      }
-                  }
+                  )
                }
 
                addGetter {

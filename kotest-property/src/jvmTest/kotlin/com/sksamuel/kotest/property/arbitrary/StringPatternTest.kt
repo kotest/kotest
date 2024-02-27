@@ -5,10 +5,10 @@ import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.arbitrary.take
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import java.util.concurrent.Executors
+import kotlinx.coroutines.newFixedThreadPoolContext
 
 class StringPatternTest : FunSpec({
 
@@ -24,11 +24,13 @@ class StringPatternTest : FunSpec({
       test("should be quick") {
          val arbPattern = Arb.stringPattern("[a-zA-Z0-9]+")
 
-         val testDispatcher = Executors.newFixedThreadPool(10).asCoroutineDispatcher()
-         generateSequence { async(testDispatcher) { arbPattern.take(100000).last() } }
-            .take(10)
-            .toList()
-            .awaitAll()
+         @OptIn(DelicateCoroutinesApi::class)
+         newFixedThreadPoolContext(10, "pool").use { testDispatcher ->
+            generateSequence { async(testDispatcher) { arbPattern.take(100000).last() } }
+               .take(10)
+               .toList()
+               .awaitAll()
+         }
       }
    }
 })

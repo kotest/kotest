@@ -1,12 +1,10 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 
-@OptIn(KotestInternal::class)
 internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(

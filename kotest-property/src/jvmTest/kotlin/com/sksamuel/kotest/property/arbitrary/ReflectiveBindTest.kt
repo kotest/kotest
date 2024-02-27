@@ -17,10 +17,15 @@ import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.Period
+import java.time.Year
+import java.time.YearMonth
+import java.time.ZonedDateTime
 import kotlin.reflect.KClass
 
 class ReflectiveBindTest : StringSpec(
@@ -29,7 +34,7 @@ class ReflectiveBindTest : StringSpec(
 
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
       class WobbleWobble(val a: Wobble)
-      data class BubbleBobble(val a: String?, val b: Boolean?)
+      data class BubbleBobble(val a: String?, val b: Boolean?, val c: BigInteger?, val d: BigDecimal?)
 
       "binds enum parameters" {
          data class Hobble(val shape: Shape)
@@ -95,10 +100,30 @@ class ReflectiveBindTest : StringSpec(
             val a: LocalDate,
             val b: LocalDateTime,
             val c: LocalTime,
-            val d: Period
+            val d: Period,
+            val e: Year,
+            val f: YearMonth,
+            val g: OffsetDateTime,
+            val h: ZonedDateTime
          )
 
          val arb = Arb.bind<DateContainer>()
+         arb.take(10).toList().size shouldBe 10
+      }
+
+      "java.time types with nullable" {
+         data class DateNullableContainer(
+            val a: LocalDate?,
+            val b: LocalDateTime?,
+            val c: LocalTime?,
+            val d: Period?,
+            val e: Year?,
+            val f: YearMonth?,
+            val g: OffsetDateTime?,
+            val h: ZonedDateTime?
+         )
+
+         val arb = Arb.bind<DateNullableContainer>()
          arb.take(10).toList().size shouldBe 10
       }
 
@@ -122,11 +147,11 @@ class ReflectiveBindTest : StringSpec(
             .toList()
 
          edgeCases shouldContainExactly listOf(
-            Wobble(a = "a", b = false, c = 1, d = Pair(-0.0, Float.POSITIVE_INFINITY)),
-            Wobble(a = "", b = true, c = 0, d = Pair(3.5669621934936836E307, -3.4028235E38F)),
+            Wobble(a = "a", b = false, c = 1, d = Pair(-0.0, Float.NEGATIVE_INFINITY)),
+            Wobble(a = "", b = true, c = 0, d = Pair(3.5669621934936836E307, Float.NaN)),
             Wobble(a = "a", b = true, c = Int.MIN_VALUE, d = Pair(1.3317496548681731E308, -1.0F)),
             Wobble(a = "", b = false, c = 1, d = Pair(-1.402243144992822E308, 1.0F)),
-            Wobble(a = "", b = false, c = 0, d = Pair(Double.POSITIVE_INFINITY, 3.4028235E38F))
+            Wobble(a = "", b = false, c = 0, d = Pair(Double.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY))
          )
       }
 
@@ -136,6 +161,12 @@ class ReflectiveBindTest : StringSpec(
 
          val listArb = Arb.bind<List<Int>>()
          listArb.next().shouldBeInstanceOf<List<Int>>()
+
+         val arrayArb = Arb.bind<Array<Int>>()
+         arrayArb.next().shouldBeInstanceOf<Array<Int>>()
+
+         val arrayArbWithClass = Arb.bind<Array<Wobble>>()
+         arrayArbWithClass.next().shouldBeInstanceOf<Array<Wobble>>()
 
          val bigDecimalArb = Arb.bind<BigDecimal>()
          bigDecimalArb.next().shouldBeInstanceOf<BigDecimal>()
@@ -192,6 +223,15 @@ class ReflectiveBindTest : StringSpec(
 
       }
 
+      "Arb.bind for set of enum should not fail target size requirement" {
+         val arb = Arb.bind<Set<Shape>>()
+         arb.take(100).toList()
+      }
+
+      "Arb.bind for set of sealed type should not fail target size requirement" {
+         val arb = Arb.bind<Set<Shape3d>>()
+         arb.take(100).toList()
+      }
    }
 ) {
    companion object {

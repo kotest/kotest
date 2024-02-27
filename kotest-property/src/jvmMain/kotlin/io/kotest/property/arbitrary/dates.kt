@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.Period
+import java.time.Year
 import java.time.Year.isLeap
 import java.time.YearMonth
 import java.time.ZoneId
@@ -16,8 +17,9 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.Date
+import java.util.*
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 /**
  * Arberates a random [Period]s.
@@ -53,16 +55,19 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
 fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
-): Arb<LocalDate> {
+): Arb<LocalDate> = when {
+   minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
+   minDate == maxDate -> Arb.constant(minDate)
+   else -> {
+      val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
 
-   val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
+      val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
+      val february29s = february28s.map { it.plusDays(1) }
 
-   val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
-   val february29s = february28s.map { it.plusDays(1) }
-
-   return arbitrary(february28s + february29s + minDate + maxDate) {
-      minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
-   }.filter { it in minDate..maxDate }
+      arbitrary(february28s + february29s + minDate + maxDate) {
+         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
+      }.filter { it in minDate..maxDate }
+   }
 }
 
 /**
@@ -170,6 +175,20 @@ fun Arb.Companion.localDateTime(
 }
 
 /**
+ * Arberates a stream of random Year
+ *
+ * This generator creates randomly generated Year, in the range [[minYear, maxYear]].
+ */
+fun Arb.Companion.year(
+   minYear: Year = Year.of(1970),
+   maxYear: Year = Year.of(2030)
+): Arb<Year> {
+   return arbitrary(listOf(minYear, maxYear)) {
+      Year.of(it.random.nextInt(minYear.value..maxYear.value))
+   }
+}
+
+/**
  * Arberates a stream of random YearMonth
  *
  * If any of the years in the range contain a leap year, the date [02/YEAR] will always be a constant value of this
@@ -235,6 +254,18 @@ fun Arb.Companion.offsetDateTime(
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
    localDateTime(minValue, maxValue),
+   zoneOffset
+) { time, offset -> time.atOffset(offset) }
+
+/**
+ * Arberates a stream of random [OffsetDateTime]
+ */
+fun Arb.Companion.offsetDateTime(
+   minValue: Instant,
+   maxValue: Instant,
+   zoneOffset: Arb<ZoneOffset> = zoneOffset()
+): Arb<OffsetDateTime> = Arb.bind(
+   instant(minValue, maxValue),
    zoneOffset
 ) { time, offset -> time.atOffset(offset) }
 

@@ -22,12 +22,14 @@ interface EngineInterceptor {
    suspend fun intercept(context: EngineContext, execute: suspend (EngineContext) -> EngineResult): EngineResult
 }
 
+@KotestInternal
 data class EngineContext(
    val suite: TestSuite,
    val listener: TestEngineListener,
    val tags: TagExpression,
    val configuration: ProjectConfiguration,
    val platform: Platform,
+   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
    constructor(configuration: ProjectConfiguration, platform: Platform) : this(
@@ -36,6 +38,7 @@ data class EngineContext(
       TagExpression.Empty,
       configuration,
       platform,
+      mutableMapOf(),
    )
 
    companion object {
@@ -44,7 +47,8 @@ data class EngineContext(
          NoopTestEngineListener,
          TagExpression.Empty,
          ProjectConfiguration(),
-         Platform.JVM
+         Platform.JVM,
+         mutableMapOf(),
       )
    }
 
@@ -57,14 +61,19 @@ data class EngineContext(
          CompositeTestEngineListener(listOf(this.listener, listener)),
          tags,
          configuration,
-         platform
+         platform,
+         state,
       )
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
       return EngineContext(
-         suite, listener, tags, configuration,
-         platform
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+         state,
       )
    }
 
@@ -75,6 +84,7 @@ data class EngineContext(
          tags,
          configuration,
          platform,
+         state,
       )
    }
 
@@ -85,6 +95,7 @@ data class EngineContext(
          tags,
          conf,
          platform,
+         state,
       )
    }
 
@@ -95,21 +106,27 @@ data class EngineContext(
          tags,
          configuration,
          platform,
+         state,
       )
    }
 }
 
-fun ProjectContext.toEngineContext(context: EngineContext, platform: Platform): EngineContext {
+internal fun ProjectContext.toEngineContext(
+   context: EngineContext,
+   platform: Platform,
+   state: MutableMap<String, Any>
+): EngineContext {
    return EngineContext(
       suite,
       context.listener,
       tags,
       configuration,
       platform,
+      state,
    )
 }
 
-fun EngineContext.toProjectContext(): ProjectContext {
+internal fun EngineContext.toProjectContext(): ProjectContext {
    return ProjectContext(
       suite,
       tags,

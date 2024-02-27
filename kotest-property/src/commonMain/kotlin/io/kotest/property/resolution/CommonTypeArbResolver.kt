@@ -9,6 +9,7 @@ import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.float
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.short
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uByte
@@ -27,7 +28,7 @@ import kotlin.reflect.KType
 internal object CommonTypeArbResolver : ArbResolver {
    override fun resolve(type: KType): Arb<*>? {
       val kclass = type.classifier as? KClass<*> ?: return null
-      return when (kclass.bestName()) {
+      val arb = when (kclass.bestName()) {
          "java.lang.String", "kotlin.String", "String" -> Arb.string()
          "java.lang.Character", "kotlin.Char", "Char" -> Arb.char()
          "java.lang.Long", "kotlin.Long", "Long" -> Arb.long()
@@ -43,5 +44,7 @@ internal object CommonTypeArbResolver : ArbResolver {
          "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.boolean()
          else -> null
       }
+
+      return if (type.isMarkedNullable) arb?.orNull() else arb
    }
 }

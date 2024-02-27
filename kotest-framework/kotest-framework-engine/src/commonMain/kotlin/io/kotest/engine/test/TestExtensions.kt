@@ -35,12 +35,12 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     * the registry.
     */
    fun extensions(testCase: TestCase): List<Extension> {
-      return testCase.config.extensions +
+      return registry.all() + // globals
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.listeners() + // overriding the listeners function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
          testCase.spec.registeredExtensions() + // added to the spec via register
-         registry.all() // globals
+         testCase.config.extensions
    }
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
@@ -82,11 +82,8 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       } + bt.mapNotNull {
          runCatching {
             it.beforeAny(testCase)
-         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
-      } + bt.mapNotNull {
-         runCatching {
             it.beforeTest(testCase)
-         }.mapError { ExtensionException.BeforeTestException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
       }
 
       return when {
@@ -109,9 +106,6 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val errors = at.mapNotNull {
          runCatching {
             it.afterTest(testCase, result)
-         }.mapError { ExtensionException.AfterTestException(it) }.exceptionOrNull()
-      } + at.mapNotNull {
-         runCatching {
             it.afterAny(testCase, result)
          }.mapError { ExtensionException.AfterAnyException(it) }.exceptionOrNull()
       } + ac.mapNotNull {

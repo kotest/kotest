@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryFilter
@@ -97,7 +98,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 28
+      descriptor.classes.size shouldBe 29
    }
 
    test("kotest should return classes if request has no included or excluded test engines") {
@@ -294,7 +295,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
@@ -303,7 +304,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
@@ -312,7 +313,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only internal specs if public is not set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))

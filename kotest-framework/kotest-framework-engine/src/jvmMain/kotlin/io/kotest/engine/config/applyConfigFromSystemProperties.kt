@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
 internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {
 
    // before applying system props, we should detect the kotest.properties file and apply defaults from that
-   KotestPropertiesLoader.loadAndApplySystemProps()
+   KotestPropertiesLoader.loadAndApplySystemPropsFile()
 
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
@@ -35,6 +35,7 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
    duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
    projectTimeout()?.let { configuration.projectTimeout = it }
    logLevel(configuration.logLevel).let { configuration.logLevel = it }
+   disableTestNestedJarScanning()?.let { configuration.disableTestNestedJarScanning = it }
 }
 
 internal fun isolationMode(): IsolationMode? =
@@ -54,6 +55,9 @@ internal fun invocationTimeout(): Long? =
 
 internal fun allowMultilineTestName(): Boolean? =
    sysprop(KotestEngineProperties.allowMultilineTestName)?.let { it.uppercase() == "TRUE" }
+
+internal fun disableTestNestedJarScanning(): Boolean? =
+   sysprop(KotestEngineProperties.concurrentSpecs)?.toBoolean()
 
 internal fun concurrentSpecs(): Int? =
    sysprop(KotestEngineProperties.concurrentSpecs)?.toInt()

@@ -44,8 +44,7 @@ Reflective binding is supported for:
 * Primitives
 * Enums
 * Sealed classes, subtypes and their primary constructor must not be private
-* `LocalDate`, `LocalDateTime`, `LocalTime`, `Period`, `Instant` from `java.time`
+* `LocalDate`, `LocalDateTime`, `LocalTime`, `Period`, `Instant`, `YearMonth`, `ZonedDateTime`, `OffsetDateTime` from `java.time`
 * `BigDecimal`, `BigInteger`
 * Collections (`Set`, `List`, `Map`)
 * Classes for which an Arb has been provided through `providedArbs`
-

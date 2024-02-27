@@ -131,7 +131,7 @@ interface MatcherResult {
          passed: Boolean,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String
-      ) = object : MatcherResult {
+      ): MatcherResult = object : MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
@@ -152,12 +152,35 @@ interface ComparableMatcherResult : MatcherResult {
          negatedFailureMessageFn: () -> String,
          actual: String,
          expected: String,
-      ) = object : ComparableMatcherResult {
+      ): ComparableMatcherResult = object : ComparableMatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
          override fun actual(): String = actual
          override fun expected(): String = expected
+      }
+   }
+}
+
+interface EqualityMatcherResult : MatcherResult {
+
+   fun actual(): Any?
+
+   fun expected(): Any?
+
+   companion object {
+      operator fun invoke(
+         passed: Boolean,
+         actual: Any?,
+         expected: Any?,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String,
+         ): EqualityMatcherResult = object : EqualityMatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+         override fun actual(): Any? = actual
+         override fun expected(): Any? = expected
       }
    }
 }

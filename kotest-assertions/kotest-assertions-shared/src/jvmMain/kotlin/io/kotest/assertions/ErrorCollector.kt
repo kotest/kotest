@@ -22,9 +22,7 @@ val errorCollectorContextElement: CoroutineContext.Element
    get() = ErrorCollectorContextElement(threadLocalErrorCollector.get())
 
 
-private val threadLocalErrorCollector = object : ThreadLocal<CoroutineLocalErrorCollector>() {
-   override fun initialValue() = CoroutineLocalErrorCollector()
-}
+private val threadLocalErrorCollector = ThreadLocal.withInitial { CoroutineLocalErrorCollector() }
 
 
 private class CoroutineLocalErrorCollector : BasicErrorCollector() {

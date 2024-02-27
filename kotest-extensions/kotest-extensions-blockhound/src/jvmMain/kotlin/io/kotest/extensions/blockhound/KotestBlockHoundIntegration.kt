@@ -22,7 +22,7 @@ class KotestBlockHoundIntegration : BlockHoundIntegration {
       }
 
       blockingMethodCallback {
-         when (BlockHound.activeMode) {
+         when (BlockHound.effectiveMode) {
             BlockHoundMode.ERROR -> throw BlockingOperationError(it)
             BlockHoundMode.PRINT -> BlockingOperationError(it).printStackTrace()
             BlockHoundMode.DISABLED -> {}

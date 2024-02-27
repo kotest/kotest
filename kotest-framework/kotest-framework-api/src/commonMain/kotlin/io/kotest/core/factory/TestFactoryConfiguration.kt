@@ -34,5 +34,7 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
     */
    fun include(factory: TestFactory) {
       factory.tests.forEach { add(it) }
+      factory.configuration.setParentConfiguration(this)
+      register(factory.extensions)
    }
 }

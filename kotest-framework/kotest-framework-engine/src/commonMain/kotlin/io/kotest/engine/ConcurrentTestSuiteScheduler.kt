@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.concurrency.use
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
@@ -12,9 +13,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -54,31 +53,32 @@ internal class ConcurrentTestSuiteScheduler(
    private suspend fun schedule(
       specs: List<SpecRef>,
       concurrency: Int,
-   ) = coroutineScope { // we don't want this function to return until all specs are completed
-      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(context.configuration)
-      val semaphore = Semaphore(concurrency)
-      val collector = CollectingTestEngineListener()
-      specs.map { ref ->
-         logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
-         async {
-            semaphore.withPermit {
-               logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
+   ) = defaultCoroutineDispatcherFactory(context.configuration).use { coroutineDispatcherFactory ->
+      coroutineScope { // we don't want this function to return until all specs are completed
+         val semaphore = Semaphore(concurrency)
+         val collector = CollectingTestEngineListener()
+         specs.map { ref ->
+            logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
+            launch {
+               semaphore.withPermit {
+                  logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
 
-               if (context.configuration.projectWideFailFast && collector.errors) {
-                  context.listener.specIgnored(ref.kclass, null)
-               } else {
-                  try {
-                     val executor = SpecExecutor(coroutineDispatcherFactory, context.mergeListener(collector))
-                     logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
-                     executor.execute(ref)
-                  } catch (t: Throwable) {
-                     logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
-                     throw t
+                  if (context.configuration.projectWideFailFast && collector.errors) {
+                     context.listener.specIgnored(ref.kclass, null)
+                  } else {
+                     try {
+                        val executor = SpecExecutor(coroutineDispatcherFactory, context.mergeListener(collector))
+                        logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
+                        executor.execute(ref)
+                     } catch (t: Throwable) {
+                        logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
+                        throw t
+                     }
                   }
                }
+               logger.log { Pair(ref.kclass.bestName(), "Released permit") }
             }
-            logger.log { Pair(ref.kclass.bestName(), "Released permit") }
          }
-      }.joinAll()
+      }
    }
 }

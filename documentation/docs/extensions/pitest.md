@@ -45,7 +45,7 @@ First of all, you need to configure the [Maven Pitest plugin](https://pitest.org
     <configuration>
         <targetClasses>...</targetClasses>
         <coverageThreshold>...</coverageThreshold>
-        ... other configurations as needed        
+        ... other configurations as needed
     </configuration>
 </plugin>
 ```
@@ -54,7 +54,7 @@ Then add the dependency on Pitest Kotest extension:
 
 ```xml
 <dependencies>
-  ... the other Kotest dependencies like kotest-runner-junit5-jvm 
+  ... the other Kotest dependencies like kotest-runner-junit5
   <dependency>
     <groupId>io.kotest.extensions</groupId>
     <artifactId>kotest-extensions-pitest</artifactId>

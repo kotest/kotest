@@ -48,11 +48,13 @@ jobs:
                - jsTest publishJsPublicationToDeployRepository
                - linuxX64Test publishLinuxX64PublicationToDeployRepository
                - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
+               - androidNativeX86TestKlibrary androidNativeX64TestKlibrary publishAndroidNativeX64PublicationToDeployRepository publishAndroidNativeX86PublicationToDeployRepository
+               - androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary publishAndroidNativeArm32PublicationToDeployRepository publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: ${{ matrix.target }}
-               java-version: 17
+               java-version: "17"
 
    mac:
       needs: api_check
@@ -80,7 +82,7 @@ jobs:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: ${{ matrix.target }}
-               java-version: 17
+               java-version: "17"
 
    windows:
       needs: api_check
@@ -90,7 +92,7 @@ jobs:
          -  uses: kotest/kotest-action@master
             with:
                gradle-command: "mingwX64Test publishMingwX64PublicationToDeployRepository"
-               java-version: 17
+               java-version: "17"
 
 env:
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

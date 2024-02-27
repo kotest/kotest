@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
@@ -11,15 +12,17 @@ import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.offsetDateTime
 import io.kotest.property.arbitrary.period
+import io.kotest.property.arbitrary.removeEdgecases
 import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.year
 import io.kotest.property.arbitrary.yearMonth
 import io.kotest.property.arbitrary.zonedDateTime
 import io.kotest.property.checkAll
@@ -30,8 +33,10 @@ import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import java.time.Year
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.hours
 
@@ -76,6 +81,32 @@ class DateTest : WordSpec({
 
       "Be the default generator for LocalDate" {
          checkAll(10) { _: LocalDate -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.localDate(minDate, maxDate)" should {
+      "Work when min date == max date" {
+         val date = of(2021, 1, 1)
+         Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }
+      }
+
+      "Throw when min date > max date" {
+         shouldThrow<IllegalArgumentException> {
+            val minDate = of(2021, 1, 1)
+            Arb.localDate(minDate, minDate.minusDays(1))
+         }.message shouldBe "minDate must be before or equal to maxDate"
+      }
+
+      "generate LocalDates from minDate to (including) maxDate" {
+         val dates = mutableSetOf<LocalDate>()
+         val minDate = of(1998, 12, 30)
+         val maxDate = of(1999, 1, 3)
+
+         checkAll(10_000, Arb.localDate(minDate, maxDate).removeEdgecases()) {
+            dates += it
+         }
+
+         dates shouldBe generateSequence(minDate) { it.plusDays(1) }.takeWhile { it <= maxDate }.toSet()
       }
    }
 
@@ -228,6 +259,24 @@ class DateTest : WordSpec({
       }
    }
 
+   "Arb.year(minYear, maxYear)" should {
+      "generate valid years (no exceptions)" {
+         shouldNotThrowAny {
+            Arb.year().take(10_000).toList()
+         }
+      }
+
+      "generate years between minYear and maxYear" {
+         val years = mutableSetOf<Year>()
+
+         checkAll(10_000, Arb.year(Year.of(1998), Year.of(1999))) {
+            years += it
+         }
+
+         years shouldBe setOf(Year.of(1998), Year.of(1999))
+      }
+   }
+
    "Arb.yearMonth(minYearMonth, maxYearMonth)" should {
       "generate valid YearMonths (no exceptions)" {
          shouldNotThrowAny {
@@ -276,6 +325,30 @@ class DateTest : WordSpec({
       }
    }
 
+   "Arb.offsetDateTime(minInstant, maxInstant, zoneOffset)" should {
+      "generate OffsetDateTimes between 1970 and 2030 year" {
+         val days = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val offsets = mutableSetOf<Int>()
+
+         checkAll(
+            5000, Arb.offsetDateTime(
+               LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+               LocalDateTime.of(2030, 12, 31, 23, 59).toInstant(ZoneOffset.UTC)
+            )
+         ) {
+            days.add(it.dayOfMonth)
+            months.add(it.monthValue)
+            offsets.add(it.offset.totalSeconds)
+         }
+
+         days.sorted() shouldBe (1..31).toSet()
+         months.sorted() shouldBe (1..12).toSet()
+         offsets.min() shouldBeGreaterThanOrEqual -18.hours.inWholeSeconds.toInt()
+         offsets.max() shouldBeLessThanOrEqual 18.hours.inWholeSeconds.toInt()
+      }
+   }
+
    "Arb.zonedDateTime(minLocalDateTime, maxLocalDateTime, zoneId)" should {
       "generate ZonedDateTime between with default values" {
          val days = mutableSetOf<Int>()
@@ -309,7 +382,7 @@ class DateTest : WordSpec({
 
          days.sorted() shouldBe (1..31).toSet()
          months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970 .. 2050).toSet()
+         years.sorted() shouldBe (1970..2050).toSet()
       }
    }
 
@@ -335,7 +408,7 @@ class DateTest : WordSpec({
 
          days.sorted() shouldBe (1..31).toSet()
          months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970 .. 2050).toSet()
+         years.sorted() shouldBe (1970..2050).toSet()
       }
    }
 })

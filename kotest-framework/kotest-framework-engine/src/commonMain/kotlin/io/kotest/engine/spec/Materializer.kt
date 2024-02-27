@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -13,6 +14,7 @@ import io.kotest.engine.test.names.DuplicateTestNameHandler
 /**
  * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
  */
+@KotestInternal
 class Materializer(private val configuration: ProjectConfiguration) {
 
    /**

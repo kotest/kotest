@@ -75,18 +75,6 @@ class UntilTest : FunSpec({
       start.elapsedNow().shouldBeLessThan(100.milliseconds)
    }
 
-   test("until with predicate, interval, and listener") {
-      var t = ""
-      val latch = CountDownLatch(5)
-      val result =
-          until(1.seconds, 10.milliseconds.fixed(), { t == "xxxxx" }, { latch.countDown() }) {
-              t += "x"
-              t
-          }
-      latch.await(15, TimeUnit.SECONDS) shouldBe true
-      result shouldBe "xxxxx"
-   }
-
    test("until should throw when the predicate doesn't equal true in the time period") {
       shouldThrow<AssertionError> {
           until(1.seconds, { it == 2 }) {

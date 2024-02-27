@@ -18,7 +18,7 @@ class CluesTests : FunSpec({
          val threadIds = mutableSetOf<Long>()
          withClue("should not fail") {
             threadIds.add(Thread.currentThread().id)
-            delay(10)
+            delay(50)
             threadIds.add(Thread.currentThread().id)
          }
          threadIds shouldHaveSize 2

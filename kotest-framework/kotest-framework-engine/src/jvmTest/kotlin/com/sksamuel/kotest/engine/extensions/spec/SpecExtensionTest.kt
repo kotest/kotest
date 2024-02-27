@@ -1,18 +1,16 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.MountableExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.ExtensionException.BeforeSpecException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -20,7 +18,6 @@ import io.kotest.inspectors.forOne
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
-import java.lang.IllegalStateException
 
 @Isolate
 class SpecExtensionTest : FunSpec() {
@@ -65,7 +62,7 @@ class SpecExtensionTest : FunSpec() {
             .withConfiguration(conf)
             .launch()
 
-         count shouldBe 3
+         count shouldBe 2
       }
 
       test("SpecExtension can opt to skip processing") {

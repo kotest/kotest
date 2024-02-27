@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.threads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 
@@ -22,7 +21,7 @@ class SpecThreadBeforeTestConcurrentSingleInstanceTest : FunSpec({
       if (isLockAcquired) {
          lock.lock()
          try {
-            delay(300)
+            Thread.sleep(300)
          } finally {
             lock.unlock()
          }

@@ -95,7 +95,7 @@ include(
    ":kotest-tests:kotest-tests-timeout-sysprop",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
    ":kotest-tests:kotest-tests-native",
-   //":kotest-tests:kotest-tests-js",
+//   ":kotest-tests:kotest-tests-js",
    ":kotest-tests:kotest-tests-config-classname",
 
    // BOM for whole kotest project
@@ -103,7 +103,7 @@ include(
 )
 
 plugins {
-   id("com.gradle.enterprise") version "3.12.3"
+   id("com.gradle.enterprise") version "3.14.1"
 }
 
 gradleEnterprise {

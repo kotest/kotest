@@ -6,7 +6,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-
 fun <T : Comparable<T>> Iterable<T>.shouldBeStrictlyIncreasing(): Iterable<T> {
    toList().shouldBeStrictlyIncreasing()
    return this
@@ -14,6 +13,11 @@ fun <T : Comparable<T>> Iterable<T>.shouldBeStrictlyIncreasing(): Iterable<T> {
 
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing(): Array<T> {
    asList().shouldBeStrictlyIncreasing()
+   return this
+}
+
+fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyIncreasing(): Sequence<T> {
+   asIterable().shouldBeStrictlyIncreasing()
    return this
 }
 
@@ -32,12 +36,15 @@ fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyIncreasing(): Array<T> {
    return this
 }
 
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeStrictlyIncreasing(): Sequence<T> {
+   asIterable().shouldNotBeStrictlyIncreasing()
+   return this
+}
+
 fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyIncreasing(): List<T> {
    this shouldNot beStrictlyIncreasing()
    return this
 }
-
-
 
 fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyIncreasing(): Iterable<T> {
    toList().shouldBeMonotonicallyIncreasing()
@@ -46,6 +53,11 @@ fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyIncreasing(): Iterable<
 
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing(): Array<T> {
    asList().shouldBeMonotonicallyIncreasing()
+   return this
+}
+
+fun <T : Comparable<T>> Sequence<T>.shouldBeMonotonicallyIncreasing(): Sequence<T> {
+   asIterable().shouldBeMonotonicallyIncreasing()
    return this
 }
 
@@ -64,60 +76,95 @@ fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyIncreasing(): Array<T> 
    return this
 }
 
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeMonotonicallyIncreasing(): Sequence<T> {
+   asIterable().shouldNotBeMonotonicallyIncreasing()
+   return this
+}
+
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing(): List<T> {
    this shouldNot beMonotonicallyIncreasing()
    return this
 }
 
-fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
+infix fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beMonotonicallyIncreasingWith(comparator)
    return this
 }
 
-fun <T> Iterable<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T> Sequence<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldBeMonotonicallyIncreasingWith(comparator)
+   return this
+}
+
+infix fun <T> Iterable<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
-fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
+infix fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
-fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
+infix fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beMonotonicallyIncreasingWith(comparator)
    return this
 }
 
-fun <T> Iterable<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T> Iterable<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
-
-fun <T> Array<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
+infix fun <T> Array<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+infix fun <T> Sequence<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldNotBeMonotonicallyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beStrictlyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> Iterable<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Iterable<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldBeStrictlyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeStrictlyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Sequence<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldBeStrictlyIncreasingWith(comparator)
+   return this
+}
+
+infix fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beStrictlyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> Iterable<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Iterable<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldNotBeStrictlyIncreasingWith(comparator)
+   return this
+}
 
-fun <T> Array<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+infix fun <T> Array<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeStrictlyIncreasingWith(comparator)
+   return this
+}
+
+infix fun <T> Sequence<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
+   asIterable().shouldNotBeStrictlyIncreasingWith(comparator)
+   return this
+}
 
 
 fun <T : Comparable<T>> beStrictlyIncreasing(): Matcher<List<T>> = strictlyIncreasing()
@@ -147,7 +194,6 @@ private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparato
       { "List [$snippet] should not be strictly increasing" }
    )
 }
-
 
 fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
 fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {

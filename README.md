@@ -1,7 +1,7 @@
 ![Kotest](doc/logo7-with-text.png)
 ==========
 
-[![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
+[![master](https://github.com/kotest/kotest/actions/workflows/master.yml/badge.svg)](https://github.com/kotest/kotest/actions/workflows/master.yml)
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest)
 ![intellij-badge](https://img.shields.io/jetbrains/plugin/v/14080-kotest?label=intellij%20plugin)
 ![GitHub](https://img.shields.io/github/license/kotest/kotest)

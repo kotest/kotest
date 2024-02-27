@@ -1,6 +1,5 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.ExtensionRegistry
@@ -21,7 +20,6 @@ import io.kotest.mpp.hasAnnotation
  *
  * Note: annotations are only available on the JVM.
  */
-@OptIn(KotestInternal::class)
 internal class IgnoredSpecInterceptor(
    private val listener: TestEngineListener,
    registry: ExtensionRegistry,

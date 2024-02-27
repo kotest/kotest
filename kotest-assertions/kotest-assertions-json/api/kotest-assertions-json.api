@@ -373,6 +373,7 @@ public final class io/kotest/assertions/json/MatchersKt {
 	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareOrder;)V
 	public static final fun shouldEqualJson (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
 	public static final fun shouldEqualSpecifiedJson (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun shouldEqualSpecifiedJsonIgnoringOrder (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareMode;)V
 	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareOrder;)V

@@ -18,7 +18,7 @@ import io.kotest.engine.tags.runtimeTagExpression
  * Filters any [Spec] that can be eagerly excluded based on the @[io.kotest.core.annotation.Tags]
  * annotation at the class level.
  */
-class TagsInterceptor(
+internal class TagsInterceptor(
    private val listener: TestEngineListener,
    private val conf: ProjectConfiguration,
 ) : SpecRefInterceptor {

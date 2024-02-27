@@ -24,6 +24,7 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
          }
       },
       assertionMode = assertions,
-      tests = tests
+      tests = tests,
+      configuration = this
    )
 }

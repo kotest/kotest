@@ -1,6 +1,7 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.Actual
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
@@ -42,7 +43,7 @@ private fun buildFailureMessage(actual: Map<*, *>?, expected: Map<*, *>?): Strin
    return when {
       actual != null && expected != null -> {
          val keysHavingDifferentValues = actual.keys.filterNot { expected[it] == actual[it] }
-         "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = 10)}\n"
+         "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = AssertionsConfig.mapDiffLimit)}\n"
       }
 
       else -> ""
@@ -60,7 +61,7 @@ private fun print(map: Map<*, *>?): Printed {
          separator = ",$newLine",
          prefix = "{$newLine",
          postfix = "$newLine}",
-         limit = 10
+         limit = AssertionsConfig.mapDiffLimit,
       ) { "$indentation${it.first.print().value} = ${it.second.print().value}" }
    )
 }

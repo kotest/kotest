@@ -39,8 +39,6 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 kotlin {
-   jvmToolchain(17)
-
    sourceSets.configureEach {
       languageSettings {
          optIn("kotlin.time.ExperimentalTime")

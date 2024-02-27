@@ -16,6 +16,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
@@ -61,7 +62,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("an error before spec started should show spec with a dummy error test") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.specFinished(MySpec::class, TestResult.Error(0.seconds, Exception("CRRAACK")))
       track.events shouldBe listOf(
@@ -84,7 +85,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("an ignored spec should be skipped") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specIgnored(MySpec::class, "disabled foo")
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionSkipped(
@@ -96,7 +97,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("a successful root test should be marked as started and finished") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(12.milliseconds))
@@ -112,7 +113,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("a failed root test should be marked as FAILED") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Failure(5.milliseconds, AssertionError("whack!")))
@@ -131,7 +132,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("an ignored root test should be marked as skipped") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testIgnored(tc1, "secret!")
       listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
@@ -145,7 +146,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("a successful nested test should be marked as SUCCESSFUL with type TEST") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testStarted(tc2)
@@ -166,7 +167,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("a failed nested test should be marked as FAILED with type TEST") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testStarted(tc2)
@@ -187,7 +188,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("an ignored nested test should be marked as skipped") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testIgnored(tc2, "secret!")
@@ -206,7 +207,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("an error in the spec should add a placeholder test with the error along with completed tests") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
@@ -228,7 +229,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("state should be reset after spec") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
@@ -261,7 +262,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("state should be reset after ignored spec") {
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter())
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
       listener.specIgnored(MySpec::class, null)
 
       listener.specStarted(MySpec2::class)
@@ -286,9 +287,9 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val conf = ProjectConfiguration()
       conf.displayFullTestPath = true
- 
-      val listener = JUnitTestEngineListener(track, root, DefaultDisplayNameFormatter(conf))
-      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf, Platform.JVM))
+
+      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default(conf))
+      listener.engineInitialized(EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, conf, Platform.JVM, mutableMapOf()))
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testStarted(tc2)

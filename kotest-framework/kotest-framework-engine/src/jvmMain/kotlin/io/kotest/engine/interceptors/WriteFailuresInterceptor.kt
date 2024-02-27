@@ -1,7 +1,6 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +14,6 @@ import kotlin.reflect.KClass
  *
  * Note: This is a JVM only feature.
  */
-@OptIn(KotestInternal::class)
 @JVMOnly
 internal object WriteFailuresInterceptor : EngineInterceptor {
 

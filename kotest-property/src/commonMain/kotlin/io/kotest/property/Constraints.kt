@@ -15,7 +15,7 @@ fun interface Constraints {
       /**
        * Returns a [Constraints] that executes the property test for a fixed number of iterations.
        */
-      fun iterations(k: Int) = Constraints { it.attempts() < k }
+      fun iterations(k: Int) = Constraints { it.evals() < k }
 
       /**
        * Returns a [Constraints] that executes the property test for a certain duration.

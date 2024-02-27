@@ -21,6 +21,7 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.mpp.Logger
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -39,7 +40,10 @@ class TestEngineLauncher(
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
+   private val configurationIsInitialized: Boolean,
 ) {
+
+   private val logger = Logger(TestEngineLauncher::class)
 
    constructor() : this(
       Platform.JVM,
@@ -48,6 +52,7 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    constructor(listener: TestEngineListener) : this(
@@ -57,6 +62,7 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    /**
@@ -77,6 +83,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -88,6 +95,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -100,6 +108,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -112,7 +121,8 @@ class TestEngineLauncher(
    }
 
    /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
+    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin,
+    * and sets [configurationIsInitialized] to false.
     */
    fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
@@ -122,6 +132,7 @@ class TestEngineLauncher(
          configs = configs + projectConfig,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = false,
       )
    }
 
@@ -133,6 +144,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = expression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -163,6 +175,19 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = false,
+      )
+   }
+
+   fun withInitializedConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
+      return TestEngineLauncher(
+         platform = platform,
+         listener = listener,
+         projectConfiguration = configuration,
+         configs = configs,
+         refs = refs,
+         tagExpression = tagExpression,
+         configurationIsInitialized = true,
       )
    }
 
@@ -178,6 +203,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         configurationIsInitialized = configurationIsInitialized,
       )
    }
 
@@ -186,6 +212,14 @@ class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
 
+      val configuration = if (configurationIsInitialized) projectConfiguration else {
+         ConfigManager.initialize(projectConfiguration) {
+            configs +
+               detectAbstractProjectConfigs() +
+               listOfNotNull(loadProjectConfigFromClassname())
+         }
+      }
+
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -193,9 +227,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         configuration = ConfigManager.initialize(
-            projectConfiguration
-         ) { configs + detectAbstractProjectConfigs() + listOfNotNull(loadProjectConfigFromClassname()) },
+         configuration = configuration,
          tagExpression,
          platform,
       )
@@ -207,7 +239,7 @@ class TestEngineLauncher(
     * Launch the [TestEngine] in an existing coroutine without blocking.
     */
    suspend fun async(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine" }
+      logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
       return engine.execute(testSuite())
    }
@@ -217,7 +249,7 @@ class TestEngineLauncher(
     * This method will throw on JS.
     */
    fun launch(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine" }
+      logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
@@ -229,7 +261,7 @@ class TestEngineLauncher(
     * This method will throw on JVM or native.
     */
    fun promise() {
-      log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
+      logger.log { "Launching Test Engine in Javascript promise" }
       runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())

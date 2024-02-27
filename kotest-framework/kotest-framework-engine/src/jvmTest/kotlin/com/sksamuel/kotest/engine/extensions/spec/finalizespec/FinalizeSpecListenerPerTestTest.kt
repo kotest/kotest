@@ -40,7 +40,7 @@ class FinalizeSpecListenerPerTestTest : FunSpec() {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 9
+         counter.get() shouldBe 8
       }
 
       // will be added once per instance created

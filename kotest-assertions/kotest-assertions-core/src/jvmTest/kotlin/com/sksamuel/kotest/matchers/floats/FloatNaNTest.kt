@@ -1,10 +1,15 @@
 package com.sksamuel.kotest.matchers.floats
 
 import com.sksamuel.kotest.matchers.doubles.numericFloats
+import io.kotest.assertions.AssertionsConfigSystemProperties
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.floats.beNaN
+import io.kotest.matchers.floats.shouldBeExactly
 import io.kotest.matchers.floats.shouldBeNaN
+import io.kotest.matchers.floats.shouldNotBeExactly
 import io.kotest.matchers.floats.shouldNotBeNaN
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -14,6 +19,7 @@ import io.kotest.property.checkAll
 class FloatNaNTest : FunSpec() {
    init {
       context("NaN matcher") {
+
          test("Every numeric float should not be NaN") {
             checkAll(100, numericFloats) {
                it.shouldNotMatchNaN()
@@ -24,6 +30,22 @@ class FloatNaNTest : FunSpec() {
             Float.NaN.shouldMatchNaN()
             Float.POSITIVE_INFINITY.shouldNotMatchNaN()
             Float.NEGATIVE_INFINITY.shouldNotMatchNaN()
+         }
+
+         test("NaN should be exactly NaN") {
+            Float.NaN shouldBeExactly Float.NaN
+            shouldThrowAny {
+               Float.NaN shouldNotBeExactly Float.NaN
+            }
+         }
+
+         test("NaN should not be exactly NaN when NaN equality is disabled") {
+            withSystemProperty(AssertionsConfigSystemProperties.disableNaNEquality, "true") {
+               Float.NaN shouldNotBeExactly Float.NaN
+               shouldThrowAny {
+                  Float.NaN shouldBeExactly Float.NaN
+               }
+            }
          }
       }
 

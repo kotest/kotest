@@ -261,6 +261,13 @@ abstract class AbstractProjectConfig {
 
    open var displayFullTestPath: Boolean? = null
 
+   open var allowOutOfOrderCallbacks: Boolean? = null
+
+   /**
+    * Set to false if you wish to allow nested jar scanning for tests.
+    */
+   open var disableTestNestedJarScanning: Boolean? = null
+
    /**
     * If set to true then the test engine will install a
     * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).

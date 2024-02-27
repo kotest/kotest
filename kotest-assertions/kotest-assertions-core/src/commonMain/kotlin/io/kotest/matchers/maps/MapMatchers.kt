@@ -12,30 +12,26 @@ fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> 
    override fun test(value: Map<K, Any?>) = MatcherResult(
       value.containsKey(key),
       { "Map should contain key $key" },
-      {
-         "Map should not contain key $key"
-      })
+      { "Map should not contain key $key" }
+   )
 }
 
-fun <K> haveKeys(vararg keys: K): Matcher<
-   Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
-  override fun test(value: Map<K, Any?>): MatcherResult {
-     val keysNotPresentInMap = keys.filterNot { value.containsKey(it) }
-    return MatcherResult(
-       keysNotPresentInMap.isEmpty(),
-       { "Map did not contain the keys ${keysNotPresentInMap.joinToString(", ")}" },
-       { "Map should not contain the keys ${keys.filter { value.containsKey(it) }.joinToString(", ")}" }
-    )
-  }
+fun <K> haveKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
+   override fun test(value: Map<K, Any?>): MatcherResult {
+      val keysNotPresentInMap = keys.filterNot { value.containsKey(it) }
+      return MatcherResult(
+         keysNotPresentInMap.isEmpty(),
+         { "Map did not contain the keys ${keysNotPresentInMap.joinToString(", ")}" },
+         { "Map should not contain the keys ${keys.filter { value.containsKey(it) }.joinToString(", ")}" }
+      )
+   }
 }
 
 fun <V> haveValue(v: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
    override fun test(value: Map<*, V>) = MatcherResult(
       value.containsValue(v),
       { "Map should contain value $v" },
-      {
-         "Map should not contain value $v"
-      })
+      { "Map should not contain value $v" })
 }
 
 fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
@@ -44,9 +40,8 @@ fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<
       return MatcherResult(
          valuesNotPresentInMap.isEmpty(),
          { "Map did not contain the values ${values.joinToString(", ")}" },
-         {
-            "Map should not contain the values ${values.joinToString(", ")}"
-         })
+         { "Map should not contain the values ${values.joinToString(", ")}" }
+      )
    }
 }
 
@@ -56,7 +51,8 @@ fun <K> containAnyKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher
       return MatcherResult(
          passed,
          { "Map did not contain any of the keys ${keys.joinToString(", ")}" },
-         { "Map should not contain any of the keys ${keys.joinToString(", ")}" })
+         { "Map should not contain any of the keys ${keys.joinToString(", ")}" }
+      )
    }
 }
 
@@ -66,7 +62,8 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
       return MatcherResult(
          passed,
          { "Map did not contain any of the values ${values.joinToString(", ")}" },
-         { "Map should not contain any of the values ${values.joinToString(", ")}" })
+         { "Map should not contain any of the values ${values.joinToString(", ")}" }
+      )
    }
 }
 
@@ -74,21 +71,22 @@ fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V
    override fun test(value: Map<K, V>) = MatcherResult(
       value[key] == v,
       { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
-      { "Map should not contain mapping $key=$v but was $value" })
+      { "Map should not contain mapping $key=$v but was $value" }
+   )
 
    private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
 }
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
-  MapContainsMatcher(expected, ignoreExtraKeys = true)
+   MapContainsMatcher(expected, ignoreExtraKeys = true)
 
 fun <K, V> containExactly(expected: Map<K, V>): Matcher<Map<K, V>> =
-  MapContainsMatcher(expected)
+   MapContainsMatcher(expected)
 
 fun <K, V> containExactly(vararg expected: Pair<K, V>): Matcher<Map<K, V>> =
-  MapContainsMatcher(expected.toMap())
+   MapContainsMatcher(expected.toMap())
 
-fun <K, V> haveSize(size: Int): Matcher<Map<K,V>> = object : Matcher<Map<K, V>> {
+fun <K, V> haveSize(size: Int): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>) =
       MatcherResult(
          value.size == size,
@@ -98,8 +96,8 @@ fun <K, V> haveSize(size: Int): Matcher<Map<K,V>> = object : Matcher<Map<K, V>> 
 }
 
 class MapContainsMatcher<K, V>(
-  private val expected: Map<K, V>,
-  private val ignoreExtraKeys: Boolean = false
+   private val expected: Map<K, V>,
+   private val ignoreExtraKeys: Boolean = false
 ) : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>): MatcherResult {
       val diff = Diff.create(value, expected, ignoreExtraMapKeys = ignoreExtraKeys)
@@ -142,12 +140,20 @@ class MapContainsMatcher<K, V>(
 }
 
 fun <K, V> matchAll(
-   vararg expected: Pair<K, (V) -> Unit>
-): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), true)
+   vararg matchers: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(matchers.toMap(), true)
+
+fun <K, V> matchAll(
+   expected: Map<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected, true)
 
 fun <K, V> matchExactly(
-   vararg expected: Pair<K, (V) -> Unit>
-): Matcher<Map<K, V>> = MapMatchesMatcher(expected.toMap(), false)
+   vararg matchers: Pair<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(matchers.toMap(), false)
+
+fun <K, V> matchExactly(
+   expected: Map<K, (V) -> Unit>
+): Matcher<Map<K, V>> = MapMatchesMatcher(expected, false)
 
 class MapMatchesMatcher<K, V>(
    private val expected: Map<K, (V) -> Unit>,

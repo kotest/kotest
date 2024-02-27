@@ -5,7 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import kotlin.time.Duration
 
 fun beInTodayODT() = object : Matcher<OffsetDateTime> {
    override fun test(value: OffsetDateTime): MatcherResult {
@@ -112,3 +112,28 @@ fun haveSameInstantAs(other: OffsetDateTime) = object : Matcher<OffsetDateTime> 
             "$value should not be equal to $other"
          })
 }
+
+infix fun OffsetDateTime.plusOrMinus(tolerance: Duration): OffsetDateTimeToleranceMatcher =
+   OffsetDateTimeToleranceMatcher(this, tolerance)
+
+class OffsetDateTimeToleranceMatcher(
+   private val expected: OffsetDateTime,
+   private val tolerance: Duration
+): Matcher<OffsetDateTime> {
+   override fun test(value: OffsetDateTime): MatcherResult {
+      val positiveTolerance = tolerance.absoluteValue
+      val lowerBound = expected.minusNanos(positiveTolerance.inWholeNanoseconds)
+      val upperBound = expected.plusNanos(positiveTolerance.inWholeNanoseconds)
+      val valueAsInstant = value.toInstant()
+      val insideToleranceInterval = (lowerBound.toInstant() <= valueAsInstant) && (valueAsInstant <= upperBound.toInstant())
+      return MatcherResult(
+         insideToleranceInterval,
+         { "$value should be equal to $expected with tolerance $tolerance (between $lowerBound and $upperBound)" },
+         { "$value should not be equal to $expected with tolerance $tolerance (not between $lowerBound and $upperBound)" }
+      )
+   }
+
+   infix fun plusOrMinus(tolerance: Duration): OffsetDateTimeToleranceMatcher =
+      OffsetDateTimeToleranceMatcher(expected, tolerance)
+}
+

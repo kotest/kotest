@@ -15,6 +15,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * @param base The duration that is multiplied by the fibonacci value
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class FibonacciInterval(private val base: Duration, private val offset: Int, private val max: Duration?) : Interval {
 
    init {
@@ -35,8 +36,10 @@ class FibonacciInterval(private val base: Duration, private val offset: Int, pri
    }
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.fibonacci(max: Duration? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
       0 -> previous

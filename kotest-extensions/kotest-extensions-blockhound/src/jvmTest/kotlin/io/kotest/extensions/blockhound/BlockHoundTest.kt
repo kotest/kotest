@@ -2,7 +2,6 @@ package io.kotest.extensions.blockhound
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,10 +17,16 @@ private suspend fun blockInNonBlockingContext() {
    }
 }
 
-@DoNotParallelize
 class BlockHoundCaseTest : FunSpec({
    test("detects for test case").config(extensions = listOf(BlockHound())) {
       shouldThrow<BlockingOperationError> { blockInNonBlockingContext() }
+   }
+
+   test("individually disabled").config(extensions = listOf(BlockHound())) {
+      shouldThrow<BlockingOperationError> { blockInNonBlockingContext() }
+      withBlockHoundMode(BlockHoundMode.DISABLED) {
+         shouldNotThrow<BlockingOperationError> { blockInNonBlockingContext() }
+      }
    }
 
    test("prints for test case").config(extensions = listOf(BlockHound(BlockHoundMode.PRINT))) {
@@ -33,7 +38,6 @@ class BlockHoundCaseTest : FunSpec({
    }
 })
 
-@DoNotParallelize
 class BlockHoundSpecTest : FunSpec({
    extension(BlockHound())
 
@@ -55,9 +59,16 @@ class BlockHoundSpecTest : FunSpec({
       }
    }
 
-   /*
-      test("configuration failure").config(extensions = listOf(BlockHound(BlockHoundMode.PRINT))) {
-         // Cannot register a BlockHound extension twice (spec plus test case).
+   test("nested configuration").config(extensions = listOf(BlockHound(BlockHoundMode.DISABLED))) {
+      shouldNotThrow<BlockingOperationError> { blockInNonBlockingContext() }
+   }
+
+   test("parallelism").config(invocations = 2, threads = 2) {
+      shouldThrow<BlockingOperationError> {
+         withContext(Dispatchers.Default) {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            Thread.sleep(2)
+         }
       }
-   */
+   }
 })

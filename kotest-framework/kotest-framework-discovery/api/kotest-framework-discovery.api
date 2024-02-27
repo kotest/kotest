@@ -1,7 +1,6 @@
 public final class io/kotest/framework/discovery/Discovery {
-	public fun <init> ()V
-	public fun <init> (Ljava/util/List;)V
-	public synthetic fun <init> (Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;)V
+	public synthetic fun <init> (Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun discover (Lio/kotest/framework/discovery/DiscoveryRequest;)Lio/kotest/framework/discovery/DiscoveryResult;
 }
 

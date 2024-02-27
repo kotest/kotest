@@ -68,7 +68,7 @@ class BigDecimalTest : FunSpec({
       fun BigDecimal.lastDigit() = stripTrailingZeros().toString().last().digitToInt()
 
       Arb.bigDecimal()
-         .take(100)
+         .take(1000)
          .map { it.lastDigit() }
          .toList()
          .shouldContainAll((1..9).toList())

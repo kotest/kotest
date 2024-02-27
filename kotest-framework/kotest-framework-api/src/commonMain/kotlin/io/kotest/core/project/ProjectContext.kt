@@ -15,6 +15,9 @@ data class ProjectContextElement(val projectContext: ProjectContext) :
    companion object Key : CoroutineContext.Key<ProjectContextElement>
 }
 
+/**
+ * Extracts the[ProjectContext] from the [TestScope]s [CoroutineContext].
+ */
 val TestScope.projectContext: ProjectContext
    get() = coroutineContext.projectContext
 

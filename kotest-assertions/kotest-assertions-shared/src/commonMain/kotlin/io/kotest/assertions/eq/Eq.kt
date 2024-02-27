@@ -20,17 +20,28 @@ interface Eq<T> {
    }
 }
 
+object NullEq : Eq<Any?> {
+
+   override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? {
+      return when {
+         actual == null && expected == null -> null
+         actual == null && expected != null && actual != expected -> actualIsNull(expected)
+         actual != null && expected == null && actual != expected -> expectedIsNull(actual)
+         actual != expected -> error("[$NullEq] should not be used when both values are not null")
+         else -> null
+      }
+   }
+}
+
 /**
- * Locates the applicable [Eq] for the inputs, and invokes it, returning the error if any.
+ * Locates the appropriate [Eq] for the inputs, and invokes it, returning the error if any.
  */
 fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
    // if we have null and non null, usually that's a failure, but people can override equals to allow it
    return when {
       actual === expected -> null
-      actual == null && expected == null -> null
-      actual == null && expected != null && actual != expected -> actualIsNull(expected)
-      actual != null && expected == null && actual != expected -> expectedIsNull(actual)
-      actual != null && expected != null -> when {
+      actual == null || expected == null -> NullEq.equals(actual, expected)
+      else -> when {
          actual is Map<*, *> && expected is Map<*, *> -> MapEq.equals(actual, expected, strictNumberEq)
          actual is Map.Entry<*, *> && expected is Map.Entry<*, *> -> MapEntryEq.equals(actual, expected, strictNumberEq)
          actual is Regex && expected is Regex -> RegexEq.equals(actual, expected)
@@ -39,15 +50,18 @@ fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
          IterableEq.isValidIterable(actual) && IterableEq.isValidIterable(expected) -> {
             IterableEq.equals(IterableEq.asIterable(actual), IterableEq.asIterable(expected), strictNumberEq)
          }
+
          actual is Sequence<*> && expected is Sequence<*> -> SequenceEq.equals(actual, expected, strictNumberEq)
          shouldShowDataClassDiff(actual, expected) -> DataClassEq.equals(actual as Any, expected as Any, strictNumberEq)
          actual is Throwable && expected is Throwable -> ThrowableEq.equals(actual, expected)
-         else -> DefaultEq.equals(actual as Any, expected as Any,strictNumberEq)
+         else -> DefaultEq.equals(actual as Any, expected as Any, strictNumberEq)
       }
-      else -> null
    }
 }
 
+/**
+ * Locates the appropriate [Eq] for the inputs, and invokes it, returning the error if any.
+ */
 fun <T : Any?> eq(actual: T, expected: T): Throwable? {
    return eq(actual, expected, false)
 }

@@ -2,8 +2,8 @@ package io.kotest.mpp
 
 import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.TimeMarkCompat
+import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
-import kotlin.time.ExperimentalTime
 
 val start by lazy { MonotonicTimeSourceCompat.markNow() }
 
@@ -12,6 +12,8 @@ internal fun isLoggingEnabled() =
    syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 class Logger(private val kclass: KClass<*>) {
+
+   @OverloadResolutionByLambdaReturnType
    fun log(f: () -> Pair<String?, String>) {
       log(null) {
          val (testName, message) = f()
@@ -22,6 +24,10 @@ class Logger(private val kclass: KClass<*>) {
          ).joinToString("  ")
       }
    }
+
+   @OverloadResolutionByLambdaReturnType
+   @JvmName("logsimple")
+   fun log(f: () -> String): Unit = log { Pair(null, f()) }
 }
 
 @OverloadResolutionByLambdaReturnType
@@ -32,10 +38,9 @@ fun log(f: () -> String) {
 fun log(t: Throwable?, f: () -> String) {
    if (isLoggingEnabled()) {
       writeLog(start, t, f)
-      println(start.elapsedNow().inWholeMicroseconds.toString() + "  " + f())
+      println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
       if (t != null) println(t)
    }
 }
 
-@ExperimentalTime
 expect fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String)

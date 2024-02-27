@@ -11,7 +11,6 @@ private val afterTestNestedCounter = AtomicInteger(0)
 private val beforeSpecNestedCounter = AtomicInteger(0)
 private val afterSpecNestedCounter = AtomicInteger(0)
 
-
 class SpecThreadWithNestedBeforeAfterSingleInstanceTest : FunSpec({
 
    isolationMode = IsolationMode.SingleInstance

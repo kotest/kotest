@@ -4,13 +4,11 @@ import io.kotest.common.JVMOnly
 import io.kotest.common.TimeMarkCompat
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
-import kotlin.time.ExperimentalTime
 
 /**
  * Returns a [TestExecutionInterceptor] for switching coroutine dispatchers.
  */
 @JVMOnly
-@ExperimentalStdlibApi
 internal expect fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ): TestExecutionInterceptor
@@ -20,7 +18,6 @@ internal expect fun coroutineDispatcherFactoryInterceptor(
  * when blockingTest is true.
  */
 @JVMOnly
-@ExperimentalTime
 internal expect fun blockedThreadTimeoutInterceptor(
    configuration: ProjectConfiguration,
    start: TimeMarkCompat,

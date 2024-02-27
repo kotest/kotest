@@ -3,45 +3,45 @@ package io.kotest.extensions.blockhound
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 enum class BlockHoundMode {
    DISABLED,
    ERROR,
-   PRINT
+   PRINT,
 }
 
-data class BlockHound(private val mode: BlockHoundMode = BlockHoundMode.ERROR) : TestCaseExtension {
+class BlockHound(private val mode: BlockHoundMode = BlockHoundMode.ERROR) : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-      // Skip intercepting lower level tests in case of nesting.
-      if (testCase.parent != null) return execute(testCase)
-
       initialize()
 
-      require (activeExtension == null) {
-         "${testCase.name.testName}: Cannot register $this, as $activeExtension is already active"
+      return withBlockHoundMode(mode) { execute(testCase) }
+   }
+
+   class ContextElement(private val mode: BlockHoundMode) : ThreadContextElement<BlockHoundMode> {
+      override val key: CoroutineContext.Key<ContextElement> = Key
+
+      override fun updateThreadContext(context: CoroutineContext): BlockHoundMode {
+         // invoked before the coroutine is resumed on the current thread
+         val oldState = threadLocalMode.get()
+         threadLocalMode.set(mode)
+         return oldState
       }
-      activeExtension = this
 
-      val modeBefore = activeMode
-      val testCaseBefore = activeTestCase
-      activeMode = mode
-      activeTestCase = testCase
-
-      try {
-         return execute(testCase)
-      } finally {
-         activeMode = modeBefore
-         activeTestCase = testCaseBefore
-
-         activeExtension = null
+      override fun restoreThreadContext(context: CoroutineContext, oldState: BlockHoundMode) {
+         // invoked after the coroutine has suspended on the current thread
+         threadLocalMode.set(oldState)
       }
+
+      object Key : CoroutineContext.Key<ContextElement>
    }
 
    companion object {
       private var isInitialized = false
-      private var activeExtension: BlockHound? = null
-      internal var activeMode = BlockHoundMode.DISABLED
-      internal var activeTestCase: TestCase? = null
+      private var threadLocalMode = ThreadLocal.withInitial { BlockHoundMode.DISABLED }
+      internal val effectiveMode: BlockHoundMode get() = threadLocalMode.get()
 
       private fun initialize() {
          if (!isInitialized) {
@@ -51,3 +51,16 @@ data class BlockHound(private val mode: BlockHoundMode = BlockHoundMode.ERROR) :
       }
    }
 }
+
+/**
+ * Execute [block] in a coroutine scope governed by the specified blockhound [mode].
+ *
+ * Example:
+ * ```
+ *     withBlockHoundMode(BlockHoundMode.DISABLED) { someBlockingCall() }
+ * ```
+ */
+suspend fun <R> withBlockHoundMode(mode: BlockHoundMode, block: suspend () -> R): R =
+   withContext(BlockHound.ContextElement(mode)) {
+      block()
+   }

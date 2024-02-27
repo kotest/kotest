@@ -359,7 +359,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
@@ -369,12 +369,17 @@ abstract class Spec : TestConfiguration() {
 
    /**
     * Registers a callback to be executed after every [TestCase] in this [Spec].
+    * This means it will be invoked for both inner and outer test blocks.
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
+    *
+    * After-test callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
     */
    override fun afterTest(f: AfterTest) {
-      register(object : AfterTestListener {
+      prependExtension(object : AfterTestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
                f(Tuple2(testCase, result))

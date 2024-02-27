@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.property.Arb
+import io.kotest.property.LabelOrder
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.enum
@@ -64,6 +65,36 @@ HALF_EVEN                                                     118 (12%)
 DOWN                                                          107 (11%)
 """.trim()
          )
+      }
+
+      test("collecting labelled stats order by label name") {
+
+         PropertyTesting.labelOrder = LabelOrder.Lexicographic
+
+         val stdout = captureStandardOut {
+            checkAll(PropTestConfig(seed = 1231245), Arb.enum<RoundingMode>()) {
+               collect(it)
+               collect("mylabel", it)
+               collect("mylabel2", it)
+            }
+         }
+         stdout.shouldContain("Statistics: [collecting labelled stats order by label name] (1000 iterations, 1 args)")
+         stdout.shouldContain("Statistics: [collecting labelled stats order by label name] (1000 iterations, 1 args) [mylabel]")
+         stdout.shouldContain("Statistics: [collecting labelled stats order by label name] (1000 iterations, 1 args) [mylabel2]")
+         stdout.lines().joinToString(separator = "\n").shouldContain(
+            """
+CEILING                                                       132 (13%)
+DOWN                                                          107 (11%)
+FLOOR                                                         122 (12%)
+HALF_DOWN                                                     142 (14%)
+HALF_EVEN                                                     118 (12%)
+HALF_UP                                                       141 (14%)
+UNNECESSARY                                                   119 (12%)
+UP                                                            119 (12%)
+""".trim()
+         )
+
+         PropertyTesting.labelOrder = LabelOrder.Quantity
       }
 
       test("no output when StatisticsReportMode.OFF") {

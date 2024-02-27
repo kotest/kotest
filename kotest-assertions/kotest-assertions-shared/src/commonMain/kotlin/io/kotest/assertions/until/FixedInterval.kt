@@ -5,6 +5,7 @@ import kotlin.time.Duration
 /**
  * Generates a fixed (linear) poll interval based on the supplied duration
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class FixedInterval(private val duration: Duration) : Interval {
    override fun toString() = "FixedInterval(${::duration.name}=$duration)"
 
@@ -13,4 +14,5 @@ class FixedInterval(private val duration: Duration) : Interval {
    }
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.fixed(): FixedInterval = FixedInterval(this)

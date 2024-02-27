@@ -42,7 +42,8 @@ module.exports = {
     "extensions/koin",
     "extensions/wiremock",
     "extensions/clock",
-    "extensions/pitest"
+    "extensions/pitest",
+    "extensions/blockhound"
   ],
   "assertions": [
     "assertions/index",
@@ -99,6 +100,7 @@ module.exports = {
   ],
   "framework": [
     "framework/index",
+    "framework/setup",
     "framework/writing_tests",
     "framework/styles",
     {
@@ -151,7 +153,7 @@ module.exports = {
       "label": "Non-deterministic Testing",
       "collapsed": true,
       "items": [
-        "framework/concurrency/eventually",
+        "assertions/eventually",
         "assertions/continually",
         "assertions/until",
         "assertions/retry"

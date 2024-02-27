@@ -1,10 +1,13 @@
 package io.kotest.assertions.throwables
 
+import io.kotest.assertions.Actual
 import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.Expected
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.assertions.print.print
 import io.kotest.mpp.bestName
 
 /**
@@ -63,7 +66,7 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
    shouldThrowUnit<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure( Expected(message.print()), Actual(it.message.print()),"Unexpected exception message: ")
       }
    }
 
@@ -212,7 +215,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
    shouldThrow<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure(Expected(message.print()), Actual(it.message.print()), "Unexpected exception message: ")
       }
    }
 

@@ -10,6 +10,7 @@ import io.kotest.core.listeners.AfterInvocationListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeInvocationListener
+import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -46,6 +47,8 @@ abstract class TestConfiguration {
    internal var _extensions = emptyList<Extension>()
 
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
+
+   private var _parentConfiguration: TestConfiguration? = null
 
    /**
     * Config applied to each test case if not overridden per test case.
@@ -106,8 +109,25 @@ abstract class TestConfiguration {
       register(extensions.toList())
    }
 
+   /**
+    * Register [Extension]s to be invoked after all current extensions.
+    */
    fun register(extensions: List<Extension>) {
       _extensions = _extensions + extensions
+   }
+
+   /**
+    * Register [Extension]s to be invoked before all current extensions.
+    */
+   fun prependExtension(extension: Extension) {
+      prependExtensions(listOf(extension))
+   }
+
+   /**
+    * Register [Extension]s to be invoked before all current extensions.
+    */
+   fun prependExtensions(extensions: List<Extension>) {
+      _extensions = extensions + _extensions
    }
 
    /**
@@ -147,6 +167,7 @@ abstract class TestConfiguration {
     * Registers a lazy [AutoCloseable] to be closed when the spec is completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
+      _parentConfiguration?.autoClose(closeable)
       _autoCloseables = listOf(closeable) + _autoCloseables
       return closeable
    }
@@ -179,8 +200,7 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed before every [TestCase]
-    * with type [TestType.Container].
+    * Registers a callback to be executed before every [TestCase] with type [TestType.Container].
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
@@ -193,14 +213,17 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed after every [TestCase]
-    * with type [TestType.Container].
+    * Registers a callback to be executed after every [TestCase] with type [TestType.Container].
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
+    *
+    * After-container callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
     */
    fun afterContainer(f: AfterContainer) {
-      register(object : AfterContainerListener {
+      prependExtension(object : AfterContainerListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -208,13 +231,12 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed before every [TestCase]
-    * with type [TestType.Test].
+    * Registers a callback to be executed before every [TestCase] with type [TestType.Test].
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      register(object : TestListener {
+      extension(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -222,14 +244,17 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Registers a callback to be executed after every [TestCase]
-    * with type [TestType.Test].
+    * Registers a callback to be executed after every [TestCase] with type [TestType.Test].
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
+    *
+    * After-each callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
     */
    fun afterEach(f: AfterEach) {
-      register(object : TestListener {
+      prependExtension(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -284,9 +309,13 @@ abstract class TestConfiguration {
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
+    *
+    * After-any callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
     */
    fun afterAny(f: AfterAny) {
-      register(object : TestListener {
+      prependExtension(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -298,7 +327,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun beforeSpec(f: BeforeSpec) {
-      register(object : TestListener {
+      register(object : BeforeSpecListener {
          override suspend fun beforeSpec(spec: Spec) {
             f(spec)
          }
@@ -343,5 +372,9 @@ abstract class TestConfiguration {
     */
    fun registeredExtensions(): List<Extension> {
       return _extensions.toList()
+   }
+
+   fun setParentConfiguration(configuration: TestConfiguration) {
+      _parentConfiguration = configuration
    }
 }

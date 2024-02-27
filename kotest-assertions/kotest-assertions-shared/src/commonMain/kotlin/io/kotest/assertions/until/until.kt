@@ -6,18 +6,12 @@ import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface UntilListener<in T> {
    fun onEval(t: T)
-
-   companion object {
-      @Deprecated("UntilListener is a functional interface. Simply use a lambda")
-      val noop = UntilListener<Any?> { }
-   }
 }
 
-@Deprecated("UntilListener is a functional interface. Simply use a lambda")
-fun <T> untilListener(f: (T) -> Unit) = UntilListener<T> { t -> f(t) }
-
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class PatienceConfig(
    val duration: Duration,
    val interval: Interval,
@@ -32,6 +26,7 @@ data class PatienceConfig(
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(duration: Duration, f: suspend () -> Boolean) =
    until(duration, interval = 1.seconds.fixed(), f = f)
 
@@ -45,6 +40,7 @@ suspend fun until(duration: Duration, f: suspend () -> Boolean) =
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(duration: Duration, interval: Interval, f: suspend () -> Boolean) =
    until(duration = duration, interval = interval, predicate = { it }, f = f)
 
@@ -57,6 +53,7 @@ suspend fun until(duration: Duration, interval: Interval, f: suspend () -> Boole
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(patience: PatienceConfig, f: suspend () -> Boolean) =
    until(duration = patience.duration, interval = patience.interval, predicate = { it }, f = f)
 
@@ -68,6 +65,7 @@ suspend fun until(patience: PatienceConfig, f: suspend () -> Boolean) =
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> until(
    duration: Duration,
    predicate: suspend (T) -> Boolean,
@@ -82,6 +80,7 @@ suspend fun <T> until(
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> until(
    duration: Duration,
    interval: Interval,
@@ -100,14 +99,14 @@ suspend fun <T> until(
  *
  * This method supports suspension.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> until(
    patience: PatienceConfig,
    predicate: suspend (T) -> Boolean,
    f: suspend () -> T
 ): T = until(duration = patience.duration, interval = patience.interval, predicate = predicate, listener = {}, f = f)
 
-@Deprecated("Simply move the listener code into the predicate code. Will be removed in 6.0")
-suspend fun <T> until(
+private suspend fun <T> until(
    duration: Duration,
    interval: Interval = 1.seconds.fixed(),
    predicate: suspend (T) -> Boolean,

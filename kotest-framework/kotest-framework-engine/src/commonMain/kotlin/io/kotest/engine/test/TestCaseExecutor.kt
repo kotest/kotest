@@ -2,20 +2,21 @@
 
 package io.kotest.engine.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
+import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
-import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
+import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
+import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
@@ -41,16 +42,14 @@ import kotlin.time.Duration
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
-@OptIn(ExperimentalKotest::class)
-class TestCaseExecutor(
+internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
+   private val context: EngineContext,
 ) {
 
    private val logger = Logger(TestCaseExecutor::class)
 
-   @OptIn(ExperimentalStdlibApi::class)
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
 
@@ -64,17 +63,19 @@ class TestCaseExecutor(
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestCaseExtensionInterceptor(configuration.registry),
-         EnabledCheckInterceptor(configuration),
-         LifecycleInterceptor(listener, timeMark, configuration.registry),
+         TestEnabledCheckInterceptor(context.configuration),
+         BeforeSpecListenerInterceptor(context.configuration.registry, context),
+         TestCaseExtensionInterceptor(context.configuration.registry),
+         LifecycleInterceptor(listener, timeMark, context.configuration.registry),
          AssertionModeInterceptor,
          SoftAssertInterceptor(),
-         CoroutineLoggingInterceptor(configuration),
-         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
+         CoroutineLoggingInterceptor(context.configuration),
+         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(context.configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
+         ExpectExceptionTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
-            configuration.registry,
+            context.configuration.registry,
             timeMark,
             listOfNotNull(
                InvocationTimeoutInterceptor,

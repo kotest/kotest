@@ -20,8 +20,9 @@ repositories {
 }
 
 dependencies {
-   implementation(libs.kotlin.gradle.plugin)
+   compileOnly(libs.kotlin.gradle.plugin)
 
+   testImplementation(libs.kotlin.gradle.plugin)
    testImplementation(projects.kotestAssertions.kotestAssertionsCore)
    testImplementation(projects.kotestFramework.kotestFrameworkApi)
    testImplementation(projects.kotestFramework.kotestFrameworkEngine)
@@ -91,10 +92,6 @@ gradlePlugin {
          tags.set(listOf("kotest", "kotlin", "testing", "integrationtesting", "javascript"))
       }
    }
-}
-
-kotlin {
-   jvmToolchain(17)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

@@ -38,25 +38,24 @@ object ShortPrint : Print<Short> {
    override fun print(a: Short): Printed = a.toString().printed()
 }
 
-
 object BytePrint : Print<Byte> {
    override fun print(a: Byte): Printed = a.toString().printed()
 }
 
 object UBytePrint: Print<UByte> {
-   override fun print(a: UByte): Printed = "${a} (UByte)".printed()
+   override fun print(a: UByte): Printed = "$a (UByte)".printed()
 }
 
 object UShortPrint: Print<UShort> {
-   override fun print(a: UShort): Printed = "${a} (UShort)".printed()
+   override fun print(a: UShort): Printed = "$a (UShort)".printed()
 }
 
 object UIntPrint: Print<UInt> {
-   override fun print(a: UInt): Printed = "${a} (UInt)".printed()
+   override fun print(a: UInt): Printed = "$a (UInt)".printed()
 }
 
 object ULongPrint: Print<ULong> {
-   override fun print(a: ULong): Printed = "${a} (ULong)".printed()
+   override fun print(a: ULong): Printed = "$a (ULong)".printed()
 }
 
 /**
@@ -66,4 +65,24 @@ object ULongPrint: Print<ULong> {
 object ToStringPrint : Print<Any> {
    override fun print(a: Any, level: Int): Printed = a.toString().printed()
    override fun print(a: Any): Printed = a.toString().printed()
+}
+
+object LongRangePrint : Print<LongRange> {
+   override fun print(a: LongRange): Printed = Printed(a.toString())
+}
+
+object IntRangePrint : Print<IntRange> {
+   override fun print(a: IntRange): Printed = Printed(a.toString())
+}
+
+object CharRangePrint : Print<CharRange> {
+   override fun print(a: CharRange): Printed = Printed(a.toString())
+}
+
+object ULongRangePrint : Print<ULongRange> {
+   override fun print(a: ULongRange): Printed = Printed(a.toString())
+}
+
+object UIntRangePrint : Print<UIntRange> {
+   override fun print(a: UIntRange): Printed = Printed(a.toString())
 }

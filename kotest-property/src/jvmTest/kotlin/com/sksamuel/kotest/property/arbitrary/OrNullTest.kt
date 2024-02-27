@@ -30,6 +30,17 @@ class OrNullTest : FunSpec({
       classifications["non-null"]?.shouldBeBetween(300, 600)
    }
 
+   test("Arb.orNull(nullProbability = 1.0) should only generate null values") {
+      val iterations = 1000
+      val classifications =
+         forAll(iterations, Arb.int().orNull(nullProbability = 1.0)) { num ->
+            classify(num == null, "null", "non-null")
+            true
+         }.classifications()
+      classifications["null"]?.shouldBeBetween(1000, 1000)
+      classifications["non-null"]?.shouldBeBetween(0, 0)
+   }
+
    test("null probability values can be specified") {
        retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
            listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)

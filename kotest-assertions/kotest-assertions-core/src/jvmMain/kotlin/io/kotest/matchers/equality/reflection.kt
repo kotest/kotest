@@ -11,7 +11,6 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
-import kotlin.reflect.jvm.javaField
 
 /**
  * Asserts that this is equal to [other] using specific fields
@@ -499,15 +498,6 @@ fun <T : Any> T.shouldNotBeEqualToComparingFields(
    )
 }
 
-private typealias PropertyPredicate = (KProperty<*>) -> Boolean
-
-// If no java field exists, it is a computed property which only has a getter
-private val nonComputed: PropertyPredicate = { it.javaField != null }
-private val nonPrivate: PropertyPredicate = { it.visibility != KVisibility.PRIVATE }
-
-private infix fun PropertyPredicate.and(other: PropertyPredicate) =
-   { property: KProperty<*> -> this(property) && other(property) }
-
 @Deprecated(
    message = "This will be removed in Kotest 6.0",
    replaceWith = ReplaceWith("beEqualComparingFields(other, fieldEqualityCheckConfig)")
@@ -569,19 +559,19 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
    }
 }
 
-private fun <T> checkEqualityOfFieldsRecursively(
+internal fun <T> checkEqualityOfFieldsRecursively(
    value: T,
    other: T,
    config: FieldsEqualityCheckConfig,
    level: Int = 1
 ): Pair<List<String>, List<KProperty1<out T, *>>> {
-   val predicates = listOfNotNull(
-      if (config.ignorePrivateFields) nonPrivate else null,
-      if (config.ignoreComputedFields) nonComputed else null,
+   val predicates: (KProperty<*>) -> Boolean = listOfNotNull(
+      if (config.ignorePrivateFields) notPrivate else null,
+      if (config.ignoreComputedFields) notComputed else null,
       { it !in config.propertiesToExclude }
    ).reduce { a, b -> a and b }
 
-   val fields = value!!::class.memberProperties
+   val fields: List<KProperty1<out T & Any, *>> = value!!::class.memberProperties
       .asSequence()
       .onEach { it.isAccessible = true }
       .filter(predicates)

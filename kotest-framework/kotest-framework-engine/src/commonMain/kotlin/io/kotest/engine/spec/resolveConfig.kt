@@ -86,4 +86,4 @@ internal fun resolveConfig(
    )
 }
 
-fun Long.toMillis(): Duration = this.milliseconds
+private fun Long.toMillis(): Duration = this.milliseconds
