@@ -67,7 +67,8 @@ suspend fun <T> retry(
    val mark = MonotonicTimeSourceCompat.markNow()
    val end = mark.plus(config.timeout)
    var retrySoFar = 0
-   var nextAwaitDuration = config.delay.inWholeMilliseconds
+   var nextAwaitDuration = config.delay
+   var delayedTime = 0.seconds
    var lastError: Throwable? = null
 
    while (end.hasNotPassedNow() && retrySoFar < config.maxRetry) {
@@ -85,12 +86,14 @@ suspend fun <T> retry(
          // else ignore and continue
       }
       retrySoFar++
+      if (retrySoFar >= config.maxRetry || end.hasPassedNow()) break
       delay(nextAwaitDuration)
+      delayedTime += nextAwaitDuration
       nextAwaitDuration *= config.multiplier
    }
    val underlyingCause = if (lastError == null) "" else "; underlying cause was ${lastError.message}"
    throw failure(
-      "Test failed after ${config.delay.toLong(DurationUnit.SECONDS)} seconds; attempted $retrySoFar times$underlyingCause",
+      "Test failed after ${delayedTime.toLong(DurationUnit.SECONDS)} seconds; attempted $retrySoFar times$underlyingCause",
       lastError
    )
 }

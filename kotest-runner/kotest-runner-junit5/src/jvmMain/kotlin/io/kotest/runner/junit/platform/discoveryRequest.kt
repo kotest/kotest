@@ -15,6 +15,9 @@ import org.junit.platform.engine.discovery.PackageNameFilter
 import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import org.junit.platform.engine.discovery.UriSelector
+import org.junit.platform.launcher.EngineFilter
+import org.junit.platform.launcher.LauncherDiscoveryRequest
+import org.junit.platform.launcher.PostDiscoveryFilter
 
 /**
  * Returns a Kotest [DiscoveryRequest] built from the selectors and filters present
@@ -77,4 +80,14 @@ internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(engineId: UniqueId)
    val selectors = packageSelectors + classSelectors + classSelectorsFromUniqueIdSelectors
 
    return DiscoveryRequest(selectors, filters)
+}
+
+fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
+   is LauncherDiscoveryRequest -> engineFilters.toList()
+   else -> emptyList()
+}
+
+fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
+   is LauncherDiscoveryRequest -> postDiscoveryFilters.toList()
+   else -> emptyList()
 }

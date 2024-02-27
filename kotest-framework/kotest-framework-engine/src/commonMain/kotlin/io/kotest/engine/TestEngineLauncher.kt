@@ -21,6 +21,7 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.mpp.Logger
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -41,6 +42,8 @@ class TestEngineLauncher(
    private val tagExpression: TagExpression?,
    private val configurationIsInitialized: Boolean,
 ) {
+
+   private val logger = Logger(TestEngineLauncher::class)
 
    constructor() : this(
       Platform.JVM,
@@ -236,7 +239,7 @@ class TestEngineLauncher(
     * Launch the [TestEngine] in an existing coroutine without blocking.
     */
    suspend fun async(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine" }
+      logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
       return engine.execute(testSuite())
    }
@@ -246,7 +249,7 @@ class TestEngineLauncher(
     * This method will throw on JS.
     */
    fun launch(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine" }
+      logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
@@ -258,7 +261,7 @@ class TestEngineLauncher(
     * This method will throw on JVM or native.
     */
    fun promise() {
-      log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
+      logger.log { "Launching Test Engine in Javascript promise" }
       runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())

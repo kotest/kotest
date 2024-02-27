@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.equals.Equality
@@ -229,6 +230,12 @@ class CollectionMatchersTest : WordSpec() {
             listOf(1, 2, 3, 4) shouldNot containDuplicates()
             listOf(1, 2, 3, 3).shouldContainDuplicates()
             listOf(1, 2, 3, 4).shouldNotContainDuplicates()
+         }
+
+         "print duplicates in message" {
+            shouldThrowAny {
+               listOf(1, 2, 3, 4, 2, 1) shouldNot containDuplicates()
+            }.shouldHaveMessage("Collection should not contain duplicates, but has some: [1, 2]")
          }
       }
 

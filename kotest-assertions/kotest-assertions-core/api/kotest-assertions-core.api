@@ -90,8 +90,31 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class io/kotest/assertions/nondeterministic/EventuallyConfigurationDefaults {
+	public static final field INSTANCE Lio/kotest/assertions/nondeterministic/EventuallyConfigurationDefaults;
+	public final fun getDuration-UwyO8pc ()J
+	public final fun getExpectedExceptions ()Ljava/util/Set;
+	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getInitialDelay-UwyO8pc ()J
+	public final fun getInterval-UwyO8pc ()J
+	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
+	public final fun getListener ()Lkotlin/jvm/functions/Function3;
+	public final fun getRetries ()I
+	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public final fun setDuration-LRDsOJo (J)V
+	public final fun setExpectedExceptions (Ljava/util/Set;)V
+	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setInitialDelay-LRDsOJo (J)V
+	public final fun setInterval-LRDsOJo (J)V
+	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
+	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
+	public final fun setRetries (I)V
+	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class io/kotest/assertions/nondeterministic/EventuallyKt {
 	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun eventually (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventuallyConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
 }
@@ -236,6 +259,8 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotHaveScale (Ljava/math/BigDecimal;I)I
 }
 
@@ -890,11 +915,16 @@ public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/date/DurationKt {
+	public static final fun and-QTBD994 (JJ)J
+}
+
 public final class io/kotest/matchers/date/InstantKt {
 	public static final fun after (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun before (Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun between (Ljava/time/Instant;Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun closeTo-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
 	public static final fun shouldBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
@@ -905,9 +935,21 @@ public final class io/kotest/matchers/date/InstantKt {
 	public static final fun shouldNotBeCloseTo-SxA4cEA (Ljava/time/Instant;Ljava/time/Instant;J)Ljava/time/Instant;
 }
 
+public final class io/kotest/matchers/date/LocalDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/LocalDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/LocalDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/LocaldatetimeKt {
 	public static final fun beInToday ()Lio/kotest/matchers/Matcher;
 	public static final fun beToday ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalDateTime;J)Lio/kotest/matchers/date/LocalDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/LocalDate;)V
 	public static final fun shouldBeToday (Ljava/time/LocalDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/LocalDate;)V
@@ -922,6 +964,7 @@ public final class io/kotest/matchers/date/LocaltimeKt {
 	public static final fun haveSameMinutes (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSameNanos (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSameSeconds (Ljava/time/LocalTime;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalTime;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldBeBefore (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldBeBetween (Ljava/time/LocalTime;Ljava/time/LocalTime;Ljava/time/LocalTime;)Ljava/lang/Object;
@@ -1038,9 +1081,21 @@ public final class io/kotest/matchers/date/MatchersKt {
 	public static final fun within (Ljava/time/temporal/TemporalAmount;Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/date/OffsetDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/OffsetDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/OffsetdatetimeKt {
 	public static final fun beInTodayODT ()Lio/kotest/matchers/Matcher;
 	public static final fun haveSameInstantAs (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/OffsetDateTime;J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/OffsetDateTime;)V
 	public static final fun shouldHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/OffsetDateTime;)V
@@ -1059,9 +1114,21 @@ public final class io/kotest/matchers/date/TimestampKt {
 	public static final fun shouldNotBeBetween (Ljava/sql/Timestamp;Ljava/sql/Timestamp;Ljava/sql/Timestamp;)V
 }
 
+public final class io/kotest/matchers/date/ZonedDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
+	public synthetic fun <init> (Ljava/time/ZonedDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public final fun plusOrMinus-LRDsOJo (J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/matchers/date/ZoneddatetimeKt {
 	public static final fun atSameZone (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun beInTodayZDT ()Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus-HG0u8IE (Ljava/time/ZonedDateTime;J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/ZonedDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/ZonedDateTime;)V
 }
@@ -1776,6 +1843,65 @@ public final class io/kotest/matchers/ranges/BeinKt {
 	public static final fun beIn (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+}
+
+public final class io/kotest/matchers/ranges/IntersectKt {
+	public static final fun intersect (Lio/kotest/matchers/ranges/Range;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+}
+
+public final class io/kotest/matchers/ranges/Range {
+	public static final field Companion Lio/kotest/matchers/ranges/Range$Companion;
+	public fun <init> (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)V
+	public final fun component1 ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun copy (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)Lio/kotest/matchers/ranges/Range;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/Range;Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;ILjava/lang/Object;)Lio/kotest/matchers/ranges/Range;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnd ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun getStart ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun greaterThan (Lio/kotest/matchers/ranges/Range;)Z
+	public fun hashCode ()I
+	public final fun intersect (Lio/kotest/matchers/ranges/Range;)Z
+	public final fun isEmpty ()Z
+	public final fun lessThan (Lio/kotest/matchers/ranges/Range;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ranges/Range$Companion {
+	public final fun closedClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun closedOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofOpenEndRange (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun openClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun openOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+}
+
+public final class io/kotest/matchers/ranges/RangeEdge {
+	public fun <init> (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)V
+	public final fun component1 ()Ljava/lang/Comparable;
+	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdgeType;
+	public final fun copy (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)Lio/kotest/matchers/ranges/RangeEdge;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/RangeEdge;Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;ILjava/lang/Object;)Lio/kotest/matchers/ranges/RangeEdge;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEdgeType ()Lio/kotest/matchers/ranges/RangeEdgeType;
+	public final fun getValue ()Ljava/lang/Comparable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ranges/RangeEdgeType : java/lang/Enum {
+	public static final field EXCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static final field INCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static fun values ()[Lio/kotest/matchers/ranges/RangeEdgeType;
 }
 
 public final class io/kotest/matchers/reflection/CallableMatchersKt {

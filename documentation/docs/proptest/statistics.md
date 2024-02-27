@@ -118,7 +118,7 @@ The possible options are:
 | Mode                                                                | Function                                   |
 |---------------------------------------------------------------------|--------------------------------------------|
 | PropertyTesting.statisticsReportMode = StatisticsReportMode.OFF     | disable all statistics reporting           |
-| PropertyTesting.statisticsReportMode = StatisticsReportMode.OFF     | enables all statistics reporting           |
+| PropertyTesting.statisticsReportMode = StatisticsReportMode.ON      | enables all statistics reporting           |
 | PropertyTesting.statisticsReportMode = StatisticsReportMode.SUCCESS | output statistics only on successful tests |
 | PropertyTesting.statisticsReportMode = StatisticsReportMode.FAILED  | output statistics only on failed tests     |
 

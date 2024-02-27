@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import java.time.LocalTime
+import kotlin.time.Duration
 
 /**
  * Asserts that hours in this time are the same as [time]'s hours
@@ -562,3 +563,72 @@ fun between(a: LocalTime, b: LocalTime): Matcher<LocalTime> = object : Matcher<L
     )
   }
 }
+
+/**
+ * Matcher that checks if LocalTime is within tolerance of another LocalTime
+ *
+ * Verifies that LocalTime is after the first LocalTime and before the second LocalTime
+ * For example, 12:30:00 is within 5 minutes of 12:34:59, and the matcher will have a positive result for this comparison.
+ * It handles cases when one of these times is before midnight and another after midnight
+ *
+ * ```
+ *    val time = LocalTime.of(12, 30, 0)
+ *    val anotherTime = LocalTime.of(12, 34, 59)
+ *
+ *    time shouldBe (anotherTime plusOrMinus 5.minutes) // Assertion passes
+ *    time shouldNotBe (anotherTime plusOrMinus 3.minutes) // Assertion fails
+ *
+ *    val beforeMidnight = LocalTime.of(23, 59, 0)
+ *    val afterMidnight = LocalTime.of(0, 1, 0)
+ *
+ *    beforeMidnight shouldBe (afterMidnight plusOrMinus 3.minutes)   // Assertion passes
+ *    afterMidnight shouldBe (beforeMidnight plusOrMinus 3.minutes)   // Assertion passes
+ * ```
+ *
+ * @see LocalTime.shouldBeBetween
+ * @see LocalTime.shouldNotBeBetween
+ */
+infix fun LocalTime.plusOrMinus(tolerance: Duration): Matcher<LocalTime> =
+   LocalTimeToleranceMatcher(this, tolerance)
+
+internal class LocalTimeToleranceMatcher(
+   private val expected: LocalTime,
+   private val tolerance: Duration
+): Matcher<LocalTime> {
+   init {
+      validateTolerance(tolerance)
+   }
+
+   override fun test(value: LocalTime): MatcherResult {
+      val positiveTolerance = tolerance.absoluteValue
+      val lowerBound = expected.minusNanos(positiveTolerance.inWholeNanoseconds)
+      val upperBound = expected.plusNanos(positiveTolerance.inWholeNanoseconds)
+      val spansTwoDays = upperBound < lowerBound
+      val insideToleranceInterval = if(spansTwoDays) (lowerBound <= value) || (value <= upperBound)
+         else (lowerBound <= value) && (value <= upperBound)
+      return MatcherResult(
+         insideToleranceInterval,
+         { "$value should be equal to $expected with tolerance $tolerance (${rangeDescription(lowerBound, upperBound)})" },
+         { "$value should not be equal to $expected with tolerance $tolerance (not ${rangeDescription(lowerBound, upperBound)})" }
+      )
+   }
+
+   infix fun plusOrMinus(tolerance: Duration): LocalTimeToleranceMatcher =
+      LocalTimeToleranceMatcher(expected, tolerance)
+
+   companion object {
+      const val NANOS_IN_SECOND = 1_000_000_000L
+      const val SECONDS_IN_HOUR = 3_600L
+      const val MAX_TOLERANCE = 12 * SECONDS_IN_HOUR * NANOS_IN_SECOND - 1
+
+      internal fun rangeDescription(lowerBound: LocalTime, upperBound: LocalTime) =
+         "between $lowerBound and $upperBound${if (upperBound < lowerBound) " next day" else ""}"
+
+      internal fun validateTolerance(tolerance: Duration) {
+         require(tolerance.absoluteValue.inWholeNanoseconds <= MAX_TOLERANCE) {
+            "Tolerance cannot be 12 hours or more, was: $tolerance"
+         }
+      }
+   }
+}
+

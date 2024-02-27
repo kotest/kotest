@@ -892,6 +892,8 @@ public final class io/kotest/property/arbitrary/DatesKt {
 	public static final fun period (Lio/kotest/property/Arb$Companion;I)Lio/kotest/property/Arb;
 	public static synthetic fun period$default (Lio/kotest/property/Arb$Companion;IILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun random (Lkotlin/ranges/ClosedRange;Lkotlin/random/Random;)Ljava/time/Instant;
+	public static final fun year (Lio/kotest/property/Arb$Companion;Ljava/time/Year;Ljava/time/Year;)Lio/kotest/property/Arb;
+	public static synthetic fun year$default (Lio/kotest/property/Arb$Companion;Ljava/time/Year;Ljava/time/Year;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun yearMonth (Lio/kotest/property/Arb$Companion;Ljava/time/YearMonth;Ljava/time/YearMonth;)Lio/kotest/property/Arb;
 	public static synthetic fun yearMonth$default (Lio/kotest/property/Arb$Companion;Ljava/time/YearMonth;Ljava/time/YearMonth;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun zonedDateTime (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
@@ -1067,8 +1069,8 @@ public final class io/kotest/property/arbitrary/IntsKt {
 }
 
 public final class io/kotest/property/arbitrary/JvmbindKt {
+	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KClass;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
 	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Lkotlin/reflect/KClass;)Lio/kotest/property/Arb;
-	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Lkotlin/reflect/KClass;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/property/Shrinker {
@@ -1158,6 +1160,14 @@ public final class io/kotest/property/arbitrary/NullKt {
 	public static final fun orNull (Lio/kotest/property/Arb;D)Lio/kotest/property/Arb;
 	public static final fun orNull (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;
 	public static synthetic fun orNull$default (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arbitrary/ProvidedArbsBuilder {
+	public fun <init> ()V
+	public final fun bindClass (Lkotlin/Pair;)V
+	public final fun bindProperty (Lkotlin/Pair;)V
+	public final fun getClassArbs ()Ljava/util/Map;
+	public final fun getPropertyArbs ()Ljava/util/Map;
 }
 
 public final class io/kotest/property/arbitrary/RangeKt {
@@ -1253,8 +1263,8 @@ public final class io/kotest/property/arbitrary/StringsjvmKt {
 }
 
 public final class io/kotest/property/arbitrary/TargetDefaultForClassNameKt {
-	public static final fun targetDefaultForType (Ljava/util/Map;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
-	public static synthetic fun targetDefaultForType$default (Ljava/util/Map;Lkotlin/reflect/KType;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun targetDefaultForType (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
+	public static synthetic fun targetDefaultForType$default (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;ILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/TimezoneKt {

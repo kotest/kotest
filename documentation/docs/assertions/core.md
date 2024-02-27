@@ -127,6 +127,8 @@ Matchers provided by the `kotest-assertions-core` module.
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
 | `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative |
+| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive |
+| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
 | `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
 | `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
 | `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equ|
@@ -185,44 +187,48 @@ Matchers provided by the `kotest-assertions-core` module.
 | `file.shouldHaveParent(name)`                      |  Assert that the file has a parent with the given name |
 
 | Dates                                         ||
-|-----------------------------------------------| ---- |
-| `date.shouldHaveSameYearAs(otherDate)`        | Asserts that the date has the same year as the given date. |
-| `date.shouldHaveSameMonthAs(otherDate)`       | Asserts that the date has the same month as the given date. |
-| `date.shouldHaveSameDayAs(otherDate)`         | Asserts that the date has the same day of the month as the given date. |
-| `date.shouldBeBefore(otherDate)`              | Asserts that the date is before the given date. |
-| `date.shouldBeAfter(otherDate)`               | Asserts that the date is after the given date. |
-| `date.shouldBeWithin(period, otherDate)`      | Asserts that the date is within the period of the given date. |
-| `date.shouldBeWithin(duration, otherDate)`    | Asserts that the date is within the duration of the given date. |
-| `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate. |
-| `date.shouldHaveYear(year)`                   | Asserts that the date have correct year. |
-| `date.shouldHaveMonth(month)`                 | Asserts that the date have correct month. |
-| `date.shouldHaveDayOfYear(day)`               | Asserts that the date have correct day of year. |
-| `date.shouldHaveDayOfMonth(day)`              | Asserts that the date have correct day of month. |
-| `date.shouldHaveDayOfWeek(day)`               | Asserts that the date have correct day of week. |
-| `date.shouldHaveHour(hour)`                   | Asserts that the date have correct hour. |
-| `date.shouldHaveMinute(Minute)`               | Asserts that the date have correct minute. |
-| `date.shouldHaveSecond(second)`               | Asserts that the date have correct second. |
-| `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second. |
+|-----------------------------------------------|--------------------------------------------------------- Asserts that the date has the same year as the given date.                                                                           -----------------|
+| `date.shouldHaveSameYearAs(otherDate)`        | Asserts that the date has the same year as the given date.                                                                           |
+| `date.shouldHaveSameMonthAs(otherDate)`       | Asserts that the date has the same month as the given date.                                                                          |
+| `date.shouldHaveSameDayAs(otherDate)`         | Asserts that the date has the same day of the month as the given date.                                                               |
+| `date.shouldBeBefore(otherDate)`              | Asserts that the date is before the given date.                                                                                      |
+| `date.shouldBeAfter(otherDate)`               | Asserts that the date is after the given date.                                                                                       |
+| `date.shouldBeWithin(period, otherDate)`      | Asserts that the date is within the period of the given date.                                                                        |
+| `date.shouldBeWithin(duration, otherDate)`    | Asserts that the date is within the duration of the given date.                                                                      |
+| `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate.                                                                           |
+| `date.shouldHaveYear(year)`                   | Asserts that the date have correct year.                                                                                             |
+| `date.shouldHaveMonth(month)`                 | Asserts that the date have correct month.                                                                                            |
+| `date.shouldHaveDayOfYear(day)`               | Asserts that the date have correct day of year.                                                                                      |
+| `date.shouldHaveDayOfMonth(day)`              | Asserts that the date have correct day of month.                                                                                     |
+| `date.shouldHaveDayOfWeek(day)`               | Asserts that the date have correct day of week.                                                                                      |
+| `date.shouldHaveHour(hour)`                   | Asserts that the date have correct hour.                                                                                             |
+| `date.shouldHaveMinute(Minute)`               | Asserts that the date have correct minute.                                                                                           |
+| `date.shouldHaveSecond(second)`               | Asserts that the date have correct second.                                                                                           |
+| `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                                                                      |
+| `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration.                                              |
 
-| ZonedDateTime                                                 ||
-|---------------------------------------------------------------| ---- |
-| `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today. |
-| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| ZonedDateTime                                                        ||
+|----------------------------------------------------------------------| ---- |
+| `zonedDateTime.shouldBeToday()`                                      | Asserts that the ZonedDateTime has the same day as the today. |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`        | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime. |
 
-| OffsetDateTime                                                  |                                                                                                      |
-|-----------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| `offsetDateTime.shouldBeToday()`                                | Asserts that the OffsetDateTime has the same day as today.                                           |
-| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)` | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| OffsetDateTime                                                           |                                                                                                      |
+|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `offsetDateTime.shouldBeToday()`                                         | Asserts that the OffsetDateTime has the same day as today.                                           |
+| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
 
-| Times                                         ||
-|-----------------------------------------------| ---- |
-| `time.shouldHaveSameHoursAs(otherTime)`       | Asserts that the time has the same hours as the given time. |
-| `time.shouldHaveSameMinutesAs(otherTime)`     | Asserts that the time has the same minutes as the given time. |
-| `time.shouldHaveSameSecondsAs(otherTime)`     | Asserts that the time has the same seconds as the given time. |
-| `time.shouldHaveSameNanosAs(otherTime)`       | Asserts that the time has the same nanos as the given time. |
-| `time.shouldBeBefore(otherTime)`              | Asserts that the time is before the given time. |
-| `time.shouldBeAfter(otherTime)`               | Asserts that the time is after the given time. |
-| `time.shouldBeBetween(firstTime, secondTime)` | Asserts that the time is between firstTime and secondTime. |
+| Times                                               ||
+|-----------------------------------------------------| ---- |
+| `time.shouldHaveSameHoursAs(otherTime)`             | Asserts that the time has the same hours as the given time. |
+| `time.shouldHaveSameMinutesAs(otherTime)`           | Asserts that the time has the same minutes as the given time. |
+| `time.shouldHaveSameSecondsAs(otherTime)`           | Asserts that the time has the same seconds as the given time. |
+| `time.shouldHaveSameNanosAs(otherTime)`             | Asserts that the time has the same nanos as the given time. |
+| `time.shouldBeBefore(otherTime)`                    | Asserts that the time is before the given time. |
+| `time.shouldBeAfter(otherTime)`                     | Asserts that the time is after the given time. |
+| `time.shouldBeBetween(firstTime, secondTime)`       | Asserts that the time is between firstTime and secondTime. |
+| `time.shouldBe(otherTime plusOrMinus 1.minutes)`    | Asserts that the time is within duration of other time. |
 
 
 
@@ -232,6 +238,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `instant.shouldBeBefore(anotherInstant)`              | Asserts that the instant is before anotherInstant |
 | `instant.shouldBeBetween(fromInstant, toInstant)`     | Asserts that the instant is between fromInstant and toInstant |
 | `instant.shouldBeCloseTo(anotherInstant, duration)`   | Asserts that the instant is close To anotherInstant in range by duration |
+| `instant.shouldBe(otherTime plusOrMinus 1.minutes)`   | Asserts that the instant is within duration of other instant. |
 
 | Timestamp                                               ||
 |---------------------------------------------------------| ---- |

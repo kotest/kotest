@@ -152,6 +152,7 @@ public final class io/kotest/mpp/JvmReflection : io/kotest/mpp/Reflection {
 public final class io/kotest/mpp/Logger {
 	public fun <init> (Lkotlin/reflect/KClass;)V
 	public final fun log (Lkotlin/jvm/functions/Function0;)V
+	public final fun logsimple (Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class io/kotest/mpp/LoggerKt {
