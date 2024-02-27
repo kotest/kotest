@@ -160,8 +160,8 @@ internal fun useEq(
    val expectedOrActualIsNull = actual == null || expected == null
    val typeIsJavaOrKotlinBuiltIn by lazy {
       val bestName = typeName.bestName()
-      bestName.startsWith("kotlin") ||
-         bestName.startsWith("java") ||
+      bestName.startsWith("kotlin.") ||
+         bestName.startsWith("java.") ||
          builtins.contains(bestName)
    }
    val expectedOrActualIsEnum = actual is Enum<*>
