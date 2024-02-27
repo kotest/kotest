@@ -47,7 +47,7 @@ fun <T> RootScope.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdentifiers].
  */
-fun <T> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(ts: Iterable<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData({ getStableIdentifier(it) }, ts, test)
 }
 
@@ -58,7 +58,7 @@ fun <T> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -
  */
 fun <T> RootScope.withData(
    nameFn: (T) -> String,
-   ts: Collection<T>,
+   ts: Iterable<T>,
    test: suspend ContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->

@@ -259,6 +259,8 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotHaveScale (Ljava/math/BigDecimal;I)I
 }
 
@@ -1867,6 +1869,7 @@ public final class io/kotest/matchers/ranges/Range {
 	public final fun getStart ()Lio/kotest/matchers/ranges/RangeEdge;
 	public final fun greaterThan (Lio/kotest/matchers/ranges/Range;)Z
 	public fun hashCode ()I
+	public final fun intersect (Lio/kotest/matchers/ranges/Range;)Z
 	public final fun isEmpty ()Z
 	public final fun lessThan (Lio/kotest/matchers/ranges/Range;)Z
 	public fun toString ()Ljava/lang/String;
@@ -1875,8 +1878,8 @@ public final class io/kotest/matchers/ranges/Range {
 public final class io/kotest/matchers/ranges/Range$Companion {
 	public final fun closedClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
 	public final fun closedOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
-	public final fun of (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
-	public final fun of (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofOpenEndRange (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
 	public final fun openClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
 	public final fun openOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
 }

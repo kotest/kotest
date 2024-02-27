@@ -19,6 +19,8 @@ data class Range<T: Comparable<T>>(
          end.edgeType == RangeEdgeType.EXCLUSIVE
       )
 
+   fun intersect(other: Range<T>): Boolean = !this.lessThan(other) && !other.lessThan(this)
+
    fun lessThan(other: Range<T>): Boolean {
       val endOfThis: T = this.end.value
       val startOfOther: T = other.start.value
@@ -31,13 +33,13 @@ data class Range<T: Comparable<T>>(
    fun greaterThan(other: Range<T>) = other.lessThan(this)
 
    companion object {
-      fun<T: Comparable<T>> of(range: ClosedRange<T>) = Range(
+      fun<T: Comparable<T>> ofClosedRange(range: ClosedRange<T>) = Range(
           start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
           end = RangeEdge(range.endInclusive, RangeEdgeType.INCLUSIVE)
       )
 
       @OptIn(ExperimentalStdlibApi::class)
-      fun<T: Comparable<T>> of(range: OpenEndRange<T>) = Range(
+      fun<T: Comparable<T>> ofOpenEndRange(range: OpenEndRange<T>) = Range(
           start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
           end = RangeEdge(range.endExclusive, RangeEdgeType.EXCLUSIVE)
       )
