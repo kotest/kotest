@@ -18,7 +18,7 @@ import io.kotest.matchers.shouldNot
  * @see [beWithin]
  */
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldBeWithin(range: ClosedRange<T>): ClosedRange<T> {
-   Range.of(this) should beWithin(Range.of(range))
+   Range.ofClosedRange(this) should beWithin(Range.ofClosedRange(range))
    return this
 }
 
@@ -39,7 +39,7 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range
    when(T::class) {
       Int::class -> shouldBeWithinRangeOfInt(this as OpenEndRange<Int>, range as ClosedRange<Int>)
       Long::class -> shouldBeWithinRangeOfLong(this as OpenEndRange<Long>, range as ClosedRange<Long>)
-      else -> Range.of(this) should beWithin(Range.of(range))
+      else -> Range.ofOpenEndRange(this) should beWithin(Range.ofClosedRange(range))
    }
    return this
 }
@@ -55,7 +55,7 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldBeWithin(range: OpenEndRange<T>): ClosedRange<T> {
-   Range.of(this) should beWithin(Range.of(range))
+   Range.ofClosedRange(this) should beWithin(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -70,7 +70,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldBeWithin(range: OpenEndRange<T
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: OpenEndRange<T>): OpenEndRange<T> {
-   Range.of(this) should beWithin(Range.of(range))
+   Range.ofOpenEndRange(this) should beWithin(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -86,7 +86,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: OpenEndRange<
  * @see [beWithin]
  */
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: ClosedRange<T>): ClosedRange<T> {
-   Range.of(this) shouldNot beWithin(Range.of(range))
+   Range.ofClosedRange(this) shouldNot beWithin(Range.ofClosedRange(range))
    return this
 }
 
@@ -101,7 +101,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: ClosedRange
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: OpenEndRange<T>): ClosedRange<T> {
-   Range.of(this) shouldNot beWithin(Range.of(range))
+   Range.ofClosedRange(this) shouldNot beWithin(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -122,7 +122,7 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(ra
    when(T::class) {
       Int::class -> shouldNotBeWithinRangeOfInt(this as OpenEndRange<Int>, range as ClosedRange<Int>)
       Long::class -> shouldNotBeWithinRangeOfLong(this as OpenEndRange<Long>, range as ClosedRange<Long>)
-      else -> Range.of(this) shouldNot beWithin(Range.of(range))
+      else -> Range.ofOpenEndRange(this) shouldNot beWithin(Range.ofClosedRange(range))
    }
    return this
 }
@@ -138,7 +138,7 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(ra
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(range: OpenEndRange<T>): OpenEndRange<T> {
-   Range.of(this) shouldNot beWithin(Range.of(range))
+   Range.ofOpenEndRange(this) shouldNot beWithin(Range.ofOpenEndRange(range))
    return this
 }
 
