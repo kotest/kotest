@@ -3062,3 +3062,7 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 }
 
+public final class io/kotest/similarity/PossibleMatchesKt {
+	public static final fun possibleMatchesDescription (Ljava/util/Set;Ljava/lang/Object;)Ljava/lang/String;
+}
+

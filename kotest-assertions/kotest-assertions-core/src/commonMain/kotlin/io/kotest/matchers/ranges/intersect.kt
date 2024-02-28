@@ -17,7 +17,7 @@ import io.kotest.matchers.shouldNot
  * @see [intersect]
  */
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T>): ClosedRange<T> {
-   Range.of(this) should intersect(Range.of(range))
+   Range.ofClosedRange(this) should intersect(Range.ofClosedRange(range))
    return this
 }
 
@@ -33,7 +33,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<T>): OpenEndRange<T> {
-   Range.of(this) should intersect(Range.of(range))
+   Range.ofOpenEndRange(this) should intersect(Range.ofClosedRange(range))
    return this
 }
 
@@ -47,7 +47,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<T>): ClosedRange<T> {
-   Range.of(this) should intersect(Range.of(range))
+   Range.ofClosedRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -61,7 +61,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
-   Range.of(this) should intersect(Range.of(range))
+   Range.ofOpenEndRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -76,7 +76,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange
  * @see [intersect]
  */
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRange<T>): ClosedRange<T> {
-   Range.of(this) shouldNot intersect(Range.of(range))
+   Range.ofClosedRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
 }
 
@@ -90,7 +90,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRang
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRange<T>): ClosedRange<T> {
-   Range.of(this) shouldNot intersect(Range.of(range))
+   Range.ofClosedRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -106,7 +106,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRan
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRange<T>): OpenEndRange<T> {
-   Range.of(this) shouldNot intersect(Range.of(range))
+   Range.ofOpenEndRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
 }
 
@@ -120,7 +120,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRan
  */
 @OptIn(ExperimentalStdlibApi::class)
 infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
-   Range.of(this) shouldNot intersect(Range.of(range))
+   Range.ofOpenEndRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this
 }
 
@@ -136,7 +136,7 @@ internal fun <T: Comparable<T>> intersect(range: Range<T>) = object : Matcher<Ra
    override fun test(value: Range<T>): MatcherResult {
       if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
 
-      val match = !range.lessThan(value) && !value.lessThan(range)
+      val match = range.intersect(value)
 
       return MatcherResult(
          match,

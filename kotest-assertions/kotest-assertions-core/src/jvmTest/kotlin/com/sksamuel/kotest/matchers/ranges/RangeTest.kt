@@ -16,6 +16,7 @@ import io.kotest.matchers.ranges.toClosedOpenRange
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
+import io.kotest.property.forAll
 
 @OptIn(ExperimentalStdlibApi::class)
 class RangeTest: WordSpec() {
@@ -177,6 +178,38 @@ class RangeTest: WordSpec() {
                maybeOuter.toClosedOpenRange().contains(
                   maybeInner.toClosedOpenRange()
                ) == (maybeOuter.toSet().intersect(maybeInner.toSet()) == maybeInner.toSet())
+            }
+         }
+      "intersect" should {
+         "work for two closed ranges" {
+            forAll(
+               Arb.int(1..3), Arb.int(1..3), Arb.int(0..4), Arb.int(1..2)
+            ) { rangeStart, rangeLength, otherStart, otherLength ->
+               val range = rangeStart..(rangeStart + rangeLength)
+               val other = otherStart..(otherStart + otherLength)
+               Range.ofClosedRange(range).intersect(Range.ofClosedRange(other)) == range.toSet().intersect(other.toSet()).isNotEmpty()
+            }
+         }
+
+         "work for two open end ranges" {
+            forAll(
+               Arb.int(1..3), Arb.int(1..3), Arb.int(0..4), Arb.int(1..2)
+            ) { rangeStart, rangeLength, otherStart, otherLength ->
+               val range = rangeStart..<(rangeStart + rangeLength)
+               val other = otherStart..<(otherStart + otherLength)
+               Range.ofOpenEndRange(range).intersect(Range.ofOpenEndRange(other)) == range.toSet().intersect(other.toSet()).isNotEmpty()
+            }
+         }
+
+         "work for closed range and open end one" {
+            forAll(
+               Arb.int(1..3), Arb.int(1..3), Arb.int(0..4), Arb.int(1..2)
+            ) { rangeStart, rangeLength, otherStart, otherLength ->
+               val range = rangeStart..(rangeStart + rangeLength)
+               val other = otherStart..<(otherStart + otherLength)
+               (Range.ofClosedRange(range).intersect(Range.ofOpenEndRange(other)) == range.toSet().intersect(other.toSet()).isNotEmpty())
+                  &&
+                  (Range.ofOpenEndRange(other).intersect(Range.ofClosedRange(range)) == range.toSet().intersect(other.toSet()).isNotEmpty())
             }
          }
       }
