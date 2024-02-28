@@ -132,7 +132,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRa
  * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
  *
  */
-fun <T: Comparable<T>> intersect(range: Range<T>) = object : Matcher<Range<T>> {
+internal fun <T: Comparable<T>> intersect(range: Range<T>) = object : Matcher<Range<T>> {
    override fun test(value: Range<T>): MatcherResult {
       if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
 

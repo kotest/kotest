@@ -7,9 +7,10 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 /**
- * Verifies that this [ClosedRange] beWithin with another [ClosedRange].
- *
- * Assertion to check that this [ClosedRange] beWithin with another [ClosedRange].
+ * Verifies that this [ClosedRange] is within another [ClosedRange].
+ * This means that every element in the range is in another range as well.
+ * For instance, there are two `Int` numbers in range [2, 3], and both are in range [1, 3],
+ * so the range [2, 3] is within range [1, 3].
  *
  * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
  *
@@ -22,9 +23,10 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldBeWithin(range: ClosedRange<T>
 }
 
 /**
- * Verifies that this [OpenEndRange] beWithins with a [ClosedRange].
- *
- * Assertion to check that this [OpenEndRange] beWithins with a [ClosedRange].
+ * Verifies that this [OpenEndRange] is within a [ClosedRange].
+ * This means that every element in the range is in another range as well.
+ * For instance, there are two `Int` numbers in [OpenEndRange] [1, 3), and both are in [ClosedRange] [1, 3],
+ * so the range [1, 3) is within range [1, 2].
  *
  * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
  *
@@ -43,9 +45,10 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range
 }
 
 /**
- * Verifies that this [ClosedRange] beWithins with an [OpenEndRange].
- *
- * Assertion to check that this [ClosedRange] beWithins with an [OpenEndRange].
+ * Verifies that this [ClosedRange] is within with an [OpenEndRange].
+ * This means that every element in the range is in another range as well.
+ * For instance, there are two `Int` numbers in [ClosedRange] [1, 2], and both are in [OpenEndRange] [1, 3),
+ * so the range [1, 2] is within range [1, 3).
  *
  * @see [shouldbeWithin]
  * @see [beWithin]
@@ -57,9 +60,10 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldBeWithin(range: OpenEndRange<T
 }
 
 /**
- * Verifies that this [OpenEndRange] beWithins with another [OpenEndRange].
- *
- * Assertion to check that this [OpenEndRange] beWithins with another [OpenEndRange].
+ * Verifies that this [OpenEndRange] is within another [OpenEndRange].
+ * This means that every element in the range is in another range as well.
+ * For instance, there are two `Int` numbers in [OpenEndRange] [1, 3), and both are in [OpenEndRange] [0, 3),
+ * so the range [1, 3) is within range [0, 3).
  *
  * @see [shouldbeWithin]
  * @see [beWithin]
@@ -72,8 +76,9 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: OpenEndRange<
 
 /**
  * Verifies that this [ClosedRange] does not beWithin with another [ClosedRange].
- *
- * Assertion to check that this [ClosedRange] does not beWithin with another [ClosedRange].
+ * This means that every element in the range is in another range as well.
+ * For instance, there are two `Int` numbers in [ClosedRange] [2, 3], and both are in [ClosedRange] [0, 3],
+ * so the range [2, 3] is within range [0, 3].
  *
  * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
  *
@@ -86,9 +91,10 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: ClosedRange
 }
 
 /**
- * Verifies that this [ClosedRange] does not beWithin with an [OpenEndRange].
- *
- * Assertion to check that this [ClosedRange] does not beWithin with an [OpenEndRange].
+ * Verifies that this [ClosedRange] is not within an [OpenEndRange].
+ * This means that every element in the range is in another range.
+ * For instance, there are two `Int` numbers in [ClosedRange] [2, 3], and 3 is not in [OpenEndRange] [2, 3),
+ * so the range [2, 3] is not within range [2, 3).
  *
  * @see [shouldNotbeWithin]
  * @see [beWithin]
@@ -100,9 +106,10 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: OpenEndRang
 }
 
 /**
- * Verifies that this [OpenEndRange] does not beWithin with a [ClosedRange].
- *
- * Assertion to check that this [OpenEndRange] does not beWithin with a [ClosedRange].
+ * Verifies that this [OpenEndRange] is not within a [ClosedRange].
+ * This means that every element in the range is in another range.
+ * For instance, there are two `Int` numbers in [OpenEndRange] [1, 3), and 2 is not in [ClosedRange] [0, 1],
+ * so the range [1, 3) is not within range [0, 1].
  *
  * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
  *
@@ -122,8 +129,9 @@ inline infix fun <reified T: Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(ra
 
 /**
  * Verifies that this [OpenEndRange] does not beWithin with another [OpenEndRange].
- *
- * Assertion to check that this [OpenEndRange] does not beWithin with another [OpenEndRange].
+ * This means that every element in the range is in another range.
+ * For instance, there are two `Int` numbers in [OpenEndRange] [1, 3), and 2 is not in [OpenEndRange] [0, 2),
+ * so the range [1, 3) is not within range [0, 2).
  *
  * @see [shouldNotbeWithin]
  * @see [beWithin]
@@ -134,14 +142,6 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(range: OpenEndRan
    return this
 }
 
-/**
- *  Matcher that verifies that this [range] beWithins with another [range]
- *
- * Assertion to check that this [range] beWithins with another [range].
- *
- * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
- *
- */
 internal fun <T: Comparable<T>> beWithin(range: Range<T>) = object : Matcher<Range<T>> {
    override fun test(value: Range<T>): MatcherResult {
       if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")

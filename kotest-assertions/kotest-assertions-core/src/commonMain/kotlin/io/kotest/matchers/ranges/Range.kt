@@ -1,6 +1,6 @@
 package io.kotest.matchers.ranges
 
-data class Range<T: Comparable<T>>(
+internal data class Range<T: Comparable<T>>(
     val start: RangeEdge<T>,
     val end: RangeEdge<T>
 ) {
@@ -87,6 +87,6 @@ internal fun<T: Comparable<T>> OpenEndRange<T>.toClosedOpenRange(): Range<T> = R
    end = RangeEdge(this.endExclusive, RangeEdgeType.EXCLUSIVE)
 )
 
-enum class RangeEdgeType { INCLUSIVE, EXCLUSIVE }
+internal enum class RangeEdgeType { INCLUSIVE, EXCLUSIVE }
 
-data class RangeEdge<T: Comparable<T>>(val value: T, val edgeType: RangeEdgeType)
+internal data class RangeEdge<T: Comparable<T>>(val value: T, val edgeType: RangeEdgeType)
