@@ -11,6 +11,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.similarity.possibleMatchesDescription
+import io.kotest.similarity.possibleMatchesDescriptions
 import kotlin.jvm.JvmName
 
 /**
@@ -93,6 +95,7 @@ fun <T, C : Collection<T>> containExactly(
 
          appendMissingAndExtra(missing, extra)
          appendLine()
+         appendPossibleMatches(missing, expected)
       }
    }
 
@@ -112,7 +115,7 @@ fun <T, C : Collection<T>> containExactly(
       MatcherResult(
          passed,
          {
-            failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
+            failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output for collection)"
          },
          {
             negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
@@ -159,5 +162,18 @@ fun StringBuilder.appendMissingAndExtra(missing: Collection<Any?>, extra: Collec
             extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value
          }"
       )
+   }
+}
+
+internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expected: Collection<T>) {
+   val expectedAsSet = expected.toSet()
+   val possibleMatches = missing.flatMap {
+      possibleMatchesDescriptions(expectedAsSet, it)
+   }.filter { it.isNotEmpty() }
+   if(possibleMatches.isNotEmpty()) {
+      append("\nPossible matches:\n${possibleMatches.take(AssertionsConfig.maxSimilarityPrintSize.value).joinToString("\n\n")}")
+   }
+   if(AssertionsConfig.maxSimilarityPrintSize.value < possibleMatches.size) {
+      append("\nPrinted first ${AssertionsConfig.maxSimilarityPrintSize.value} similarities out of ${possibleMatches.size}, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)\n")
    }
 }
