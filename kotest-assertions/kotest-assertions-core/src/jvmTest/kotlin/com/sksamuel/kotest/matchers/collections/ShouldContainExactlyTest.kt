@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -15,6 +16,9 @@ import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -172,20 +176,35 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "include extras when too many" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath)
                ).shouldContainExactly(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+            message.shouldContain(
                """
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
-                  |
+               """.trimMargin()
+            )
+            message.shouldContain(
+                  """
+                  |Possible matches:
+                  | expected: Blonde(a=foo, b=true, c=23423, p=a/b/c),
+                  |  but was: Blonde(a=woo, b=true, c=97821, p=a/b/c),
+                  |  The following fields did not match:
+                  |    "a" expected: <"foo">, but was: <"woo">
+                  |    "c" expected: <23423>, but was: <97821>
+               """.trimMargin()
+                  )
+            message.shouldContain(
+                     """
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
                """.trimMargin()
+            )
          }
 
          "include missing when too few" {
@@ -207,7 +226,7 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "include missing and extras when not the right amount" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("hoo", true, 96915, inputPath)
@@ -215,17 +234,34 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("woo", true, 97821, inputPath),
                   Blonde("goo", true, 51984, inputPath)
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+            message shouldStartWith
                """
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+               """.trimMargin()
+            message shouldContain """
+                  |Possible matches:
+                  | expected: Blonde(a=goo, b=true, c=51984, p=a/b/c),
+                  |  but was: Blonde(a=woo, b=true, c=97821, p=a/b/c),
+                  |  The following fields did not match:
+                  |    "a" expected: <"goo">, but was: <"woo">
+                  |    "c" expected: <51984>, but was: <97821>
                   |
+                  | expected: Blonde(a=woo, b=true, c=97821, p=a/b/c),
+                  |  but was: Blonde(a=goo, b=true, c=51984, p=a/b/c),
+                  |  The following fields did not match:
+                  |    "a" expected: <"woo">, but was: <"goo">
+                  |    "c" expected: <97821>, but was: <51984>
+            """.trimMargin()
+            message shouldContain
+               """
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
                """.trimMargin()
          }
 
          "exclude full print with warning on large collections" {
-            shouldThrow<AssertionError> {
+            val thrown = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 1, inputPath),
                   Blonde("foo", true, 2, inputPath),
@@ -271,12 +307,27 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 20, inputPath),
                   Blonde("foo", true, 21, inputPath),
                )
-            }.message?.trim() shouldBe
-               """
+            }
+            val message = thrown.message?.trim()
+            assertSoftly {
+               message shouldContain
+                  """
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
                   |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=a/b/c)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=a/b/c)]
-                  |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)
                """.trimMargin()
+               message shouldContain
+                  """
+                  | expected: Blonde(a=foo, b=true, c=2, p=a/b/c),
+                  |  but was: Blonde(a=foo, b=true, c=77, p=a/b/c),
+                  |  The following fields did not match:
+                  |    "c" expected: <2>, but was: <77>
+               """.trimMargin()
+               message shouldContain "Printed first 5 similarities out of 20, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)"
+               message shouldContain
+                  """
+                  |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output for collection)
+               """.trimMargin()
+            }
          }
 
       }
