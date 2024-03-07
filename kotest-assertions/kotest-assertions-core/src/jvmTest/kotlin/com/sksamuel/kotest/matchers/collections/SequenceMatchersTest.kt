@@ -34,12 +34,16 @@ import io.kotest.matchers.sequences.shouldNotBeSortedWith
 import io.kotest.matchers.sequences.shouldNotBeUnique
 import io.kotest.matchers.sequences.shouldNotContain
 import io.kotest.matchers.sequences.shouldNotContainAllInAnyOrder
+import io.kotest.matchers.sequences.shouldNotContainDuplicates
 import io.kotest.matchers.sequences.shouldNotContainExactly
 import io.kotest.matchers.sequences.shouldNotContainNoNulls
 import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.throwable.shouldHaveMessage
 
 class SequenceMatchersTest : WordSpec() {
 
@@ -712,7 +716,7 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.countup.shouldContainAllInAnyOrder((5..15).asSequence())
          }
 
-         succeed("for subset, same count with nulls") {
+         fail("for subset, same count with nulls") {
             sampleData.sparse.shouldContainAllInAnyOrder(sampleData.nulls)
          }
 
@@ -730,6 +734,17 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for same, different count") {
             sampleData.repeating.shouldContainAllInAnyOrder(sampleData.unique)
+         }
+
+         succeed("detect different count of individual elements in collections of same length") {
+            shouldThrowAny{
+               sequenceOf(1, 2, 2).shouldContainAllInAnyOrder(sequenceOf(1, 1, 2))
+            }.shouldHaveMessage("""
+            |Sequence should contain the values of [1, 1, 2] in any order, but was [1, 2, 2].
+            |Count Mismatches:
+            |  For 1: expected count: <2>, but was: <1>
+            |  For 2: expected count: <1>, but was: <2>
+            """.trimMargin())
          }
       }
 
@@ -750,7 +765,7 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.countup.shouldNotContainAllInAnyOrder((5..15).asSequence())
          }
 
-         fail("for subset, same count with nulls") {
+         succeed("for subset, same count with nulls") {
             sampleData.sparse.shouldNotContainAllInAnyOrder(sampleData.nulls)
          }
 
@@ -770,6 +785,9 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.repeating.shouldNotContainAllInAnyOrder(sampleData.unique)
          }
 
+         succeed("detect different count of individual elements in sequences of same length") {
+            sequenceOf(1, 2, 2).shouldNotContainAllInAnyOrder(sequenceOf(1, 1, 2))
+         }
       }
 
       "contain in order" should {
@@ -786,6 +804,12 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for overlapping sequence") {
             sampleData.countup.shouldContainInOrder((5..15).asSequence())
+         }
+
+         "describe first unmatched element" {
+            shouldThrowAny {
+               sequenceOf(1, 2, 3).shouldContainInOrder(sequenceOf(2, 3, 4, 5))
+            }.message shouldContain "did not contain the elements [[2, 3, 4, 5]] in order, could not match element 4 at index 2"
          }
 
          fail("for overlapping sequence (variadic)") {
@@ -836,12 +860,16 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldBeUnique()
          }
 
-         fail("with repeated nulls") {
-            sampleData.sparse.shouldBeUnique()
+         "fail with repeated nulls" {
+            shouldThrowAny {
+               sampleData.sparse.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [<null>]")
          }
 
-         fail("with repeats") {
-            sampleData.repeating.shouldBeUnique()
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [1, 2, 3]")
          }
 
          succeed("for multiple unique") {
@@ -891,6 +919,12 @@ class SequenceMatchersTest : WordSpec() {
          fail("for multiple unique") {
             sampleData.countup.shouldContainDuplicates()
          }
+
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldNotContainDuplicates()
+            }.shouldHaveMessage("Sequence should not contain duplicates, but has some: [1, 2, 3]")
+         }
       }
 
       /* comparable */
@@ -904,16 +938,20 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldHaveUpperBound(0)
          }
 
-         fail("for single with wrong bound") {
-            sampleData.single.shouldHaveUpperBound(-1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveUpperBound(-1)
+            }.shouldHaveMessage("Sequence should have upper bound -1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
             sampleData.countup.shouldHaveUpperBound(sampleData.countup.maxOrNull() ?: Int.MAX_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            sampleData.countup.shouldHaveUpperBound((sampleData.countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveUpperBound((sampleData.countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+            }.shouldHaveMessage("Sequence should have upper bound 9, but element at index 10 was: 10")
          }
       }
 
@@ -926,16 +964,20 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.single.shouldHaveLowerBound(0)
          }
 
-         fail("for single with wrong bound") {
-            sampleData.single.shouldHaveLowerBound(1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveLowerBound(1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
             sampleData.countup.shouldHaveLowerBound(sampleData.countup.minOrNull() ?: Int.MIN_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            sampleData.countup.shouldHaveLowerBound((sampleData.countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveLowerBound((sampleData.countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
       }
 

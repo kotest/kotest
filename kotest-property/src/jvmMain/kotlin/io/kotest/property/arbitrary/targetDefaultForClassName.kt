@@ -1,6 +1,5 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.mpp.bestName
 import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -12,16 +11,14 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.Period
+import java.time.Year
 import java.time.YearMonth
 import java.time.ZonedDateTime
 import java.util.Date
 import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.javaType
-import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
@@ -40,6 +37,7 @@ fun targetDefaultForType(
       typeOf<LocalDateTime>(), typeOf<LocalDateTime?>() -> Arb.localDateTime()
       typeOf<LocalTime>(), typeOf<LocalTime?>() -> Arb.localTime()
       typeOf<Period>(), typeOf<Period?>() -> Arb.period()
+      typeOf<Year>(), typeOf<Year?>() -> Arb.year()
       typeOf<YearMonth>(), typeOf<YearMonth?>() -> Arb.yearMonth()
       typeOf<ZonedDateTime>(), typeOf<ZonedDateTime?>() -> Arb.zonedDateTime()
       typeOf<OffsetDateTime>(), typeOf<OffsetDateTime?>() -> Arb.offsetDateTime()

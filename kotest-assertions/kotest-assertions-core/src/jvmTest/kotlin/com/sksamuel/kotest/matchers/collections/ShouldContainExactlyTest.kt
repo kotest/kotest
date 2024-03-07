@@ -3,8 +3,11 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.CountMismatch
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
+import io.kotest.matchers.collections.countMismatch
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainExactly
@@ -14,11 +17,15 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.of
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
+import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -75,6 +82,38 @@ class ShouldContainExactlyTest : WordSpec() {
             }
             shouldThrow<AssertionError> {
                actual.shouldContainExactly(3, 2, 1)
+            }
+         }
+
+
+         "Supports all sorted set types" {
+            /**
+             * Generates an [Exhaustive] for all (supported) sorted set implementations of the given elements.
+             */
+            fun <T> Exhaustive.Companion.sortedSetOf(vararg elements: T): Exhaustive<Set<T>> = Exhaustive.of(
+               TreeSet(elements.asList()),
+               ConcurrentSkipListSet(elements.asList()),
+               linkedSetOf(*elements),
+            )
+
+            checkAll(Exhaustive.sortedSetOf(1,2,3)) { actual ->
+               actual should containExactly(1, 2, 3)
+               actual.shouldContainExactly(1, 2, 3)
+
+               actual shouldNot containExactly(1, 2)
+               actual.shouldNotContainExactly(1, 2)
+
+               actual shouldNot containExactly(3, 2, 1)
+               actual.shouldNotContainExactly(3, 2, 1)
+               actual.shouldContainExactly(linkedSetOf(3, 2, 1))
+
+               shouldThrow<AssertionError> {
+                  actual should containExactly(1, 2)
+               }
+
+               shouldThrow<AssertionError> {
+                  actual should containExactly(3, 2, 1)
+               }
             }
          }
 
@@ -239,6 +278,7 @@ class ShouldContainExactlyTest : WordSpec() {
                   |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)
                """.trimMargin()
          }
+
       }
 
       "containExactlyInAnyOrder" should {
@@ -292,6 +332,28 @@ class ShouldContainExactlyTest : WordSpec() {
             )
          }
 
+         "print count mismatches for not null keys" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 2, 3).shouldContainExactlyInAnyOrder(listOf(1, 2, 3, 3))
+            }.shouldHaveMessage(
+               """
+                  Collection should contain [1, 2, 3, 3] in any order, but was [1, 2, 2, 3]
+                  CountMismatches: Key="2", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
+               """.trimIndent()
+            )
+         }
+
+         "print count mismatches for nullable keys" {
+            shouldThrow<AssertionError> {
+               listOf(1, null, null, 3).shouldContainExactlyInAnyOrder(listOf(1, null, 3, 3))
+            }.shouldHaveMessage(
+               """
+                  Collection should contain [1, <null>, 3, 3] in any order, but was [1, <null>, <null>, 3]
+                  CountMismatches: Key="null", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
+               """.trimIndent()
+            )
+         }
+
          "disambiguate when using optional expected value" {
             val actual: List<String> = listOf("A", "B", "C")
             val expected: List<String>? = listOf("A", "B", "C")
@@ -302,6 +364,29 @@ class ShouldContainExactlyTest : WordSpec() {
             checkAll(1000, Arb.shuffle(listOf("1", "2", "3", "4", "5", "6", "7"))) {
                it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
             }
+         }
+      }
+
+      "countMismatch" should {
+         "return empty list for a complete match" {
+            val counts = mapOf("apple" to 1, "orange" to 2)
+            countMismatch(counts, counts).shouldBeEmpty()
+         }
+         "return differences for not null key" {
+            countMismatch(
+               mapOf("apple" to 1, "orange" to 2, "banana" to 3),
+               mapOf("apple" to 2, "orange" to 2, "peach" to 1)
+            ) shouldBe listOf(
+               CountMismatch("apple", 1, 2)
+            )
+         }
+         "return differences for null key" {
+            countMismatch(
+               mapOf(null to 1, "orange" to 2, "banana" to 3),
+               mapOf(null to 2, "orange" to 2, "peach" to 1)
+            ) shouldBe listOf(
+               CountMismatch(null, 1, 2)
+            )
          }
       }
    }
