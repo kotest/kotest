@@ -18,7 +18,7 @@ class ContainerTimeoutTest : FunSpec() {
             .launch()
          collector.tests.keys.map { it.name.testName }.toSet() shouldBe setOf("a")
          collector.tests.values.map { it.errorOrNull?.message }.toSet() shouldBe setOf(
-            "Test 'a' did not complete within 10ms",
+            "Test 'a' did not complete within 100ms",
          )
       }
    }
@@ -27,9 +27,9 @@ class ContainerTimeoutTest : FunSpec() {
 @ExperimentalKotest
 private class NestedTimeout : FunSpec() {
    init {
-      context("a").config(timeout = 10.milliseconds) {
+      context("a").config(timeout = 100.milliseconds) {
          test("b") {
-            delay(200.milliseconds)
+            delay(2000.milliseconds)
          }
       }
    }

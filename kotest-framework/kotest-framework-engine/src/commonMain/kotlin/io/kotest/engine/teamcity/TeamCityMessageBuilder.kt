@@ -1,6 +1,7 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.TestResult
 import kotlin.time.Duration
 
@@ -10,6 +11,7 @@ import kotlin.time.Duration
  * Message format:
  *
  * https://www.jetbrains.com/help/teamcity/service-messages.html
+ * https://confluence.jetbrains.com/display/TCD10/Build+Script+Interaction+with+TeamCity
  * https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html
  * https://confluence.jetbrains.com/display/TCD65/Build+Script+Interaction+with+TeamCity#BuildScriptInteractionwithTeamCity-servMsgsServiceMessages
  *

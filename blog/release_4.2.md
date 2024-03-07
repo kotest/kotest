@@ -189,7 +189,7 @@ The Kotest Intellij Plugin is released on a separate cadence from Kotest itself,
 * No extra dependencies are needed to use the plugin - the plugin ships with all required libraries.
 * The new extended callbacks are recognized in the Kotest tool window.
 * Runnning single tests is now supported in `AnnotationSpec`.
-* Seperate builds for Android Studio / Intellij 2019 to address some minor incompatibilities.
+* Separate builds for Android Studio / Intellij 2019 to address some minor incompatibilities.
 * Added inspection for using focus mode in nested tests
 * Added implicit usage provider for object based project config
 

@@ -1,9 +1,13 @@
-import org.gradle.kotlin.dsl.`kotlin-dsl`
+plugins {
+   `kotlin-dsl`
+}
 
 repositories {
    mavenCentral()
+   gradlePluginPortal()
 }
 
-plugins {
-   `kotlin-dsl`
+dependencies {
+   implementation(libs.testlogger.gradle.plugin)
+   implementation(libs.kotlin.gradle.plugin)
 }

@@ -3,11 +3,12 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import io.kotest.property.arbitrary.strings.StringClassifier
+import io.kotest.property.exhaustive.upperLowerCases
 import kotlin.random.nextInt
 
 /**
  * Returns an [Arb] where each random value is a String of length between minSize and maxSize.
- * By default, the arb uses a [ascii] codepoint generator, but this can be substituted
+ * By default, the arb uses a [printableAscii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
  * The edge case values are a string of min length, using the first
@@ -17,7 +18,7 @@ import kotlin.random.nextInt
 fun Arb.Companion.string(
    minSize: Int = 0,
    maxSize: Int = 100,
-   codepoints: Arb<Codepoint> = Codepoint.ascii()
+   codepoints: Arb<Codepoint> = Codepoint.printableAscii()
 ): Arb<String> {
 
    return ArbitraryBuilder.create { rs ->
@@ -39,23 +40,23 @@ fun Arb.Companion.string(
 
 /**
  * Returns an [Arb] where each random value is a String which has a length in the given range.
- * By default the arb uses a [ascii] codepoint generator, but this can be substituted
+ * By default the arb uses a [printableAscii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
  * The edge case values are a string of the first value in the range, using the first edge case
  * codepoint provided by the codepoints arb.
  */
-fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
+fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
 /**
  * Returns an [Arb] where each random value is a String of length [size].
- * By default the arb uses a [ascii] codepoint generator, but this can be substituted
+ * By default the arb uses a [printableAscii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
  * There are no edge case values associated with this arb.
  */
-fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
+fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
 @Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5.")
@@ -101,12 +102,6 @@ class StringShrinkerWithMin(
    private val simplestCharSelector: (preShrinkValue: String) -> Char? = CharSequence::firstOrNull
 ) : Shrinker<String> {
 
-//   @Deprecated("a static 'simplestChar' means invalid shrinks can be generated - use the alternative constructor instead, which allows for a dynamic 'simplestChar'")
-//   constructor (
-//      minLength: Int = 0,
-//      simplestChar: Char,
-//   ) : this(minLength, { simplestChar })
-
    override fun shrink(value: String): List<String> {
 
       val simplestChar: Char? = simplestCharSelector(value)
@@ -148,4 +143,13 @@ class StringShrinkerWithMin(
 
    private fun replace(value: String, newChar: Char, index: Int) =
       if (index == -1) null else value.replaceRange(index..index, newChar.toString())
+}
+
+fun Arb.Companion.upperLowerCase(s: String): Arb<String> {
+   return ArbitraryBuilder.create { rs ->
+      val upperLower = s.upperLowerCases(rs).iterator()
+      upperLower.next()
+   }.withEdgecaseFn { rs ->
+      listOf(s.uppercase(), s.lowercase()).random(rs.random)
+   }.build()
 }

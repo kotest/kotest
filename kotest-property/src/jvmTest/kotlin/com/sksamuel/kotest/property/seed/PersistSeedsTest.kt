@@ -12,6 +12,14 @@ import kotlin.io.path.readText
 
 class PersistSeedsTest : FunSpec({
 
+   fun clearSeedDirectory() {
+      seedDirectory().toFile().listFiles().forEach { it.delete() }
+   }
+
+   afterTest {
+      PropertyTesting.writeFailedSeed = true
+   }
+
    test("failed tests should persist seeds") {
       shouldThrowAny {
          checkAll<Int, Int>(PropTestConfig(seed = 2344324)) { a, b ->
@@ -19,15 +27,23 @@ class PersistSeedsTest : FunSpec({
          }
       }
       seedDirectory()
-         .resolve("com.sksamuel.kotest.property.seed.PersistSeedsTest")
-         .resolve("failed tests should persist seeds")
+         .resolve("com.sksamuel.kotest.property.seed.PersistSeedsTest_failed tests should persist seeds")
          .readText().shouldBe("2344324")
    }
 
-   test("when write seeds is disabled, failed tests should not persist seeds") {
-      seedDirectory().apply {
-         toFile().listFiles().forEach { it.deleteRecursively() }
+   test("failed tests should persist seeds even for illegal chars ():<>/\\") {
+      shouldThrowAny {
+         checkAll<Int, Int>(PropTestConfig(seed = 623515)) { a, b ->
+            a shouldBe 0
+         }
       }
+      seedDirectory()
+         .resolve("com.sksamuel.kotest.property.seed.PersistSeedsTest_failed tests should persist seeds even for illegal chars _______")
+         .readText().shouldBe("623515")
+   }
+
+   test("when write seeds is disabled, failed tests should not persist seeds") {
+      clearSeedDirectory()
       PropertyTesting.writeFailedSeed = false
       shouldThrowAny {
          checkAll<Int, Int> { a, b ->
@@ -38,9 +54,7 @@ class PersistSeedsTest : FunSpec({
    }
 
    test("a successful test should not write seed") {
-      seedDirectory().apply {
-         toFile().listFiles().forEach { it.deleteRecursively() }
-      }
+      clearSeedDirectory()
       checkAll<Int, Int> { a, b ->
       }
       seedDirectory().shouldBeEmptyDirectory()

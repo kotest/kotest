@@ -5,6 +5,7 @@ import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
@@ -26,6 +27,7 @@ class TestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
+      enabledOrReasonIf: EnabledOrReasonIf? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit
@@ -36,6 +38,7 @@ class TestWithConfigBuilder(
       val config = UnresolvedTestConfig(
          enabled = enabled,
          enabledIf = enabledIf,
+         enabledOrReasonIf = enabledOrReasonIf,
          tags = tags,
          extensions = extensions,
          timeout = timeout,

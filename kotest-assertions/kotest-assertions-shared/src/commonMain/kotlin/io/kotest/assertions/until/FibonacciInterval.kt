@@ -1,6 +1,8 @@
 package io.kotest.assertions.until
 
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Fibonacci delay implements a delay where each duration is calculated as a multiplier
@@ -13,6 +15,7 @@ import kotlin.time.Duration
  * @param base The duration that is multiplied by the fibonacci value
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class FibonacciInterval(private val base: Duration, private val offset: Int, private val max: Duration?) : Interval {
 
    init {
@@ -24,17 +27,19 @@ class FibonacciInterval(private val base: Duration, private val offset: Int, pri
    override fun next(count: Int): Duration {
       val baseMs = base.inWholeMilliseconds
       val total = baseMs * fibonacci(offset + count)
-      val result = Duration.milliseconds(total)
+      val result = total.milliseconds
       return if (max == null) result else minOf(max, result)
    }
 
    companion object {
-      val defaultMax = Duration.hours(2)
+      val defaultMax = 2.hours
    }
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun Duration.fibonacci(max: Duration? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
       0 -> previous

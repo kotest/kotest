@@ -49,10 +49,24 @@ fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<L
 fun Arb.Companion.positiveLong(max: Long = Long.MAX_VALUE): Arb<Long> = long(1L, max)
 
 /**
+ * Returns an [Arb] that produces non-negative [Long]s from 0 to [max] (inclusive).
+ * The edge cases are 0, 1 and [max].
+ *
+ * Max defaults to [Long.MAX_VALUE]
+ */
+fun Arb.Companion.nonNegativeLong(max: Long = Long.MAX_VALUE) = long(0, max)
+
+/**
  * Returns an [Arb] that produces negative [Long]s from [min] to -1 (inclusive).
  * The edge cases are [min] and -1.
  */
 fun Arb.Companion.negativeLong(min: Long = Long.MIN_VALUE): Arb<Long> = long(min, -1L)
+
+/**
+ * Returns an [Arb] that produces non-positive [Long]s from [min] to 0 (inclusive).
+ * The edge cases are [min], -1 and 0.
+ */
+fun Arb.Companion.nonPositiveLong(min: Long = Long.MIN_VALUE) = long(min, 0)
 
 /**
  * Returns an [Arb] that produces [LongArray]s where [generateArrayLength] produces the length of the arrays and

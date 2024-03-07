@@ -1,9 +1,9 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -12,20 +12,24 @@ import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
  * A [TestEngineListener] that logs events to the console using a [TeamCityMessageBuilder].
  */
+@KotestInternal
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
    private val details: Boolean = true,
 ) : TestEngineListener {
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private val logger = Logger(TeamCityTestEngineListener::class)
+
+   private var formatter = FallbackDisplayNameFormatter.default(ProjectConfiguration())
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -70,7 +74,7 @@ class TeamCityTestEngineListener(
    override suspend fun engineStarted() {}
 
    override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
+      formatter = getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
@@ -121,11 +125,32 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testStarted(testCase: TestCase) {
+      logger.log { Pair(testCase.name.testName, "testStarted $testCase") }
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
-         TestType.Container -> startTestSuite(testCase)
-         TestType.Test -> startTest(testCase)
-         TestType.Dynamic -> Unit
+         TestType.Container -> {
+            val p = testCase.parent
+            // we might have a container inside a dynamic parent, in which case we need to start the dynamic parent
+            if (p != null && p.type == TestType.Dynamic) {
+               if (!started.contains(p.descriptor)) startTestSuite(p)
+            }
+            startTestSuite(testCase)
+         }
+         TestType.Test -> {
+            val p = testCase.parent
+            // we might have a container inside a dynamic parent, in which case we need to start it
+            if (p != null && p.type == TestType.Dynamic) {
+               if (!started.contains(p.descriptor)) startTestSuite(p)
+            }
+            startTest(testCase)
+         }
+         TestType.Dynamic -> {
+            val p = testCase.parent
+            // we might have a dynamic inside another dynamic parent, in which case we need to start the dynamic parent
+            if (p != null && p.type == TestType.Dynamic) {
+               if (!started.contains(p.descriptor)) startTestSuite(p)
+            }
+         }
       }
    }
 
@@ -138,6 +163,7 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      logger.log { Pair(testCase.name.testName, "testFinished $testCase") }
       results[testCase.descriptor] = result
       when (testCase.type) {
          TestType.Container -> {
@@ -151,11 +177,11 @@ class TeamCityTestEngineListener(
          }
          TestType.Dynamic -> {
             if (isParent(testCase)) {
-               startTestSuite(testCase)
+               if (!started.contains(testCase.descriptor)) startTestSuite(testCase)
                failTestSuiteIfError(testCase, result)
                finishTestSuite(testCase, result)
             } else {
-               startTest(testCase)
+               if (!started.contains(testCase.descriptor)) startTest(testCase)
                if (result.isErrorOrFailure) failTest(testCase, result)
                finishTest(testCase, result)
             }
@@ -172,7 +198,7 @@ class TeamCityTestEngineListener(
       }
    }
 
-   // returns true if this test case is a parent
+   // returns true if this test case contains child tests
    private fun isParent(testCase: TestCase) = children.getOrElse(testCase.descriptor) { mutableListOf() }.isNotEmpty()
 
    /**
@@ -194,6 +220,7 @@ class TeamCityTestEngineListener(
     * For a [TestCase] will output the "test started" message.
     */
    private fun startTest(testCase: TestCase) {
+      logger.log { Pair(testCase.name.testName, "startTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -224,6 +251,7 @@ class TeamCityTestEngineListener(
     * For a given [TestCase] will output the "test finished" message.
     */
    private fun finishTest(testCase: TestCase, result: TestResult) {
+      logger.log { Pair(testCase.name.testName, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -239,6 +267,7 @@ class TeamCityTestEngineListener(
     * For a given [TestCase] will output the "test suite started" message.
     */
    private fun startTestSuite(testCase: TestCase) {
+      logger.log { Pair(testCase.name.testName, "startTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testSuiteStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -253,6 +282,7 @@ class TeamCityTestEngineListener(
     * For a given [TestCase] will output the "test suite finished" message.
     */
    private fun finishTestSuite(testCase: TestCase, result: TestResult) {
+      logger.log { Pair(testCase.name.testName, "finishTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)

@@ -69,6 +69,7 @@ internal fun legacyOptions(mode: CompareMode, order: CompareOrder) =
 internal val defaultCompareJsonOptions = CompareJsonOptions()
 
 class CompareJsonOptions(
+
    /**
     * Controls whether property order must be identical
     */
@@ -123,6 +124,7 @@ enum class ArrayOrder {
 }
 
 enum class FieldComparison {
+
    /**
     * Default. Objects in [expected] and [actual] must contain the same fields.
     */
@@ -201,17 +203,17 @@ internal fun compareObjects(
 ): JsonError? {
 
    if (FieldComparison.Strict == options.fieldComparison) {
-      val keys1 = expected.elements.keys
-      val keys2 = actual.elements.keys
+      val expectedKeys = expected.elements.keys
+      val actualKeys = actual.elements.keys
 
-      if (keys1.size < keys2.size) {
-         val missing = keys2 - keys1
-         return JsonError.ObjectMissingKeys(path, missing)
+      if (actualKeys.size > expectedKeys.size) {
+         val extra = actualKeys - expectedKeys
+         return JsonError.ObjectExtraKeys(path, extra)
       }
 
-      if (keys2.size < keys1.size) {
-         val extra = keys1 - keys2
-         return JsonError.ObjectExtraKeys(path, extra)
+      if (actualKeys.size < expectedKeys.size) {
+         val missing = expectedKeys - actualKeys
+         return JsonError.ObjectMissingKeys(path, missing)
       }
    }
 
@@ -268,7 +270,7 @@ internal fun compareArrays(
          fun findMatchingIndex(element: JsonNode): Int? {
             for (i in availableIndexes()) {
                // Comparison with no error -> matching element
-               val isMatch = compare(path + "[$i]", element, expected.elements[i], options) == null
+               val isMatch = compare(path + "[$i]", expected.elements[i], element, options) == null
 
                if (isMatch) {
                   return i

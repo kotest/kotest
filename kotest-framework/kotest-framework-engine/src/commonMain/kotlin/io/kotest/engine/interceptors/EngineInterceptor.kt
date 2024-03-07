@@ -1,6 +1,7 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.Platform
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
@@ -21,58 +22,111 @@ interface EngineInterceptor {
    suspend fun intercept(context: EngineContext, execute: suspend (EngineContext) -> EngineResult): EngineResult
 }
 
+@KotestInternal
 data class EngineContext(
    val suite: TestSuite,
    val listener: TestEngineListener,
    val tags: TagExpression,
    val configuration: ProjectConfiguration,
+   val platform: Platform,
+   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
-   constructor(configuration: ProjectConfiguration) : this(
+   constructor(configuration: ProjectConfiguration, platform: Platform) : this(
       TestSuite.empty,
       NoopTestEngineListener,
       TagExpression.Empty,
-      configuration
+      configuration,
+      platform,
+      mutableMapOf(),
    )
 
    companion object {
-      val empty = EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, ProjectConfiguration())
+      val empty = EngineContext(
+         TestSuite.empty,
+         NoopTestEngineListener,
+         TagExpression.Empty,
+         ProjectConfiguration(),
+         Platform.JVM,
+         mutableMapOf(),
+      )
    }
 
    /**
     * Returns this [EngineContext] with the given [listener] added via a [CompositeTestEngineListener].
     */
    fun mergeListener(listener: TestEngineListener): EngineContext {
-      return EngineContext(suite, CompositeTestEngineListener(listOf(this.listener, listener)), tags, configuration)
+      return EngineContext(
+         suite,
+         CompositeTestEngineListener(listOf(this.listener, listener)),
+         tags,
+         configuration,
+         platform,
+         state,
+      )
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+         state,
+      )
    }
 
    fun withListener(listener: TestEngineListener): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+         state,
+      )
    }
 
-   fun withConfiguration(c: ProjectConfiguration): EngineContext {
-      return EngineContext(suite, listener, tags, c)
+   fun withConfiguration(conf: ProjectConfiguration): EngineContext {
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         conf,
+         platform,
+         state,
+      )
    }
 
    fun withTags(tags: TagExpression): EngineContext {
-      return EngineContext(suite, listener, tags, configuration)
+      return EngineContext(
+         suite,
+         listener,
+         tags,
+         configuration,
+         platform,
+         state,
+      )
    }
 }
 
-fun ProjectContext.toEngineContext(context: EngineContext): EngineContext {
+internal fun ProjectContext.toEngineContext(
+   context: EngineContext,
+   platform: Platform,
+   state: MutableMap<String, Any>
+): EngineContext {
    return EngineContext(
       suite,
       context.listener,
       tags,
-      configuration
+      configuration,
+      platform,
+      state,
    )
 }
 
-fun EngineContext.toProjectContext(): ProjectContext {
+internal fun EngineContext.toProjectContext(): ProjectContext {
    return ProjectContext(
       suite,
       tags,

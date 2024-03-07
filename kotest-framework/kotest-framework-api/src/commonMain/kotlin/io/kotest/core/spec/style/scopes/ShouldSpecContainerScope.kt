@@ -15,10 +15,11 @@ typealias ShouldSpecContainerContext = ShouldSpecContainerScope
 /**
  * A scope that allows tests to be registered using the syntax:
  *
+ * ```
  * context("some context")
  * should("some test")
  * should("some test").config(...)
- *
+ * ```
  */
 @KotestTestScope
 class ShouldSpecContainerScope(

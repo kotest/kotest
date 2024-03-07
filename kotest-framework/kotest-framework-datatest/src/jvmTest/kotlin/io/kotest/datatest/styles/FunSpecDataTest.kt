@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
@@ -23,13 +24,24 @@ class FunSpecDataTest : FunSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 104
+         count shouldBe 108
       }
 
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
+         }
+      }
+
+      context("a context should allow nullable maps") {
+         withData(
+            mapOf(
+               "true" to true,
+               "false" to false,
+               "null" to null,
+            )
+         ) { _ ->
          }
       }
    }

@@ -18,7 +18,7 @@ interface Matcher<in T> {
 
    fun test(value: T): MatcherResult
 
-   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(f(it)) }
+   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { test(f(it)) }
 
    fun invert(): Matcher<T> = Matcher {
       with(test(it)) {
@@ -29,7 +29,7 @@ interface Matcher<in T> {
    fun <T> Matcher<T>.invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
 
    @Deprecated("Use contramap. Deprecated in 5.3", ReplaceWith("contramap(fn)"))
-   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(fn(it)) }
+   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { test(fn(it)) }
 
    companion object {
 
@@ -67,41 +67,24 @@ infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = Matcher {
  * The matcher returned by [invert] will _also_ assert that the value is not `null`. Use this for matchers that
  * should fail on `null` values, whether called with `should` or `shouldNot`.
  */
-internal abstract class NeverNullMatcher<T : Any?> : Matcher<T?> {
-   final override fun test(value: T?): MatcherResult {
-      return if (value == null) invoke(false, { "Expecting actual not to be null" }, { "" })
-      else testNotNull(value)
-   }
-
-   override fun invert(): Matcher<T?> = object : NeverNullMatcher<T?>() {
-      override fun testNotNull(value: T?): MatcherResult {
-         if (value == null) return invoke(false, { "Expecting actual not to be null" }, { "" })
-         val result = this@NeverNullMatcher.testNotNull(value)
-         return invoke(!result.passed(), { result.negatedFailureMessage() }, { result.failureMessage() })
+private class NeverNullMatcher<T : Any?>(
+   private val next: Matcher<T>
+) : Matcher<T?> {
+   override fun test(value: T?): MatcherResult =
+      when (value) {
+         null -> MatcherResult(false, { "Expecting actual not to be null" }, { "" })
+         else -> next.test(value)
       }
-   }
 
-   abstract fun testNotNull(value: T): MatcherResult
-
-   companion object {
-      /**
-       * Create matcher with the given function to evaluate the value and return a MatcherResult
-       *
-       * @param tester The function that evaluates a value and returns a MatcherResult
-       */
-      inline operator fun <T : Any> invoke(crossinline tester: (T) -> MatcherResult) = object : NeverNullMatcher<T>() {
-         override fun testNotNull(value: T) = tester(value)
-      }
-   }
+   override fun invert(): Matcher<T?> =
+      // invert the next matcher, but not the null check
+      NeverNullMatcher(next.invert())
 }
 
-fun <T : Any> neverNullMatcher(t: (T) -> MatcherResult): Matcher<T?> {
-   return object : NeverNullMatcher<T>() {
-      override fun testNotNull(value: T): MatcherResult {
-         return t(value)
-      }
-   }
-}
+fun <T : Any> neverNullMatcher(t: (T) -> MatcherResult): Matcher<T?> =
+   NeverNullMatcher(
+      Matcher { t(it) }
+   )
 
 /**
  * An instance of [MatcherResult] contains the result of an evaluation of a [Matcher].
@@ -148,7 +131,7 @@ interface MatcherResult {
          passed: Boolean,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String
-      ) = object : MatcherResult {
+      ): MatcherResult = object : MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
@@ -169,12 +152,35 @@ interface ComparableMatcherResult : MatcherResult {
          negatedFailureMessageFn: () -> String,
          actual: String,
          expected: String,
-      ) = object : ComparableMatcherResult {
+      ): ComparableMatcherResult = object : ComparableMatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
          override fun actual(): String = actual
          override fun expected(): String = expected
+      }
+   }
+}
+
+interface EqualityMatcherResult : MatcherResult {
+
+   fun actual(): Any?
+
+   fun expected(): Any?
+
+   companion object {
+      operator fun invoke(
+         passed: Boolean,
+         actual: Any?,
+         expected: Any?,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String,
+         ): EqualityMatcherResult = object : EqualityMatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+         override fun actual(): Any? = actual
+         override fun expected(): Any? = expected
       }
    }
 }

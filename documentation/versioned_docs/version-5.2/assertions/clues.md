@@ -4,7 +4,7 @@ slug: clues.html
 ---
 
 :::note
-Clues only work if you are using the Kotest test framework in conjuction with the assertions library
+Clues only work if you are using the Kotest assertions library or Kotest test framework
 :::
 
 

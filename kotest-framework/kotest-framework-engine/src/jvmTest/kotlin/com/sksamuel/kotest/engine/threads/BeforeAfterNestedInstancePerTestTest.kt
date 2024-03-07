@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.threads
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -33,12 +32,11 @@ class BeforeAfterNestedInstancePerTestTest : FunSpec({
    }
 
    afterProject {
-      assertSoftly {
-         beforeSpecNestedCounter.get() shouldBe 9
-         afterSpecNestedCounter.get() shouldBe 9
-         beforeTestNestedCounter.get() shouldBe 18
-         afterTestNestedCounter.get() shouldBe 18
-      }
+      // we create 18 instances of the spec
+      beforeSpecNestedCounter.get() shouldBe 9
+      afterSpecNestedCounter.get() shouldBe 9
+      beforeTestNestedCounter.get() shouldBe 18
+      afterTestNestedCounter.get() shouldBe 18
    }
 
    context("First single thread context") {

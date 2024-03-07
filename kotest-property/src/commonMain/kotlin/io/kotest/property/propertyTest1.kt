@@ -3,8 +3,8 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
+import io.kotest.property.resolution.default
 import kotlin.jvm.JvmName
 
 @JvmName("checkAllExt")
@@ -52,7 +52,7 @@ suspend fun <A> checkAll(
 suspend inline fun <reified A> checkAll(
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   Arb.default<A>(),
+   Arb.default(),
    PropTestConfig(),
    property
 )
@@ -70,7 +70,7 @@ suspend inline fun <reified A> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   Arb.default<A>(),
+   Arb.default(),
    config,
    property
 )
@@ -80,7 +80,7 @@ suspend inline fun <reified A> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   Arb.default<A>(),
+   Arb.default(),
    config.copy(iterations = iterations),
    property
 )
@@ -138,7 +138,7 @@ suspend inline fun <reified A> forAll(
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
 ) = proptest<A>(
-   Arb.default<A>(),
+   Arb.default(),
    config
 ) { a -> property(a) shouldBe true }
 
@@ -147,7 +147,7 @@ suspend inline fun <reified A> forAll(
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
 ) = proptest<A>(
-   Arb.default<A>(),
+   Arb.default(),
    config.copy(iterations = iterations)
 ) { a -> property(a) shouldBe true }
 
@@ -178,7 +178,7 @@ suspend fun <A> forNone(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = proptest<A>(
+) = proptest(
    genA,
    config
 ) { a -> property(a) shouldBe false }
@@ -211,7 +211,7 @@ suspend inline fun <reified A> forNone(
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
 ) = proptest<A>(
-   Arb.default<A>(),
+   Arb.default(),
    config
 ) { a -> property(a) shouldBe false }
 

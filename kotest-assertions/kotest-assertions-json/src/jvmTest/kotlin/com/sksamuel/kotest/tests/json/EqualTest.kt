@@ -2,7 +2,9 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.TypeCoercion
 import io.kotest.assertions.json.shouldEqualJson
+import io.kotest.assertions.json.shouldNotEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldStartWith
@@ -13,11 +15,29 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.numericDouble
 import io.kotest.property.arbitrary.string
+import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
 class EqualTest : FunSpec() {
    init {
+      test("compare non equal objects") {
+         val arb = Arb.string(1 .. 10, Codepoint.az())
+         checkAll(arb, arb) {a,b ->
+            assume( a != b)
+
+            val left = """{ "a": "$a" }"""
+            val right = """{ "a": "$b" }"""
+
+            left shouldNotEqualJson right
+         }
+
+         val a = """ { "a" : "foo", "b" : "bar" } """
+
+         shouldFail {
+            a shouldNotEqualJson a
+         }.shouldHaveMessage("Expected values to not match")
+      }
 
       test("comparing strings in objects") {
 
@@ -159,12 +179,12 @@ expected:<{
       }
 
       test("comparing object with extra key") {
-         val a = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
-         val b = """ { "a" : "foo", "b" : "bar" } """
+         val actual = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
+         val expected = """ { "a" : "foo", "b" : "bar" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c]
+            """The top level object has extra field(s) [c]
 
 expected:<{
   "a": "foo",
@@ -178,12 +198,12 @@ expected:<{
       }
 
       test("comparing object with extra keys") {
-         val a = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": true } """
-         val b = """ { "a" : "foo", "b" : "bar" } """
+         val actual = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": true } """
+         val expected = """ { "a" : "foo", "b" : "bar" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c,d]
+            """The top level object has extra field(s) [c,d]
 
 expected:<{
   "a": "foo",
@@ -198,12 +218,12 @@ expected:<{
       }
 
       test("comparing object with missing key") {
-         val a = """ { "a" : "foo", "b" : "bar" } """
-         val b = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
+         val actual = """ { "a" : "foo", "b" : "bar" } """
+         val expected = """ { "a" : "foo", "b" : "bar", "c": "baz" } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object has extra field(s) [c]
+            """The top level object was missing expected field(s) [c]
 
 expected:<{
   "a": "foo",
@@ -217,12 +237,12 @@ expected:<{
       }
 
       test("comparing object with missing keys") {
-         val a = """ { "a" : "foo", "b" : "bar" } """
-         val b = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": 123 } """
+         val actual = """ { "a" : "foo", "b" : "bar" } """
+         val expected = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": 123 } """
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.shouldHaveMessage(
-            """The top level object has extra field(s) [c,d]
+            """The top level object was missing expected field(s) [c,d]
 
 expected:<{
   "a": "foo",
@@ -236,15 +256,29 @@ expected:<{
          )
       }
 
-
-      test("comparing boolean to string with lenient mode") {
+      context("comparing boolean to string with lenient mode") {
          val a = """ { "a" : "foo", "b" : true } """
          val b = """ { "a" : "foo", "b" : "true" } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
-
          val c = """ { "a" : "foo", "b" : false } """
          val d = """ { "a" : "foo", "b" : "false" } """
-         c.shouldEqualJson(d, CompareMode.Lenient)
+
+         test("Check new block-style configuration options") {
+            a shouldEqualJson {
+               typeCoercion = TypeCoercion.Enabled
+               b
+            }
+
+            a shouldNotEqualJson {
+               typeCoercion = TypeCoercion.Disabled
+               b
+            }
+         }
+
+
+         test("Using old CompareMode flags") {
+            a.shouldEqualJson(b, CompareMode.Lenient)
+            c.shouldEqualJson(d, CompareMode.Lenient)
+         }
       }
 
       test("comparing long to string with lenient mode") {
@@ -658,12 +692,12 @@ expected:<{
       }
 
       test("real world json without field") {
-         val a = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
-         val b = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
+         val actual = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         val expected = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
          shouldFail {
-            a shouldEqualJson b
+            actual shouldEqualJson expected
          }.message.shouldStartWith(
-            """At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
+            """At 'products.[0].variants.[0]' object has extra field(s) [sku]
 
 expected:<{
   "products": [
@@ -739,7 +773,8 @@ expected:<{
          a.shouldEqualJson(b)
          shouldFail {
             a.shouldEqualJson(b, CompareOrder.Strict)
-         }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
+         }.shouldHaveMessage(
+            """The top level object expected field 0 to be 'sku' but was 'id'
 
 expected:<{
   "sku": "RIND-TOTEO-001-MCF",
@@ -755,7 +790,8 @@ expected:<{
   "requires_shipping": true,
   "taxable": true,
   "featured_image": null
-}>""")
+}>"""
+         )
       }
    }
 }

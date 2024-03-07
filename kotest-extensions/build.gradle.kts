@@ -1,36 +1,31 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
 
    sourceSets {
 
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework.api))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Common))
-            implementation(libs.apache.commons.io)
-            implementation(libs.mockk)
+            implementation(projects.kotestFramework.kotestFrameworkApi)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestCommon)
          }
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
          }
       }
    }
 }
 
-apply(from = "../publish-mpp.gradle.kts")
+tasks.withType<Test>().configureEach {
+   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}

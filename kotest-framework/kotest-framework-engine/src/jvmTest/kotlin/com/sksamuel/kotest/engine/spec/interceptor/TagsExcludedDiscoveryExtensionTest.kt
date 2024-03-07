@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 
 @ExperimentalKotest
@@ -24,21 +24,21 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          // will be excluded explicitly
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(ExcludedSpec::class)) { error("foo") }
 
          // will be included as includes are ignored at the class level
          var executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
          executed.shouldBeTrue()
 
-         // will be included as we can must check the spec itself later to see if the test themselves have the include or exclude
+         // will be included as we must check the spec itself later to see if the test themselves have the include or exclude
          executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())
@@ -53,7 +53,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          var executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(ExcludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
@@ -61,7 +61,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          executed.shouldBeTrue()
 
          executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
@@ -69,7 +69,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          executed.shouldBeTrue()
 
          executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())
@@ -83,13 +83,13 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          val conf = ProjectConfiguration()
          conf.registry.add(SpecifiedTagsTagExtension(tags))
 
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(ExcludedSpec::class)) {
                error("foo")
             }
 
          var executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
@@ -97,7 +97,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          executed.shouldBeTrue()
 
          executed = false
-         TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
+         TagsInterceptor(NoopTestEngineListener, conf)
             .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())

@@ -45,28 +45,32 @@ object DoubleShrinker : Shrinker<Double> {
 
 /**
  * Returns an [Arb] that produces [Double]s from [min] to [max] (inclusive).
- * The edge cases are [Double.NEGATIVE_INFINITY], [min], -1.0, -[Double.MIN_VALUE], -0.0, 0.0, [Double.MIN_VALUE], 1.0,
- * [max], [Double.POSITIVE_INFINITY] and [Double.NaN].
- *
- * Only values in the provided range are included.
+ * The numeric edge cases are [min], -1.0, -[Double.MIN_VALUE], -0.0, 0.0, [Double.MIN_VALUE], 1.0 and [max]
+ * which are only included if they are in the provided range.
+ * The non-finite edge cases are [Double.NEGATIVE_INFINITY], [Double.POSITIVE_INFINITY] and [Double.NaN]
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  *
  * @see numericDouble to only produce numeric [Double]s
  */
 fun Arb.Companion.double(
    min: Double = -Double.MAX_VALUE,
-   max: Double = Double.MAX_VALUE
-): Arb<Double> = double(min..max)
+   max: Double = Double.MAX_VALUE,
+   includeNonFiniteEdgeCases: Boolean = true
+): Arb<Double> = double(min..max, includeNonFiniteEdgeCases)
 
 /**
  * Returns an [Arb] that produces [Double]s in [range].
- * The edge cases are [Double.NEGATIVE_INFINITY], [ClosedFloatingPointRange.start], -1.0, -[Double.MIN_VALUE], -0.0,
- * 0.0, [Double.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive], [Double.POSITIVE_INFINITY] and [Double.NaN]
+ * The numeric edge cases are [ClosedFloatingPointRange.start], -1.0, -[Double.MIN_VALUE], -0.0,
+ * 0.0, [Double.MIN_VALUE], 1.0 and [ClosedFloatingPointRange.endInclusive]
  * which are only included if they are in the provided range.
+ * The non-finite edge cases are [Double.NEGATIVE_INFINITY], [Double.POSITIVE_INFINITY] and [Double.NaN]
+ * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
  */
 fun Arb.Companion.double(
-   range: ClosedFloatingPointRange<Double> = -Double.MAX_VALUE..Double.MAX_VALUE
+   range: ClosedFloatingPointRange<Double> = -Double.MAX_VALUE..Double.MAX_VALUE,
+   includeNonFiniteEdgeCases: Boolean = true
 ): Arb<Double> = arbitrary(
-   (numericEdgeCases.filter { it in range } + nonFiniteEdgeCases  + listOf(range.start, range.endInclusive)).distinct(),
+   (numericEdgeCases.filter { it in range } + listOf(range.start, range.endInclusive)).distinct() + getNonFiniteEdgeCases(range, includeNonFiniteEdgeCases),
    DoubleShrinker
 ) {
    it.random.nextDouble(range.start, range.endInclusive)
@@ -74,20 +78,22 @@ fun Arb.Companion.double(
 
 /**
  * Returns an [Arb] that produces positive [Double]s from [Double.MIN_VALUE] to [max] (inclusive).
- * The edge cases are [Double.MIN_VALUE], 1.0, [max] and [Double.POSITIVE_INFINITY] which are only included if they are
- * in the provided range.
+ * The numeric edge cases are [Double.MIN_VALUE], 1.0 and [max] which are only included if they are in the provided range.
+ * The non-finite edge case is [Double.POSITIVE_INFINITY]
+ * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE): Arb<Double> = double(Double.MIN_VALUE, max)
+fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(Double.MIN_VALUE, max, includeNonFiniteEdgeCases)
 
 @Deprecated("use positiveDouble. Deprecated in 5.0.", ReplaceWith("positiveDouble()"))
 fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
 
 /**
  * Returns an [Arb] that produces negative [Double]s from [min] to -[Double.MIN_VALUE] (inclusive).
- * The edge cases are [Double.NEGATIVE_INFINITY], [min], -1.0 and -[Double.MIN_VALUE] which are only included if they
- * are in the provided range.
+ * The numeric edge cases are [min], -1.0 and -[Double.MIN_VALUE] which are only included if they are in the provided range.
+ * The non-finite edge case is [Double.NEGATIVE_INFINITY]
+ * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
-fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE): Arb<Double> = double(min, -Double.MIN_VALUE)
+fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(min, -Double.MIN_VALUE, includeNonFiniteEdgeCases)
 
 @Deprecated("use negativeDouble. Deprecated in 5.0.", ReplaceWith("negativeDouble()"))
 fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
@@ -116,3 +122,12 @@ fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = 
  */
 fun Arb.Companion.doubleArray(length: Gen<Int>, content: Arb<Double>): Arb<DoubleArray> =
    toPrimitiveArray(length, content, Collection<Double>::toDoubleArray)
+
+private fun getNonFiniteEdgeCases(range: ClosedFloatingPointRange<Double>, includeNonFiniteEdgeCases: Boolean) : List<Double> {
+   return if (includeNonFiniteEdgeCases) {
+      if (range == -Double.MAX_VALUE..Double.MAX_VALUE) nonFiniteEdgeCases
+      else if (range.start == -Double.MAX_VALUE) nonFiniteEdgeCases.filter { it <= range.endInclusive }
+      else if (range.endInclusive == Double.MAX_VALUE) nonFiniteEdgeCases.filter { it >= range.start }
+      else emptyList()
+   } else emptyList()
+}

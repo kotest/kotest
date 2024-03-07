@@ -9,7 +9,7 @@ import io.kotest.mpp.Logger
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.min
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Installs an invocation timeout.
@@ -41,7 +41,7 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
             // user level timeouts will throw an exception, ours will return null
             withTimeoutOrNull(timeout) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
-            } ?: throw TestTimeoutException(Duration.milliseconds(timeout), testCase.name.testName)
+            } ?: throw TestTimeoutException(timeout.milliseconds, testCase.name.testName)
          } catch (t: TimeoutCancellationException) {
             logger.log { Pair(testCase.name.testName, "Caught user timeout $t") }
             throw t

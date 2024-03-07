@@ -3,8 +3,8 @@ package io.kotest.extensions.system
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.io.PrintStream
 
 /**
@@ -13,9 +13,11 @@ import java.io.PrintStream
 inline fun captureStandardOut(fn: () -> Unit): String {
    val previous = System.out
    val buffer = ByteArrayOutputStream()
+   previous.flush()
    System.setOut(PrintStream(buffer))
    try {
       fn()
+      System.out.flush()
       return String(buffer.toByteArray())
    } finally {
       System.setOut(previous)
@@ -28,9 +30,11 @@ inline fun captureStandardOut(fn: () -> Unit): String {
 inline fun captureStandardErr(fn: () -> Unit): String {
    val previous = System.err
    val buffer = ByteArrayOutputStream()
+   previous.flush()
    System.setErr(PrintStream(buffer))
    try {
       fn()
+      System.err.flush()
       return String(buffer.toByteArray())
    } finally {
       System.setErr(previous)
@@ -56,6 +60,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.out
+      previous.flush()
       if (tee) {
          System.setOut(PrintStream(TeeOutputStream(previous, buffer)))
       } else {
@@ -84,6 +89,7 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.err
+      previous.flush()
       if (tee) {
          System.setErr(PrintStream(TeeOutputStream(previous, buffer)))
       } else {
@@ -93,5 +99,42 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       System.setErr(previous)
+   }
+}
+
+/**
+ * Write to multiple output streams at once
+ *
+ * (avoids pulling in commons-io:commons-io just for a single class)
+ */
+@Suppress("BlockingMethodInNonBlockingContext")
+internal class TeeOutputStream(
+   private val firstOutput: OutputStream,
+   private val secondOutput: OutputStream
+) : OutputStream() {
+
+   override fun write(data: Int) = synchronized(this) {
+      firstOutput.write(data)
+      secondOutput.write(data)
+   }
+
+   override fun write(data: ByteArray) = synchronized(this) {
+      firstOutput.write(data)
+      secondOutput.write(data)
+   }
+
+   override fun write(data: ByteArray, offset: Int, length: Int) = synchronized(this) {
+      firstOutput.write(data, offset, length)
+      secondOutput.write(data, offset, length)
+   }
+
+   override fun flush() {
+      firstOutput.flush()
+      secondOutput.flush()
+   }
+
+   override fun close() {
+      firstOutput.close()
+      secondOutput.close()
    }
 }

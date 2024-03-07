@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
@@ -20,13 +21,24 @@ class DescribeSpecDataTest : DescribeSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 104
+         count shouldBe 108
       }
 
       describe("inside a describe") {
          registerContextTests().assertDataTestResults()
          describe("inside another describe") {
             registerContextTests().assertDataTestResults()
+         }
+      }
+
+      describe("a describe should allow nullable maps") {
+         withData(
+            mapOf(
+               "true" to true,
+               "false" to false,
+               "null" to null,
+            )
+         ) { _ ->
          }
       }
    }

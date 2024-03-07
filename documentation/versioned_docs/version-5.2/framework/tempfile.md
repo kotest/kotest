@@ -6,7 +6,7 @@ slug: temporary-files
 
 
 
-Sometimes it is requires for a test to create a file and delete it after test, deleting it manually may lead to flaky
+Sometimes it is required for a test to create a file and delete it after test, deleting it manually may lead to flaky
 test.
 
 For example, you may be using a temporary file during a test. If the test passes successfully, your clean up code will execute

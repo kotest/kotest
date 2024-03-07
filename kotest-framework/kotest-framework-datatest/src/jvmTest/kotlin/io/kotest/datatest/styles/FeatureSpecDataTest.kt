@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
@@ -20,13 +21,24 @@ class FeatureSpecDataTest : FeatureSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 104
+         count shouldBe 108
       }
 
       feature("inside a feature") {
          registerContextTests().assertDataTestResults()
          feature("inside another feature") {
             registerContextTests().assertDataTestResults()
+         }
+      }
+
+      feature("a feature should allow nullable maps") {
+         withData(
+            mapOf(
+               "true" to true,
+               "false" to false,
+               "null" to null,
+            )
+         ) { _ ->
          }
       }
    }

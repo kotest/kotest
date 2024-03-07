@@ -19,7 +19,7 @@ These annotations are only available for the JVM target.
 
 ### @Ignored
 
-If we with to simply disable a spec completely, then we can use the `@Ignored` annotation.
+If we wish to simply disable a spec completely, then we can use the `@Ignored` annotation.
 
 ```kotlin
 @Ignored
@@ -40,7 +40,7 @@ to determine if a spec is enabled. Note that implementations must have a zero ar
 For example, we may wish to only execute tests containing the name "Linux" when run on a Linux machine.
 
 ```kotlin
-class LinuxOnlyCondition : EnabledCondition() {
+class LinuxOnlyCondition : EnabledCondition {
   override fun enabled(kclass: KClass<out Spec>): Boolean = when {
     kclass.simpleName?.contains("Linux") == true -> IS_OS_LINUX
     else -> true // non Linux tests always run

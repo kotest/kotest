@@ -7,50 +7,59 @@ on:
          - 'documentation/**'
          - '*.md'
          - '*.yml'
+         - '.github/workflows/**'
       branches:
          - master
 
 permissions:
-  contents: read
+   contents: read
 
 jobs:
-   linux:
-      if: github.repository == 'kotest/kotest'
+   api_check:
       runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
             with:
                fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
 
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
                distribution: 'temurin'
-               java-version: '8'
+               java-version: '17'
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: Run tests
-            run: ./gradlew check --scan
+         -  name: Run api check
+            run: ./gradlew apiCheck
 
-         -  name: publish snapshots
-            run: ./gradlew publish
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
+   linux:
+      needs: api_check
+      runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
+      strategy:
+         fail-fast: false
+         matrix:
+            target:
+               - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
+               - jsTest publishJsPublicationToDeployRepository
+               - linuxX64Test publishLinuxX64PublicationToDeployRepository
+               - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
+               - androidNativeX86TestKlibrary androidNativeX64TestKlibrary publishAndroidNativeX64PublicationToDeployRepository publishAndroidNativeX86PublicationToDeployRepository
+               - androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary publishAndroidNativeArm32PublicationToDeployRepository publishAndroidNativeArm64PublicationToDeployRepository
+      steps:
+         -  uses: kotest/kotest-action@master
             with:
-               name: error-report
-               path: build-reports.zip
+               gradle-command: ${{ matrix.target }}
+               java-version: "17"
 
    mac:
+      needs: api_check
+      runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
-      runs-on: macos-11
       strategy:
          fail-fast: false
          matrix:
@@ -67,66 +76,25 @@ jobs:
                - watchosArm64TestKlibrary publishWatchosArm64PublicationToDeployRepository
                - watchosX86Test publishWatchosX86PublicationToDeployRepository
                - watchosX64Test publishWatchosX64PublicationToDeployRepository
-
+               - watchosSimulatorArm64Test publishWatchosSimulatorArm64PublicationToDeployRepository
+               - tvosSimulatorArm64Test publishTvosSimulatorArm64PublicationToDeployRepository
       steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
+         -  uses: kotest/kotest-action@master
             with:
-               fetch-depth: 0
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'temurin'
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run tests
-            run: ./gradlew ${{ matrix.target }} --scan
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
-            with:
-               name: error-report
-               path: build-reports.zip
+               gradle-command: ${{ matrix.target }}
+               java-version: "17"
 
    windows:
+      needs: api_check
       runs-on: windows-latest
       if: github.repository == 'kotest/kotest'
       steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
+         -  uses: kotest/kotest-action@master
             with:
-               fetch-depth: 0
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run tests
-            run: ./gradlew mingwX64Test --scan
-
-         -  name: publish mingw64 and mingw86 snapshot
-            run: ./gradlew publishMingwX64PublicationToDeployRepository
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
-            with:
-               name: error-report
-               path: build-reports.zip
-
+               gradle-command: "mingwX64Test publishMingwX64PublicationToDeployRepository"
+               java-version: "17"
 
 env:
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}

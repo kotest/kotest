@@ -3,7 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.default
+import io.kotest.property.resolution.default
 import io.kotest.property.internal.proptest
 
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> checkAll(
@@ -243,7 +243,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    Arb.default(),
    Arb.default(),
    config
-) { a, b, c, d, e, F, G, H, I, J, K, L -> property(a, b, c, d, e, F, G, H, I, J, K, L) shouldBe true }
+) { a, b, c, d, e, f, g, h, i, j, k, l -> property(a, b, c, d, e, f, g, h, i, j, k, l) shouldBe true }
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F, reified G, reified H, reified I, reified J, reified K, reified L> forAll(
    iterations: Int,
@@ -288,8 +288,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(
    genL: Gen<L>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Boolean
 ) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, config) {
-      a, b, c, d, E, F, G, H, I, J, K, L ->
-   property(a, b, c, d, E, F, G, H, I, J, K, L) shouldBe false
+      a, b, c, d, e, f, g, h, i, j, k, l ->
+   property(a, b, c, d, e, f, g, h, i, j, k, l) shouldBe false
 }
 
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(
@@ -348,7 +348,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    Arb.default(),
    Arb.default(),
    config
-) { a, b, c, d, E, F, G, H, I, J, K, L -> property(a, b, c, d, E, F, G, H, I, J, K, L) shouldBe false }
+) { a, b, c, d, e, f, g, h, i, j, k, l -> property(a, b, c, d, e, f, g, h, i, j, k, l) shouldBe false }
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F, reified G, reified H, reified I, reified J, reified K, reified L> forNone(
    iterations: Int,

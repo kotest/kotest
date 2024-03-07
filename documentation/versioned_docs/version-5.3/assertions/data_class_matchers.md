@@ -1,13 +1,13 @@
 ---
-id: data_class_matchers
-title: Data Class Matchers
-slug: data-class-matchers.html
-sidebar_label: Data Class Matchers
+id: composed_matchers
+title: Composed Matchers
+slug: composed-matchers.html
+sidebar_label: Composed Matchers
 ---
 
 
 
-Matchers for data classes can be created by composing one or more other matchers along with the property to extract to
+Composed matchers can be created for any `class` or `interface` by composing one or more other matchers along with the property to extract to
 test against. This allows us to build up complicated matchers from simpler ones.
 
 For example, say we had the following structures:

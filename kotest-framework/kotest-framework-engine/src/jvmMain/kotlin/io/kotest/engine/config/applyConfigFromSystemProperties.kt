@@ -9,6 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.mpp.sysprop
 import io.kotest.mpp.syspropOrEnv
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [ProjectConfiguration] object.
@@ -16,6 +17,10 @@ import kotlin.time.Duration
  * Note: This function will have no effect on non-JVM targets.
  */
 internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {
+
+   // before applying system props, we should detect the kotest.properties file and apply defaults from that
+   KotestPropertiesLoader.loadAndApplySystemPropsFile()
+
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
    parallelism()?.let { configuration.parallelism = it }
@@ -26,9 +31,11 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
    allowMultilineTestName()?.let { configuration.removeTestNameWhitespace = it }
    globalAssertSoftly()?.let { configuration.globalAssertSoftly = it }
    testNameAppendTags()?.let { configuration.testNameAppendTags = it }
+   tagInheritance()?.let { configuration.tagInheritance = it }
    duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
    projectTimeout()?.let { configuration.projectTimeout = it }
    logLevel(configuration.logLevel).let { configuration.logLevel = it }
+   disableTestNestedJarScanning()?.let { configuration.disableTestNestedJarScanning = it }
 }
 
 internal fun isolationMode(): IsolationMode? =
@@ -49,6 +56,9 @@ internal fun invocationTimeout(): Long? =
 internal fun allowMultilineTestName(): Boolean? =
    sysprop(KotestEngineProperties.allowMultilineTestName)?.let { it.uppercase() == "TRUE" }
 
+internal fun disableTestNestedJarScanning(): Boolean? =
+   sysprop(KotestEngineProperties.concurrentSpecs)?.toBoolean()
+
 internal fun concurrentSpecs(): Int? =
    sysprop(KotestEngineProperties.concurrentSpecs)?.toInt()
 
@@ -61,12 +71,15 @@ internal fun globalAssertSoftly(): Boolean? =
 internal fun testNameAppendTags(): Boolean? =
    sysprop(KotestEngineProperties.testNameAppendTags)?.let { it.uppercase() == "TRUE" }
 
+internal fun tagInheritance(): Boolean? =
+   syspropOrEnv(KotestEngineProperties.tagInheritance)?.let { it.uppercase() == "TRUE" }
+
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
    sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 
 internal fun projectTimeout(): Duration? {
    val d = sysprop(KotestEngineProperties.projectTimeout)?.toLong() ?: return null
-   return Duration.milliseconds(d)
+   return d.milliseconds
 }
 
 

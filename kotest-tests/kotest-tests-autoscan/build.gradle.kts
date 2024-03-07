@@ -1,29 +1,18 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
 
    sourceSets {
 
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.JunitRunner))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
-
-apply(from = "../../nopublish.gradle")

@@ -74,6 +74,8 @@ object KotestEngineProperties {
     */
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
+   const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
+
    const val concurrentSpecs = "kotest.framework.spec.concurrent"
 
    const val concurrentTests = "kotest.framework.test.concurrent"
@@ -110,6 +112,11 @@ object KotestEngineProperties {
     * Appends all tags associated with a test case to its display name.
     * */
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
+
+   /**
+    * Controls whether classes will inherit tags from their supertypes. Default false
+    */
+   const val tagInheritance = "kotest.framework.tag.inheritance"
 
    /**
     * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.

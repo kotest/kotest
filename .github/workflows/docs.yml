@@ -18,7 +18,7 @@ jobs:
          -  uses: actions/checkout@v3
          -  uses: actions/setup-node@v3
             with:
-               node-version: '16.x'
+               node-version: '18.4.0'
          -  name: Release to GitHub Pages
             env:
                USE_SSH: true

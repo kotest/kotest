@@ -1,15 +1,13 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
  * Wraps the [TestEngineListener] to listen for test events and returns an error
- * if there were no tests executed and [failOnEmptyTestSuite] is true.
+ * if there were no tests executed and [failOnEmptyTestSuite] is configured to be true.
  */
-@KotestInternal
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override suspend fun intercept(

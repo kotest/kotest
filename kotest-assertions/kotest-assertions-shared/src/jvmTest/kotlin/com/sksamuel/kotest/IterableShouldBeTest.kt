@@ -1,8 +1,10 @@
 package com.sksamuel.kotest
 
+import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import java.math.BigInteger
 
 class IterableShouldBeTest : DescribeSpec() {
    init {

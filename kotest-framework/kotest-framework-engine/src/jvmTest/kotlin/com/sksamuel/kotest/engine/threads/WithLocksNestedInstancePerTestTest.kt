@@ -4,7 +4,6 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 
@@ -36,7 +35,7 @@ class SpecThreadWithNestedTestWithLockInstancePerTestTest : FunSpec({
          innerLock.lock()
          outerContextLock.lock()
          try {
-            delay(1000)
+            Thread.sleep(1000)
          } finally {
             outerContextLock.unlock()
             innerLock.unlock()
@@ -48,7 +47,7 @@ class SpecThreadWithNestedTestWithLockInstancePerTestTest : FunSpec({
 
          locks.add(innerLock)
          locks.add(outerContextLock)
-         delay(300)
+         Thread.sleep(300)
          outerContextLock.isLocked shouldBe false
          innerLock.isLocked shouldBe false
       }
@@ -67,7 +66,7 @@ class SpecThreadWithNestedTestWithLockInstancePerTestTest : FunSpec({
          innerLock.lock()
          outerContextLock.lock()
          try {
-            delay(1000)
+            Thread.sleep(1000)
          } finally {
             outerContextLock.unlock()
             innerLock.unlock()
@@ -79,7 +78,7 @@ class SpecThreadWithNestedTestWithLockInstancePerTestTest : FunSpec({
 
          locks.add(innerLock)
          locks.add(outerContextLock)
-         delay(300)
+         Thread.sleep(300)
          outerContextLock.isLocked shouldBe false
          innerLock.isLocked shouldBe false
       }

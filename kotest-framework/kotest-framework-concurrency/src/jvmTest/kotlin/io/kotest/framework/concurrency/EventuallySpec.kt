@@ -7,6 +7,7 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
@@ -14,23 +15,23 @@ import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.Duration
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.system.measureTimeMillis
 
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
 
 @ExperimentalKotest
+@OptIn(DelicateCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
    test("eventually should immediately pass working tests") {
@@ -150,46 +151,48 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually does one final iteration if we never executed before interval expired") {
-      val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-      launch(dispatcher) {
-         Thread.sleep(2000)
-      }
-      val counter = AtomicInteger(0)
-      withContext(dispatcher) {
-         // we won't be able to run in here
-         eventually({
-            duration = 1.seconds()
-            interval = 100.milliseconds().fixed()
-         }) {
-            counter.incrementAndGet()
+      newSingleThreadContext("single").use { dispatcher ->
+         launch(dispatcher) {
+            Thread.sleep(2000)
          }
+         val counter = AtomicInteger(0)
+         withContext(dispatcher) {
+            // we won't be able to run in here
+            eventually({
+               duration = 1.seconds()
+               interval = 100.milliseconds().fixed()
+            }) {
+               counter.incrementAndGet()
+            }
+         }
+         counter.get().shouldBe(1)
       }
-      counter.get().shouldBe(1)
    }
 
    test("eventually does one final iteration if we only executed once and the last delay > interval") {
-      val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-      // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-      launch(dispatcher) {
-         delay(100.milliseconds())
-         Thread.sleep(500)
-      }
-      val counter = AtomicInteger(0)
-      withContext(dispatcher) {
-         // this will execute once immediately, then the earlier async will steal the thread
-         // and then since the delay has been > interval and times == 1, we will execute once more
-         eventually({
-            duration = 250.milliseconds()
-            interval = 25.milliseconds().fixed()
-         }) {
-            counter.incrementAndGet() shouldBe 2
+      newSingleThreadContext("single").use { dispatcher ->
+         // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
+         launch(dispatcher) {
+            delay(100.milliseconds())
+            Thread.sleep(500)
          }
+         val counter = AtomicInteger(0)
+         withContext(dispatcher) {
+            // this will execute once immediately, then the earlier async will steal the thread
+            // and then since the delay has been > interval and times == 1, we will execute once more
+            eventually({
+               duration = 250.milliseconds()
+               interval = 25.milliseconds().fixed()
+            }) {
+               counter.incrementAndGet() shouldBe 2
+            }
+         }
+         counter.get().shouldBe(2)
       }
-      counter.get().shouldBe(2)
    }
 
    test("eventually handles shouldNotBeNull") {
-      measureTimeMillis {
+      measureTimeMillisCompat {
          shouldThrow<java.lang.AssertionError> {
             eventually(50.milliseconds()) {
                val str: String? = null
@@ -361,7 +364,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually calls the listener when an exception is thrown in the producer function") {
-      var state: EventuallyState<Unit>? = null
+      var state: EventuallyState<Int>? = null
 
       shouldThrow<Throwable> {
          eventually({

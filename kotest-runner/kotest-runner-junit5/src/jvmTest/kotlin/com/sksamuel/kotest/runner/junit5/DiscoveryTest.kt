@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryFilter
@@ -10,10 +10,12 @@ import io.kotest.framework.discovery.DiscoverySelector
 import io.kotest.framework.discovery.Modifier
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
+import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.engine.discovery.PackageNameFilter
+import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.launcher.EngineFilter.excludeEngines
 import org.junit.platform.launcher.EngineFilter.includeEngines
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
@@ -31,28 +33,63 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.size shouldBe 0
    }
-   test("kotest should return Nil for uniqueId selectors") {
-      val req = LauncherDiscoveryRequestBuilder.request().selectors(DiscoverySelectors.selectUniqueId("[engine:failgood]/[class:whatever]"))
+
+   test("kotest should return Nil for uniqueId selectors if request excludes kotest engine") {
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectUniqueId(
+            UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+               .append(Segment.Spec.value, com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName)
+         ))
          .filters(
-            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+            excludeEngines(KotestJunitPlatformTestEngine.EngineId)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 0
+      descriptor.children.size shouldBe 0
    }
 
-   test("kotest should throw for uniqueIds with kotest engine descriptor") {
-      val req = LauncherDiscoveryRequestBuilder.request().selectors(DiscoverySelectors.selectUniqueId("[engine:${KotestJunitPlatformTestEngine.EngineId}]/[class:whatever]"))
+   test("kotest should return Nil for uniqueId selectors on non kotest engine") {
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectUniqueId(
+            UniqueId.forEngine("failgood")
+               .append(Segment.Spec.value, com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName)
+         ))
          .filters(
             includeEngines(KotestJunitPlatformTestEngine.EngineId)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      shouldThrow<RuntimeException> {
-         engine.discover(req, UniqueId.forEngine("testengine"))
-      }
+      val descriptor = engine.discover(req, UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId))
+      descriptor.children.size shouldBe 0
    }
+
+   test("kotest should return Nil for uniqueId selectors on non existing class") {
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectUniqueId(engineId.append(Segment.Spec.value, "whatever")))
+         .filters(
+            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+         )
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, engineId)
+      descriptor.children.size shouldBe 0
+   }
+
+   test("kotest should return class for uniqueId selectors") {
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+      val testClass = com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectUniqueId(engineId.append(Segment.Spec.value, testClass.qualifiedName)))
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, engineId)
+      descriptor.children.size shouldBe 1
+      val firstChild = descriptor.children.first()
+      (firstChild.source.get() as ClassSource).javaClass shouldBe testClass.java
+   }
+
    test("kotest should return classes if request includes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
@@ -61,7 +98,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 27
+      descriptor.classes.size shouldBe 29
    }
 
    test("kotest should return classes if request has no included or excluded test engines") {
@@ -72,7 +109,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 25
+      descriptor.classes.size shouldBe 27
    }
 
    test("kotest should support include package name filter") {
@@ -186,6 +223,7 @@ class DiscoveryTest : FunSpec({
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName)
+      descriptor.children.map { (it.source.get() as ClassSource).javaClass } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java)
    }
 
    test("kotest should support multiple selected class names") {
@@ -200,6 +238,10 @@ class DiscoveryTest : FunSpec({
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
+      )
+      descriptor.children.map { (it.source.get() as ClassSource).javaClass } shouldBe listOf(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java,
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java,
       )
    }
 
@@ -253,7 +295,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
@@ -262,7 +304,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
@@ -271,7 +313,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only internal specs if public is not set") {
-      Discovery().discover(
+      Discovery(configuration = ProjectConfiguration()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))

@@ -18,11 +18,15 @@ typealias WordSpecShouldContainerContext = WordSpecShouldContainerScope
 /**
  * A scope that allows tests to be registered using the syntax:
  *
+ * ```
  * "some context" { }
+ * ```
  *
  * or
  *
+ * ```
  * "some context".config(...) { }
+ * ```
  *
  */
 @KotestTestScope

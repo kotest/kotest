@@ -3,14 +3,12 @@ package io.kotest.datatest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
-import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestType
 import kotlin.jvm.JvmName
 
 /**
  * Registers tests inside the given test context for each element.
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ * The test name will be generated from the stable properties of the elements. See [StableIdentifiers].
  */
 suspend fun <T> ContainerScope.withData(
    first: T,
@@ -22,8 +20,7 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
- * The test names will be generated from the stable properties of the elements. See [Identifiers].
+ * The test names will be generated from the stable properties of the elements. See [StableIdentifiers].
  */
 suspend fun <T> ContainerScope.withData(
    ts: Sequence<T>,
@@ -32,8 +29,7 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
- * The test names will be generated from the stable properties of the elements. See [Identifiers].
+ * The test names will be generated from the stable properties of the elements. See [StableIdentifiers].
  */
 suspend fun <T> ContainerScope.withData(
    ts: Iterable<T>,
@@ -44,7 +40,6 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- *
  * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
@@ -55,8 +50,7 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element.
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
@@ -67,9 +61,8 @@ suspend fun <T> ContainerScope.withData(
 ) = withData(nameFn, listOf(first, second) + rest, test)
 
 /**
- * Registers tests inside the given test context for each element of [ts].
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ * Registers tests inside the given [ContainerScope] for each element of [ts].
+ * The test name will be generated from the given [nameFn] function.
  */
 suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
@@ -86,7 +79,7 @@ suspend fun <T> ContainerScope.withData(
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withDataMap")
-suspend fun <T : Any> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
+suspend fun <T> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
       registerTest(TestName(name), false, null, TestType.Dynamic) { AbstractContainerScope(this).test(t) }
    }

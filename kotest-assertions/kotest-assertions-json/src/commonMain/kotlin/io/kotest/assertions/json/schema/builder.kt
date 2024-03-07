@@ -1,10 +1,13 @@
+@file:Suppress("unused") // We use unused receivers to scope DSL functions
+
 package io.kotest.assertions.json.schema
 
+import io.kotest.assertions.json.ContainsSpec
+import io.kotest.assertions.json.JsonNode
+import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
+import io.kotest.matchers.sequences.beUnique
 import kotlinx.serialization.Serializable
 
 @DslMarker
@@ -51,8 +54,13 @@ data class JsonSchema(
    object Builder
    internal interface JsonNumber
 
-   @Serializable
-   data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
+   data class JsonArray(
+      val minItems: Int = 0,
+      val maxItems: Int = Int.MAX_VALUE,
+      val matcher: Matcher<Sequence<JsonNode>>? = null,
+      val contains: ContainsSpec? = null,
+      val elementType: JsonSchemaElement? = null,
+   ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
 
@@ -73,19 +81,65 @@ data class JsonSchema(
        */
       fun withProperty(
          name: String,
-         required: Boolean = false,
-         elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement
+         optional: Boolean = false,
+         elementBuilder: Builder.() -> JsonSchemaElement
       ) {
-         properties[name] = JsonSchema.Builder.elementBuilder()
-         if (required) requiredProperties.add(name)
+         properties[name] = Builder.elementBuilder()
+         if (!optional) requiredProperties.add(name)
       }
+
+      fun string(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<String>? = { null }
+      ) = withProperty(name, optional) { string(matcherBuilder) }
+
+      fun integer(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Long>? = { null }
+      ) = withProperty(name, optional) { integer(matcherBuilder) }
+
+      fun decimal(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, optional) { decimal(matcherBuilder) }
+
+      fun number(
+         name: String,
+         optional: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, optional) { number(matcherBuilder) }
+
+      fun array(
+         name: String,
+         optional: Boolean = false,
+         typeBuilder: () -> JsonSchemaElement
+      ) = withProperty(name, optional) { array(typeBuilder = typeBuilder) }
+
+      fun obj(
+         name: String,
+         optional: Boolean = false,
+         dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}
+      ) = withProperty(name, optional) { obj(dsl) }
+
+      fun boolean(
+         name: String,
+         optional: Boolean = false,
+      ) = withProperty(name, optional) { boolean() }
+
+      fun `null`(
+         name: String,
+         optional: Boolean = false,
+      ) = withProperty(name, optional) { `null`() }
 
       fun build() = JsonObject(
          additionalProperties = additionalProperties,
          minProperties = minProperties,
          maxProperties = maxProperties,
          properties = properties,
-         requiredProperties = requiredProperties.toTypedArray()
+         requiredProperties = requiredProperties
       )
    }
 
@@ -105,7 +159,7 @@ data class JsonSchema(
       /**
        * https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
        */
-      val requiredProperties: Array<String> = emptyArray(),
+      val requiredProperties: List<String> = emptyList(),
    ) : JsonSchemaElement {
       operator fun get(name: String) = properties.get(name)
       override fun typeName() = "object"
@@ -178,15 +232,13 @@ fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }
  * It supports no further configuration. The actual value must always be either true or false.
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.boolean() =
-   JsonSchema.JsonBoolean
+fun JsonSchema.Builder.boolean() = JsonSchema.JsonBoolean
 
 /**
  * Creates a [JsonSchema.Null] node, which is a leaf node that must always be null, if present.
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.`null`() =
-   JsonSchema.Null
+fun JsonSchema.Builder.`null`() = JsonSchema.Null
 
 /**
  * Creates a [JsonSchema.JsonObject] node. Expand on the object configuration using the [dsl] which lets you specify
@@ -208,15 +260,34 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
 
 /**
  * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
+ * The length of the array can be specified using the [minItems] and [maxItems] keywords. Schema can ensure
+ * that each of item in an array is unique specified by [uniqueItems] keyword.
+ *
+ * @param minItems - minimum array length, default value is 0
+ * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
+ * @param uniqueItems - item uniqueness, default value is false
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
-   JsonSchema.JsonArray(typeBuilder())
+fun JsonSchema.Builder.array(
+   minItems: Int = 0,
+   maxItems: Int = Int.MAX_VALUE,
+   uniqueItems: Boolean = false,
+   contains: ContainsSpec? = null,
+   typeBuilder: (() -> JsonSchemaElement?)? = null
+): JsonSchema.JsonArray {
+   val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke())
+}
 
 @ExperimentalKotest
 fun jsonSchema(
    rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement
-): JsonSchema =
-   JsonSchema(
-      JsonSchema.Builder.rootBuilder()
-   )
+): JsonSchema = JsonSchema(
+   JsonSchema.Builder.rootBuilder()
+)
+
+fun JsonSchema.Builder.containsSpec(
+   minContains: Int = 0,
+   maxContains: Int = Int.MAX_VALUE,
+   schema: JsonSchema.Builder.() -> JsonSchemaElement
+) = ContainsSpec(schema(), minContains = minContains, maxContains = maxContains)

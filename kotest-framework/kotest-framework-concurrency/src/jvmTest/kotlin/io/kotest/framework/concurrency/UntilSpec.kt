@@ -2,12 +2,12 @@ package io.kotest.framework.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import java.time.Duration
-import kotlin.system.measureTimeMillis
 
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
@@ -56,7 +56,7 @@ class UntilSpec : FunSpec({
    }
 
    test("until with predicate and interval") {
-      measureTimeMillis {
+      measureTimeMillisCompat {
          var attempts = 0
          var t = ""
          until({
@@ -81,7 +81,7 @@ class UntilSpec : FunSpec({
    }
 
    test("until should support fibonacci intervals") {
-      measureTimeMillis {
+      measureTimeMillisCompat {
          var t = ""
          var attempts = 0
          until({

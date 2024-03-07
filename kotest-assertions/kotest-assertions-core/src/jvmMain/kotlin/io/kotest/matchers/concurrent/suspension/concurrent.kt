@@ -1,11 +1,11 @@
 package io.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.failure
+import io.kotest.common.measureTimeMillisCompat
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.system.measureTimeMillis
 
 /**
  * Asserts that the given suspendable lambda completes within the given time.
@@ -39,7 +39,7 @@ suspend fun <A> shouldCompleteBetween(from: Long, to: Long, unit: TimeUnit, thun
    val ref = AtomicReference<A>(null)
 
    try {
-      val timeElapsed = measureTimeMillis {
+      val timeElapsed = measureTimeMillisCompat {
          withTimeout(unit.toMillis(to)) {
             val a = thunk()
             ref.set(a)

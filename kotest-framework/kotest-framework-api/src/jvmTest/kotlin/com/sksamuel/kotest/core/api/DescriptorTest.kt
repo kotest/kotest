@@ -11,6 +11,8 @@ class DescriptorTest : FunSpec({
    val spec = DescriptorTest::class.toDescriptor()
    val container = spec.append("a context")
    val test = container.append("nested test")
+   val nestedContainer = test.append("a context")
+   val deepTest = nestedContainer.append("nested test")
 
    test("isTestCase") {
       spec.isTestCase() shouldBe false
@@ -30,6 +32,8 @@ class DescriptorTest : FunSpec({
       test.isChildOf(test) shouldBe false
       container.isChildOf(spec) shouldBe true
       spec.isChildOf(container) shouldBe false
+      deepTest.isChildOf(container) shouldBe false
+      test.isChildOf(nestedContainer) shouldBe false
    }
 
    test("isParentOf") {
@@ -39,6 +43,8 @@ class DescriptorTest : FunSpec({
       test.isParentOf(test) shouldBe false
       container.isParentOf(spec) shouldBe false
       spec.isParentOf(container) shouldBe true
+      container.isParentOf(deepTest) shouldBe false
+      nestedContainer.isParentOf(test) shouldBe false
    }
 
    test("isAncestorOf") {
@@ -46,6 +52,8 @@ class DescriptorTest : FunSpec({
       spec.isAncestorOf(test) shouldBe true
       container.isAncestorOf(spec) shouldBe false
       test.isAncestorOf(spec) shouldBe false
+      container.isAncestorOf(nestedContainer) shouldBe true
+      container.isAncestorOf(deepTest) shouldBe true
    }
 
    test("isDescendentOf") {

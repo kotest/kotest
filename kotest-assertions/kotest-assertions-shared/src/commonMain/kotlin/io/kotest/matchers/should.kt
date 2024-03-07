@@ -14,7 +14,7 @@ import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
 @Suppress("UNCHECKED_CAST")
-infix fun <T, U : T> T.shouldBe(expected: U?) {
+infix fun <T, U : T> T.shouldBe(expected: U?): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> {
@@ -23,14 +23,16 @@ infix fun <T, U : T> T.shouldBe(expected: U?) {
          eq(actual, expected)?.let(errorCollector::collectOrThrow)
       }
    }
+   return this
 }
 
 @Suppress("UNCHECKED_CAST")
-infix fun <T> T.shouldNotBe(any: Any?) {
+infix fun <T> T.shouldNotBe(any: Any?): T {
    when (any) {
       is Matcher<*> -> shouldNot(any as Matcher<T>)
       else -> shouldNot(equalityMatcher(any))
    }
+   return this
 }
 
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
@@ -45,9 +47,16 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
       when (result) {
          is ComparableMatcherResult -> errorCollector.collectOrThrow(
             failure(
-               Expected(Printed(result.expected())),
-               Actual(Printed(result.actual())),
-               result.failureMessage()
+               expected = Expected(Printed(result.expected())),
+               actual = Actual(Printed(result.actual())),
+               prependMessage = result.failureMessage() + "\n"
+            )
+         )
+         is EqualityMatcherResult -> errorCollector.collectOrThrow(
+            failure(
+               expected = Expected(result.expected().print()),
+               actual = Actual(result.actual().print()),
+               prependMessage = result.failureMessage() + "\n"
             )
          )
          else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
@@ -84,6 +93,3 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       )
    }
 }
-
-
-

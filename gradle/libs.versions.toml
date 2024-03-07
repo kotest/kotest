@@ -1,24 +1,39 @@
 [versions]
-kotlin = "1.6.21"
-kotlinx-coroutines = "1.6.1"
+blockhound = "1.0.8.RELEASE"
+classgraph = "4.8.165"
+commons-lang3 = "3.13.0"
+gradle-test-logger-plugin = "3.2.0"
+java-diff-utils = "4.12"
+jdom2 = "2.0.6.1"
+json-path = "2.8.0"
+junit4 = "4.13.2"
+junit-platform = "1.8.2"
+junit-jupiter = "5.8.2"
+kotlin = "1.8.10"
+kotlinx-coroutines = "1.7.0"
 kotlinx-serialization = "1.3.3"
 ktor = "1.6.8"
-junit-platform = "1.7.2"
-junit-jupiter = "5.7.2"
+mockserver-netty = "5.15.0"
+mockk = "1.13.9"
+mordant = "1.2.1"
+opentest4j = "1.3.0"
+plugin-publish = "1.2.1"
+rgxgen = "1.4"
+shadowjar = "7.1.2"
 
 [libraries]
-apache-commons-io = { module = "commons-io:commons-io", version = "2.11.0" }
-apache-commons-lang = { module = "org.apache.commons:commons-lang3", version = "3.12.0" }
-classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.147" }
-diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
-jayway-json-path = { module = "com.jayway.jsonpath:json-path", version = "2.7.0" }
-jdom2 = { module = "org.jdom:jdom2", version = "2.0.6.1" }
-junit4 = { module = "junit:junit", version = "4.13.2" }
-mockk = { module = "io.mockk:mockk", version = "1.12.4" }
-mockserver-netty = { module = "org.mock-server:mockserver-netty", version = "5.13.2" }
-mordant = { module = "com.github.ajalt:mordant", version = "1.2.1" }
-opentest4j = { module = "org.opentest4j:opentest4j", version = "1.2.0" }
-rgxgen = { module = "com.github.curious-odd-man:rgxgen", version = "1.3" }
+apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
+classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
+diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
+jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
+jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
+junit4 = { module = "junit:junit", version.ref = "junit4" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver-netty" }
+mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
+opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
+rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
@@ -40,16 +55,20 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.2.0" }
+kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.3.0" }
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+
+# Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 
 [bundles]
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 
 [plugins]
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
-shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
-
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }

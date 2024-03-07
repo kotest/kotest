@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.scopes.RootScope
 /**
  * A [TestFactoryConfiguration] extends [TestConfiguration] with the ability to register
  * [DynamicRootTest]s. This class shouldn't be used directly, but as the base for a particular
- * layout style, eg [FunSpecTestFactoryConfiguration].
+ * layout style, e.g. [io.kotest.core.spec.style.FunSpecTestFactoryConfiguration].
  */
 abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
 
@@ -34,5 +34,7 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
     */
    fun include(factory: TestFactory) {
       factory.tests.forEach { add(it) }
+      factory.configuration.setParentConfiguration(this)
+      register(factory.extensions)
    }
 }

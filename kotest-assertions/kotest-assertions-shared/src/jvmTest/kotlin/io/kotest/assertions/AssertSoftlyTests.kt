@@ -18,7 +18,7 @@ class AssertSoftlyTests : FunSpec({
                   threadIds.add(Thread.currentThread().id)
                   "assertSoftly block begins on $name, id $id" shouldBe "collected failure"
                }
-               delay(10)
+               delay(50)
                Thread.currentThread().run {
                   threadIds.add(Thread.currentThread().id)
                   "assertSoftly block ends on $name, id $id" shouldBe "collected failure"

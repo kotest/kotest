@@ -42,7 +42,7 @@ context("Pythag triples tests") {
 }
 ```
 
-Kotest will automatically generate a test case for each input row, as if you had manually written a seperate test case for each.
+Kotest will automatically generate a test case for each input row, as if you had manually written a separate test case for each.
 
 ![data test example output](images/datatest1.png)
 
@@ -101,7 +101,7 @@ class MyTest : FunSpec() {
 
 Say we only want to execute tests that are CRITICAL or higher, we can execute with the system property `kotest.framework.test.severity=CRITICAL`
 
-This can be useful if we have a huge test suite and want to run some tests first in a seperate test run.
+This can be useful if we have a huge test suite and want to run some tests first in a separate test run.
 
 By default, all tests are executed.
 

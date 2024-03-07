@@ -15,17 +15,26 @@ object ConfigManager {
     *
     * @return the initialized input
     */
-   fun initialize(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>): ProjectConfiguration {
+   fun initialize(configuration: ProjectConfiguration, projectConfigs: () -> List<AbstractProjectConfig>): ProjectConfiguration {
       compile(configuration, projectConfigs).getOrThrow()
       return configuration
    }
 
-   fun compile(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>) = runCatching {
-      log { "ConfigManager: compiling config projectConfigs=$projectConfigs" }
+   fun compile(configuration: ProjectConfiguration, projectConfigs: () -> List<AbstractProjectConfig>) = runCatching {
+      log { "ConfigManager: compiling configs" }
+
+      log { "ConfigManager: Applying platform defaults" }
       applyPlatformDefaults(configuration)
+
+      log { "ConfigManager: Applying configs from system properties" }
       applyConfigFromSystemProperties(configuration)
+
+      log { "ConfigManager: Applying configs from auto scan" }
       applyConfigFromAutoScan(configuration)
-      projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
+
+      log { "ConfigManager: Applying configs from compiled lamdas" }
+      projectConfigs().forEach { applyConfigFromProjectConfig(it, configuration) }
+
    }.mapError { ConfigurationException(it) }
 }
 

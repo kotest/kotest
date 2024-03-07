@@ -37,4 +37,16 @@ class CheckCoverageTest : FunSpec({
          }
       }
    }
+
+   test("should throw if coverage is not classified at all") {
+
+      shouldThrowAny {
+         checkCoverage("not same" to 50.0) {
+            forAll<Int> { a ->
+               classify(a != a, "not same", "same")
+               a + a == 2 * a
+            }
+         }
+      }
+   }
 })

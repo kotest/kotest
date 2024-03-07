@@ -12,20 +12,28 @@ fun isStable(type: KType) = when (val classifier = type.classifier) {
 }
 
 /**
- * Returns true if the given class is a "stable" class.
+ * Returns true if the given class is a "stable" class, ie one that has a consistent toString().
  *
  * A stable class is either:
- *  - a primitive type or a String
+ *  - a Kotlin or Java primitive type or a String
  *  - an enum class
  *  - a data class that only contains stable classes as members
+ *  - a stable type on the executing platform
  */
 fun isStable(kclass: KClass<*>): Boolean {
    return when {
-      primitiveTypes.contains(kclass) || nonPrimitiveStableTypes.contains(kclass) -> true
-      reflection.isEnumClass(kclass) || (reflection.isDataClass(kclass) && hasStableMembers(kclass)) -> true
-      else -> false
+      allPlatformStableTypes.contains(kclass) -> true
+      reflection.isEnumClass(kclass) -> true
+      reflection.isDataClass(kclass) && hasStableMembers(kclass) -> true
+      isPlatformStable(kclass) -> true
+      else -> {
+         println("Warning, type $kclass used in data testing does not have a stable toString()")
+         false
+      }
    }
 }
+
+expect fun isPlatformStable(kclass: KClass<*>): Boolean
 
 /**
  * Returns true if all members of this class are "stable".
@@ -34,7 +42,7 @@ private fun hasStableMembers(kclass: KClass<*>) = reflection.primaryConstructorM
    members.isNotEmpty() && members.all { isStable(it.type) }
 }
 
-private val primitiveTypes = setOf(
+private val allPlatformStableTypes = setOf(
    String::class,
    Int::class,
    Long::class,
@@ -42,12 +50,8 @@ private val primitiveTypes = setOf(
    Float::class,
    Byte::class,
    Short::class,
-   Boolean::class
-)
-
-private val nonPrimitiveStableTypes = setOf(
+   Boolean::class,
    Pair::class,
-   Triple::class
+   Triple::class,
+   Char::class,
 )
-
-

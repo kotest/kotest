@@ -8,6 +8,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
@@ -17,8 +18,8 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
- * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [Spec] and [TestCase]s.
+ * Project-wide configuration. Extensions returned by an instance of this class will be applied
+ * to all [Spec]s and [TestCase][io.kotest.core.test.TestCase]s.
  *
  * Create an object or class that is derived from this class and place it in your source.
  *
@@ -26,11 +27,12 @@ import kotlin.time.Duration
  *
  * For example, you could create this object and place the source in `src/main/kotlin/my/test/package`.
  *
+ * ```
  * object KotestProjectConfig : AbstractProjectConfig() {
  *    override val failOnEmptyTestSuite = true
  *    override val testCaseOrder = TestCaseOrder.Random
  * }
- *
+ * ```
  */
 abstract class AbstractProjectConfig {
 
@@ -99,11 +101,11 @@ abstract class AbstractProjectConfig {
     * that callbacks all operate on the same thread. In other words, a spec is sticky
     * in regard to the execution thread.
     *
-    * Increasing this value to k > 1, means that k threads are created, allowing different
-    * specs to execute on different threads. For n specs, if you set this value to k, then
-    * on average, each thread will service n/k specs.
+    * Increasing this value to `k > 1`, means that `k` threads are created, allowing different
+    * specs to execute on different threads. For `n` specs, if you set this value to `k`, then
+    * on average, each thread will service `n/k` specs.
     *
-    * An alternative way to enable this is the system property kotest.framework.parallelism
+    * An alternative way to enable this is the system property `kotest.framework.parallelism`
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
@@ -112,12 +114,17 @@ abstract class AbstractProjectConfig {
     */
    open val parallelism: Int? = null
 
+   open val coroutineTestScope: Boolean? = null
+
    /**
     * When set to true, failed specs are written to a file called spec_failures.
     * This file is used on subsequent test runs to run the failed specs first.
     *
     * To enable this feature, set this to true, or set the system property
-    * 'kotest.write.specfailures=true'
+    *
+    * ```properties
+    * kotest.write.specfailures=true
+    * ```
     *
     * Note: This is a JVM platform only option.
     */
@@ -125,7 +132,7 @@ abstract class AbstractProjectConfig {
 
    /**
     * Sets the order of top level tests in a spec.
-    * The value set here will be used unless overriden in a [Spec].
+    * The value set here will be used unless overridden in a [Spec].
     * The value in a [Spec] is always taken in preference to the value here.
     * Nested tests will always be executed in discovery order.
     *
@@ -142,20 +149,22 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this value and set it to true if you want all tests to behave as if they
-    * were operating in an [assertSoftly] block.
+    * were operating in an [io.kotest.assertions.assertSoftly] block.
     */
    open val globalAssertSoftly: Boolean? = null
 
    /**
-    * Override this value and set it to false if you want to disable autoscanning of extensions
+    * Override this value and set it to false if you want to disable auto-scanning of extensions
     * and listeners.
     *
-    *  Note: This is a JVM platform only option.
+    * Note: This is a JVM platform only option.
     */
    open val autoScanEnabled: Boolean? = null
 
    /**
-    * Override this value with a list of classes for which @autoscan is disabled.
+    * Override this value with a list of classes for which
+    * [@AutoScan][io.kotest.core.annotation.AutoScan]
+    * is disabled.
     *
     *  Note: This is a JVM platform only option.
     */
@@ -186,36 +195,39 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overriden in a spec,
+    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overridden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.
-    * For example, when using ExpectSpec like this:
+    * For example, when using [io.kotest.core.spec.style.ExpectSpec] like this:
     *
+    * ```
     * expect("this test 1") {
     *   feature("this test 2") {
     *   }
     * }
+    * ```
     *
     * Will result in:
-    *
+    * ```text
     * Expect: this test 1
     *   Feature: this test 2
-    *
+    * ```
     * From 4.2, this feature can be disabled by setting this value to false.
     * Then the output of the previous test would be:
-    *
+    * ```text
     * this test 1
     *   this test 2
+    * ```
     */
    open val includeTestScopePrefixes: Boolean? = null
 
    /**
-    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
-    * prefixes (I.e.: Given, When, Then) and tests' titles.
+    * The casing of test names can be adjusted using different strategies. It affects test
+    * prefixes (I.e.: Given, When, Then) and test titles.
     *
     * This setting's options are defined in [TestNameCase]. Check the previous enum for the
     * available options and examples.
@@ -225,6 +237,8 @@ abstract class AbstractProjectConfig {
    open val testNameRemoveWhitespace: Boolean? = null
 
    open val testNameAppendTags: Boolean? = null
+
+   open val tagInheritance: Boolean? = null
 
    /**
     * Controls what to do when a duplicated test name is discovered.
@@ -247,12 +261,20 @@ abstract class AbstractProjectConfig {
 
    open var displayFullTestPath: Boolean? = null
 
+   open var allowOutOfOrderCallbacks: Boolean? = null
+
    /**
-    * If set to true then the test engine will install a [TestDispatcher].
+    * Set to false if you wish to allow nested jar scanning for tests.
+    */
+   open var disableTestNestedJarScanning: Boolean? = null
+
+   /**
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     *
     * This can be retrieved via `delayController` in your tests.
     *
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
    open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
@@ -268,7 +290,8 @@ abstract class AbstractProjectConfig {
     * [ProjectListener.beforeProject] methods.
     */
    @Deprecated(message = "use beforeProject supports suspension", replaceWith = ReplaceWith("beforeProject"))
-   open fun beforeAll() {}
+   open fun beforeAll() {
+   }
 
    /**
     * Executed after the last test of the project, but before the
@@ -281,5 +304,6 @@ abstract class AbstractProjectConfig {
     * [ProjectListener.afterProject] methods.
     */
    @Deprecated(message = "use afterProject which supports suspension", replaceWith = ReplaceWith("afterProject"))
-   open fun afterAll() {}
+   open fun afterAll() {
+   }
 }

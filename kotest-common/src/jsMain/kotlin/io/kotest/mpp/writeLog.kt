@@ -1,10 +1,8 @@
 package io.kotest.mpp
 
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeMark
+import io.kotest.common.TimeMarkCompat
 
-@ExperimentalTime
-actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
+actual fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String) {
    console.log(start.elapsedNow().inWholeMicroseconds.toString())
    console.log("  ")
    console.log(f())

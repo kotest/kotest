@@ -35,12 +35,41 @@ class TestPathTestCaseFilter(
          } else desc.append(name.trim())
       }
 
+
+   private fun List<Descriptor>.prefixesWithWildcardMatch(that: List<Descriptor>): Boolean {
+      if (this.isEmpty()) {
+         return true
+      }
+      if (this.size > that.size) {
+         return false
+      }
+
+      val first = this[0]
+      val second = that[0]
+      if (!first.isEqualType(second)) {
+         return false
+      }
+      return first.id.wildCardMatch(second.id) && this.subList(1, this.size).prefixesWithWildcardMatch(that.subList(1, that.size))
+   }
+
+   /**
+    * This filter is called in a tree like manner so there are two cases possible
+    * first we check if the group we are currently running is parent of the test filter.
+    * Returning true at this point means that test engine will keep on going recursively deeper into the
+    * hierarchy
+    * Eventually we are deep into the hierarchy where we have runnable targets that will be on the
+    * path of the filters which means they can be run
+    */
    override fun filter(descriptor: Descriptor): TestFilterResult {
+      val descriptorPrefix = descriptor.getTreePrefix()
+      val target1Prefix = target1.getTreePrefix()
+      val target2Prefix = target2.getTreePrefix()
+      val onTestFilterPath = descriptorPrefix.prefixesWithWildcardMatch(target1Prefix)
+         || descriptorPrefix.prefixesWithWildcardMatch(target2Prefix)
+      val testOnDescriptorPath = target1Prefix.prefixesWithWildcardMatch(descriptorPrefix)
+         || target2Prefix.prefixesWithWildcardMatch(descriptorPrefix)
       return when {
-         target1.isOnPath(descriptor) ||
-            target2.isOnPath(descriptor) ||
-            descriptor.isOnPath(target1) ||
-            descriptor.isOnPath(target2) -> TestFilterResult.Include
+         onTestFilterPath || testOnDescriptorPath -> TestFilterResult.Include
          else -> TestFilterResult.Exclude("Excluded by test path filter: '$testPath'")
       }
    }

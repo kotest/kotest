@@ -12,9 +12,9 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.string.shouldStartWith
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
 import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalStdlibApi
@@ -32,16 +32,13 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
             )
 
             val controller = object : CoroutineDispatcherFactory {
-               override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
-                  val executor = Executors.newSingleThreadExecutor {
-                     val t = Thread(it)
-                     t.name = "foo"
-                     t
+               @OptIn(DelicateCoroutinesApi::class)
+               override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T =
+                  newSingleThreadContext("foo").use { dispatcher ->
+                     withContext(dispatcher) {
+                        f()
+                     }
                   }
-                  return withContext(executor.asCoroutineDispatcher()) {
-                     f()
-                  }
-               }
             }
 
             CoroutineDispatcherFactoryInterceptor(controller).intercept(

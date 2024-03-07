@@ -1,42 +1,19 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
-   targets {
-      jvm()
-   }
-
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-         }
-      }
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Common))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Framework.api))
+            implementation(projects.kotestCommon)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.junit.jupiter.api)
          }
       }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")

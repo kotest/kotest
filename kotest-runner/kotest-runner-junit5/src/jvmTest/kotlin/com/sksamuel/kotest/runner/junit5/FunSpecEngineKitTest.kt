@@ -36,7 +36,6 @@ class FunSpecEngineKitTest : FunSpec({
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.FunSpecSample",
                "a failing test",
                "a passing test",
                "an erroring test",

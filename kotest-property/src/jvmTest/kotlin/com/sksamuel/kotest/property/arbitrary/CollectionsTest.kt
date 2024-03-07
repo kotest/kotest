@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
@@ -10,6 +11,7 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
@@ -18,11 +20,32 @@ import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class CollectionsTest : DescribeSpec({
+
+   describe("Arb.element should") {
+      it("not construct an arb from an empty list") {
+         shouldThrow<IllegalArgumentException> { Arb.of(emptyList<String>()) }
+      }
+
+      it("not construct an arb from an empty vararg") {
+         shouldThrow<IllegalArgumentException> { Arb.of<String>() }
+      }
+
+      it("yield a random sample from the provided collection") {
+         val expected = listOf("bar", "foo", "baz", "foo", "baz")
+         Arb.of(listOf("foo", "bar", "baz")).take(5, RandomSource.seeded(1234L)).toList() shouldBe expected
+      }
+
+      it("yield a random sample from the provided vararg") {
+         val expected = listOf("bar", "foo", "baz", "foo", "baz")
+         Arb.of("foo", "bar", "baz").take(5, RandomSource.seeded(1234L)).toList() shouldBe expected
+      }
+   }
 
    describe("Arb.list should") {
 

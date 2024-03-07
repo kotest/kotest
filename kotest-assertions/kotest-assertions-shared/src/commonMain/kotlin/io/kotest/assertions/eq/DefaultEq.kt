@@ -1,9 +1,10 @@
 package io.kotest.assertions.eq
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
+import io.kotest.assertions.ActualWithType
+import io.kotest.assertions.ExpectedWithType
 import io.kotest.assertions.failure
-import io.kotest.assertions.print.print
+import io.kotest.assertions.failureWithTypeInformation
+import io.kotest.assertions.print.printWithType
 
 /**
  * This [Eq] is used when there is no more specific eq available.
@@ -14,7 +15,7 @@ import io.kotest.assertions.print.print
 internal object DefaultEq : Eq<Any> {
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? {
       return if (test(actual, expected)) null else {
-         failure(Expected(expected.print()), Actual(actual.print()))
+         failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
       }
    }
 

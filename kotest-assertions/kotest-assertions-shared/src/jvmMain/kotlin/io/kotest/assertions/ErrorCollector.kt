@@ -2,6 +2,7 @@
 
 package io.kotest.assertions
 
+import io.kotest.assertions.print.Printed
 import kotlinx.coroutines.CopyableThreadContextElement
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,9 +22,7 @@ val errorCollectorContextElement: CoroutineContext.Element
    get() = ErrorCollectorContextElement(threadLocalErrorCollector.get())
 
 
-private val threadLocalErrorCollector = object : ThreadLocal<CoroutineLocalErrorCollector>() {
-   override fun initialValue() = CoroutineLocalErrorCollector()
-}
+private val threadLocalErrorCollector = ThreadLocal.withInitial { CoroutineLocalErrorCollector() }
 
 
 private class CoroutineLocalErrorCollector : BasicErrorCollector() {
@@ -61,3 +60,24 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
    override fun mergeForChild(overwritingElement: CoroutineContext.Element): CoroutineContext =
       copyForChild()
 }
+
+actual fun ErrorCollector.collectiveError(): AssertionError? {
+   fun prefixWithSubjectInformation(e: AssertionFailedError, subject: Printed) =
+      AssertionFailedError(
+         "The following assertion for ${subject.value} failed:\n" + e.message,
+         e.cause,
+         e.expectedValue,
+         e.actualValue
+      )
+
+   val failures = errors()
+   clear()
+
+   return if (failures.size == 1 && failures[0] is AssertionFailedError) {
+      val e = failures[0] as AssertionFailedError
+      subject?.let { prefixWithSubjectInformation(e, it) } ?: e
+   } else {
+      failures.toAssertionError(depth, subject)
+   }
+}
+

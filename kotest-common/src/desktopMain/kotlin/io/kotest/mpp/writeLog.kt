@@ -1,8 +1,6 @@
 package io.kotest.mpp
 
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeMark
+import io.kotest.common.TimeMarkCompat
 
-@ExperimentalTime
-actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
+actual fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String) {
 }

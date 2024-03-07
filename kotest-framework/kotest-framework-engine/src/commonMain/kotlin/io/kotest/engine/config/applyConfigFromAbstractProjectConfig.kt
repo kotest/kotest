@@ -24,6 +24,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.specExecutionOrder?.let { configuration.specExecutionOrder = it }
    config.writeSpecFailureFile?.let { configuration.writeSpecFailureFile = it }
    config.projectWideFailFast?.let { configuration.projectWideFailFast = it }
+   config.allowOutOfOrderCallbacks?.let { configuration.allowOutOfOrderCallbacks = it }
 
    // concurrency
    config.parallelism?.let { configuration.parallelism = it }
@@ -37,6 +38,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.invocationTimeout?.let { configuration.invocationTimeout = it }
    config.projectTimeout?.let { configuration.projectTimeout = it }
 
+   // discovery
+   config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
+
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
    config.testNameRemoveWhitespace?.let { configuration.removeTestNameWhitespace = it }
@@ -48,10 +52,12 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // config
    config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
    config.logLevel?.let { configuration.logLevel = it }
+   config.tagInheritance?.let { configuration.tagInheritance = it }
 
    // coroutines
    config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }
-   config.testCoroutineDispatcher?.let { configuration.testCoroutineDispatcher = it }
+   config.testCoroutineDispatcher.let { configuration.testCoroutineDispatcher = it }
+   config.coroutineTestScope?.let { configuration.coroutineTestScope = it }
 
    // the project config object allows us to define project event methods, which we
    // wrap into a project listener and register as normal

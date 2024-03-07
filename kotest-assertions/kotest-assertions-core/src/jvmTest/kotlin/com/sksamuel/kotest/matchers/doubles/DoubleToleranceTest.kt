@@ -9,8 +9,6 @@ import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.bind
-import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.numericDouble
 import io.kotest.property.checkAll
 
@@ -32,12 +30,15 @@ class DoubleToleranceTest : FunSpec({
    test("Allow for percentage tolerance") {
       1.5 shouldBe (1.0 plusOrMinus 50.percent)
       1.5 shouldNotBe (2.0 plusOrMinus 10.percent)
+
+      -1.5 shouldBe (-1.0 plusOrMinus 50.percent)
+      -1.5 shouldNotBe (-2.0 plusOrMinus 10.percent)
    }
 
    context("Percentage") {
 
       test("Match equal numbers") {
-         Arb.bind(Arb.double(), Arb.double(0.0, 5.0)) { value, percentage ->
+         checkAll(Arb.numericDouble(), Arb.numericDouble(Double.MIN_VALUE, 5.0)) { value, percentage ->
             value.shouldBeWithinPercentageOf(value, percentage)
          }
       }
@@ -49,9 +50,10 @@ class DoubleToleranceTest : FunSpec({
       }
 
       test("Match close enough numbers") {
-         Arb.bind(Arb.double(), Arb.double(0.0, 5.0)) { value, percentage ->
-            value.shouldBeWithinPercentageOf((value - value.times(percentage / 100)), percentage)
-            value.shouldBeWithinPercentageOf((value + value.times(percentage / 100)), percentage)
+         checkAll(Arb.numericDouble(), Arb.numericDouble(Double.MIN_VALUE, 5.0)) { value, percentage ->
+            val delta = value.times(percentage / 100)
+            (value + delta).shouldBeWithinPercentageOf(value, percentage)
+            (value - delta).shouldBeWithinPercentageOf(value, percentage)
          }
       }
    }

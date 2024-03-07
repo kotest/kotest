@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.threads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 
@@ -22,7 +21,7 @@ class SpecThreadBeforeTestConcurrentInstancePerLeafTest : FunSpec({
       if (isLockAcquired) {
          lock.lock()
          try {
-            delay(300)
+            Thread.sleep(300)
          } finally {
             lock.unlock()
          }
@@ -38,14 +37,11 @@ class SpecThreadBeforeTestConcurrentInstancePerLeafTest : FunSpec({
    }
 
    test("test 1 should run before/after test concurrently and independent") {
-      "void"
    }
 
    test("test 2 should run before/after test concurrently and independent") {
-      "void"
    }
 
    test("test 3 should run before/after test concurrently and independent") {
-      "void"
    }
 })

@@ -3,9 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
-import kotlinx.coroutines.internal.LockFreeLinkedListHead
 
 object IterableEq : Eq<Iterable<*>> {
 
@@ -23,14 +21,17 @@ object IterableEq : Eq<Iterable<*>> {
     * of deterministic test outcomes, Kotest allows equality testing between [Actual] and [Expected] [Iterable]s with
     * guaranteed unambiguous ordering, between [Actual] and [Expected] [Iterable]s with no ordering guarantee (in which
     * case, equality executes as an unordered containment test), and between ordered [Iterable]s and [LinkedHashSet]
-    * since the latter is ubiquitous and, by implementation, ordered by chronological insertion.  In addition,
-    * custom [Iterable]s may be compared if and only if they are of the same type exactly (i.e. not by inheritance).
-    * Since the ordering contract of custom [Iterable]s is unknown, best practices should be applied.  An equality
-    * comparison executed between disallowed types will result in a best-effort error message with some detail on
-    * the reason why it is disallowed. However, if type information is lost, the failure diagnostic may unfortunately
-    * become confusing.  If so (e.g. the equality test fails, but the error message seems to contradict the failure),
-    * check your types: failure in that case may be from an attempt to compare types for which the test is fragile.
-    * Alternatively, instead of
+    * since the latter is ubiquitous and, by implementation, ordered by chronological insertion.
+    *  Even though it uses the term [Iterable] but it does not mean that it support equality check for [Iterable]s
+    * of any type. It only supports equality check for [Iterable]s of the following types:
+    * [List], [Set], [Collection]
+    * and additionally [Array]s of any type.
+    *
+    * An equality comparison executed between disallowed types will result in a best-effort error message with some
+    * detail on the reason why it is disallowed. However, if type information is lost, the failure diagnostic may
+    * unfortunately become confusing.  If so (e.g. the equality test fails, but the error message seems to contradict
+    * the failure), check your types: failure in that case may be from an attempt to compare types for which the test is
+    * fragile. Alternatively, instead of
     * ```
     * lhs shouldBe rhs
     * ```
@@ -43,7 +44,7 @@ object IterableEq : Eq<Iterable<*>> {
    fun isValidIterable(it: Any): Boolean {
       return when (it) {
          is String -> false
-         is List<*>, is Set<*>, is Array<*>, is Collection<*>, is Iterable<*> -> true
+         is List<*>, is Set<*>, is Array<*>, is Collection<*> -> true
          else -> false
       }
    }
@@ -55,7 +56,6 @@ object IterableEq : Eq<Iterable<*>> {
          is List<*> -> it
          is Set<*> -> it
          is Collection<*> -> it
-         is Iterable<*> -> it
          else -> error("Cannot convert $it to Iterable<*>")
       }
    }
@@ -132,13 +132,22 @@ object IterableEq : Eq<Iterable<*>> {
    const val trigger = "Disallowed"
 
    private fun errorWithTypeDetails(actual: Iterable<*>, expected: Iterable<*>): Throwable {
-      val tag = "${actual::class.simpleName?.let {it} ?: actual::class} with ${expected::class.simpleName?.let {it} ?: expected::class}\n"
+      val actualTypeName = actual::class.simpleName ?: actual::class
+      val expectedTypeName = expected::class.simpleName ?: expected::class
+      val tag = "$actualTypeName with $expectedTypeName\n"
+
       val detailErrorMessage = when {
-         actual is Set<*> || expected is Set<*> -> "$trigger: Set can be compared only to Set\nMay not compare $tag"
+         actual is Set<*> || expected is Set<*> -> {
+            val (setType, nonSetType) =
+               if (actual is Set<*>) actualTypeName to expectedTypeName
+               else expectedTypeName to actualTypeName
+
+            "$trigger: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
+         }
          (actual is Collection || actual is Array<*>) || (expected is Collection || expected is Array<*>) -> "$trigger typed contract\nMay not compare $tag"
          else -> "$trigger promiscuous iterators\nMay not compare $tag"
       }
-      return failure(Expected(Printed("*")), Actual(Printed("*")), detailErrorMessage)
+      return failure(detailErrorMessage)
    }
 
    private const val disallowed = "$trigger nesting iterator"

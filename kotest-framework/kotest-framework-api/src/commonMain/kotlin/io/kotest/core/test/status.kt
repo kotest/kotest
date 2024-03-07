@@ -1,15 +1,15 @@
 package io.kotest.core.test
 
 enum class TestStatus {
-   // the test was skipped completely
+   /** The test was skipped completely */
    Ignored,
 
-   // the test was successful
+   /** The test was successful */
    Success,
 
-   // the test failed because of some exception that was not an assertion error
+   /** The test failed because of some exception that was not an assertion error */
    Error,
 
-   // the test ran but an assertion failed
+   /** The test ran but an assertion failed */
    Failure
 }

@@ -22,10 +22,14 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
  * regardless of order.
  *
  */
-infix fun String?.shouldMatchJson(expected: String?) = this should matchJson(expected)
-infix fun String?.shouldNotMatchJson(expected: String?) = this shouldNot matchJson(expected)
+@Deprecated("Use shouldEqualJson. Deprecated since 5.6. Will be removed in 6.0")
+infix fun String?.shouldMatchJson(expected: String?) =
+   this should matchJson(expected)
 
-@OptIn(ExperimentalSerializationApi::class)
+@Deprecated("Use shouldNotEqualJson. Deprecated since 5.6. Will be removed in 6.0")
+infix fun String?.shouldNotMatchJson(expected: String?) =
+   this shouldNot matchJson(expected)
+
 fun matchJson(expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
@@ -34,9 +38,8 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
          return MatcherResult(
             false,
             { "expected: actual json to be valid json: $value" },
-            {
-               "expected: actual json to be invalid json: $value"
-            })
+            { "expected: actual json to be invalid json: $value" }
+         )
       }
 
       val expectedJson = try {
@@ -51,7 +54,7 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
 
       return ComparableMatcherResult(
          actualJson == expectedJson,
-         { "expected json to match, but they differed\n\n" },
+         { "expected json to match, but they differed\n" },
          { "expected not to match with: $expectedJson but match: $actualJson" },
          actualJson.toString(),
          expectedJson.toString()
@@ -59,27 +62,25 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
    }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun beValidJson() = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       return try {
          value?.let(pretty::parseToJsonElement)
          MatcherResult(
-              true,
-              { "expected: actual json to be valid json: $value" },
-              { "expected: actual json to be invalid json: $value" }
+            true,
+            { "expected: actual json to be valid json: $value" },
+            { "expected: actual json to be invalid json: $value" }
          )
       } catch (ex: Exception) {
          MatcherResult(
-              false,
-              { "expected: actual json to be valid json: $value" },
-              { "expected: actual json to be invalid json: $value" }
+            false,
+            { "expected: actual json to be valid json: $value" },
+            { "expected: actual json to be invalid json: $value" }
          )
       }
    }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
@@ -107,20 +108,22 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
  * regardless of order.
  *
  */
+@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
+@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a should equalJson(e, options)
+   this should equalJson(expected, options)
 }
 
+@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
+@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, options: CompareJsonOptions) {
-   val (e, a) = parse(expected, this)
-   a shouldNot equalJson(e, options)
+   this shouldNot equalJson(expected, options)
 }
 
 fun String.shouldBeEmptyJsonArray(): String {
@@ -134,24 +137,28 @@ fun String.shouldBeEmptyJsonObject(): String {
 }
 
 fun String.shouldBeJsonArray(): String {
-   this should beJsonType(JsonArray::class)
+   this should beJsonArray()
    return this
 }
 
 fun String.shouldNotBeJsonArray(): String {
-   this shouldNot beJsonType(JsonArray::class)
+   this shouldNot beJsonArray()
    return this
 }
 
+fun beJsonArray() = beJsonType(JsonArray::class)
+
 fun String.shouldBeJsonObject(): String {
-   this should beJsonType(JsonObject::class)
+   this should beJsonObject()
    return this
 }
 
 fun String.shouldNotBeJsonObject(): String {
-   this shouldNot beJsonType(JsonObject::class)
+   this shouldNot beJsonObject()
    return this
 }
+
+fun beJsonObject() = beJsonType(JsonObject::class)
 
 fun String.shouldBeValidJson(): String {
    this should beValidJson()

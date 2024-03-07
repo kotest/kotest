@@ -14,6 +14,6 @@ class IntelliErrorDiffTest : FunSpec({
    test("diff format should distinguish between numbers and strings") {
       shouldThrow<AssertionError> {
          "1" shouldBe 1
-      }.message shouldBe """expected:<1> but was:<"1">"""
+      }.message shouldBe """expected:kotlin.Int<1> but was:kotlin.String<"1">"""
    }
 })

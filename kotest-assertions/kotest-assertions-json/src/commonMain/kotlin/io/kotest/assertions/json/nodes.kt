@@ -1,5 +1,8 @@
 package io.kotest.assertions.json
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed class JsonNode {
 
    fun type() = when (this) {

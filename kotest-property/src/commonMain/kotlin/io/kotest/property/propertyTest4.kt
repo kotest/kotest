@@ -3,7 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.default
+import io.kotest.property.resolution.default
 import io.kotest.property.internal.proptest
 
 suspend fun <A, B, C, D> checkAll(

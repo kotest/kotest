@@ -2,7 +2,9 @@ package io.kotest.engine.concurrency
 
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
-import io.kotest.mpp.annotation
+import io.kotest.mpp.IncludingAnnotations
+import io.kotest.mpp.IncludingSuperclasses
+import io.kotest.mpp.hasAnnotation
 import kotlin.reflect.KClass
 
 /**
@@ -11,5 +13,7 @@ import kotlin.reflect.KClass
  *
  * Those annotations are [DoNotParallelize] and [Isolate].
  */
-internal fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
+internal fun KClass<*>.isIsolate(): Boolean =
+   hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
+      || hasAnnotation<Isolate>(IncludingAnnotations, IncludingSuperclasses)
 

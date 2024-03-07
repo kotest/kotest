@@ -413,7 +413,7 @@ class DoubleMatchersTest : FreeSpec() {
       }
 
       "The non-numeric double" - {
-        "NaN" {
+        "NaN" - {
           "Should not be less than or equal" - {
             "Any numeric double" {
               checkAll(100, nonMinNorMaxValueDoubles) {
@@ -812,12 +812,12 @@ class DoubleMatchersTest : FreeSpec() {
   }
 
   private fun Double.shouldThrowMinimumExceptionOnBetween(a: Double, b: Double, tolerance: Double) {
-    val message = "$this should be bigger than $a"
+    val message = "$this is outside expected range [$a, $b] (using tolerance $tolerance)"
     shouldThrowExceptionOnBetween(a, b, tolerance, message)
   }
 
   private fun Double.shouldThrowMaximumExceptionOnBetween(a: Double, b: Double, tolerance: Double) {
-    val message = "$this should be smaller than $b"
+    val message = "$this is outside expected range [$a, $b] (using tolerance $tolerance)"
     shouldThrowExceptionOnBetween(a, b, tolerance, message)
   }
 
@@ -826,7 +826,7 @@ class DoubleMatchersTest : FreeSpec() {
     a: Double,
     b: Double,
     tolerance: Double,
-    message: String = "$this should be smaller than $b and bigger than $a"
+    message: String = "$this is outside expected range [$a, $b] (using tolerance $tolerance)"
   ) {
     shouldThrowAssertionError(message,
                               { this.shouldBeBetween(a, b, tolerance) },
@@ -837,7 +837,7 @@ class DoubleMatchersTest : FreeSpec() {
     a: Double,
     b: Double,
     tolerance: Double,
-    message: String = "$this should not be smaller than $b and should not be bigger than $a"
+    message: String = "$this is not outside expected range [$a, $b] (using tolerance $tolerance)"
   ) {
 
     shouldThrowAssertionError(message,

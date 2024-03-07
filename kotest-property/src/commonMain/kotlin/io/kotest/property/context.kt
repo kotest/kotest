@@ -1,15 +1,23 @@
 package io.kotest.property
 
+import io.kotest.property.statistics.Label
+import kotlin.math.roundToInt
+
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
-class PropertyContext {
+class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
 
    private var successes = 0
    private var failures = 0
+   private var evals = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
+   private var contextualRandomSource: RandomSource? = null
+   private val generatedSamples = mutableListOf<Sample<*>>()
+
+   private val statistics = mutableMapOf<Label?, MutableMap<Any?, Int>>()
 
    fun markSuccess() {
       successes++
@@ -19,10 +27,56 @@ class PropertyContext {
       failures++
    }
 
+   /**
+    * Setup this [PropertyContext] for a single run of property test.
+    *
+    * This function sets the [contextualRandomSource] as well as clears the [generatedSamples].
+    */
+   internal fun setupContextual(rs: RandomSource) {
+      contextualRandomSource = rs
+      generatedSamples.clear()
+   }
+
+   internal fun generatedSamples(): List<Sample<*>> = generatedSamples
+
+   /**
+    * Returns a [RandomSource] that can be used within this [PropertyContext]
+    */
+   fun randomSource(): RandomSource = contextualRandomSource ?: RandomSource.default()
+
+   /**
+    * Extracts a sample or edgecase value from an [Arb] using the contextual [RandomSource].
+    */
+   fun <A> Arb<A>.bind(): A {
+      val sample = this.generate(randomSource(), config.edgeConfig).first()
+      generatedSamples.add(sample)
+      return sample.value
+   }
+
+   fun markEvaluation() = evals++
+
    fun successes() = successes
    fun failures() = failures
 
+   /**
+    * Returns the number of invocations of the test function was invoked after checking for assumptions.
+    * This is the count post-assumptions.
+    */
    fun attempts(): Int = successes + failures
+
+   /**
+    * Returns the number of times the test function was invoked beore checking for assumptions.
+    * This is the count pre-assumptions.
+    */
+   fun evals(): Int = evals
+
+   /**
+    * Returns an Int that is the rounded percentage of discarded inputs (failed assumptions) from all inputs.
+    */
+   fun discardPercentage(): Int {
+      val discards = evals - attempts()
+      return if (discards == 0 || evals() == 0) 0 else (discards / evals().toDouble() * 100.0).roundToInt()
+   }
 
    fun classifications(): Map<String, Int> = classifications.toMap()
    fun autoclassifications(): Map<String, Map<String, Int>> = autoclassifications.toMap()
@@ -61,5 +115,29 @@ class PropertyContext {
          val current = classifications.getOrElse(falseLabel) { 0 }
          classifications[falseLabel] = current + 1
       }
+   }
+
+   /**
+    * Returns all labels used in this property test run.
+    */
+   fun labels(): Set<Label> = statistics.keys.toSet().filterNotNull().toSet()
+
+   /**
+    * Returns the statistics.
+    */
+   fun statistics(): Map<Label?, Map<Any?, Int>> = statistics.toMap()
+
+   fun collect(classification: Any?) {
+      collect(null, classification)
+   }
+
+   fun collect(label: String, classification: Any?) {
+      collect(Label(label), classification)
+   }
+
+   private fun collect(label: Label?, classification: Any?) {
+      val stats = statistics.getOrPut(label) { mutableMapOf() }
+      val count = stats.getOrElse(classification) { 0 }
+      stats[classification] = count + 1
    }
 }

@@ -19,8 +19,11 @@ interface PrepareSpecListener : Listener {
     * execute the tests for that spec.
     *
     * Regardless of how many times the spec is instantiated,
-    * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
-    * modes are used, this callback will only be invoked once.
+    * for example, if
+    * [InstancePerTest][io.kotest.core.spec.IsolationMode.InstancePerTest]
+    * or
+    * [InstancePerLeaf][io.kotest.core.spec.IsolationMode.InstancePerLeaf]
+    * isolation modes are used, this callback will only be invoked once.
     *
     * @param kclass the [Spec] class
     */

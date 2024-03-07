@@ -25,18 +25,21 @@ import io.kotest.core.test.config.ResolvedTestConfig
  *
  * For example, in the FunSpec we only allow top level tests.
  *
+ * ```
  * test("this is a test") { }
+ * ```
  *
  * And in WordSpec we allow two levels of tests.
  *
+ * ```
  * "a string" should {
  *   "return the length" {
  *   }
  * }
- *
+ * ```
  */
 data class TestCase(
-   // parseable, stable, consistent identifer for this test element
+   // parseable, stable, consistent identifier for this test element
    val descriptor: Descriptor.TestDescriptor,
    // the name of the test as entered by the user
    val name: TestName,
@@ -61,14 +64,14 @@ data class TestCase(
 }
 
 /**
- * Returns true if this test is focused.
+ * Returns `true` if this test is focused.
  *
- * A focused test case is one which is defined at the top level and has a f: prefix
+ * A focused test case is one which is defined at the top level and has a `f:` prefix
  */
 fun TestCase.isFocused() = this.parent == null && name.focus
 
 /**
- * Returns true if this descriptor represents a root test case.
+ * Returns `true` if this descriptor represents a root test case.
  *
  * A root test case is one which is defined at the top level in a spec.
  */

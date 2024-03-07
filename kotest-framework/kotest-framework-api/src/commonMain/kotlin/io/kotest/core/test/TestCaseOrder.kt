@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 /**
- * This enum is used to configure the order of root test execution in a [Spec].
+ * This enum is used to configure the order of root test execution in a [io.kotest.core.spec.Spec].
  */
 enum class TestCaseOrder {
 

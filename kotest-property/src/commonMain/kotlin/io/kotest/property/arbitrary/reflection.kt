@@ -2,12 +2,14 @@ package io.kotest.property.arbitrary
 
 import io.kotest.mpp.bestName
 import io.kotest.property.Arb
+import io.kotest.property.resolution.default
 import kotlin.reflect.KClass
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified A> Arb.Companion.default(): Arb<A> = forClass(A::class)
+@Deprecated("This logic has moved to io.kotest.property.resolution.Resolve and this function will be removed in 5.6. Since 5.5")
+inline fun <reified A> Arb.Companion.default(): Arb<A> = default()
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
 fun defaultForClass(kClass: KClass<*>): Arb<*>? {
    return when (kClass.bestName()) {
       "java.lang.String", "kotlin.String", "String" -> Arb.string()
@@ -27,11 +29,15 @@ fun defaultForClass(kClass: KClass<*>): Arb<*>? {
    }
 }
 
+@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
 expect inline fun <reified A> targetDefaultForClass(): Arb<A>?
 
+@Suppress("UNCHECKED_CAST")
+@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
 inline fun <reified A> Arb.Companion.forClass(kClass: KClass<*>): Arb<A> =
    defaultForClass(kClass) as Arb<A>?
       ?: targetDefaultForClass()
       ?: throw NoGeneratorFoundException("Cannot infer generator for ${A::class}; specify generators explicitly")
 
-class NoGeneratorFoundException(msg: String) : RuntimeException(msg)
+@Deprecated("Package change. Use io.kotest.property.resolution.NoGeneratorFoundException and this alias will be removed in 5.6. Since 5.5")
+typealias NoGeneratorFoundException = io.kotest.property.resolution.NoGeneratorFoundException

@@ -10,11 +10,7 @@ import kotlin.coroutines.CoroutineContext
  * This scope exists so we can add a deprecated `should` method to stop nesting a `should` inside a `should`
  */
 @KotestTestScope
-class WordSpecTerminalScope(val testScope: TestScope) : TestScope {
-
-   override suspend fun registerTestCase(nested: NestedTest) {
-      testScope.registerTestCase(nested)
-   }
+class WordSpecTerminalScope(val testScope: TestScope) : TerminalScope() {
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
    override val testCase: TestCase = testScope.testCase

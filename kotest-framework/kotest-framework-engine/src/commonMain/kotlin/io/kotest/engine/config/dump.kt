@@ -1,10 +1,10 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.engine.tags.runtimeTags
+import io.kotest.engine.tags.runtimeTagExpression
 import io.kotest.mpp.bestName
 
-fun ProjectConfiguration.createConfigSummary(): String {
+internal fun ProjectConfiguration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
@@ -48,7 +48,7 @@ fun ProjectConfiguration.createConfigSummary(): String {
       }
    }
 
-   runtimeTags().expression?.let { sb.buildOutput("Tags", it) }
+   runtimeTagExpression().expression.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }
 

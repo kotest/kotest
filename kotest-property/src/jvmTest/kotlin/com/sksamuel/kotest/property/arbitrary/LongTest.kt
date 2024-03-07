@@ -5,11 +5,20 @@ import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.longs.shouldBeNegative
+import io.kotest.matchers.longs.shouldBeNonNegative
+import io.kotest.matchers.longs.shouldBeNonPositive
+import io.kotest.matchers.longs.shouldBePositive
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.negativeLong
+import io.kotest.property.arbitrary.nonNegativeLong
+import io.kotest.property.arbitrary.nonPositiveLong
+import io.kotest.property.arbitrary.positiveLong
 import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.uLong
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
@@ -49,6 +58,26 @@ class LongTest : FunSpec({
       checkAll(100_000, Arb.long(min, max)) { value ->
          value.shouldBeBetween(min, max)
       }
+   }
+
+   test("Arb.positiveLongs should return positive longs only") {
+      val numbers = Arb.positiveLong().take(1000).toSet()
+      numbers.forAll { it.shouldBePositive() }
+   }
+
+   test("Arb.nonNegativeLongs should return non negative longs only") {
+      val numbers = Arb.nonNegativeLong().take(1000).toSet()
+      numbers.forAll { it.shouldBeNonNegative() }
+   }
+
+   test("Arb.negativeLongs should return negative longs only") {
+      val numbers = Arb.negativeLong().take(1000).toSet()
+      numbers.forAll { it.shouldBeNegative() }
+   }
+
+   test("Arb.nonPositiveLongs should return non positive longs only") {
+      val numbers = Arb.nonPositiveLong().take(1000).toSet()
+      numbers.forAll { it.shouldBeNonPositive() }
    }
 })
 

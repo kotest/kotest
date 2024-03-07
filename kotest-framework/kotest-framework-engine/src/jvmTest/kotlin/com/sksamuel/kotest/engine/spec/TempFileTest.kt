@@ -17,3 +17,4 @@ class TempFileTest : FunSpec({
       file.shouldNotExist()
    }
 })
+

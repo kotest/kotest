@@ -10,7 +10,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
@@ -19,7 +19,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
       var fired = false
-      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
+      EnabledIfInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept(SpecRef.Reference(MyUnannotatedSpec::class)) {
             fired = true
             Result.success(emptyMap())
@@ -29,7 +29,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed any spec annotated with @EnabledIf that passes predicate") {
       var fired = false
-      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
+      EnabledIfInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept(SpecRef.Reference(MyEnabledSpec::class)) {
             fired = true
             Result.success(emptyMap())
@@ -38,7 +38,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
    }
 
    test("EnabledIfSpecInterceptor should skip any spec annotated with @EnabledIf that fails predicate") {
-      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
+      EnabledIfInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept(SpecRef.Reference(MyDisabledSpec::class)) { error("boom") }
    }
 
@@ -49,7 +49,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
             fired = true
          }
       }
-      EnabledIfSpecInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
+      EnabledIfInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
          .intercept(SpecRef.Reference(MyDisabledSpec::class)) { error("boom") }
       fired.shouldBeTrue()
    }

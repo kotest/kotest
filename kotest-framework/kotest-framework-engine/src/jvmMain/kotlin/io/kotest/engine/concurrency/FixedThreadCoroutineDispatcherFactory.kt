@@ -3,12 +3,13 @@ package io.kotest.engine.concurrency
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.Logger
-import io.kotest.mpp.bestName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.io.Closeable
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
-import kotlin.math.abs
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 /**
@@ -17,7 +18,7 @@ import kotlin.reflect.KClass
  *
  * If [affinity] is true, then the same thread will be assigned to a spec and all it's tests.
  * This ensures that all tests and callbacks in a single spec are using the same thread.
- * This option can be overriden at the spec level.
+ * This option can be overridden at the spec level.
  *
  * Affinity helps avoid subtle memory model issues on the JVM for those who are not
  * familiar with how the JVM guarantees updates to variables are visible across threads.
@@ -31,10 +32,15 @@ import kotlin.reflect.KClass
 class FixedThreadCoroutineDispatcherFactory(
    threads: Int,
    private val affinity: Boolean,
-) : CoroutineDispatcherFactory {
+) : CoroutineDispatcherFactory, Closeable {
 
    private val logger = Logger(FixedThreadCoroutineDispatcherFactory::class)
-   private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
+
+   private val dispatcherPool = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
+
+   private val requestCount = AtomicInteger(0)
+
+   private val pinnedDispatchers = ConcurrentHashMap<KClass<*>, CoroutineDispatcher>()
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
@@ -42,10 +48,10 @@ class FixedThreadCoroutineDispatcherFactory(
       logger.log { Pair(testCase.name.testName, "affinity=$resolvedAffinity") }
 
       // if dispatcher affinity is set to true, we pick a dispatcher for the spec and stick with it
-      // otherwise each test just gets a random dispatcher
+      // otherwise each test just gets a dispatcher from the pool in a round-robin fashion
       val dispatcher = when (resolvedAffinity) {
-         true -> dispatcherFor(testCase.spec::class)
-         else -> dispatchers.random()
+         true -> pinnedDispatchers.getOrPut(testCase.spec::class, ::nextDispatcher)
+         else -> nextDispatcher()
       }
 
       logger.log { Pair(testCase.name.testName, "Switching dispatcher to $dispatcher") }
@@ -55,9 +61,14 @@ class FixedThreadCoroutineDispatcherFactory(
    }
 
    /**
-    * Returns a consistent dispatcher for the given [kclass].
+    * Close dispatchers created by the factory, releasing threads.
     */
-   private fun dispatcherFor(kclass: KClass<*>): CoroutineDispatcher =
-      dispatchers[abs(kclass.bestName().hashCode()) % dispatchers.size]
+   override fun close() {
+      dispatcherPool.forEach { it.close() }
+   }
 
+   /**
+    * Returns the next dispatcher from the pool in a round-robin fashion.
+    */
+   private fun nextDispatcher() = dispatcherPool[requestCount.getAndIncrement() % dispatcherPool.size]
 }

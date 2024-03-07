@@ -1,17 +1,19 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.shouldFail
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 
+@OptIn(ExperimentalKotest::class)
 class ObjectSchemaTest : FunSpec(
    {
       val personSchemaAllowingExtraProperties = jsonSchema {
          obj {
-            withProperty("name", required = true) { string() }
-            withProperty("initials", required = false) { string() }
-            withProperty("age", required = true) { number() }
+            withProperty("name") { string() }
+            withProperty("initials", optional = true) { string() }
+            withProperty("age") { number() }
          }
       }
 

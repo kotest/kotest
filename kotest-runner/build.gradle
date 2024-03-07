@@ -1,5 +1,0 @@
-plugins {
-    id 'maven-publish'
-}
-
-publish.enabled = false

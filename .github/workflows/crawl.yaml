@@ -6,6 +6,8 @@ on:
          - master
       paths:
          - 'documentation/versions.json'
+permissions:
+   contents: read
 env:
    CRAWLER_ID: '3b78c51b-bf3c-401e-9546-7fa9fb0d61f4'
    ALGOLIA_USERID: ${{ secrets.ALGOLIA_USERID }}

@@ -1,10 +1,8 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,10 +10,10 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
-import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
+import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -75,11 +73,10 @@ import kotlin.time.Duration
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
+   private val formatter: FallbackDisplayNameFormatter,
 ) : AbstractTestEngineListener() {
 
    private val logger = Logger(JUnitTestEngineListener::class)
-
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -100,17 +97,16 @@ class JUnitTestEngineListener(
    private val dummies = hashSetOf<String>()
 
    override suspend fun engineStarted() {
-      logger.log { Pair(null, "Engine started") }
+      logger.log { "Engine started" }
       listener.executionStarted(root)
    }
 
    override suspend fun engineInitialized(context: EngineContext) {
       failOnIgnoredTests = context.configuration.failOnIgnoredTests
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      logger.log { Pair(null, "Engine finished; throwables=[${t}]") }
+      logger.log { "Engine finished; throwables=[${t}]" }
 
       registerExceptionPlaceholders(t)
 
@@ -120,7 +116,7 @@ class JUnitTestEngineListener(
          TestExecutionResult.successful()
       }
 
-      logger.log { Pair(null, "Notifying junit that engine completed $root") }
+      logger.log { "Notifying junit that engine completed $root" }
       listener.executionFinished(root, result)
    }
 
@@ -148,7 +144,7 @@ class JUnitTestEngineListener(
          }
          else -> {
             val descriptor = getSpecDescriptor(kclass)
-            val result = when (t) {
+            val r = when (t) {
                null -> TestExecutionResult.successful()
                else -> {
                   addPlaceholderTest(descriptor, t, kclass)
@@ -157,7 +153,7 @@ class JUnitTestEngineListener(
             }
 
             logger.log { Pair(kclass.bestName(), "executionFinished: $descriptor") }
-            listener.executionFinished(descriptor, result)
+            listener.executionFinished(descriptor, r)
          }
       }
       reset()
@@ -171,10 +167,8 @@ class JUnitTestEngineListener(
    private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
       return try {
 
-         val descriptor = getSpecDescriptor(root, kclass.toDescriptor(), formatter.format(kclass))
-
-         logger.log { Pair(kclass.bestName(), "Registering dynamic spec $descriptor") }
-         listener.dynamicTestRegistered(descriptor)
+         log { "Getting TestDescriptor for $kclass" }
+         val descriptor = getSpecDescriptor(kclass)
 
          logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
          listener.executionStarted(descriptor)
@@ -183,7 +177,7 @@ class JUnitTestEngineListener(
          descriptor
 
       } catch (t: Throwable) {
-         logger.log { Pair(kclass.bestName(), "Error in JUnit Platform listener $t") }
+         logger.log { Pair(kclass.bestName(), "Error marking spec as started $t") }
          throw t
       }
    }
@@ -314,7 +308,7 @@ class JUnitTestEngineListener(
       val c = children[testCase.descriptor]
       val t = when {
          type != null -> type
-         c == null || c.isEmpty() -> TestDescriptor.Type.TEST
+         c.isNullOrEmpty() -> TestDescriptor.Type.TEST
          else -> TestDescriptor.Type.CONTAINER
       }
 

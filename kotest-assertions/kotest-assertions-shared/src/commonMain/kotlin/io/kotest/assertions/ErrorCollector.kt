@@ -1,5 +1,6 @@
 package io.kotest.assertions
 
+import io.kotest.assertions.print.Printed
 import io.kotest.mpp.stacktraces
 
 expect val errorCollector: ErrorCollector
@@ -16,6 +17,8 @@ enum class ErrorCollectionMode {
 typealias Clue = () -> String
 
 interface ErrorCollector {
+   var depth: Int
+   var subject: Printed?
 
    fun getCollectionMode(): ErrorCollectionMode
 
@@ -48,6 +51,8 @@ interface ErrorCollector {
 }
 
 object NoopErrorCollector : ErrorCollector {
+   override var depth = 0
+   override var subject: Printed? = null
 
    override fun getCollectionMode(): ErrorCollectionMode = ErrorCollectionMode.Hard
 
@@ -76,6 +81,9 @@ open class BasicErrorCollector : ErrorCollector {
    protected val failures = mutableListOf<Throwable>()
    protected var mode = ErrorCollectionMode.Hard
    protected val clues = mutableListOf<Clue>()
+
+   override var subject: Printed? = null
+   override var depth: Int = 0
 
    override fun getCollectionMode(): ErrorCollectionMode = mode
 
@@ -151,21 +159,8 @@ fun ErrorCollector.throwCollectedErrors() {
 /**
  * All errors currently collected in the [ErrorCollector] are returned as a single [MultiAssertionError].
  */
-fun ErrorCollector.collectiveError(): AssertionError? {
-   val failures = errors()
-   clear()
-   return if (failures.isNotEmpty()) {
-      if (failures.size == 1) {
-         AssertionError(failures[0].message).also {
-            stacktraces.cleanStackTrace(it)
-         }
-      } else {
-         MultiAssertionError(failures).also {
-            stacktraces.cleanStackTrace(it) // cleans the creation of MultiAssertionError
-         }
-      }
-   } else null
-}
+expect fun ErrorCollector.collectiveError(): AssertionError?
+
 
 inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> T): T =
    getCollectionMode().let { original ->
@@ -176,3 +171,14 @@ inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, blo
          setCollectionMode(original)
       }
    }
+
+internal fun List<Throwable>.toAssertionError(depth: Int, subject: Printed?): AssertionError? {
+   return when {
+      isEmpty() -> null
+      size == 1 && subject != null -> AssertionError("The following assertion for ${subject.value} failed:\n" + this[0].message)
+      size == 1 && subject == null -> AssertionError(this[0].message)
+      else -> MultiAssertionError(this, depth, subject)
+   }?.let {
+      stacktraces.cleanStackTrace(it)
+   }
+}

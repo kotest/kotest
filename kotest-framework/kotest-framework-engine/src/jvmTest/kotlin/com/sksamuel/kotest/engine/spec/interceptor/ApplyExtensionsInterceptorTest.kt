@@ -6,7 +6,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.SpecWrapperExtension
-import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
+import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 class ApplyExtensionsInterceptorTest : FunSpec() {

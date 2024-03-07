@@ -18,7 +18,7 @@ maintained and hosted by third parties.
 | [Mockserver](mockserver.md) | Integrate mockserver HTTP servers with the test lifecycle |
 | [System](system.md) | Provides utilities for integrating with System.* functions |
 | [Instant](instant.md) | Override the 'now' context in java.time |
-| [Test Containers](test_containers.md) | Run docker images as part of a test lifecycle |
+| [Testcontainers](test_containers.md) | Run docker images as part of a test lifecycle |
 | [Wiremock](wiremock.md) | Provides a mock HTTP server. Project homepage [here](http://wiremock.org/). |
 | [Roboelectric](roboelectric.md) | Integrate roboelectric with the test lifecycle |
 | [Allure](allure.md) | Provides output for the allure framework |
@@ -37,4 +37,4 @@ maintained and hosted by third parties.
 | [Kotless](https://github.com/LeoColman/kotest-kotless) | Utilties for kotless and kotest |
 | [LogCapture](https://github.com/jsalinaspolo/logcapture) | LogCapture is a testing library for asserting logging messages |
 | [KotlinFixture](https://github.com/appmattus/kotlinfixture/blob/main/fixture-kotest/README.adoc) | generate well-defined, but essentially random, input |
-| [Fluentlenium](https://fluentlenium.com/docs/test-runners/#kotest) | FluentLenium integration with Kotest |
+| [Fluentlenium](https://fluentlenium.io/docs/test-runners/#kotest) | FluentLenium integration with Kotest |

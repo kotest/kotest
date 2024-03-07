@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.assertions
 
 import io.kotest.assertions.retry
+import io.kotest.assertions.retryConfig
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
@@ -11,28 +12,39 @@ class RetryTest : StringSpec() {
    init {
 
       "should allow execution of suspend functions" {
-          retry(5, 500.milliseconds, 100.milliseconds) {
-              dummySuspend()
-          }
+         retry(5, 500.milliseconds, 100.milliseconds) {
+            dummySuspend()
+         }
 
-          retry(5, 500.milliseconds, 20.milliseconds, 1, IllegalArgumentException::class) {
-              dummySuspend()
-          }
+         retry(5, 500.milliseconds, 20.milliseconds, 1, IllegalArgumentException::class) {
+            dummySuspend()
+         }
+      }
+
+      "should allow config" {
+         val config = retryConfig {
+            maxRetry = 5
+            timeout = 500.milliseconds
+            delay = 100.milliseconds
+         }
+         retry(config) {
+            delay(10)
+         }
       }
 
       "should call given assertion when until it pass in given number of times" {
          val testClass = TestClass(4)
-          retry(5, 500.milliseconds, 100.milliseconds) {
-              testClass.isReady() shouldBe true
-          }
+         retry(5, 500.milliseconds, 100.milliseconds) {
+            testClass.isReady() shouldBe true
+         }
       }
 
       "should not call given assertion beyond given number of times" {
          val testClass = TestClass(4)
          runSafely {
-             retry(2, 500.milliseconds, 100.milliseconds, 1) {
-                 testClass.isReady() shouldBe true
-             }
+            retry(2, 500.milliseconds, 100.milliseconds, 1) {
+               testClass.isReady() shouldBe true
+            }
          }
          testClass.times shouldBe 2
       }
@@ -40,9 +52,9 @@ class RetryTest : StringSpec() {
       "should not call given assertion beyond given max duration" {
          val testClass = TestClass(4)
          runSafely {
-             retry(5, 500.milliseconds, 400.milliseconds, 1) {
-                 testClass.isReady() shouldBe true
-             }
+            retry(5, 500.milliseconds, 400.milliseconds, 1) {
+               testClass.isReady() shouldBe true
+            }
          }
          testClass.times shouldBe 2
       }
@@ -50,9 +62,9 @@ class RetryTest : StringSpec() {
       "should call given assertion exponentially" {
          val testClass = TestClass(4)
          runSafely {
-             retry(5, 500.milliseconds, 100.milliseconds, 2) {
-                 testClass.isReady() shouldBe true
-             }
+            retry(5, 500.milliseconds, 100.milliseconds, 2) {
+               testClass.isReady() shouldBe true
+            }
          }
          val calledAt = testClass.calledAtTimeInstance
          val delayInFirstRetry = (calledAt[1] - calledAt[0])
@@ -64,9 +76,9 @@ class RetryTest : StringSpec() {
       "should not retry in case of unexpected exception" {
          val testClass = TestClass(2)
          runSafely {
-             retry(5, 500.milliseconds, 20.milliseconds, 1, IllegalArgumentException::class) {
-                 testClass.throwUnexpectedException()
-             }
+            retry(5, 500.milliseconds, 20.milliseconds, 1, IllegalArgumentException::class) {
+               testClass.throwUnexpectedException()
+            }
          }
 
          testClass.times shouldBe 1

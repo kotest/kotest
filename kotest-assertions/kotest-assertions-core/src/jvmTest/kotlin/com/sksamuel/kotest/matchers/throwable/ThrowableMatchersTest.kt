@@ -65,6 +65,7 @@ class ThrowableMatchersTest : FreeSpec() {
 
 Actual was:
 "This is a test exception"
+
 expected:<"foo"> but was:<"This is a test exception">"""
                )
          }

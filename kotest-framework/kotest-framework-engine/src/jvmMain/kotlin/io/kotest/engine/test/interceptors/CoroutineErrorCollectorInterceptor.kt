@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.assertions.assertionCounterContextElement
 import io.kotest.assertions.errorCollectorContextElement
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -23,8 +24,13 @@ internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      logger.log { Pair(testCase.name.testName, "Adding $errorCollectorContextElement to coroutine context") }
-      return withContext(errorCollectorContextElement) {
+      logger.log {
+         Pair(
+            testCase.name.testName,
+            "Adding $errorCollectorContextElement and $assertionCounterContextElement to coroutine context"
+         )
+      }
+      return withContext(errorCollectorContextElement + assertionCounterContextElement) {
          test(testCase, scope)
       }
    }

@@ -12,7 +12,7 @@ internal actual suspend fun instantiate(kclass: KClass<*>, registry: ExtensionRe
 }
 
 /**
- * Creates an instance of a [Spec] by delegating to [ConstructorExtension], with
+ * Creates an instance of a [Spec] by delegating to a [ConstructorExtension], with
  * a fallback to a reflection based zero-args constructor.
  *
  * If the [kclass] represents an object, then the singleton object instance will be returned.

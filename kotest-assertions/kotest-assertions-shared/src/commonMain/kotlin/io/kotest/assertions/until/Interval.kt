@@ -5,6 +5,7 @@ import kotlin.time.Duration
 /**
  * A [Interval] determines how often Kotest will invoke the predicate function for an [until] block.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 interface Interval {
 
    /**

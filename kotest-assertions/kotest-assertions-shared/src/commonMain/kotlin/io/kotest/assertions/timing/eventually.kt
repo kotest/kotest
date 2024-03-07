@@ -5,25 +5,28 @@ import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
+import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.TimeMarkCompat
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration), f = f)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T : Any> eventually(
    duration: Duration,
    interval: Interval,
    f: suspend () -> T
 ): T = eventually(EventuallyConfig(duration, interval), f = f)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
@@ -31,6 +34,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration = duration, interval), predicate = predicate, f = f)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
@@ -38,12 +42,14 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration = duration, interval), listener = listener, f = f)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration, interval = poll.fixed()), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration, exceptionClass = exceptionClass), f = f)
 
@@ -57,6 +63,7 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
  * [eventually] will delay the specified [interval] between iterations, defaults to 25 [milliseconds]
  * [eventually] will pass the resulting value and state (see [EventuallyState]) into the optional [listener]
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
    interval: Interval = 25.milliseconds.fixed(),
@@ -71,6 +78,7 @@ suspend fun <T> eventually(
  * Runs a function until it doesn't throw and the result satisfies the predicate as long as the specified duration hasn't passed
  * and uses [EventuallyConfig] to control the duration, interval, listener, retries, and exceptionClass.
  */
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    config: EventuallyConfig,
    predicate: EventuallyPredicate<T> = { true },
@@ -78,7 +86,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T {
 
-   val start = TimeSource.Monotonic.markNow()
+   val start = MonotonicTimeSourceCompat.markNow()
    val end = start.plus(config.duration)
    var times = 0
    var firstError: Throwable? = null
@@ -120,7 +128,7 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      val delayMark = TimeSource.Monotonic.markNow()
+      val delayMark = MonotonicTimeSourceCompat.markNow()
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
    }
@@ -148,6 +156,7 @@ suspend fun <T> eventually(
    throw failure(message.toString())
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class EventuallyConfig(
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
@@ -160,17 +169,20 @@ data class EventuallyConfig(
    }
 }
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class EventuallyState<T>(
    val result: T?,
-   val start: TimeMark,
-   val end: TimeMark,
+   val start: TimeMarkCompat,
+   val end: TimeMarkCompat,
    val iteration: Int,
    val firstError: Throwable?,
    val thisError: Throwable?,
 )
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias EventuallyPredicate<T> = (T) -> Boolean
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface EventuallyListener<T> {
    fun onEval(state: EventuallyState<T>)
 }

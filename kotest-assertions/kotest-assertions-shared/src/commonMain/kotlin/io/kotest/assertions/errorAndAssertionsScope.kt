@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
@@ -59,4 +60,14 @@ internal fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
    if (getCollectionMode() == ErrorCollectionMode.Hard) {
       throwCollectedErrors()
    }
+}
+
+/**
+ * Pushes the provided [error] onto the [errorCollector] and throws
+ */
+@ExperimentalKotest
+@KotestInternal
+fun ErrorCollector.pushErrorAndThrow(error: Throwable): Nothing {
+   pushError(error)
+   throw collectiveError()!!
 }

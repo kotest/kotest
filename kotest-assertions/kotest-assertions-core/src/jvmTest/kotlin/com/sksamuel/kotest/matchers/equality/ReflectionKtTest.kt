@@ -7,6 +7,7 @@ import io.kotest.matchers.equality.*
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import io.mockk.mockk
 import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 import kotlin.reflect.KVisibility
@@ -42,6 +43,12 @@ class ReflectionKtTest : FunSpec() {
    class Hospital(val name: String, val mainDoctor: Doctor?)
 
    class City(val name: String, val mainHospital: Hospital)
+
+   enum class SimpleEnum { ONE, TWO }
+
+   enum class EnumWithProperties(val value: String) { ONE("one"), TWO("two"), }
+
+   data class EnumWrapper<E : Enum<E>>(val enum: E)
 
    init {
 
@@ -138,6 +145,19 @@ class ReflectionKtTest : FunSpec() {
          city.shouldBeEqualToComparingFields(city2)
       }
 
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively using default shouldBe for given types") {
+         val doctor = mockk<Doctor>()
+         val city = City("test", Hospital("test-hospital", doctor))
+         val city2 = City("test", Hospital("test-hospital", doctor))
+
+         city.shouldBeEqualToComparingFields(
+            city2,
+            FieldsEqualityCheckConfig(
+               useDefaultShouldBeForFields = listOf("com.sksamuel.kotest.matchers.equality.ReflectionKtTest.Doctor")
+            )
+         )
+      }
+
       test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively handling nullable fields") {
          val jasmineSociety = Society("Jasmine", Person("Andrew"), Hospital("Wellness", null))
          val roseSociety = Society("Rose", null, Hospital("Wellness", Doctor("Marco", 45, emptyList())))
@@ -157,7 +177,7 @@ class ReflectionKtTest : FunSpec() {
          person.setAddress("new address")
 
          val errorMessage = shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFields(Person("foo"), ignorePrivateFields = false)
+            person.shouldBeEqualToComparingFields(Person("foo"), FieldsEqualityCheckConfig(ignorePrivateFields = false))
          }.message
 
          errorMessage shouldContain "Using fields: address, isExhausted, name"
@@ -171,14 +191,16 @@ class ReflectionKtTest : FunSpec() {
          person.isExhausted = true
          person.setAddress("new address")
 
-         person.shouldBeEqualToComparingFieldsExcept(
+         person.shouldBeEqualToComparingFields(
             Person("foo"),
-            Person::isExhausted
+            FieldsEqualityCheckConfig(propertiesToExclude = listOf(Person::isExhausted))
          )
-         person.shouldBeEqualToComparingFieldsExcept(
+         person.shouldBeEqualToComparingFields(
             Person("foo"),
-            true,
-            Person::isExhausted
+            FieldsEqualityCheckConfig(
+               ignorePrivateFields = true,
+               propertiesToExclude = listOf(Person::isExhausted)
+            )
          )
       }
 
@@ -188,10 +210,12 @@ class ReflectionKtTest : FunSpec() {
          person.setAddress("new address")
 
          val message = shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFieldsExcept(
+            person.shouldBeEqualToComparingFields(
                Person("foo"),
-               false,
-               Person::isExhausted
+               FieldsEqualityCheckConfig(
+                  ignorePrivateFields = false,
+                  propertiesToExclude = listOf(Person::isExhausted)
+               )
             )
          }.message
          message shouldContain "Using fields: address, name"
@@ -216,7 +240,10 @@ class ReflectionKtTest : FunSpec() {
 
       test("shouldNotBeEqualToComparingFields should consider private fields") {
          shouldThrow<AssertionError> {
-            Person("foo").shouldNotBeEqualToComparingFields(Person("foo"), false)
+            Person("foo").shouldNotBeEqualToComparingFields(
+               Person("foo"),
+               FieldsEqualityCheckConfig(ignorePrivateFields = false)
+            )
          }.message shouldContain "Using fields: address, isExhausted, name"
       }
 
@@ -227,7 +254,10 @@ class ReflectionKtTest : FunSpec() {
 
       test("shouldBeEqualToComparingFields can include computed field") {
          shouldFail {
-            HasComputedField("foo").shouldBeEqualToComparingFields(HasComputedField("foo"), ignoreComputedFields = false)
+            HasComputedField("foo").shouldBeEqualToComparingFields(
+               HasComputedField("foo"),
+               FieldsEqualityCheckConfig(ignoreComputedFields = false)
+            )
          }.message shouldContain "Using fields: name, random"
       }
 
@@ -248,5 +278,18 @@ class ReflectionKtTest : FunSpec() {
             HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
          }.message shouldNotContain "random"
       }
+
+      test("shouldBeEqualToWithEnums") {
+         shouldFail {
+            EnumWrapper(SimpleEnum.ONE).shouldBeEqualToComparingFields(EnumWrapper(SimpleEnum.TWO))
+         }.message.shouldContain("expected:<TWO> but was:<ONE>")
+      }
+
+      test("shouldBeEqualToWithEnums message contains enum names") {
+         shouldFail {
+            EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
+         }.message.shouldContain("expected:<TWO> but was:<ONE>")
+      }
+
    }
 }

@@ -225,8 +225,8 @@ class DataTestingTest : StringSpec() {
          }.message
 
          assertSoftly {
-            errorMessage shouldContain "1) Test failed for (nums, [2, 3, 1, 1, 4]), (result, 2) with error expected:<2> but was:<[2, 3, 1, 1, 4]>"
-            errorMessage shouldContain "2) Test failed for (nums, [0]), (result, 0) with error expected:<0> but was:<[0]>"
+            errorMessage shouldContain "1) Test failed for (nums, [2, 3, 1, 1, 4]), (result, 2) with error expected:kotlin.Int<2> but was:kotlin.IntArray<[2, 3, 1, 1, 4]>"
+            errorMessage shouldContain "2) Test failed for (nums, [0]), (result, 0) with error expected:kotlin.Int<0> but was:kotlin.IntArray<[0]>"
          }
       }
    }

@@ -45,7 +45,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.writeSpecFailureFile].
     *
-    * Note: Only has an effect on the JVM.
+    * Note: Only has an effect on JVM.
     */
    var writeSpecFailureFile: Boolean = Defaults.writeSpecFailureFile
 
@@ -54,20 +54,20 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.specFailureFilePath].
     *
-    * Note: Only has an effect on the JVM.
+    * Note: Only has an effect on JVM.
     */
    var specFailureFilePath: String = Defaults.specFailureFilePath
 
    /**
-    * If true, then all test cases are implicitly wrapped in an assertSoftly call.
+    * If true, then all test cases are implicitly wrapped in an [io.kotest.assertions.assertSoftly] call.
     *
     * Defaults to [Defaults.globalAssertSoftly].
     */
    var globalAssertSoftly: Boolean = Defaults.globalAssertSoftly
 
    /**
-    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
-    * prefixes (I.e.: Given, When, Then) and tests' titles.
+    * The casing of test names can be adjusted using different strategies. It affects test
+    * prefixes (I.e.: Given, When, Then) and test titles.
     *
     * This setting's options are defined in [TestNameCase].
     *
@@ -194,7 +194,7 @@ class ProjectConfiguration {
     *
     * This value is used if a timeout is not specified in the test case itself.
     *
-    * Defaults to [Defaults.defaultInvocationTimeout].
+    * Defaults to [Defaults.defaultInvocationTimeoutMillis].
     */
    var invocationTimeout: Long? = null
 
@@ -218,11 +218,12 @@ class ProjectConfiguration {
    var severity: TestCaseSeverityLevel = Defaults.severity
 
    /**
-    * If set to true then the test engine will install a [TestDispatcher].
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     *
     * This can be retrieved via `delayController` in your tests.
     *
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
    @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
@@ -259,22 +260,28 @@ class ProjectConfiguration {
     *
     * For example, when using ExpectSpec like this:
     *
+    * ```
     * expect("this test 1") {
     *   feature("this test 2") {
     *   }
     * }
+    * ```
     *
     * If prefixes are enabled, the output would be:
     *
+    * ```text
     * Expect: this test 1
     *   Feature: this test 2
+    * ```
     *
     * And if disabled, the output would be:
     *
+    * ```text
     * this test 1
     *    test this 2
+    * ```
     *
-    * Defaults to null, which is to use the default.
+    * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
     */
    var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
 
@@ -284,7 +291,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.displaySpecIfNoActiveTests]
     *
-    * Note: This only works for JUnit and Intellij runners.
+    * Note: This only works for JUnit and IntelliJ runners.
     */
    var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
 
@@ -326,6 +333,14 @@ class ProjectConfiguration {
    var testNameAppendTags: Boolean = false
 
    /**
+    * Determines whether tags can be inherited from super types
+    * Default is false
+    */
+   var tagInheritance: Boolean = false
+
+   var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
+
+   /**
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
     *
@@ -334,6 +349,8 @@ class ProjectConfiguration {
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
    var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+
+   var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
    /**
     * Returns all globally registered [Listener]s.

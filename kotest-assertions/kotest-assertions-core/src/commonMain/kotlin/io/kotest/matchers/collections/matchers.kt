@@ -1,9 +1,10 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
-import io.kotest.matchers.*
-
-
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 
 fun <T> Iterable<T>.shouldHaveElementAt(index: Int, element: T) = toList().shouldHaveElementAt(index, element)
 fun <T> Array<T>.shouldHaveElementAt(index: Int, element: T) = asList().shouldHaveElementAt(index, element)
@@ -12,7 +13,6 @@ fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveEl
 fun <T> Iterable<T>.shouldNotHaveElementAt(index: Int, element: T) = toList().shouldNotHaveElementAt(index, element)
 fun <T> Array<T>.shouldNotHaveElementAt(index: Int, element: T) = asList().shouldNotHaveElementAt(index, element)
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
-
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
    override fun test(value: L) =
@@ -23,32 +23,6 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
       )
 }
 
-
-
-
-infix fun <T> Iterable<T>.shouldHaveSingleElement(t: T): Iterable<T> {
-   toList().shouldHaveSingleElement(t)
-   return this
-}
-
-infix fun <T> Array<T>.shouldHaveSingleElement(t: T): Array<T> {
-   asList().shouldHaveSingleElement(t)
-   return this
-}
-
-infix fun <T> Iterable<T>.shouldHaveSingleElement(p: (T) -> Boolean): Iterable<T> {
-   toList().shouldHaveSingleElement(p)
-   return this
-}
-
-infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean) = asList().shouldHaveSingleElement(p)
-infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
-infix fun <T> Collection<T>.shouldHaveSingleElement(p: (T) -> Boolean) = this should singleElement(p)
-infix fun <T> Iterable<T>.shouldNotHaveSingleElement(t: T) = toList().shouldNotHaveSingleElement(t)
-infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
-infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
-
-
 infix fun <T> Iterable<T>.shouldExist(p: (T) -> Boolean) = toList().shouldExist(p)
 infix fun <T> Array<T>.shouldExist(p: (T) -> Boolean) = asList().shouldExist(p)
 infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
@@ -56,9 +30,8 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.any { p(it) },
       { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
-      {
-         "Collection ${value.print().value} should not contain an element that matches the predicate $p"
-      })
+      { "Collection ${value.print().value} should not contain an element that matches the predicate $p" }
+   )
 }
 
 fun <T> Iterable<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = toList().shouldMatchInOrder(assertions.toList())
@@ -120,11 +93,11 @@ infix fun <T> List<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = th
 
 
 
-fun <T> Iterable<T>.shouldContainAnyOf(vararg ts: T) = toList().shouldContainAnyOf(ts)
-fun <T> Array<T>.shouldContainAnyOf(vararg ts: T) = asList().shouldContainAnyOf(ts)
+fun <T> Iterable<T>.shouldContainAnyOf(vararg ts: T) = toList().shouldContainAnyOf(*ts)
+fun <T> Array<T>.shouldContainAnyOf(vararg ts: T) = asList().shouldContainAnyOf(*ts)
 fun <T> Collection<T>.shouldContainAnyOf(vararg ts: T) = this should containAnyOf(ts.asList())
-fun <T> Iterable<T>.shouldNotContainAnyOf(vararg ts: T) = toList().shouldNotContainAnyOf(ts)
-fun <T> Array<T>.shouldNotContainAnyOf(vararg ts: T) = asList().shouldNotContainAnyOf(ts)
+fun <T> Iterable<T>.shouldNotContainAnyOf(vararg ts: T) = toList().shouldNotContainAnyOf(*ts)
+fun <T> Array<T>.shouldNotContainAnyOf(vararg ts: T) = asList().shouldNotContainAnyOf(*ts)
 fun <T> Collection<T>.shouldNotContainAnyOf(vararg ts: T) = this shouldNot containAnyOf(ts.asList())
 infix fun <T> Iterable<T>.shouldContainAnyOf(ts: Collection<T>) = toList().shouldContainAnyOf(ts)
 infix fun <T> Array<T>.shouldContainAnyOf(ts: Collection<T>) = asList().shouldContainAnyOf(ts)
@@ -149,4 +122,3 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
 internal fun throwEmptyCollectionError(): Nothing {
    throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
 }
-

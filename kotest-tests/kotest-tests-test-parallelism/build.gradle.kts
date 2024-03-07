@@ -1,5 +1,5 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotlin-conventions")
 }
 
 kotlin {
@@ -11,11 +11,9 @@ kotlin {
    sourceSets {
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.JunitRunner))
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")

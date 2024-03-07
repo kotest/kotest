@@ -24,7 +24,7 @@ Matchers provided by the `kotest-assertions-core` module.
 |---------------------------------------------| ---- |
 | `obj.shouldBeSameInstanceAs(other)`         | Compares objects by identity, that is, they are the same exact reference. |
 | `obj.shouldBeTypeOf<T>()`                   | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
-| `obj.shouldBeInstanceOf<T>`                 | Asserts that the given reference is of type T or a subclass of T. |
+| `obj.shouldBeInstanceOf<T>()`               | Asserts that the given reference is of type T or a subclass of T. |
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | `obj.shouldBeNull()`                        | Asserts that a given reference is null.|
 
@@ -43,16 +43,19 @@ Matchers provided by the `kotest-assertions-core` module.
 | `iterator.shouldBeEmpty()`  | Asserts that the iterator does not have a next value. |
 | `iterator.shouldHaveNext()` | Asserts that the iterator has a next value |
 
-| Maps                                ||
-|-------------------------------------| ---- |
-| `map.shouldContain("key", "value")` | Asserts that the map contains the mapping "key" to "value" |
-| `map.shouldContainAll(other)`       | Asserts that the map contains all the pairs from the given map. |
-| `map.shouldContainExactly(other)`   | Asserts that the map contains exactly the pairs from given map, and no extra. |
-| `map.shouldContainKey(key)`         | Asserts that the map contains a key called `key` with any value |
-| `map.shouldContainKeys(keys)`       | Asserts that the map contains mappings for all the given keys. |
-| `map.shouldContainValue(value)`     | Asserts that the map contains at least one mapping where the value is `value`. |
-| `map.shouldContainValues(values)`   | Asserts that the map contains all the given values. |
-| `map.shouldBeEmpty()`               | Asserts that this map is empty. |
+| Maps                                                                                  ||
+|---------------------------------------------------------------------------------------| ---- |
+| `map.shouldContain("key", "value")`                                                   | Asserts that the map contains the mapping "key" to "value" |
+| `map.shouldContainAll(other)`                                                         | Asserts that the map contains all the pairs from the given map. |
+| `map.shouldContainExactly(other)`                                                     | Asserts that the map contains exactly the pairs from given map, and no extra. |
+| `map.shouldContainKey(key)`                                                           | Asserts that the map contains a key called `key` with any value |
+| `map.shouldContainKeys(keys)`                                                         | Asserts that the map contains mappings for all the given keys. |
+| `map.shouldContainValue(value)`                                                       | Asserts that the map contains at least one mapping where the value is `value`. |
+| `map.shouldContainValues(values)`                                                     | Asserts that the map contains all the given values. |
+| `map.shouldBeEmpty()`                                                                 | Asserts that this map is empty. |
+| `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
+| `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
+
 
 | Strings                                     ||
 |---------------------------------------------| ---- |
@@ -118,12 +121,14 @@ Matchers provided by the `kotest-assertions-core` module.
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||     |
+| BigDecimal                                  ||
 |---------------------------------------------| ---- |
 | `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
 | `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative |
+| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive |
+| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
 | `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
 | `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
 | `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equ|
@@ -141,45 +146,6 @@ Matchers provided by the `kotest-assertions-core` module.
 | `channel.shouldBeClosed()`                        | Asserts that the channel is closed |
 | `channel.shouldBeOpen()`                          | Asserts that the channel is open |
 | `channel.shouldBeEmpty()`                         | Asserts that the channel is empty |
-
-| Collections                                     |                                                                                                                                                                   |
-|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `collection.shouldBeEmpty()`                    | Asserts that the collections has zero elements.                                                                                                                   |
-| `collection.shouldBeUnique()`                   | Asserts that all the elements of the collection are distinct.                                                                                                     |
-| `collection.shouldContain(element)`             | Asserts that the collection contains the given element.                                                                                                           |
-| `collection.shouldContainAll(e1, e2, ..., en)`  | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.              |
-| `collection.shouldContainDuplicates()`          | Asserts that the collection contains at least one duplicate element.                                                                                              |
-| `collection.shouldContainExactly()`             | Assert that a collection contains exactly the given values and nothing else, in order.                                                                            |
-| `collection.shouldContainExactlyInAnyOrder()`   | Assert that a collection contains exactly the given values and nothing else, in _any_ order.                                                                      |
-| `collection.shouldContainAllInAnyOrder()`       | Assert that a collection contains all the given values and nothing else, in _any_ order.                                                                          |
-| `collection.shouldContainNoNulls()`             | Asserts that the collection contains no null elements, or is empty.                                                                                               |
-| `collection.shouldContainNull()`                | Asserts that the collection contains at least one null element.                                                                                                   |
-| `collection.shouldContainOnlyNulls()`           | Asserts that the collection contains only null elements, or is empty.                                                                                             |
-| `collection.shouldHaveSingleElement(element)`   | Asserts that the collection only contains a single element and that that element is the given one.                                                                |
-| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection only contains a single element and that the element matches the given predicate.                                                      |
-| `collection.shouldHaveSize(length)`             | Asserts that the collection is exactly the given length.                                                                                                          |
-| `collection.shouldBeSingleton()`                | Asserts that the collection contains only one element.                                                                                                            |
-| `collection.shouldBeSingleton { block }`        | Asserts that the collection only one element, and then, runs the block with this element.                                                                         |
-| `collection.shouldHaveLowerBound(element)`      | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable.                         |
-| `collection.shouldHaveUpperBound(element)`      | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable.                          |
-| `collection.shouldBeSmallerThan(col)`           | Asserts that the collection is smaller than the other collection.                                                                                                 |
-| `collection.shouldBeLargerThan(col)`            | Asserts that the collection is larger than the other collection.                                                                                                  |
-| `collection.shouldBeSameSizeAs(col)`            | Asserts that the collection has the same size as the other collection.                                                                                            |
-| `collection.shouldHaveAtLeastSize(n)`           | Asserts that the collection has at least size n.                                                                                                                  |
-| `collection.shouldHaveAtMostSize(n)`            | Asserts that the collection has at most size n.                                                                                                                   |
-| `list.shouldBeSorted()`                         | Asserts that the list is sorted.                                                                                                                                  |
-| `list.shouldBeSortedBy { transform }`           | Asserts that the list is sorted by the value after applying the transform.                                                                                        |
-| `list.shouldContainInOrder(other)`              | Asserts that this list contains the given list in order. Other elements may appear either side of the given list.                                                 |
-| `list.shouldExistInOrder({ element }, ...)`     | Asserts that this list contains elements matching the predicates in order. Other elements may appear around or between the elements matching the predicates.      |
-| `list.shouldHaveElementAt(index, element)`      | Asserts that this list contains the given element at the given position.                                                                                          |
-| `list.shouldStartWith(lst)`                     | Asserts that this list starts with the elements of the given list, in order.                                                                                      |
-| `list.shouldEndWith(lst)`                       | Asserts that this list ends with the elements of the given list, in order.                                                                                        |
-| `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch. |
-| `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                  |
-| `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                    |
-| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection.                                                                                                    |
-| `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                      |
-| `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                        |
 
 | URIs                                ||
 |-------------------------------------| ---- |
@@ -221,47 +187,58 @@ Matchers provided by the `kotest-assertions-core` module.
 | `file.shouldHaveParent(name)`                      |  Assert that the file has a parent with the given name |
 
 | Dates                                         ||
-|-----------------------------------------------| ---- |
-| `date.shouldHaveSameYearAs(otherDate)`        | Asserts that the date has the same year as the given date. |
-| `date.shouldHaveSameMonthAs(otherDate)`       | Asserts that the date has the same month as the given date. |
-| `date.shouldHaveSameDayAs(otherDate)`         | Asserts that the date has the same day of the month as the given date. |
-| `date.shouldBeBefore(otherDate)`              | Asserts that the date is before the given date. |
-| `date.shouldBeAfter(otherDate)`               | Asserts that the date is after the given date. |
-| `date.shouldBeWithin(period, otherDate)`      | Asserts that the date is within the period of the given date. |
-| `date.shouldBeWithin(duration, otherDate)`    | Asserts that the date is within the duration of the given date. |
-| `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate. |
-| `date.shouldHaveYear(year)`                   | Asserts that the date have correct year. |
-| `date.shouldHaveMonth(month)`                 | Asserts that the date have correct month. |
-| `date.shouldHaveDayOfYear(day)`               | Asserts that the date have correct day of year. |
-| `date.shouldHaveDayOfMonth(day)`              | Asserts that the date have correct day of month. |
-| `date.shouldHaveDayOfWeek(day)`               | Asserts that the date have correct day of week. |
-| `date.shouldHaveHour(hour)`                   | Asserts that the date have correct hour. |
-| `date.shouldHaveMinute(Minute)`               | Asserts that the date have correct minute. |
-| `date.shouldHaveSecond(second)`               | Asserts that the date have correct second. |
-| `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second. |
+|-----------------------------------------------|--------------------------------------------------------- Asserts that the date has the same year as the given date.                                                                           -----------------|
+| `date.shouldHaveSameYearAs(otherDate)`        | Asserts that the date has the same year as the given date.                                                                           |
+| `date.shouldHaveSameMonthAs(otherDate)`       | Asserts that the date has the same month as the given date.                                                                          |
+| `date.shouldHaveSameDayAs(otherDate)`         | Asserts that the date has the same day of the month as the given date.                                                               |
+| `date.shouldBeBefore(otherDate)`              | Asserts that the date is before the given date.                                                                                      |
+| `date.shouldBeAfter(otherDate)`               | Asserts that the date is after the given date.                                                                                       |
+| `date.shouldBeWithin(period, otherDate)`      | Asserts that the date is within the period of the given date.                                                                        |
+| `date.shouldBeWithin(duration, otherDate)`    | Asserts that the date is within the duration of the given date.                                                                      |
+| `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate.                                                                           |
+| `date.shouldHaveYear(year)`                   | Asserts that the date have correct year.                                                                                             |
+| `date.shouldHaveMonth(month)`                 | Asserts that the date have correct month.                                                                                            |
+| `date.shouldHaveDayOfYear(day)`               | Asserts that the date have correct day of year.                                                                                      |
+| `date.shouldHaveDayOfMonth(day)`              | Asserts that the date have correct day of month.                                                                                     |
+| `date.shouldHaveDayOfWeek(day)`               | Asserts that the date have correct day of week.                                                                                      |
+| `date.shouldHaveHour(hour)`                   | Asserts that the date have correct hour.                                                                                             |
+| `date.shouldHaveMinute(Minute)`               | Asserts that the date have correct minute.                                                                                           |
+| `date.shouldHaveSecond(second)`               | Asserts that the date have correct second.                                                                                           |
+| `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                                                                      |
+| `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration.                                              |
 
-| ZonedDateTime                                                 ||
-|---------------------------------------------------------------| ---- |
-| `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today. |
-| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| ZonedDateTime                                                        ||
+|----------------------------------------------------------------------| ---- |
+| `zonedDateTime.shouldBeToday()`                                      | Asserts that the ZonedDateTime has the same day as the today. |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`        | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime. |
 
-| Times                                         ||
-|-----------------------------------------------| ---- |
-| `time.shouldHaveSameHoursAs(otherTime)`       | Asserts that the time has the same hours as the given time. |
-| `time.shouldHaveSameMinutesAs(otherTime)`     | Asserts that the time has the same minutes as the given time. |
-| `time.shouldHaveSameSecondsAs(otherTime)`     | Asserts that the time has the same seconds as the given time. |
-| `time.shouldHaveSameNanosAs(otherTime)`       | Asserts that the time has the same nanos as the given time. |
-| `time.shouldBeBefore(otherTime)`              | Asserts that the time is before the given time. |
-| `time.shouldBeAfter(otherTime)`               | Asserts that the time is after the given time. |
-| `time.shouldBeBetween(firstTime, secondTime)` | Asserts that the time is between firstTime and secondTime. |
+| OffsetDateTime                                                           |                                                                                                      |
+|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `offsetDateTime.shouldBeToday()`                                         | Asserts that the OffsetDateTime has the same day as today.                                           |
+| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
+
+| Times                                               ||
+|-----------------------------------------------------| ---- |
+| `time.shouldHaveSameHoursAs(otherTime)`             | Asserts that the time has the same hours as the given time. |
+| `time.shouldHaveSameMinutesAs(otherTime)`           | Asserts that the time has the same minutes as the given time. |
+| `time.shouldHaveSameSecondsAs(otherTime)`           | Asserts that the time has the same seconds as the given time. |
+| `time.shouldHaveSameNanosAs(otherTime)`             | Asserts that the time has the same nanos as the given time. |
+| `time.shouldBeBefore(otherTime)`                    | Asserts that the time is before the given time. |
+| `time.shouldBeAfter(otherTime)`                     | Asserts that the time is after the given time. |
+| `time.shouldBeBetween(firstTime, secondTime)`       | Asserts that the time is between firstTime and secondTime. |
+| `time.shouldBe(otherTime plusOrMinus 1.minutes)`    | Asserts that the time is within duration of other time. |
 
 
 
-| Instant                                           ||
-|---------------------------------------------------| ---- |
-| `instant.shouldBeAfter(anotherInstant)`           | Asserts that the instant is after anotherInstant |
-| `instant.shouldBeBefore(anotherInstant)`          | Asserts that the instant is before anotherInstant |
-| `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
+| Instant                                               ||
+|-------------------------------------------------------| ---- |
+| `instant.shouldBeAfter(anotherInstant)`               | Asserts that the instant is after anotherInstant |
+| `instant.shouldBeBefore(anotherInstant)`              | Asserts that the instant is before anotherInstant |
+| `instant.shouldBeBetween(fromInstant, toInstant)`     | Asserts that the instant is between fromInstant and toInstant |
+| `instant.shouldBeCloseTo(anotherInstant, duration)`   | Asserts that the instant is close To anotherInstant in range by duration |
+| `instant.shouldBe(otherTime plusOrMinus 1.minutes)`   | Asserts that the instant is within duration of other instant. |
 
 | Timestamp                                               ||
 |---------------------------------------------------------| ---- |
@@ -379,10 +356,23 @@ Matchers provided by the `kotest-assertions-core` module.
 | `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)` | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
 
 
-| Field by Field Comparison Matchers                                                                                                                      ||     |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------| ---- |
-| `any.shouldBeEqualToComparingFields(other: T)`                                                                                                          | Asserts that the any is equal to other considering their fields(ignoring private fields) instead of `equals` method.|
-| `any.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean)`                                                                            | Asserts that the any is equal to other considering their fields and private fields(if `ignorePrivateFields` is false) instead of `equals` method.|
-| `any.shouldBeEqualToComparingFieldsExcept(other: T, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)`                               | Asserts that the any is equal to other considering their public fields ignoring private fields and other fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.|
-| `any.shouldBeEqualToComparingFieldsExcept(other: T, ignorePrivateFields: Boolean, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)` | Asserts that the any is equal to other considering all their fields including private fields(if `ignorePrivateFields` is false) but ignoring fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.|
+| Field by Field Comparison Matchers                                                                                                                          |                                                                                                                                                                                                                                                                                                                                         |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `any.shouldBeEqualToComparingFields(other: T)`                                                                                                              | Asserts that the any is equal to other considering their fields(ignoring private fields) instead of `equals` method.                                                                                                                                                                                                                    |
+| `any.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean)`                                                                                | Asserts that the any is equal to other considering their fields and private fields(if `ignorePrivateFields` is false) instead of `equals` method.                                                                                                                                                                                       |
+| ~~`any.shouldBeEqualToComparingFieldsExcept(other: T, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)`~~                               | ~~Asserts that the any is equal to other considering their public fields ignoring private fields and other fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.~~ deprecated. shouldBeEqualToComparingFields and shouldBeEqualToIgnoringFields are alternative.                                      |
+| ~~`any.shouldBeEqualToComparingFieldsExcept(other: T, ignorePrivateFields: Boolean, ignoreProperty: KProperty<*>, vararg ignoreProperties: KProperty<*>)`~~ | ~~Asserts that the any is equal to other considering all their fields including private fields(if `ignorePrivateFields` is false) but ignoring fields mentioned by `ignoreProperty` and `ignoreProperties` instead of `equals` method.~~  deprecated. shouldBeEqualToComparingFields and shouldBeEqualToIgnoringFields are alternative. |
+
+
+
+| Resource Matchers                                                                   |                                                                                                                                                          |
+|-------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `str shouldMatchResource "/path/to/test_resource.txt"`                              | Asserts that the string is equal to the given resource (as String). This matcher will ignore differences in line separators.                             |
+| `str shouldNotMatchResource "/path/to/test_resource.txt"`                           | Asserts that the string is **not** equal to the given resource (as String). This matcher will ignore differences in line separators.                     |
+| `str.shouldMatchResource("/path/to/test_resource.txt", ::providedMatcher)`          | Asserts that the string matches to the given resource (as String) using `providedMatcher`. Differences in line separators is ignored by default.         |
+| `str.shouldNotMatchResource("/path/to/test_resource.txt", ::providedMatcher)`       | Asserts that the string **not** matches to the given resource (as String) using `providedMatcher`. Differences in line separators is ignored by default. |
+| `byteArray shouldMatchResource "/path/to/test_resource.bin"`                        | Asserts that the byteArray is equal to the given resource.                                                                                               |
+| `byteArray shouldNotMatchResource "/path/to/test_resource.bin"`                     | Asserts that the byteArray is **not** equal to the given resource.                                                                                       |
+| `byteArray.shouldMatchResource("/path/to/test_resource.bin", ::providedMatcher)`    | Asserts that the byteArray matches to the given resource using `providedMatcher`.                                                                        |
+| `byteArray.shouldNotMatchResource("/path/to/test_resource.bin", ::providedMatcher)` | Asserts that the byteArray **not** matches to the given resource using `providedMatcher`.                                                                |
 

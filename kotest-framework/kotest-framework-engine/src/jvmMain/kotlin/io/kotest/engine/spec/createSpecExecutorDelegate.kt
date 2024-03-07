@@ -1,6 +1,5 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
@@ -8,7 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.isIsolate
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
@@ -18,28 +17,24 @@ import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.math.max
 
-@ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
-   listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
-): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+   context: EngineContext,
+): SpecExecutorDelegate = JvmSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
 
-@ExperimentalKotest
-class JvmSpecExecutorDelegate(
-   private val listener: TestEngineListener,
+internal class JvmSpecExecutorDelegate(
    private val dispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: ProjectConfiguration,
+   private val context: EngineContext,
 ) : SpecExecutorDelegate {
 
    private val logger = Logger(JvmSpecExecutorDelegate::class)
 
    private fun Spec.resolvedIsolationMode() =
-      this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
+      this.isolationMode() ?: this.isolationMode ?: context.configuration.isolationMode
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
-      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(configuration.concurrentTests)) {
+      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(context.configuration.concurrentTests)) {
          ProjectConfiguration.Sequential -> SequentialTestScheduler
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
@@ -49,22 +44,20 @@ class JvmSpecExecutorDelegate(
 
       val runner = when (isolation) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(
-            listener,
             scheduler,
             dispatcherFactory,
-            configuration
+            context
          )
+
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(
-            listener,
             scheduler,
             dispatcherFactory,
-            configuration
+            context,
          )
+
          IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(
-            listener,
-            scheduler,
             dispatcherFactory,
-            configuration
+            context,
          )
       }
 
@@ -75,15 +68,19 @@ class JvmSpecExecutorDelegate(
 /**
  * Returns the concurrent tests count to use for tests in this spec.
  *
- * If threads is specified on the spec, then that will implicitly raise the concurrentTests
- * count to the same value if concurrentTests is not specified.
+ * If threads is specified on the spec, then that will implicitly raise the
+ * [concurrentTests][io.kotest.core.config.AbstractProjectConfig.concurrentTests]
+ * count to the same value if
+ * [concurrentTests][io.kotest.core.config.AbstractProjectConfig.concurrentTests]
+ * is not specified.
  *
- * Note that if this spec is annotated with @Isolate then the value
- * will be 1 regardless of the config setting.
+ * Note that if this spec is annotated with [@Isolate][io.kotest.core.annotation.Isolate] then
+ * the value will be 1 regardless of the config setting.
  *
+ * ```
  * spec.concurrency ?: configuration.concurrentTests
+ * ```
  */
-@OptIn(ExperimentalKotest::class)
 internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {

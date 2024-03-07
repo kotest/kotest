@@ -39,7 +39,7 @@ interface AfterTestListener : Listener {
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
    /**
-    * Alias for afterTest
+    * Alias for [afterTest]
     */
    suspend fun afterAny(testCase: TestCase, result: TestResult): Unit = Unit
 }

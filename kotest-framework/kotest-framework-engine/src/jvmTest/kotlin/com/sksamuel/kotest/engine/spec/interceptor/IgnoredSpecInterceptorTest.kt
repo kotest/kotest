@@ -8,7 +8,7 @@ import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 

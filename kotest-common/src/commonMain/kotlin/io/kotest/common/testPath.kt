@@ -11,3 +11,10 @@ class TestPathContextElement(
 ) : AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<TestPathContextElement>
 }
+
+@ExperimentalKotest
+class TestNameContextElement(
+   val testName: String,
+) : AbstractCoroutineContextElement(Key) {
+   companion object Key : CoroutineContext.Key<TestNameContextElement>
+}

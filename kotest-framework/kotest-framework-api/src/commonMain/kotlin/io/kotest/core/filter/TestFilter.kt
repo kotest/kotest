@@ -18,7 +18,9 @@ interface TestFilter : Filter {
 }
 
 sealed interface TestFilterResult {
-   object Include : TestFilterResult
+   object Include : TestFilterResult {
+      override fun toString() = "TestFilterResult.Include" // Replace me with `data object` when it's available
+   }
    data class Exclude(val reason: String?) : TestFilterResult
 }
 

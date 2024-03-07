@@ -1,7 +1,9 @@
 package com.sksamuel.kotest
 
+import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import java.math.BigInteger
 
 class ShouldBeNumericTests : WordSpec({
   "should be" should {
@@ -30,5 +32,11 @@ class ShouldBeNumericTests : WordSpec({
       42F shouldBe v6
       42F shouldBe v7
     }
+
+     "Prints type information on mismatching types" {
+        shouldFail {
+           1 shouldBe BigInteger.ONE
+        }.message shouldBe "expected:java.math.BigInteger<1> but was:kotlin.Int<1>"
+     }
   }
 })

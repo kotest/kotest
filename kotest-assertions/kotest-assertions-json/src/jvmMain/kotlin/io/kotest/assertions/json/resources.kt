@@ -1,8 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
-import io.kotest.assertions.print.printed
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -18,24 +15,21 @@ infix fun String?.shouldMatchJsonResource(resource: String) {
    this should matchJsonResource(resource)
 }
 
-infix fun String.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
+infix fun String.shouldNotMatchJsonResource(resource: String) =
+   this shouldNot matchJsonResource(resource)
 
 fun matchJsonResource(resource: String) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
       val actualJson = value?.let(pretty::parseToJsonElement)
-      val expectedJson = this.javaClass.getResourceAsStream(resource).bufferedReader().use {
+      val expectedJson = this.javaClass.getResourceAsStream(resource)?.bufferedReader()?.use {
          pretty.parseToJsonElement(it.readText())
-      }
+      } ?: throw AssertionError("File should exist in resources: $resource")
 
       return ComparableMatcherResult(
          actualJson == expectedJson,
-         {
-            "expected json to match, but they differed\n\n"
-         },
-         {
-            "expected not to match with: $expectedJson but match: $actualJson"
-         },
+         { "expected json to match, but they differed\n" },
+         { "expected not to match with: $expectedJson but match: $actualJson" },
          actualJson.toString(),
          expectedJson.toString(),
       )

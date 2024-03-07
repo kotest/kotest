@@ -3,12 +3,15 @@ package io.kotest.property.internal
 import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
 import io.kotest.property.AfterPropertyContextElement
+import io.kotest.property.AssumptionFailedException
 import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.RandomSource
 import io.kotest.property.seed.clearFailedSeed
 import io.kotest.property.seed.writeFailedSeedIfEnabled
+import io.kotest.property.statistics.outputStatistics
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -25,9 +28,12 @@ internal suspend fun test(
    inputs: List<Any?>,
    classifiers: List<Classifier<out Any?>?>,
    seed: Long,
-   fn: suspend () -> Any
+   contextualSeed: Long,
+   testFn: suspend () -> Any
 ) {
    require(inputs.size == classifiers.size)
+   context.markEvaluation()
+   context.setupContextual(RandomSource.seeded(contextualSeed))
    try {
 
       inputs.indices.forEach { k ->
@@ -40,14 +46,16 @@ internal suspend fun test(
       }
 
       coroutineContext[BeforePropertyContextElement]?.before?.invoke()
-      fn()
+      testFn()
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
+      clearFailedSeed()
+   } catch (e: AssumptionFailedException) { // we don't mark failed assumptions as errors
    } catch (e: Throwable) {  // we track any throwables and try to shrink them
       context.markFailure()
+      outputStatistics(context, inputs.size, false)
       handleException(context, shrinkfn, inputs, seed, e, config)
    }
-   clearFailedSeed()
 }
 
 internal suspend fun handleException(
@@ -61,8 +69,12 @@ internal suspend fun handleException(
    if (config.maxFailure == 0) {
 
       println("Property test failed for inputs\n")
-      inputs.withIndex().forEach { (index, value) ->
-         println("$index) ${value.print().value}")
+      val allInputs = buildList {
+         addAll(inputs.map { it.print().value })
+         context.generatedSamples().forEach { add("${it.value.print().value} (generated within property context)") }
+      }
+      allInputs.withIndex().forEach { (index, value) ->
+         println("$index) $value")
       }
       println()
 

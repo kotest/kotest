@@ -16,11 +16,29 @@ annotation class Test2
 @Test2
 private class Foo
 
+@Isolate
+private abstract class Bar
+
+@Ignored
+private interface Baz
+
+private class Qux: Bar(), Baz
+
 class AnnotationReflectionTest : FunSpec() {
    init {
-      test("has annotation should work for composed annotations") {
+      test("has annotation by default should work for composed annotations") {
          Foo::class.annotation<Ignored>().shouldNotBeNull()
          Foo::class.hasAnnotation<Ignored>() shouldBe true
+      }
+
+      test("has annotation should work for parent class annotations if using with IncludingSuperclasses") {
+         Qux::class.annotations<Isolate>(IncludingSuperclasses).shouldNotBeNull()
+         Qux::class.hasAnnotation<Isolate>(IncludingSuperclasses) shouldBe true
+      }
+
+      test("has annotation should work for implemented interface annotations if using with IncludingSuperclasses") {
+         Qux::class.annotations<Ignored>(IncludingSuperclasses).shouldNotBeNull()
+         Qux::class.hasAnnotation<Ignored>(IncludingSuperclasses) shouldBe true
       }
    }
 }

@@ -25,8 +25,8 @@ class SpecExtensionIsolationModePerLeafTest : WordSpec() {
       isolationMode = IsolationMode.InstancePerLeaf
 
       afterProject {
-         beforeInstancePerLeaf shouldBe 4
-         afterInstancePerLeaf shouldBe 4
+         beforeInstancePerLeaf shouldBe 3
+         afterInstancePerLeaf shouldBe 3
       }
 
       "SpecExtensions" should {

@@ -9,6 +9,7 @@ slug: pitest.html
 The Mutation Testing tool [Pitest](https://pitest.org/) is integrated with Kotest via an extension module.
 
 ## Gradle configuration
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-pitest.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-pitest)
 
 After [configuring](https://gradle-pitest-plugin.solidsoft.info/) Pitest,
 add the `io.kotest.extensions:kotest-extensions-pitest` module to your dependencies as well:
@@ -32,6 +33,7 @@ configure<PitestPluginExtension> {
 This should set everything up, and running `./gradlew pitest` will generate reports in the way you configured.
 
 ## Maven configuration
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-pitest.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-pitest)
 
 First of all, you need to configure the [Maven Pitest plugin](https://pitest.org/quickstart/maven/):
 
@@ -43,7 +45,7 @@ First of all, you need to configure the [Maven Pitest plugin](https://pitest.org
     <configuration>
         <targetClasses>...</targetClasses>
         <coverageThreshold>...</coverageThreshold>
-        ... other configurations as needed        
+        ... other configurations as needed
     </configuration>
 </plugin>
 ```
@@ -52,7 +54,7 @@ Then add the dependency on Pitest Kotest extension:
 
 ```xml
 <dependencies>
-  ... the other Kotest dependencies like kotest-runner-junit5-jvm 
+  ... the other Kotest dependencies like kotest-runner-junit5
   <dependency>
     <groupId>io.kotest.extensions</groupId>
     <artifactId>kotest-extensions-pitest</artifactId>

@@ -1,23 +1,23 @@
 ---
 id: test_containers
-title: Test Containers
-sidebar_label: Test Containers
+title: Testcontainers
+sidebar_label: Testcontainers
 slug: test_containers.html
 ---
 
 
 
-## Test Containers
+## Testcontainers
 
 :::note
-This documentation is for the latest release of the test containers module and is compatible with Kotest 5.0+.
+This documentation is for the latest release of the Testcontainers module and is compatible with Kotest 5.0+.
 For earlier versions see docs [here](https://kotest.io/docs/extensions/test_containers_46.html)
 :::
 
-The [testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases,
+The [Testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases,
 elasticsearch, kafka, Selenium web browsers, or anything else that can run in a Docker container - ideal for use inside tests.
 
-Kotest provides integration with testcontainers through an additional module which provides several extensions - specialized extensions for
+Kotest provides integration with Testcontainers through an additional module which provides several extensions - specialized extensions for
 databases and kafka and general containers support for any supported docker image.
 
 ### Dependencies
@@ -161,7 +161,7 @@ val elasticsearch = install(TestContainerExtension(ElasticsearchContainer(ELASTI
 }
 ```
 
-The strongly typed container is preferred when one is provided by the test containers project, because it gives us
+The strongly typed container is preferred when one is provided by the Testcontainers project, because it gives us
 access to specific settings - such as the password option in the elasticsearch example above.
 
 However, when a strongly typed container is not available, the former method allows us to spool up any docker image

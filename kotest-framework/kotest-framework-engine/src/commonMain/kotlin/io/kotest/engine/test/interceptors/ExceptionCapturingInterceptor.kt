@@ -1,18 +1,18 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.Logger
-import kotlin.time.TimeMark
 
 /**
  * Captures exceptions from downstream interceptors and converts to a failed test result.
  * Any [TestExecutionInterceptor]s that can throw (eg by using withConetxt) should
  * appear after this interceptor.
  */
-internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : TestExecutionInterceptor {
+internal class ExceptionCapturingInterceptor(private val timeMark: TimeMarkCompat) : TestExecutionInterceptor {
 
    private val logger = Logger(ExceptionCapturingInterceptor::class)
 

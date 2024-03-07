@@ -6,7 +6,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -20,11 +19,11 @@ typealias StringSpecRootContext = StringSpecRootScope
  * Defines the DSL for creating tests in the 'StringSpec' style.
  *
  * Example:
- *
+ * ```
  * "my test" {
  *   1 + 1 shouldBe 2
  * }
- *
+ * ```
  */
 interface StringSpecRootScope : RootScope {
 
@@ -80,9 +79,5 @@ interface StringSpecRootScope : RootScope {
 @KotestTestScope
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
-   override val testCase: TestCase
-) : TestScope {
-   override suspend fun registerTestCase(nested: NestedTest) {
-      error("Cannot add nested tests using StringSpec")
-   }
-}
+   override val testCase: TestCase,
+) : TerminalScope()

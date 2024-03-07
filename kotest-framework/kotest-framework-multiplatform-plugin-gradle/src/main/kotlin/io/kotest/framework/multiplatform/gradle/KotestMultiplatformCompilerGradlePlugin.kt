@@ -1,10 +1,13 @@
-@file:Suppress("unused")
-
 package io.kotest.framework.multiplatform.gradle
 
+import javax.inject.Inject
 import org.gradle.api.Project
-import org.gradle.api.provider.Property
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
@@ -12,81 +15,73 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
-class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugin {
+abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
+   private val providers: ProviderFactory,
+) : KotlinCompilerPluginSupportPlugin {
+
+   private val logger: Logger = Logging.getLogger(this::class.java)
 
    companion object {
+      const val kotestPluginExtensionName = "kotest"
       const val compilerPluginId = "io.kotest.multiplatform"
       const val KotestGroupId = "io.kotest"
-      const val KotestJsArtifactId = "kotest-framework-multiplatform-plugin-js-jvm"
-      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
-      const val missingProjectValError = "Project is not initialized"
-      const val engineDepPrefix = "kotest-framework-engine"
-   }
-
-   private var target: Project? = null
-   private var extension: KotestPluginExtension? = null
-
-   override fun apply(target: Project) {
-      super.apply(target)
-      this.target = target
-      extension = target.extensions.create("kotest", KotestPluginExtension::class.java)
+      const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
+      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
    }
 
    /**
-    * Returns the version to use for the compiler plugins.
+    * For use in [getPluginArtifact] and [getPluginArtifactForNative], as an instance of the targeted Gradle [Project]
+    * is not available there.
     *
-    * Takes the version from the gradle extension configuration first, or if not
-    * specified, then defaults to using the same version as the engine dependency.
+    * In [isApplicable] a [Project] instance is available, so fetch the extension 'normally'. This helps ensure the
+    * Gradle API is used correctly.
     */
-   private fun version(): String? {
-      val project = target ?: error(missingProjectValError)
+   private var kotestExtension: KotestPluginExtension? = null
 
-      val versionFromExtension = extension?.compilerPluginVersion?.orNull
-      if (versionFromExtension != null) {
-         println("Kotest compiler plugin [$versionFromExtension]")
-         return versionFromExtension
-      }
-
-      val version = engineDeps(project).firstOrNull()?.version ?: return null
-      if (version.contains("LOCAL")) {
-         println("Detected dev engine version [$version]")
-      }
-      return version
+   override fun apply(target: Project) {
+      kotestExtension = target.createKotestExtension()
    }
 
-   private fun engineDeps(project: Project) =
-      project.configurations
-         .flatMap { it.all }
-         .flatMap { it.dependencies }
-         .filter { it.group == KotestGroupId && it.name.startsWith(engineDepPrefix) }
+   private fun Project.createKotestExtension(): KotestPluginExtension {
+      return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
+         kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
+      }
+   }
 
    override fun getCompilerPluginId() = compilerPluginId
 
    override fun getPluginArtifact(): SubpluginArtifact =
-      SubpluginArtifact(KotestGroupId, KotestJsArtifactId, version())
+      SubpluginArtifact(
+         KotestGroupId,
+         KotestEmbeddableCompilerArtifactId,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
+      )
 
+   // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
-      SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, version())
+      SubpluginArtifact(
+         KotestGroupId,
+         KotestNativeArtifactId,
+         kotestExtension?.kotestCompilerPluginVersion?.orNull,
+      )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
+      val project = kotlinCompilation.target.project
+      val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
+         ?: error("Could not find Kotest extension in $project")
+
       return when {
-         // if we can't find a version to use then we won't apply to this module
-         version() == null -> false
-         kotlinCompilation is KotlinJsCompilation -> true
-         kotlinCompilation is AbstractKotlinNativeCompilation -> true
-         else -> false
+         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
+            logger.warn("Warning: the Kotest plugin has been added to $project, but kotestCompilerPluginVersion has been set to null. Kotest will not be enabled.")
+            false
+         }
+
+         kotlinCompilation is KotlinJsCompilation               -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
+         else                                                   -> false
       }
    }
 
-   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
-      return kotlinCompilation.target.project.provider { emptyList() }
-   }
-}
-
-abstract class KotestPluginExtension {
-   abstract val compilerPluginVersion: Property<String>
-
-   init {
-      compilerPluginVersion.convention(null as String?)
-   }
+   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> =
+      providers.provider { emptyList() }
 }

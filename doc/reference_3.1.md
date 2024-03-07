@@ -382,7 +382,7 @@ _(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
  test cases and specs. Test level extensions will be covered in the next section.
 
-For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
+For example, to extract logic for beforeAll and afterAll into a separate class you can implement the interface `ProjectExtension`.
 
 ```kotlin
 class TimerExtension: ProjectExtension {
@@ -780,9 +780,6 @@ You can use the same mechanism to run tests only under certain conditions.
 }
 ```
 
-`isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
-
-
 ### Focus
 
 KotlinTest supports isolating a single top level test by preceding the test name with `f:`.
@@ -1026,7 +1023,8 @@ KotlinTest offers a Spring extension that allows you to test code that wires dep
 To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
-This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
+This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use
+[`@ActiveProfiles`](https://docs.spring.io/spring-framework/reference/testing/annotations/integration-spring/annotation-activeprofiles.html) to
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
 There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.

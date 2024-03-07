@@ -7,28 +7,44 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.superclasses
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.reflect
 
 object JvmReflection : Reflection {
 
    private val fqns = mutableMapOf<KClass<*>, String?>()
-   private val annotations = mutableMapOf<KClass<*>, List<Annotation>>()
+   private val annotations = mutableMapOf<Pair<KClass<*>, Set<AnnotationSearchParameter>>, List<Annotation>>()
 
    override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
 
-   override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> {
-      return if (recursive) return annotations(kclass, emptySet()) else kclass.annotationsSafe()
+   override fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation> {
+      return annotations.getOrPut(kclass to parameters) {
+         val includeSuperclasses = parameters.contains(IncludingSuperclasses)
+         val includeAnnotations = parameters.contains(IncludingAnnotations)
+         annotations(kclass, includeSuperclasses, includeAnnotations)
+      }
    }
 
-   private fun annotations(kclass: KClass<*>, checked: Set<String>): List<Annotation> {
-      return annotations.getOrPut(kclass) {
-         val annos = kclass.annotations
-         annos + annos.flatMap {
-            // we don't want to get into a loop with annotations that annotate themselves
-            if (checked.contains(it.annotationClass.jvmName)) emptyList() else {
-               annotations(it.annotationClass, checked + it.annotationClass.jvmName)
-            }
+   private fun annotations(
+      kclass: KClass<*>,
+      includeSuperclasses: Boolean,
+      includeAnnotations: Boolean
+   ): List<Annotation> {
+      val classes = listOf(kclass) + if (includeSuperclasses) kclass.superclasses else emptyList()
+      return if (includeAnnotations) {
+         classes.flatMap(::composedAnnotations)
+      } else {
+         classes.flatMap { it.annotationsSafe() }
+      }
+   }
+
+   private fun composedAnnotations(kclass: KClass<*>, checked: Set<String> = emptySet()): List<Annotation> {
+      val annos = kclass.annotationsSafe()
+      return annos + annos.flatMap {
+         // we don't want to get into a loop with annotations that annotate themselves
+         if (checked.contains(it.annotationClass.jvmName)) emptyList() else {
+            composedAnnotations(it.annotationClass, checked + it.annotationClass.jvmName)
          }
       }
    }

@@ -5,7 +5,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlin.math.abs
 
 /**
  * Asserts that this [Double] is in the interval [[a]-[tolerance] , [b]+[tolerance]]
@@ -76,28 +75,13 @@ fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double): Double {
  * @see [Double.shouldNotBeBetween]
  */
 fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object : Matcher<Double> {
-  override fun test(value: Double): MatcherResult {
-    val differenceToMinimum = value - a
-    val differenceToMaximum = b - value
-
-    if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
+   override fun test(value: Double): MatcherResult {
+      val min = a - tolerance
+      val max = b + tolerance
       return invoke(
-         false,
-         { "$value should be bigger than $a" },
-         { "$value should not be bigger than $a" })
-    }
-
-    if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
-      return invoke(
-         false,
-         { "$value should be smaller than $b" },
-         { "$value should not be smaller than $b" })
-    }
-
-    return invoke(
-       true,
-       { "$value should be smaller than $b and bigger than $a" },
-       { "$value should not be smaller than $b and should not be bigger than $a" }
-    )
-  }
+         value in min..max,
+         { "$value is outside expected range [$a, $b] (using tolerance $tolerance)" },
+         { "$value is not outside expected range [$a, $b] (using tolerance $tolerance)" }
+      )
+   }
 }

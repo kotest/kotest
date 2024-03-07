@@ -58,11 +58,12 @@ class PrimitivePrintsTest : FunSpec() {
          charArrayOf('a', 'g').print().value shouldBe "['a', 'g']"
       }
 
+      test("detect show for unsigned integer types") {
+         42.toUByte().print().value shouldBe "42 (UByte)"
+         42.toUShort().print().value shouldBe "42 (UShort)"
+         42.toUInt().print().value shouldBe "42 (UInt)"
+         42.toULong().print().value shouldBe "42 (ULong)"
+      }
+
    }
-}
-
-data class WibbleWobble(val a: String, val b: Int)
-
-class WibbleWobblePrint : Print<WibbleWobble> {
-   override fun print(a: WibbleWobble): Printed = "wibble ${a.a} wobble ${a.b}".printed()
 }

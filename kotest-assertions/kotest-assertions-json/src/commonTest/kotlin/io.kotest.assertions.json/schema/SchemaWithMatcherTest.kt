@@ -1,19 +1,17 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.shouldFail
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.and
 import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
 import io.kotest.matchers.doubles.beLessThanOrEqualTo
 import io.kotest.matchers.doubles.beMultipleOf
-import io.kotest.matchers.ints.beEven
-import io.kotest.matchers.ints.beInRange
-import io.kotest.matchers.longs.beInRange
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.haveMaxLength
 import io.kotest.matchers.string.haveMinLength
-import io.kotest.matchers.types.beInstanceOf
 
+@OptIn(ExperimentalKotest::class)
 class SchemaWithMatcherTest : FunSpec(
    {
       test("Even numbers") {
@@ -24,7 +22,7 @@ class SchemaWithMatcherTest : FunSpec(
          shouldFail { "3" shouldMatchSchema evenNumbers }
             .message shouldBe """
                $ => 3.0 should be multiple of 2.0
-            """.trimIndent()
+         """.trimIndent()
       }
 
       context("smoke") {

@@ -2,24 +2,13 @@ package io.kotest.engine.test
 
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
-import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
 /**
- * Returns a [TestResult] derived from a throwable.
- *
- * If the throwable is null, then a succesfull result is returned.
- *
- * If the throwable is either an [AssertionError] or one of the platform specific assertion types,
- * then a [TestStatus.Failure] will be returned, otherwise a [TestStatus.Error] will be returned.
+ * Creates a [TestResult] which is a [TestResult.success] if the supplied exception is null,
+ * a [TestResult.failure] if the supplied error is an assertion failure, or a [TestResult.error]
+ * if the exception is any other type.
  */
-@Deprecated(
-   "Replaced with createTestResult(Duration, Throwable?)",
-   ReplaceWith("createTestResult(duration.milliseconds, error)")
-)
-fun createTestResult(duration: Long, error: Throwable?): TestResult =
-   createTestResult(Duration.milliseconds(duration), error)
-
 fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
    error == null -> TestResult.Success(duration)
    error.isFrameworkAssertionType() -> TestResult.Failure(duration, error as AssertionError)
@@ -27,17 +16,12 @@ fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
    else -> TestResult.Error(duration, error)
 }
 
-@JvmName("throwableToTestResultLong")
-@Deprecated(
-   "Replaced with Throwable.toTestResult(Duration)",
-   ReplaceWith("createTestResult(duration.milliseconds, this)", "kotlin.time.milliseconds")
-)
-fun Throwable.toTestResult(duration: Long): TestResult = createTestResult(Duration.milliseconds(duration), this)
-
-@JvmName("throwableToTestResult")
 fun Throwable.toTestResult(duration: Duration): TestResult = createTestResult(duration, this)
 
-fun Throwable.isFrameworkAssertionType() =
+/**
+ * Returns true if the receiver is one of the supported assertion failure exception types.
+ */
+internal fun Throwable.isFrameworkAssertionType(): Boolean =
    listOf(
       "org.opentest4j.AssertionFailedError",
       "AssertionFailedError",

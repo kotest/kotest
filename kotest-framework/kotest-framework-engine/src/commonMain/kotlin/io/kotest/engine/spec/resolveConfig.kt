@@ -9,6 +9,7 @@ import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
@@ -72,7 +73,7 @@ internal fun resolveConfig(
       invocations = invocations,
       timeout = timeout,
       invocationTimeout = invocationTimeout,
-      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(),
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(configuration.tagInheritance),
       extensions = extensions,
       failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: configuration.failfast,
       severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: configuration.severity,
@@ -85,4 +86,4 @@ internal fun resolveConfig(
    )
 }
 
-fun Long.toMillis(): Duration = Duration.milliseconds(this)
+private fun Long.toMillis(): Duration = this.milliseconds

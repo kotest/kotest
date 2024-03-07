@@ -34,6 +34,12 @@ private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecurs
    override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
+private val expectedPath = if (System.getProperty("os.name").lowercase().contains("win")) {
+   "WindowsPath"
+} else {
+   "UnixPath"
+}
+
 class IterableEqTest : FunSpec({
 
    test("should give null for two equal sets") {
@@ -74,9 +80,8 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(hs, listOf(1, 2, 3))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe """Disallowed: Set can be compared only to Set
-                                  |May not compare HashSet with ArrayList
-                                  |expected:<*> but was:<*>""".trimMargin()
+         error.message shouldBe """Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
+                                  |HashSet does not provide a stable iteration order and was compared with ArrayList which is not a Set""".trimMargin()
       }
    }
 
@@ -91,7 +96,7 @@ class IterableEqTest : FunSpec({
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed typed contract
                                   |May not compare BareIterable with ArrayList
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |""".trimMargin()
       }
    }
 
@@ -114,18 +119,19 @@ class IterableEqTest : FunSpec({
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
-                                  |May not compare UnixPath with BareIterable
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |May not compare $expectedPath with BareIterable
+                                  |""".trimMargin()
       }
    }
 
    test("should give error for promiscuous iterables when recursive") {
       val error = IterableEq.equals(Paths.get("foo"), BareRecursiveIterable(1,0))
+      System.getProperty("os")
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
-                                  |May not compare UnixPath with BareRecursiveIterable
-                                  |expected:<*> but was:<*>""".trimMargin()
+                                  |May not compare $expectedPath with BareRecursiveIterable
+                                  |""".trimMargin()
       }
    }
 
@@ -153,10 +159,15 @@ class IterableEqTest : FunSpec({
       IterableEq.equals(array1.toList(), array2.toList()).shouldBeNull()
    }
 
-   test("should give null for equal iterables nested in ordered collection") {
+   test("should give error for equal iterables nested in ordered collection") {
       val aut1 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
       val aut2 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
-      IterableEq.equals(aut1, aut2).shouldBeNull()
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """Element differ at index: [1]
+                                  |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
+      }
    }
 
    test("should give error for unequal iterables nested in ordered collection") {
@@ -171,10 +182,14 @@ class IterableEqTest : FunSpec({
       }
    }
 
-   test("should give null for equal iterables nested in Set") {
+   test("should give error for equal iterables nested in Set") {
       val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
       val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, arrayOf(BareIterable(3,3), BareIterable(4,4)))
-      IterableEq.equals(aut1, aut2).shouldBeNull()
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """expected:<[[("a", [1, 2, 3])], 1, [[], []]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>"""
+      }
    }
 
    test("should give error for unequal iterables nested in Set") {
@@ -208,8 +223,8 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
-         error.message?.endsWith("; (use custom test code instead)") shouldBe true
+         error.message shouldBe """Element differ at index: [1]
+                                  |expected:<[1, [[]], [("a", [1, 2, 3])]]> but was:<[1, [[]], [("a", [1, 2, 3])]]>""".trimMargin()
       }
    }
 
@@ -220,8 +235,7 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
-         error.message?.endsWith("; (use custom test code instead)") shouldBe true
+         error.message shouldBe """expected:<[1, [("a", [1, 2, 3])], [[]]]> but was:<[1, [[]], [("a", [1, 2, 3])]]>""".trimMargin()
       }
    }
 
@@ -301,8 +315,6 @@ class IterableEqTest : FunSpec({
          java.util.HashSet(listOf(1)),
          arrayOf(1),
          ConcurrentLinkedQueue<Int>(),
-         BareIterable(0,0),
-         Paths.get("foo/bar"),
       ).forAll {
          IterableEq.isValidIterable(it) shouldBe true
       }

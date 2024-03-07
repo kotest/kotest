@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.equals.Equality
@@ -17,32 +18,22 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
-import io.kotest.matchers.collections.matchInOrder
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.matchEach
+import io.kotest.matchers.collections.matchInOrder
 import io.kotest.matchers.collections.matchInOrderSubset
-import io.kotest.matchers.collections.monotonicallyDecreasing
-import io.kotest.matchers.collections.monotonicallyDecreasingWith
-import io.kotest.matchers.collections.monotonicallyIncreasing
-import io.kotest.matchers.collections.monotonicallyIncreasingWith
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldBeLargerThan
-import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasing
-import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasingWith
-import io.kotest.matchers.collections.shouldBeMonotonicallyIncreasing
-import io.kotest.matchers.collections.shouldBeMonotonicallyIncreasingWith
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
 import io.kotest.matchers.collections.shouldBeSorted
 import io.kotest.matchers.collections.shouldBeSortedBy
+import io.kotest.matchers.collections.shouldBeSortedDescending
+import io.kotest.matchers.collections.shouldBeSortedDescendingBy
 import io.kotest.matchers.collections.shouldBeSortedWith
-import io.kotest.matchers.collections.shouldBeStrictlyDecreasing
-import io.kotest.matchers.collections.shouldBeStrictlyDecreasingWith
-import io.kotest.matchers.collections.shouldBeStrictlyIncreasing
-import io.kotest.matchers.collections.shouldBeStrictlyIncreasingWith
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
@@ -57,18 +48,10 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldMatchInOrder
 import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
-import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
-import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
-import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasing
-import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
 import io.kotest.matchers.collections.shouldNotBeSingleton
 import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldNotBeSortedBy
 import io.kotest.matchers.collections.shouldNotBeSortedWith
-import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasing
-import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasingWith
-import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasing
-import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasingWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainNoNulls
@@ -81,17 +64,13 @@ import io.kotest.matchers.collections.shouldNotMatchInOrder
 import io.kotest.matchers.collections.shouldNotMatchInOrderSubset
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.collections.sorted
-import io.kotest.matchers.collections.strictlyDecreasing
-import io.kotest.matchers.collections.strictlyDecreasingWith
-import io.kotest.matchers.collections.strictlyIncreasing
-import io.kotest.matchers.collections.strictlyIncreasingWith
+import io.kotest.matchers.collections.sortedDescending
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -199,6 +178,22 @@ class CollectionMatchersTest : WordSpec() {
             }.shouldHaveMessage("List [1, 2, 3] should not be sorted")
          }
 
+         "test that a collection is sorted descending" {
+            emptyList<Int>() shouldBe sortedDescending<Int>()
+            listOf(1) shouldBe sortedDescending<Int>()
+            listOf(4, 3, 2, 1) shouldBe sortedDescending<Int>()
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2) shouldBe sortedDescending<Int>()
+            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+
+            listOf(9, 6, 2, 1).shouldBeSortedDescending()
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2).shouldBeSortedDescending()
+            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+         }
+
          "restrict items at the error message" {
             val longList = (1..1000).toList()
 
@@ -223,71 +218,9 @@ class CollectionMatchersTest : WordSpec() {
             items.shouldBeSortedBy { it.first }
             items.shouldNotBeSortedBy { it.second }
          }
-      }
 
-      "shouldBeIncreasing" should {
-         "test that a collection is monotonically increasing" {
-            listOf(1, 2, 2, 3) shouldBe monotonicallyIncreasing<Int>()
-            listOf(6, 5) shouldNotBe monotonicallyIncreasing<Int>()
-            listOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
-            listOf(6, 5).shouldNotBeMonotonicallyIncreasing()
-         }
-         "test that a collection is monotonically increasing according to comparator" {
-            val comparator = Comparator(desc)
-            listOf(3, 2, 2, 1) shouldBe monotonicallyIncreasingWith(comparator)
-            listOf(5, 6) shouldNotBe monotonicallyIncreasingWith(comparator)
-            listOf(3, 2, 2, 1).shouldBeMonotonicallyIncreasingWith(comparator)
-            listOf(5, 6).shouldNotBeMonotonicallyIncreasingWith(comparator)
-         }
-         "test that a collection is strictly increasing" {
-            listOf(1, 2, 3) shouldBe strictlyIncreasing<Int>()
-            listOf(1, 2, 2, 3) shouldNotBe strictlyIncreasing<Int>()
-            listOf(6, 5) shouldNotBe strictlyIncreasing<Int>()
-            listOf(1, 2, 3).shouldBeStrictlyIncreasing()
-            listOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasing()
-            listOf(6, 5).shouldNotBeStrictlyIncreasing()
-         }
-         "test that a collection is strictly increasing according to comparator" {
-            val comparator = Comparator(desc)
-            listOf(3, 2, 1) shouldBe strictlyIncreasingWith(comparator)
-            listOf(3, 2, 2, 1) shouldNotBe strictlyIncreasingWith(comparator)
-            listOf(5, 6) shouldNotBe strictlyIncreasingWith(comparator)
-            listOf(3, 2, 1).shouldBeStrictlyIncreasingWith(comparator)
-            listOf(3, 2, 2, 1).shouldNotBeStrictlyIncreasingWith(comparator)
-            listOf(5, 6).shouldNotBeStrictlyIncreasingWith(comparator)
-         }
-      }
-
-      "shouldBeDecreasing" should {
-         "test that a collection is monotonically decreasing" {
-            listOf(3, 2, 2, -4) shouldBe monotonicallyDecreasing<Int>()
-            listOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
-            listOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
-            listOf(5, 6).shouldNotBeMonotonicallyDecreasing()
-         }
-         "test that a collection is monotonically decreasing according to comparator" {
-            val comparator = Comparator(desc)
-            listOf(-4, 2, 2, 3) shouldBe monotonicallyDecreasingWith(comparator)
-            listOf(6, 5) shouldNotBe monotonicallyDecreasingWith(comparator)
-            listOf(-4, 2, 2, 3).shouldBeMonotonicallyDecreasingWith(comparator)
-            listOf(6, 5).shouldNotBeMonotonicallyDecreasingWith(comparator)
-         }
-         "test that a collection is strictly decreasing" {
-            listOf(3, 2, -4) shouldBe strictlyDecreasing<Int>()
-            listOf(3, 2, 2, -4) shouldNotBe strictlyDecreasing<Int>()
-            listOf(5, 6) shouldNotBe strictlyDecreasing<Int>()
-            listOf(3, 2, -4).shouldBeStrictlyDecreasing()
-            listOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
-            listOf(5, 6).shouldNotBeStrictlyDecreasing()
-         }
-         "test that a collection is strictly decreasing according to comparator" {
-            val comparator = Comparator(desc)
-            listOf(-4, 2, 3) shouldBe strictlyDecreasingWith(comparator)
-            listOf(-4, 2, 2, 3) shouldNotBe strictlyDecreasingWith(comparator)
-            listOf(6, 5) shouldNotBe strictlyDecreasingWith(comparator)
-            listOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
-            listOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
-            listOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
+         "compare by the tranformed value in descending order" {
+            items.shouldBeSortedDescendingBy { it.first * -1 }
          }
       }
 
@@ -298,6 +231,12 @@ class CollectionMatchersTest : WordSpec() {
             listOf(1, 2, 3, 3).shouldContainDuplicates()
             listOf(1, 2, 3, 4).shouldNotContainDuplicates()
          }
+
+         "print duplicates in message" {
+            shouldThrowAny {
+               listOf(1, 2, 3, 4, 2, 1) shouldNot containDuplicates()
+            }.shouldHaveMessage("Collection should not contain duplicates, but has some: [1, 2]")
+         }
       }
 
       "singleElement" should {
@@ -307,7 +246,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1) shouldBe singleElement(2)
-            }.shouldHaveMessage("Collection should be a single element of 2 but has 1 elements: [1]")
+            }.shouldHaveMessage("Collection should be a single element containing 2\nexpected:<2> but was:<1>")
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
@@ -427,6 +366,55 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotHaveSize(3)
             }.shouldHaveMessage("Collection should not have size 3. Values: [1, 2, 3]")
+
+            booleanArrayOf(true, false)
+               .shouldHaveSize(2)
+               .shouldNotHaveSize(1)
+               .shouldHaveAtLeastSize(1)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(booleanArrayOf(false, true))
+            byteArrayOf(0x01, 0x02, 0x03)
+               .shouldHaveSize(3)
+               .shouldNotHaveSize(1)
+               .shouldHaveAtLeastSize(2)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(byteArrayOf(0x04, 0x05, 0x06))
+            charArrayOf('a', 'b', 'c')
+               .shouldHaveSize(3)
+               .shouldNotHaveSize(5)
+               .shouldHaveAtLeastSize(1)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(charArrayOf('x', 'y', 'z'))
+            shortArrayOf(1, 2, 3, 4)
+               .shouldHaveSize(4)
+               .shouldNotHaveSize(6)
+               .shouldHaveAtLeastSize(3)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(shortArrayOf(5, 6, 7, 8))
+            intArrayOf(1, 2, 3)
+               .shouldHaveSize(3)
+               .shouldNotHaveSize(0)
+               .shouldHaveAtLeastSize(2)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(intArrayOf(4, 5, 6))
+            longArrayOf(1, 2, 3, 4 ,5)
+               .shouldHaveSize(5)
+               .shouldNotHaveSize(2)
+               .shouldHaveAtLeastSize(4)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(longArrayOf(6, 7, 8, 9, 10))
+            floatArrayOf(1.0f, 2.0f, 3.0f)
+               .shouldHaveSize(3)
+               .shouldNotHaveSize(2)
+               .shouldHaveAtLeastSize(1)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(floatArrayOf(4.0f, 5.0f, 6.0f))
+            doubleArrayOf(1.0, 2.0, 3.0)
+               .shouldHaveSize(3)
+               .shouldNotHaveSize(42)
+               .shouldHaveAtLeastSize(1)
+               .shouldHaveAtMostSize(10)
+               .shouldBeSameSizeAs(doubleArrayOf(4.0, 5.0, 6.0))
          }
       }
 
@@ -925,6 +913,14 @@ class CollectionMatchersTest : WordSpec() {
             listOf(1, 2, 3).shouldContainAnyOf(1)
          }
 
+         "Pass when one element is in the iterable" {
+            listOf(1, 2, 3).asIterable().shouldContainAnyOf(1)
+         }
+
+         "Pass when one element is in the array" {
+            arrayOf(1, 2, 3).shouldContainAnyOf(1)
+         }
+
          "Pass when all elements are in the list" {
             listOf(1, 2, 3).shouldContainAnyOf(1, 2, 3)
          }
@@ -932,6 +928,18 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when no element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldContainAnyOf(4)
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
+         }
+
+         "Fail when no element is in the iterable" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).asIterable().shouldContainAnyOf(4)
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
+         }
+
+         "Fail when no element is in the array" {
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2, 3).shouldContainAnyOf(4)
             }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
          }
       }
@@ -950,6 +958,18 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when one element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1)
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+         }
+
+         "Fail when one element is in the iterable" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).asIterable().shouldNotContainAnyOf(1)
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+         }
+
+         "Fail when one element is in the array" {
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2, 3).shouldNotContainAnyOf(1)
             }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
          }
 

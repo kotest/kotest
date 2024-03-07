@@ -10,7 +10,7 @@ will notice that only the leaf test name is included in output and test reports.
 which is designed around class.method test frameworks.
 
 Until such time that Gradle improves their test integration so that tests can be arbitrarily nested, Kotest
-offers a workaround by allowing you to specify `displayFullTestPath` in [project configuration](#project-config).
+offers a workaround by allowing you to specify `displayFullTestPath` in [project configuration](project_config.md).
 
 When this setting is enabled, the test names will be the concatenation of the entire test path. So a test like this:
 

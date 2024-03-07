@@ -144,6 +144,7 @@ class MatchTest : StringSpec() {
 
       }
 
+      @Suppress("JsonStandardCompliance") // invalid JSON is desired in this test
       "test json equality throws with invalid expected json" {
          shouldThrow<AssertionError> {
             """
@@ -255,7 +256,7 @@ class MatchTest : StringSpec() {
                       }
                     ]
                   }
-            """
+            """.trimIndent()
             )
          }.message shouldStartWith "expected: expected json to be valid json: "
 

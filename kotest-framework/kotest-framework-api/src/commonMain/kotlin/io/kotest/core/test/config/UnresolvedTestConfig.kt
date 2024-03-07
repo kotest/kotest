@@ -64,10 +64,11 @@ data class UnresolvedTestConfig(
    val coroutineDebugProbes: Boolean? = null,
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     * This can be retrieved via `delayController` in your tests.
     *
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
    val testCoroutineDispatcher: Boolean? = null,
@@ -83,7 +84,7 @@ data class UnresolvedTestConfig(
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }
       require(threads == null || threads > 0) { "Number of threads must be greater than 0" }
-      require((threads ?: 0) <= (invocations ?: 0)) { "Number of threads must be <= number of invocations" }
+      require((threads ?: 0) <= (invocations ?: 1)) { "Number of threads must be <= number of invocations" }
       require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
       require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
    }

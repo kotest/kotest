@@ -26,3 +26,12 @@ We follow the [Kotlin Coding Conventions](http://kotlinlang.org/docs/reference/c
 
 * Minimize mutability
 * Choose self-explanatory names
+
+
+Binary compatibility
+------------------
+We use [Kotlin Binary Compatibility Validator](https://github.com/kotlin/binary-compatibility-validator/) to keep
+changes to the public API under control.
+
+Before submitting a PR which changes the API you need to run `./gradlew apiDump` to generate updates to the api dumps.
+

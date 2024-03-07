@@ -4,8 +4,8 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 

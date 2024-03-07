@@ -1,12 +1,8 @@
 package io.kotest.mpp.atomics
 
-import kotlin.native.concurrent.FreezableAtomicReference
-import kotlin.native.concurrent.freeze
-import kotlin.native.concurrent.isFrozen
-
 actual class AtomicReference<T> actual constructor(initialValue: T) {
 
-   private val delegate = FreezableAtomicReference(initialValue)
+   private val delegate = kotlin.native.concurrent.AtomicReference(initialValue)
 
    actual var value: T
       get() = delegate.value
@@ -18,10 +14,6 @@ actual class AtomicReference<T> actual constructor(initialValue: T) {
       delegate.compareAndSet(expectedValue, newValue.freezeIfNeeded())
 
    private fun T.freezeIfNeeded(): T {
-      if (delegate.isFrozen) {
-         freeze()
-      }
-
       return this
    }
 }

@@ -4,13 +4,18 @@ import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
+import io.kotest.common.KotestInternal
+import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.TimeMarkCompat
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
+import kotlin.time.Duration.Companion.milliseconds
 
-data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
+@KotestInternal
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
+data class ContinuallyState(val start: TimeMarkCompat, val end: TimeMarkCompat, val times: Int)
 
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface ContinuallyListener<in T> {
    fun onEval(t: T, state: ContinuallyState)
 
@@ -19,13 +24,14 @@ fun interface ContinuallyListener<in T> {
    }
 }
 
-data class Continually<T> (
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
+data class Continually<T>(
    val duration: Duration = Duration.INFINITE,
-   val interval: Interval = Duration.milliseconds(25).fixed(),
+   val interval: Interval = 25.milliseconds.fixed(),
    val listener: ContinuallyListener<T> = ContinuallyListener.noop,
-   ) {
+) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
-      val start = TimeSource.Monotonic.markNow()
+      val start = MonotonicTimeSourceCompat.markNow()
       val end = start.plus(duration)
       var times = 0
       var result: T? = null
@@ -50,11 +56,9 @@ data class Continually<T> (
    }
 }
 
-@Deprecated("Use continually with an interval, using Duration based poll is deprecated",
-   ReplaceWith("continually(duration, poll.fixed(), f = f)", "io.kotest.assertions.until.fixed")
-)
-suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T) =
-   continually(duration, poll.fixed(), f = f)
-
-suspend fun <T> continually(duration: Duration, interval: Interval = Duration.milliseconds(10).fixed(), f: suspend () -> T) =
-   Continually<T>(duration, interval).invoke(f)
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
+suspend fun <T> continually(
+   duration: Duration,
+   interval: Interval = 10.milliseconds.fixed(),
+   f: suspend () -> T
+) = Continually<T>(duration, interval).invoke(f)

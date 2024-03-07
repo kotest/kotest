@@ -64,5 +64,15 @@ class BigDecimalTest : FunSpec({
       Arb.bigDecimal(min = min, max = max).edgecases().shouldContainAll(expectedEdgecases)
    }
 
+   test("Arb.bigDecimal should generate random terminal digit") {
+      fun BigDecimal.lastDigit() = stripTrailingZeros().toString().last().digitToInt()
+
+      Arb.bigDecimal()
+         .take(1000)
+         .map { it.lastDigit() }
+         .toList()
+         .shouldContainAll((1..9).toList())
+   }
+
 
 })

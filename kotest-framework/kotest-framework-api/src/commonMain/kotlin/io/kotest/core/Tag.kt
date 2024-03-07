@@ -13,7 +13,7 @@ package io.kotest.core
  * different packages) are treated as the same single tag.
  *
  * For example, if you create a Tag `com.sksamuel.kotest.SuperTag` then the tag name will
- * simply be SuperTag.
+ * simply be `SuperTag`.
  *
  * Therefore, the tags `com.sksamuel.kotest.SuperTag` and `io.kotest.SuperTag` would be
  * considered equal.
@@ -39,7 +39,10 @@ abstract class Tag {
 /**
  * Creates a tag using the given parameter as the name.
  */
-class NamedTag(override val name: String) : Tag()
+data class NamedTag(override val name: String) : Tag() {
+   // Don't use toString from `data class`
+   override fun toString() = super.toString()
+}
 
 @Deprecated("Use NamedTag. This Will be removed in 6.0")
 class StringTag(override val name: String) : Tag()

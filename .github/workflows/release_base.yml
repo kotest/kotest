@@ -1,0 +1,54 @@
+name: release_base
+
+on:
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version"
+            required: true
+         branch:
+            description: "The branch to release from"
+            required: true
+            default: 'master'
+
+env:
+   RELEASE_VERSION: ${{ inputs.version }}
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
+permissions:
+   contents: read
+
+jobs:
+   publish_base:
+      runs-on: ubuntu-latest
+      strategy:
+         max-parallel: 1
+         matrix:
+            target:
+               - publishKotlinMultiplatformPublicationToDeployRepository
+               - publishJvmPublicationToDeployRepository
+               - publishJsPublicationToDeployRepository
+               - publishKotestBomPublicationToDeployRepository
+               - publishLinuxX64PublicationToDeployRepository
+               - publishLinuxArm64PublicationToDeployRepository
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v3
+            with:
+               fetch-depth: 0
+               ref: ${{ inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'adopt'
+               java-version: '17'
+
+         -  uses: gradle/gradle-build-action@v2
+
+         -  name: publish
+            run: ./gradlew ${{ matrix.target }}

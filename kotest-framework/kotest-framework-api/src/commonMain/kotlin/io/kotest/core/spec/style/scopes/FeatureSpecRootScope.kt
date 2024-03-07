@@ -9,10 +9,12 @@ typealias FeatureSpecRootContext = FeatureSpecRootScope
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
  *
- * Eg:
- *   feature("some context") { }
- *   xfeature("some test") { }
+ * E.g.:
  *
+ * ```
+ * feature("some context") { }
+ * xfeature("some test") { }
+ * ```
  */
 interface FeatureSpecRootScope : RootScope {
 

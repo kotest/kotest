@@ -5,8 +5,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
-fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)
+infix fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
+infix fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)
 
 fun haveSameHashCodeAs(other: Any) = object : Matcher<Any> {
    override fun test(value: Any): MatcherResult {

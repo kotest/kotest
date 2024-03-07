@@ -5,6 +5,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.ints.shouldBeInRange
+import io.kotest.matchers.maps.shouldBeEmpty
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.Codepoint
@@ -103,4 +106,29 @@ class MapsTest : FunSpec({
          }
       }
    }
+
+   context("Arb.map(arb,arb) edgecases") {
+      test("should be empty if minSize is larger than 0") {
+         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+      }
+
+      test("should contain empty map if minSize is 0 (default)") {
+         Arb.map(keyArb = Arb.string(), valueArb = Arb.int()).edgecase(RandomSource.seeded(1234L))
+            .shouldNotBeNull()
+            .shouldBeEmpty()
+      }
+   }
+
+   context("Arb.map(arb) edgecases") {
+      test("should be empty if disabled") {
+         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+      }
+
+      test("should contain empty map if enabled") {
+         Arb.map(arb = Arb.pair(Arb.string(), Arb.int())).edgecase(RandomSource.seeded(1234L))
+            .shouldNotBeNull()
+            .shouldBeEmpty()
+      }
+   }
+
 })

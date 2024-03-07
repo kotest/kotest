@@ -40,9 +40,15 @@ import kotlin.js.JsName
  *
  * For example, to set a default timeout for all tests in a spec, one can do either:
  *
- * `timeout = 100.seconds`
+ * ```
+ * timeout = 100.seconds
+ * ```
  *
- * or `override fun timeout() = 100.seconds`
+ * or
+ *
+ * ```
+ * override fun timeout() = 100.seconds
+ * ```
  *
  * The former is useful for declaring inside an init block and the latter useful for outside.
  * They are functionally equivalent.
@@ -52,11 +58,15 @@ import kotlin.js.JsName
  *
  * For example, to apply a before-test callback, one can do either:
  *
- * `beforeTest { println("bonjour!") }`
+ * ```
+ * beforeTest { println("bonjour!") }
+ * ```
  *
  * or
  *
- * `override fun beforeTest() { println("bonjour!") }`
+ * ```
+ * override fun beforeTest() { println("bonjour!") }
+ * ```
  *
  * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
  *
@@ -110,7 +120,7 @@ abstract class Spec : TestConfiguration() {
    open fun testCaseOrder(): TestCaseOrder? = null
 
    /**
-    * Returns the timeout to be used by each test case. This value is overriden by a timeout
+    * Returns the timeout to be used by each test case. This value is overridden by a timeout
     * specified on a [TestCase] itself.
     *
     * If this value returns null, and the test case does not define a timeout, then the project
@@ -119,7 +129,7 @@ abstract class Spec : TestConfiguration() {
    open fun timeout(): Long? = null
 
    /**
-    * Returns the invocation timeout to be used by each test case. This value is overriden by a
+    * Returns the invocation timeout to be used by each test case. This value is overridden by a
     * value specified on a [TestCase] itself.
     *
     * If this value returns null, and the test case does not define an invocation timeout, then
@@ -138,7 +148,7 @@ abstract class Spec : TestConfiguration() {
    open fun tags(): Set<Tag> = emptySet()
 
    /**
-    * Sets the [AssertionMode] to be used by test cases in this spec. This value is overriden
+    * Sets the [AssertionMode] to be used by test cases in this spec. This value is overridden
     * by a value specified on a [TestCase] itself.
     *
     * If this value returns null, and the test case does not define a value, then the project
@@ -231,14 +241,14 @@ abstract class Spec : TestConfiguration() {
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: This setting has no effect unless the number of threads is increasd; see [ProjectConfiguration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increased; see [ProjectConfiguration.parallelism].
     */
    @ExperimentalKotest
    @JsName("dispatcherAffinity_js")
    var dispatcherAffinity: Boolean? = null
 
    /**
-    * Sets a millisecond timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
     *
     * If this value is null, and the [SpecFunctionConfiguration.timeout] is also null, the project default will be used.
     */
@@ -246,7 +256,7 @@ abstract class Spec : TestConfiguration() {
    var timeout: Long? = null
 
    /**
-    * Sets a millisecond invocation timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond invocation timeout for each test case in this spec unless overridden in the test config itself.
     * If this value is null, and the [SpecFunctionConfiguration.invocationTimeout] is also null,
     * the project default will be used.
     *
@@ -265,7 +275,7 @@ abstract class Spec : TestConfiguration() {
    /**
     * When set to true, execution will switch to a dedicated thread for each test
     * case in this spec, therefore allowing the test engine to safely interrupt
-    * tests via Thread.interrupt when they time out.
+    * tests via `Thread.interrupt` when they time out.
     *
     * This is useful if you are testing blocking code and want to use timeouts
     * because coroutine timeouts are cooperative by nature.
@@ -282,9 +292,11 @@ abstract class Spec : TestConfiguration() {
    var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    /**
-    * If set to true then the test engine will install a [TestDispatcher].
+    * If set to true then the test engine will install a
+    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
     * This can be retrieved via `delayController` in your tests.
-    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    *
+    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
    @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
@@ -347,7 +359,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
@@ -357,12 +369,17 @@ abstract class Spec : TestConfiguration() {
 
    /**
     * Registers a callback to be executed after every [TestCase] in this [Spec].
+    * This means it will be invoked for both inner and outer test blocks.
     *
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
+    *
+    * After-test callbacks are executed in reverse order. That is callbacks registered
+    * first are executed last, which allows for nested test blocks to add callbacks that run before
+    * top level callbacks.
     */
    override fun afterTest(f: AfterTest) {
-      register(object : AfterTestListener {
+      prependExtension(object : AfterTestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
                f(Tuple2(testCase, result))

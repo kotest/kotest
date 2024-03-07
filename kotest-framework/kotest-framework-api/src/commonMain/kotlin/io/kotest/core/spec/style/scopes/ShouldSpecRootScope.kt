@@ -10,17 +10,21 @@ typealias ShouldSpecRootContext = ShouldSpecRootScope
 /**
  * Allows tests to be registered in the 'ShouldSpec' fashion.
  *
- *  context("with context") {
- *    should("do something") {
- *      // test here
- *    }
- *  }
+ * ```
+ * context("with context") {
+ *   should("do something") {
+ *     // test here
+ *   }
+ * }
+ * ```
  *
  *  or
  *
- *  should("do something") {
- *    // test here
- *  }
+ * ```
+ * should("do something") {
+ *   // test here
+ * }
+ * ```
  */
 interface ShouldSpecRootScope : RootScope {
 
@@ -56,7 +60,7 @@ interface ShouldSpecRootScope : RootScope {
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied
-    * by invoking .config on the return of this function.
+    * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
    fun should(name: String): RootTestWithConfigBuilder =
       RootTestWithConfigBuilder(this, TestName("should ", name, true), false)

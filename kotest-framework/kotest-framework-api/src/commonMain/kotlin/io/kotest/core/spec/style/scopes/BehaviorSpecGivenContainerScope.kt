@@ -13,18 +13,21 @@ typealias BehaviorSpecGivenContainerContext = BehaviorSpecGivenContainerScope
 /**
  * A context that allows tests to be registered using the syntax:
  *
+ * ```
  * when("some test")
  * when("some test").config(...)
  * xwhen("some disabled test")
  * xwhen("some disabled test").config(...)
+ * ```
  *
  * and
  *
+ * ```
  * then("some test")
  * then("some test").config(...)
  * xthen("some disabled test").config(...)
  * xthen("some disabled test").config(...)
- *
+ * ```
  */
 @Suppress("FunctionName")
 @KotestTestScope

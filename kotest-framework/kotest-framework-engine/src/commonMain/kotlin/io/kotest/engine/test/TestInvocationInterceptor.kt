@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -9,11 +10,11 @@ import io.kotest.mpp.Logger
 import io.kotest.mpp.replay
 import kotlinx.coroutines.coroutineScope
 import kotlin.time.Duration
-import kotlin.time.TimeMark
 
-class TestInvocationInterceptor(
+internal class TestInvocationInterceptor(
    registry: ExtensionRegistry,
-   private val timeMark: TimeMark,
+   private val timeMark: TimeMarkCompat,
+   private val invocationInterceptors: List<TestExecutionInterceptor>,
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)
@@ -22,7 +23,7 @@ class TestInvocationInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
       return try {
          // we wrap in a coroutine scope so that we wait for any user-launched coroutines to finish,
@@ -30,11 +31,9 @@ class TestInvocationInterceptor(
          coroutineScope {
             replay(
                testCase.config.invocations,
-               testCase.config.threads,
-               { extensions.beforeInvocation(testCase, it) },
-               { extensions.afterInvocation(testCase, it) }) {
-               test(testCase, scope)
-            }
+               testCase.config.threads
+            )
+            { runBeforeTestAfter(testCase, scope, it, test) }
          }
          logger.log { Pair(testCase.name.testName, "Test returned without error") }
          try {
@@ -50,5 +49,27 @@ class TestInvocationInterceptor(
             TestResult.Error(Duration.ZERO, t) // workaround for kotlin 1.5
          }
       }
+   }
+
+   private suspend fun runBeforeTestAfter(
+      testCase: TestCase,
+      scope: TestScope,
+      times: Int,
+      test: suspend (TestCase, TestScope) -> TestResult,
+   ) {
+      val executeWithBeforeAfter: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
+         try {
+            extensions.beforeInvocation(testCase, times)
+            test(testCase, scope)
+         } finally {
+            extensions.afterInvocation(testCase, times)
+         }
+      }
+
+      val wrappedTest = invocationInterceptors.foldRight(executeWithBeforeAfter) { ext, fn ->
+         { tc, sc -> ext.intercept(tc, sc, fn) }
+      }
+
+      wrappedTest(testCase, scope)
    }
 }

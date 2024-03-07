@@ -87,17 +87,18 @@ class MapInspectorsTest : WordSpec() {
                map.forAll {
                   if (true) throw NullPointerException()
                }
-            }.message shouldBe "0 elements passed but expected 5\n" +
-               "\n" +
-               "The following elements passed:\n" +
-               "--none--\n" +
-               "\n" +
-               "The following elements failed:\n" +
-               "1=1 => java.lang.NullPointerException\n" +
-               "2=2 => java.lang.NullPointerException\n" +
-               "3=3 => java.lang.NullPointerException\n" +
-               "4=4 => java.lang.NullPointerException\n" +
-               "5=5 => java.lang.NullPointerException"
+            }.message shouldBe """0 elements passed but expected 5
+
+The following elements passed:
+  --none--
+
+The following elements failed:
+  [0] 1=1 => java.lang.NullPointerException
+  [1] 2=2 => java.lang.NullPointerException
+  [2] 3=3 => java.lang.NullPointerException
+  [3] 4=4 => java.lang.NullPointerException
+  [4] 5=5 => java.lang.NullPointerException
+"""
          }
       }
 
@@ -157,13 +158,14 @@ class MapInspectorsTest : WordSpec() {
             }.message shouldBe """1 elements passed but expected 0
 
 The following elements passed:
-4=4
+  [3] 4=4
 
 The following elements failed:
-1=1 => expected:<4=4> but was:<1=1>
-2=2 => expected:<4=4> but was:<2=2>
-3=3 => expected:<4=4> but was:<3=3>
-5=5 => expected:<4=4> but was:<5=5>"""
+  [0] 1=1 => expected:<4=4> but was:<1=1>
+  [1] 2=2 => expected:<4=4> but was:<2=2>
+  [2] 3=3 => expected:<4=4> but was:<3=3>
+  [4] 5=5 => expected:<4=4> but was:<5=5>
+"""
          }
          "fail if all entries pass fn test" {
             shouldThrow<AssertionError> {
@@ -173,14 +175,15 @@ The following elements failed:
             }.message shouldBe """5 elements passed but expected 0
 
 The following elements passed:
-1=1
-2=2
-3=3
-4=4
-5=5
+  [0] 1=1
+  [1] 2=2
+  [2] 3=3
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
---none--"""
+  --none--
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {
@@ -243,14 +246,15 @@ The following elements failed:
             }.message shouldBe """No elements passed but expected at least one
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1=1 => expected:<0=0> but was:<1=1>
-2=2 => expected:<0=0> but was:<2=2>
-3=3 => expected:<0=0> but was:<3=3>
-4=4 => expected:<0=0> but was:<4=4>
-5=5 => expected:<0=0> but was:<5=5>"""
+  [0] 1=1 => expected:<0=0> but was:<1=1>
+  [1] 2=2 => expected:<0=0> but was:<2=2>
+  [2] 3=3 => expected:<0=0> but was:<3=3>
+  [3] 4=4 => expected:<0=0> but was:<4=4>
+  [4] 5=5 => expected:<0=0> but was:<5=5>
+"""
          }
          "fail if all entries pass test"  {
             shouldThrow<AssertionError> {
@@ -260,14 +264,15 @@ The following elements failed:
             }.message shouldBe """All elements passed but expected < 5
 
 The following elements passed:
-1=1
-2=2
-3=3
-4=4
-5=5
+  [0] 1=1
+  [1] 2=2
+  [2] 3=3
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
---none--"""
+  --none--
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {
@@ -330,13 +335,14 @@ The following elements failed:
             }.message shouldBe """3 elements passed but expected 1
 
 The following elements passed:
-3=3
-4=4
-5=5
+  [2] 3=3
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
-1=1 => Map should contain mapping 1=1 but was {3=3, 4=4, 5=5}
-2=2 => Map should contain mapping 2=2 but was {3=3, 4=4, 5=5}"""
+  [0] 1=1 => Map should contain mapping 1=1 but was {3=3, 4=4, 5=5}
+  [1] 2=2 => Map should contain mapping 2=2 but was {3=3, 4=4, 5=5}
+"""
          }
          "fail if no entries pass test"  {
             shouldThrow<AssertionError> {
@@ -346,14 +352,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1=1 => expected:<22=22> but was:<1=1>
-2=2 => expected:<22=22> but was:<2=2>
-3=3 => expected:<22=22> but was:<3=3>
-4=4 => expected:<22=22> but was:<4=4>
-5=5 => expected:<22=22> but was:<5=5>"""
+  [0] 1=1 => expected:<22=22> but was:<1=1>
+  [1] 2=2 => expected:<22=22> but was:<2=2>
+  [2] 3=3 => expected:<22=22> but was:<3=3>
+  [3] 4=4 => expected:<22=22> but was:<4=4>
+  [4] 5=5 => expected:<22=22> but was:<5=5>
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {
@@ -416,14 +423,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1=1 => expected:<6=6> but was:<1=1>
-2=2 => expected:<6=6> but was:<2=2>
-3=3 => expected:<6=6> but was:<3=3>
-4=4 => expected:<6=6> but was:<4=4>
-5=5 => expected:<6=6> but was:<5=5>"""
+  [0] 1=1 => expected:<6=6> but was:<1=1>
+  [1] 2=2 => expected:<6=6> but was:<2=2>
+  [2] 3=3 => expected:<6=6> but was:<3=3>
+  [3] 4=4 => expected:<6=6> but was:<4=4>
+  [4] 5=5 => expected:<6=6> but was:<5=5>
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {
@@ -479,13 +487,14 @@ The following elements failed:
             }.message shouldBe """4 elements passed but expected 3
 
 The following elements passed:
-2=2
-3=3
-4=4
-5=5
+  [1] 2=2
+  [2] 3=3
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
-1=1 => 1=1 should not equal 1=1"""
+  [0] 1=1 => 1=1 should not equal 1=1
+"""
          }
          "fail if less entries pass test"  {
             shouldThrow<AssertionError> {
@@ -495,13 +504,14 @@ The following elements failed:
             }.message shouldBe """4 elements passed but expected 5
 
 The following elements passed:
-2=2
-3=3
-4=4
-5=5
+  [1] 2=2
+  [2] 3=3
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
-1=1 => 1=1 should not equal 1=1"""
+  [0] 1=1 => 1=1 should not equal 1=1
+"""
          }
          "fail if no entries pass test"  {
             shouldThrow<AssertionError> {
@@ -511,14 +521,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1=1 => expected:<10=10> but was:<1=1>
-2=2 => expected:<10=10> but was:<2=2>
-3=3 => expected:<10=10> but was:<3=3>
-4=4 => expected:<10=10> but was:<4=4>
-5=5 => expected:<10=10> but was:<5=5>"""
+  [0] 1=1 => expected:<10=10> but was:<1=1>
+  [1] 2=2 => expected:<10=10> but was:<2=2>
+  [2] 3=3 => expected:<10=10> but was:<3=3>
+  [3] 4=4 => expected:<10=10> but was:<4=4>
+  [4] 5=5 => expected:<10=10> but was:<5=5>
+"""
          }
       }
 
@@ -566,13 +577,14 @@ The following elements failed:
             }.message shouldBe """2 elements passed but expected at most 1
 
 The following elements passed:
-4=4
-5=5
+  [3] 4=4
+  [4] 5=5
 
 The following elements failed:
-1=1 => Map should contain mapping 1=1 but was {4=4, 5=5}
-2=2 => Map should contain mapping 2=2 but was {4=4, 5=5}
-3=3 => Map should contain mapping 3=3 but was {4=4, 5=5}"""
+  [0] 1=1 => Map should contain mapping 1=1 but was {4=4, 5=5}
+  [1] 2=2 => Map should contain mapping 2=2 but was {4=4, 5=5}
+  [2] 3=3 => Map should contain mapping 3=3 but was {4=4, 5=5}
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {
@@ -629,14 +641,15 @@ The following elements failed:
             }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
---none--
+  --none--
 
 The following elements failed:
-1=1 => expected:<22=22> but was:<1=1>
-2=2 => expected:<22=22> but was:<2=2>
-3=3 => expected:<22=22> but was:<3=3>
-4=4 => expected:<22=22> but was:<4=4>
-5=5 => expected:<22=22> but was:<5=5>"""
+  [0] 1=1 => expected:<22=22> but was:<1=1>
+  [1] 2=2 => expected:<22=22> but was:<2=2>
+  [2] 3=3 => expected:<22=22> but was:<3=3>
+  [3] 4=4 => expected:<22=22> but was:<4=4>
+  [4] 5=5 => expected:<22=22> but was:<5=5>
+"""
          }
          "work inside assertSoftly block (for map)" {
             assertSoftly(map) {

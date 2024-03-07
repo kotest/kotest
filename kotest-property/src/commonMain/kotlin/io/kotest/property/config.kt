@@ -5,6 +5,9 @@ import io.kotest.mpp.atomics.AtomicProperty
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardLabelsReporter
+import io.kotest.property.statistics.DefaultStatisticsReporter
+import io.kotest.property.statistics.StatisticsReportMode
+import io.kotest.property.statistics.StatisticsReporter
 
 /**
  * Global object containing settings for property testing.
@@ -52,6 +55,22 @@ object PropertyTesting {
    var writeFailedSeed: Boolean by AtomicProperty {
       sysprop("kotest.proptest.seed.write-failed", true)
    }
+   var labelOrder: LabelOrder by AtomicProperty { LabelOrder.Quantity }
+
+   @ExperimentalKotest
+   var statisticsReporter: StatisticsReporter by AtomicProperty {
+      DefaultStatisticsReporter
+   }
+
+   @ExperimentalKotest
+   var statisticsReportMode: StatisticsReportMode by AtomicProperty {
+      StatisticsReportMode.ON
+   }
+}
+
+enum class LabelOrder {
+   Quantity,
+   Lexicographic,
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
@@ -101,6 +120,7 @@ data class PropTestConfig(
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
    val labelsReporter: LabelsReporter = StandardLabelsReporter,
    val constraints: Constraints? = null,
+   val maxDiscardPercentage: Int = 20,
 )
 
 interface PropTestListener {

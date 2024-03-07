@@ -11,7 +11,7 @@ class InvalidDuplicateNameModeSystemPropertyTest : FunSpec() {
    init {
       test("invalid duplicate name mode value should error") {
          withSystemProperty(KotestEngineProperties.duplicateTestNameMode, "qwerty") {
-            ConfigManager.compile(ProjectConfiguration(), emptyList()).shouldBeFailure()
+            ConfigManager.compile(ProjectConfiguration()) { emptyList() }.shouldBeFailure()
          }
       }
    }

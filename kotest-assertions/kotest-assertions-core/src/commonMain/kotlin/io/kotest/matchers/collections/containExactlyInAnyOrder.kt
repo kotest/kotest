@@ -1,6 +1,7 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.equals.Equality
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -105,15 +106,69 @@ fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected:
 }
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
-fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
+fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C) =
+   containExactlyInAnyOrder(expected, null)
+
+/** Assert that a collection contains exactly the given values and nothing else, in any order. */
+fun <T, C : Collection<T>> containExactlyInAnyOrder(
+   expected: C,
+   verifier: Equality<T>?,
+): Matcher<C?> = neverNullMatcher { actual ->
+
+   val valueGroupedCounts: Map<T, Int> = actual.groupBy { it }.mapValues { it.value.size }
    val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
+
    val passed = expectedGroupedCounts.size == valueGroupedCounts.size
-      && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
+      && expectedGroupedCounts.all { (k, v) ->
+      valueGroupedCounts.filterKeys { verifier?.verify(k, it)?.areEqual() ?: (k == it) }[k] == v
+   }
+
+   val missing = expected.filterNot { t ->
+      actual.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
+   }
+   val extra = actual.filterNot { t ->
+      expected.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
+   }
+   val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts)
+
+   val failureMessage = {
+      buildString {
+         append("Collection should contain ${expected.print().value} in any order, but was ${actual.print().value}")
+         appendLine()
+         appendMissingAndExtra(missing, extra)
+         if(missing.isNotEmpty() || extra.isNotEmpty()) {
+            appendLine()
+         }
+         if(countMismatch.isNotEmpty()) {
+            append("CountMismatches: ${countMismatch.joinToString(", ")}")
+         }
+      }
+   }
+
+   val negatedFailureMessage = { "Collection should not contain exactly ${expected.print().value} in any order" }
 
    MatcherResult(
       passed,
-      { "Collection should contain ${expected.print().value} in any order, but was ${value.print().value}" },
-      { "Collection should not contain exactly ${expected.print().value} in any order" }
+      failureMessage,
+      negatedFailureMessage
    )
+}
+
+internal fun<T> countMismatch(expectedCounts: Map<T, Int>, actualCounts: Map<T, Int>) =
+   actualCounts.entries.mapNotNull { actualEntry ->
+      expectedCounts[actualEntry.key]?.let { expectedValue ->
+         if(actualEntry.value != expectedValue)
+            CountMismatch(actualEntry.key, expectedValue, actualEntry.value)
+         else null
+      }
+   }
+
+internal data class CountMismatch<T>(val key: T, val expectedCount: Int, val actualCount: Int) {
+   init {
+       require(expectedCount >= 0 && actualCount >= 0) {
+          "Both expected and actual count should be non-negative, but expected was: $expectedCount and actual: was: $actualCount"
+       }
+   }
+
+   override fun toString(): String = "Key=\"${key}\", expected count: $expectedCount, but was: $actualCount"
 }

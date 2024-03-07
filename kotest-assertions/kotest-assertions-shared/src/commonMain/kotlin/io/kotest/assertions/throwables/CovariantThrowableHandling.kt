@@ -1,7 +1,13 @@
 package io.kotest.assertions.throwables
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.Expected
 import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.assertions.print.print
 import io.kotest.mpp.bestName
 
 /**
@@ -60,7 +66,7 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
    shouldThrowUnit<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure( Expected(message.print()), Actual(it.message.print()),"Unexpected exception message: ")
       }
    }
 
@@ -141,6 +147,45 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
 }
 
 /**
+ * Verifies if a block of code will throw a Throwable of type [T] or subtypes
+ *
+ * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
+ *
+ * This function will include subclasses of [T]. For example, if you test for [java.io.IOException] and
+ * the code block throws [java.io.FileNotFoundException], the test will pass.
+ *
+ * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
+ *
+ * This function is identical to [shouldThrow] except is used inside soft assertion blocks. When inside such a block,
+ * errors are only thrown at the end of the block, rather than immediately. Therefore, the signature cannot return
+ * the throwable type, as in the case of a failure, there would be neither an immediate throws, nor a type to return.
+ */
+inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
+   require(errorCollector.getCollectionMode() == ErrorCollectionMode.Soft)
+
+   assertionCounter.inc()
+   val expectedExceptionClass = T::class
+   val thrownThrowable = try {
+      block()
+      null  // Can't throw failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
+   } catch (thrown: Throwable) {
+      thrown
+   }
+
+   when (thrownThrowable) {
+      null -> errorCollector.collectOrThrow(failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown."))
+      // This should be before `is AssertionError`.
+      // If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
+      is T -> Unit
+      is AssertionError -> errorCollector.collectOrThrow(thrownThrowable)
+      else -> errorCollector.collectOrThrow(failure(
+         "Expected exception ${expectedExceptionClass.bestName()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
+         thrownThrowable
+      ))
+   }
+}
+
+/**
  * Verifies if a block of code will throw a Throwable of type [T] or subtypes with specified message.
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
@@ -170,7 +215,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
    shouldThrow<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
+         else -> throw failure(Expected(message.print()), Actual(it.message.print()), "Unexpected exception message: ")
       }
    }
 

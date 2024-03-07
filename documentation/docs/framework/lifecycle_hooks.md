@@ -80,7 +80,7 @@ The second, related, method is to override the callback functions in the Spec. T
 
 ```kotlin
 class TestSpec : WordSpec() {
-    override fun beforeTest(testCase: TestCase) {
+    override suspend fun beforeTest(testCase: TestCase) {
         println("Starting a test $testCase")
     }
 
@@ -94,9 +94,15 @@ class TestSpec : WordSpec() {
 }
 ```
 
+To understand all callbacks correctly
+it's important to have a good understanding of
+possible `TestType` values:
 
-
-
+- `Container` - a container that can contain other tests,
+- `Test` - a leaf test that cannot contain nested tests,
+- `Dynamic` - can either be a container or a test
+and is used when tests are added dynamically
+via functionality such as property tests or data tests.
 
 |Callback|Description|
 |--------|-----------|
@@ -115,4 +121,7 @@ class TestSpec : WordSpec() {
 |beforeInvocation|Invoked before each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.<br/><br/>If you are running a test with the default single invocation then this callback is effectively the same as `beforeTest`.<br/><br/>_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._|
 |afterInvocation|Invoked after each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.<br/><br/>If you are running a test with the default single invocation then this callback is effectively the same as `afterTest`.<br/><br/>_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._|
 
-
+Notice that as far as `beforeAny` and `beforeTest` are just another name for the same functionality,
+`beforeEach` is different. Each of `beforeAny` and `beforeTest` will be invoked before any `TestType.Test`,
+whereas `beforeEach` will be invoked before both `TestType.Container` and `TestType.Test`.
+The same applies to `afterAny`, `afterTest` and `afterEach`.

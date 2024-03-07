@@ -1,18 +1,30 @@
 package io.kotest.matchers.floats
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
+import kotlin.math.absoluteValue
 
 fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
    override fun test(value: Float) =
       MatcherResult(
          value == d,
          { "$value is not equal to expected value $d" },
-         { "$value should not be equal to $d" })
+         { "$value should not be equal to $d" }
+      )
+}
+
+fun exactlyByBits(expected: Float): Matcher<Float> = object : Matcher<Float> {
+   override fun test(value: Float) =
+      MatcherResult(
+         value.toBits() == expected.toBits(),
+         { "$value is not equal to expected value $expected" },
+         { "$value should not equal $expected" }
+      )
 }
 
 fun lt(x: Float) = beLessThan(x)
@@ -63,12 +75,26 @@ infix fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe gt(x)
 infix fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe gte(x)
 infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe gte(x)
 
-infix fun Float.shouldBeExactly(x: Float) = this shouldBe exactly(x)
-infix fun Float.shouldNotBeExactly(x: Float) = this shouldNotBe exactly(x)
+infix fun Float.shouldBeExactly(x: Float): Float {
+   if (AssertionsConfig.disableNaNEquality) {
+      this shouldBe exactly(x)
+   } else {
+      this shouldBe exactlyByBits(x)
+   }
+   return this
+}
+
+infix fun Float.shouldNotBeExactly(x: Float): Float {
+   if (AssertionsConfig.disableNaNEquality) {
+      this shouldNotBe exactly(x)
+   } else {
+      this shouldNotBe exactlyByBits(x)
+   }
+   return this
+}
 
 fun Float.shouldBeZero() = this shouldBeExactly 0f
 fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f
-
 
 
 /**
@@ -98,7 +124,7 @@ fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
 }
 
 fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
-   private val tolerance = other.times(percentage / 100)
+   private val tolerance = other.times(percentage / 100).absoluteValue.toFloat()
    private val range = (other - tolerance)..(other + tolerance)
 
    override fun test(value: Float) = MatcherResult(

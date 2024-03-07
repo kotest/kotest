@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 typealias TestPath = io.kotest.common.TestPath
 
 /**
- * A parseable, stable, consistent identifer for a test element.
+ * A parseable, stable, consistent identifier for a test element.
  *
  * The id should not depend on runtime configuration and should not change between test runs,
  * unless the test, or a parent test, has been modified by the user.
@@ -67,19 +67,30 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns true if this descriptor is for a class based test file.
+    * Returns `true` if this descriptor is for a class based test file.
     */
    fun isSpec() = this is SpecDescriptor
 
    /**
-    * Returns true if this descriptor is for a test case.
+    * Returns `true` if this descriptor is for a test case.
     */
    fun isTestCase() = this is TestDescriptor
 
    /**
-    * Returns true if this descriptor represents a root test case.
+    * Returns `true` if this descriptor represents a root test case.
     */
    fun isRootTest() = this is TestDescriptor && this.parent.isSpec()
+
+   /**
+    * Returns `true` if this type equals that type. For example
+    * if this is a spec and the rhs is also spec
+    */
+   fun isEqualType(that: Descriptor): Boolean {
+      return when (this) {
+         is SpecDescriptor -> that.isSpec()
+         is TestDescriptor -> that.isTestCase()
+      }
+   }
 
    /**
     * Returns the depth of this node, where the [SpecDescriptor] has depth of 0,
@@ -99,37 +110,57 @@ sealed interface Descriptor {
    fun chain() = parents() + this
 
    /**
-    * Returns true if this descriptor is the immediate parent of the given [descriptor].
+    * Returns `true` if this descriptor is the immediate parent of the given [descriptor].
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be the parent of a spec
-      is TestDescriptor -> this.id == descriptor.parent.id
+      is TestDescriptor -> this == descriptor.parent
    }
 
    /**
-    * Returns true if this descriptor is ancestor (1..nth-parent) of the given [descriptor].
+    * Returns `true` if this descriptor is ancestor (1..nth-parent) of the given [descriptor].
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
-      is TestDescriptor -> this.id == descriptor.parent.id || isAncestorOf(descriptor.parent)
+      is TestDescriptor -> isParentOf(descriptor) || isAncestorOf(descriptor.parent)
    }
 
    /**
-    * Returns true if this descriptor is the immediate child of the given [descriptor].
+    * Returns `true` if this descriptor is the immediate child of the given [descriptor].
     */
    fun isChildOf(descriptor: Descriptor): Boolean = descriptor.isParentOf(this)
 
    /**
-    * Returns true if this descriptor is a child, grandchild, etc of the given [descriptor].
+    * Returns `true` if this descriptor is a child, grandchild, etc of the given [descriptor].
     */
    fun isDescendentOf(descriptor: Descriptor): Boolean = descriptor.isAncestorOf(this)
 
    /**
-    * Returns true if this instance is on the path to the given description. That is, if this
+    * Returns `true` if this instance is on the path to the given description. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
     */
    fun isOnPath(description: Descriptor): Boolean =
-      this.path() == description.path() || this.isAncestorOf(description)
+      this == description || this.isAncestorOf(description)
+
+   /**
+    * Returns the prefix of the descriptor starting with the root (spec)
+    */
+   fun getTreePrefix(): List<Descriptor> {
+      val ret = mutableListOf<Descriptor>()
+      var x = this
+      loop@ while (true) {
+         ret.add(0, x)
+         when (x) {
+            is SpecDescriptor -> {
+               break@loop
+            }
+            is TestDescriptor -> {
+               x = x.parent
+            }
+         }
+      }
+      return ret
+   }
 
    /**
     * Returns the [SpecDescriptor] parent for this [Descriptor].
@@ -141,7 +172,23 @@ sealed interface Descriptor {
    }
 }
 
-data class DescriptorId(val value: String)
+data class DescriptorId(
+   val value: String,
+) {
+
+   /**
+    * Treats the lhs and rhs both as wildcard regex one by one and check if it matches the other
+    */
+   fun wildCardMatch(id: DescriptorId): Boolean {
+      val thisRegex = with(this.value) {
+         ("\\Q$this\\E").replace("*", "\\E.*\\Q").toRegex()
+      }
+      val thatRegex = with(id.value) {
+         ("\\Q$this\\E").replace("*", "\\E.*\\Q").toRegex()
+      }
+      return (thisRegex.matches(id.value) || thatRegex.matches(this.value))
+   }
+}
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
    TestDescriptor(this, DescriptorId(name.testName))
@@ -157,7 +204,7 @@ fun Descriptor.append(name: String): TestDescriptor =
  * This may be the same descriptor that this method is invoked on, if that descriptor
  * is a root test.
  */
-fun TestDescriptor.root(): TestDescriptor {
+tailrec fun TestDescriptor.root(): TestDescriptor {
    return when (parent) {
       is SpecDescriptor -> this // if my parent is a spec, then I am a root
       is TestDescriptor -> parent.root()

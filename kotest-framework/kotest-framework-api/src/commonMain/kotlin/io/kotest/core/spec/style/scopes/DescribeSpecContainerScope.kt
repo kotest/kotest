@@ -15,18 +15,24 @@ typealias DescribeSpecContainerContext = DescribeSpecContainerScope
 /**
  * A scope that allows tests to be registered using the syntax:
  *
+ * ```
  * describe("some test")
+ * ```
  *
  * or
  *
+ * ```
  * xdescribe("some disabled test")
+ * ```
  *
  * and
  *
+ * ```
  * it("some test")
  * it("some test").config(...)
  * xit("some test")
  * xit("some test").config(...)
+ * ```
  */
 @KotestTestScope
 class DescribeSpecContainerScope(

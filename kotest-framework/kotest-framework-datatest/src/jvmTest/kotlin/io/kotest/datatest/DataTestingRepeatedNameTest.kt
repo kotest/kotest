@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -8,6 +9,8 @@ import io.kotest.matchers.shouldBe
 
 class DataTestingRepeatedTestNameTest : FunSpec() {
    init {
+
+      isolationMode = IsolationMode.InstancePerLeaf
 
       test("with describe spec repeated names should have count appended") {
 

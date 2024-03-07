@@ -3,17 +3,18 @@ package io.kotest.framework.concurrency
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
-@OptIn(ExperimentalKotest::class)
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias EventuallyStateFunction<T, U> = (EventuallyState<T>) -> U
+
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias ThrowablePredicate = (Throwable) -> Boolean
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class EventuallyConfig<T>(
    val duration: Long = defaultDuration,
    val interval: Interval = defaultInterval,
@@ -26,7 +27,7 @@ data class EventuallyConfig<T>(
    val shortCircuit: EventuallyStateFunction<T, Boolean>? = null,
 )
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 private fun <T> EventuallyConfig<T>.toBuilder() = EventuallyBuilder<T>().apply {
    duration = this@toBuilder.duration
    interval = this@toBuilder.interval
@@ -39,7 +40,7 @@ private fun <T> EventuallyConfig<T>.toBuilder() = EventuallyBuilder<T>().apply {
    shortCircuit = this@toBuilder.shortCircuit
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class EventuallyBuilder<T> {
    var duration: Long = defaultDuration
    var interval: Interval = defaultInterval
@@ -58,10 +59,10 @@ class EventuallyBuilder<T> {
    )
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 class EventuallyShortCircuitException(override val message: String) : Throwable()
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class EventuallyState<T>(
    val result: T?,
    val start: Long,
@@ -71,7 +72,7 @@ data class EventuallyState<T>(
    val thisError: Throwable?,
 )
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 private class EventuallyControl(val config: EventuallyConfig<*>) {
    val start = timeInMillis()
    val end = start + config.duration
@@ -138,7 +139,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    }.toString()
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    delay(initialDelay)
 
@@ -181,9 +182,7 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    throw failure(control.buildFailureMessage())
 }
 
-// region eventually
-
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    config: EventuallyConfig<T>,
    configure: EventuallyBuilder<T>.() -> Unit,
@@ -193,7 +192,7 @@ suspend fun <T> eventually(
    return resolvedConfig.invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T {
@@ -201,25 +200,21 @@ suspend fun <T> eventually(
    return config.invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(
    config: EventuallyConfig<T>, @BuilderInference test: suspend () -> T
 ): T {
    return config.invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T =
    eventually(duration.inWholeMilliseconds, test)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventually({ this.duration = duration }, test)
 
-// endregion
-
-// region until
-
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(
    config: EventuallyConfig<Boolean>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
@@ -229,7 +224,7 @@ suspend fun until(
    builder.build().invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(
    configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
@@ -239,10 +234,8 @@ suspend fun until(
    builder.build().invoke(test)
 }
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(millis = duration.inWholeMilliseconds, test)
 
-@ExperimentalKotest
+@Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(millis: Long, test: suspend () -> Boolean) = until({ this.duration = millis }, test)
-
-// endregion

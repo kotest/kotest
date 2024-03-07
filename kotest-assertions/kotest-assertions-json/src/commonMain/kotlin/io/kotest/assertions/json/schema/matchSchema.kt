@@ -1,7 +1,7 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
-import io.kotest.assertions.json.JsonTree
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
@@ -22,6 +22,7 @@ infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+
 @ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
@@ -77,13 +78,42 @@ private fun validate(
    fun violation(message: String) =
       listOf(SchemaViolation(currentPath, message))
 
+   fun violationIf(conditionResult: Boolean, message: String) = if (conditionResult) violation(message) else emptyList()
+
+   fun <T> violation(matcher: Matcher<T>?, value: T) = matcher?.let {
+      val matcherResult = it.test(value)
+      violationIf(!matcherResult.passed(), matcherResult.failureMessage())
+   } ?: emptyList()
+
+   fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
+      val schemaViolations = tree.elements.mapIndexed { i, node ->
+         validate("\t$currentPath[$i]", node, schema)
+      }
+      return when (val foundElements = schemaViolations.count { it.isEmpty() }) {
+         0 -> violation("Expected some item to match contains-specification:") + schemaViolations.flatten()
+         !in minContains..maxContains -> violation("Expected items of type ${schema.typeName()} between $minContains and $maxContains, but found $foundElements")
+         else -> emptyList()
+      }
+
+   }
+
+   fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
+      tree.elements.flatMapIndexed { i, node ->
+         validate("$currentPath[$i]", node, this)
+      }
+
    return when (tree) {
       is JsonNode.ArrayNode -> {
-         if (expected is JsonSchema.JsonArray)
-            tree.elements.flatMapIndexed { i, node ->
-               validate("$currentPath[$i]", node, expected.elementType)
-            }
-         else violation("Expected ${expected.typeName()}, but was array")
+         if (expected is JsonSchema.JsonArray) {
+            val sizeViolation = violationIf(
+               tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
+               "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
+            )
+            val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
+            val containsViolation = expected.contains?.violation(tree) ?: emptyList()
+            val elementTypeViolation = expected.elementType?.violation(tree) ?: emptyList()
+            matcherViolation + sizeViolation + containsViolation + elementTypeViolation
+         } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
          if (expected is JsonSchema.JsonObject) {
@@ -116,28 +146,17 @@ private fun validate(
          when (expected) {
             is JsonSchema.JsonInteger -> {
                if (tree.content.contains(".")) violation("Expected integer, but was number")
-               else expected.matcher?.let {
-                  val matcherResult = it.test(tree.content.toLong())
-                  if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
-               } ?: emptyList()
+               else violation(expected.matcher, tree.content.toLong())
             }
-
             is JsonSchema.JsonDecimal -> {
-               expected.matcher?.let {
-                  val matcherResult = it.test(tree.content.toDouble())
-                  if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
-               } ?: emptyList()
+               violation(expected.matcher, tree.content.toDouble())
             }
-
             else -> violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          }
 
       is JsonNode.StringNode ->
          if (expected is JsonSchema.JsonString) {
-            expected.matcher?.let {
-               val matcherResult = it.test(tree.value)
-               if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
-            } ?: emptyList()
+            violation(expected.matcher, tree.value)
          } else violation("Expected ${expected.typeName()}, but was ${tree.type()}")
       is JsonNode.BooleanNode ->
          if (!isCompatible(tree, expected))

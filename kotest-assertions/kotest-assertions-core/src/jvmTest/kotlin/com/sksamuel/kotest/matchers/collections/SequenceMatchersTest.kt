@@ -3,8 +3,9 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
 import io.kotest.core.spec.style.scopes.WordSpecShouldContainerScope
+import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
+import io.kotest.core.spec.style.scopes.WordSpecWhenContainerScope
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
 import io.kotest.matchers.sequences.shouldBeSmallerThan
@@ -33,12 +34,16 @@ import io.kotest.matchers.sequences.shouldNotBeSortedWith
 import io.kotest.matchers.sequences.shouldNotBeUnique
 import io.kotest.matchers.sequences.shouldNotContain
 import io.kotest.matchers.sequences.shouldNotContainAllInAnyOrder
+import io.kotest.matchers.sequences.shouldNotContainDuplicates
 import io.kotest.matchers.sequences.shouldNotContainExactly
 import io.kotest.matchers.sequences.shouldNotContainNoNulls
 import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.throwable.shouldHaveMessage
 
 class SequenceMatchersTest : WordSpec() {
 
@@ -51,7 +56,7 @@ class SequenceMatchersTest : WordSpec() {
 
    fun WordSpecShouldContainerScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
    suspend fun WordSpecShouldContainerScope.fail(name: String, test: () -> Any?) {
-      ("fail $name") { shouldThrowAny(test) }
+      ("fail $name") { shouldThrow<AssertionError>(test) }
    }
 
    suspend inline fun <reified E : Throwable> WordSpecShouldContainerScope.abort(name: String, crossinline test: () -> Any?) {
@@ -63,14 +68,46 @@ class SequenceMatchersTest : WordSpec() {
       test)
 
    /* sample data */
-   val empty = emptySequence<Int>()
-   val single = sequenceOf(0)
-   val nulls = sequenceOf<Int?>(null, null, null, null)
-   val sparse = sequenceOf(null, null, null, 3)
-   val countup = (0..10).asSequence()
-   val countdown = (10 downTo 0).asSequence()
-   val unique = sequenceOf(3, 2, 1)
-   val repeating = sequenceOf(1, 2, 3, 1, 2, 3)
+   interface SampleData {
+      val empty: Sequence<Int>
+      val single: Sequence<Int>
+      val nulls: Sequence<Int?>
+      val sparse: Sequence<Int?>
+      val countup: Sequence<Int>
+      val countdown: Sequence<Int>
+      val unique: Sequence<Int>
+      val repeating: Sequence<Int>
+   }
+
+   val nonConstrainedSampleData = object : SampleData {
+      override val empty = emptySequence<Int>()
+      override val single = sequenceOf(0)
+      override val nulls = sequenceOf<Int?>(null, null, null, null)
+      override val sparse = sequenceOf(null, null, null, 3)
+      override val countup = (0..10).asSequence()
+      override val countdown = (10 downTo 0).asSequence()
+      override val unique = sequenceOf(3, 2, 1)
+      override val repeating = sequenceOf(1, 2, 3, 1, 2, 3)
+   }
+   val constrainedSampleData = object : SampleData {
+      override val empty: Sequence<Int>
+         get() = nonConstrainedSampleData.empty.constrainOnce()
+      override val single: Sequence<Int>
+         get() = nonConstrainedSampleData.single.constrainOnce()
+      override val nulls: Sequence<Int?>
+         get() = nonConstrainedSampleData.nulls.constrainOnce()
+      override val sparse: Sequence<Int?>
+         get() = nonConstrainedSampleData.sparse.constrainOnce()
+      override val countup: Sequence<Int>
+         get() = nonConstrainedSampleData.countup.constrainOnce()
+      override val countdown: Sequence<Int>
+         get() = nonConstrainedSampleData.countdown.constrainOnce()
+      override val unique: Sequence<Int>
+         get() = nonConstrainedSampleData.unique.constrainOnce()
+      override val repeating: Sequence<Int>
+         get() = nonConstrainedSampleData.repeating.constrainOnce()
+
+   }
 
    val asc = { a: Int, b: Int -> a - b }
    val desc = { a: Int, b: Int -> b - a }
@@ -78,179 +115,187 @@ class SequenceMatchersTest : WordSpec() {
    /* tests */
    init {
 
+      "non-constrained" When {
+         runTestsForSample(nonConstrainedSampleData)
+      }
+      "constrained" When {
+         runTestsForSample(constrainedSampleData)
+      }
+   }
 
+   private suspend fun WordSpecWhenContainerScope.runTestsForSample(sampleData: SampleData) {
       /* count */
       "have count" should {
          succeed("for empty when 0") {
-            empty.shouldHaveCount(0)
+            sampleData.empty.shouldHaveCount(0)
          }
 
          fail("for empty when non-zero") {
-            empty.shouldHaveCount(1)
+            sampleData.empty.shouldHaveCount(1)
          }
 
          succeed("for single when 1") {
-            single.shouldHaveCount(1)
+            sampleData.single.shouldHaveCount(1)
          }
 
          fail("for single when 0") {
-            single.shouldHaveCount(0)
+            sampleData.single.shouldHaveCount(0)
          }
 
          "match count() for multiple" {
-            sparse.shouldHaveCount(sparse.count())
+            sampleData.sparse.shouldHaveCount(sampleData.sparse.count())
          }
 
          fail("to mis-match count() for multiple") {
-            sparse.shouldHaveCount(sparse.count() - 1)
+            sampleData.sparse.shouldHaveCount(sampleData.sparse.count() - 1)
          }
       }
 
       "not have count" should {
          fail("for empty when non-zero") {
-            empty.shouldNotHaveCount(0)
+            sampleData.empty.shouldNotHaveCount(0)
          }
 
          succeed("for empty when non-zero") {
-            empty.shouldNotHaveCount(1)
+            sampleData.empty.shouldNotHaveCount(1)
          }
 
          fail("for single when 1") {
-            single.shouldNotHaveCount(1)
+            sampleData.single.shouldNotHaveCount(1)
          }
 
          succeed("for single when 0") {
-            single.shouldNotHaveCount(0)
+            sampleData.single.shouldNotHaveCount(0)
          }
 
          fail("to match count() for multiple") {
-            sparse.shouldNotHaveCount(sparse.count())
+            sampleData.sparse.shouldNotHaveCount(sampleData.sparse.count())
          }
 
          "mis-match count() for multiple" {
-            sparse.shouldNotHaveCount(sparse.count() - 1)
+            sampleData.sparse.shouldNotHaveCount(sampleData.sparse.count() - 1)
          }
       }
 
       "larger than" should {
          fail("for empty") {
-            empty.shouldBeLargerThan(single)
+            sampleData.empty.shouldBeLargerThan(sampleData.single)
          }
 
          succeed("with empty") {
-            single.shouldBeLargerThan(empty)
+            sampleData.single.shouldBeLargerThan(sampleData.empty)
          }
 
          fail("for smaller") {
-            nulls.shouldBeLargerThan(countup)
+            sampleData.nulls.shouldBeLargerThan(sampleData.countup)
          }
 
          fail("for same count") {
-            countup.shouldBeLargerThan(countdown)
+            sampleData.countup.shouldBeLargerThan(sampleData.countdown)
          }
 
          succeed("for larger") {
-            countup.shouldBeLargerThan(nulls)
+            sampleData.countup.shouldBeLargerThan(sampleData.nulls)
          }
       }
 
       "smaller than" should {
          succeed("for empty") {
-            empty.shouldBeSmallerThan(single)
+            sampleData.empty.shouldBeSmallerThan(sampleData.single)
          }
 
          fail("with empty") {
-            single.shouldBeSmallerThan(empty)
+            sampleData.single.shouldBeSmallerThan(sampleData.empty)
          }
 
          succeed("for smaller") {
-            nulls.shouldBeSmallerThan(countup)
+            sampleData.nulls.shouldBeSmallerThan(sampleData.countup)
          }
 
          fail("for same count") {
-            countup.shouldBeSmallerThan(countdown)
+            sampleData.countup.shouldBeSmallerThan(sampleData.countdown)
          }
 
          fail("for larger") {
-            countup.shouldBeSmallerThan(nulls)
+            sampleData.countup.shouldBeSmallerThan(sampleData.nulls)
          }
       }
 
       "same count" should {
          fail("for empty with any") {
-            empty.shouldBeSameCountAs(single)
+            sampleData.empty.shouldBeSameCountAs(sampleData.single)
          }
 
          fail("for any with empty") {
-            nulls.shouldBeSameCountAs(empty)
+            sampleData.nulls.shouldBeSameCountAs(sampleData.empty)
          }
 
          fail("for smaller") {
-            nulls.shouldBeSameCountAs(countup)
+            sampleData.nulls.shouldBeSameCountAs(sampleData.countup)
          }
 
          succeed("with same count") {
-            countup.shouldBeSameCountAs(countdown)
+            sampleData.countup.shouldBeSameCountAs(sampleData.countdown)
          }
 
          fail("for larger") {
-            countup.shouldBeSmallerThan(nulls)
+            sampleData.countup.shouldBeSameCountAs(sampleData.nulls)
          }
       }
 
       "at least count" should {
          succeed("for empty with -1") {
-            empty.shouldHaveAtLeastCount(-1)
+            sampleData.empty.shouldHaveAtLeastCount(-1)
          }
 
          succeed("for any with -1") {
-            countup.shouldHaveAtLeastCount(-1)
+            sampleData.countup.shouldHaveAtLeastCount(-1)
          }
 
          succeed("for empty with 0") {
-            empty.shouldHaveAtLeastCount(0)
+            sampleData.empty.shouldHaveAtLeastCount(0)
          }
 
          fail("for empty with 1") {
-            empty.shouldHaveAtLeastCount(1)
+            sampleData.empty.shouldHaveAtLeastCount(1)
          }
 
          succeed("for smaller count") {
-            single.shouldHaveAtLeastCount(0)
+            sampleData.single.shouldHaveAtLeastCount(0)
          }
 
          succeed("for same count") {
-            nulls.shouldHaveAtLeastCount(nulls.count())
+            sampleData.nulls.shouldHaveAtLeastCount(sampleData.nulls.count())
          }
 
          fail("for larger count") {
-            countup.shouldHaveAtLeastCount(countup.count() + 1)
+            sampleData.countup.shouldHaveAtLeastCount(sampleData.countup.count() + 1)
          }
       }
 
       "at most count" should {
          fail("for empty with -1") {
-            empty.shouldHaveAtMostCount(-1)
+            sampleData.empty.shouldHaveAtMostCount(-1)
          }
 
          succeed("for empty with 0") {
-            empty.shouldHaveAtMostCount(0)
+            sampleData.empty.shouldHaveAtMostCount(0)
          }
 
          succeed("for empty with 1") {
-            empty.shouldHaveAtMostCount(1)
+            sampleData.empty.shouldHaveAtMostCount(1)
          }
 
          fail("for smaller count") {
-            countup.shouldHaveAtMostCount(countup.count() - 1)
+            sampleData.countup.shouldHaveAtMostCount(sampleData.countup.count() - 1)
          }
 
          succeed("for same count") {
-            countup.shouldHaveAtMostCount(countup.count())
+            sampleData.countup.shouldHaveAtMostCount(sampleData.countup.count())
          }
 
          succeed("for larger count") {
-            countup.shouldHaveAtMostCount(countup.count() + 1)
+            sampleData.countup.shouldHaveAtMostCount(sampleData.countup.count() + 1)
          }
       }
 
@@ -259,386 +304,386 @@ class SequenceMatchersTest : WordSpec() {
       /** null */
       "contain only nulls" should {
          succeed("for empty") {
-            empty.shouldContainOnlyNulls()
+            sampleData.empty.shouldContainOnlyNulls()
          }
 
          fail("for single") {
-            single.shouldContainOnlyNulls()
+            sampleData.single.shouldContainOnlyNulls()
          }
 
          succeed("for nulls") {
-            nulls.shouldContainOnlyNulls()
+            sampleData.nulls.shouldContainOnlyNulls()
          }
 
          fail("for sparse") {
-            sparse.shouldContainOnlyNulls()
+            sampleData.sparse.shouldContainOnlyNulls()
          }
       }
 
       "not contain only nulls" should {
          fail("for empty") {
-            empty.shouldNotContainOnlyNulls()
+            sampleData.empty.shouldNotContainOnlyNulls()
          }
 
          "fail for single" {
-            single.shouldNotContainOnlyNulls()
+            sampleData.single.shouldNotContainOnlyNulls()
          }
 
          fail("for nulls") {
-            nulls.shouldNotContainOnlyNulls()
+            sampleData.nulls.shouldNotContainOnlyNulls()
          }
 
          succeed("for sparse") {
-            sparse.shouldNotContainOnlyNulls()
+            sampleData.sparse.shouldNotContainOnlyNulls()
          }
       }
 
       "contain a null" should {
          fail("for empty") {
-            empty.shouldContainNull()
+            sampleData.empty.shouldContainNull()
          }
 
          fail("for non-nulls") {
-            single.shouldContainNull()
+            sampleData.single.shouldContainNull()
          }
 
          succeed("for nulls") {
-            nulls.shouldContainNull()
+            sampleData.nulls.shouldContainNull()
          }
 
          succeed("for sparse") {
-            sparse.shouldContainNull()
+            sampleData.sparse.shouldContainNull()
          }
       }
 
       "not contain a null" should {
          succeed("for empty") {
-            empty.shouldNotContainNull()
+            sampleData.empty.shouldNotContainNull()
          }
 
          succeed("for non-nulls") {
-            single.shouldNotContainNull()
+            sampleData.single.shouldNotContainNull()
          }
 
          fail("for nulls") {
-            nulls.shouldNotContainNull()
+            sampleData.nulls.shouldNotContainNull()
          }
 
          fail("for sparse") {
-            sparse.shouldNotContainNull()
+            sampleData.sparse.shouldNotContainNull()
          }
       }
 
       "contain no nulls" should {
          succeed("for empty") {
-            empty.shouldContainNoNulls()
+            sampleData.empty.shouldContainNoNulls()
          }
 
          succeed("for non-nulls") {
-            single.shouldContainNoNulls()
+            sampleData.single.shouldContainNoNulls()
          }
 
          fail("for nulls") {
-            nulls.shouldContainNoNulls()
+            sampleData.nulls.shouldContainNoNulls()
          }
 
          fail("for sparse") {
-            sparse.shouldContainNoNulls()
+            sampleData.sparse.shouldContainNoNulls()
          }
       }
 
       "not contain no nulls" should {
          fail("for empty") {
-            empty.shouldNotContainNoNulls()
+            sampleData.empty.shouldNotContainNoNulls()
          }
 
          fail("for non-nulls") {
-            single.shouldNotContainNoNulls()
+            sampleData.single.shouldNotContainNoNulls()
          }
 
          succeed("for nulls") {
-            nulls.shouldNotContainNoNulls()
+            sampleData.nulls.shouldNotContainNoNulls()
          }
 
          succeed("for sparse") {
-            sparse.shouldNotContainNoNulls()
+            sampleData.sparse.shouldNotContainNoNulls()
          }
       }
 
       /** single-value */
       "single element" should {
          fail("for empty") {
-            empty.shouldHaveSingleElement(null)
+            sampleData.empty.shouldHaveSingleElement(null)
          }
 
          succeed("for single") {
-            single.shouldHaveSingleElement(single.first())
+            sampleData.single.shouldHaveSingleElement(sampleData.single.first())
          }
 
          fail("for multiple") {
-            nulls.shouldHaveSingleElement(null)
+            sampleData.nulls.shouldHaveSingleElement(null)
          }
       }
 
       "have element at" should {
          abort<IndexOutOfBoundsException>("for empty") {
-            empty.shouldHaveElementAt(empty.count(), 0)
+            sampleData.empty.shouldHaveElementAt(sampleData.empty.count(), 0)
          }
 
          abort<IndexOutOfBoundsException>("when an element after the end is requested") {
-            nulls.shouldHaveElementAt(nulls.count(), 0)
+            sampleData.nulls.shouldHaveElementAt(sampleData.nulls.count(), 0)
          }
 
          succeed("when the sequence has the element") {
-            countup.shouldHaveElementAt(10, 10)
+            sampleData.countup.shouldHaveElementAt(10, 10)
          }
 
          fail("when the sequence doesn't have the element") {
-            countdown.shouldHaveElementAt(10, 10)
+            sampleData.countdown.shouldHaveElementAt(10, 10)
          }
       }
 
       "not have element at" should {
          abort<IndexOutOfBoundsException>("for empty") {
-            empty.shouldNotHaveElementAt(empty.count(), 0)
+            sampleData.empty.shouldNotHaveElementAt(sampleData.empty.count(), 0)
          }
 
          abort<IndexOutOfBoundsException>("when an element after the end is requested") {
-            nulls.shouldNotHaveElementAt(nulls.count(), 0)
+            sampleData.nulls.shouldNotHaveElementAt(sampleData.nulls.count(), 0)
          }
 
          fail("when the sequence has the element") {
-            countup.shouldNotHaveElementAt(10, 10)
+            sampleData.countup.shouldNotHaveElementAt(10, 10)
          }
 
          succeed("when the sequence doesn't have the element") {
-            countdown.shouldNotHaveElementAt(10, 10)
+            sampleData.countdown.shouldNotHaveElementAt(10, 10)
          }
       }
 
       "contain" should {
          fail("for empty") {
-            empty.shouldContain(0)
+            sampleData.empty.shouldContain(0)
          }
 
          succeed("when the sequence contains the value") {
-            countup.shouldContain(2)
+            sampleData.countup.shouldContain(2)
          }
 
          fail("when the sequence doesn't contain the value") {
-            sparse.shouldContain(2)
+            sampleData.sparse.shouldContain(2)
          }
       }
 
       "not contain" should {
          succeed("for empty") {
-            empty.shouldNotContain(0)
+            sampleData.empty.shouldNotContain(0)
          }
 
          fail("when the sequence contains the value") {
-            countup.shouldNotContain(2)
+            sampleData.countup.shouldNotContain(2)
          }
 
          succeed("when the sequence doesn't contain the value") {
-            sparse.shouldNotContain(2)
+            sampleData.sparse.shouldNotContain(2)
          }
       }
 
       "exist" should {
          fail("for empty") {
-            empty.shouldExist { true }
+            sampleData.empty.shouldExist { true }
          }
 
          succeed("when always true") {
-            single.shouldExist { true }
+            sampleData.single.shouldExist { true }
          }
 
          fail("when always false") {
-            countup.shouldExist { false }
+            sampleData.countup.shouldExist { false }
          }
 
          succeed("when matches at least one") {
-            countdown.shouldExist { it % 5 == 4 }
+            sampleData.countdown.shouldExist { it % 5 == 4 }
          }
 
          fail("when matches none") {
-            countdown.shouldExist { it > 20 }
+            sampleData.countdown.shouldExist { it > 20 }
          }
       }
 
       /** multiple-value */
       "contain all" should {
          succeed("for empty with empty") {
-            empty.shouldContainAll(empty)
+            sampleData.empty.shouldContainAll(sampleData.empty)
          }
 
          succeed("for empty with empty (variadic)") {
-            empty.shouldContainAll()
+            sampleData.empty.shouldContainAll()
          }
 
          fail("for empty with any other") {
-            empty.shouldContainAll(single)
+            sampleData.empty.shouldContainAll(sampleData.single)
          }
 
          succeed("for any with empty") {
-            single.shouldContainAll(empty)
+            sampleData.single.shouldContainAll(sampleData.empty)
          }
 
          succeed("for any with empty (variadic)") {
-            single.shouldContainAll()
+            sampleData.single.shouldContainAll()
          }
 
          succeed("for subset of nulls") {
-            sparse.shouldContainAll(nulls)
+            sampleData.sparse.shouldContainAll(sampleData.nulls)
          }
 
          succeed("for subset of nulls (variadic)") {
-            sparse.shouldContainAll(null, null)
+            sampleData.sparse.shouldContainAll(null, null)
          }
 
          succeed("for subset in order (variadic)") {
-            countdown.shouldContainAll(2, 3, 5, 7)
+            sampleData.countdown.shouldContainAll(2, 3, 5, 7)
          }
 
          succeed("for subset not in order (variadic)") {
-            countdown.shouldContainAll(2, 5, 3, 7)
+            sampleData.countdown.shouldContainAll(2, 5, 3, 7)
          }
 
          succeed("for same elements") {
-            repeating.shouldContainAll(unique)
+            sampleData.repeating.shouldContainAll(sampleData.unique)
          }
 
          succeed("for same elements (variadic)") {
-            repeating.shouldContainAll(2, 3, 1)
+            sampleData.repeating.shouldContainAll(2, 3, 1)
          }
 
          succeed("for same elements, repeated") {
-            unique.shouldContainAll(repeating)
+            sampleData.unique.shouldContainAll(sampleData.repeating)
          }
 
          succeed("for same elements, repeated (variadic)") {
-            unique.shouldContainAll(1, 2, 3, 1, 2, 3)
+            sampleData.unique.shouldContainAll(1, 2, 3, 1, 2, 3)
          }
       }
 
       "contain exactly empty" should {
          succeed("for empty") {
-            empty.shouldContainExactly(sequenceOf<Int>())
+            sampleData.empty.shouldContainExactly(sequenceOf<Int>())
          }
 
          succeed("for empty (variadic)") {
-            empty.shouldContainExactly()
+            sampleData.empty.shouldContainExactly()
          }
 
          fail("for single") {
-            single.shouldContainExactly(empty)
+            sampleData.single.shouldContainExactly(sampleData.empty)
          }
 
          "fail for single (variadic)" {
             shouldThrowAny {
-               single.shouldContainExactly()
+               sampleData.single.shouldContainExactly()
             }
          }
 
          fail("for multiple") {
-            nulls.shouldContainExactly(empty)
+            sampleData.nulls.shouldContainExactly(sampleData.empty)
          }
 
          fail("for multiple (variadic)") {
-            nulls.shouldContainExactly()
+            sampleData.nulls.shouldContainExactly()
          }
       }
 
       "contain exactly non-empty" should {
-         val nonempty = sparse;
+         fun nonempty() = sampleData.sparse
 
          fail("for empty") {
-            empty.shouldContainExactly(nonempty)
+            sampleData.empty.shouldContainExactly(nonempty())
          }
 
          fail("for empty (variadic)") {
-            empty.shouldContainExactly(*nonempty.toList().toTypedArray())
+            sampleData.empty.shouldContainExactly(*nonempty().toList().toTypedArray())
          }
 
          succeed("for same") {
-            sparse.shouldContainExactly(nonempty)
+            sampleData.sparse.shouldContainExactly(nonempty())
          }
 
          succeed("for same (variadic)") {
-            sparse.shouldContainExactly(*sparse.toList().toTypedArray())
+            sampleData.sparse.shouldContainExactly(*sampleData.sparse.toList().toTypedArray())
          }
 
          fail("for another of different size") {
-            countup.shouldContainExactly(nonempty)
+            sampleData.countup.shouldContainExactly(nonempty())
          }
 
          fail("for another of different size (variadic)") {
-            countup.shouldContainExactly(*nonempty.toList().toTypedArray())
+            sampleData.countup.shouldContainExactly(*nonempty().toList().toTypedArray())
          }
 
          fail("for another of same size") {
-            nulls.shouldContainExactly(nonempty)
+            sampleData.nulls.shouldContainExactly(nonempty())
          }
 
          fail("for another of same size (variadic)") {
-            nulls.shouldContainExactly(*nonempty.toList().toTypedArray())
+            sampleData.nulls.shouldContainExactly(*nonempty().toList().toTypedArray())
          }
 
          fail("for same elements but different order") {
-            repeating.shouldContainExactly(unique + unique)
+            sampleData.repeating.shouldContainExactly(sampleData.unique + sampleData.unique)
          }
 
          fail("for same elements but different order (variadic)") {
-            repeating.shouldContainExactly(1, 1, 2, 2, 3, 3)
+            sampleData.repeating.shouldContainExactly(1, 1, 2, 2, 3, 3)
          }
       }
 
       "not contain exactly empty" should {
          fail("for empty") {
-            empty.shouldNotContainExactly(sequenceOf<Int>())
+            sampleData.empty.shouldNotContainExactly(sequenceOf<Int>())
          }
 
          succeed("for single") {
-            single.shouldNotContainExactly(empty)
+            sampleData.single.shouldNotContainExactly(sampleData.empty)
          }
 
          succeed("for multiple") {
-            nulls.shouldNotContainExactly(empty)
+            sampleData.nulls.shouldNotContainExactly(sampleData.empty)
          }
       }
 
       "not contain exactly non-empty" should {
-         val nonempty = sparse;
+         fun nonempty() = sampleData.sparse
 
          succeed("for empty") {
-            empty.shouldNotContainExactly(nonempty)
+            sampleData.empty.shouldNotContainExactly(nonempty())
          }
 
          fail("for same") {
-            sparse.shouldNotContainExactly(nonempty)
+            sampleData.sparse.shouldNotContainExactly(nonempty())
          }
 
          succeed("for another of different size") {
-            countup.shouldNotContainExactly(nonempty)
+            sampleData.countup.shouldNotContainExactly(nonempty())
          }
 
          succeed("for another of same size") {
-            nulls.shouldNotContainExactly(nonempty)
+            sampleData.nulls.shouldNotContainExactly(nonempty())
          }
 
          succeed("for same elements but different order") {
-            repeating.shouldNotContainExactly(unique + unique)
+            sampleData.repeating.shouldNotContainExactly(sampleData.unique + sampleData.unique)
          }
 
          succeed("for same elements but different order (variadic)") {
-            repeating.shouldNotContainExactly(1, 1, 2, 2, 3, 3)
+            sampleData.repeating.shouldNotContainExactly(1, 1, 2, 2, 3, 3)
          }
 
          succeed("for single traversable equal sequence") {
             var count1 = 0
             var count2 = 0
-            val seq1 = generateSequence { if(count1 < 5) count1++ else null }
-            val seq2 = generateSequence { if(count2 < 5) count2++ else null }
+            val seq1 = generateSequence { if (count1 < 5) count1++ else null }
+            val seq2 = generateSequence { if (count2 < 5) count2++ else null }
 
             seq1.shouldContainExactly(seq2)
          }
@@ -646,8 +691,8 @@ class SequenceMatchersTest : WordSpec() {
          fail("for single traversable unequal sequence") {
             var count1 = 0
             var count2 = 0
-            val seq1 = generateSequence { if(count1 < 5) count1++ else null }
-            val seq2 = generateSequence { if(count2 < 6) count2++ else null }
+            val seq1 = generateSequence { if (count1 < 5) count1++ else null }
+            val seq2 = generateSequence { if (count2 < 6) count2++ else null }
 
             seq1.shouldContainExactly(seq2)
          }
@@ -656,77 +701,92 @@ class SequenceMatchersTest : WordSpec() {
 
       "contain in any order" should {
          succeed("for empty with empty") {
-            empty.shouldContainAllInAnyOrder(empty)
+            sampleData.empty.shouldContainAllInAnyOrder(sampleData.empty)
          }
 
          fail("for empty with any other") {
-            empty.shouldContainAllInAnyOrder(nulls)
+            sampleData.empty.shouldContainAllInAnyOrder(sampleData.nulls)
          }
 
          succeed("when elements are same") {
-            countdown.shouldContainAllInAnyOrder(countup)
+            sampleData.countdown.shouldContainAllInAnyOrder(sampleData.countup)
          }
 
          fail("for overlapping sequence") {
-            countup.shouldContainAllInAnyOrder((5..15).asSequence())
+            sampleData.countup.shouldContainAllInAnyOrder((5..15).asSequence())
          }
 
-         succeed("for subset, same count with nulls") {
-            sparse.shouldContainAllInAnyOrder(nulls)
+         fail("for subset, same count with nulls") {
+            sampleData.sparse.shouldContainAllInAnyOrder(sampleData.nulls)
          }
 
          succeed("for subset, same count") {
-            repeating.shouldContainAllInAnyOrder(unique + unique)
+            sampleData.repeating.shouldContainAllInAnyOrder(sampleData.unique + sampleData.unique)
          }
 
          succeed("for subset, same count (variadic)") {
-            repeating.shouldContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
+            sampleData.repeating.shouldContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
          }
 
          fail("for subset, different count with nulls") {
-            sparse.shouldContainAllInAnyOrder(sparse.toSet().asSequence())
+            sampleData.sparse.shouldContainAllInAnyOrder(sampleData.sparse.toSet().asSequence())
          }
 
          fail("for same, different count") {
-            repeating.shouldContainAllInAnyOrder(unique)
+            sampleData.repeating.shouldContainAllInAnyOrder(sampleData.unique)
+         }
+
+         succeed("detect different count of individual elements in collections of same length") {
+            shouldThrowAny{
+               sequenceOf(1, 2, 2).shouldContainAllInAnyOrder(sequenceOf(1, 1, 2))
+            }.shouldHaveMessage("""
+            |Sequence should contain the values of [1, 1, 2] in any order, but was [1, 2, 2].
+            |Count Mismatches:
+            |  For 1: expected count: <2>, but was: <1>
+            |  For 2: expected count: <1>, but was: <2>
+            """.trimMargin())
          }
       }
 
       "not contain in any order" should {
          fail("for empty with empty") {
-            empty.shouldNotContainAllInAnyOrder(empty)
+            sampleData.empty.shouldNotContainAllInAnyOrder(sampleData.empty)
          }
 
          succeed("for empty with any other") {
-            empty.shouldNotContainAllInAnyOrder(nulls)
+            sampleData.empty.shouldNotContainAllInAnyOrder(sampleData.nulls)
          }
 
          fail("when elements are same") {
-            countdown.shouldNotContainAllInAnyOrder(countup)
+            sampleData.countdown.shouldNotContainAllInAnyOrder(sampleData.countup)
          }
 
          succeed("for overlapping sequence") {
-            countup.shouldNotContainAllInAnyOrder((5..15).asSequence())
+            sampleData.countup.shouldNotContainAllInAnyOrder((5..15).asSequence())
          }
 
-         fail("for subset, same count with nulls") {
-            sparse.shouldNotContainAllInAnyOrder(nulls)
+         succeed("for subset, same count with nulls") {
+            sampleData.sparse.shouldNotContainAllInAnyOrder(sampleData.nulls)
          }
 
          fail("for subset, same count") {
-            repeating.shouldNotContainAllInAnyOrder(unique + unique)
+            sampleData.repeating.shouldNotContainAllInAnyOrder(sampleData.unique + sampleData.unique)
          }
 
          fail("for subset, same count (variadic)") {
-            repeating.shouldNotContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
+            sampleData.repeating.shouldNotContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
          }
 
          succeed("for subset, different count with nulls") {
-            sparse.shouldNotContainAllInAnyOrder(sparse.toSet().asSequence())
+            sampleData.sparse.shouldNotContainAllInAnyOrder(sampleData.sparse.toSet().asSequence())
          }
 
          succeed("for same, different count") {
-            repeating.shouldNotContainAllInAnyOrder(unique)
+            sampleData.repeating.shouldNotContainAllInAnyOrder(sampleData.unique)
+         }
+
+         succeed("detect different count of individual elements in sequences of same length") {
+            sequenceOf(1, 2, 2).shouldNotContainAllInAnyOrder(sequenceOf(1, 1, 2))
          }
       }
 
@@ -734,52 +794,58 @@ class SequenceMatchersTest : WordSpec() {
 
          "with empty" {
             shouldThrowAny {
-               countup.shouldContainInOrder(empty)
+               sampleData.countup.shouldContainInOrder(sampleData.empty)
             }
          }
 
-         fail("with empty (variadic)") {
-            countup.shouldContainInOrder()
+         abort<IllegalArgumentException>("with empty (variadic)") {
+            sampleData.countup.shouldContainInOrder()
          }
 
          fail("for overlapping sequence") {
-            countup.shouldContainInOrder((5..15).asSequence())
+            sampleData.countup.shouldContainInOrder((5..15).asSequence())
+         }
+
+         "describe first unmatched element" {
+            shouldThrowAny {
+               sequenceOf(1, 2, 3).shouldContainInOrder(sequenceOf(2, 3, 4, 5))
+            }.message shouldContain "did not contain the elements [[2, 3, 4, 5]] in order, could not match element 4 at index 2"
          }
 
          fail("for overlapping sequence (variadic)") {
-            countup.shouldContainInOrder(*(5..15).toList().toTypedArray())
+            sampleData.countup.shouldContainInOrder(*(5..15).toList().toTypedArray())
          }
 
          succeed("for subset in order") {
-            countup.shouldContainInOrder(sequenceOf(2, 3, 5, 7))
+            sampleData.countup.shouldContainInOrder(sequenceOf(2, 3, 5, 7))
          }
 
          succeed("for subset in order (variadic)") {
-            countup.shouldContainInOrder(2, 3, 5, 7)
+            sampleData.countup.shouldContainInOrder(2, 3, 5, 7)
          }
 
          succeed("for subset in order with repeats") {
-            repeating.shouldContainInOrder(sequenceOf(1, 3, 1, 2))
+            sampleData.repeating.shouldContainInOrder(sequenceOf(1, 3, 1, 2))
          }
 
          succeed("for subset in order with repeats (variadic)") {
-            repeating.shouldContainInOrder(1, 3, 1, 2)
+            sampleData.repeating.shouldContainInOrder(1, 3, 1, 2)
          }
 
          fail("for subset in order with too many repeats") {
-            repeating.shouldContainInOrder(sequenceOf(1, 3, 1, 2, 2))
+            sampleData.repeating.shouldContainInOrder(sequenceOf(1, 3, 1, 2, 2))
          }
 
          fail("for subset in order with too many repeats (variadic)") {
-            repeating.shouldContainInOrder(1, 3, 1, 2, 2)
+            sampleData.repeating.shouldContainInOrder(1, 3, 1, 2, 2)
          }
 
          fail("for subset not in order") {
-            countup.shouldContainInOrder(sequenceOf(2, 5, 3, 7))
+            sampleData.countup.shouldContainInOrder(sequenceOf(2, 5, 3, 7))
          }
 
          fail("for subset not in order (variadic)") {
-            countup.shouldContainInOrder(2, 5, 3, 7)
+            sampleData.countup.shouldContainInOrder(2, 5, 3, 7)
          }
       }
 
@@ -787,67 +853,77 @@ class SequenceMatchersTest : WordSpec() {
       /** unique */
       "unique" should {
          succeed("for empty") {
-            empty.shouldBeUnique()
+            sampleData.empty.shouldBeUnique()
          }
 
          succeed("for single") {
-            single.shouldBeUnique()
+            sampleData.single.shouldBeUnique()
          }
 
-         fail("with repeated nulls") {
-            sparse.shouldBeUnique()
+         "fail with repeated nulls" {
+            shouldThrowAny {
+               sampleData.sparse.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [<null>]")
          }
 
-         fail("with repeats") {
-            repeating.shouldBeUnique()
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldBeUnique()
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [1, 2, 3]")
          }
 
          succeed("for multiple unique") {
-            countup.shouldBeUnique()
+            sampleData.countup.shouldBeUnique()
          }
       }
 
       "not unique" should {
          fail("for empty") {
-            empty.shouldNotBeUnique()
+            sampleData.empty.shouldNotBeUnique()
          }
 
          fail("for single") {
-            single.shouldNotBeUnique()
+            sampleData.single.shouldNotBeUnique()
          }
 
          succeed("with repeated nulls") {
-            sparse.shouldNotBeUnique()
+            sampleData.sparse.shouldNotBeUnique()
          }
 
          succeed("with repeats") {
-            repeating.shouldNotBeUnique()
+            sampleData.repeating.shouldNotBeUnique()
          }
 
          fail("for multiple unique") {
-            countup.shouldNotBeUnique()
+            sampleData.countup.shouldNotBeUnique()
          }
       }
 
       "duplicates" should {
          fail("for empty") {
-            empty.shouldContainDuplicates()
+            sampleData.empty.shouldContainDuplicates()
          }
 
          fail("for single") {
-            single.shouldContainDuplicates()
+            sampleData.single.shouldContainDuplicates()
          }
 
          succeed("with repeated nulls") {
-            sparse.shouldContainDuplicates()
+            sampleData.sparse.shouldContainDuplicates()
          }
 
          succeed("with repeats") {
-            repeating.shouldNotBeUnique()
+            sampleData.repeating.shouldContainDuplicates()
          }
 
          fail("for multiple unique") {
-            countup.shouldContainDuplicates()
+            sampleData.countup.shouldContainDuplicates()
+         }
+
+         "fail with repeats" {
+            shouldThrowAny {
+               sampleData.repeating.shouldNotContainDuplicates()
+            }.shouldHaveMessage("Sequence should not contain duplicates, but has some: [1, 2, 3]")
          }
       }
 
@@ -855,45 +931,53 @@ class SequenceMatchersTest : WordSpec() {
       /** bound */
       "have an upper bound" should {
          succeed("for empty") {
-            empty.shouldHaveUpperBound(Int.MIN_VALUE)
+            sampleData.empty.shouldHaveUpperBound(Int.MIN_VALUE)
          }
 
          succeed("for single") {
-            single.shouldHaveUpperBound(0)
+            sampleData.single.shouldHaveUpperBound(0)
          }
 
-         fail("for single with wrong bound") {
-            single.shouldHaveUpperBound(-1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveUpperBound(-1)
+            }.shouldHaveMessage("Sequence should have upper bound -1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
-            countup.shouldHaveUpperBound(countup.maxOrNull() ?: Int.MAX_VALUE)
+            sampleData.countup.shouldHaveUpperBound(sampleData.countup.maxOrNull() ?: Int.MAX_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            countup.shouldHaveUpperBound((countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveUpperBound((sampleData.countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
+            }.shouldHaveMessage("Sequence should have upper bound 9, but element at index 10 was: 10")
          }
       }
 
       "have a lower bound" should {
          succeed("for empty") {
-            empty.shouldHaveLowerBound(Int.MAX_VALUE)
+            sampleData.empty.shouldHaveLowerBound(Int.MAX_VALUE)
          }
 
          succeed("for single") {
-            single.shouldHaveLowerBound(0)
+            sampleData.single.shouldHaveLowerBound(0)
          }
 
-         fail("for single with wrong bound") {
-            single.shouldHaveLowerBound(1)
+         "fail for single with wrong bound" {
+            shouldThrowAny {
+               sampleData.single.shouldHaveLowerBound(1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
 
          succeed("for multiple") {
-            countup.shouldHaveLowerBound(countup.minOrNull() ?: Int.MIN_VALUE)
+            sampleData.countup.shouldHaveLowerBound(sampleData.countup.minOrNull() ?: Int.MIN_VALUE)
          }
 
-         fail("for multiple with wrong bound") {
-            countup.shouldHaveLowerBound((countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+         "fail for multiple with wrong bound" {
+            shouldThrowAny {
+               sampleData.countup.shouldHaveLowerBound((sampleData.countup.minOrNull() ?: Int.MIN_VALUE) + 1)
+            }.shouldHaveMessage("Sequence should have lower bound 1, but element at index 0 was: 0")
          }
       }
 
@@ -901,45 +985,45 @@ class SequenceMatchersTest : WordSpec() {
       /** sort */
       "sorted" should {
          succeed("for empty") {
-            empty.shouldBeSorted()
+            sampleData.empty.shouldBeSorted()
          }
 
          succeed("for single") {
-            single.shouldBeSorted()
+            sampleData.single.shouldBeSorted()
          }
 
          fail("for repeating") {
-            repeating.shouldBeSorted()
+            sampleData.repeating.shouldBeSorted()
          }
 
          succeed("for count-up") {
-            countup.shouldBeSorted()
+            sampleData.countup.shouldBeSorted()
          }
 
          fail("for count-down") {
-            countdown.shouldBeSorted()
+            sampleData.countdown.shouldBeSorted()
          }
       }
 
       "not sorted" should {
          fail("for empty") {
-            empty.shouldNotBeSorted()
+            sampleData.empty.shouldNotBeSorted()
          }
 
          fail("for single") {
-            single.shouldNotBeSorted()
+            sampleData.single.shouldNotBeSorted()
          }
 
          succeed("for repeating") {
-            repeating.shouldNotBeSorted()
+            sampleData.repeating.shouldNotBeSorted()
          }
 
          fail("for count-up") {
-            countup.shouldNotBeSorted()
+            sampleData.countup.shouldNotBeSorted()
          }
 
          succeed("for count-down") {
-            countdown.shouldNotBeSorted()
+            sampleData.countdown.shouldNotBeSorted()
          }
       }
 
@@ -947,23 +1031,23 @@ class SequenceMatchersTest : WordSpec() {
          val dir = asc
 
          succeed("for empty") {
-            empty.shouldBeSortedWith(dir)
+            sampleData.empty.shouldBeSortedWith(dir)
          }
 
          succeed("for single") {
-            single.shouldBeSortedWith(dir)
+            sampleData.single.shouldBeSortedWith(dir)
          }
 
          fail("for repeating") {
-            repeating.shouldBeSortedWith(dir)
+            sampleData.repeating.shouldBeSortedWith(dir)
          }
 
          succeed("for count-up") {
-            countup.shouldBeSortedWith(dir)
+            sampleData.countup.shouldBeSortedWith(dir)
          }
 
          fail("for count-down") {
-            countdown.shouldBeSortedWith(dir)
+            sampleData.countdown.shouldBeSortedWith(dir)
          }
 
       }
@@ -972,23 +1056,23 @@ class SequenceMatchersTest : WordSpec() {
          val dir = desc
 
          succeed("for empty") {
-            empty.shouldBeSortedWith(dir)
+            sampleData.empty.shouldBeSortedWith(dir)
          }
 
          succeed("for single") {
-            single.shouldBeSortedWith(dir)
+            sampleData.single.shouldBeSortedWith(dir)
          }
 
          fail("for repeating") {
-            repeating.shouldBeSortedWith(dir)
+            sampleData.repeating.shouldBeSortedWith(dir)
          }
 
          fail("for count-up") {
-            countup.shouldBeSortedWith(dir)
+            sampleData.countup.shouldBeSortedWith(dir)
          }
 
          succeed("for count-down") {
-            countdown.shouldBeSortedWith(dir)
+            sampleData.countdown.shouldBeSortedWith(dir)
          }
       }
 
@@ -996,23 +1080,23 @@ class SequenceMatchersTest : WordSpec() {
          val dir = asc
 
          fail("for empty") {
-            empty.shouldNotBeSortedWith(dir)
+            sampleData.empty.shouldNotBeSortedWith(dir)
          }
 
          fail("for single") {
-            single.shouldNotBeSortedWith(dir)
+            sampleData.single.shouldNotBeSortedWith(dir)
          }
 
          succeed("for repeating") {
-            repeating.shouldNotBeSortedWith(dir)
+            sampleData.repeating.shouldNotBeSortedWith(dir)
          }
 
          fail("for count-up") {
-            countup.shouldNotBeSortedWith(dir)
+            sampleData.countup.shouldNotBeSortedWith(dir)
          }
 
          succeed("for count-down") {
-            countdown.shouldNotBeSortedWith(dir)
+            sampleData.countdown.shouldNotBeSortedWith(dir)
          }
       }
 
@@ -1020,23 +1104,23 @@ class SequenceMatchersTest : WordSpec() {
          val dir = desc
 
          fail("for empty") {
-            empty.shouldNotBeSortedWith(dir)
+            sampleData.empty.shouldNotBeSortedWith(dir)
          }
 
          fail("for single") {
-            single.shouldNotBeSortedWith(dir)
+            sampleData.single.shouldNotBeSortedWith(dir)
          }
 
          succeed("for repeating") {
-            repeating.shouldNotBeSortedWith(dir)
+            sampleData.repeating.shouldNotBeSortedWith(dir)
          }
 
          succeed("for count-up") {
-            countup.shouldNotBeSortedWith(dir)
+            sampleData.countup.shouldNotBeSortedWith(dir)
          }
 
          fail("for count-down") {
-            countdown.shouldNotBeSortedWith(dir)
+            sampleData.countdown.shouldNotBeSortedWith(dir)
          }
       }
    }

@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.TimeMarkCompat
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,7 +9,6 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.Logger
-import kotlin.time.TimeMark
 
 /**
  * Executes a test taking care of invoking user level listeners.
@@ -28,7 +28,7 @@ import kotlin.time.TimeMark
  */
 internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
-   private val timeMark: TimeMark,
+   private val timeMark: TimeMarkCompat,
    registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 

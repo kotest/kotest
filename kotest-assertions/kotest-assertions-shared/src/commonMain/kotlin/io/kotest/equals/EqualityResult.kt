@@ -28,7 +28,7 @@ interface EqualityResult {
                explainFn = {
                   val expectedStr = expected.print().value
                   val actualStr = actual.print().value
-                  return@SimpleEqualityResultDetail """
+                  """
                      | $expectedStr is ${if (equal) "" else "not "}equal to $actualStr by ${verifier.name()}
                      | Expected: $expectedStr
                      | Actual  : $actualStr

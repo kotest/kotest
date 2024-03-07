@@ -1,13 +1,11 @@
 package io.kotest.mpp
 
+import io.kotest.common.TimeMarkCompat
 import java.io.FileWriter
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeMark
 
-val file: FileWriter by lazy { FileWriter("/home/sam/development/workspace/kotest/kotest/kotest.log", false) }
+val file: FileWriter by lazy { FileWriter(syspropOrEnv("KOTEST_DEBUG_PATH") ?: "kotest.log", false) }
 
-@ExperimentalTime
-actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
+actual fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String) {
    file.write(start.elapsedNow().inWholeMicroseconds.toString())
    file.write("  ")
    file.write(f())

@@ -17,9 +17,9 @@ internal val bigDecimalDefaultEdgecases = listOf(
 fun Arb.Companion.bigDecimal(): Arb<BigDecimal> {
    return arbitrary(bigDecimalDefaultEdgecases) {
       if (it.random.nextInt() % 2 == 0) {
-         BigDecimal(it.random.nextLong()) * BigDecimal(it.random.nextDouble())
+         BigDecimal(it.random.nextLong()) * it.random.nextDouble().toBigDecimal()
       } else {
-         BigDecimal(it.random.nextInt()) * BigDecimal(it.random.nextDouble())
+         BigDecimal(it.random.nextInt()) * it.random.nextDouble().toBigDecimal()
       }
    }
 }
@@ -33,6 +33,6 @@ fun Arb.Companion.bigDecimal(min: BigDecimal, max: BigDecimal): Arb<BigDecimal> 
       .plus(min)
 
    return arbitrary(boundedEdgecases) {
-      min.add(BigDecimal(it.random.nextDouble()).multiply(max.subtract(min)))
+      min.add(it.random.nextDouble().toBigDecimal().multiply(max.subtract(min)))
    }
 }

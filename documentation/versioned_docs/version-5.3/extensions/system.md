@@ -28,6 +28,18 @@ withEnvironment("FooKey", "BarValue") {
 }
 ```
 
+:::info
+To use `withEnvironment` with JDK17 you need to add `--add-opens=java.base/java.util=ALL-UNNAMED` to the arguments for the JVM that runs the tests.
+
+If you run tests with gradle, you can add the following to your `build.gradle.kts`:
+
+```kotlin
+tasks.withType<Test>().configureEach {
+  jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}
+```
+:::
+
 You can also use multiple values in this extension, through a map or list of pairs.
 
 ```kotlin
@@ -167,7 +179,7 @@ withDefaultLocale(Locale.FRANCE) {
   println("My locale is now France! Très bien!")
 }
 
-withDefaultTimezone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
+withDefaultTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
   println("My timezone is now America/Sao_Paulo! Muito bem!")
 }
 

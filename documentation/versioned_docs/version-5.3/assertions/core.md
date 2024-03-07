@@ -24,7 +24,7 @@ Matchers provided by the `kotest-assertions-core` module.
 |---------------------------------------------| ---- |
 | `obj.shouldBeSameInstanceAs(other)`         | Compares objects by identity, that is, they are the same exact reference. |
 | `obj.shouldBeTypeOf<T>()`                   | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
-| `obj.shouldBeInstanceOf<T>`                 | Asserts that the given reference is of type T or a subclass of T. |
+| `obj.shouldBeInstanceOf<T>()`               | Asserts that the given reference is of type T or a subclass of T. |
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | `obj.shouldBeNull()`                        | Asserts that a given reference is null.|
 
@@ -116,7 +116,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||     |
+| BigDecimal                                  ||
 |---------------------------------------------| ---- |
 | `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
 | `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
@@ -154,7 +154,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `collection.shouldContainNull()`                | Asserts that the collection contains at least one null element.                                                                                                   |
 | `collection.shouldContainOnlyNulls()`           | Asserts that the collection contains only null elements, or is empty.                                                                                             |
 | `collection.shouldHaveSingleElement(element)`   | Asserts that the collection only contains a single element and that that element is the given one.                                                                |
-| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection only contains a single element and that the element matches the given predicate.                                                      |
+| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection contains a single element by a given predicate.                                                                                       |
 | `collection.shouldHaveSize(length)`             | Asserts that the collection is exactly the given length.                                                                                                          |
 | `collection.shouldBeSingleton()`                | Asserts that the collection contains only one element.                                                                                                            |
 | `collection.shouldBeSingleton { block }`        | Asserts that the collection only one element, and then, runs the block with this element.                                                                         |
@@ -377,7 +377,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)` | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
 
 
-| Field by Field Comparison Matchers                                                                                                                      ||     |
+| Field by Field Comparison Matchers                                                                                                                      ||
 |---------------------------------------------------------------------------------------------------------------------------------------------------------| ---- |
 | `any.shouldBeEqualToComparingFields(other: T)`                                                                                                          | Asserts that the any is equal to other considering their fields(ignoring private fields) instead of `equals` method.|
 | `any.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean)`                                                                            | Asserts that the any is equal to other considering their fields and private fields(if `ignorePrivateFields` is false) instead of `equals` method.|

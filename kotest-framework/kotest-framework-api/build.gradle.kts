@@ -1,136 +1,32 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-multiplatform-library-conventions")
+   id("kotest-android-native-conventions")
+   id("kotest-watchos-device-conventions")
 }
 
 kotlin {
-
-   targets {
-
-      jvm()
-
-      js(IR) {
-         browser()
-         nodejs()
-      }
-
-      linuxX64()
-
-      mingwX64()
-
-      macosX64()
-      macosArm64()
-
-      tvos()
-      tvosSimulatorArm64()
-
-      watchosArm32()
-      watchosArm64()
-      watchosX86()
-      watchosX64()
-      watchosSimulatorArm64()
-
-      iosX64()
-      iosArm64()
-      iosArm32()
-      iosSimulatorArm64()
-   }
-
    sourceSets {
 
       val commonMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
             api(libs.kotlinx.coroutines.core)
-//            implementation(Libs.Kotlin.kotlinScriptRuntime)
-            implementation(project(Projects.Common))
-            api(project(Projects.Assertions.Shared))
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-      }
-
-      val jvmMain by getting {
-         dependsOn(commonMain)
-         dependencies {
+            api(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(kotlin("reflect"))
+            api(projects.kotestCommon) // needs to be API so the domain objects are open
             api(libs.kotlinx.coroutines.test)
          }
       }
 
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val macosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX86Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
+      val jvmMain by getting {
+         dependencies {
+         }
       }
 
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
-            // we use the internals of the JVM project in the tests
-            implementation(project(Projects.JunitRunner))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
             implementation(libs.junit.platform.engine)
@@ -141,16 +37,11 @@ kotlin {
             implementation(libs.junit.jupiter.engine)
          }
       }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
 
 tasks.create("buildConfigDocs") {
-   //find config files
+   // find config files
    val fileNames = listOf("KotestEngineProperties.kt")
 
    val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
@@ -165,7 +56,7 @@ tasks.create("buildConfigDocs") {
    if (foundFiles.size != fileNames.size)
       throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
 
-   //replace in docs
+   // replace in docs
 
    val docName = "config_props.md"
    val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
@@ -205,5 +96,3 @@ slug: framework-config-props.html
 }
 
 tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
-
-apply(from = "../../publish-mpp.gradle.kts")

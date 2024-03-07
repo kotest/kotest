@@ -1,6 +1,8 @@
 package io.kotest.assertions
 
+import io.kotest.assertions.print.print
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
@@ -45,7 +47,22 @@ suspend fun <T> all(assertions: suspend () -> T): T {
 inline fun <T> assertSoftly(assertions: () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block
-   if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
+   if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) {
+      val oldErrors = errorCollector.errors()
+      errorCollector.clear()
+      errorCollector.depth++
+
+      return try {
+         assertions()
+      } finally {
+         val aggregated = errorCollector.collectiveError()
+         errorCollector.clear()
+         errorCollector.pushErrors(oldErrors)
+         aggregated?.let { errorCollector.pushError(it) }
+         errorCollector.depth--
+      }
+   }
+
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
    return try {
       assertions()
@@ -74,15 +91,31 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  */
 @ExperimentalKotest
 suspend fun <T> all(t: T, assertions: suspend T.(T) -> Unit): T {
-   return all {
-      t.assertions(t)
-      t
+   return withSubject(t) {
+      all {
+         t.assertions(t)
+         t
+      }
    }
 }
 
 inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
-   return assertSoftly {
-      t.assertions(t)
-      t
+   return withSubject(t) {
+      assertSoftly {
+         t.assertions(t)
+         t
+      }
+   }
+}
+
+
+@KotestInternal
+inline fun <T, R> withSubject(t: T, doWithSubject: () -> R): R {
+   val previousSubject = errorCollector.subject
+   errorCollector.subject = t.print()
+   return try {
+      doWithSubject()
+   } finally {
+      errorCollector.subject = previousSubject
    }
 }

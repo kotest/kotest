@@ -1,14 +1,19 @@
 package com.sksamuel.kotest.engine.tags
 
+import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.datatest.withData
 import io.kotest.engine.spec.Materializer
+import io.kotest.engine.tags.tags
 import io.kotest.engine.test.status.isEnabledInternal
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -106,6 +111,27 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             .map { it.name.testName }
             .toSet() shouldBe setOf("b", "c")
       }
+
+      context("Inheritance of @Tags") {
+         withData(
+            true to setOf("a"),
+            false to setOf()
+         ) { (inheritanceEnabled, expectedTests) ->
+            val ext = object : TagExtension {
+               override fun tags(): TagExpression = TagExpression.include(NamedTag("SuperSuper"))
+            }
+
+            val conf = ProjectConfiguration()
+            conf.registry.add(ext)
+            conf.tagInheritance = inheritanceEnabled
+            conf.testCaseOrder = TestCaseOrder.Random
+
+            Materializer(conf).materialize(InheritingTest())
+               .filter { it.isEnabledInternal(conf).isEnabled }
+               .map { it.name.testName }
+               .toSet() shouldBe expectedTests
+         }
+      }
    }
 }
 
@@ -114,7 +140,7 @@ object UnitTest : Tag()
 object Mysql : Tag()
 object Postgres : Tag()
 
-@io.kotest.core.annotation.Tags("Linux")
+@Tags("Linux")
 private class MyTestClass : FunSpec() {
    init {
       tags(UnitTest)
@@ -124,3 +150,16 @@ private class MyTestClass : FunSpec() {
       test("d") { }
    }
 }
+
+private class InheritingTest : SlowTest, CustomSpec({
+   test("a") {}
+})
+
+@Tags("SuperTag")
+private open class CustomSpec(block: FunSpec.() -> Unit) : SuperSuper, FunSpec(block)
+
+@Tags("Slow")
+private interface SlowTest
+
+@Tags("SuperSuper")
+private interface SuperSuper

@@ -4,63 +4,102 @@ import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 class GradleClassMethodRegexTestFilterTest : FunSpec({
 
-   test("include classes") {
-
+   context("include classes") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
-
-      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest")).filter(spec) shouldBe TestFilterResult.Include
-      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest2")).filter(spec) shouldBe
-         TestFilterResult.Exclude(null)
-      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTes")).filter(spec) shouldBe
-         TestFilterResult.Exclude(null)
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest"))
-         .filter(spec) shouldBe TestFilterResult.Include
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.GradleClassMethodRegexTestFilterTest"))
-         .filter(spec) shouldBe TestFilterResult.Exclude(null)
+      withData(
+         nameFn = { filters -> "should be INCLUDED when evaluating $filters" },
+         listOf("\\QGradleClassMethodRegexTestFilterTest\\E"),
+         listOf(".*\\QthodRegexTestFilterTest\\E"),
+         listOf(".*\\QTest\\E"),
+         listOf("\\Qio.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest\\E"),
+         listOf(".*\\Q.platform.gradle.GradleClassMethodRegexTestFilterTest\\E"),
+         listOf(".*\\Qorm.gradle.GradleClassMethodRegexTestFilterTest\\E")
+      ) { filters ->
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Include
+      }
    }
 
-   test("include packages") {
-
+   context("exclude classes") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle"))
-         .filter(spec) shouldBe TestFilterResult.Include
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gra"))
-         .filter(spec) shouldBe TestFilterResult.Include
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit"))
-         .filter(spec) shouldBe TestFilterResult.Include
-
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit2"))
-         .filter(spec) shouldBe TestFilterResult.Exclude(null)
+      withData(
+         nameFn = { filters -> "should be EXCLUDED when evaluating $filters" },
+         listOf("\\QGradleClassMethodRegexTestFilterTest2\\E"),
+         listOf("\\QGradleClassMethodRegexTestFilterTes\\E"),
+         listOf("\\Qio.kotest.runner.junit.platform.GradleClassMethodRegexTestFilterTest\\E")
+      ) { filters ->
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Exclude(null)
+      }
    }
 
-   test("includes with test paths") {
+   context("include packages") {
 
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val container = spec.append("a context")
       val test = container.append("nested test")
 
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context"))
-         .filter(container) shouldBe TestFilterResult.Include
+      withData(
+         nameFn = { filters -> "should be INCLUDED if any of the filters matches when evaluating $filters" },
+         listOf("\\Qio.kotest.runner.junit.platform.gradle\\E"),
+         listOf("\\Qio.kotest.runner.junit.platform.gradle.\\E.*"),
+         listOf(".*\\Qnner.junit.platform.gradle\\E"),
+         listOf(".*\\Qnner.junit.platform.gradle.\\E.*"),
+         listOf(".*\\Q.junit.platform.gradle\\E"),
+         listOf("\\Qio.kotest.runner.junit.platform.gra\\E.*"),
+         listOf(".*\\QNotSpec\\E", "\\Qio.kotest.runner.junit\\E"),
+      ) { filters ->
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Include
+      }
 
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context2"))
-         .filter(container) shouldBe TestFilterResult.Exclude(null)
+      withData(
+         nameFn = { filters -> "should be EXCLUDED if none of the filters matches when evaluating $filters" },
+         listOf("\\Qio.kotest.runner.junit2\\E"),
+         listOf("\\Qio.kotest.runner.junit2\\E", ".*\\QNotSpec\\E"),
+      ) { filters ->
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Exclude(null)
+      }
 
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context -- nested test"))
-         .filter(test) shouldBe TestFilterResult.Include
+      withData(
+         nameFn = { filters -> "should be INCLUDED when container and test were evaluated using $filters" },
+         listOf("\\QGradleClassMethodRegexTestFilterTest.a context\\E.*"),
+         listOf(".*\\QTest\\E", "\\QGradleClassMethodRegex\\E.*\\Q.a context\\E.*"),
+      ) { filters ->
+         GradleClassMethodRegexTestFilter(filters).filter(container) shouldBe TestFilterResult.Include
+         GradleClassMethodRegexTestFilter(filters).filter(test) shouldBe TestFilterResult.Include
+      }
+   }
 
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.nested test"))
-         .filter(test) shouldBe TestFilterResult.Exclude(null)
+   context("includes with test paths") {
 
-      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest.a context -- nested test2"))
-         .filter(test) shouldBe TestFilterResult.Exclude(null)
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val container = spec.append("a context")
+      val test = container.append("nested test")
+      val fqcn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      withData(
+         nameFn = { "should be INCLUDED when filter is: $it" },
+         fqcn,
+         "$fqcn\\Q.a context\\E.*",
+         ".*\\Q.gradle.GradleClassMethodRegexTestFilterTest.a context\\E.*",
+         ".*\\Qadle.GradleClassMethodRegexTestFilterTest.a context\\E.*"
+      ) { filter ->
+         GradleClassMethodRegexTestFilter(listOf(filter))
+            .filter(test) shouldBe TestFilterResult.Include
+      }
+
+      withData(
+         nameFn = { "should be EXCLUDED when filter is: $it" },
+         "$fqcn\\Q.a context2\\E",
+         "$fqcn\\Q.nested test\\E",
+         "$fqcn\\Q.a context.nested test2\\E",
+         ".*\\QsMethodRegexTestFilterTest.a context -- nested test2\\Q",
+      ) { filter ->
+         GradleClassMethodRegexTestFilter(listOf(filter))
+            .filter(test) shouldBe TestFilterResult.Exclude(null)
+      }
    }
 })

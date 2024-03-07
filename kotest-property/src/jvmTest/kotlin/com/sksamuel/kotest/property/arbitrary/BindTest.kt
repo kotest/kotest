@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -10,15 +11,21 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldNotStartWith
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
@@ -235,11 +242,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abk",
-         "abK",
-         "abz",
-         "aaw",
-         "ab/"
+         "ab<",
+         "abZ",
+         "ab<",
+         "aad",
+         "ab."
       )
    }
 
@@ -255,11 +262,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abb ",
-         "aaaC",
-         "aabV",
-         "abad",
-         "aabb"
+         "abbM",
+         "aaa\$",
+         "aabh",
+         "abau",
+         "aab\""
       )
    }
 
@@ -276,11 +283,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abkbb",
-         "aaCab",
-         "aa-ba",
-         "ab/aa",
-         "aa`aa"
+         "ab<bb",
+         "aa\$ab",
+         "aa&ba",
+         "ab.aa",
+         "aanaa"
       )
    }
 
@@ -299,11 +306,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "bbkbb?",
-         "aaGaaP",
-         "ba'ab/",
-         "bb;bbL",
-         "bbiab;"
+         "bb<bbG",
+         "aa;aaq",
+         "baDab.",
+         "bb{bbX",
+         "bb.ab6"
       )
    }
 
@@ -323,11 +330,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "%babb?a",
-         "#baabVa",
-         "'aaabsb",
-         ":baaa\\b",
-         "`babaBa"
+         "[babbGa",
+         "xbaabha",
+         "DaaabQb",
+         "1baaaXb",
+         "Lbaba+a"
       )
    }
 
@@ -349,11 +356,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "babacbbK",
-         "aaaaPbaw",
-         "aaabsbb;",
-         "aaabsbb`",
-         "babbPbb'"
+         "baba:bbZ",
+         "aaaaqbad",
+         "aaabQbb{",
+         "aaabFbbL",
+         "babbFbbO"
       )
    }
 
@@ -384,11 +391,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "boabb?aaa",
-         "bzaab8aba",
-         "azabb;bba",
-         "bsabaAaba",
-         "aEaabBaaa"
+         "bsabbGaaa",
+         "b<aabCaba",
+         "a\$abb{bba",
+         "bFabaJaba",
+         "agaabeaaa"
       )
    }
 
@@ -412,11 +419,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "boababbKaa",
-         "aVababa'ab",
-         "a2bbabbLab",
-         "b\\bbabaBab",
-         "aabaaaa*ab"
+         "bsababbZaa",
+         "auababaDab",
+         "aDbbabbXab",
+         "b1bbaba+ab",
+         "aZbaaaaxab"
       )
    }
 
@@ -442,11 +449,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "babacbbaaCa",
-         "aaab8abaaSb",
-         "baba`aaabsb",
-         "baabYbabb=b",
-         "aaaa*abbaOa"
+         "baba:bbaa\$a",
+         "aaabCabaaub",
+         "babanaaabFb",
+         "baabKbabb4b",
+         "aaaaxabbafa"
       )
    }
 
@@ -486,11 +493,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "bbkbbbbaaaaG",
-         "ba-babaababs",
-         "ba`aaabbbab`",
-         "baBabbbababh",
-         "ab?babbabaa0"
+         "bb<bbbbaaaa;",
+         "ba&babaababQ",
+         "banaaabbbabL",
+         "ba+abbbabab0",
+         "abCbabbabaa@"
       )
    }
 
@@ -532,11 +539,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "%baabbWaaaabz",
-         "-baaaaSbaabb;",
-         "Lababb\\bbabaB",
-         " ababa#aaaab ",
-         "7aaaaapbaaaav"
+         "[baabbqaaaab<",
+         "&baaaaubaabb{",
+         "Xababb1bbaba+",
+         "*ababaqaaaab]",
+         "iaaaaa\$baaaaM"
       )
    }
 
@@ -579,11 +586,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgeCases shouldContainExactly listOf(
-         "abbabbbWaaaabz",
-         "aababaaSbaabb;",
-         "aaabbbb\\bbabaB",
-         "abababa#aabab ",
-         "abaabaapbabaav"
+         "abbabbbqaaaab<",
+         "aababaaubaabb{",
+         "aaabbbb1bbaba+",
+         "abababaqaabab]",
+         "abaabaa\$babaaM"
       )
    }
 
@@ -624,4 +631,45 @@ class BindTest : StringSpec({
       stdout shouldContain "Shrink result"
       stdout shouldContain "Person(name=, age=-1)"
    }
+
+   "Bind using properties" {
+      checkAll(Arb.bind<User> {
+         bind(User::email to Arb.string().map { s -> "$s@yahoo.com" })
+      }) { user ->
+         user.email shouldEndWith "@yahoo.com"
+      }
+   }
+
+   "Binding properties in a nested structure should work" {
+      data class Person(val id: Int, val name: String)
+      data class Family(val name: String, val persons: List<Person>)
+
+      checkAll(Arb.bind<Family> {
+         bind(Family::name to Arb.string().map { s -> "Flanders-$s" })
+         bind(Person::id to Arb.positiveInt())
+      }) { family ->
+         family.name shouldStartWith "Flanders-"
+         family.persons.forAll {
+            it.name shouldNotStartWith "Flanders-"
+            it.id shouldBeGreaterThan 0
+         }
+      }
+   }
+
+   "When binding using properties and classes, properties should take precedence no matter the order of binding" {
+      checkAll(Arb.bind<User> {
+         bind(Int::class to Arb.constant(3))
+         bind(User::id to Arb.constant(7))
+      }) {
+         it.id shouldBe 7
+      }
+
+      checkAll(Arb.bind<User> {
+         bind(User::id to Arb.constant(7))
+         bind(Int::class to Arb.constant(3))
+      }) {
+         it.id shouldBe 7
+      }
+   }
+
 })

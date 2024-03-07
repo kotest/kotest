@@ -18,7 +18,7 @@ expect object Exceptions {
     * given message and expected and actual values. If the platform supports nested exceptions, the cause
     * is set to the given [cause].
     *
-    * If the platform has opentest4k, jUnit5 or jUnit5 on the classpath, it will use exceptions from those platforms
+    * If the platform has opentest4j it will use exceptions from that library
     * for compatibility with tools that look for these special exception types.
     */
    fun createAssertionError(message: String, cause: Throwable?, expected: Expected, actual: Actual): Throwable

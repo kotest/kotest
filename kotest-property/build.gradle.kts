@@ -1,55 +1,22 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-multiplatform-library-conventions")
+   id("kotest-android-native-conventions")
+   id("kotest-watchos-device-conventions")
 }
 
 kotlin {
-
-   targets {
-
-      jvm()
-
-      js(BOTH) {
-         browser()
-         nodejs()
-      }
-
-      linuxX64()
-
-      mingwX64()
-
-      macosX64()
-      macosArm64()
-
-      tvos()
-      tvosSimulatorArm64()
-
-      watchosArm32()
-      watchosArm64()
-      watchosX86()
-      watchosX64()
-      watchosSimulatorArm64()
-
-      iosX64()
-      iosArm64()
-      iosArm32()
-      iosSimulatorArm64()
-   }
-
    sourceSets {
 
       val commonMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(project(Projects.Common))
-            api(project(Projects.Assertions.Shared))
+            api(projects.kotestCommon)
+            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
 
       val jvmMain by getting {
-         dependsOn(commonMain)
          dependencies {
             implementation(libs.diffutils)
             api(libs.rgxgen)
@@ -59,99 +26,10 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Assertions.Core))
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val desktopTest by creating {
-         dependsOn(commonTest)
-         dependencies {
-            implementation(kotlin("test-common"))
-         }
-      }
-
-      val iosX64Test by getting {
-         dependsOn(desktopTest)
-      }
-
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val macosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX86Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
-
-apply(from = "../publish-mpp.gradle.kts")

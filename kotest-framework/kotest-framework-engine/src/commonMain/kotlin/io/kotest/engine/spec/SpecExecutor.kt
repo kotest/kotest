@@ -1,120 +1,56 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.common.Platform
+import io.kotest.common.KotestInternal
 import io.kotest.common.flatMap
-import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.interceptors.toProjectContext
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
-import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
-import io.kotest.engine.spec.interceptor.FinalizeSpecInterceptor
-import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
-import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
-import io.kotest.engine.spec.interceptor.PrepareSpecInterceptor
-import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
-import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
-import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
- * Executes a single [SpecRef].
+ * Executes a [SpecRef].
  *
- * Uses a [TestEngineListener] to notify of events in the spec lifecycle.
- *
- * The spec executor has two levels of interceptors:
- * [io.kotest.engine.spec.interceptor.SpecRefInterceptor] are executed before the spec is created.
- * [io.kotest.engine.spec.interceptor.SpecInterceptor] are executed after the spec is created.
- *
+ * First invokes the [SpecRef] against a [SpecRefInterceptorPipeline], then creates an instance
+ * of the reference, then executes the spec instance via a [SpecExecutorDelegate].
  */
-@ExperimentalKotest
-class SpecExecutor(
+internal class SpecExecutor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) {
 
    private val logger = Logger(SpecExecutorDelegate::class)
+   private val pipeline = SpecRefInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.configuration.registry)
-   private val listener = context.listener
-
-   suspend fun execute(ref: SpecRef) {
-      logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
-      referenceInterceptors(ref)
-   }
 
    suspend fun execute(kclass: KClass<out Spec>) {
       execute(SpecRef.Reference(kclass))
    }
 
-   private suspend fun referenceInterceptors(ref: SpecRef) {
-
-      val interceptors = listOfNotNull(
-         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, context.configuration.registry) else null,
-         IgnoredSpecInterceptor(listener, context.configuration.registry),
-         SpecFilterInterceptor(listener, context.configuration.registry),
-         SystemPropertySpecFilterInterceptor(listener, context.configuration.registry),
-         TagsExcludedSpecInterceptor(listener, context.configuration),
-         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, context.configuration, context.configuration.registry) else null,
-         SpecRefExtensionInterceptor(context.configuration.registry),
-         SpecStartedInterceptor(listener),
-         SpecFinishedInterceptor(listener),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.configuration.registry) else null,
-         PrepareSpecInterceptor(context.configuration.registry),
-         FinalizeSpecInterceptor(context.configuration.registry),
-      )
-
+   suspend fun execute(ref: SpecRef) {
+      logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
       val innerExecute: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> = {
-         createInstance(ref).flatMap { specInterceptors(it) }
+         createInstance(ref).flatMap { executeInDelegate(it) }
       }
-
-      logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
-      interceptors.foldRight(innerExecute) { ext: SpecRefInterceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
-         { ref -> ext.intercept(ref, fn) }
-      }.invoke(ref)
+      pipeline.execute(ref, innerExecute)
    }
 
-   private suspend fun specInterceptors(spec: Spec): Result<Map<TestCase, TestResult>> {
-
-      val interceptors = listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.configuration.registry) else null,
-         ProjectContextInterceptor(context.toProjectContext()),
-         SpecExtensionInterceptor(context.configuration.registry),
-         ConfigurationInContextInterceptor(context.configuration),
-      )
-
-      val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
-         try {
-            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context.configuration)
-            logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
-            Result.success(delegate.execute(spec))
-         } catch (t: Throwable) {
-            logger.log { Pair(spec::class.bestName(), "Error executing spec $t") }
-            Result.failure(t)
-         }
+   private suspend fun executeInDelegate(spec: Spec): Result<Map<TestCase, TestResult>> {
+      return try {
+         val delegate = createSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
+         logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
+         Result.success(delegate.execute(spec))
+      } catch (t: Throwable) {
+         logger.log { Pair(spec::class.bestName(), "Error executing spec $t") }
+         Result.failure(t)
       }
-
-      logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
-      return interceptors.foldRight(initial) { ext, fn ->
-         { spec -> ext.intercept(spec, fn) }
-      }.invoke(spec)
    }
 
    /**
@@ -130,14 +66,27 @@ class SpecExecutor(
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
 }
 
-interface SpecExecutorDelegate {
+/**
+ * A platform specific specialization of [SpecExecutor] logic.
+ */
+internal interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
-@ExperimentalKotest
 internal expect fun createSpecExecutorDelegate(
-   listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: ProjectConfiguration,
+   context: EngineContext,
 ): SpecExecutorDelegate
 
+/**
+ * Used to test a [SpecExecutor] from another module.
+ * Should not be used by user's code and is subject to change.
+ */
+@KotestInternal
+suspend fun testSpecExecutor(
+   dispatcherFactory: NoopCoroutineDispatcherFactory,
+   context: EngineContext,
+   ref: SpecRef.Reference
+) {
+   SpecExecutor(dispatcherFactory, context).execute(ref)
+}

@@ -74,6 +74,18 @@ class JunitXmlReporterTest : WordSpec() {
             root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet()
                .shouldBe(setOf("com.sksamuel.kotest.DummyBehaviorSpecTest"))
          }
+
+         "include the full path of deeply nested tests" {
+            val root = loadTestFile("without_containers/TEST-com.sksamuel.kotest.DummyFreeSpecTest.xml")
+            root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet() shouldBe
+               setOf(
+                  "1 -- 2 -- 3",
+                  "1 -- 2 -- 4 -- 5 -- 6",
+               )
+            root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet()
+               .shouldBe(setOf("com.sksamuel.kotest.DummyFreeSpecTest"))
+
+         }
       }
    }
 

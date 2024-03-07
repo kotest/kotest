@@ -52,6 +52,12 @@ class RootDataTestNameFunctionTest : FunSpec({
       )
    ) {}
 
+   withData<Int>(
+      { i: Int -> "Test $i" },
+      1..3
+   ) {}
+
+   withData(4 downTo 0 step 2) {}
 }) {
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       DataTestNamesStore.names.add(testCase.descriptor.id.value)
@@ -73,6 +79,12 @@ class RootDataTestNameFunctionTest : FunSpec({
          "(1) simplea2b2",
          "(2) simplea1b1",
          "(2) simplea2b2",
+         "Test 1",
+         "Test 2",
+         "Test 3",
+         "4",
+         "2",
+         "0",
       )
    }
 

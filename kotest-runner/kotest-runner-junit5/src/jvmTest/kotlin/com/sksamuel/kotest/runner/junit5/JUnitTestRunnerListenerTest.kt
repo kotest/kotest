@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -9,6 +10,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.createTestResult
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -27,6 +30,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
 
          val root = KotestEngineDescriptor(
             UniqueId.forEngine("kotest"),
+            ProjectConfiguration(),
             emptyList(),
             emptyList(),
             emptyList(),
@@ -66,7 +70,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
             parent = test1,
          )
 
-         val listener = JUnitTestEngineListener(engineListener, root)
+         val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
          listener.engineStarted()
          listener.specStarted(JUnitTestRunnerListenerTest::class)
          listener.specStarted(JUnitTestRunnerListenerTest::class)

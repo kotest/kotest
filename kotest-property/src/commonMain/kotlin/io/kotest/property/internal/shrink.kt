@@ -2,6 +2,7 @@ package io.kotest.property.internal
 
 import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
+import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
@@ -118,3 +119,16 @@ private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
       println(sb)
    }
 }
+
+/**
+ * The contextual shrinking is  only used for output purposes for the time being.
+ * Contextual arb shrinking is theoretically possible. A strategy that may work is to treat shrinks
+ * as a standard Vector of arbitrary dimension. However, this will need to be discussed and addressed separately.
+ */
+internal suspend fun PropertyContext.doContextualShrinking(
+   mode: ShrinkingMode,
+   test: suspend PropertyContext.() -> Unit
+): List<ShrinkResult<*>> = generatedSamples().map {
+   ShrinkResult(it.value, it.value, null)
+}
+

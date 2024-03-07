@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.matchers.bigdecimal
 
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThan
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldBeInRange
@@ -15,8 +17,9 @@ import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldNotBeInRange
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThan
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldNotBeNegative
+import io.kotest.matchers.bigdecimal.shouldNotBePositive
 import io.kotest.matchers.bigdecimal.shouldNotHaveScale
-import io.kotest.core.spec.style.StringSpec
 import java.math.BigDecimal
 
 class BigDecimalMatchersTest : StringSpec() {
@@ -47,15 +50,33 @@ class BigDecimalMatchersTest : StringSpec() {
     }
     "shouldBePositive" {
       BigDecimal(10).shouldBePositive()
-      BigDecimal.ZERO.shouldBePositive()
+      BigDecimal.ONE.shouldBePositive()
       BigDecimal(0.1).shouldBePositive()
       0.1.toBigDecimal().shouldBePositive()
+
+      shouldThrowAny { BigDecimal(-1).shouldBePositive() }
+      shouldThrowAny { BigDecimal.ZERO.shouldBePositive() }
     }
     "shouldBeNegative" {
       BigDecimal(-1).shouldBeNegative()
       (-1).toBigDecimal().shouldBeNegative()
       BigDecimal(-0.1).shouldBeNegative()
       BigDecimal(1).minus(BigDecimal(2)).shouldBeNegative()
+
+      shouldThrowAny { BigDecimal(1).shouldBeNegative() }
+      shouldThrowAny { BigDecimal.ZERO.shouldBeNegative() }
+    }
+    "shouldNotBePositive" {
+       BigDecimal(-1).shouldNotBePositive()
+       BigDecimal.ZERO.shouldNotBePositive()
+
+       shouldThrowAny { BigDecimal(1).shouldNotBePositive() }
+    }
+    "shouldNotBeNegative" {
+       BigDecimal(1).shouldNotBeNegative()
+       BigDecimal.ZERO.shouldNotBeNegative()
+
+       shouldThrowAny { BigDecimal(-1).shouldNotBeNegative() }
     }
     "shouldBeGreaterThan" {
       BigDecimal.ONE shouldBeGreaterThan BigDecimal.ZERO

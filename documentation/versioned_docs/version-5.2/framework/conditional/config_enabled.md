@@ -29,9 +29,6 @@ For example you could run certain tests only on Linux systems using
 }
 ```
 
-`isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
-
-
 ### Enabled if
 
 If you want to use a function that is evaluated each time the test is invoked, then you can use `enabledIf`.
