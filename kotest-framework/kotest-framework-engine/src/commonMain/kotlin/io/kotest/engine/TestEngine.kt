@@ -58,7 +58,9 @@ class TestEngine(private val config: TestEngineConfig) {
                context,
             )
 
-            else -> SequentialTestSuiteScheduler(context)
+            Platform.JS,
+            Platform.Native,
+            Platform.WasmJs -> SequentialTestSuiteScheduler(context)
          }
          scheduler.schedule(context.suite)
       }

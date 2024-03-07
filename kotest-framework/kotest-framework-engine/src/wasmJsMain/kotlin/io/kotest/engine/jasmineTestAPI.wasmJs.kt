@@ -10,8 +10,8 @@ actual fun jasmineTestIt(
    timeout: Int
 ) {
    it(description, { done ->
-      callTest(testFunction) {
-         callImplementationCallback(done, it)
+      callTestFunction(testFunction) {
+         callDone(done, it)
       }
    }, timeout)
 }
@@ -21,13 +21,13 @@ actual fun jasmineTestXit(
    testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
 ) {
    xit(description) { done ->
-      callTest(testFunction) {
-         callImplementationCallback(done, it)
+      callTestFunction(testFunction) {
+         callDone(done, it)
       }
    }
 }
 
-private fun callTest(
+private fun callTestFunction(
    testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
    done: (errorOrNull: Throwable?) -> Unit
 ): JsAny? =
@@ -43,7 +43,7 @@ private fun callTest(
       jsThrow(exception.toJsError())
    }
 
-private fun callImplementationCallback(
+private fun callDone(
    done: (errorOrNull: JsAny?) -> Unit,
    errorOrNull: Throwable?
 ) {

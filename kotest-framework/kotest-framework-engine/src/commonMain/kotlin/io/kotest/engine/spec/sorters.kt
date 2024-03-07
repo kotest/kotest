@@ -22,7 +22,7 @@ interface SpecSorter {
 /**
  * An implementation of [SpecExecutionOrder] which will order specs in lexicographic order.
  */
-val LexicographicSpecSorter = object : SpecSorter {
+internal val LexicographicSpecSorter = object : SpecSorter {
    override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = a.bestName().compareTo(b.bestName())
 }
 

@@ -36,16 +36,17 @@ kotlin {
    }
 }
 
-// Use a Node.js version current enough to support Kotlin/Wasm
+// FIXME: WORKAROUND https://youtrack.jetbrains.com/issue/KT-65864
+//     Use a Node.js version current enough to support Kotlin/Wasm
 
 rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
    rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
       // Initialize once in a multi-project build.
       // Otherwise, Gradle would complain "Configuration already finalized for previous property values".
       if (!System.getProperty("nodeJsCanaryConfigured").toBoolean()) {
-         nodeVersion = "22.0.0-v8-canary20231213fc7703246e"
+         nodeVersion = "22.0.0-nightly2024010568c8472ed9"
          println("Using Node.js $nodeVersion to support Kotlin/Wasm")
-         nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+         nodeDownloadBaseUrl = "https://nodejs.org/download/nightly"
          System.setProperty("nodeJsCanaryConfigured", "true")
       }
    }

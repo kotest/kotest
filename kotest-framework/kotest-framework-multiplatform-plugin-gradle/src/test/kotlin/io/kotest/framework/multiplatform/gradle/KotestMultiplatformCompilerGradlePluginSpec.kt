@@ -18,7 +18,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
 
    setOf(
-      "1.9.21",
+      "1.9.23",
 //      "2.0.0-Beta2",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
