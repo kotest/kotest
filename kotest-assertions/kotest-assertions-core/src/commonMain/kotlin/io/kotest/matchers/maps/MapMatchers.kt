@@ -7,6 +7,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.string.stringify
+import io.kotest.similarity.possibleMatchesDescription
 
 fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
    override fun test(value: Map<K, Any?>) = MatcherResult(
@@ -101,6 +102,12 @@ class MapContainsMatcher<K, V>(
 ) : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>): MatcherResult {
       val diff = Diff.create(value, expected, ignoreExtraMapKeys = ignoreExtraKeys)
+      val unexpectedKeys = (value.keys - expected.keys)
+      val possibleMatches = unexpectedKeys.joinToString("\n") {
+         possibleMatchesDescription(expected.keys, it)
+      }
+      val possibleMatchesDescription = if(possibleMatches.isEmpty()) ""
+      else "\nPossible matches for missing keys:\n$possibleMatches"
       val (expectMsg, negatedExpectMsg) = if (ignoreExtraKeys) {
          "should contain all of" to "should not contain all of"
       } else {
@@ -132,7 +139,7 @@ class MapContainsMatcher<K, V>(
     """.trimMargin()
       return MatcherResult(
          diff.isEmpty(),
-         { failureMsg },
+         { failureMsg + possibleMatchesDescription },
          {
             negatedFailureMsg
          })
@@ -187,3 +194,4 @@ class MapMatchesMatcher<K, V>(
       )
    }
 }
+

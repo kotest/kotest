@@ -259,6 +259,8 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotHaveScale (Ljava/math/BigDecimal;I)I
 }
 
@@ -1841,6 +1843,65 @@ public final class io/kotest/matchers/ranges/BeinKt {
 	public static final fun beIn (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+}
+
+public final class io/kotest/matchers/ranges/IntersectKt {
+	public static final fun intersect (Lio/kotest/matchers/ranges/Range;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+}
+
+public final class io/kotest/matchers/ranges/Range {
+	public static final field Companion Lio/kotest/matchers/ranges/Range$Companion;
+	public fun <init> (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)V
+	public final fun component1 ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun copy (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)Lio/kotest/matchers/ranges/Range;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/Range;Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;ILjava/lang/Object;)Lio/kotest/matchers/ranges/Range;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnd ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun getStart ()Lio/kotest/matchers/ranges/RangeEdge;
+	public final fun greaterThan (Lio/kotest/matchers/ranges/Range;)Z
+	public fun hashCode ()I
+	public final fun intersect (Lio/kotest/matchers/ranges/Range;)Z
+	public final fun isEmpty ()Z
+	public final fun lessThan (Lio/kotest/matchers/ranges/Range;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ranges/Range$Companion {
+	public final fun closedClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun closedOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun ofOpenEndRange (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
+	public final fun openClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public final fun openOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+}
+
+public final class io/kotest/matchers/ranges/RangeEdge {
+	public fun <init> (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)V
+	public final fun component1 ()Ljava/lang/Comparable;
+	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdgeType;
+	public final fun copy (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)Lio/kotest/matchers/ranges/RangeEdge;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/RangeEdge;Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;ILjava/lang/Object;)Lio/kotest/matchers/ranges/RangeEdge;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEdgeType ()Lio/kotest/matchers/ranges/RangeEdgeType;
+	public final fun getValue ()Ljava/lang/Comparable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ranges/RangeEdgeType : java/lang/Enum {
+	public static final field EXCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static final field INCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static fun values ()[Lio/kotest/matchers/ranges/RangeEdgeType;
 }
 
 public final class io/kotest/matchers/reflection/CallableMatchersKt {

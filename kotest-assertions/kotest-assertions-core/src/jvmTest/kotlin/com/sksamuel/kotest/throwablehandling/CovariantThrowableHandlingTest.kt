@@ -229,7 +229,8 @@ class CovariantThrowableHandlingTest : FreeSpec() {
       val throwable = catchThrowable(block)
 
       throwable.shouldBeInstanceOf<AssertionError>()
-      throwable.message shouldBe "Expected exception message $expectedMessage but was $actualMessage instead."
+      throwable.message shouldBe "Unexpected exception message: " +
+         "expected:<\"$expectedMessage\"> but was:<\"$actualMessage\">"
    }
 
    private fun verifyReturnsExactly(thrownException: Throwable, block: () -> Any?) {

@@ -892,6 +892,8 @@ public final class io/kotest/property/arbitrary/DatesKt {
 	public static final fun period (Lio/kotest/property/Arb$Companion;I)Lio/kotest/property/Arb;
 	public static synthetic fun period$default (Lio/kotest/property/Arb$Companion;IILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun random (Lkotlin/ranges/ClosedRange;Lkotlin/random/Random;)Ljava/time/Instant;
+	public static final fun year (Lio/kotest/property/Arb$Companion;Ljava/time/Year;Ljava/time/Year;)Lio/kotest/property/Arb;
+	public static synthetic fun year$default (Lio/kotest/property/Arb$Companion;Ljava/time/Year;Ljava/time/Year;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun yearMonth (Lio/kotest/property/Arb$Companion;Ljava/time/YearMonth;Ljava/time/YearMonth;)Lio/kotest/property/Arb;
 	public static synthetic fun yearMonth$default (Lio/kotest/property/Arb$Companion;Ljava/time/YearMonth;Ljava/time/YearMonth;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun zonedDateTime (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
@@ -1147,6 +1149,7 @@ public final class io/kotest/property/arbitrary/MultiplesShrinker : io/kotest/pr
 
 public final class io/kotest/property/arbitrary/NetworkKt {
 	public static final fun ipAddressV4 (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
+	public static final fun ipAddressV6 (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/NextKt {

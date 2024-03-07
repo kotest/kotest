@@ -12,6 +12,8 @@ import io.kotest.matchers.shouldNotBe
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.isRegularFile
 import kotlin.streams.toList
 
 infix fun Path.shouldStartWithPath(file: File) = this should startWithPath(file)
@@ -66,9 +68,9 @@ fun Path.shouldBeAFile() = this should aFile()
 fun Path.shouldNotBeAFile() = this shouldNot aFile()
 fun aFile(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
-      !Files.isDirectory(value),
-      { "File $value should be a directory" },
-      { "File $value should not be a directory" })
+      value.isRegularFile(),
+      { "Path $value should be a regular file" },
+      { "Path $value should not be a regular file" })
 }
 
 fun Path.shouldBeAbsolute() = this should beAbsolute()
