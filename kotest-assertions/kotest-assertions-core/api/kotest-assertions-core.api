@@ -1900,6 +1900,7 @@ public final class io/kotest/matchers/ranges/RangeEdge {
 public final class io/kotest/matchers/ranges/RangeEdgeType : java/lang/Enum {
 	public static final field EXCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
 	public static final field INCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ranges/RangeEdgeType;
 	public static fun values ()[Lio/kotest/matchers/ranges/RangeEdgeType;
 }

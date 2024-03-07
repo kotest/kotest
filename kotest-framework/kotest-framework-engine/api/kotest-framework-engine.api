@@ -462,10 +462,6 @@ public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spe
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
-public final class io/kotest/engine/spec/SortersKt {
-	public static final fun getLexicographicSpecSorter ()Lio/kotest/engine/spec/SpecSorter;
-}
-
 public final class io/kotest/engine/spec/Sorters_jvmKt {
 	public static final fun getAnnotatedSpecSorter ()Lio/kotest/engine/spec/SpecSorter;
 	public static final fun getFailureFirstSorter ()Lio/kotest/engine/spec/SpecSorter;
