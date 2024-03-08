@@ -16,6 +16,7 @@ import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -351,6 +352,24 @@ class EventuallyTest : FunSpec() {
                1 shouldBe 2
             }
          }.message shouldContain """Block failed after \d{1,3}ms; attempted 1 time""".toRegex()
+      }
+
+      test("suppress first error") {
+         var count = 0
+         shouldFail {
+            val config = eventuallyConfig {
+               duration = 100.milliseconds
+               includeFirst = false
+            }
+            eventually(config) {
+               if(count++ == 0)
+               {
+                  fail("first")
+               }else{
+                  fail("last")
+               }
+            }
+         }.message shouldNotContain "The first error was caused by: first"
       }
    }
 }
