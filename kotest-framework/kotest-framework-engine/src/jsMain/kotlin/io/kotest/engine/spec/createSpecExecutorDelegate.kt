@@ -12,8 +12,6 @@ import io.kotest.engine.it
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.engine.test.scopes.TerminalTestScope
-import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scopes.InOrderTestScope
 import io.kotest.engine.test.status.isEnabledInternal
@@ -26,15 +24,17 @@ import kotlin.coroutines.coroutineContext
 internal actual fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
-   configuration: ProjectConfiguration,
-): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+): SpecExecutorDelegate =
+   JavascriptSpecExecutorDelegate(
+      defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
+      context = context,
+   )
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 @ExperimentalKotest
 internal class JavascriptSpecExecutorDelegate(
-   private val testEngineListener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext
 ) : SpecExecutorDelegate {
@@ -47,7 +47,8 @@ internal class JavascriptSpecExecutorDelegate(
    private val materializer = Materializer(context.configuration)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
-      val cc = coroutineContext
+      val executeCoroutineContext = coroutineContext
+
       // we use the spec itself as an outer/parent test.
       describe(testNameEscape(spec::class.bestName())) {
          materializer.materialize(spec).forEach { root ->
@@ -64,19 +65,24 @@ internal class JavascriptSpecExecutorDelegate(
                   // but we can't launch a promise inside the describe and have it resolve the "it"
                   // this means we must duplicate the isEnabled check outside of the executor
                   GlobalScope.promise {
+                     val duplicateTestNameMode = context.configuration.duplicateTestNameMode
+
                      val scope = InOrderTestScope(
-                        root,
-                        cc,
-                        configuration.duplicateTestNameMode,
-                        testEngineListener,
-                        defaultCoroutineDispatcherFactory,
-                        configuration
+                        testCase = root,
+                        coroutineContext = executeCoroutineContext,
+                        mode = duplicateTestNameMode,
+                        coroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
+                        context = context,
                      )
+
                      TestCaseExecutor(
-                        PromiseTestCaseExecutionListener(done),
-                        defaultCoroutineDispatcherFactory,
-                        context
-                     ).execute(root, DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, scope))
+                        listener = PromiseTestCaseExecutionListener(done = done),
+                        defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
+                        context = context
+                     ).execute(
+                        testCase = root,
+                        testScope = DuplicateNameHandlingTestScope(duplicateTestNameMode, scope),
+                     )
                   }
 
                   // we don't want to return the promise as the js frameworks will use that for test resolution
