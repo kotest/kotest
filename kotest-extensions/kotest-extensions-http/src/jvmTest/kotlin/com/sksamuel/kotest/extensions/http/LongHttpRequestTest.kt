@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.http.http
 import io.kotest.extensions.mockserver.MockServerListener
 import io.kotest.matchers.shouldBe
-import io.ktor.client.plugins.*
+import io.ktor.client.features.*
 import io.ktor.http.HttpStatusCode
 import org.mockserver.client.MockServerClient
 import org.mockserver.model.HttpRequest.request
