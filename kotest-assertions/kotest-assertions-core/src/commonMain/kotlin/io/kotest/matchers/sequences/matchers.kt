@@ -168,13 +168,15 @@ fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
 fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
    val valueAsList = value.toList()
    val expectedAsList = expected.toList()
-   val passed = valueAsList.size == expectedAsList.size && valueAsList.containsAll(expectedAsList)
+   val comparison = UnorderedCollectionsDifference.of(expectedAsList, valueAsList)
    MatcherResult(
-      passed,
-      { "Sequence should contain the values of $expectedAsList in any order, but was $valueAsList" },
+      comparison.isMatch(),
+      { "Sequence should contain the values of $expectedAsList in any order, but was $valueAsList.${comparison}" },
       { "Sequence should not contain the values of $expectedAsList in any order" }
    )
 }
+
+internal fun<T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
 
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 
