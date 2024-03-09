@@ -99,6 +99,7 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
       expectedExceptionsFn = { t -> this.expectedExceptions.any { it.isInstance(t) } || this.expectedExceptionsFn(t) },
       listener = this.listener ?: NoopEventuallyListener,
       shortCircuit = this.shortCircuit,
+      includeFirst = this.includeFirst,
    )
 }
 
@@ -110,6 +111,7 @@ data class EventuallyConfiguration(
    val expectedExceptionsFn: (Throwable) -> Boolean,
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
+   val includeFirst: Boolean,
 )
 
 object EventuallyConfigurationDefaults {
@@ -122,6 +124,7 @@ object EventuallyConfigurationDefaults {
    var expectedExceptionsFn: (Throwable) -> Boolean = { true }
    var listener: EventuallyListener? = null
    var shortCircuit: (Throwable) -> Boolean = { false }
+   var includeFirst: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
@@ -184,6 +187,13 @@ class EventuallyConfigurationBuilder {
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
    var shortCircuit: (Throwable) -> Boolean = EventuallyConfigurationDefaults.shortCircuit
+
+   /**
+    * An option that can be used to turn off the first error.
+    *
+    * This is useful for those who don't want to see the first error.
+    */
+   var includeFirst: Boolean = EventuallyConfigurationDefaults.includeFirst
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
@@ -240,7 +250,7 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
 
       appendLine("Block failed after $printedDuration; attempted $iterations time(s)")
 
-      firstError?.run {
+      firstError?.takeIf { config.includeFirst }?.run {
          appendLine("The first error was caused by: ${this.message}")
          appendLine(this.stackTraceToString())
       }
