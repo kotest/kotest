@@ -1,12 +1,12 @@
 plugins {
    id("kotest-js-conventions")
    // must be a published version and not one in the current build
-   id("io.kotest.multiplatform").version("5.8.0")
+   id("io.kotest.multiplatform") version "5.8.0"
 }
 
 kotlin {
    sourceSets {
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestFramework.kotestFrameworkEngine)

@@ -9,34 +9,34 @@ class NestedTests : FunSpec() {
          1 + 1 shouldBe 2
       }
 
-      test("a top level failing test") {
+      xtest("a top level failing test") {
          1 + 1 shouldBe 3
       }
 
-      test("a top level skipped test") {}
+      xtest("a top level skipped test") {}
 
       context("a context") {
-         test("successful test") {
+         test("successful test inside a context") {
             1 + 1 shouldBe 2
          }
 
-         test("failing test") {
+         test("failing test inside a context") {
             1 + 1 shouldBe 3
          }
 
-         xtest("skipped test") { }
+         xtest("skipped test inside a context") { }
       }
 
       xcontext("skipped context") {
-         test("successful test") {
+         test("successful test inside a context") {
             1 + 1 shouldBe 2
          }
 
-         test("failing test") {
+         test("failing test inside a context") {
             1 + 1 shouldBe 3
          }
 
-         xtest("skipped test") { }
+         xtest("skipped test inside a context") { }
       }
    }
 }
