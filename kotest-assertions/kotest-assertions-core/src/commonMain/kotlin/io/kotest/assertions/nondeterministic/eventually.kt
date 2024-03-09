@@ -67,6 +67,14 @@ suspend fun <T> eventually(
 
          control.step()
       }
+   } catch (e : ShortCircuitControlException) {
+      // Short-circuited out from retries, will throw below
+
+      // If we terminated due to an exception, we are missing an iteration in the counter
+      // since the step function is not invoked when terminating early
+      control.iterations++
+   } catch (e: Throwable) {
+      control.iterations++
    } finally {
       errorCollector.setCollectionMode(originalAssertionMode)
    }
@@ -91,6 +99,7 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
       expectedExceptionsFn = { t -> this.expectedExceptions.any { it.isInstance(t) } || this.expectedExceptionsFn(t) },
       listener = this.listener ?: NoopEventuallyListener,
       shortCircuit = this.shortCircuit,
+      includeFirst = this.includeFirst,
    )
 }
 
@@ -102,6 +111,7 @@ data class EventuallyConfiguration(
    val expectedExceptionsFn: (Throwable) -> Boolean,
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
+   val includeFirst: Boolean,
 )
 
 object EventuallyConfigurationDefaults {
@@ -114,6 +124,7 @@ object EventuallyConfigurationDefaults {
    var expectedExceptionsFn: (Throwable) -> Boolean = { true }
    var listener: EventuallyListener? = null
    var shortCircuit: (Throwable) -> Boolean = { false }
+   var includeFirst: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
@@ -176,6 +187,13 @@ class EventuallyConfigurationBuilder {
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
    var shortCircuit: (Throwable) -> Boolean = EventuallyConfigurationDefaults.shortCircuit
+
+   /**
+    * An option that can be used to turn off the first error.
+    *
+    * This is useful for those who don't want to see the first error.
+    */
+   var includeFirst: Boolean = EventuallyConfigurationDefaults.includeFirst
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
@@ -227,9 +245,12 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
    fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
 
    fun buildFailureMessage() = StringBuilder().apply {
-      appendLine("Block failed after ${config.duration}; attempted $iterations time(s)")
+      val totalDuration = timeInMillis() - start
+      val printedDuration = if (totalDuration >= 1000) "${totalDuration / 1000}s" else "${totalDuration}ms"
 
-      firstError?.run {
+      appendLine("Block failed after $printedDuration; attempted $iterations time(s)")
+
+      firstError?.takeIf { config.includeFirst }?.run {
          appendLine("The first error was caused by: ${this.message}")
          appendLine(this.stackTraceToString())
       }
