@@ -716,7 +716,7 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.countup.shouldContainAllInAnyOrder((5..15).asSequence())
          }
 
-         succeed("for subset, same count with nulls") {
+         fail("for subset, same count with nulls") {
             sampleData.sparse.shouldContainAllInAnyOrder(sampleData.nulls)
          }
 
@@ -734,6 +734,17 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for same, different count") {
             sampleData.repeating.shouldContainAllInAnyOrder(sampleData.unique)
+         }
+
+         succeed("detect different count of individual elements in collections of same length") {
+            shouldThrowAny{
+               sequenceOf(1, 2, 2).shouldContainAllInAnyOrder(sequenceOf(1, 1, 2))
+            }.shouldHaveMessage("""
+            |Sequence should contain the values of [1, 1, 2] in any order, but was [1, 2, 2].
+            |Count Mismatches:
+            |  For 1: expected count: <2>, but was: <1>
+            |  For 2: expected count: <1>, but was: <2>
+            """.trimMargin())
          }
       }
 
@@ -754,7 +765,7 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.countup.shouldNotContainAllInAnyOrder((5..15).asSequence())
          }
 
-         fail("for subset, same count with nulls") {
+         succeed("for subset, same count with nulls") {
             sampleData.sparse.shouldNotContainAllInAnyOrder(sampleData.nulls)
          }
 
@@ -774,6 +785,9 @@ class SequenceMatchersTest : WordSpec() {
             sampleData.repeating.shouldNotContainAllInAnyOrder(sampleData.unique)
          }
 
+         succeed("detect different count of individual elements in sequences of same length") {
+            sequenceOf(1, 2, 2).shouldNotContainAllInAnyOrder(sequenceOf(1, 1, 2))
+         }
       }
 
       "contain in order" should {
