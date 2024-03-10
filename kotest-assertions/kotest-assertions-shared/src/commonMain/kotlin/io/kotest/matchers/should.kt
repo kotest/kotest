@@ -4,12 +4,9 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
-import io.kotest.assertions.eq.actualIsNull
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.eq.expectedIsNull
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
@@ -17,11 +14,7 @@ import io.kotest.assertions.print.print
 infix fun <T, U : T> T.shouldBe(expected: U?): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
-      else -> {
-         val actual = this
-         assertionCounter.inc()
-         eq(actual, expected)?.let(errorCollector::collectOrThrow)
-      }
+      else -> this should be(expected)
    }
    return this
 }
@@ -30,7 +23,7 @@ infix fun <T, U : T> T.shouldBe(expected: U?): T {
 infix fun <T> T.shouldNotBe(any: Any?): T {
    when (any) {
       is Matcher<*> -> shouldNot(any as Matcher<T>)
-      else -> shouldNot(equalityMatcher(any))
+      else -> this shouldNot be(any)
    }
    return this
 }
@@ -59,6 +52,10 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
                prependMessage = result.failureMessage() + "\n"
             )
          )
+         is MatcherResultWithError -> {
+            val error = result.error ?: failure(result.failureMessage())
+            errorCollector.collectOrThrow(error)
+         }
          else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
       }
    }
@@ -73,23 +70,17 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val t = if (value == null && expected == null) {
-         null
-      } else if (value == null && expected != null) {
-         actualIsNull(expected)
-      } else if (value != null && expected == null) {
-         expectedIsNull(value)
-      } else {
-         eq(value, expected)
-      }
-      return MatcherResult(
-         t == null,
-         {
-            val e = Expected(expected.print())
-            val a = Actual(value.print())
-            failure(e, a).message ?: intellijFormatError(e, a)
+      val error = eq(value, expected)
+
+      return MatcherResultWithError(
+         error = error,
+         passed = error == null,
+         failureMessageFn = { e ->
+            e?.message ?: "${expected.print().value} should be equal to ${value.print().value}"
          },
-         { "${expected.print().value} should not equal ${value.print().value}" }
+         negatedFailureMessageFn = { e ->
+            e?.message ?: "${expected.print().value} should not equal ${value.print().value}"
+         }
       )
    }
 }

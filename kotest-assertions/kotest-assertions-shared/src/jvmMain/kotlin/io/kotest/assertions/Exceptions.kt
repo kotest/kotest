@@ -8,7 +8,15 @@ actual object Exceptions {
     * Creates an [AssertionError] from the given message. If the platform supports nested exceptions, the cause
     * is set to the given [cause].
     */
-   actual fun createAssertionError(message: String, cause: Throwable?): AssertionError = AssertionError(message, cause)
+   actual fun createAssertionError(message: String, cause: Throwable?): AssertionError = try {
+      // in the case of a mock, trying to access the cause's stacktrace in the assertion error constructor
+      // will cause another exception to throw
+      // easist workaround is to try to access the stack trace ourselves and catch any throwable
+      cause?.stackTrace
+      AssertionError(message, cause)
+   } catch (e: Throwable) {
+      AssertionError(message, null)
+   }
 
    /**
     * Creates an [AssertionError] from the given message and expected and actual values.
@@ -24,7 +32,15 @@ actual object Exceptions {
       cause: Throwable?,
       expected: Expected,
       actual: Actual
-   ): Throwable = AssertionFailedError(message, cause, expected.value.value, actual.value.value)
+   ): Throwable = try {
+      // in the case of a mock, trying to access the cause's stacktrace in the assertion error constructor
+      // will cause another exception to throw
+      // easist workaround is to try to access the stack trace ourselves and catch any throwable
+      cause?.stackTrace
+      AssertionFailedError(message, cause, expected.value.value, actual.value.value)
+   } catch (e: Throwable) {
+      AssertionFailedError(message, null, expected.value.value, actual.value.value)
+   }
 }
 
 /**
