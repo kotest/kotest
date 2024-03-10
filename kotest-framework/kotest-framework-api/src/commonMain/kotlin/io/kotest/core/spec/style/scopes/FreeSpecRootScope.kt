@@ -6,13 +6,13 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 @Deprecated("Renamed to FreeSpecRootContext. Deprecated since 5.0")
 typealias FreeSpecRootContext = FreeSpecRootScope
 
-data class FreeSpecContextConfigBuilder(val name: String, val config: UnresolvedTestConfig)
+data class FreeSpecContextConfigBuilder(val name: String, val config: TestConfig)
 
 interface FreeSpecRootScope : RootScope {
 
@@ -49,7 +49,7 @@ interface FreeSpecRootScope : RootScope {
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
    ): FreeSpecContextConfigBuilder {
-      val config = UnresolvedTestConfig(
+      val config = TestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
@@ -63,6 +63,21 @@ interface FreeSpecRootScope : RootScope {
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
       )
+      return config(config)
+   }
+
+   /**
+    * Starts a config builder, which can be added to the scope by invoking [minus] on the returned value.
+    *
+    * E.g.
+    *
+    * ```
+    * "this test".config(...) - { }
+    * ```
+    */
+   fun String.config(
+      config: TestConfig,
+   ): FreeSpecContextConfigBuilder {
       return FreeSpecContextConfigBuilder(this, config)
    }
 
@@ -101,7 +116,7 @@ interface FreeSpecRootScope : RootScope {
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
-      val config = UnresolvedTestConfig(
+      val config = TestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
@@ -116,5 +131,9 @@ interface FreeSpecRootScope : RootScope {
          coroutineTestScope = coroutineTestScope,
       )
       addTest(TestName(this), false, config, test)
+   }
+
+   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit): FreeSpecContextConfigBuilder {
+      return FreeSpecContextConfigBuilder(this, config)
    }
 }
