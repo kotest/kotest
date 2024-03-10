@@ -45,5 +45,5 @@ class ExcludedTestByOverrideTagTest : StringSpec() {
          fail("Shouldn't get here")
       }
    }
-
 }
+
