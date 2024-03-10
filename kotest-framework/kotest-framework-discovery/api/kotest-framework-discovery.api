@@ -8,18 +8,6 @@ public abstract class io/kotest/framework/discovery/DiscoveryFilter {
 	public abstract fun test (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/framework/discovery/DiscoveryFilter$ClassModifierDiscoveryFilter : io/kotest/framework/discovery/DiscoveryFilter {
-	public fun <init> (Ljava/util/Set;)V
-	public final fun component1 ()Ljava/util/Set;
-	public final fun copy (Ljava/util/Set;)Lio/kotest/framework/discovery/DiscoveryFilter$ClassModifierDiscoveryFilter;
-	public static synthetic fun copy$default (Lio/kotest/framework/discovery/DiscoveryFilter$ClassModifierDiscoveryFilter;Ljava/util/Set;ILjava/lang/Object;)Lio/kotest/framework/discovery/DiscoveryFilter$ClassModifierDiscoveryFilter;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getModifiers ()Ljava/util/Set;
-	public fun hashCode ()I
-	public fun test (Lkotlin/reflect/KClass;)Z
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class io/kotest/framework/discovery/DiscoveryFilter$ClassNameDiscoveryFilter : io/kotest/framework/discovery/DiscoveryFilter {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public final fun component1 ()Lkotlin/jvm/functions/Function1;
