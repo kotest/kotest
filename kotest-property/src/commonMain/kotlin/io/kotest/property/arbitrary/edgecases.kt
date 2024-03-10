@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Classifier
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
@@ -33,7 +34,11 @@ fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.
 /**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
-fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this@withEdgecases.next(it) }
+fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = object : Arb<A>() {
+   override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
+   override fun sample(rs: RandomSource): Sample<A> = this@withEdgecases.sample(rs)
+   override val classifier: Classifier<out A>? = this@withEdgecases.classifier
+}
 
 /**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
