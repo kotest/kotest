@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.core.Tag
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -44,6 +45,11 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.testName}")
       rootTests = rootTests + test
+   }
+
+   override fun tags(vararg tags: Tag) {
+      if (sealed) throw InvalidDslException("Cannot add a tag after the spec has been instantiated")
+      super.tags(*tags)
    }
 
    /**

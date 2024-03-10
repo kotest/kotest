@@ -352,6 +352,10 @@ class ProjectConfiguration {
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
+   var threads: Int = defaultTestConfig.threads
+
+   var invocations: Int = defaultTestConfig.invocations
+
    /**
     * Returns all globally registered [Listener]s.
     */
