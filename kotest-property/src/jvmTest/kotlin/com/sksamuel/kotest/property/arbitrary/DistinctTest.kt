@@ -18,7 +18,7 @@ import io.kotest.property.arbitrary.take
 class DistinctTest : FunSpec({
 
    test("with enough entropy distinct should return required count") {
-      Arb.int(0..100000).distinct().take(100).toList().shouldBeUnique()
+      Arb.int(0..100000).distinct().take(100).toList().shouldBeUnique().shouldHaveSize(100)
    }
 
    test("without enough entropy distinct should throw") {
