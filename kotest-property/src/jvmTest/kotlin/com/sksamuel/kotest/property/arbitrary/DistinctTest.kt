@@ -3,23 +3,22 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.DelicateKotest
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeUnique
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
-import io.kotest.property.arbitrary.arbitraryBuilder
 import io.kotest.property.arbitrary.distinct
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.take
-import kotlin.random.Random
 
 @OptIn(DelicateKotest::class)
 class DistinctTest : FunSpec({
 
    test("with enough entropy distinct should return required count") {
-      Arb.int(0..100000).distinct().take(100).toList().shouldHaveSize(100)
+      Arb.int(0..100000).distinct().take(100).toList().shouldBeUnique()
    }
 
    test("without enough entropy distinct should throw") {
