@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -16,6 +17,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class FeatureSpecEngineKitTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("verify engine events happy path") {
       listOf(
          selectClass(FeatureSpecHappyPathSample::class.java),
@@ -24,8 +33,7 @@ class FeatureSpecEngineKitTest : FunSpec({
          EngineTestKit
             .engine("kotest")
             .selectors(selector)
-            .configurationParameter("allow_private", "true")
-            .execute()
+                        .execute()
             .allEvents().apply {
                started().shouldHaveNames(
                   "Kotest",
@@ -94,8 +102,7 @@ class FeatureSpecEngineKitTest : FunSpec({
          EngineTestKit
             .engine("kotest")
             .selectors(selector)
-            .configurationParameter("allow_private", "true")
-            .execute()
+                        .execute()
             .allEvents().apply {
                started().shouldHaveNames(
                   "Kotest",
@@ -142,8 +149,7 @@ class FeatureSpecEngineKitTest : FunSpec({
          EngineTestKit
             .engine("kotest")
             .selectors(selector)
-            .configurationParameter("allow_private", "true")
-            .execute()
+                        .execute()
             .allEvents().apply {
                failed().shouldHaveNames("no assertion")
                succeeded().shouldHaveNames(

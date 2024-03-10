@@ -50,6 +50,7 @@ class GlobalAssertionTest : FunSpec({
       val collector = CollectingTestEngineListener()
       val projectConfiguration = ProjectConfiguration()
       projectConfiguration.globalAssertSoftly = true
+      projectConfiguration.includePrivateClasses = true
 
       TestEngineLauncher(collector)
          .withConfiguration(projectConfiguration)
@@ -67,6 +68,7 @@ class GlobalAssertionTest : FunSpec({
       val collector = CollectingTestEngineListener()
       val projectConfiguration = ProjectConfiguration()
       projectConfiguration.globalAssertSoftly = true
+      projectConfiguration.includePrivateClasses = true
 
       TestEngineLauncher(collector)
          .withConfiguration(projectConfiguration)
@@ -82,6 +84,7 @@ class GlobalAssertionTest : FunSpec({
       val collector = CollectingTestEngineListener()
       val projectConfiguration = ProjectConfiguration()
       projectConfiguration.globalAssertSoftly = true
+      projectConfiguration.includePrivateClasses = true
 
       TestEngineLauncher(collector)
          .withConfiguration(projectConfiguration)

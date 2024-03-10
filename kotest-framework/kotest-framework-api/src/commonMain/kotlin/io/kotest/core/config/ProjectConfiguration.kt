@@ -357,6 +357,11 @@ class ProjectConfiguration {
    var invocations: Int = defaultTestConfig.invocations
 
    /**
+    * Set to true to include private classes when executing specs.
+    */
+   var includePrivateClasses: Boolean = Defaults.includePrivateClasses
+
+   /**
     * Returns all globally registered [Listener]s.
     */
    @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)

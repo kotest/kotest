@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors
@@ -19,13 +20,20 @@ class WhackBeforeProjectListener : ProjectListener {
 
 class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("a BeforeProjectListenerException should add marker test using listener name") {
 
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener")
+                  .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -53,8 +61,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .configurationParameter(
+                  .configurationParameter(
             "kotest.extensions",
             "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener,com.sksamuel.kotest.runner.junit5.WhackBeforeProjectListener"
          )

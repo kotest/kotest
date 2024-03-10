@@ -2,6 +2,7 @@
 
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.spec.style.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors
@@ -21,12 +22,19 @@ class WhackAfterProjectListener : AfterProjectListener {
 
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("an AfterProjectListenerException should add marker test") {
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener")
+                  .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -60,8 +68,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .configurationParameter(
+                  .configurationParameter(
             "kotest.extensions",
             "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener,com.sksamuel.kotest.runner.junit5.WhackAfterProjectListener"
          )
@@ -98,6 +105,6 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    }
 })
 
-private class AfterProjectListenerExceptionSample : FunSpec({
+class AfterProjectListenerExceptionSample : FunSpec({
    test("foo") {}
 })

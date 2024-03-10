@@ -2,6 +2,7 @@ package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -35,6 +36,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
          TestEngineLauncher()
             .withListener(listener)
             .withClasses(RegularClassAndLeafIsolation::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          results shouldBe listOf(
@@ -53,6 +55,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
          TestEngineLauncher()
             .withListener(listener)
             .withClasses(DataClassWithNonDataParameterAndLeafIsolation::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          results shouldBe listOf(

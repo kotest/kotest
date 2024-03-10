@@ -11,7 +11,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 class SetupLauncherTest : FunSpec() {
    init {
       test("setupLauncher should return an error for unknown class") {
-         setupLauncher(LauncherArgs(null, null, "unknown.class", null, null, null), NoopTestEngineListener)
+         setupLauncher(LauncherArgs(null, null, "unknown.class", null, null, null, false), NoopTestEngineListener)
             .isFailure.shouldBeTrue()
       }
    }

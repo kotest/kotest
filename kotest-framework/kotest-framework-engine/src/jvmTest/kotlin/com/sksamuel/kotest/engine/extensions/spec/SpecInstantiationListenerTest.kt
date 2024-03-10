@@ -29,6 +29,7 @@ class SpecInstantiationListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(ext)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationSuccessSpec::class)
@@ -54,6 +55,7 @@ class SpecInstantiationListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(ext)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationFailureSpec::class)

@@ -11,6 +11,7 @@ class ProjectWideFailFastTest : FunSpec() {
    init {
       val c = ProjectConfiguration()
       c.projectWideFailFast = true
+      c.includePrivateClasses = true
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
          .withConfiguration(c)

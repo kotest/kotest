@@ -35,6 +35,7 @@ class SpecExtensionTest : FunSpec() {
 
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
+         conf.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptSingleInstance::class)
@@ -56,6 +57,7 @@ class SpecExtensionTest : FunSpec() {
 
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
+         conf.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptInstancePerTest::class)
@@ -73,6 +75,7 @@ class SpecExtensionTest : FunSpec() {
 
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
+         conf.includePrivateClasses = true
 
          val collecting = CollectingTestEngineListener()
 
@@ -89,6 +92,7 @@ class SpecExtensionTest : FunSpec() {
 
          TestEngineLauncher(collecting)
             .withClasses(BrokenSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          collecting.specs.forOne {

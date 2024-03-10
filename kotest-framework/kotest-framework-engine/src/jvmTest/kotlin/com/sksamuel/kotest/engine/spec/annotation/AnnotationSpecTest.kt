@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -14,7 +15,10 @@ class AnnotationSpecTest : DescribeSpec({
 
       it("should detect public and private methods annotated with @Test") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecClass::class).launch()
+         TestEngineLauncher(listener)
+            .withClasses(AnnotationSpecClass::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
+            .launch()
          listener.tests.shouldHaveSize(2)
       }
 
@@ -26,21 +30,30 @@ class AnnotationSpecTest : DescribeSpec({
 
       it("should support throwing exceptions with @Test(expected=foo)") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher(listener)
+            .withClasses(AnnotationSpecWithExceptions::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
+            .launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test1")]?.isSuccess shouldBe true
       }
 
       it("should fail on unexpected exception") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher(listener)
+            .withClasses(AnnotationSpecWithExceptions::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
+            .launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test2")]?.isFailure shouldBe true
       }
 
       it("should fail on expected exception that wasn't thrown") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher(listener)
+            .withClasses(AnnotationSpecWithExceptions::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
+            .launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test3")]?.isFailure shouldBe true
       }

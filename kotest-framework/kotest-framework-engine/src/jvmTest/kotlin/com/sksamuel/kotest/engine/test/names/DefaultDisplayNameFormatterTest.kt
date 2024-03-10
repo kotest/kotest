@@ -167,6 +167,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
       test("Tags from Spec are only added once when displaying the name of the test with tags included") {
          val configuration = ProjectConfiguration().apply {
             testNameAppendTags = true
+            includePrivateClasses = true
          }
 
          val collector = TeamCityTestEngineListener()

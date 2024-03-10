@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
@@ -8,12 +9,19 @@ import org.junit.platform.testkit.engine.EngineTestKit
 
 class WordSpecEngineKitTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("verify engine stats") {
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(WordSpecSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .execute()
+                  .execute()
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",

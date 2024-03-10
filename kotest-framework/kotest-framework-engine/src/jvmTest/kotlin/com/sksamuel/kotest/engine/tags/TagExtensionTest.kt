@@ -18,6 +18,7 @@ class TagExtensionTest : StringSpec() {
          val c = ProjectConfiguration().apply {
             registry.add(TagExtension { TagExpression(setOf(TagA), setOf(TagB)) })
             registry.add(SpecifiedTagsTagExtension(TagExpression("!SpecExcluded")))
+            includePrivateClasses = true
          }
 
          val collector = CollectingTestEngineListener()

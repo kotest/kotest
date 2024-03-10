@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -17,6 +18,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher(listener)
             .withClasses(FailFastFunSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          val results = listener.tests.mapKeys { it.key.name.testName }
@@ -38,6 +40,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher(listener)
             .withClasses(FailFastFreeSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          val results = listener.tests.mapKeys { it.key.name.testName }
@@ -59,6 +62,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher(listener)
             .withClasses(GrandfatherFailFastFreeSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          val results = listener.tests.mapKeys { it.key.name.testName }

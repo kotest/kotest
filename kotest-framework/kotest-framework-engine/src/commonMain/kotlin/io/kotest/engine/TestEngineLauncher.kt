@@ -167,6 +167,15 @@ class TestEngineLauncher(
       return this
    }
 
+   /**
+    * Note: If after invoking this method, the [withConfiguration] is invoked, then any changes
+    * here will be lost.
+    */
+   fun withPrivate(private: Boolean): TestEngineLauncher {
+      projectConfiguration.includePrivateClasses = private
+      return this
+   }
+
    fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,

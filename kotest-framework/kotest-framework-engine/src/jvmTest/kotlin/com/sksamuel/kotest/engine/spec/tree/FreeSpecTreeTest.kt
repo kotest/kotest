@@ -27,7 +27,7 @@ class FreeSpecTreeTest : FunSpec() {
    }
 }
 
-private class MyFreeSpec : FreeSpec() {
+class MyFreeSpec : FreeSpec() {
    init {
       "a" - {
          "b" - {

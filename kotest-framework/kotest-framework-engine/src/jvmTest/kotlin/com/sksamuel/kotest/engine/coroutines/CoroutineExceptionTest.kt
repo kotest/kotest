@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.coroutines
 
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -29,6 +30,7 @@ class CoroutineExceptionTest : FunSpec({
 
       TestEngineLauncher(listener)
          .withClasses(FailingCoroutineTest::class)
+         .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
          .launch()
 
       _result?.isError shouldBe true

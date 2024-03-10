@@ -26,7 +26,7 @@ class BehaviorSpecTreeTest : FunSpec() {
    }
 }
 
-private class MyBehaviorSpecTree : BehaviorSpec() {
+class MyBehaviorSpecTree : BehaviorSpec() {
    init {
       given("a") {
          When("b") {

@@ -10,9 +10,10 @@ import kotlinx.coroutines.delay
 
 class GlobalTimeoutTest : FunSpec() {
    init {
-      test("global timeouts should apply if no other timeout is set")
-      {
+      test("global timeouts should apply if no other timeout is set") {
          val c = ProjectConfiguration().apply { timeout = 3 }
+         c.includePrivateClasses = true
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(TestTimeouts::class)

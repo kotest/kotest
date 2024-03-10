@@ -26,6 +26,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
+         c.includePrivateClasses = true
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
@@ -43,6 +44,7 @@ class AfterSpecListenerTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyErrorSpec2::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.specs.size shouldBe 1
          collector.specs[MyErrorSpec2::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -53,6 +55,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
+         c.includePrivateClasses = true
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -66,6 +69,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("inline afterSpec functions should be invoked") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(InlineAfterSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          inlineAfterSpec.shouldBeTrue()
       }
@@ -75,6 +79,7 @@ class AfterSpecListenerTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(InlineAfterSpecError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.specs.size.shouldBe(1)
          collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()

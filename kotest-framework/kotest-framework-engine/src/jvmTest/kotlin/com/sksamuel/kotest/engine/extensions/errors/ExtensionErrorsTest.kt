@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.errors
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -18,6 +19,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(BeforeSpecFunctionOverrideError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
@@ -27,6 +29,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(BeforeSpecDSLError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
@@ -36,6 +39,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MultipleBeforeSpecErrors::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -47,6 +51,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(AfterSpecFunctionOverrideError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -56,6 +61,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(AfterSpecDSLError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -65,6 +71,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MultipleAfterSpecErrors::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -76,6 +83,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(BeforeTestFunctionOverrideError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -85,6 +93,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(BeforeTestDSLError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -94,6 +103,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MultipleBeforeTestErrors::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -105,6 +115,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(AfterTestFunctionOverrideError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -114,6 +125,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(AfterTestDSLError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -123,6 +135,7 @@ class ExtensionErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MultipleAfterTestErrors::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
