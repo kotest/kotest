@@ -85,6 +85,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withPlatform (Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withPrivate (Z)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withProjectConfig ([Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecs ([Lio/kotest/core/spec/Spec;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/core/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
@@ -519,7 +520,7 @@ public final class io/kotest/engine/spec/TempfileKt {
 }
 
 public final class io/kotest/engine/spec/interceptors/ClassVisibilitySpecRefInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
+	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
 	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

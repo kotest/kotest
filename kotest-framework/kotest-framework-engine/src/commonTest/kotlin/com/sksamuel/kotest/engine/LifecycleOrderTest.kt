@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
@@ -19,7 +18,6 @@ class LifecycleOrderTest : FunSpec() {
       test("project, spec and test interceptors should wrap each other") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
-            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .withClasses(LifecycleTests::class)
             .withExtensions(LifecycleExtension("project"))
             .launch()

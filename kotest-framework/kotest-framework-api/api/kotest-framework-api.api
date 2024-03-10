@@ -1582,6 +1582,7 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field filterSpecs Ljava/lang/String;
 	public static final field filterTests Ljava/lang/String;
 	public static final field globalAssertSoftly Ljava/lang/String;
+	public static final field includePrivateClasses Ljava/lang/String;
 	public static final field includeTags Ljava/lang/String;
 	public static final field invocationTimeout Ljava/lang/String;
 	public static final field isolationMode Ljava/lang/String;
