@@ -19,9 +19,9 @@ class LifecycleOrderTest : FunSpec() {
       test("project, spec and test interceptors should wrap each other") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .withClasses(LifecycleTests::class)
             .withExtensions(LifecycleExtension("project"))
-            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(
