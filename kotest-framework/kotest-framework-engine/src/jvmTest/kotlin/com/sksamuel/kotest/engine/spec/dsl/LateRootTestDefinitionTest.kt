@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
 import io.kotest.core.annotation.Description
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.style.ExpectSpec
@@ -21,6 +22,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(ExpectSpecWithExtraRootTests::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -29,6 +31,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(FeatureSpecWithExtraRootTests::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -37,6 +40,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(FreeSpecWithExtraRootTests::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -45,6 +49,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(FunSpecWithExtraRootTests::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -53,6 +58,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(ShouldSpecWithExtraRootTests::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }

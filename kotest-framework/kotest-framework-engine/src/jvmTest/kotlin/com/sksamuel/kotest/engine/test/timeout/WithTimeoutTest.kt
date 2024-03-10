@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -18,6 +19,7 @@ class WithTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(WithTimeoutSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.result("a")!!.errorOrNull!!.message shouldBe """Timed out waiting for 1000 ms"""
 

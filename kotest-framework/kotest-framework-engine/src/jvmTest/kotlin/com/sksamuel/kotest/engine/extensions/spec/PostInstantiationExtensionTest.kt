@@ -17,12 +17,13 @@ class PostInstantiationExtensionTest : FunSpec() {
 
       test("post instantiation extensions should be triggered") {
 
-         val conf = ProjectConfiguration()
-         conf.registry.add(MyPostInstantiationExtension)
+         val c = ProjectConfiguration()
+         c.registry.add(MyPostInstantiationExtension)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MySpec::class)
-            .withConfiguration(conf)
+            .withConfiguration(c)
             .launch()
 
          a shouldBe "foo"

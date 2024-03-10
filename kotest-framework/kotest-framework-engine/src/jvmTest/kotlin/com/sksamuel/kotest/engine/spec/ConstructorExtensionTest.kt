@@ -14,6 +14,7 @@ class ConstructorExtensionTest : FunSpec() {
 
       val c = ProjectConfiguration()
       c.registry.add(ErroringConstructorExtension())
+      c.includePrivateClasses = true
 
       val collector = CollectingTestEngineListener()
 
