@@ -16,7 +16,7 @@ or with another test framework like JUnit or Spock.
 
 
 [![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core-jvm.svg?label=release)](https://search.maven.org/search?q=g:io.kotest)
-[![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-assertions-core-jvm.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
+[![version badge](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.kotest/kotest-assertions-core-jvm.svg?label=snapshot)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 The core functionality of the assertion modules are functions that test state. Kotest calls these types of state
 assertion functions _matchers_. There are [core](matchers.md) matchers and matchers for third party libraries.

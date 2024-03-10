@@ -39,10 +39,6 @@ These are provided separately so you can pick and choose which parts to use if y
 
 The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
 
-_Note: Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with -JVM, such as `kotest-property-jvm`_
-
-
 #### Gradle
 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
@@ -119,21 +115,29 @@ For maven you must configure the surefire plugin for junit tests.
 
 And then add the Kotest JUnit5 runner to your build to use the framework product.
 
+
 ```xml
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <artifactId>kotest-runner-junit5</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>
 ```
 
-For using kotest core jvm assertions add the following configuration.
+:::info
+Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on.
+Since version 5.9.0, Kotest includes a workaround so that the `kotest-runner-junit5` module can be used directly, but
+for older versions you need to explicitly depend on the modules that end with -JVM, such as `kotest-property-jvm`_
+:::
+
+For using kotest assertions add the following configuration.
 
 ```xml
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-assertions-core-jvm</artifactId>
+    <artifactId>kotest-assertions-core</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>
@@ -144,7 +148,7 @@ And for using kotest property testing add the following configuration.
 ```xml
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-property-jvm</artifactId>
+    <artifactId>kotest-property</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>

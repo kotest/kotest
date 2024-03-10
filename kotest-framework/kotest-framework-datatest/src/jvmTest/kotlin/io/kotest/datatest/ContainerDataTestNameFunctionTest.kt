@@ -6,7 +6,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
 
 @ExperimentalKotest
 class ContainerDataTestNameFunctionTest : FunSpec({
@@ -20,8 +19,8 @@ class ContainerDataTestNameFunctionTest : FunSpec({
 
    context("Data test with triple") {
       withData(
-         Triple(1,2,3),
-         Triple(3,2,1),
+         Triple(1, 2, 3),
+         Triple(3, 2, 1),
       ) {}
    }
 
@@ -67,6 +66,17 @@ class ContainerDataTestNameFunctionTest : FunSpec({
       ) {}
    }
 
+   context("data test with name function and range") {
+      withData<Int>(
+         { i: Int -> "Test $i" },
+         1..3
+      ) {}
+   }
+
+   context("data test with progression") {
+      withData(4 downTo 0 step 2) {}
+   }
+
 }) {
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       DataTestNamesStore.names.add(testCase.descriptor.id.value)
@@ -95,6 +105,14 @@ class ContainerDataTestNameFunctionTest : FunSpec({
          "simplea1b1",
          "simplea2b2",
          "data test with name function and collection",
+         "Test 1",
+         "Test 2",
+         "Test 3",
+         "data test with name function and range",
+         "4",
+         "2",
+         "0",
+         "data test with progression",
       )
    }
 
