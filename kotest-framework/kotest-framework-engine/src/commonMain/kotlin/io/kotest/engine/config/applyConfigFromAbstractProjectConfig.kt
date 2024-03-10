@@ -25,6 +25,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.writeSpecFailureFile?.let { configuration.writeSpecFailureFile = it }
    config.projectWideFailFast?.let { configuration.projectWideFailFast = it }
    config.allowOutOfOrderCallbacks?.let { configuration.allowOutOfOrderCallbacks = it }
+   config.randomOrderSeed?.let { configuration.randomOrderSeed = it }
 
    // concurrency
    config.parallelism?.let { configuration.parallelism = it }
@@ -53,6 +54,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
    config.logLevel?.let { configuration.logLevel = it }
    config.tagInheritance?.let { configuration.tagInheritance = it }
+
 
    // coroutines
    config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }
