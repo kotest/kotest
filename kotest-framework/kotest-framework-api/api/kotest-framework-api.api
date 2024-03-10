@@ -88,7 +88,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun setAssertions (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/TestCaseConfig;)V
 	public final fun setParentConfiguration (Lio/kotest/core/TestConfiguration;)V
-	public final fun tags ([Lio/kotest/core/Tag;)V
+	public fun tags ([Lio/kotest/core/Tag;)V
 }
 
 public final class io/kotest/core/Tuple10 {
@@ -1948,6 +1948,7 @@ public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Sp
 	public final fun include (Ljava/lang/String;Lio/kotest/core/factory/TestFactory;)V
 	public fun rootTests ()Ljava/util/List;
 	public final fun seal ()V
+	public fun tags ([Lio/kotest/core/Tag;)V
 }
 
 public final class io/kotest/core/spec/InvalidDslException : java/lang/Exception {
