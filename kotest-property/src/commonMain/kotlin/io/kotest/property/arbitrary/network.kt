@@ -14,3 +14,20 @@ fun Arb.Companion.ipAddressV4(): Arb<String> = arbitrary {
       it.random.nextInt(0, 255)
    ).joinToString(".")
 }
+
+/**
+ * Returns an [Arb] where each generated value is an IP Address in V6 format represented as a String.
+ * Each part is a number between 0 and 65535 represented as a hexadecimal number.
+ */
+fun Arb.Companion.ipAddressV6(): Arb<String> = arbitrary {
+   listOf(
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase(),
+      it.random.nextInt(0x10000).toString(16).uppercase()
+   ).joinToString(":")
+}

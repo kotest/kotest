@@ -37,7 +37,8 @@ suspend fun until(
             config.listener.invoke(iteration, error)
          }
       },
-      shortCircuit = config.shortCircuit
+      shortCircuit = config.shortCircuit,
+      includeFirst = config.includeFirst,
    )
    eventually(eventuallyConfiguration) { test() shouldBe true }
 }
@@ -61,6 +62,7 @@ private fun UntilConfigurationBuilder.build(): UntilConfiguration {
          override suspend fun invoke(iteration: Int, error: Throwable) {}
       },
       shortCircuit = this.shortCircuit,
+      includeFirst = this.includeFirst,
    )
 }
 
@@ -72,6 +74,7 @@ data class UntilConfiguration(
    val expectedExceptionsFn: (Throwable) -> Boolean,
    val listener: UntilListener,
    val shortCircuit: (Throwable) -> Boolean,
+   val includeFirst: Boolean,
 )
 
 class UntilConfigurationBuilder {
@@ -134,6 +137,13 @@ class UntilConfigurationBuilder {
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
    var shortCircuit: (Throwable) -> Boolean = { false }
+
+   /**
+    * An option that can be used to turn off the first error.
+    *
+    * This is useful for those who don't want to see the first error.
+    */
+   var includeFirst: Boolean = EventuallyConfigurationDefaults.includeFirst
 }
 
 typealias UntilListener = suspend (Int, Throwable) -> Unit
