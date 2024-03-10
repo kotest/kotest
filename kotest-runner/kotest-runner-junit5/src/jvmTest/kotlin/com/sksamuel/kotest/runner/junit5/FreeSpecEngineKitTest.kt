@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -8,12 +9,19 @@ import org.junit.platform.testkit.engine.EngineTestKit
 
 class FreeSpecEngineKitTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("verify container events") {
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FreeSpecSample::class.java))
-         .configurationParameter("allow_private", "true")
-         .execute()
+                  .execute()
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",

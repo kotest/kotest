@@ -13,8 +13,7 @@ class PerformanceTest : FunSpec() {
           EngineTestKit
               .engine("kotest")
               .selectors(DiscoverySelectors.selectClass(ManyTests::class.java))
-              .configurationParameter("allow_private", "true")
-              .execute()
+                            .execute()
               .allEvents().apply {
                   finished().count() shouldBe 10003L // kotest, spec, foo, and the nested tests
               }

@@ -37,6 +37,8 @@ object KotestEngineProperties {
     */
    const val filterSpecs = "kotest.filter.specs"
 
+   const val includePrivateClasses = "kotest.include.private.classes"
+
    const val propertiesFilename = "kotest.properties.filename"
 
    /**

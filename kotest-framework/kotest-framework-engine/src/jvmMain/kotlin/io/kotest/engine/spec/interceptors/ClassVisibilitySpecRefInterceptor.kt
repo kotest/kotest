@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.interceptors
 
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -17,9 +18,15 @@ class ClassVisibilitySpecRefInterceptor(private val config: ProjectConfiguration
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
+
+
       return when {
-         ref.kclass.visibility == KVisibility.PRIVATE && !config.includePrivateClasses -> Result.success(emptyMap())
+         ref.kclass.visibility == KVisibility.PRIVATE && !allowPrivate() -> Result.success(emptyMap())
          else -> fn(ref)
       }
+   }
+
+   private fun allowPrivate(): Boolean {
+      return config.includePrivateClasses || System.getProperty(KotestEngineProperties.includePrivateClasses) == "true"
    }
 }

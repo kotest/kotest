@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -20,11 +21,18 @@ fun Events.shouldBeEmpty() = list().shouldBeEmpty()
 
 class StringSpecEngineKitTest : FunSpec({
 
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "true")
+   }
+
+   afterSpec {
+      System.setProperty(KotestEngineProperties.includePrivateClasses, "false")
+   }
+
    test("verify all events") {
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecTestCase::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -65,7 +73,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInInit::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 7
@@ -96,7 +103,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeSpecOverride::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 12L
@@ -135,7 +141,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeSpecFunction::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -173,7 +178,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterSpec::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 13
@@ -214,7 +218,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterSpecFunction::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 13
@@ -255,7 +258,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeTest::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 10
@@ -292,7 +294,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeTestFunction::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 10
@@ -332,7 +333,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInInitializerErrorInBeforeTestFunction::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 10
@@ -369,7 +369,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterTest::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 10
@@ -406,7 +405,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterTestFunction::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 10
@@ -445,7 +443,6 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerLeaf::class.java))
-         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
