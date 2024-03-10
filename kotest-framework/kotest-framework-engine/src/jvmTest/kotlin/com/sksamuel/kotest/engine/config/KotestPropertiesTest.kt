@@ -16,6 +16,7 @@ class KotestPropertiesTest : FunSpec() {
          // override the kotest.properties filename so it's only applied to this test
          withSystemProperty(KotestEngineProperties.propertiesFilename, "/test.kotest.properties") {
             val c = ProjectConfiguration()
+            c.includePrivateClasses = true
             val listener = CollectingTestEngineListener()
             TestEngineLauncher(listener)
                .withConfiguration(c)

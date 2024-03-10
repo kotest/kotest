@@ -29,6 +29,7 @@ class TestFilterTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          val c = ProjectConfiguration()
          c.registry.add(filter)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(collector)
             .withClasses(SillySpec::class)

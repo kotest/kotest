@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
@@ -20,6 +21,7 @@ class LifecycleOrderTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(LifecycleTests::class)
             .withExtensions(LifecycleExtension("project"))
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(

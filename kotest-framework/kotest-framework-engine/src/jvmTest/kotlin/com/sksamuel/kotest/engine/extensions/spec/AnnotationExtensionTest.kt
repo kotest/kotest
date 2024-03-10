@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
@@ -33,6 +34,7 @@ class AnnotationExtensionTest : FunSpec() {
       test("a spec annotated with ApplyExtension should have that extension applied") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec1::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          instantiations.shouldBe(1)
          beforeSpec.shouldBe(1)
@@ -61,6 +63,7 @@ class AnnotationExtensionTest : FunSpec() {
       test("ApplyExtension should only apply to the spec they are annotating") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec1::class, NotAnnotatedSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          instantiations.shouldBe(1)
          beforeSpec.shouldBe(1)

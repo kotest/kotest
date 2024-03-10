@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.dsl.aftereach
 
 import io.kotest.core.annotation.Description
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FreeSpec
@@ -20,6 +21,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(FunSpecWithAfterEach::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -30,6 +32,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(ShouldSpecWithAfterEach::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -40,6 +43,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(ExpectSpecWithAfterEach::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -50,6 +54,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(WordSpecWithAfterEach::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -60,6 +65,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(FreeSpecWithAfterEach::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()

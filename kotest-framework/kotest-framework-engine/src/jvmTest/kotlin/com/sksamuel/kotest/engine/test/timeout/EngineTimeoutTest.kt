@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -16,6 +17,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(DannyDelay::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.names shouldBe listOf("a")
          collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 1ms"
@@ -25,6 +27,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(LarryLauncher::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.names shouldBe listOf("a")
          collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 1ms"
@@ -34,6 +37,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(BillyBlocked::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          collector.names shouldBe listOf("a")
          collector.result("a")!!.errorOrNull!!.message!! shouldBe "sleep interrupted"
