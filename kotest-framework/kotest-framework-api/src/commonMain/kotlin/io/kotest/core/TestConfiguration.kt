@@ -150,7 +150,7 @@ abstract class TestConfiguration {
     * When applied in a factory, only tests generated from that factory will have the tags applied.
     * When applied to a spec, all tests will have the tags applied.
     */
-   fun tags(vararg tags: Tag) {
+   open fun tags(vararg tags: Tag) {
       _tags = _tags + tags.toSet()
    }
 
