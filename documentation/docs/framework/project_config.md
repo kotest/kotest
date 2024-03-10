@@ -10,7 +10,8 @@ Kotest is flexible and has many ways to configure tests, such as configuring the
 test classes are created. Sometimes you may want to set this at a global level and for that you need to use
 project-level-config.
 
-Project level configuration can be used by creating an object or class that extends from `AbstractProjectConfig`.
+Project level configuration can be used by creating a class that extends from `AbstractProjectConfig`.
+Note: On the JVM and JS platforms, an object is also supported if you prefer to a class.
 
 Any configuration set at the Spec level or directly on a test will override the config specified at the project level.
 
