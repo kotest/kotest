@@ -46,7 +46,7 @@ public abstract interface class io/kotest/assertions/nondeterministic/DurationFn
 }
 
 public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration {
-	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-UwyO8pc ()J
 	public final fun component2-UwyO8pc ()J
 	public final fun component3 ()Lio/kotest/assertions/nondeterministic/DurationFn;
@@ -54,11 +54,13 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun component5 ()Lkotlin/jvm/functions/Function1;
 	public final fun component6 ()Lkotlin/jvm/functions/Function3;
 	public final fun component7 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy-jecXKW4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
-	public static synthetic fun copy-jecXKW4$default (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+	public final fun component8 ()Z
+	public final fun copy-SC-SkC4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Z)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+	public static synthetic fun copy-SC-SkC4$default (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getIncludeFirst ()Z
 	public final fun getInitialDelay-UwyO8pc ()J
 	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
 	public final fun getListener ()Lkotlin/jvm/functions/Function3;
@@ -73,6 +75,7 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptions ()Ljava/util/Set;
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getIncludeFirst ()Z
 	public final fun getInitialDelay-UwyO8pc ()J
 	public final fun getInterval-UwyO8pc ()J
 	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
@@ -82,6 +85,7 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun setDuration-LRDsOJo (J)V
 	public final fun setExpectedExceptions (Ljava/util/Set;)V
 	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setIncludeFirst (Z)V
 	public final fun setInitialDelay-LRDsOJo (J)V
 	public final fun setInterval-LRDsOJo (J)V
 	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
@@ -95,6 +99,7 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptions ()Ljava/util/Set;
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getIncludeFirst ()Z
 	public final fun getInitialDelay-UwyO8pc ()J
 	public final fun getInterval-UwyO8pc ()J
 	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
@@ -104,6 +109,7 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun setDuration-LRDsOJo (J)V
 	public final fun setExpectedExceptions (Ljava/util/Set;)V
 	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setIncludeFirst (Z)V
 	public final fun setInitialDelay-LRDsOJo (J)V
 	public final fun setInterval-LRDsOJo (J)V
 	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
@@ -159,7 +165,7 @@ public final class io/kotest/assertions/nondeterministic/NoopEventuallyListener 
 }
 
 public final class io/kotest/assertions/nondeterministic/UntilConfiguration {
-	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-UwyO8pc ()J
 	public final fun component2-UwyO8pc ()J
 	public final fun component3 ()Lio/kotest/assertions/nondeterministic/DurationFn;
@@ -167,11 +173,13 @@ public final class io/kotest/assertions/nondeterministic/UntilConfiguration {
 	public final fun component5 ()Lkotlin/jvm/functions/Function1;
 	public final fun component6 ()Lkotlin/jvm/functions/Function3;
 	public final fun component7 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy-jecXKW4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
-	public static synthetic fun copy-jecXKW4$default (Lio/kotest/assertions/nondeterministic/UntilConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
+	public final fun component8 ()Z
+	public final fun copy-SC-SkC4 (JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Z)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
+	public static synthetic fun copy-SC-SkC4$default (Lio/kotest/assertions/nondeterministic/UntilConfiguration;JJLio/kotest/assertions/nondeterministic/DurationFn;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getIncludeFirst ()Z
 	public final fun getInitialDelay-UwyO8pc ()J
 	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
 	public final fun getListener ()Lkotlin/jvm/functions/Function3;
@@ -186,6 +194,7 @@ public final class io/kotest/assertions/nondeterministic/UntilConfigurationBuild
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptions ()Ljava/util/Set;
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getIncludeFirst ()Z
 	public final fun getInitialDelay-UwyO8pc ()J
 	public final fun getInterval-UwyO8pc ()J
 	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
@@ -195,6 +204,7 @@ public final class io/kotest/assertions/nondeterministic/UntilConfigurationBuild
 	public final fun setDuration-LRDsOJo (J)V
 	public final fun setExpectedExceptions (Ljava/util/Set;)V
 	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setIncludeFirst (Z)V
 	public final fun setInitialDelay-LRDsOJo (J)V
 	public final fun setInterval-LRDsOJo (J)V
 	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
@@ -1845,8 +1855,16 @@ public final class io/kotest/matchers/ranges/BeinKt {
 	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
 }
 
+public final class io/kotest/matchers/ranges/BewithinKt {
+	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
+	public static final fun shouldNotBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+}
+
 public final class io/kotest/matchers/ranges/IntersectKt {
-	public static final fun intersect (Lio/kotest/matchers/ranges/Range;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
@@ -1855,53 +1873,6 @@ public final class io/kotest/matchers/ranges/IntersectKt {
 	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
 	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
-}
-
-public final class io/kotest/matchers/ranges/Range {
-	public static final field Companion Lio/kotest/matchers/ranges/Range$Companion;
-	public fun <init> (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)V
-	public final fun component1 ()Lio/kotest/matchers/ranges/RangeEdge;
-	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdge;
-	public final fun copy (Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;)Lio/kotest/matchers/ranges/Range;
-	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/Range;Lio/kotest/matchers/ranges/RangeEdge;Lio/kotest/matchers/ranges/RangeEdge;ILjava/lang/Object;)Lio/kotest/matchers/ranges/Range;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lio/kotest/matchers/ranges/RangeEdge;
-	public final fun getStart ()Lio/kotest/matchers/ranges/RangeEdge;
-	public final fun greaterThan (Lio/kotest/matchers/ranges/Range;)Z
-	public fun hashCode ()I
-	public final fun intersect (Lio/kotest/matchers/ranges/Range;)Z
-	public final fun isEmpty ()Z
-	public final fun lessThan (Lio/kotest/matchers/ranges/Range;)Z
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/matchers/ranges/Range$Companion {
-	public final fun closedClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
-	public final fun closedOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
-	public final fun ofClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
-	public final fun ofOpenEndRange (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
-	public final fun openClosed (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
-	public final fun openOpen (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
-}
-
-public final class io/kotest/matchers/ranges/RangeEdge {
-	public fun <init> (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)V
-	public final fun component1 ()Ljava/lang/Comparable;
-	public final fun component2 ()Lio/kotest/matchers/ranges/RangeEdgeType;
-	public final fun copy (Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;)Lio/kotest/matchers/ranges/RangeEdge;
-	public static synthetic fun copy$default (Lio/kotest/matchers/ranges/RangeEdge;Ljava/lang/Comparable;Lio/kotest/matchers/ranges/RangeEdgeType;ILjava/lang/Object;)Lio/kotest/matchers/ranges/RangeEdge;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEdgeType ()Lio/kotest/matchers/ranges/RangeEdgeType;
-	public final fun getValue ()Ljava/lang/Comparable;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/matchers/ranges/RangeEdgeType : java/lang/Enum {
-	public static final field EXCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
-	public static final field INCLUSIVE Lio/kotest/matchers/ranges/RangeEdgeType;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ranges/RangeEdgeType;
-	public static fun values ()[Lio/kotest/matchers/ranges/RangeEdgeType;
 }
 
 public final class io/kotest/matchers/reflection/CallableMatchersKt {
