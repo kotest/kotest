@@ -6,6 +6,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.similarity.possibleMatchesForSet
 
 fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(*ts)
 fun <T> Array<T>.shouldContainAll(vararg ts: T) = asList().shouldContainAll(*ts)
@@ -38,8 +39,10 @@ fun <T> containAll(
          }
          val passed = missing.isEmpty()
 
+         val possibleMatchesDescription = possibleMatchesForSet(passed, value.toSet(), missing.toSet(), verifier)
+
          val failure =
-            { "Collection should contain all of ${ts.print().value} but was missing ${missing.print().value}" }
+            { "Collection should contain all of ${ts.print().value} but was missing ${missing.print().value}$possibleMatchesDescription" }
          val negFailure = { "Collection should not contain all of ${ts.print().value}" }
 
          return MatcherResult(passed, failure, negFailure)
