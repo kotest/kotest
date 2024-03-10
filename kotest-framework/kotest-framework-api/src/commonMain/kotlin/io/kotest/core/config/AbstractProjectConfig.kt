@@ -21,14 +21,15 @@ import kotlin.time.Duration
  * Project-wide configuration. Extensions returned by an instance of this class will be applied
  * to all [Spec]s and [TestCase][io.kotest.core.test.TestCase]s.
  *
- * Create an object or class that is derived from this class and place it in your source.
+ * Create a class that is derived from this class and place it in your source.
+ * Note, on the JVM and JS, this config class can also be an object.
  *
  * It will be detected at runtime and used to configure the test engine.
  *
  * For example, you could create this object and place the source in `src/main/kotlin/my/test/package`.
  *
  * ```
- * object KotestProjectConfig : AbstractProjectConfig() {
+ * class KotestProjectConfig : AbstractProjectConfig() {
  *    override val failOnEmptyTestSuite = true
  *    override val testCaseOrder = TestCaseOrder.Random
  * }
