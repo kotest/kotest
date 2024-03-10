@@ -1,11 +1,14 @@
 package io.kotest.datatest
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
+import kotlin.random.Random
 
 class DataTestingRepeatedTestNameTest : FunSpec() {
    init {
@@ -17,6 +20,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(RepeatedNamesDescribeSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          collector.names shouldBe listOf(
@@ -36,6 +40,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(RepeatedNamesDescribeSpecRoot::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          collector.names shouldBe listOf(
@@ -54,6 +59,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(RepeatedNamesFunSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          collector.names shouldBe listOf(
@@ -73,6 +79,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(RepeatedNamesRootFunSpec::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          collector.names shouldBe listOf(
@@ -150,3 +157,18 @@ private class RepeatedNamesRootFunSpec : FunSpec() {
 
 
 private data class Foo(val name: String)
+
+class MyTest : WordSpec({
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   "a" should {
+      "b" {}
+      "c" {}
+      "d" {}
+      "e" {}
+   }
+
+   finalizeSpec {
+      println("finalizeSpec " + Random.nextInt())
+   }
+})
