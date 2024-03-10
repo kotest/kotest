@@ -65,8 +65,7 @@ internal fun resolveConfig(
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
       defaultTestConfig.extensions +
-      defaultTestConfig.listeners +
-      projectConfiguration.registry.all()
+      defaultTestConfig.listeners
 
    return ResolvedTestConfig(
       enabled = enabled,
