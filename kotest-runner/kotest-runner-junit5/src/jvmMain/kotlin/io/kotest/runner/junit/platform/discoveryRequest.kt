@@ -3,7 +3,6 @@ package io.kotest.runner.junit.platform
 import io.kotest.framework.discovery.DiscoveryFilter
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoverySelector
-import io.kotest.framework.discovery.Modifier
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassNameFilter
@@ -72,11 +71,7 @@ internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(engineId: UniqueId)
       DiscoveryFilter.PackageNameDiscoveryFilter { filter.toPredicate().test(it.value) }
    }
 
-   val private = if (configurationParameters.get("allow_private").isPresent) Modifier.Private else null
-   val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
-   val modifiersFilter = DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet())
-
-   val filters = packageFilters + classFilters + modifiersFilter
+   val filters = packageFilters + classFilters
    val selectors = packageSelectors + classSelectors + classSelectorsFromUniqueIdSelectors
 
    return DiscoveryRequest(selectors, filters)

@@ -20,8 +20,9 @@ import kotlin.time.Duration
  * https://github.com/JetBrains/intellij-community/blob/master/plugins/testng/testSources/com/theoryinpractice/testng/configuration/TestNGTreeHierarchyTest.java
  * https://github.com/JetBrains/intellij-community/blob/master/plugins/junit_rt/src/com/intellij/junit4/JUnit4TestListener.java
  *
+ * https://github.com/JetBrains/intellij-community/blob/23bb68de04cfd849d615dac6ceaa2738e5bd431d/platform/testFramework/core/src/com/intellij/testFramework/TeamCityLogger.java#L15
+ *
  * @param prefix Is the opening string used to signal that the line is a team city line.
- *               If unspecified this defaults to the team city format '##teamcity'.
  *               Can be overriden to help with testing.
  *
  * @param escapeColons team city uses colons in its format, and does not support colons inside messages properly,

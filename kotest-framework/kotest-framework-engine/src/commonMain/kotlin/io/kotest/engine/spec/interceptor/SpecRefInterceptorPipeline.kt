@@ -43,14 +43,14 @@ internal class SpecRefInterceptorPipeline(
       ref: SpecRef,
       inner: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      val interceptors = createPipeline()
+      val interceptors = createCommonInterceptors() + platformInterceptors(context)
       logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
       return interceptors.foldRight(inner) { interceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
          { ref -> interceptor.intercept(ref, fn) }
       }.invoke(ref)
    }
 
-   private fun createPipeline(): List<SpecRefInterceptor> {
+   private fun createCommonInterceptors(): List<SpecRefInterceptor> {
       return listOfNotNull(
          RequiresPlatformInterceptor(listener, context, configuration.registry),
          if (platform == Platform.JVM) EnabledIfInterceptor(listener, configuration.registry) else null,
@@ -73,3 +73,5 @@ internal class SpecRefInterceptorPipeline(
       )
    }
 }
+
+internal expect fun platformInterceptors(context: EngineContext): List<SpecRefInterceptor>

@@ -52,4 +52,6 @@ object Defaults {
    const val dispatcherAffinity = true
 
    const val allowOutOfOrderCallbacks = false
+
+   const val includePrivateClasses: Boolean = false
 }

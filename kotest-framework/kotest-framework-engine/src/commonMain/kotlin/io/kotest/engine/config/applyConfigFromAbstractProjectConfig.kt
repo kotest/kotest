@@ -41,6 +41,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // discovery
    config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
+   config.includePrivateClasses?.let { configuration.includePrivateClasses = it }
 
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }

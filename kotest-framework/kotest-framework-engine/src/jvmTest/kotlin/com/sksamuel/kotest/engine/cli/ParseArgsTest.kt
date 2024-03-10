@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.cli.parseArgs
 import io.kotest.matchers.shouldBe
 
-class ArgParseTest : FunSpec() {
+class ParseArgsTest : FunSpec() {
    init {
       test("parsing args happy path") {
          val args = listOf("--reporter", "taycan", "--package", "com.foo.bar.baz", "--spec", "FooBarTest")

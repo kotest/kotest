@@ -12,16 +12,43 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
-class RunLauncherTest: FunSpec() {
+class RunLauncherTest : FunSpec() {
    init {
+
       test("runLauncher should run tests for known class") {
          val listener = SetupLauncherTestListener()
          val result = setupLauncher(
             LauncherArgs(
-            null,
-            "com.sksamuel.kotest.engine.launcher",
-            "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-            null, null, null), listener)
+               testpath = null,
+               packageName = "com.sksamuel.kotest.engine.launcher",
+               spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
+               termcolor = null,
+               listener = null,
+               tagExpression = null,
+               private = false,
+            ), listener
+         )
+         result.isFailure.shouldBeFalse()
+         result.getOrNull()?.launch()
+         listener.testFinished.sorted() shouldBe arrayOf(
+            "bar", "first", "foo", "nothing else", "second", "second bar", "something", "something else"
+         )
+         listener.specFinished.sorted() shouldBe arrayOf("DescribeSpec1")
+      }
+
+      test("runLauncher should support private classes") {
+         val listener = SetupLauncherTestListener()
+         val result = setupLauncher(
+            LauncherArgs(
+               testpath = null,
+               packageName = "com.sksamuel.kotest.engine.launcher",
+               spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
+               termcolor = null,
+               listener = null,
+               tagExpression = null,
+               private = true,
+            ), listener
+         )
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
          listener.testFinished.sorted() shouldBe arrayOf(
@@ -34,29 +61,37 @@ class RunLauncherTest: FunSpec() {
          val listener = SetupLauncherTestListener()
          val result = setupLauncher(
             LauncherArgs(
-            "something",
-            "com.sksamuel.kotest.engine.launcher",
-            "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-            null, null, null), listener)
+               testpath = "something",
+               packageName = "com.sksamuel.kotest.engine.launcher",
+               spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
+               termcolor = null, listener = null, tagExpression = null, private = false,
+            ), listener
+         )
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
          listener.testStarted.size shouldBe 3
-         listener.testStarted.filter{it.type == TestType.Container}.map { it.descriptor.id.value } shouldBe arrayOf("something")
-         listener.testStarted.filter{it.type == TestType.Test}.map { it.descriptor.id.value } shouldBe arrayOf("first", "second")
+         listener.testStarted.filter { it.type == TestType.Container }
+            .map { it.descriptor.id.value } shouldBe arrayOf("something")
+         listener.testStarted.filter { it.type == TestType.Test }
+            .map { it.descriptor.id.value } shouldBe arrayOf("first", "second")
       }
 
       test("runLauncher should support single level testpath regex") {
          val listener = SetupLauncherTestListener()
          val result = setupLauncher(
             LauncherArgs(
-               "something*",
-               "com.sksamuel.kotest.engine.launcher",
-               "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               null, null, null), listener)
+               testpath = "something*",
+               packageName = "com.sksamuel.kotest.engine.launcher",
+               spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
+               termcolor = null, listener = null, tagExpression = null, private = false,
+            ), listener
+         )
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
-         listener.testStarted.filter{it.type == TestType.Container}.map { it.descriptor.id.value } shouldBe arrayOf("something", "something else")
-         listener.testStarted.filter{it.type == TestType.Test}.map { it.descriptor.id.value } shouldBe arrayOf("first", "second", "foo")
+         listener.testStarted.filter { it.type == TestType.Container }
+            .map { it.descriptor.id.value } shouldBe arrayOf("something", "something else")
+         listener.testStarted.filter { it.type == TestType.Test }
+            .map { it.descriptor.id.value } shouldBe arrayOf("first", "second", "foo")
       }
 
       test("runLauncher should support multi level testpath regex") {
@@ -66,11 +101,15 @@ class RunLauncherTest: FunSpec() {
                "something* -- first",
                "com.sksamuel.kotest.engine.launcher",
                "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               null, null, null), listener)
+               null, null, null, private = false,
+            ), listener
+         )
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
-         listener.testStarted.filter{it.type == TestType.Container}.map { it.descriptor.id.value } shouldBe arrayOf("something", "something else")
-         listener.testStarted.filter{it.type == TestType.Test}.map { it.descriptor.id.value } shouldBe arrayOf("first")
+         listener.testStarted.filter { it.type == TestType.Container }
+            .map { it.descriptor.id.value } shouldBe arrayOf("something", "something else")
+         listener.testStarted.filter { it.type == TestType.Test }
+            .map { it.descriptor.id.value } shouldBe arrayOf("first")
       }
 
       test("runLauncher should support second level testpath regex") {
@@ -80,28 +119,33 @@ class RunLauncherTest: FunSpec() {
                "* -- second*",
                "com.sksamuel.kotest.engine.launcher",
                "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               null, null, null), listener)
+               null, null, null, private = false,
+            ), listener
+         )
          result.isFailure.shouldBeFalse()
          result.getOrNull()?.launch()
-         listener.testStarted.filter{it.type == TestType.Container}.map { it.descriptor.id.value } shouldBe arrayOf("something", "something else", "nothing else")
-         listener.testStarted.filter{it.type == TestType.Test}.map { it.descriptor.id.value } shouldBe arrayOf("second", "second bar")
+         listener.testStarted.filter { it.type == TestType.Container }
+            .map { it.descriptor.id.value } shouldBe arrayOf("something", "something else", "nothing else")
+         listener.testStarted.filter { it.type == TestType.Test }
+            .map { it.descriptor.id.value } shouldBe arrayOf("second", "second bar")
       }
    }
 }
 
 
 class SetupLauncherTestListener(
-): AbstractTestEngineListener() {
+) : AbstractTestEngineListener() {
    var specIgnored = mutableMapOf<String, KClass<*>>();
    var specFinished = mutableListOf<String>()
    var testStarted = mutableListOf<TestCase>()
    var testFinished = mutableListOf<String>()
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      specIgnored[kclass.qualifiedName?:""] = kclass;
+      specIgnored[kclass.qualifiedName ?: ""] = kclass;
       super.specIgnored(kclass, reason);
    }
+
    override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
-      kclass.simpleName?.let{
+      kclass.simpleName?.let {
          specFinished.add(it)
       }
       super.specFinished(kclass, result)
@@ -110,6 +154,7 @@ class SetupLauncherTestListener(
    override suspend fun testStarted(testCase: TestCase) {
       testStarted.add(testCase)
    }
+
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       testFinished.add(testCase.name.testName)
       super.testFinished(testCase, result)
@@ -117,8 +162,7 @@ class SetupLauncherTestListener(
 }
 
 
-
-private class DescribeSpec1: DescribeSpec() {
+class DescribeSpec1 : DescribeSpec() {
    init {
       describe("something") {
          it("first") {
@@ -131,17 +175,17 @@ private class DescribeSpec1: DescribeSpec() {
       }
 
       describe("something else") {
-         it ("foo") {
+         it("foo") {
 
          }
       }
 
       describe("nothing else") {
-         it ("bar") {
+         it("bar") {
 
          }
 
-         it ("second bar") {
+         it("second bar") {
 
          }
       }

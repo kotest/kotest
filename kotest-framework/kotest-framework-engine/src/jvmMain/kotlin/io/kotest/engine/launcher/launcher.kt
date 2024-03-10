@@ -33,6 +33,7 @@ internal fun setupLauncher(
       .withExtensions(listOfNotNull(filter))
       .withTagExpression(args.tagExpression?.let { TagExpression(it) })
       .withClasses(specs)
+      .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = args.private })
 }
 
 /**
