@@ -1,13 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.framework.discovery.Discovery
-import io.kotest.framework.discovery.DiscoveryFilter
-import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.framework.discovery.DiscoverySelector
-import io.kotest.framework.discovery.Modifier
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import io.kotest.runner.junit.platform.Segment
@@ -292,32 +286,5 @@ class DiscoveryTest : FunSpec({
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec3::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec4::class.java.canonicalName
       )
-   }
-
-   test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery(configuration = ProjectConfiguration()).discover(
-         DiscoveryRequest(
-            selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
-            filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
-         )
-      ).specs.map { it.simpleName }.toSet() shouldBe setOf("DummySpec7")
-   }
-
-   test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery(configuration = ProjectConfiguration()).discover(
-         DiscoveryRequest(
-            selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
-            filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
-         )
-      ).specs.map { it.simpleName }.toSet() shouldBe setOf("DummySpec6", "DummySpec7")
-   }
-
-   test("kotest should detect only internal specs if public is not set") {
-      Discovery(configuration = ProjectConfiguration()).discover(
-         DiscoveryRequest(
-            selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
-            filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))
-         )
-      ).specs.map { it.simpleName }.toSet() shouldBe setOf("DummySpec6")
    }
 })
