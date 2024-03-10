@@ -43,7 +43,7 @@ internal class SpecRefInterceptorPipeline(
       ref: SpecRef,
       inner: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      val interceptors = createCommonInterceptors() + platformInterceptors(context)
+      val interceptors = platformInterceptors(context) + createCommonInterceptors()
       logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
       return interceptors.foldRight(inner) { interceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
          { ref -> interceptor.intercept(ref, fn) }

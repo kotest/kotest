@@ -11,11 +11,11 @@ class ProjectWideFailFastTest : FunSpec() {
    init {
       val c = ProjectConfiguration()
       c.projectWideFailFast = true
+      c.includePrivateClasses = true
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
          .withConfiguration(c)
          .withClasses(A::class, B::class)
-         .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
          .launch()
       listener.result("a")!!.isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")

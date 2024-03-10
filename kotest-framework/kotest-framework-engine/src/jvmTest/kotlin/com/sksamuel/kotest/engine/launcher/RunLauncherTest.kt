@@ -25,7 +25,7 @@ class RunLauncherTest : FunSpec() {
                termcolor = null,
                listener = null,
                tagExpression = null,
-               private = false,
+               private = true,
             ), listener
          )
          result.isFailure.shouldBeFalse()
@@ -64,7 +64,10 @@ class RunLauncherTest : FunSpec() {
                testpath = "something",
                packageName = "com.sksamuel.kotest.engine.launcher",
                spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               termcolor = null, listener = null, tagExpression = null, private = false,
+               termcolor = null,
+               listener = null,
+               tagExpression = null,
+               private = true,
             ), listener
          )
          result.isFailure.shouldBeFalse()
@@ -83,7 +86,10 @@ class RunLauncherTest : FunSpec() {
                testpath = "something*",
                packageName = "com.sksamuel.kotest.engine.launcher",
                spec = "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               termcolor = null, listener = null, tagExpression = null, private = false,
+               termcolor = null,
+               listener = null,
+               tagExpression = null,
+               private = true,
             ), listener
          )
          result.isFailure.shouldBeFalse()
@@ -101,7 +107,7 @@ class RunLauncherTest : FunSpec() {
                "something* -- first",
                "com.sksamuel.kotest.engine.launcher",
                "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               null, null, null, private = false,
+               null, null, null, private = true,
             ), listener
          )
          result.isFailure.shouldBeFalse()
@@ -119,7 +125,10 @@ class RunLauncherTest : FunSpec() {
                "* -- second*",
                "com.sksamuel.kotest.engine.launcher",
                "com.sksamuel.kotest.engine.launcher.DescribeSpec1",
-               null, null, null, private = false,
+               null,
+               null,
+               null,
+               private = true,
             ), listener
          )
          result.isFailure.shouldBeFalse()
@@ -135,7 +144,7 @@ class RunLauncherTest : FunSpec() {
 
 class SetupLauncherTestListener(
 ) : AbstractTestEngineListener() {
-   var specIgnored = mutableMapOf<String, KClass<*>>();
+   private var specIgnored = mutableMapOf<String, KClass<*>>();
    var specFinished = mutableListOf<String>()
    var testStarted = mutableListOf<TestCase>()
    var testFinished = mutableListOf<String>()
@@ -161,8 +170,7 @@ class SetupLauncherTestListener(
    }
 }
 
-
-class DescribeSpec1 : DescribeSpec() {
+private class DescribeSpec1 : DescribeSpec() {
    init {
       describe("something") {
          it("first") {

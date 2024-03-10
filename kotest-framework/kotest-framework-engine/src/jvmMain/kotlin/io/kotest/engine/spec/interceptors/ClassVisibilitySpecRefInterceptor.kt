@@ -18,8 +18,6 @@ class ClassVisibilitySpecRefInterceptor(private val context: EngineContext) : Sp
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-
-
       return when {
          ref.kclass.visibility == KVisibility.PRIVATE && !allowPrivate() -> Result.success(emptyMap())
          else -> fn(ref)

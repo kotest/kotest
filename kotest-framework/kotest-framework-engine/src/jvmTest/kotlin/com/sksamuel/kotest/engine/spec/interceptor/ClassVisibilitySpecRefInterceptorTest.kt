@@ -25,7 +25,7 @@ class ClassVisibilitySpecRefInterceptorTest : FunSpec({
          fired = true
          Result.success(emptyMap())
       }
-      fired.shouldBeFalse()
+      fired.shouldBeTrue()
    }
 
    test("ClassVisibilitySpecRefInterceptor should exclude private classes if multiple") {
@@ -49,7 +49,7 @@ class ClassVisibilitySpecRefInterceptorTest : FunSpec({
    test("ClassVisibilitySpecRefInterceptor should include private classes when config flag is set") {
       var fired = false
       ClassVisibilitySpecRefInterceptor(
-         EngineContext(ProjectConfiguration(), Platform.JVM).withTestSuite(
+         EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withTestSuite(
             TestSuite(
                listOf(
                   SpecRef.Reference(PrivateSpec::class),

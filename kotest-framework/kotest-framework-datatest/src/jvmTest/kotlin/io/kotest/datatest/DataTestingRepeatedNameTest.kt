@@ -157,18 +157,3 @@ private class RepeatedNamesRootFunSpec : FunSpec() {
 
 
 private data class Foo(val name: String)
-
-class MyTest : WordSpec({
-   isolationMode = IsolationMode.InstancePerLeaf
-
-   "a" should {
-      "b" {}
-      "c" {}
-      "d" {}
-      "e" {}
-   }
-
-   finalizeSpec {
-      println("finalizeSpec " + Random.nextInt())
-   }
-})

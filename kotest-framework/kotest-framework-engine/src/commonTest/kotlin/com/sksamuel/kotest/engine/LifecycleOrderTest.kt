@@ -40,7 +40,7 @@ class LifecycleOrderTest : FunSpec() {
    }
 }
 
-class LifecycleTests : FunSpec() {
+private class LifecycleTests : FunSpec() {
    init {
       test("foo") {}
       test("bar").config(extensions = listOf(LifecycleExtension("bar"))) {}
