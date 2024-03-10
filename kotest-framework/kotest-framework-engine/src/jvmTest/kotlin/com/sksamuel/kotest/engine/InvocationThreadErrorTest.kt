@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -12,6 +13,7 @@ class InvocationThreadErrorTest : FunSpec({
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
          .withClasses(InvocationErrorsTests::class)
+         .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
          .launch()
       listener.tests.keys.map { it.name.testName } shouldBe setOf(
          "multiple invocations",

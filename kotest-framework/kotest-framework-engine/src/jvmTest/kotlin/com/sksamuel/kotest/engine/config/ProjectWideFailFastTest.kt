@@ -15,6 +15,7 @@ class ProjectWideFailFastTest : FunSpec() {
       TestEngineLauncher(listener)
          .withConfiguration(c)
          .withClasses(A::class, B::class)
+         .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
          .launch()
       listener.result("a")!!.isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")

@@ -30,6 +30,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
+         c.includePrivateClasses = true
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
@@ -46,6 +47,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener via method override should be triggered for a spec with tests") {
 
          val c = ProjectConfiguration()
+         c.includePrivateClasses = true
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
@@ -62,6 +64,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener inline should be triggered for a spec with tests") {
 
          val c = ProjectConfiguration()
+         c.includePrivateClasses = true
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
@@ -80,10 +83,12 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecInlineOrderFunSpecTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecInlineOrderDescribeSpecTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          a shouldBe "spectest1test2spectestinner"
@@ -94,6 +99,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecInlineWithTestInterceptor::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
 
          b shouldBe "beforeSpecintercepttest"
@@ -102,6 +108,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener registered by overriding extensions should be triggered for a spec with tests") {
 
          val c = ProjectConfiguration()
+         c.includePrivateClasses = true
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
@@ -119,6 +126,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecNoTests::class)
@@ -132,6 +140,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecErrorNoTests::class)
@@ -145,6 +154,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
+         c.includePrivateClasses = true
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecDisabledOnlyTests::class)
@@ -158,6 +168,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecWithError::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 3

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
@@ -21,6 +22,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
       test("fun spec") {
          val result = TestEngineLauncher(NoopTestEngineListener)
             .withClasses(FunSpecUnfinishedTestDefinitionTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished test") }
       }
@@ -28,6 +30,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
       test("describe spec") {
          val result = TestEngineLauncher(NoopTestEngineListener)
             .withClasses(DescribeSpecUnfinishedTestDefinitionTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished it") }
       }
@@ -35,6 +38,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
       test("should spec") {
          val result = TestEngineLauncher(NoopTestEngineListener)
             .withClasses(ShouldSpecUnfinishedTestDefinitionTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished should") }
       }
@@ -42,6 +46,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
       test("feature spec") {
          val result = TestEngineLauncher(NoopTestEngineListener)
             .withClasses(FeatureSpecUnfinishedTestDefinitionTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished scenario") }
       }
@@ -49,6 +54,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
       test("expect spec") {
          val result = TestEngineLauncher(NoopTestEngineListener)
             .withClasses(ExpectSpecUnfinishedTestDefinitionTest::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished expect") }
       }

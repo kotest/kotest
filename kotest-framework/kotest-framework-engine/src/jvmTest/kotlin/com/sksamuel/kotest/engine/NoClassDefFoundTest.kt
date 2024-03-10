@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -12,7 +13,10 @@ class NoClassDefFoundTest : FunSpec() {
    init {
       test("java.lang.NoClassDefFoundError should be caught") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(SomeSpec1::class, SomeSpec2::class).launch()
+         TestEngineLauncher(listener)
+            .withClasses(SomeSpec1::class, SomeSpec2::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
+            .launch()
          listener.specs.shouldHaveSize(2)
          listener.specs[SomeSpec1::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
          listener.specs[SomeSpec2::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()

@@ -16,6 +16,7 @@ class CoroutineDebugTest : FunSpec() {
 
          val c = ProjectConfiguration()
          c.coroutineDebugProbes = true
+         c.includePrivateClasses = true
 
          val output = captureStandardOut {
             TestEngineLauncher(NoopTestEngineListener)
