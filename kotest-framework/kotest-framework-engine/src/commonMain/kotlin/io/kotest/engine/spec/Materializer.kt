@@ -50,7 +50,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
                xdisabled = rootTest.disabled,
                parent = null,
                spec = spec,
-               configuration = configuration,
+               projectConfiguration = configuration,
             ),
             factoryId = rootTest.factoryId,
          )
@@ -79,7 +79,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
             xdisabled = nested.disabled,
             parent = parent,
             spec = parent.spec,
-            configuration = configuration
+            projectConfiguration = configuration
          ),
          factoryId = parent.factoryId,
          parent = parent,

@@ -11,6 +11,7 @@ import io.kotest.core.test.config.TestCaseConfig
 
 object Defaults {
 
+   const val threads = 1
    const val disableTestNestedJarScanning: Boolean = true
 
    val assertionMode: AssertionMode = AssertionMode.None
@@ -36,7 +37,7 @@ object Defaults {
    const val parallelism: Int = 1
 
    const val defaultTimeoutMillis = 10 * 60 * 1000L
-   const val defaultInvocationTimeoutMillis =  10 * 60 * 1000L
+   const val defaultInvocationTimeoutMillis = 10 * 60 * 1000L
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false
