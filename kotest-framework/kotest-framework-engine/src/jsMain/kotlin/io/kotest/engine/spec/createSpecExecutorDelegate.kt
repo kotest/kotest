@@ -17,7 +17,6 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.escapedJsTestName
-import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
@@ -90,7 +89,7 @@ private class SingleInstanceSpecJsRunner(
    private val testEngineListener: TestEngineListener = context.listener
 
    private val TestCase.enabled: Boolean get() = isEnabledInternal(conf = context.configuration).isEnabled
-   private fun TestCase.displayName(): String = testNameEscape(formatter.format(this))
+   private fun TestCase.displayName(): String = formatter.format(this).escapedJsTestName()
 
    suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
@@ -147,10 +146,12 @@ private class SingleInstanceSpecJsRunner(
          delegate = SingleInstanceTestScope(testCase, parentScope)
       )
 
-      val parents = generateSequence(parentScope) { it.parentScope }
-         .map { it.testCase.displayName().escapedJsTestName() }
-         .toList()
-         .reversed()
+      val parents = buildList {
+         val scopeNames = generateSequence(parentScope) { it.parentScope }
+            .map { it.testCase.displayName() }
+         addAll(scopeNames)
+         add(specName)
+      }.reversed()
 
 // this approach seems more accurate, but it doesn't work :( It overrides any parent describes?
 //      fun scopes(names: ArrayDeque<String>, inner: () -> Unit) {
