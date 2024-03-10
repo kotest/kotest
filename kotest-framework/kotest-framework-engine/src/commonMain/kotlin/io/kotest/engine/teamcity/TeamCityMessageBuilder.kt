@@ -139,8 +139,15 @@ class TeamCityMessageBuilder(
       val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
       message(escapeColons(message))
-      if (showDetails)
-         details(escapeColons(error.stackTraceToString()))
+      if (showDetails) {
+         // stackTraceToString fails if the error is created by a mocking framework, so we should catch
+         val stacktrace = try {
+            error.stackTraceToString()
+         } catch (e: Exception) {
+            "StackTrace unavailable (Sometimes caused by a mocked exception)"
+         }
+         details(escapeColons(stacktrace))
+      }
 
       when (error) {
          is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
