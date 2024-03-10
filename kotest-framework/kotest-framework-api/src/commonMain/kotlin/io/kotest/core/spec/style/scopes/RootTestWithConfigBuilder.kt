@@ -7,7 +7,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 class RootTestWithConfigBuilder(
@@ -33,7 +33,7 @@ class RootTestWithConfigBuilder(
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
-      val config = UnresolvedTestConfig(
+      val config = TestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
