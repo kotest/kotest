@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -10,7 +11,9 @@ class SpecInitializationErrorTest : FunSpec() {
    init {
       test("errors in fields should fail the spec in the engine") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector).withClasses(FieldInitErrorSpec::class).launch()
+         TestEngineLauncher(collector)
+            .withClasses(FieldInitErrorSpec::class)
+            .launch()
          collector.specs[FieldInitErrorSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }
    }

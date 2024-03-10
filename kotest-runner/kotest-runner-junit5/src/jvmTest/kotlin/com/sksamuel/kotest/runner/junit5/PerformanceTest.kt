@@ -10,13 +10,12 @@ import kotlin.time.Duration.Companion.seconds
 class PerformanceTest : FunSpec() {
    init {
       test("performance of multiple tests").config(timeout = 20.seconds) {
-          EngineTestKit
-              .engine("kotest")
-              .selectors(DiscoverySelectors.selectClass(ManyTests::class.java))
-                            .execute()
-              .allEvents().apply {
-                  finished().count() shouldBe 10003L // kotest, spec, foo, and the nested tests
-              }
+         EngineTestKit
+            .engine("kotest")
+            .selectors(DiscoverySelectors.selectClass(ManyTests::class.java)).execute()
+            .allEvents().apply {
+               finished().count() shouldBe 10003L // kotest, spec, foo, and the nested tests
+            }
       }
    }
 }

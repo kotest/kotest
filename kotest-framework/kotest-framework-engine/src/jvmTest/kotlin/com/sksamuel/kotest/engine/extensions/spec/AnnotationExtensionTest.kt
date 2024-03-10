@@ -49,6 +49,7 @@ class AnnotationExtensionTest : FunSpec() {
       test("a spec annotated with multiple ApplyExtension's should have all extensions applied") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec2::class)
+            .withConfiguration(ProjectConfiguration().also { it.includePrivateClasses = true })
             .launch()
          instantiations.shouldBe(2)
          beforeSpec.shouldBe(2)

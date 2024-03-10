@@ -37,6 +37,9 @@ object KotestEngineProperties {
     */
    const val filterSpecs = "kotest.filter.specs"
 
+   /**
+    * If set to "true" then private classes (specs) will be included in the test suite.
+    */
    const val includePrivateClasses = "kotest.include.private.classes"
 
    const val propertiesFilename = "kotest.properties.filename"

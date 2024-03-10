@@ -48,7 +48,7 @@ private class StringSpecWithAfterTestError : StringSpec({
    afterTest {
       error("boom")
    }
-   "string test"{}
+   "string test" {}
 })
 
 private class ShouldSpecWithAfterTestError : ShouldSpec({
@@ -114,55 +114,84 @@ class AfterAnyExceptionTest : WordSpec({
 
    "an exception in before test" should {
       "fail the test for behavior spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(
+               listener
+            )
+         )
          executor.execute(BehaviorSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for feature spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(FeatureSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for word spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(WordSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for should spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(ShouldSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for string spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(StringSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for describe spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(DescribeSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for free spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(FreeSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for fun spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(FunSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for expect spec" {
-         val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener))
+         val executor = SpecExecutor(
+            NoopCoroutineDispatcherFactory,
+            EngineContext(ProjectConfiguration().also { it.includePrivateClasses = true }, Platform.JVM).withListener(listener)
+         )
          executor.execute(ExpectSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")

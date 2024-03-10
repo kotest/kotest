@@ -44,7 +44,7 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
          }
 
          "beforeAll / afterAll" {
-            beforeAfterAll  = ""
+            beforeAfterAll = ""
             TestEngineLauncher(NoopTestEngineListener)
                // two classes so we know these callbacks are only invoked once
                .withClasses(A::class, B::class)
@@ -56,7 +56,7 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
    }
 }
 
-private class A : FunSpec() {
+class A : FunSpec() {
    init {
       test("a") {
          beforeAfterProject += "a"
@@ -65,7 +65,7 @@ private class A : FunSpec() {
    }
 }
 
-private class B : FunSpec() {
+class B : FunSpec() {
    init {
       test("b") {
          beforeAfterProject += "b"
