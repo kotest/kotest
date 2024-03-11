@@ -51,12 +51,12 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, true)
    }
 
