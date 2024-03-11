@@ -8,7 +8,9 @@ import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
 
 class JaxbElementTest : FunSpec({
+
    context("Comparing JAXBElement reflectively works as expected") {
+
       val jaxbElement = JAXBElement(QName.valueOf("name"), Int::class.java, 123)
       val otherJaxbElement = JAXBElement(QName.valueOf("name"), Int::class.java, 124)
 

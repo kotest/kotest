@@ -615,8 +615,7 @@ private fun requiresUseOfDefaultEq(
    useDefaultEqualForFields: List<String>
 ): Boolean {
    val expectedOrActualIsNull = actual == null || expected == null
-   val typeIsJavaOrKotlinBuiltIn by lazy { actual.isBuiltInType() && expected.isBuiltInType() }
-
+   val typeIsJavaOrKotlinBuiltIn by lazy { typeName.startsWith("kotlin.") || typeName.startsWith("java.") || typeName.startsWith("javax.xml.") }
    val expectedOrActualIsEnum = actual is Enum<*>
       || expected is Enum<*>
       || (actual != null && actual::class.java.isEnum)

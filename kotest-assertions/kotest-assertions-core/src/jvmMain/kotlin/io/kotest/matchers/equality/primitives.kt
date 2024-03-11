@@ -1,5 +1,8 @@
 package io.kotest.matchers.equality
 
+/**
+ * This is currently unused but will form the basis of reflection based checks in 6.0
+ */
 internal fun <T> T.isBuiltInType() =
    this is Number
    || this is UInt
