@@ -253,7 +253,9 @@ public final class io/kotest/matchers/atomic/AtomicBooleanMatchersKt {
 }
 
 public final class io/kotest/matchers/bigdecimal/MatchersKt {
+	public static final fun beEqualIgnoringScale (Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
 	public static final fun beInClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
@@ -264,6 +266,7 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldBeZero (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldHavePrecision (Ljava/math/BigDecimal;I)I
 	public static final fun shouldHaveScale (Ljava/math/BigDecimal;I)I
+	public static final fun shouldNotBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldNotBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
