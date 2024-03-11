@@ -13,6 +13,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | General                                 |                                                                                                  |
 |-----------------------------------------|--------------------------------------------------------------------------------------------------|
 | `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal                            |
+| `obj::prop.shouldHaveValue(other)`      | General purpose assertion on a property value printing information of the property on failure.   |
 | `expr.shouldBeTrue()`                   | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)`           |
 | `expr.shouldBeFalse()`                  | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)`         |
 | `shouldThrow<T> { block }`              | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T` |

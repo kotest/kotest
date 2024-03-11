@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.config
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
@@ -81,6 +82,13 @@ class FunSpecConfigSyntaxTest : FunSpec() {
       context("an outer context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
          error("boom")
          test("an inner test") { error("boom") }
+      }
+
+      context("a context with overloaded config") {
+         val config = TestConfig(enabled = false)
+         test("disabled from config object").config(config) {
+            error("boom")
+         }
       }
 
       context("an outer context") {

@@ -5,7 +5,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldContain
+import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.checkAll
 
 class ShrinkingTest : FunSpec() {
@@ -54,6 +57,24 @@ Shrink #13: "<<<" pass
 Shrink #14: "<<<<" fail
 Shrink result (after 14 shrinks) => "<<<<"
             """.trim()
+         )
+      }
+
+      test("withEdgecases should maintain the shrinker") {
+         val arb = Arb.int().withEdgecases(5, 6)
+
+         val stdout = captureStandardOut {
+            shouldThrowAny {
+               checkAll(PropTestConfig(seed = 324236), arb, arb) { a, b ->
+                  (a + b) shouldBeLessThan 4
+               }
+            }
+         }
+
+         stdout.shouldContain(
+            """Attempting to shrink arg -245346456
+Shrink #1: 0 fail
+Shrink result (after 1 shrinks) => 0"""
          )
       }
    }
