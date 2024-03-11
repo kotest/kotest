@@ -61,7 +61,6 @@ fun Project.publishPlatformArtifactsInRootModule() {
 
 plugins {
    signing
-   `java-library`
    `maven-publish`
 }
 

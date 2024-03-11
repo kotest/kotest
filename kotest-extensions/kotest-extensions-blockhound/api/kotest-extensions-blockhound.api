@@ -34,6 +34,7 @@ public final class io/kotest/extensions/blockhound/BlockHoundMode : java/lang/En
 	public static final field DISABLED Lio/kotest/extensions/blockhound/BlockHoundMode;
 	public static final field ERROR Lio/kotest/extensions/blockhound/BlockHoundMode;
 	public static final field PRINT Lio/kotest/extensions/blockhound/BlockHoundMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/blockhound/BlockHoundMode;
 	public static fun values ()[Lio/kotest/extensions/blockhound/BlockHoundMode;
 }

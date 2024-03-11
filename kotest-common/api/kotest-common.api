@@ -25,6 +25,7 @@ public final class io/kotest/common/Platform : java/lang/Enum {
 	public static final field JS Lio/kotest/common/Platform;
 	public static final field JVM Lio/kotest/common/Platform;
 	public static final field Native Lio/kotest/common/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/common/Platform;
 	public static fun values ()[Lio/kotest/common/Platform;
 }

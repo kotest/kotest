@@ -126,6 +126,7 @@ public final class io/kotest/assertions/ErrorAndAssertionsScopeKt {
 public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
 	public static final field Hard Lio/kotest/assertions/ErrorCollectionMode;
 	public static final field Soft Lio/kotest/assertions/ErrorCollectionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/ErrorCollectionMode;
 	public static fun values ()[Lio/kotest/assertions/ErrorCollectionMode;
 }

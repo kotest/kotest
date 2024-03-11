@@ -2,7 +2,7 @@ package io.kotest.mpp.atomics
 
 actual class AtomicReference<T> actual constructor(initialValue: T) {
 
-   private val delegate = kotlin.native.concurrent.AtomicReference(initialValue)
+   private val delegate = kotlin.concurrent.AtomicReference(initialValue)
 
    actual var value: T
       get() = delegate.value

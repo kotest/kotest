@@ -615,6 +615,7 @@ public final class io/kotest/engine/tags/TagExpressionResult : java/lang/Enum {
 	public static final field Include Lio/kotest/engine/tags/TagExpressionResult;
 	public static final field Inconclusive Lio/kotest/engine/tags/TagExpressionResult;
 	public final fun and (Lio/kotest/engine/tags/TagExpressionResult;)Lio/kotest/engine/tags/TagExpressionResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun not ()Lio/kotest/engine/tags/TagExpressionResult;
 	public final fun or (Lio/kotest/engine/tags/TagExpressionResult;)Lio/kotest/engine/tags/TagExpressionResult;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/engine/tags/TagExpressionResult;
@@ -645,6 +646,7 @@ public final class io/kotest/engine/tags/TokenType : java/lang/Enum {
 	public static final field Identifier Lio/kotest/engine/tags/TokenType;
 	public static final field OpenParen Lio/kotest/engine/tags/TokenType;
 	public static final field Pipe Lio/kotest/engine/tags/TokenType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/engine/tags/TokenType;
 	public static fun values ()[Lio/kotest/engine/tags/TokenType;
 }

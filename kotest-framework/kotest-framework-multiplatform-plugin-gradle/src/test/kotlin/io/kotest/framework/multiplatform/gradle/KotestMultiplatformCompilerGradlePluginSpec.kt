@@ -16,7 +16,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
 
    setOf(
-      "1.8.10",
+      "1.9.20",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
