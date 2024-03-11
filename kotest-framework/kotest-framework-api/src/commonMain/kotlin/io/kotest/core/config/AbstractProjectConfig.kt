@@ -12,7 +12,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -200,9 +199,10 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overridden in a spec,
+    * Any [TestCaseConfig] set here is used as the default for tests, unless overridden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
+   @Deprecated("use the individual settings instead of the test case config class. Deprecated since 5.8.1")
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**

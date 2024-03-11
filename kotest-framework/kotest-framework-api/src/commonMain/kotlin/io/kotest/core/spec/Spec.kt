@@ -26,7 +26,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.js.JsName
 
 /**
@@ -438,6 +438,6 @@ data class RootTest(
    val type: TestType,
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
-   val config: UnresolvedTestConfig?, // if specified by the test, may be null
+   val config: TestConfig?, // if specified by the test, may be null
    val factoryId: FactoryId?, // if this root test was added from a factory
 )

@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.config
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.Enabled
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
@@ -39,6 +40,13 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
       describe("a describe with multiple tags").config(tags = setOf(Tag1, Tag2)) {
          counter.incrementAndGet()
          it("an inner test") {}
+      }
+
+      describe("a describe with overloaded config") {
+         val config = TestConfig(enabled = false)
+         it("disabled from config object").config(config) {
+            error("boom")
+         }
       }
 
       describe("a describe disabled by an enabled flag").config(enabled = false) {
