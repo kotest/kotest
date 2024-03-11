@@ -13,6 +13,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | General                                 |                                                                                                  |
 |-----------------------------------------|--------------------------------------------------------------------------------------------------|
 | `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal                            |
+| `obj::prop.shouldHaveValue(other)`      | General purpose assertion on a property value printing information of the property on failure.   |
 | `expr.shouldBeTrue()`                   | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)`           |
 | `expr.shouldBeFalse()`                  | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)`         |
 | `shouldThrow<T> { block }`              | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T` |
@@ -207,25 +208,28 @@ Matchers provided by the `kotest-assertions-core` module.
 | `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                                                                      |
 | `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration.                                              |
 
-| ZonedDateTime                                                 ||
-|---------------------------------------------------------------| ---- |
-| `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today. |
-| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| ZonedDateTime                                                        ||
+|----------------------------------------------------------------------| ---- |
+| `zonedDateTime.shouldBeToday()`                                      | Asserts that the ZonedDateTime has the same day as the today. |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`        | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime. |
 
-| OffsetDateTime                                                  |                                                                                                      |
-|-----------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| `offsetDateTime.shouldBeToday()`                                | Asserts that the OffsetDateTime has the same day as today.                                           |
-| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)` | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| OffsetDateTime                                                           |                                                                                                      |
+|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `offsetDateTime.shouldBeToday()`                                         | Asserts that the OffsetDateTime has the same day as today.                                           |
+| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
 
-| Times                                         ||
-|-----------------------------------------------| ---- |
-| `time.shouldHaveSameHoursAs(otherTime)`       | Asserts that the time has the same hours as the given time. |
-| `time.shouldHaveSameMinutesAs(otherTime)`     | Asserts that the time has the same minutes as the given time. |
-| `time.shouldHaveSameSecondsAs(otherTime)`     | Asserts that the time has the same seconds as the given time. |
-| `time.shouldHaveSameNanosAs(otherTime)`       | Asserts that the time has the same nanos as the given time. |
-| `time.shouldBeBefore(otherTime)`              | Asserts that the time is before the given time. |
-| `time.shouldBeAfter(otherTime)`               | Asserts that the time is after the given time. |
-| `time.shouldBeBetween(firstTime, secondTime)` | Asserts that the time is between firstTime and secondTime. |
+| Times                                               ||
+|-----------------------------------------------------| ---- |
+| `time.shouldHaveSameHoursAs(otherTime)`             | Asserts that the time has the same hours as the given time. |
+| `time.shouldHaveSameMinutesAs(otherTime)`           | Asserts that the time has the same minutes as the given time. |
+| `time.shouldHaveSameSecondsAs(otherTime)`           | Asserts that the time has the same seconds as the given time. |
+| `time.shouldHaveSameNanosAs(otherTime)`             | Asserts that the time has the same nanos as the given time. |
+| `time.shouldBeBefore(otherTime)`                    | Asserts that the time is before the given time. |
+| `time.shouldBeAfter(otherTime)`                     | Asserts that the time is after the given time. |
+| `time.shouldBeBetween(firstTime, secondTime)`       | Asserts that the time is between firstTime and secondTime. |
+| `time.shouldBe(otherTime plusOrMinus 1.minutes)`    | Asserts that the time is within duration of other time. |
 
 
 
@@ -235,6 +239,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `instant.shouldBeBefore(anotherInstant)`              | Asserts that the instant is before anotherInstant |
 | `instant.shouldBeBetween(fromInstant, toInstant)`     | Asserts that the instant is between fromInstant and toInstant |
 | `instant.shouldBeCloseTo(anotherInstant, duration)`   | Asserts that the instant is close To anotherInstant in range by duration |
+| `instant.shouldBe(otherTime plusOrMinus 1.minutes)`   | Asserts that the instant is within duration of other instant. |
 
 | Timestamp                                               ||
 |---------------------------------------------------------| ---- |

@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
@@ -92,7 +91,7 @@ class DescribeSpecContainerScope(
       ) { DescribeSpecContainerScope(it) }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,
@@ -101,7 +100,7 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,

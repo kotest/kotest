@@ -6,7 +6,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 @ExperimentalKotest
@@ -27,7 +27,7 @@ class ContainerWithConfigBuilder<T>(
       blockingTest: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
-      val config = UnresolvedTestConfig(
+      val config = TestConfig(
          enabled = enabled,
          enabledIf = enabledIf,
          enabledOrReasonIf = enabledOrReasonIf,

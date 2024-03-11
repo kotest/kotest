@@ -55,16 +55,19 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
 fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
-): Arb<LocalDate> {
+): Arb<LocalDate> = when {
+   minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
+   minDate == maxDate -> Arb.constant(minDate)
+   else -> {
+      val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
 
-   val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
+      val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
+      val february29s = february28s.map { it.plusDays(1) }
 
-   val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
-   val february29s = february28s.map { it.plusDays(1) }
-
-   return arbitrary(february28s + february29s + minDate + maxDate) {
-      minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
-   }.filter { it in minDate..maxDate }
+      arbitrary(february28s + february29s + minDate + maxDate) {
+         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
+      }.filter { it in minDate..maxDate }
+   }
 }
 
 /**
