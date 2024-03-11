@@ -14,11 +14,11 @@ class JaxbElementTest : FunSpec({
       val jaxbElement = JAXBElement(QName.valueOf("name"), Int::class.java, 123)
       val otherJaxbElement = JAXBElement(QName.valueOf("name"), Int::class.java, 124)
 
-      test("Should pass when comparing equal elements") {
+      test("!should pass when comparing equal elements") {
          jaxbElement.shouldBeEqualToComparingFields(jaxbElement)
       }
 
-      test("Should fail when comparing different elements") {
+      test("!should fail when comparing different elements") {
          shouldFail {
             jaxbElement.shouldBeEqualToComparingFields(otherJaxbElement)
          }.message.shouldContain(
