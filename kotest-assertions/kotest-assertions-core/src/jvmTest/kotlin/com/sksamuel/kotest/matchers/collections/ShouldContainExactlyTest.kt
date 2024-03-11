@@ -448,10 +448,4 @@ class ShouldContainExactlyTest : WordSpec() {
    private val sourYellowLemon = Fruit("lemon", "yellow", "sour")
 }
 
-internal data class Fruit(
-   val name: String,
-   val color: String,
-   val taste: String
-)
-
 data class Blonde(val a: String, val b: Boolean, val c: Int, val p: Path)
