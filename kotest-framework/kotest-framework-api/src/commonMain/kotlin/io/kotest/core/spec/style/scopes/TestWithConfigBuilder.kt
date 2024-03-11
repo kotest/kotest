@@ -7,7 +7,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
@@ -15,6 +15,11 @@ class TestWithConfigBuilder(
    private val context: ContainerScope,
    private val xdisabled: Boolean,
 ) {
+
+   suspend fun config(config: TestConfig, test: suspend TestScope.() -> Unit) {
+      TestDslState.clear(context.testCase.descriptor.append(name))
+      context.registerTest(name, xdisabled, config, test)
+   }
 
    suspend fun config(
       enabled: Boolean? = null,
@@ -31,10 +36,8 @@ class TestWithConfigBuilder(
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit
    ) {
-
       TestDslState.clear(name.originalName)
-
-      val config = UnresolvedTestConfig(
+      val config = TestConfig(
          enabled = enabled,
          enabledIf = enabledIf,
          enabledOrReasonIf = enabledOrReasonIf,
@@ -48,7 +51,6 @@ class TestWithConfigBuilder(
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
       )
-
-      context.registerTest(name, xdisabled, config, test)
+      config(config, test)
    }
 }

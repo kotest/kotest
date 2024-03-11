@@ -6,26 +6,26 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.config.ResolvedTestConfig
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
+ * Accepts an [TestConfig] and returns a [ResolvedTestConfig] by completing
  * any nulls in the unresolved config with defaults from the [spec] or [ProjectConfiguration].
  */
 internal fun resolveConfig(
-   config: UnresolvedTestConfig?,
+   config: TestConfig?,
    xdisabled: Boolean?,
    parent: TestCase?,
    spec:Spec,
-   configuration: ProjectConfiguration
+   projectConfiguration: ProjectConfiguration
 ): ResolvedTestConfig {
 
    val defaultTestConfig = spec.defaultTestConfig
       ?: spec.defaultTestCaseConfig()
-      ?: configuration.defaultTestConfig
+      ?: projectConfiguration.defaultTestConfig
 
    val enabled: EnabledOrReasonIf = { testCase ->
       when {
@@ -45,22 +45,22 @@ internal fun resolveConfig(
       ?: spec.timeout?.toMillis()
       ?: spec.timeout()?.toMillis()
       ?: defaultTestConfig.timeout
-      ?: configuration.timeout?.toMillis()
+      ?: projectConfiguration.timeout?.toMillis()
 
-   val threads = config?.threads
+   val threads: Int = config?.threads
       ?: spec.threads
       ?: spec.threads()
-      ?: defaultTestConfig.threads
+      ?: projectConfiguration.threads
 
    val invocations = config?.invocations
-      ?: defaultTestConfig.invocations
+      ?: projectConfiguration.invocations
 
    val invocationTimeout: Duration? = config?.invocationTimeout
       ?: parent?.config?.invocationTimeout
       ?: spec.invocationTimeout?.toMillis()
       ?: spec.invocationTimeout()?.toMillis()
       ?: defaultTestConfig.invocationTimeout
-      ?: configuration.invocationTimeout?.toMillis()
+      ?: projectConfiguration.invocationTimeout?.toMillis()
 
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
@@ -73,16 +73,16 @@ internal fun resolveConfig(
       invocations = invocations,
       timeout = timeout,
       invocationTimeout = invocationTimeout,
-      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(configuration.tagInheritance),
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(projectConfiguration.tagInheritance),
       extensions = extensions,
-      failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: configuration.failfast,
-      severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: configuration.severity,
-      assertSoftly = config?.assertSoftly ?: parent?.config?.assertSoftly ?:spec.assertSoftly ?: configuration.globalAssertSoftly,
-      assertionMode = config?.assertionMode ?: parent?.config?.assertionMode ?: spec.assertions ?: spec.assertionMode() ?: configuration.assertionMode,
-      coroutineDebugProbes = config?.coroutineDebugProbes ?: parent?.config?.coroutineDebugProbes ?:spec.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
-      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: parent?.config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
-      coroutineTestScope = config?.coroutineTestScope ?: parent?.config?.coroutineTestScope ?: spec.coroutineTestScope ?: configuration.coroutineTestScope,
-      blockingTest = config?.blockingTest ?: parent?.config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
+      failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: projectConfiguration.failfast,
+      severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: projectConfiguration.severity,
+      assertSoftly = config?.assertSoftly ?: parent?.config?.assertSoftly ?:spec.assertSoftly ?: projectConfiguration.globalAssertSoftly,
+      assertionMode = config?.assertionMode ?: parent?.config?.assertionMode ?: spec.assertions ?: spec.assertionMode() ?: projectConfiguration.assertionMode,
+      coroutineDebugProbes = config?.coroutineDebugProbes ?: parent?.config?.coroutineDebugProbes ?:spec.coroutineDebugProbes ?: projectConfiguration.coroutineDebugProbes,
+      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: parent?.config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: projectConfiguration.testCoroutineDispatcher,
+      coroutineTestScope = config?.coroutineTestScope ?: parent?.config?.coroutineTestScope ?: spec.coroutineTestScope ?: projectConfiguration.coroutineTestScope,
+      blockingTest = config?.blockingTest ?: parent?.config?.blockingTest ?: spec.blockingTest ?: projectConfiguration.blockingTest,
    )
 }
 

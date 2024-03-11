@@ -9,13 +9,16 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
+@Deprecated("Renamed to TestConfig. Type alias will be removed in 6.0")
+typealias UnresolvedTestConfig = TestConfig
+
 /**
  * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
  *
  * This config is not resolved, and will be converted to a [ResolvedTestConfig] once
  * resolved at runtime.
  */
-data class UnresolvedTestConfig(
+data class TestConfig(
 
    val enabled: Boolean? = null,
    val enabledIf: EnabledIf? = null,
