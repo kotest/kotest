@@ -861,6 +861,53 @@ class CollectionMatchersTest : WordSpec() {
          }
       }
 
+      "matchEach with actual / expected pairs" should {
+         "create proper matchers for collections of the same size" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => expected:<4> but was:<1>
+            """.trimIndent()
+         }
+
+         "element missing on expected list" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => Element has no corresponding assertion. Only 3 assertions provided
+            """.trimIndent()
+         }
+
+         "element missing on actual list" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => No actual element for assertion at index 3
+            """.trimIndent()
+         }
+      }
+
       "existInOrder" should {
          "test that a collection matches the predicates in the given order, duplicates permitted" {
             val col = listOf(1, 1, 2, 2, 3, 3)
