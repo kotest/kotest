@@ -12,7 +12,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -21,14 +20,15 @@ import kotlin.time.Duration
  * Project-wide configuration. Extensions returned by an instance of this class will be applied
  * to all [Spec]s and [TestCase][io.kotest.core.test.TestCase]s.
  *
- * Create an object or class that is derived from this class and place it in your source.
+ * Create a class that is derived from this class and place it in your source.
+ * Note, on the JVM and JS, this config class can also be an object.
  *
  * It will be detected at runtime and used to configure the test engine.
  *
  * For example, you could create this object and place the source in `src/main/kotlin/my/test/package`.
  *
  * ```
- * object KotestProjectConfig : AbstractProjectConfig() {
+ * class KotestProjectConfig : AbstractProjectConfig() {
  *    override val failOnEmptyTestSuite = true
  *    override val testCaseOrder = TestCaseOrder.Random
  * }
@@ -57,14 +57,14 @@ abstract class AbstractProjectConfig {
     * Override this function and return an instance of [SpecExecutionOrder] which will
     * be used to sort specs before execution.
     *
-    * Note: This has no effect on non-JVM targets.
+    * Note: JVM ONLY
     */
    open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     *
-    * Note: This is a JVM platform only option.
+    * Note: JVM ONLY
     */
    open val isolationMode: IsolationMode? = null
 
@@ -111,6 +111,8 @@ abstract class AbstractProjectConfig {
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
     * [concurrentSpecs] to [ProjectConfiguration.MaxConcurrency] unless that option has been explicitly
     * set to another value.
+    *
+    * Note: JVM ONLY
     */
    open val parallelism: Int? = null
 
@@ -126,7 +128,7 @@ abstract class AbstractProjectConfig {
     * kotest.write.specfailures=true
     * ```
     *
-    * Note: This is a JVM platform only option.
+    * Note: JVM ONLY
     */
    open val writeSpecFailureFile: Boolean? = null
 
@@ -157,7 +159,7 @@ abstract class AbstractProjectConfig {
     * Override this value and set it to false if you want to disable auto-scanning of extensions
     * and listeners.
     *
-    * Note: This is a JVM platform only option.
+    * Note: JVM ONLY
     */
    open val autoScanEnabled: Boolean? = null
 
@@ -166,7 +168,7 @@ abstract class AbstractProjectConfig {
     * [@AutoScan][io.kotest.core.annotation.AutoScan]
     * is disabled.
     *
-    *  Note: This is a JVM platform only option.
+    * Note: JVM ONLY
     */
    open val autoScanIgnoredClasses: List<KClass<*>> = emptyList()
 
@@ -183,9 +185,11 @@ abstract class AbstractProjectConfig {
    open val failOnEmptyTestSuite: Boolean? = null
 
    @ExperimentalKotest
+   // Note: JVM ONLY
    open val concurrentSpecs: Int? = null
 
    @ExperimentalKotest
+   // Note: JVM ONLY
    open val concurrentTests: Int? = null
 
    /**
@@ -195,9 +199,10 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overridden in a spec,
+    * Any [TestCaseConfig] set here is used as the default for tests, unless overridden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
+   @Deprecated("use the individual settings instead of the test case config class. Deprecated since 5.8.1")
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
@@ -238,6 +243,7 @@ abstract class AbstractProjectConfig {
 
    open val testNameAppendTags: Boolean? = null
 
+   // Note: JVM ONLY
    open val tagInheritance: Boolean? = null
 
    /**
@@ -265,6 +271,8 @@ abstract class AbstractProjectConfig {
 
    /**
     * Set to false if you wish to allow nested jar scanning for tests.
+    *
+    * Note: JVM ONLY
     */
    open var disableTestNestedJarScanning: Boolean? = null
 

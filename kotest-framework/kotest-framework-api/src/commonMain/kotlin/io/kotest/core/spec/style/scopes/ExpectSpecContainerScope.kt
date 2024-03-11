@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
@@ -50,7 +49,7 @@ class ExpectSpecContainerScope(
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Expect: ", name, false),
          context = this,
@@ -59,7 +58,7 @@ class ExpectSpecContainerScope(
    }
 
    suspend fun xexpect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Expect: ", name, false),
          context = this,

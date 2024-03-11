@@ -16,7 +16,7 @@ jobs:
          run_tests: ${{ steps.check_files.outputs.run_tests }}
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
             with:
                fetch-depth: 2
 
@@ -102,7 +102,7 @@ jobs:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
       runs-on: ubuntu-latest
       steps:
-         -  uses: actions/checkout@v3
+         -  uses: actions/checkout@v4
             with:
                fetch-depth: 0
                ref: ${{ inputs.ref }}

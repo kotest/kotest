@@ -1,37 +1,45 @@
+package io.kotest.matchers.properties
+
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.eq.eq
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.print.print
 import io.kotest.assertions.withClue
-import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import kotlin.reflect.KProperty0
 
 /**
- * Assert that this property has a specific value. Unlike regular [shouldBe], name of the property will be
- * automatically added to the error message
+ * Asserts that this property has a specific value. Unlike regular [shouldBe], the name of the property
+ * will be automatically added to the error message
  */
-infix fun <T> KProperty0<T>.shouldHaveValue(t: T) = this should haveValue(t)
+infix fun <T> KProperty0<T>.shouldHaveValue(expected: T) = this should haveValue(expected)
 
-fun <T> haveValue(t: T) = object : Matcher<KProperty0<T>> {
+/**
+ * Asserts that this property does not have a specific value. Unlike regular [shouldNotBe], the name of the
+ * property will be automatically added to the error message
+ */
+infix fun <T> KProperty0<T>.shouldNotHaveValue(expected: T) = this shouldNot haveValue(expected)
+
+fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
    override fun test(value: KProperty0<T>): MatcherResult {
+      val prependMessage = { "Assertion failed for property '${value.name}'" }
       val actual = value.get()
-      val res = runCatching {
-         actual shouldBe t
-      }
+      return object : MatcherResult {
+         override fun passed(): Boolean =
+            eq(actual, expected) == null
 
-      return EqualityMatcherResult(
-         res.isSuccess,
-         actual,
-         t,
-         {
-            val detailedMessage = res.exceptionOrNull()?.message
-            "Property '${value.name}' should have value $t\n$detailedMessage"
-         },
-         {
-            val detailedMessage = res.exceptionOrNull()?.message
-            "Property '${value.name}' should not have value $t\n$detailedMessage"
-         },
-      )
+         override fun failureMessage(): String =
+            prependMessage() + "\n" + intellijFormatError(Expected(expected.print()), Actual(actual.print()))
+
+         override fun negatedFailureMessage(): String =
+            prependMessage() + "\n${expected.print().value} should not equal ${actual.print().value}"
+      }
    }
 }
 
