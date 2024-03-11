@@ -17,7 +17,7 @@ class TestWithConfigBuilder(
 ) {
 
    suspend fun config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-      TestDslState.clear(context.testCase.descriptor.append(name))
+      TestDslState.clear(name.originalName)
       context.registerTest(name, xdisabled, config, test)
    }
 

@@ -24,7 +24,7 @@ data class TestName(
    val prefix: String?,
    val suffix: String?,
    val defaultAffixes: Boolean,
-   val originalName: String
+   val originalName: String,
 ) {
 
    companion object {
