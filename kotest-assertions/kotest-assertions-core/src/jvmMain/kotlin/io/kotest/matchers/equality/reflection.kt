@@ -584,7 +584,7 @@ internal fun <T> checkEqualityOfFieldsRecursively(
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
       val typeName = when (val classifier = it.returnType.classifier) {
-         is KClass<*> -> classifier.jvmName
+         is KClass<*> -> classifier.qualifiedName ?: classifier.jvmName
          else -> it.returnType.toString().replace("?", "")
       }
       val heading = "${it.name}:"
