@@ -6,11 +6,13 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.jvmName
 
 /**
  * Asserts that this is equal to [other] using specific fields
@@ -581,7 +583,10 @@ internal fun <T> checkEqualityOfFieldsRecursively(
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
-      val typeName = it.returnType.toString().replace("?", "")
+      val typeName = when (val classifier = it.returnType.classifier) {
+         is KClass<*> -> classifier.qualifiedName ?: classifier.jvmName
+         else -> it.returnType.toString().replace("?", "")
+      }
       val heading = "${it.name}:"
 
       if (requiresUseOfDefaultEq(actual, expected, typeName, config.useDefaultShouldBeForFields)) {
