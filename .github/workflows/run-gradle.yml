@@ -19,18 +19,18 @@ jobs:
       runs-on: ${{ inputs.runs-on }}
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.ref }}
 
          -  name: Setup JDK
-            uses: actions/setup-java@v3
+            uses: actions/setup-java@v4
             with:
                distribution: 'temurin'
                java-version: "17"
 
-         -  uses: gradle/gradle-build-action@v2
+         -  uses: gradle/actions/setup-gradle@v3
 
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
