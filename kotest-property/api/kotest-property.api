@@ -122,6 +122,7 @@ public final class io/kotest/property/GenKt {
 public final class io/kotest/property/LabelOrder : java/lang/Enum {
 	public static final field Lexicographic Lio/kotest/property/LabelOrder;
 	public static final field Quantity Lio/kotest/property/LabelOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/LabelOrder;
 	public static fun values ()[Lio/kotest/property/LabelOrder;
 }
@@ -1229,6 +1230,7 @@ public final class io/kotest/property/arbitrary/SingleShotArbContinuation$Suspen
 public final class io/kotest/property/arbitrary/SingleShotGenerationMode : java/lang/Enum {
 	public static final field Edgecase Lio/kotest/property/arbitrary/SingleShotGenerationMode;
 	public static final field Sample Lio/kotest/property/arbitrary/SingleShotGenerationMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/arbitrary/SingleShotGenerationMode;
 	public static fun values ()[Lio/kotest/property/arbitrary/SingleShotGenerationMode;
 }
@@ -1308,6 +1310,7 @@ public final class io/kotest/property/arbitrary/UUIDVersion : java/lang/Enum {
 	public static final field V3 Lio/kotest/property/arbitrary/UUIDVersion;
 	public static final field V4 Lio/kotest/property/arbitrary/UUIDVersion;
 	public static final field V5 Lio/kotest/property/arbitrary/UUIDVersion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getUuidRegex ()Lkotlin/text/Regex;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/arbitrary/UUIDVersion;
 	public static fun values ()[Lio/kotest/property/arbitrary/UUIDVersion;
@@ -1628,6 +1631,7 @@ public final class io/kotest/property/statistics/StatisticsReportMode : java/lan
 	public static final field OFF Lio/kotest/property/statistics/StatisticsReportMode;
 	public static final field ON Lio/kotest/property/statistics/StatisticsReportMode;
 	public static final field SUCCESS Lio/kotest/property/statistics/StatisticsReportMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/statistics/StatisticsReportMode;
 	public static fun values ()[Lio/kotest/property/statistics/StatisticsReportMode;
 }
