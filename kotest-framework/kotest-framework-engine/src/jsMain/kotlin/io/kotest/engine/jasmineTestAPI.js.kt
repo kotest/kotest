@@ -5,8 +5,8 @@ actual fun jasmineTestFrameworkAvailable(): Boolean =
 
 actual fun jasmineTestIt(
    description: String,
-   testFunction: (done: JsTestDoneCallback) -> Any?,
    timeout: Int,
+   testFunction: (done: JsTestDoneCallback) -> Any?,
 ) {
    it(description, testFunction, timeout)
 }
@@ -16,6 +16,20 @@ actual fun jasmineTestXit(
    testFunction: (done: JsTestDoneCallback) -> Any?,
 ) {
    xit(description, testFunction)
+}
+
+internal actual fun jasmineTestDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   describe(description, specDefinitions)
+}
+
+internal actual fun jasmineTestXDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   xdescribe(description, specDefinitions)
 }
 
 // Jasmine test framework functions

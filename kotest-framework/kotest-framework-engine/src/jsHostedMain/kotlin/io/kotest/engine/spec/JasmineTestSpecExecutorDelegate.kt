@@ -8,10 +8,10 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.JsTestDoneCallback
-import io.kotest.engine.describe
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.invoke
-import io.kotest.engine.it
+import io.kotest.engine.jasmineTestDescribe
+import io.kotest.engine.jasmineTestIt
+import io.kotest.engine.jasmineTestXit
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 @ExperimentalKotest
-internal class JavascriptSpecExecutorDelegate(
+internal class JasmineTestSpecExecutorDelegate(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) : SpecExecutorDelegate {
@@ -158,28 +158,31 @@ private class SingleInstanceSpecJsRunner(
 
       val describeName = parents.joinToString("⟶")
 
-      describe(describeName) {
+      jasmineTestDescribe(describeName) {
 
-         val it = if (testCase.enabled) it else it.skip
+         if (testCase.enabled) {
+            jasmineTestIt(testCase.displayName()) { done: JsTestDoneCallback ->
 
-         val handle = it(testCase.displayName()) { done ->
+               val listener = JsTestCaseExecutionListenerAdapter(listener = testEngineListener, done = done)
+               val executor = TestCaseExecutor(
+                  listener = listener,
+                  defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
+                  context = context,
+               )
 
-            val listener = JsTestCaseExecutionListenerAdapter(listener = testEngineListener, done = done)
-            val executor = TestCaseExecutor(
-               listener = listener,
-               defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
-               context = context,
-            )
+               globalScopeLaunch {
+                  val result = executor.execute(testCase, scope)
+                  listener.testFinished(testCase, result)
+               }
+            }
+         } else {
+            jasmineTestXit(testCase.displayName()) {
 
-            globalScopeLaunch {
-               val result = executor.execute(testCase, scope)
-               listener.testFinished(testCase, result)
             }
          }
 
-         // some frameworks default to a 2000 timeout,
-         // here we set to a high number and use the timeout support kotest provides via coroutines
-         handle.timeout(Int.MAX_VALUE)
+
+//         handle.timeout(Int.MAX_VALUE)
       }
    }
 }

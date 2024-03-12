@@ -2,12 +2,13 @@ package io.kotest.engine
 
 import kotlin.js.Promise
 
-actual fun jasmineTestFrameworkAvailable(): Boolean = js("typeof describe === 'function' && typeof it === 'function'")
+internal actual fun jasmineTestFrameworkAvailable(): Boolean =
+   js("typeof describe === 'function' && typeof it === 'function'")
 
-actual fun jasmineTestIt(
+internal actual fun jasmineTestIt(
    description: String,
+   timeout: Int,
    testFunction: (done: JsTestDoneCallback) -> Any?,
-   timeout: Int
 ) {
    it(description, { done ->
       callTestFunction(testFunction) {
@@ -16,7 +17,7 @@ actual fun jasmineTestIt(
    }, timeout)
 }
 
-actual fun jasmineTestXit(
+internal actual fun jasmineTestXit(
    description: String,
    testFunction: (done: JsTestDoneCallback) -> Any?
 ) {
@@ -25,6 +26,20 @@ actual fun jasmineTestXit(
          callDone(done, it)
       }
    }
+}
+
+internal actual fun jasmineTestDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   describe(description, specDefinitions)
+}
+
+internal actual fun jasmineTestXDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   xdescribe(description, specDefinitions)
 }
 
 private fun callTestFunction(
@@ -72,20 +87,12 @@ private external fun xit(
    testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?
 )
 
-//actual internal operator fun ImplementationCallbackPromise.invoke() {
-//   this as JsAny
-//   this.toJsReference().
-//}
-//
-//
-//
-//
-//// Kotlin/Wasm
-//private fun updateUserAge(user: JsAny, age: Int): Unit =
-//   js("{ user.profile.updateAge(age); }")
-//
-//fun processUser(user: JsAny, age: Int) {
-//   // ...
-//   updateUserAge(user, age)
-//   // ...
-//}
+private external fun describe(
+   description: String,
+   specDefinitions: () -> Unit,
+)
+
+private external fun xdescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+)

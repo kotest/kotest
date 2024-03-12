@@ -7,7 +7,7 @@ internal actual fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): SpecExecutorDelegate =
-   JavascriptSpecExecutorDelegate(
+   JasmineTestSpecExecutorDelegate(
       defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
       context = context,
    )
