@@ -178,13 +178,14 @@ private class SingleInstanceSpecJsRunner(
                }
             }
          } else {
-            jasmineTestXit(testCase.displayName()) {
+            jasmineTestXit(testCase.displayName()) { done ->
+               val listener = JsTestCaseExecutionListenerAdapter(listener = testEngineListener, done = done)
 
+               globalScopeLaunch {
+                  listener.testIgnored(testCase, testCase.isEnabledInternal(conf = context.configuration).reason)
+               }
             }
          }
-
-
-//         handle.timeout(Int.MAX_VALUE)
       }
    }
 }
