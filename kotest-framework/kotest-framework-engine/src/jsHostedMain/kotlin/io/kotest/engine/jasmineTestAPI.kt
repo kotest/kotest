@@ -29,18 +29,3 @@ internal expect fun jasmineTestXDescribe(
 
 
 internal typealias JsTestDoneCallback = (errorOrNull: Throwable?) -> Unit
-
-//@KotestInternal
-//external interface JsTestDoneCallback
-//
-//internal expect operator fun JsTestDoneCallback.invoke(
-//   error: Throwable?
-//)
-
-//// (() => PromiseLike<any>) | (() => void) | ((done: DoneFn) => void);
-//internal external interface ImplementationCallback
-//internal external interface ImplementationCallbackPromise: ImplementationCallback
-//internal external interface ImplementationCallbackUnit: ImplementationCallback
-//internal external interface ImplementationCallbackDone: ImplementationCallback
-//
-//expect internal  operator fun ImplementationCallbackPromise.invoke()
