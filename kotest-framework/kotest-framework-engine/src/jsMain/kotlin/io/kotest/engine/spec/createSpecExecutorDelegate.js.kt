@@ -4,6 +4,10 @@ import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 
 internal actual fun createSpecExecutorDelegate(
-    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-    context: EngineContext
-): SpecExecutorDelegate = JasmineTestSpecExecutorDelegate(context)
+   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
+   context: EngineContext,
+): SpecExecutorDelegate =
+   JavascriptSpecExecutorDelegate(
+      defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
+      context = context,
+   )

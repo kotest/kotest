@@ -38,12 +38,6 @@ external interface JsTestHandle {
    fun timeout(timeout: Int)
 }
 
-@KotestInternal
-external interface JsTestDoneCallback
-
-internal operator fun JsTestDoneCallback.invoke(
-   error: Throwable?
-): dynamic = asDynamic()(error)
 
 
 /** Creates a test closure */

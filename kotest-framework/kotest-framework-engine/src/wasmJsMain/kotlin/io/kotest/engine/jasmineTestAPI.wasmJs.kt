@@ -6,7 +6,7 @@ actual fun jasmineTestFrameworkAvailable(): Boolean = js("typeof describe === 'f
 
 actual fun jasmineTestIt(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
+   testFunction: (done: JsTestDoneCallback) -> Any?,
    timeout: Int
 ) {
    it(description, { done ->
@@ -18,7 +18,7 @@ actual fun jasmineTestIt(
 
 actual fun jasmineTestXit(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: JsTestDoneCallback) -> Any?
 ) {
    xit(description) { done ->
       callTestFunction(testFunction) {
@@ -71,3 +71,21 @@ private external fun xit(
    description: String,
    testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?
 )
+
+//actual internal operator fun ImplementationCallbackPromise.invoke() {
+//   this as JsAny
+//   this.toJsReference().
+//}
+//
+//
+//
+//
+//// Kotlin/Wasm
+//private fun updateUserAge(user: JsAny, age: Int): Unit =
+//   js("{ user.profile.updateAge(age); }")
+//
+//fun processUser(user: JsAny, age: Int) {
+//   // ...
+//   updateUserAge(user, age)
+//   // ...
+//}

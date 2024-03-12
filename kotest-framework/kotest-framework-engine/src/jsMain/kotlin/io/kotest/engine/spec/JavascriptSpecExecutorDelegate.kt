@@ -24,21 +24,13 @@ import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
-internal actual fun createSpecExecutorDelegate(
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   context: EngineContext,
-): SpecExecutorDelegate =
-   JavascriptSpecExecutorDelegate(
-      defaultCoroutineDispatcherFactory = defaultCoroutineDispatcherFactory,
-      context = context,
-   )
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
