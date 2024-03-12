@@ -6,7 +6,7 @@ import io.kotest.mpp.annotation
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
-actual class FailureFirstSorter : SpecSorter {
+actual val FailureFirstSorter: SpecSorter = object : SpecSorter {
 
    private val path = Paths.get(".kotest").resolve("spec_failures")
 
@@ -30,8 +30,7 @@ actual class FailureFirstSorter : SpecSorter {
    }
 }
 
-actual object AnnotatedSpecSorter : SpecSorter {
-
+actual val AnnotatedSpecSorter: SpecSorter = object : SpecSorter {
    override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int {
       val orderValueA = a.annotation<Order>()?.value ?: Int.MAX_VALUE
       val orderValueB = b.annotation<Order>()?.value ?: Int.MAX_VALUE

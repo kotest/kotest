@@ -161,7 +161,7 @@ internal fun useEq(
    val typeIsJavaOrKotlinBuiltIn by lazy {
       val bestName = typeName.bestName()
       bestName.startsWith("kotlin") ||
-         bestName.startsWith("java") ||
+         (bestName.startsWith("java") && !bestName.startsWith("javax.xml.bind.JAXBElement")) ||
          builtins.contains(bestName)
    }
    val expectedOrActualIsEnum = actual is Enum<*>

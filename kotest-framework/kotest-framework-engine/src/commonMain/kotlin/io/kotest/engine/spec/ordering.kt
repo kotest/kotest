@@ -27,7 +27,7 @@ internal class DefaultSpecExecutionOrderExtension(
 
          SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(specs)
          SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(specs)
-         SpecExecutionOrder.FailureFirst -> FailureFirstSorter().sort(specs)
+         SpecExecutionOrder.FailureFirst -> FailureFirstSorter.sort(specs)
          SpecExecutionOrder.Random -> {
             val random = when (val seed = configuration.randomOrderSeed) {
                null -> Random.Default

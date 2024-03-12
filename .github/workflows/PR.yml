@@ -16,7 +16,7 @@ jobs:
          run_tests: ${{ steps.check_files.outputs.run_tests }}
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
             with:
                fetch-depth: 2
 
@@ -60,6 +60,7 @@ jobs:
             target:
                - jvmTest
                - jsTest
+               - wasmJsTest
                - linuxX64Test linuxArm64TestKlibrary
                - androidNativeX86TestKlibrary androidNativeX64TestKlibrary androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary
                - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
@@ -77,9 +78,9 @@ jobs:
          matrix:
             target:
                - macosX64Test macosArm64Test
-               - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary
+               - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary
                - tvosX64Test tvosArm64TestKlibrary tvosSimulatorArm64Test
-               - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64TestKlibrary
+               - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64TestKlibrary
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: macos-latest
@@ -101,7 +102,7 @@ jobs:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
       runs-on: ubuntu-latest
       steps:
-         -  uses: actions/checkout@v3
+         -  uses: actions/checkout@v4
             with:
                fetch-depth: 0
                ref: ${{ inputs.ref }}
