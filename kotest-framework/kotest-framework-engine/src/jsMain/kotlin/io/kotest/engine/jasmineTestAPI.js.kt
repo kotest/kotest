@@ -8,7 +8,8 @@ actual fun jasmineTestIt(
    timeout: Int,
    testFunction: (done: JsTestDoneCallback) -> Any?,
 ) {
-   it(description, testFunction, timeout)
+   val t = it(description, testFunction, timeout)
+   t.timeout(timeout)
 }
 
 actual fun jasmineTestXit(
@@ -38,7 +39,7 @@ private external fun it(
    description: String,
    testFunction: (done: JsTestDoneCallback) -> Any?,
    timeout: Int,
-)
+): dynamic
 
 private external fun xit(
    description: String,
