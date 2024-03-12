@@ -33,6 +33,8 @@ import kotlinx.coroutines.launch
 
 
 /**
+ * A [SpecExecutorDelegate] running tests via a Jasmine-like JavaScript test framework (Jasmine/Mocha/Jest).
+ *
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 @ExperimentalKotest
