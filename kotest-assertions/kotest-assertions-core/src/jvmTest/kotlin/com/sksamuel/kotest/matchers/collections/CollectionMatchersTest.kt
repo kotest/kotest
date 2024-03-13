@@ -72,6 +72,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotHave
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class CollectionMatchersTest : WordSpec() {
@@ -142,6 +143,40 @@ class CollectionMatchersTest : WordSpec() {
             )
             tests should haveElementAt(0, TestSealed.Test1("test1"))
             tests.shouldHaveElementAt(1, TestSealed.Test2(2))
+         }
+         "print if list is too short" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(3, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 3
+            |But it is too short: only 3 elements
+            """.trimMargin()
+         }
+         "print if element does not match" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(2, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 2
+            |Expected: <"c">, but was <"d">
+            """.trimMargin()
+         }
+         "print if element found at another index" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(2, "b")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1]
+            """.trimMargin()
+         }
+         "print if element found at multiple other indexes" {
+            shouldThrowAny {
+               listOf("a", "b", "c", "b").shouldHaveElementAt(2, "b")
+            }.message shouldBe """
+            |Collection ["a", "b", "c", "b"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1, 3]
+            """.trimMargin()
          }
       }
 
