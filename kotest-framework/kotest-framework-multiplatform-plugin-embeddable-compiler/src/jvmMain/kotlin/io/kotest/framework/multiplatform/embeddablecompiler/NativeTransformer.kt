@@ -79,7 +79,7 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
    }
 
    private val eagerAnnotationConstructor by lazy {
-      val annotationName = ClassId.fromString("kotlin.native.EagerInitialization")
+      val annotationName = ClassId.fromString("kotlin/native/EagerInitialization")
 
       val annotation = pluginContext.referenceClass(annotationName)
          ?: error("Cannot find eager initialisation annotation class $annotationName")

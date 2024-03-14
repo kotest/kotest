@@ -31,7 +31,6 @@ jobs:
             target:
                - "publishWatchosArm32PublicationToDeployRepository"
                - "publishWatchosArm64PublicationToDeployRepository"
-               - "publishWatchosX86PublicationToDeployRepository"
                - "publishWatchosX64PublicationToDeployRepository"
                - "publishWatchosSimulatorArm64PublicationToDeployRepository"
       steps:
