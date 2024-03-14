@@ -1,11 +1,11 @@
 package io.kotest.matchers.bigdecimal
 
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.comparables.lte
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
@@ -39,7 +39,18 @@ fun beInClosedRange(range: ClosedRange<BigDecimal>) = object : Matcher<BigDecima
    override fun test(value: BigDecimal) = MatcherResult(
       range.contains(value),
       { "Value $value should be in range from ${range.start} to ${range.endInclusive} (Inclusive)" },
-      {
-         "Value $value should not be in range from ${range.start} to ${range.endInclusive} (Inclusive)"
-      })
+      { "Value $value should not be in range from ${range.start} to ${range.endInclusive} (Inclusive)" }
+   )
 }
+
+infix fun BigDecimal.shouldBeEqualIgnoringScale(other: BigDecimal) = this should beEqualIgnoringScale(other)
+infix fun BigDecimal.shouldNotBeEqualIgnoringScale(other: BigDecimal) = this shouldNot beEqualIgnoringScale(other)
+
+fun beEqualIgnoringScale(other: BigDecimal) = object : Matcher<BigDecimal> {
+   override fun test(value: BigDecimal) = MatcherResult(
+      value.compareTo(other) == 0,
+      { "BigDecimal $value should be equal ignoring scale to $other" },
+      { "BigDecimal $value should not be equal ignoring scale to $other" },
+   )
+}
+

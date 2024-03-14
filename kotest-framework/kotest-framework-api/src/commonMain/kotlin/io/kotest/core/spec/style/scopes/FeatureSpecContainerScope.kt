@@ -57,7 +57,7 @@ class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerSco
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,
@@ -66,7 +66,7 @@ class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerSco
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,

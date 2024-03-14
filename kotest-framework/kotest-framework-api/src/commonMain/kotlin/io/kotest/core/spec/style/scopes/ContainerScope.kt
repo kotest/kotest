@@ -20,7 +20,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.coroutines.CoroutineContext
 
 @Deprecated("Renamed to ContainerScope in 5.0")
@@ -41,11 +41,11 @@ interface ContainerScope : TestScope {
    fun hasChildren(): Boolean
 
    suspend fun registerTest(
-      name: TestName,
-      disabled: Boolean,
-      config: UnresolvedTestConfig?,
-      type: TestType,
-      test: suspend TestScope.() -> Unit,
+     name: TestName,
+     disabled: Boolean,
+     config: TestConfig?,
+     type: TestType,
+     test: suspend TestScope.() -> Unit,
    ) {
       registerTestCase(
          NestedTest(
@@ -60,19 +60,19 @@ interface ContainerScope : TestScope {
    }
 
    suspend fun registerContainer(
-      name: TestName,
-      disabled: Boolean,
-      config: UnresolvedTestConfig?,
-      test: suspend TestScope.() -> Unit,
+     name: TestName,
+     disabled: Boolean,
+     config: TestConfig?,
+     test: suspend TestScope.() -> Unit,
    ) {
       registerTest(name, disabled, config, TestType.Container, test)
    }
 
    suspend fun registerTest(
-      name: TestName,
-      disabled: Boolean,
-      config: UnresolvedTestConfig?,
-      test: suspend TestScope.() -> Unit,
+     name: TestName,
+     disabled: Boolean,
+     config: TestConfig?,
+     test: suspend TestScope.() -> Unit,
    ) {
       registerTest(name, disabled, config, TestType.Test, test)
    }
