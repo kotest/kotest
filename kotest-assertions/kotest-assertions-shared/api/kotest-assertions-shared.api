@@ -54,6 +54,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
+	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
 }
@@ -3060,6 +3061,10 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldNot (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNotBe (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
+}
+
+public final class io/kotest/similarity/PossibleMatchesDescriptionsKt {
+	public static final fun possibleMatchesDescriptions (Ljava/util/Set;Ljava/lang/Object;)Ljava/util/List;
 }
 
 public final class io/kotest/similarity/PossibleMatchesForSetKt {
