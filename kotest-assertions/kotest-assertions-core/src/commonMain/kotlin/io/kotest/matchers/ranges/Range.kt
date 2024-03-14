@@ -1,6 +1,6 @@
 package io.kotest.matchers.ranges
 
-data class Range<T: Comparable<T>>(
+internal data class Range<T: Comparable<T>>(
     val start: RangeEdge<T>,
     val end: RangeEdge<T>
 ) {
@@ -31,6 +31,18 @@ data class Range<T: Comparable<T>>(
    }
 
    fun greaterThan(other: Range<T>) = other.lessThan(this)
+
+   fun contains(other: Range<T>) = contains(other.start) && contains(other.end)
+
+   fun contains(edge: RangeEdge<T>) = when {
+      edge.value < this.start.value -> false
+      edge.value == this.start.value ->
+         this.start.edgeType == RangeEdgeType.INCLUSIVE || edge.edgeType == RangeEdgeType.EXCLUSIVE
+      this.start.value < edge.value && edge.value < this.end.value -> true
+      edge.value == this.end.value ->
+         this.end.edgeType == RangeEdgeType.INCLUSIVE || edge.edgeType == RangeEdgeType.EXCLUSIVE
+      else -> false
+   }
 
    companion object {
       fun<T: Comparable<T>> ofClosedRange(range: ClosedRange<T>) = Range(
@@ -63,10 +75,20 @@ data class Range<T: Comparable<T>>(
           start = RangeEdge(start, RangeEdgeType.INCLUSIVE),
           end = RangeEdge(end, RangeEdgeType.INCLUSIVE)
       )
-
    }
 }
 
-enum class RangeEdgeType { INCLUSIVE, EXCLUSIVE }
+internal fun<T: Comparable<T>> ClosedRange<T>.toClosedClosedRange(): Range<T> = Range(
+   start = RangeEdge(this.start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(this.endInclusive, RangeEdgeType.INCLUSIVE)
+)
 
-data class RangeEdge<T: Comparable<T>>(val value: T, val edgeType: RangeEdgeType)
+@OptIn(ExperimentalStdlibApi::class)
+internal fun<T: Comparable<T>> OpenEndRange<T>.toClosedOpenRange(): Range<T> = Range(
+   start = RangeEdge(this.start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(this.endExclusive, RangeEdgeType.EXCLUSIVE)
+)
+
+internal enum class RangeEdgeType { INCLUSIVE, EXCLUSIVE }
+
+internal data class RangeEdge<T: Comparable<T>>(val value: T, val edgeType: RangeEdgeType)

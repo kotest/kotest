@@ -10,6 +10,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
+@Deprecated("Deprecated in favor of ResolvedTestConfig")
 data class TestCaseConfig(
 
    /**
