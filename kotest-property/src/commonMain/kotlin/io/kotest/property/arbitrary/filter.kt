@@ -6,7 +6,6 @@ import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.filter
-import kotlin.jvm.JvmName
 
 /**
  * Returns a new [Arb] which takes its elements from the receiver and filters them using the supplied
