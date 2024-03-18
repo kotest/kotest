@@ -6,6 +6,7 @@ import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.filter
+import kotlin.jvm.JvmName
 
 /**
  * Returns a new [Arb] which takes its elements from the receiver and filters them using the supplied
@@ -39,4 +40,4 @@ fun <A> Arb<A>.filterNot(f: (A) -> Boolean): Arb<A> = filter { !f(it) }
  * a particular subtype.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <A, reified B : A> Arb<A>.filterIsInstance(): Arb<B> = filter { it is B }.map { it as B }
+inline fun <reified B> Arb<*>.filterIsInstance(): Arb<B> = filter { it is B } as Arb<B>
