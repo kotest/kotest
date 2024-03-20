@@ -32,7 +32,6 @@ jobs:
                - "publishIosX64PublicationToDeployRepository"
                - "publishIosSimulatorArm64PublicationToDeployRepository"
                - "publishIosArm64PublicationToDeployRepository"
-               - "publishIosArm32PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

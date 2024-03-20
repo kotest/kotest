@@ -126,6 +126,7 @@ public final class io/kotest/framework/discovery/Modifier : java/lang/Enum {
 	public static final field Internal Lio/kotest/framework/discovery/Modifier;
 	public static final field Private Lio/kotest/framework/discovery/Modifier;
 	public static final field Public Lio/kotest/framework/discovery/Modifier;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/framework/discovery/Modifier;
 	public static fun values ()[Lio/kotest/framework/discovery/Modifier;
 }
