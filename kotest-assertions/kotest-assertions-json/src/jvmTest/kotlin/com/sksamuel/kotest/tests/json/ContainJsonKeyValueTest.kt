@@ -37,6 +37,15 @@ class ContainJsonKeyValueTest : StringSpec({
       }
    """.trimIndent()
 
+   "Negated assertions" {
+      "".shouldNotContainJsonKeyValue("$.store.bicycle.color", "red")
+      "{}".shouldNotContainJsonKeyValue("$.store.bicycle.color", "red")
+      """{ "foo": "bar" }""".shouldNotContainJsonKeyValue("foo", "baz")
+      shouldFail {
+         """{ "foo": "bar" }""".shouldNotContainJsonKeyValue("foo", "bar")
+      }.message shouldBe """{ "foo": "bar" } should not contain the element foo = bar"""
+   }
+
    "Failure message states if key is missing, when it's missing" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.bicycle.engine", "V2")
