@@ -15,6 +15,7 @@ import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -352,6 +353,20 @@ class ShouldContainExactlyTest : WordSpec() {
                   CountMismatches: Key="null", expected count: 1, but was: 2, Key="3", expected count: 2, but was: 1
                """.trimIndent()
             )
+         }
+
+         "find similar elements for unexpected key" {
+            val message = shouldThrow<AssertionError> {
+               listOf(sweetGreenApple, sweetRedApple).shouldContainExactlyInAnyOrder(listOf(sweetGreenApple, sweetGreenPear))
+            }.message
+            message shouldContain """
+               |Possible matches for unexpected elements:
+               |
+               | expected: Fruit(name=apple, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=red, taste=sweet),
+               |  The following fields did not match:
+               |    "color" expected: <"green">, but was: <"red">
+            """.trimMargin()
          }
 
          "disambiguate when using optional expected value" {
