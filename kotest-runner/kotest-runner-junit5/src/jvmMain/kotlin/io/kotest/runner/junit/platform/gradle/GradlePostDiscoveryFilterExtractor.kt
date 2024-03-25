@@ -17,7 +17,7 @@ import java.util.regex.Pattern
  * thus allowing kotest to properly support the --tests options.
  *
  */
-object GradlePostDiscoveryFilterExtractor {
+internal object GradlePostDiscoveryFilterExtractor {
 
    private val logger = Logger(GradlePostDiscoveryFilterExtractor::class)
 

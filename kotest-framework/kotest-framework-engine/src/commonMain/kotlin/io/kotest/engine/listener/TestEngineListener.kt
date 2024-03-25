@@ -45,8 +45,7 @@ interface TestEngineListener {
    suspend fun specStarted(kclass: KClass<*>)
 
    /**
-    * Invoked when a spec is ignored. If the results map is empty, then this means
-    * the spec did not define any tests, or the spec was not instantiated.
+    * Invoked when a spec is ignored. An optional [reason] for being ignored can be provided.
     */
    suspend fun specIgnored(kclass: KClass<*>, reason: String?)
 

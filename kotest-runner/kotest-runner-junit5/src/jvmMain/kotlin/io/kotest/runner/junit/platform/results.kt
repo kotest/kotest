@@ -6,7 +6,7 @@ import org.junit.platform.engine.TestExecutionResult
 /**
  * Returns a JUnit [TestExecutionResult] populated from the values of the Kotest [TestResult].
  */
-fun TestResult.toTestExecutionResult(): TestExecutionResult = when (this) {
+internal fun TestResult.toTestExecutionResult(): TestExecutionResult = when (this) {
    is TestResult.Ignored -> error("An ignored test cannot reach this state")
    is TestResult.Success -> TestExecutionResult.successful()
    is TestResult.Error -> TestExecutionResult.failed(this.errorOrNull)

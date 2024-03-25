@@ -15,12 +15,12 @@ import org.junit.platform.engine.discovery.UniqueIdSelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 
-fun EngineDiscoveryRequest.string() = when (this) {
+internal fun EngineDiscoveryRequest.string() = when (this) {
    is LauncherDiscoveryRequest -> this.string()
    else -> "EngineDiscoveryRequest []"
 }
 
-fun LauncherDiscoveryRequest.string() =
+internal fun LauncherDiscoveryRequest.string() =
    "LauncherDiscoveryRequest [\n" +
       "configurationParameters=${this.configurationParameters}\n" +
       "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +

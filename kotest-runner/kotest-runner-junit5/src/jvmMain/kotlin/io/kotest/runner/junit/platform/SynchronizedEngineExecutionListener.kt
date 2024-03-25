@@ -5,7 +5,7 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.reporting.ReportEntry
 
-class SynchronizedEngineExecutionListener(val listener: EngineExecutionListener) : EngineExecutionListener {
+internal class SynchronizedEngineExecutionListener(val listener: EngineExecutionListener) : EngineExecutionListener {
 
   override fun executionFinished(testDescriptor: TestDescriptor?, testExecutionResult: TestExecutionResult?) {
     synchronized(listener) {
