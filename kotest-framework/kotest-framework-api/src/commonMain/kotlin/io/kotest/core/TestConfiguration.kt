@@ -12,6 +12,7 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.After
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -20,6 +21,7 @@ import io.kotest.core.spec.AfterSpec
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.AroundTestFn
 import io.kotest.core.spec.AutoCloseable
+import io.kotest.core.spec.Before
 import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
@@ -271,6 +273,22 @@ abstract class TestConfiguration {
       register(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
+         }
+      })
+   }
+
+   open fun before(f: Before) {
+      register(object : TestListener {
+         override suspend fun before(testCase: TestCase) {
+            f(testCase)
+         }
+      })
+   }
+
+   open fun after(f: After) {
+      register(object : TestListener {
+         override suspend fun after(testCase: TestCase, result: TestResult) {
+            f(Tuple2(testCase, result))
          }
       })
    }

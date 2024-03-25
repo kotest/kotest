@@ -25,6 +25,14 @@ fun Spec.functionOverrideCallbacks() = object : TestListener {
       this@functionOverrideCallbacks.beforeTest(testCase)
    }
 
+   override suspend fun before(testCase: TestCase) {
+      this@functionOverrideCallbacks.before(testCase)
+   }
+
+   override suspend fun after(testCase: TestCase, result: TestResult) {
+      this@functionOverrideCallbacks.after(testCase, result)
+   }
+
    override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
       this@functionOverrideCallbacks.afterContainer(testCase, result)
    }

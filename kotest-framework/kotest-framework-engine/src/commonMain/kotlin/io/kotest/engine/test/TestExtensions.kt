@@ -8,10 +8,12 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterInvocationListener
+import io.kotest.core.listeners.AfterListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
+import io.kotest.core.listeners.BeforeListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
@@ -70,6 +72,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val bt = extensions(testCase).filterIsInstance<BeforeTestListener>()
       val bc = extensions(testCase).filterIsInstance<BeforeContainerListener>()
       val be = extensions(testCase).filterIsInstance<BeforeEachListener>()
+      val bf = extensions(testCase).filterIsInstance<BeforeListener>()
 
       val errors = bc.mapNotNull {
          runCatching {
@@ -83,6 +86,10 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          runCatching {
             it.beforeAny(testCase)
             it.beforeTest(testCase)
+         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
+      } + bf.mapNotNull {
+         runCatching {
+            it.before(testCase)
          }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
       }
 
@@ -102,6 +109,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val at = extensions(testCase).filterIsInstance<AfterTestListener>()
       val ac = extensions(testCase).filterIsInstance<AfterContainerListener>()
       val ae = extensions(testCase).filterIsInstance<AfterEachListener>()
+      val af = extensions(testCase).filterIsInstance<AfterListener>()
 
       val errors = at.mapNotNull {
          runCatching {
@@ -115,6 +123,10 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       } + ae.mapNotNull {
          runCatching {
             if (testCase.type == TestType.Test) it.afterEach(testCase, result)
+         }.mapError { ExtensionException.AfterEachException(it) }.exceptionOrNull()
+      } + af.mapNotNull {
+         runCatching {
+            if (testCase.type == TestType.Test) it.after(testCase, result)
          }.mapError { ExtensionException.AfterEachException(it) }.exceptionOrNull()
       }
 
