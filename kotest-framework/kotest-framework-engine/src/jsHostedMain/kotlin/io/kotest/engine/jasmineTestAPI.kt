@@ -1,16 +1,31 @@
 package io.kotest.engine
 
-expect fun jasmineTestFrameworkAvailable(): Boolean
+internal expect fun jasmineTestFrameworkAvailable(): Boolean
 
 // Adapters for test framework functions whose signatures differ between JS and Wasm.
 
-expect fun jasmineTestIt(
+internal expect fun jasmineTestIt(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
-   timeout: Int
+   // some frameworks default to a 2000 timeout,
+   // here we set to a high number and use the timeout support kotest provides via coroutines
+   timeout: Int = Int.MAX_VALUE,
+   testFunction: (done: JsTestDoneCallback) -> Any?,
 )
 
-expect fun jasmineTestXit(
+internal expect fun jasmineTestXit(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: JsTestDoneCallback) -> Any?,
 )
+
+internal expect fun jasmineTestDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+)
+
+internal expect fun jasmineTestXDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+)
+
+
+internal typealias JsTestDoneCallback = (errorOrNull: Throwable?) -> Unit

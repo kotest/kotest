@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 package io.kotest.engine.test
 
 import io.kotest.common.MonotonicTimeSourceCompat
@@ -79,7 +77,7 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                InvocationTimeoutInterceptor,
-               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
+               if (platform == Platform.JVM && testCase.config.coroutineTestScope) TestDispatcherInterceptor() else null,
                if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),

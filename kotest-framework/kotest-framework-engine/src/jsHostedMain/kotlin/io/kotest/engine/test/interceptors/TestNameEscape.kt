@@ -8,3 +8,8 @@ package io.kotest.engine.test.interceptors
 fun testNameEscape(name: String): String {
    return name.replace('.', ' ')
 }
+
+/**
+ * @see testNameEscape
+ */
+internal fun String.escapedJsTestName(): String = testNameEscape(this)

@@ -1,0 +1,7 @@
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+build/
+.idea/
+kotlin-js-store/

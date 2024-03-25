@@ -2,12 +2,13 @@ package io.kotest.engine
 
 import kotlin.js.Promise
 
-actual fun jasmineTestFrameworkAvailable(): Boolean = js("typeof describe === 'function' && typeof it === 'function'")
+internal actual fun jasmineTestFrameworkAvailable(): Boolean =
+   js("typeof describe === 'function' && typeof it === 'function'")
 
-actual fun jasmineTestIt(
+internal actual fun jasmineTestIt(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
-   timeout: Int
+   timeout: Int,
+   testFunction: (done: JsTestDoneCallback) -> Any?,
 ) {
    it(description, { done ->
       callTestFunction(testFunction) {
@@ -16,15 +17,29 @@ actual fun jasmineTestIt(
    }, timeout)
 }
 
-actual fun jasmineTestXit(
+internal actual fun jasmineTestXit(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
+   testFunction: (done: JsTestDoneCallback) -> Any?
 ) {
    xit(description) { done ->
       callTestFunction(testFunction) {
          callDone(done, it)
       }
    }
+}
+
+internal actual fun jasmineTestDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   describe(description, specDefinitions)
+}
+
+internal actual fun jasmineTestXDescribe(
+   description: String,
+   specDefinitions: () -> Unit,
+) {
+   xdescribe(description, specDefinitions)
 }
 
 private fun callTestFunction(
@@ -70,4 +85,14 @@ private external fun it(
 private external fun xit(
    description: String,
    testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?
+)
+
+private external fun describe(
+   description: String,
+   specDefinitions: () -> Unit,
+)
+
+private external fun xdescribe(
+   description: String,
+   specDefinitions: () -> Unit,
 )

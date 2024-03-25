@@ -11,7 +11,7 @@ internal actual fun createSpecExecutorDelegate(
    context: EngineContext,
 ): SpecExecutorDelegate =
    if (jasmineTestFrameworkAvailable()) {
-      JasmineTestSpecExecutorDelegate(context)
+      JasmineTestSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
    } else {
       DefaultSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
    }

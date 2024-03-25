@@ -1,6 +1,5 @@
 package io.kotest.engine.test.scopes
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
