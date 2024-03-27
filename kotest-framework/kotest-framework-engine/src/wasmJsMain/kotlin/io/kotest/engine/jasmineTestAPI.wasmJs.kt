@@ -4,16 +4,19 @@ import kotlin.js.Promise
 
 actual fun jasmineTestFrameworkAvailable(): Boolean = js("typeof describe === 'function' && typeof it === 'function'")
 
+actual fun jasminTestDescribe(name: String, specDefinitions: () -> Unit) {
+   describe(name, specDefinitions)
+}
+
 actual fun jasmineTestIt(
    description: String,
-   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?,
-   timeout: Int
+   testFunction: (done: (errorOrNull: Throwable?) -> Unit) -> Any?
 ) {
-   it(description, { done ->
+   it(description) { done ->
       callTestFunction(testFunction) {
          callDone(done, it)
       }
-   }, timeout)
+   }
 }
 
 actual fun jasmineTestXit(
@@ -50,9 +53,11 @@ private fun callDone(
    done(errorOrNull?.toJsError())
 }
 
+@Suppress("UNUSED_PARAMETER")
 private fun jsThrow(jsException: JsAny): Nothing =
    js("{ throw jsException; }")
 
+@Suppress("UNUSED_PARAMETER")
 private fun throwableToJsError(message: String, stack: String): JsAny =
    js("{ const e = new Error(); e.message = message; e.stack = stack; return e; }")
 
@@ -61,13 +66,12 @@ private fun Throwable.toJsError(): JsAny =
 
 // Jasmine test framework functions
 
-private external fun it(
-   description: String,
-   testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?,
-   timeout: Int
-)
+@Suppress("UNUSED_PARAMETER")
+private fun describe(description: String, specDefinitions: () -> Unit) {
+   // Here we disable the default 2s timeout and use the timeout support Kotest provides via coroutines.
+   js("describe(description, function () { this.timeout(0); specDefinitions(); })")
+}
 
-private external fun xit(
-   description: String,
-   testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?
-)
+private external fun it(description: String, testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?)
+
+private external fun xit(description: String, testFunction: (done: (errorOrNull: JsAny?) -> Unit) -> JsAny?)
