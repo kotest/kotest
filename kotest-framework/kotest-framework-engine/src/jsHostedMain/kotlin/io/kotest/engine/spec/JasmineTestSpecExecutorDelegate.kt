@@ -8,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.PromiseTestCaseExecutionListener
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.jasminTestDescribe
 import io.kotest.engine.jasmineTestIt
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
@@ -34,7 +35,7 @@ internal class JasmineTestSpecExecutorDelegate(private val context: EngineContex
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       val cc = coroutineContext
       // we use the spec itself as an outer/parent test.
-      describe(testNameEscape(spec::class.bestName())) {
+      jasminTestDescribe(testNameEscape(spec::class.bestName())) {
          materializer.materialize(spec).forEach { root ->
 
             val testDisplayName = testNameEscape(formatter.format(root))
@@ -59,10 +60,7 @@ internal class JasmineTestSpecExecutorDelegate(private val context: EngineContex
                      }
                      // we don't want to return the promise as the js frameworks will use that for test resolution
                      // instead of the done callback, and we prefer the callback as it allows for custom timeouts
-                  },
-                  // some frameworks default to a 2000 timeout,
-                  // here we set to a high number and use the timeout support kotest provides via coroutines
-                  timeout = Int.MAX_VALUE
+                  }
                )
             } else {
                jasmineTestXit(description = testDisplayName, testFunction = {})
@@ -72,5 +70,3 @@ internal class JasmineTestSpecExecutorDelegate(private val context: EngineContex
       return emptyMap()
    }
 }
-
-private external fun describe(description: String, specDefinitions: () -> Unit)
