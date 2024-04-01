@@ -17,4 +17,4 @@ javax-activation = { module = "javax.activation:activation", version = "1.1.1" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-intellij = { id = "org.jetbrains.intellij", version = "1.17.2" }
+intellij = { id = "org.jetbrains.intellij", version = "1.17.3" }
