@@ -335,7 +335,8 @@ class CollectionMatchersTest : WordSpec() {
             val col2 = setOf(1, 2, 3)
             val col3 = listOf(1, 2, 3, 4)
 
-            col1.shouldBeSameSizeAs(col2)
+            val (_, _, third) = col1 shouldBeSameSizeAs col2
+            third.shouldBe(3)
             col1 should beSameSizeAs(col2)
             col1 shouldNot beSameSizeAs(col3)
 
@@ -343,13 +344,27 @@ class CollectionMatchersTest : WordSpec() {
                col1.shouldBeSameSizeAs(col3)
             }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
          }
+         "test that an iterable is the same size as another iterable"  {
+            class Group(val name: String, memberIds: Iterable<Int>) : Iterable<Int> by memberIds
+            val group = Group("group 1", listOf(1, 2, 3))
+            val col2 = setOf(1, 2, 3)
+            val col3 = listOf(1, 2, 3, 4)
+            group.shouldBeSameSizeAs(col2).name shouldBe "group 1"
+
+            shouldThrow<AssertionError> {
+               group.shouldBeSameSizeAs(col3)
+            }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
+         }
+
       }
 
       "haveSize" should {
          "test that a collection has a certain size" {
             val col1 = listOf(1, 2, 3)
             col1 should haveSize(3)
-            col1.shouldHaveSize(3)
+            val (first, _, third) = col1.shouldHaveSize(3)
+            first shouldBe 1
+            third shouldBe 3
             shouldThrow<AssertionError> {
                col1 should haveSize(2)
             }
