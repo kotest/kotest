@@ -42,7 +42,7 @@ internal data class MismatchByField(
     override fun description() = """$field expected: $expected,
         |  but was: $actual,
         |  The following fields did not match:
-        |${comparisonResults.filter{ !it.match }.joinToString("\n    ") { it.description() }}""".trimMargin()
+        |${comparisonResults.filter{ !it.match }.joinToString("\n") { it.description() }}""".trimMargin()
     override val match: Boolean
       get() = comparisonResults.all { it.match }
 }
