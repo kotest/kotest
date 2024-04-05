@@ -68,6 +68,8 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
    }
 }
 
+fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = mapcontain(key, v)
+
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
    MapContainsMatcher(expected, ignoreExtraKeys = true)
 
