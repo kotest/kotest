@@ -68,16 +68,6 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
    }
 }
 
-fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
-   override fun test(value: Map<K, V>) = MatcherResult(
-      value[key] == v,
-      { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
-      { "Map should not contain mapping $key=$v but was $value" }
-   )
-
-   private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
-}
-
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
    MapContainsMatcher(expected, ignoreExtraKeys = true)
 
