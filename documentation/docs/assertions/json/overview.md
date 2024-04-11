@@ -4,7 +4,7 @@ slug: json-overview.html
 sidebar_label: Overview
 ---
 
-To use these matchers add `testImplementation("io.kotest.extensions:kotest-assertions-json:<version>")` to your build.
+To use these matchers add `testImplementation("io.kotest:kotest-assertions-json:<version>")` to your build.
 
 ## Basic matchers
 
