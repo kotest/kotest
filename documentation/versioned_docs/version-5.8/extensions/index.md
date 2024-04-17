@@ -33,7 +33,7 @@ maintained and hosted by third parties.
 | [H2 Database Extension](https://github.com/LeoColman/kotest-extensions-h2)                       | H2 Database integration with Kotest                                                |
 | [Http4k](https://www.http4k.org/guide/reference/kotest/)                                         | Functional toolkit for Kotlin HTTP applications                                    |
 | [Kotless](https://github.com/LeoColman/kotest-kotless)                                           | Utilties for kotless and kotest                                                    |
-| [KotlinFaker](https://serpro69.github.io/kotlin-faker/extensions/kotest-property-extension/)     | Generate realistically looking fake data within a variety of different domains.    |
+| [KotlinFaker](https://serpro69.github.io/kotlin-faker/extensions/kotest-property-extension/)     | Kotlin-faker data generation extensions for Kotest Property Testing                |
 | [KotlinFixture](https://github.com/appmattus/kotlinfixture/blob/main/fixture-kotest/README.adoc) | generate well-defined, but essentially random, input                               |
 | [LogCapture](https://github.com/jsalinaspolo/logcapture)                                         | LogCapture is a testing library for asserting logging messages                     |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test)                                | JVM-based, full-stack framework for building modular, easily testable microservice |
