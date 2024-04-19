@@ -3,6 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
 import io.kotest.matchers.collections.CountMismatch
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -30,6 +32,16 @@ import kotlin.time.Duration.Companion.seconds
 
 
 class ShouldContainExactlyTest : WordSpec() {
+   private val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
+      override fun name() = "Case Insensitive String Matcher"
+
+      override fun verify(actual: String, expected: String): EqualityResult {
+         return if (actual.uppercase() == expected.uppercase())
+            EqualityResult.equal(actual, expected, this)
+         else
+            EqualityResult.notEqual(actual, expected, this)
+      }
+   }
 
    init {
 
@@ -279,6 +291,19 @@ class ShouldContainExactlyTest : WordSpec() {
                """.trimMargin()
          }
 
+         "pass with custom verifier" {
+            listOf("Apple", "ORANGE", "apple") should containExactly(
+               listOf("Apple", "orange", "APPLE"),
+               caseInsensitiveStringEquality
+            )
+         }
+
+         "fail with custom verifier" {
+            listOf("Apple", "ORANGE", "orange") shouldNot containExactly(
+               listOf("Apple", "orange", "APPLE"),
+               caseInsensitiveStringEquality
+            )
+         }
       }
 
       "containExactlyInAnyOrder" should {
