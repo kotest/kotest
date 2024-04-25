@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
@@ -90,6 +91,11 @@ class CollectionsTest : DescribeSpec({
             it.shouldHaveAtLeastSize(250)
             it.shouldHaveAtMostSize(500)
          }
+      }
+
+      it("not fail on edge cases for non-empty lists with null values") {
+         Arb.list(Arb.constant(null), 1..100).edgecases().forAll {}
+         Arb.list(Exhaustive.constant(null), 1..100).edgecases().forAll {}
       }
    }
 
