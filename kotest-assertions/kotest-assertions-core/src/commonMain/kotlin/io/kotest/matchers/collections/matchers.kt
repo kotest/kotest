@@ -15,12 +15,18 @@ fun <T> Array<T>.shouldNotHaveElementAt(index: Int, element: T) = asList().shoul
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
-   override fun test(value: L) =
-      MatcherResult(
-         index < value.size && value[index] == element,
-         { "Collection ${value.print().value} should contain ${element.print().value} at index $index" },
+   override fun test(value: L): MatcherResult {
+      val (passed, errorDescription) = when {
+         index >= value.size -> false to "but collection was shorter"
+         value[index] != element -> false to "but element was different. Expected: <${element.print().value}>, but was <${value[index].print().value}>"
+         else -> true to ""
+      }
+      return MatcherResult(
+         passed,
+         { "Collection ${value.print().value} should contain ${element.print().value} at index $index, $errorDescription" },
          { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
+   }
 }
 
 infix fun <T> Iterable<T>.shouldExist(p: (T) -> Boolean) = toList().shouldExist(p)
