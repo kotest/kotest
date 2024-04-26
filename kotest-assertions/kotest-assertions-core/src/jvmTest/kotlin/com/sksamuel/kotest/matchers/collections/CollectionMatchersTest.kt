@@ -261,11 +261,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 0 elements: [1]")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate, but no elements matched, and the whole collection was: [1]")
 
             shouldThrow<AssertionError> {
                listOf(2, 2) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 2 elements: [2, 2]")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate, but elements with the following indexes matched: [0, 1], and the whole collection was: [2, 2]")
          }
       }
 

@@ -52,9 +52,17 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
 fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       val filteredValue: List<T> = value.filter(p)
+      val indexesOfMatchingElements = value.mapIndexedNotNull { index, element ->
+         if(p(element)) index else null
+      }
+      val mismatchDescription = when(indexesOfMatchingElements.size) {
+         0 -> "no elements matched"
+         1 -> ""
+         else -> "elements with the following indexes matched: ${indexesOfMatchingElements.print().value}"
+      }
       return MatcherResult(
-         filteredValue.size == 1,
-         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${value.print().value}" },
+         indexesOfMatchingElements.size == 1,
+         { "Collection should have a single element by a given predicate, but $mismatchDescription, and the whole collection was: ${value.print().value}" },
          { "Collection should not have a single element by a given predicate" }
       )
    }
