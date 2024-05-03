@@ -194,6 +194,8 @@ expected:<"foo"> but was:<"This is a test exception">"""
          "shouldHaveStacktraceContaining" {
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
                .shouldHaveStacktraceContaining("CompleteTestException")
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldHaveStacktraceContaining("Complete\\w+Exception".toRegex())
          }
       }
 
