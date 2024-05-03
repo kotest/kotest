@@ -48,6 +48,15 @@ fun haveCause() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = resultForThrowable(value.cause)
 }
 
+infix fun Throwable.shouldHaveStacktraceContaining(substr: String) = this should haveStacktraceContaining(substr)
+infix fun Throwable.shouldNotHaveStacktraceContaining(substr: String) = this shouldNot haveStacktraceContaining(substr)
+fun haveStacktraceContaining(substr: String) = object : Matcher<Throwable> {
+   override fun test(value: Throwable) = MatcherResult(
+      value.stackTraceToString().contains(substr),
+      { "Throwable stacktrace should contain substring: ${substr.print().value}\nActual was:\n${value.stackTraceToString().print().value}" },
+      { "Throwable stacktrace should not contain substring: ${substr.print().value}" })
+}
+
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf() = this should haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf() = this shouldNot haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Throwable> {
