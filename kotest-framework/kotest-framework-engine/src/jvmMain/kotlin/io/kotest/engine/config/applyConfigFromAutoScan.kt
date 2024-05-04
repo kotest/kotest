@@ -17,12 +17,17 @@ import io.kotest.mpp.log
 internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration) {
 
    // this property is used to disable class path scanning for configurations
-   if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == "true") {
+   if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == true.toString()) {
       log { "Kotest auto classpath scanning is disabled" }
       return
    }
 
-   println("Warning: Kotest autoscan is enabled. This means Kotest will scan the classpath for extensions that are annotated with @AutoScan. To avoid this startup cost, set autoscan to false by setting the system property 'kotest.framework.classpath.scanning.config.disable=true'. In 6.0 this value will default to true. For further details see https://kotest.io/docs/next/framework/project-config.html#runtime-detection")
+   println("Warning: Kotest autoscan is enabled. This means Kotest will scan the classpath for extensions that are "
+      + "annotated with @AutoScan. To avoid this startup cost, set autoscan to false by setting the system property "
+      + "'${KotestEngineProperties.disableAutoScanClassPathScanning}=${true}'. "
+      + "In 6.0 this value will default to true. For further details see "
+      + "https://kotest.io/docs/next/framework/project-config.html#runtime-detection"
+   )
 
    classgraph().scan().use { result ->
       result.getClassesWithAnnotation(AutoScan::class.java.name)
