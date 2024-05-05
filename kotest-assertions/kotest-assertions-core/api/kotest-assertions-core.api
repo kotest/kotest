@@ -2392,14 +2392,20 @@ public final class io/kotest/matchers/throwable/MatchersKt {
 	public static final fun haveCause ()Lio/kotest/matchers/Matcher;
 	public static final fun haveMessage (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveMessage (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
+	public static final fun haveStacktraceContaining (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveStacktraceContaining (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
 	public static final fun resultForThrowable (Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResult;
 	public static final fun shouldHaveCause (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun shouldHaveCause$default (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
 	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
+	public static final fun shouldHaveStacktraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
+	public static final fun shouldHaveStacktraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
 	public static final fun shouldNotHaveCause (Ljava/lang/Throwable;)V
 	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
 	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
+	public static final fun shouldNotHaveStacktraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
+	public static final fun shouldNotHaveStacktraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
 }
 
 public final class io/kotest/matchers/time/DurationKt {
