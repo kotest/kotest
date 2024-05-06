@@ -17,7 +17,7 @@ import io.kotest.mpp.log
 internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration) {
 
    // this property is used to disable class path scanning for configurations
-   if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == true.toString()) {
+   if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == "true") {
       log { "Kotest auto classpath scanning is disabled" }
       return
    }
