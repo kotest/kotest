@@ -4,7 +4,8 @@ internal fun<T> closestMatches(expected: Set<T>, actual: T): List<PairComparison
    return expected.asSequence().mapNotNull { candidate ->
             val comparisonResult = VanillaDistanceCalculator.compare("", candidate, actual)
             if (comparisonResult is MismatchByField &&
-               comparisonResult.distance.distance > Distance.COMPLETE_MISMATCH_VALUE) {
+               comparisonResult.distance.distance > Distance.COMPLETE_MISMATCH_VALUE
+            ) {
                PairComparison(actual, candidate, comparisonResult)
             } else null
          }.topWithTiesBy {

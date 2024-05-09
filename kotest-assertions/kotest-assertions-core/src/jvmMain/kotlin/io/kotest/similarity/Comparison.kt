@@ -33,11 +33,11 @@ internal data class AtomicMismatch(
 }
 
 internal data class MismatchByField(
-   val field: String,
-   val expected: Any,
-   val actual: Any,
-   val comparisonResults: List<ComparisonResult>,
-   val distance: Distance
+    val field: String,
+    val expected: Any,
+    val actual: Any,
+    val comparisonResults: List<ComparisonResult>,
+    val distance: Distance
 ): ComparisonResult {
     override fun description() = """$field expected: $expected,
         |  but was: $actual,

@@ -6,8 +6,8 @@ internal data class IndexedElement(
 )
 
 internal data class PossibleMatch(
-   val matchInExpected: IndexedElement,
-   val actual: IndexedElement,
-   val comparisonResult: ComparisonResult
+    val matchInExpected: IndexedElement,
+    val actual: IndexedElement,
+    val comparisonResult: ComparisonResult
 )
 
