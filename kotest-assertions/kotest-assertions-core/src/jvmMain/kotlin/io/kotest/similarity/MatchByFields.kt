@@ -13,7 +13,7 @@ internal fun matchByFields(field: String, expected: Any, actual: Any): Compariso
     val comparisons = expectedFields.mapIndexed{
         index, expectedField ->
         val actualField = actualFields[index]
-       VanillaDistanceCalculator.compare(expectedField.name, expectedField.value, actualField.value)
+        VanillaDistanceCalculator.compare(expectedField.name, expectedField.value, actualField.value)
     }
     val matches = comparisons.count { it is Match }
     val distance = Distance(BigDecimal(matches)

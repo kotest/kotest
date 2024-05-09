@@ -18,7 +18,7 @@ class MatchByFieldsTest: StringSpec() {
                         expected = redCircle,
                         actual = blueCircle,
                         comparisonResults = listOf(
-                            AtomicMismatch(field="color", expected="red", actual="blue", distance=Distance(BigDecimal.ZERO)),
+                            AtomicMismatch(field="color", expected="red", actual="blue", distance= Distance(BigDecimal.ZERO)),
                             Match(field="shape", value="circle")
                         ),
                         distance = Distance(BigDecimal("0.5"))
@@ -36,16 +36,17 @@ class MatchByFieldsTest: StringSpec() {
                                 field="color",
                                 expected="red",
                                 actual="blue",
-                                distance=Distance(BigDecimal.ZERO)
+                                distance= Distance(BigDecimal.ZERO)
                             ),
                             AtomicMismatch(
                                 field="shape",
                                 expected="circle",
                                 actual="triangle",
-                                distance=Distance(BigDecimal.ZERO)
+                                distance= Distance(BigDecimal.ZERO)
                             ),
                         ),
-                        distance = Distance(BigDecimal.ZERO))
+                        distance = Distance(BigDecimal.ZERO)
+                    )
         }
     }
 }
