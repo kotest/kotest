@@ -1,28 +1,36 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.exist
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
 import io.kotest.property.Exhaustive
+import io.kotest.property.PropTestConfig
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
+import io.kotest.property.exhaustive.of
 import io.kotest.property.forAll
 
 class CollectionsTest : DescribeSpec({
@@ -89,6 +97,26 @@ class CollectionsTest : DescribeSpec({
          checkAll(1000, Arb.list(Arb.double(), 250..500)) {
             it.shouldHaveAtLeastSize(250)
             it.shouldHaveAtMostSize(500)
+         }
+      }
+
+      it("support underlying generators returning null") {
+         checkAll(
+            Exhaustive.of(
+               Exhaustive.constant(null),
+               Arb.constant(null),
+               Arb.constant("").orNull(1.0),
+               Arb.constant(0).orNull(1.0)
+            ),
+            Exhaustive.of(0..100, 1..10, 2..50),
+         ) { gen, range ->
+            shouldNotThrowAny {
+               Arb.list(gen, range).checkAll(PropTestConfig(edgeConfig = EdgeConfig(0.5))) {
+                  it.shouldHaveAtLeastSize(range.first)
+                  it.shouldHaveAtMostSize(range.last)
+                  it shouldNot exist { value -> value != null }
+               }
+            }
          }
       }
    }
