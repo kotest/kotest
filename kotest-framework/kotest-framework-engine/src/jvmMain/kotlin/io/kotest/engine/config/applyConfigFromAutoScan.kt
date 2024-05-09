@@ -24,7 +24,7 @@ internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration)
 
    println("Warning: Kotest autoscan is enabled. This means Kotest will scan the classpath for extensions that are "
       + "annotated with @AutoScan. To avoid this startup cost, set autoscan to false by setting the system property "
-      + "'${KotestEngineProperties.disableAutoScanClassPathScanning}=${true}'. "
+      + "'${KotestEngineProperties.disableAutoScanClassPathScanning}=true'. "
       + "In 6.0 this value will default to true. For further details see "
       + "https://kotest.io/docs/next/framework/project-config.html#runtime-detection"
    )
