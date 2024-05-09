@@ -210,7 +210,9 @@ public final class io/kotest/mpp/ReplayKt {
 
 public final class io/kotest/mpp/StableKt {
 	public static final fun isStable (Lkotlin/reflect/KClass;)Z
+	public static final fun isStable (Lkotlin/reflect/KClass;Ljava/lang/Object;)Z
 	public static final fun isStable (Lkotlin/reflect/KType;)Z
+	public static synthetic fun isStable$default (Lkotlin/reflect/KClass;Ljava/lang/Object;ILjava/lang/Object;)Z
 }
 
 public abstract interface class io/kotest/mpp/StackTraces {
