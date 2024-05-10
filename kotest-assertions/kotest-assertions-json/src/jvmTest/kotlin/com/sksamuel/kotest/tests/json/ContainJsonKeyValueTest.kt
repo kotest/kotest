@@ -31,7 +31,8 @@ class ContainJsonKeyValueTest : StringSpec({
               "bicycle": {
                  "color": "red",
                  "price": 19.95,
-                 "code": 1
+                 "code": 1,
+                 "weight": null
               }
          }
       }
@@ -54,6 +55,14 @@ class ContainJsonKeyValueTest : StringSpec({
       """.trimIndent()
    }
 
+   "Failure message states if key is missing, shows valid subpath" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.bicycle.engine", "V2")
+      }.message shouldBe """
+         Expected given to contain json key <'$.store.bicycle.engine'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>
+      """.trimIndent()
+   }
+
    "Failure message states states value mismatch if key is present with different value" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.book[0].price", 9.95)
@@ -69,6 +78,7 @@ class ContainJsonKeyValueTest : StringSpec({
       json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
       json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
       json.shouldContainJsonKeyValue("$.store.bicycle.code", 1L)
+      json.shouldContainJsonKeyValue<Int?>("$.store.bicycle.weight", null)
 
       json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
