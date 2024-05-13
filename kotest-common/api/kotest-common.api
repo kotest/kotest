@@ -256,7 +256,6 @@ public final class io/kotest/mpp/UuidKt {
 }
 
 public final class io/kotest/mpp/WriteLogKt {
-	public static final fun getFile ()Ljava/io/FileWriter;
 	public static final fun writeLog (Lio/kotest/common/TimeMarkCompat;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 

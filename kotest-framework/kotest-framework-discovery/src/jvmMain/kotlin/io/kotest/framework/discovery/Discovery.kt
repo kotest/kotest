@@ -137,6 +137,11 @@ class Discovery(
     * locations specified by the uris param.
     */
    private fun specsFromClassGraph(): List<KClass<out Spec>> {
+      if (!configuration.discoveryClasspathScanningEnabled) {
+         log { "[Discovery] classpath scanning is disabled" }
+         return emptyList()
+      }
+
       val start = System.currentTimeMillis()
       val specs = classgraph().scan().use { scanResult ->
          scanResult
@@ -161,7 +166,7 @@ class Discovery(
          .ignoreClassVisibility()
 
       if (configuration.disableTestNestedJarScanning) {
-         log { "Nested jar scanning is disabled" }
+         log { "[Discovery] Nested jar scanning is disabled" }
          cg.disableNestedJarScanning()
          cg.disableModuleScanning()
       }

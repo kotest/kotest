@@ -270,6 +270,13 @@ abstract class AbstractProjectConfig {
    open var allowOutOfOrderCallbacks: Boolean? = null
 
    /**
+    * Set to false if you wish to disable classpath scanning for test discovery.
+    *
+    * Note: JVM ONLY
+    */
+   open var discoveryClasspathScanningEnabled: Boolean? = null
+
+   /**
     * Set to false if you wish to allow nested jar scanning for tests.
     *
     * Note: JVM ONLY

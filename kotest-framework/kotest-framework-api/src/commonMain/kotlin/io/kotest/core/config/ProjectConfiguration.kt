@@ -338,6 +338,7 @@ class ProjectConfiguration {
     */
    var tagInheritance: Boolean = false
 
+   var discoveryClasspathScanningEnabled: Boolean = Defaults.discoveryClasspathScanningEnabled
    var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
 
    /**

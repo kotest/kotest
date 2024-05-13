@@ -40,6 +40,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.projectTimeout?.let { configuration.projectTimeout = it }
 
    // discovery
+   config.discoveryClasspathScanningEnabled?.let { configuration.discoveryClasspathScanningEnabled = it }
    config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
 
    // test names
