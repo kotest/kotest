@@ -14,6 +14,7 @@ import io.kotest.matchers.throwable.shouldNotHaveCause
 import io.kotest.matchers.throwable.shouldNotHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldNotHaveCauseOfType
 import io.kotest.matchers.throwable.shouldNotHaveMessage
+import io.kotest.matchers.throwable.shouldNotHaveStackTraceContaining
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.text.RegexOption.DOT_MATCHES_ALL
@@ -199,6 +200,14 @@ expected:<"foo"> but was:<"This is a test exception">"""
                .shouldHaveStackTraceContaining("Complete\\w+Exception".toRegex())
             shouldThrow<AssertionError> { CompleteTestException().shouldHaveStackTraceContaining("SomeOtherException") }
                .shouldHaveMessage("^Throwable stacktrace should contain substring: \"SomeOtherException\"\nActual was:\n\".+".toRegex(DOT_MATCHES_ALL))
+         }
+         "shouldNotHaveStackTraceContaining" {
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldNotHaveStackTraceContaining("ProductionException")
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldNotHaveStackTraceContaining("Prod\\w+Exception".toRegex())
+            shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveStackTraceContaining("file.txt not found") }
+               .shouldHaveMessage("Throwable stacktrace should not contain substring: \"file.txt not found\"")
          }
       }
 
