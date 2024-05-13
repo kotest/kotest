@@ -10,7 +10,6 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.log
 import io.kotest.mpp.syspropOrEnv
-import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -43,15 +42,12 @@ class Discovery(
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
-   // the results of a classpath scan, lazily executed and memoized.
-   private val scanResult = lazy { classgraph().scan() }
-
    // filter functions
    //private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
-   private val fromClassPaths: List<KClass<out Spec>> by lazy { scanUris() }
+   private val cachedSpecsFromClassPaths: List<KClass<out Spec>> by lazy { specsFromClassGraph() }
 
    /**
     * Returns a function that applies all the [DiscoveryFilter]s to a given class.
@@ -72,19 +68,6 @@ class Discovery(
    fun discover(request: DiscoveryRequest): DiscoveryResult =
       requests.getOrPut(request) { doDiscovery(request).getOrElse { DiscoveryResult.error(it) } }
 
-//   /**
-//    * Scans the classpaths for kotlin script files.
-//    */
-//   private fun discoverScripts(): List<KClass<out ScriptTemplateWithArgs>> {
-//      log { "Discovery: Running script scan" }
-//      return scanResult.value
-//         .allClasses
-//         .filter { it.extendsSuperclass(ScriptTemplateWithArgs::class.java.name) }
-//         .map { it.load(false) }
-//         .filter(isScript)
-//         .filterIsInstance<KClass<out ScriptTemplateWithArgs>>()
-//   }
-
    /**
     * Loads a class reference from a [ClassInfo].
     *
@@ -95,98 +78,84 @@ class Discovery(
 
    private fun doDiscovery(request: DiscoveryRequest): Result<DiscoveryResult> = runCatching {
 
-      val specClasses =
-         if (request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
+      val specsSelected = request.specsIfCompletelySpecifiedOrNull()
+         ?: cachedSpecsFromClassPaths
+            .asSequence()
+            .filter(isSpecSubclassKt)
+            .filterNot(isAbstract)
+            .filter(selectorFn(request.selectors))
+            .toList()
 
-      val filtered = specClasses
-         .asSequence()
-         .filter(selectorFn(request.selectors))
-         .filter(filterFn(request.filters))
-         // all classes must subclass one of the spec parents
-         .filter(isSpecSubclassKt)
-         // we don't want abstract classes
-         .filterNot(isAbstract)
-         .toList()
+      log { "[Discovery] Selected ${specsSelected.size} specs" }
 
-      log { "After filters there are ${filtered.size} spec classes" }
+      val specsAfterInitialFiltering = specsSelected.filter(filterFn(request.filters))
+
+      log { "[Discovery] ${specsAfterInitialFiltering.size} specs remain after initial filtering" }
 
       log { "[Discovery] Further filtering classes via discovery extensions [$discoveryExtensions]" }
 
-      val afterExtensions = discoveryExtensions
-         .fold(filtered) { cl, ext -> ext.afterScan(cl) }
+      val specsAfterExtensionFiltering = discoveryExtensions
+         .fold(specsAfterInitialFiltering) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
 
-      log { "After discovery extensions there are ${afterExtensions.size} spec classes" }
+      log { "[Discovery] ${specsAfterExtensionFiltering.size} specs remain after extension filtering" }
 
-//      val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
-//         System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
-
-//      val scripts = when {
-//         scriptsEnabled -> discoverScripts()
-//         else -> emptyList()
-//      }
-
-      if (scanResult.isInitialized()) runCatching { scanResult.value.close() }
-
-      log { "Discovery result [${afterExtensions.size} specs; scripts]" }
-      DiscoveryResult(afterExtensions, emptyList(), null)
+      DiscoveryResult(specsAfterExtensionFiltering, emptyList(), null)
    }
 
    /**
-    * Returns whether this is a request that selects single classes
-    * only. Used to avoid full classpath scans when not necessary.
+    * Returns the request's [Spec]s if they are completely specified and a classpath scan is avoidable, null otherwise.
+    *
+    * Specs are completely specified if the request consists of class discovery selectors only.
     */
-   private fun DiscoveryRequest.onlySelectsSingleClasses(): Boolean =
-      selectors.isNotEmpty() &&
-         selectors.all { it is DiscoverySelector.ClassDiscoverySelector }
+   private fun DiscoveryRequest.specsIfCompletelySpecifiedOrNull(): List<KClass<out Spec>>? {
+      if (selectors.isEmpty() || !selectors.all { it is DiscoverySelector.ClassDiscoverySelector })
+         return null
 
-   /**
-    * Returns a list of [Spec] classes from discovery requests that only have
-    * selectors of type [DiscoverySelector.ClassDiscoverySelector].
-    */
-   private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
-      log { "Discovery: Loading specified classes..." }
+      log { "[Discovery] Collecting specs via class discovery selectors..." }
       val start = System.currentTimeMillis()
 
       // first filter down to spec instances only, then load the full class
-      val loadedClasses = request
-         .selectors
+      val specs = selectors
          .asSequence()
          .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
          .map { Class.forName(it.className, false, this::class.java.classLoader) }
          .filter(isSpecSubclass)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+         .filterNot(isAbstract)
          .toList()
 
-      val duration = System.currentTimeMillis() - start
-      log { "Discovery: Loading of selected classes completed in ${duration}ms" }
-      return loadedClasses
+      log {
+         val duration = System.currentTimeMillis() - start
+         "[Discovery] Collecting specs via class discovery selectors completed in ${duration}ms," +
+            " found ${specs.size} specs"
+      }
+
+      return specs
    }
 
    /**
     * Returns a list of [Spec] classes detected using classgraph in the list of
     * locations specified by the uris param.
     */
-   private fun scanUris(): List<KClass<out Spec>> {
+   private fun specsFromClassGraph(): List<KClass<out Spec>> {
+      log { "[Discovery] Starting classgraph scan for specs..." }
 
-      log {
-         val uptime = ManagementFactory.getRuntimeMXBean().uptime
-         "Discovery: Starting test discovery scan... [uptime=$uptime]"
+      val start = System.currentTimeMillis()
+      val specs = classgraph().scan().use { scanResult ->
+         scanResult
+            .getSubclasses(Spec::class.java.name)
+            .map { Class.forName(it.name).kotlin }
+            .filterIsInstance<KClass<out Spec>>()
       }
 
-      val result = scanResult.value
-         .getSubclasses(Spec::class.java.name)
-         .map { Class.forName(it.name).kotlin }
-         .filterIsInstance<KClass<out Spec>>()
-
       log {
-         val start = System.currentTimeMillis()
          val duration = System.currentTimeMillis() - start
-         "Discovery: Test discovery completed in ${duration}ms"
+         "[Discovery] Completed classgraph scan for specs in ${duration}ms, found ${specs.size} specs"
       }
 
-      return result
+      return specs
    }
 
    private fun classgraph(): ClassGraph {
