@@ -2525,3 +2525,11 @@ public final class io/kotest/matchers/url/MatchersKt {
 	public static final fun shouldNotHaveRef (Ljava/net/URL;Ljava/lang/String;)V
 }
 
+public final class io/kotest/similarity/PossibleMatchesForSetKt {
+	public static final fun possibleMatchesForSet (ZLjava/util/Set;Ljava/util/Set;Lio/kotest/equals/Equality;)Ljava/lang/String;
+}
+
+public final class io/kotest/similarity/PossibleMatchesKt {
+	public static final fun possibleMatchesDescription (Ljava/util/Set;Ljava/lang/Object;)Ljava/lang/String;
+}
+

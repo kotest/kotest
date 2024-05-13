@@ -1,6 +1,6 @@
 [versions]
-blockhound = "1.0.8.RELEASE"
-classgraph = "4.8.165"
+blockhound = "1.0.9.RELEASE"
+classgraph = "4.8.172"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
@@ -71,4 +71,4 @@ junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
+kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.14.0" }
