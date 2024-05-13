@@ -48,18 +48,18 @@ fun haveCause() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = resultForThrowable(value.cause)
 }
 
-infix fun Throwable.shouldHaveStacktraceContaining(substr: String) = this should haveStacktraceContaining(substr)
-infix fun Throwable.shouldNotHaveStacktraceContaining(substr: String) = this shouldNot haveStacktraceContaining(substr)
-fun haveStacktraceContaining(substr: String) = object : Matcher<Throwable> {
+infix fun Throwable.shouldHaveStackTraceContaining(substr: String) = this should haveStackTraceContaining(substr)
+infix fun Throwable.shouldNotHaveStackTraceContaining(substr: String) = this shouldNot haveStackTraceContaining(substr)
+fun haveStackTraceContaining(substr: String) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
       value.stackTraceToString().contains(substr),
       { "Throwable stacktrace should contain substring: ${substr.print().value}\nActual was:\n${value.stackTraceToString().print().value}" },
       { "Throwable stacktrace should not contain substring: ${substr.print().value}" })
 }
 
-infix fun Throwable.shouldHaveStacktraceContaining(regex: Regex) = this should haveStacktraceContaining(regex)
-infix fun Throwable.shouldNotHaveStacktraceContaining(regex: Regex) = this shouldNot haveStacktraceContaining(regex)
-fun haveStacktraceContaining(regex: Regex) = object : Matcher<Throwable> {
+infix fun Throwable.shouldHaveStackTraceContaining(regex: Regex) = this should haveStackTraceContaining(regex)
+infix fun Throwable.shouldNotHaveStackTraceContaining(regex: Regex) = this shouldNot haveStackTraceContaining(regex)
+fun haveStackTraceContaining(regex: Regex) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
       value.stackTraceToString().contains(regex),
       { "Throwable stacktrace should contain regex: ${regex.print().value}\nActual was:\n${value.stackTraceToString().print().value}" },

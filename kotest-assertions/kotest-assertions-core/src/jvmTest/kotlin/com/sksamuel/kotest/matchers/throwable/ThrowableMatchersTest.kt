@@ -9,7 +9,7 @@ import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.throwable.shouldHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldHaveCauseOfType
 import io.kotest.matchers.throwable.shouldHaveMessage
-import io.kotest.matchers.throwable.shouldHaveStacktraceContaining
+import io.kotest.matchers.throwable.shouldHaveStackTraceContaining
 import io.kotest.matchers.throwable.shouldNotHaveCause
 import io.kotest.matchers.throwable.shouldNotHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldNotHaveCauseOfType
@@ -191,11 +191,11 @@ expected:<"foo"> but was:<"This is a test exception">"""
          "shouldNotHaveCauseOfType" {
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!.shouldNotHaveCauseOfType<IOException>()
          }
-         "shouldHaveStacktraceContaining" {
+         "shouldHaveStackTraceContaining" {
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
-               .shouldHaveStacktraceContaining("CompleteTestException")
+               .shouldHaveStackTraceContaining("CompleteTestException")
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
-               .shouldHaveStacktraceContaining("Complete\\w+Exception".toRegex())
+               .shouldHaveStackTraceContaining("Complete\\w+Exception".toRegex())
          }
       }
 
