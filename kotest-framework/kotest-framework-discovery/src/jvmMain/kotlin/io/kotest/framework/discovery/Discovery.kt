@@ -78,6 +78,8 @@ class Discovery(
 
    private fun doDiscovery(request: DiscoveryRequest): Result<DiscoveryResult> = runCatching {
 
+      log { "[Discovery] Starting spec discovery" }
+
       val specsSelected = request.specsIfCompletelySpecifiedOrNull()
          ?: cachedSpecsFromClassPaths
             .asSequence()
@@ -86,13 +88,9 @@ class Discovery(
             .filter(selectorFn(request.selectors))
             .toList()
 
-      log { "[Discovery] Selected ${specsSelected.size} specs" }
-
       val specsAfterInitialFiltering = specsSelected.filter(filterFn(request.filters))
 
       log { "[Discovery] ${specsAfterInitialFiltering.size} specs remain after initial filtering" }
-
-      log { "[Discovery] Further filtering classes via discovery extensions [$discoveryExtensions]" }
 
       val specsAfterExtensionFiltering = discoveryExtensions
          .fold(specsAfterInitialFiltering) { cl, ext -> ext.afterScan(cl) }
@@ -112,7 +110,6 @@ class Discovery(
       if (selectors.isEmpty() || !selectors.all { it is DiscoverySelector.ClassDiscoverySelector })
          return null
 
-      log { "[Discovery] Collecting specs via class discovery selectors..." }
       val start = System.currentTimeMillis()
 
       // first filter down to spec instances only, then load the full class
@@ -128,7 +125,7 @@ class Discovery(
 
       log {
          val duration = System.currentTimeMillis() - start
-         "[Discovery] Collecting specs via class discovery selectors completed in ${duration}ms," +
+         "[Discovery] Collected specs via ${selectors.size} class discovery selectors in ${duration}ms," +
             " found ${specs.size} specs"
       }
 
@@ -140,8 +137,6 @@ class Discovery(
     * locations specified by the uris param.
     */
    private fun specsFromClassGraph(): List<KClass<out Spec>> {
-      log { "[Discovery] Starting classgraph scan for specs..." }
-
       val start = System.currentTimeMillis()
       val specs = classgraph().scan().use { scanResult ->
          scanResult
@@ -152,7 +147,7 @@ class Discovery(
 
       log {
          val duration = System.currentTimeMillis() - start
-         "[Discovery] Completed classgraph scan for specs in ${duration}ms, found ${specs.size} specs"
+         "[Discovery] Scanned classgraph for specs in ${duration}ms, found ${specs.size} specs"
       }
 
       return specs
