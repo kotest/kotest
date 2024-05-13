@@ -143,7 +143,7 @@ class CollectionMatchersTest : WordSpec() {
             tests should haveElementAt(0, TestSealed.Test1("test1"))
             tests.shouldHaveElementAt(1, TestSealed.Test2(2))
          }
-         "indicate than collection is too short" {
+         "indicate that collection is too short" {
             shouldThrowAny {
                listOf("a", "b", "c").shouldHaveElementAt(3, "b")
             }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 3, but collection was shorter"
