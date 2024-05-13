@@ -16,6 +16,7 @@ import io.kotest.matchers.throwable.shouldNotHaveCauseOfType
 import io.kotest.matchers.throwable.shouldNotHaveMessage
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.text.RegexOption.DOT_MATCHES_ALL
 
 class ThrowableMatchersTest : FreeSpec() {
    init {
@@ -196,6 +197,8 @@ expected:<"foo"> but was:<"This is a test exception">"""
                .shouldHaveStackTraceContaining("CompleteTestException")
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
                .shouldHaveStackTraceContaining("Complete\\w+Exception".toRegex())
+            shouldThrow<AssertionError> { CompleteTestException().shouldHaveStackTraceContaining("SomeOtherException") }
+               .shouldHaveMessage("^Throwable stacktrace should contain substring: \"SomeOtherException\"\nActual was:\n\".+".toRegex(DOT_MATCHES_ALL))
          }
       }
 
