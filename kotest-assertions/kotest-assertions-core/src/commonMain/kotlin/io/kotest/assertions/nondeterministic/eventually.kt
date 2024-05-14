@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.INFINITE
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -112,7 +113,12 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+) {
+   init {
+      require(duration.inWholeMilliseconds >= 0) { "Duration cannot be negative" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0" }
+   }
+}
 
 object EventuallyConfigurationDefaults {
    var duration: Duration = Duration.INFINITE
@@ -205,7 +211,7 @@ object NoopEventuallyListener : EventuallyListener {
 private class EventuallyControl(val config: EventuallyConfiguration) {
 
    val start = timeInMillis()
-   val end = start + config.duration.inWholeMilliseconds
+   val end = addSafely()
 
    var iterations = 0
 
@@ -242,7 +248,14 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
       lastDelayPeriod = (timeInMillis() - delayMark).milliseconds
    }
 
-   fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
+   fun hasAttemptsRemaining() : Boolean {
+      // If the duration is infinite, it is considered as default value, which means it will never stop
+      val isInfinite = config.duration == INFINITE
+      val isWithinDuration = timeInMillis() < end
+      val hasRetries = iterations < config.retries
+
+      return (isInfinite || isWithinDuration) && hasRetries
+   }
 
    fun buildFailureMessage() = StringBuilder().apply {
       val totalDuration = timeInMillis() - start
@@ -260,6 +273,15 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
          appendLine(this.stackTraceToString())
       }
    }.toString()
+
+   private fun addSafely(): Long {
+      val result = start + config.duration.inWholeMilliseconds
+      if (result < 0) {
+         println("[WARN] Overflow detected in duration calculation; setting to INFINITE.")
+         return INFINITE.inWholeMilliseconds
+      }
+      return result
+   }
 }
 
 internal object ShortCircuitControlException : Throwable()
