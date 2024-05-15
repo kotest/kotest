@@ -121,7 +121,7 @@ data class EventuallyConfiguration(
 }
 
 object EventuallyConfigurationDefaults {
-   var duration: Duration = Duration.INFINITE
+   var duration: Duration = INFINITE
    var initialDelay: Duration = Duration.ZERO
    var interval: Duration = 25.milliseconds
    var intervalFn: DurationFn? = null
@@ -211,7 +211,7 @@ object NoopEventuallyListener : EventuallyListener {
 private class EventuallyControl(val config: EventuallyConfiguration) {
 
    val start = timeInMillis()
-   val end = addSafely()
+   val end = (start + config.duration.inWholeMilliseconds).ensureInRange()
 
    var iterations = 0
 
@@ -248,14 +248,7 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
       lastDelayPeriod = (timeInMillis() - delayMark).milliseconds
    }
 
-   fun hasAttemptsRemaining() : Boolean {
-      // If the duration is infinite, it is considered as default value, which means it will never stop
-      val isInfinite = config.duration == INFINITE
-      val isWithinDuration = timeInMillis() < end
-      val hasRetries = iterations < config.retries
-
-      return (isInfinite || isWithinDuration) && hasRetries
-   }
+   fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
 
    fun buildFailureMessage() = StringBuilder().apply {
       val totalDuration = timeInMillis() - start
@@ -274,13 +267,9 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
       }
    }.toString()
 
-   private fun addSafely(): Long {
-      val result = start + config.duration.inWholeMilliseconds
-      if (result < 0) {
-         println("[WARN] Overflow detected in duration calculation; setting to INFINITE.")
-         return INFINITE.inWholeMilliseconds
-      }
-      return result
+
+   fun Long.ensureInRange() = if (this in 0..INFINITE.inWholeMilliseconds) this else INFINITE.inWholeMilliseconds.also {
+      println("[WARN] end value $this is out of the valid range (0 to ${INFINITE.inWholeMilliseconds}), value is fixed to Duration.INFINITE.isWholeMilliseconds")
    }
 }
 
