@@ -6,7 +6,7 @@ import kotlin.reflect.KType
 /**
  * Returns true if the given type is a class and considered "stable".
  */
-@Deprecated("Internal class, will not be exposed in the future. Deprecated since 5.9")
+@Deprecated("Internal function, will not be exposed in the future. Deprecated since 5.9")
 fun isStable(type: KType) = when (val classifier = type.classifier) {
    is KClass<*> -> isStable(classifier, null)
    else -> false
@@ -21,7 +21,7 @@ fun isStable(type: KType) = when (val classifier = type.classifier) {
  *  - a data class that only contains stable classes as members
  *  - a stable type on the executing platform
  */
-@Deprecated("Internal class, will not be exposed in the future. Deprecated since 5.9")
+@Deprecated("Internal function, will not be exposed in the future. Deprecated since 5.9")
 fun isStable(kclass: KClass<*>) = isStable(kclass, null)
 
 /**
@@ -33,7 +33,7 @@ fun isStable(kclass: KClass<*>) = isStable(kclass, null)
  *  - a data class that only contains stable classes as members
  *  - a stable type on the executing platform
  */
-@Deprecated("Internal class, will not be exposed in the future. Deprecated since 5.9")
+@Deprecated("Internal function, will not be exposed in the future. Deprecated since 5.9")
 fun isStable(kclass: KClass<*>, t: Any? = null): Boolean {
    return when {
       allPlatformStableTypes.contains(kclass) -> true
@@ -47,7 +47,7 @@ fun isStable(kclass: KClass<*>, t: Any? = null): Boolean {
    }
 }
 
-@Deprecated("Internal class, will not be exposed in the future. Deprecated since 5.9")
+@Deprecated("Internal function, will not be exposed in the future. Deprecated since 5.9")
 expect fun isPlatformStable(kclass: KClass<*>): Boolean
 
 /**

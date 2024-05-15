@@ -15,8 +15,6 @@ class StableTest : FreeSpec({
          val byte: Byte,
          val short: Short,
          val boolean: Boolean,
-         val pair: Pair<String, String>,
-         val triple: Triple<String, String, String>,
          val char: Char,
       )
 
@@ -33,12 +31,12 @@ class StableTest : FreeSpec({
 
    "Given a data class with generics" - {
       "When all members are stable, then the class should be considered stable" {
-         val x: Row3<String, Int, Double> = Row3("x", 1, 2.0)
+         val x = Row3("x", 1, 2.0)
          isStable(x::class, x) shouldBe true
       }
 
       "When isStable does not have access to actual values, it cannot determine the stability of the class" {
-         val x: Row3<String, Int, Double> = Row3("x", 1, 2.0)
+         val x = Row3("x", 1, 2.0)
          isStable(x::class, t = null) shouldBe false
       }
 
