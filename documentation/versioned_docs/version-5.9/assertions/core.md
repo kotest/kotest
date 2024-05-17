@@ -188,7 +188,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `file.shouldHaveParent(name)`                      |  Assert that the file has a parent with the given name |
 
 | Dates                                         ||
-|-----------------------------------------------|--------------------------------------------------------- Asserts that the date has the same year as the given date.                                                                           -----------------|
+|-----------------------------------------------|--------------------------------------------------------------------------|
 | `date.shouldHaveSameYearAs(otherDate)`        | Asserts that the date has the same year as the given date.                                                                           |
 | `date.shouldHaveSameMonthAs(otherDate)`       | Asserts that the date has the same month as the given date.                                                                          |
 | `date.shouldHaveSameDayAs(otherDate)`         | Asserts that the date has the same day of the month as the given date.                                                               |
