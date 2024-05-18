@@ -268,8 +268,18 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
    }.toString()
 
 
-   fun Long.ensureInRange() = if (this in 0..INFINITE.inWholeMilliseconds) this else INFINITE.inWholeMilliseconds.also {
-      println("[WARN] end value $this is out of the valid range (0 to ${INFINITE.inWholeMilliseconds}), value is fixed to Duration.INFINITE.isWholeMilliseconds")
+   fun Long.ensureInRange() : Long {
+      // Check if the duration is INFINITE which is default
+      if (config.duration == INFINITE) {
+         return INFINITE.inWholeMilliseconds
+      }
+
+      return when {
+         this in 0..INFINITE.inWholeMilliseconds -> this
+         else -> INFINITE.inWholeMilliseconds.also {
+            println("[WARN] end value $this is out of the valid range (0 to ${INFINITE.inWholeMilliseconds}), value is fixed to Duration.INFINITE.inWholeMilliseconds")
+         }
+      }
    }
 }
 
