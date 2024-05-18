@@ -371,5 +371,38 @@ class EventuallyTest : FunSpec() {
             }
          }.message shouldNotContain "The first error was caused by: first"
       }
+
+      test("raise error if duration is less than 0") {
+         shouldThrow<IllegalArgumentException> {
+            eventually(-1.milliseconds) {
+               1 shouldBe 2
+            }
+         }
+      }
+
+      test("raise error if retries is less than 0") {
+         shouldThrow<IllegalArgumentException> {
+            eventuallyConfig {
+               retries = -1
+            }
+         }
+      }
+
+      test("when duration is set to default it cannot end test until iteration is done") {
+         val finalCount = 10000
+         var count = 0
+         val config = eventuallyConfig {
+            interval = 0.1.milliseconds
+            retries = finalCount
+         }
+         shouldThrow<AssertionError> {
+            eventually(config) {
+               count++
+               1 shouldBe 2
+            }
+         }
+
+         count shouldBe finalCount
+      }
    }
 }
