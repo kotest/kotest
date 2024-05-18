@@ -373,19 +373,23 @@ class EventuallyTest : FunSpec() {
       }
 
       test("raise error if duration is less than 0") {
-         shouldThrow<IllegalArgumentException> {
+         val message = shouldThrow<IllegalArgumentException> {
             eventually(-1.milliseconds) {
                1 shouldBe 2
             }
-         }
+         }.message
+
+         message shouldContain "Duration must be greater than or equal to 0"
       }
 
       test("raise error if retries is less than 0") {
-         shouldThrow<IllegalArgumentException> {
+         val message = shouldThrow<IllegalArgumentException> {
             eventuallyConfig {
                retries = -1
             }
-         }
+         }.message
+
+         message shouldContain "Retries must be greater than or equal to 0"
       }
 
       test("when duration is set to default it cannot end test until iteration is done") {
