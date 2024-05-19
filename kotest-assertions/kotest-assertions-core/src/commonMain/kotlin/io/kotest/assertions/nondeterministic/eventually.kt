@@ -275,9 +275,7 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
 
       return when {
          this in 0..Duration.INFINITE.inWholeMilliseconds -> this
-         else -> Duration.INFINITE.inWholeMilliseconds.also {
-            println("[WARN] end value $this is out of the valid range (0 to $it), value is fixed to Duration.INFINITE.inWholeMilliseconds")
-         }
+         else -> throw IllegalArgumentException("[ERROR] end value $this is out of the valid range (0 to ${Duration.INFINITE.inWholeMilliseconds})")
       }
    }
 }
