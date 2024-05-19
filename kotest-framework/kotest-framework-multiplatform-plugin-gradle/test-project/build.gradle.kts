@@ -1,8 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
@@ -20,11 +18,21 @@ kotlin {
 
    jvm()
 
-   js(IR) {
-      // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-      // browser()
+   js {
+      browser()
       nodejs()
    }
+
+   wasmJs {
+      browser()
+      nodejs()
+   }
+
+   /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
+   wasmWasi {
+      nodejs()
+   }
+   */
 
    linuxX64()
    macosX64()
@@ -67,4 +75,19 @@ if (useNewNativeMemoryModel.toBoolean()) {
          binaryOptions["memoryModel"] = "experimental"
       }
    }
+}
+
+// FIXME: WORKAROUND https://youtrack.jetbrains.com/issue/KT-65864
+//     Use a Node.js version current enough to support Kotlin/Wasm
+
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
+   rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+      nodeVersion = "22.0.0-nightly2024010568c8472ed9"
+      println("Using Node.js $nodeVersion to support Kotlin/Wasm")
+      nodeDownloadBaseUrl = "https://nodejs.org/download/nightly"
+   }
+}
+
+rootProject.tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
+   args.add("--ignore-engines") // Prevent Yarn from complaining about newer Node.js versions.
 }

@@ -126,6 +126,7 @@ public final class io/kotest/assertions/ErrorAndAssertionsScopeKt {
 public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
 	public static final field Hard Lio/kotest/assertions/ErrorCollectionMode;
 	public static final field Soft Lio/kotest/assertions/ErrorCollectionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/ErrorCollectionMode;
 	public static fun values ()[Lio/kotest/assertions/ErrorCollectionMode;
 }
@@ -3060,13 +3061,5 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldNot (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNotBe (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
-}
-
-public final class io/kotest/similarity/PossibleMatchesForSetKt {
-	public static final fun possibleMatchesForSet (ZLjava/util/Set;Ljava/util/Set;Lio/kotest/equals/Equality;)Ljava/lang/String;
-}
-
-public final class io/kotest/similarity/PossibleMatchesKt {
-	public static final fun possibleMatchesDescription (Ljava/util/Set;Ljava/lang/Object;)Ljava/lang/String;
 }
 
