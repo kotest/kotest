@@ -122,6 +122,7 @@ via functionality such as property tests or data tests.
 |afterInvocation|Invoked after each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.<br/><br/>If you are running a test with the default single invocation then this callback is effectively the same as `afterTest`.<br/><br/>_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._|
 
 Notice that as far as `beforeAny` and `beforeTest` are just another name for the same functionality,
-`beforeEach` is different. Each of `beforeAny` and `beforeTest` will be invoked before any `TestType.Test`,
-whereas `beforeEach` will be invoked before both `TestType.Container` and `TestType.Test`.
+`beforeEach` is different.
+Each of `beforeAny` and `beforeTest` will be invoked before both `TestType.Container` and `TestType.Test`,
+whereas `beforeEach` will be invoked before any `TestType.Test`.
 The same applies to `afterAny`, `afterTest` and `afterEach`.
