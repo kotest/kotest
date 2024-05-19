@@ -2,6 +2,8 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.IterableEq
+import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldBeNull
@@ -41,6 +43,20 @@ private val expectedPath = if (System.getProperty("os.name").lowercase().contain
 }
 
 class IterableEqTest : FunSpec({
+   test("Comparing empty set with other iterable should be ok") {
+      shouldNotThrowAny {
+         emptySet<Int>() shouldBe listOf()
+      }
+   }
+
+   test("Comparing empty set with other iterable should provide meaningful assertion error") {
+      shouldFail {
+         emptySet<Int>() shouldBe listOf(1)
+      }.message shouldBe """
+         Missing elements from index 0
+         expected:<[1]> but was:<[]>
+      """.trimIndent()
+   }
 
    test("should give null for two equal sets") {
       IterableEq.equals(setOf(1, 2, 3), setOf(2, 3, 1)).shouldBeNull()
