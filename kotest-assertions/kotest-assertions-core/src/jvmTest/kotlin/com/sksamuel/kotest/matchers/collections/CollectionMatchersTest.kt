@@ -261,7 +261,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
-            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]")
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]. Element found at index(es): [1].")
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2) shouldBe singleElement(3)
+            }.shouldHaveMessage("Collection should be a single element of 3 but has 2 elements: [1, 2]. Element not found in collection.")
          }
       }
 
