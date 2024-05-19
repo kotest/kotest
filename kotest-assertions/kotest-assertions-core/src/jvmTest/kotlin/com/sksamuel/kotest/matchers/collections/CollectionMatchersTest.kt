@@ -18,6 +18,7 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
+import io.kotest.matchers.collections.exist
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
@@ -499,6 +500,11 @@ class CollectionMatchersTest : WordSpec() {
          "test that a collection contains at least one element that matches a predicate" {
             val list = listOf(1, 2, 3)
             list.shouldExist { it == 2 }
+         }
+         "give descriptive message when predicate should not match" {
+            shouldThrowAny {
+               listOf(1, 2, 3, 2) shouldNot exist { it == 2}
+            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate (kotlin.Int) -> kotlin.Boolean, but elements with the following indexes matched: [1, 3]"
          }
       }
 
