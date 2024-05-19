@@ -96,17 +96,13 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
       edgecaseFn = { rs ->
          val emptyList = emptyList<A>()
          val singleList: List<A>? = when (gen) {
-            is Arb -> listOf(if (gen.edgecases().isNotEmpty()) gen.edgecases().random(rs.random) else gen.next(rs))
-            is Exhaustive -> gen.values.let { if (it.isEmpty()) null else listOf(it.first()) }
+            is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { listOf(it) }
+            is Exhaustive -> gen.values.firstOrNull()?.let { listOf(it) }
          }
          val repeatedList: List<A>? = when {
             range.last < 2 -> null // too small for repeats
-            gen is Arb -> (if (gen.edgecases().isNotEmpty()) gen.edgecases().random(rs.random) else gen.next(rs))
-               .let { a -> List(max(2, range.first)) { a } }
-
-            gen is Exhaustive -> if (gen.values.isEmpty()) null else gen.values.first()
-               .let { a -> List(max(2, range.first)) { a } }
-
+            gen is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { a -> List(max(2, range.first)) { a } }
+            gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }
          listOfNotNull(emptyList, singleList, repeatedList).filter { it.size in range }.distinct().random(rs.random)
