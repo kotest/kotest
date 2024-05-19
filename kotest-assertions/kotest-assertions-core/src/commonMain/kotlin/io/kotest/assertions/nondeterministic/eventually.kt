@@ -8,7 +8,6 @@ import kotlinx.coroutines.delay
 import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.INFINITE
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -121,7 +120,7 @@ data class EventuallyConfiguration(
 }
 
 object EventuallyConfigurationDefaults {
-   var duration: Duration = INFINITE
+   var duration: Duration = Duration.INFINITE
    var initialDelay: Duration = Duration.ZERO
    var interval: Duration = 25.milliseconds
    var intervalFn: DurationFn? = null
@@ -136,7 +135,7 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the eventually function can take to complete successfully.
+    * The total time that the eventually function can take to complete successfully. Must be greater than or equal to 0.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -159,7 +158,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default this is set to max retries. Must be greater than or equal to 0.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
@@ -270,14 +269,14 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
 
    fun Long.ensureInRange() : Long {
       // Check if the duration is INFINITE which is default
-      if (config.duration == INFINITE) {
-         return INFINITE.inWholeMilliseconds
+      if (config.duration.isInfinite()) {
+         return Duration.INFINITE.inWholeMilliseconds
       }
 
       return when {
-         this in 0..INFINITE.inWholeMilliseconds -> this
-         else -> INFINITE.inWholeMilliseconds.also {
-            println("[WARN] end value $this is out of the valid range (0 to ${INFINITE.inWholeMilliseconds}), value is fixed to Duration.INFINITE.inWholeMilliseconds")
+         this in 0..Duration.INFINITE.inWholeMilliseconds -> this
+         else -> Duration.INFINITE.inWholeMilliseconds.also {
+            println("[WARN] end value $this is out of the valid range (0 to $it), value is fixed to Duration.INFINITE.inWholeMilliseconds")
          }
       }
    }
