@@ -11,8 +11,3 @@ actual fun runPromise(f: suspend () -> Unit) {
       throw it
    }
 }
-
-@OptIn(DelicateCoroutinesApi::class)
-actual fun runPromiseIgnoringErrors(f: suspend () -> Unit) {
-   GlobalScope.promise { f() }
-}
