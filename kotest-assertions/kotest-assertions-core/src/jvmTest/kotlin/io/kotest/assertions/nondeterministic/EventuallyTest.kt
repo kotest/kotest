@@ -15,13 +15,16 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -393,10 +396,9 @@ class EventuallyTest : FunSpec() {
       }
 
       test("when duration is set to default it cannot end test until iteration is done") {
-         val finalCount = 10000
+         val finalCount = 100
          var count = 0
          val config = eventuallyConfig {
-            interval = 0.1.milliseconds
             retries = finalCount
          }
          shouldThrow<AssertionError> {
@@ -407,6 +409,16 @@ class EventuallyTest : FunSpec() {
          }
 
          count shouldBe finalCount
+      }
+
+      test("test eventually without configuration") {
+         // linked to issue #3988
+         var cnt = 0
+            eventually {
+               cnt+=1
+               cnt shouldBe 100
+            }
+         cnt shouldBe 100
       }
    }
 }
