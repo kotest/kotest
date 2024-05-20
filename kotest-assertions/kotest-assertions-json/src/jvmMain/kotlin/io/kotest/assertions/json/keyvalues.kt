@@ -7,6 +7,7 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.print
+import io.kotest.common.KotestInternal
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -76,6 +77,7 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
    }
 }
 
+@KotestInternal
 inline fun<reified T> extractByPath(json: String?, path: String): ExtractValueOutcome {
    val parsedJson = JsonPath.parse(json)
    return try {
@@ -88,6 +90,7 @@ inline fun<reified T> extractByPath(json: String?, path: String): ExtractValueOu
    }
 }
 
+@KotestInternal
 inline fun findValidSubPath(json: String?, path: String): String? {
    val parsedJson = JsonPath.parse(json)
    var subPath = path
@@ -102,15 +105,19 @@ inline fun findValidSubPath(json: String?, path: String): String? {
    return null
 }
 
+@KotestInternal
 fun removeLastPartFromPath(path: String): String {
    val tokens = path.split(".")
    return tokens.take(tokens.size - 1).joinToString(".")
 }
 
+@KotestInternal
 sealed interface ExtractValueOutcome
 
+@KotestInternal
 data class ExtractedValue<T>(
    val value: T
 ): ExtractValueOutcome
 
+@KotestInternal
 object JsonPathNotFound : ExtractValueOutcome
