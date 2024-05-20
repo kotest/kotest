@@ -9,6 +9,7 @@ import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toDuration
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -210,7 +211,7 @@ object NoopEventuallyListener : EventuallyListener {
 private class EventuallyControl(val config: EventuallyConfiguration) {
 
    val start = timeInMillis()
-   val end = (start + config.duration.inWholeMilliseconds).ensureInRange()
+   val end = (start.milliseconds + config.duration).inWholeMilliseconds
 
    var iterations = 0
 
@@ -265,19 +266,6 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
          appendLine(this.stackTraceToString())
       }
    }.toString()
-
-
-   fun Long.ensureInRange() : Long {
-      // Check if the duration is INFINITE which is default
-      if (config.duration.isInfinite()) {
-         return Duration.INFINITE.inWholeMilliseconds
-      }
-
-      return when {
-         this in 0..Duration.INFINITE.inWholeMilliseconds -> this
-         else -> throw IllegalArgumentException("[ERROR] end value $this is out of the valid range (0 to ${Duration.INFINITE.inWholeMilliseconds})")
-      }
-   }
 }
 
 internal object ShortCircuitControlException : Throwable()
