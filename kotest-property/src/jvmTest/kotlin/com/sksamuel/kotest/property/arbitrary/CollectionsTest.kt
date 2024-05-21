@@ -96,7 +96,11 @@ class CollectionsTest : DescribeSpec({
          }
       }
 
-      it("maintain performance").config(timeout = 1.seconds) {
+      it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = 1.seconds) {
+         /*
+         if we revert the fix as follows, the test fails:
+         git revert 8ba8975 --no-commit 
+          */
          val innerGen0 = arbitrary {
             Box(
                Arb.string().bind(),
