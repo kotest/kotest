@@ -1,6 +1,5 @@
 plugins {
    id("kotest-jvm-conventions")
-   id("kotest-js-conventions")
    id("kotest-publishing-conventions")
 }
 
@@ -25,14 +24,6 @@ kotlin {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.mockserver.netty)
             implementation(libs.kotest.extensions.mockserver)
-         }
-      }
-
-      if (!project.hasProperty(Ci.JVM_ONLY)) {
-         val jsMain by getting {
-            dependencies {
-               implementation(libs.ktor.client.js)
-            }
          }
       }
    }

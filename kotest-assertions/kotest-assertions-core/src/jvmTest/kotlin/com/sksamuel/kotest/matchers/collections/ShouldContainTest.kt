@@ -1,8 +1,13 @@
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
+import io.kotest.equals.ReflectionUsingFieldsEquality
+import io.kotest.equals.SimpleEqualityResult
+import io.kotest.equals.SimpleEqualityResultDetail
 import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
@@ -38,6 +43,44 @@ class ShouldContainTest : WordSpec({
          col shouldContain (2)
       }
 
+      "find similar element" {
+         shouldThrowAny {
+            listOf(sweetGreenApple, sweetGreenPear) shouldContain (sweetRedApple)
+         }.shouldHaveMessage(
+            """
+            |Collection should contain element Fruit(name=apple, color=red, taste=sweet) based on object equality; but the collection is [Fruit(name=apple, color=green, taste=sweet), Fruit(name=pear, color=green, taste=sweet)]
+            |PossibleMatches:
+            | expected: Fruit(name=apple, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=red, taste=sweet),
+            |  The following fields did not match:
+            |    "color" expected: <"green">, but was: <"red">
+    """.trimMargin()
+         )
+      }
+
+      "add nothing to output if no similar elements found" {
+         shouldThrowAny {
+            listOf(sweetGreenApple, sweetGreenPear) should contain (sourYellowLemon)
+         }.shouldHaveMessage(
+            """
+            |Collection should contain element Fruit(name=lemon, color=yellow, taste=sour) based on object equality; but the collection is [Fruit(name=apple, color=green, taste=sweet), Fruit(name=pear, color=green, taste=sweet)]
+    """.trimMargin()
+         )
+      }
+
+      "add nothing to output if custom comparator is used" {
+         shouldThrowAny {
+            listOf(sweetGreenApple, sweetGreenPear).shouldContain(
+               sourYellowLemon,
+               comparator = FruitEquality
+            )
+         }.shouldHaveMessage(
+            """
+            |Collection should contain element Fruit(name=lemon, color=yellow, taste=sour) based on fruit equality; but the collection is [Fruit(name=apple, color=green, taste=sweet), Fruit(name=pear, color=green, taste=sweet)]
+    """.trimMargin()
+         )
+      }
+
       "support type inference for subtypes of collection" {
          val tests = listOf(
             TestSealed.Test1("test1"),
@@ -60,3 +103,9 @@ class ShouldContainTest : WordSpec({
       }
    }
 })
+
+private object FruitEquality: Equality<Fruit> {
+   override fun name() = "fruit equality"
+   override fun verify(actual: Fruit, expected: Fruit): EqualityResult =
+      SimpleEqualityResult(actual == expected, SimpleEqualityResultDetail { "Some Mesasge" })
+}

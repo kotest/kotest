@@ -1,6 +1,7 @@
 public final class io/kotest/assertions/json/ArrayOrder : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/ArrayOrder;
 	public static final field Strict Lio/kotest/assertions/json/ArrayOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/ArrayOrder;
 	public static fun values ()[Lio/kotest/assertions/json/ArrayOrder;
 }
@@ -28,6 +29,7 @@ public final class io/kotest/assertions/json/CompareKt {
 public final class io/kotest/assertions/json/CompareMode : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/CompareMode;
 	public static final field Strict Lio/kotest/assertions/json/CompareMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/CompareMode;
 	public static fun values ()[Lio/kotest/assertions/json/CompareMode;
 }
@@ -35,6 +37,7 @@ public final class io/kotest/assertions/json/CompareMode : java/lang/Enum {
 public final class io/kotest/assertions/json/CompareOrder : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/CompareOrder;
 	public static final field Strict Lio/kotest/assertions/json/CompareOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/CompareOrder;
 	public static fun values ()[Lio/kotest/assertions/json/CompareOrder;
 }
@@ -60,9 +63,24 @@ public final class io/kotest/assertions/json/ErrorsKt {
 	public static final fun asString (Lio/kotest/assertions/json/JsonError;)Ljava/lang/String;
 }
 
+public abstract interface class io/kotest/assertions/json/ExtractValueOutcome {
+}
+
+public final class io/kotest/assertions/json/ExtractedValue : io/kotest/assertions/json/ExtractValueOutcome {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lio/kotest/assertions/json/ExtractedValue;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/ExtractedValue;Ljava/lang/Object;ILjava/lang/Object;)Lio/kotest/assertions/json/ExtractedValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/json/FieldComparison : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/FieldComparison;
 	public static final field Strict Lio/kotest/assertions/json/FieldComparison;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/FieldComparison;
 	public static fun values ()[Lio/kotest/assertions/json/FieldComparison;
 }
@@ -269,7 +287,7 @@ public abstract class io/kotest/assertions/json/JsonNode {
 	public static final field Companion Lio/kotest/assertions/json/JsonNode$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public final fun type ()Ljava/lang/String;
-	public static final fun write$Self (Lio/kotest/assertions/json/JsonNode;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lio/kotest/assertions/json/JsonNode;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class io/kotest/assertions/json/JsonNode$ArrayNode : io/kotest/assertions/json/JsonNode {
@@ -347,6 +365,10 @@ public final class io/kotest/assertions/json/JsonNode$StringNode$Companion {
 public abstract interface class io/kotest/assertions/json/JsonNode$ValueNode {
 }
 
+public final class io/kotest/assertions/json/JsonPathNotFound : io/kotest/assertions/json/ExtractValueOutcome {
+	public static final field INSTANCE Lio/kotest/assertions/json/JsonPathNotFound;
+}
+
 public final class io/kotest/assertions/json/JsonTree {
 	public fun <init> (Lio/kotest/assertions/json/JsonNode;Ljava/lang/String;)V
 	public final fun component1 ()Lio/kotest/assertions/json/JsonNode;
@@ -364,6 +386,11 @@ public final class io/kotest/assertions/json/KeysKt {
 	public static final fun containJsonKey (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainJsonKey (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldNotContainJsonKey (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class io/kotest/assertions/json/KeyvaluesKt {
+	public static final fun findValidSubPath (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun removeLastPartFromPath (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/json/MatchersKt {
@@ -384,6 +411,7 @@ public final class io/kotest/assertions/json/MatchersKt {
 public final class io/kotest/assertions/json/NumberFormat : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/NumberFormat;
 	public static final field Strict Lio/kotest/assertions/json/NumberFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/NumberFormat;
 	public static fun values ()[Lio/kotest/assertions/json/NumberFormat;
 }
@@ -391,6 +419,7 @@ public final class io/kotest/assertions/json/NumberFormat : java/lang/Enum {
 public final class io/kotest/assertions/json/PropertyOrder : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/PropertyOrder;
 	public static final field Strict Lio/kotest/assertions/json/PropertyOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/PropertyOrder;
 	public static fun values ()[Lio/kotest/assertions/json/PropertyOrder;
 }
@@ -404,6 +433,7 @@ public final class io/kotest/assertions/json/ResourcesKt {
 public final class io/kotest/assertions/json/TypeCoercion : java/lang/Enum {
 	public static final field Disabled Lio/kotest/assertions/json/TypeCoercion;
 	public static final field Enabled Lio/kotest/assertions/json/TypeCoercion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/TypeCoercion;
 	public static fun values ()[Lio/kotest/assertions/json/TypeCoercion;
 }
@@ -507,7 +537,6 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonInteger : io/
 
 public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject : io/kotest/assertions/json/schema/JsonSchemaElement {
 	public static final field Companion Lio/kotest/assertions/json/schema/JsonSchema$JsonObject$Companion;
-	public synthetic fun <init> (IZILjava/lang/Integer;Ljava/util/Map;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (ZILjava/lang/Integer;Ljava/util/Map;Ljava/util/List;)V
 	public synthetic fun <init> (ZILjava/lang/Integer;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
@@ -527,7 +556,6 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject : io/k
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public fun typeName ()Ljava/lang/String;
-	public static final fun write$Self (Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {

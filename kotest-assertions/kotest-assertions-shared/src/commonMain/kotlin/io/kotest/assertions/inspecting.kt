@@ -29,6 +29,7 @@ package io.kotest.assertions
  * @param inspector the inspector in which further assertions and inspections can be done
  * @author Hannes Thaller
  */
+@Deprecated(message = "Use with(obj) or assertSofty(obj) instead. Deprecated in 5.9. Will be removed in 6.0")
 fun <K> inspecting(obj: K, inspector: K.() -> Unit) {
     obj.inspector()
 }
