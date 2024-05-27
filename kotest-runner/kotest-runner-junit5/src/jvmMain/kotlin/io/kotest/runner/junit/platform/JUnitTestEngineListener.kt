@@ -17,8 +17,10 @@ import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -193,11 +195,12 @@ class JUnitTestEngineListener(
 
    private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
+      val id = parent.uniqueId.append(Segment.Test.value, name)
       val descriptor = createTestDescriptor(
-         parent.uniqueId.append(Segment.Test.value, name),
+         id,
          name,
          TestDescriptor.Type.TEST,
-         ClassSource.from(kclass.java),
+         getMethodSource(kclass, id),
          false
       )
       parent.addChild(descriptor)
@@ -316,13 +319,19 @@ class JUnitTestEngineListener(
          id,
          formatter.format(testCase),
          t,
-         ClassSource.from(testCase.spec::class.java, null), // gradle-junit-platform hides tests if we don't send this
+         // gradle-junit-platform hides tests if we don't send a source at all
+         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
+         //   and produce more correct XML report with test case name.
+         getMethodSource(testCase.spec::class, id),
          type == TestDescriptor.Type.CONTAINER
       ).apply {
          parent.addChild(this)
          descriptors[testCase.descriptor] = this
       }
    }
+
+   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource
+      = MethodSource.from(kclass.qualifiedName, id.segments.filter { it.type == Segment.Test.value }.map { it.value }.joinToString("/"))
 
    private fun getSpecDescriptor(kclass: KClass<*>): TestDescriptor {
       return getSpecDescriptor(root, kclass.toDescriptor(), formatter.format(kclass))
