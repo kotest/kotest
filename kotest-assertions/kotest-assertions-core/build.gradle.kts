@@ -27,7 +27,6 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
