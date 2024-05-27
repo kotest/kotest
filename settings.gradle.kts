@@ -56,7 +56,6 @@ include(
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
    ":kotest-tests:kotest-tests-core",
-   ":kotest-tests:kotest-tests-native",
 //   ":kotest-tests:kotest-tests-js",
 
    // BOM for whole kotest project
