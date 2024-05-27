@@ -48,7 +48,7 @@ jobs:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       uses: ./.github/workflows/run-gradle.yml
       with:
-         runs-on: ubuntu-latest
+         runs-on: macos-latest
          ref: ${{ inputs.ref }}
          task: apiCheck
 
