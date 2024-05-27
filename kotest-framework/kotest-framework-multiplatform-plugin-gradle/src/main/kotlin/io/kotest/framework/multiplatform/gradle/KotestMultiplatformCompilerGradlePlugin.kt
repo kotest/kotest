@@ -1,19 +1,23 @@
 package io.kotest.framework.multiplatform.gradle
 
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
+import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.task
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsSetupTask
+import javax.inject.Inject
 
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
@@ -40,6 +44,24 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    override fun apply(target: Project) {
       kotestExtension = target.createKotestExtension()
+
+      target.task("kotest", Exec::class) {
+         group = "verification"
+
+         dependsOn(":kotlinNodeJsSetup")
+         dependsOn(":build")
+
+         val testModule = "${project.name}-test"
+         val entryPackage = "io.kotest.js"
+         val runFnName = "runKotest"
+
+         target.rootProject.tasks.withType(NodeJsSetupTask::class).whenTaskAdded {
+//            workingDir = File(this.destination, "bin")
+            val buildDir = project.layout.buildDirectory.asFile.get().toPath()
+            val moduleFile = buildDir.resolve("js/packages/${testModule}/kotlin/${testModule}.js")
+            commandLine("node", "-e", "require('${moduleFile}').$entryPackage.$runFnName()")
+         }
+      }
    }
 
    private fun Project.createKotestExtension(): KotestPluginExtension {
@@ -76,9 +98,9 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
             false
          }
 
-         kotlinCompilation is KotlinJsCompilation               -> true
-         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
-         else                                                   -> false
+         kotlinCompilation is KotlinJsCompilation -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation -> true
+         else -> false
       }
    }
 

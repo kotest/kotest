@@ -17,6 +17,7 @@ version = Ci.gradleVersion
 repositories {
    mavenCentral()
    mavenLocal()
+   gradlePluginPortal()
 }
 
 dependencies {

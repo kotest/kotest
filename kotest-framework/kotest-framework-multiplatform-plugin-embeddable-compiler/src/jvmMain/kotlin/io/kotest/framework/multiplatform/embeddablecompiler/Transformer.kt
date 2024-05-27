@@ -1,10 +1,19 @@
 package io.kotest.framework.multiplatform.embeddablecompiler
 
+import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.toLogger
+import org.jetbrains.kotlin.fir.FirSession
+import org.jetbrains.kotlin.fir.extensions.ExperimentalTopLevelDeclarationsGenerationApi
+import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
+import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
+import org.jetbrains.kotlin.fir.extensions.MemberGenerationContext
+import org.jetbrains.kotlin.fir.plugin.createTopLevelFunction
+import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
+import org.jetbrains.kotlin.fir.types.ConeDynamicType
+import org.jetbrains.kotlin.fir.types.create
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.irCall
@@ -13,17 +22,25 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
+import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.file
+import org.jetbrains.kotlin.ir.util.getPackageFragment
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import java.util.concurrent.CopyOnWriteArrayList
 
+@OptIn(UnsafeDuringIrConstructionAPI::class)
 abstract class Transformer(
    private val messageCollector: MessageCollector,
    protected val pluginContext: IrPluginContext
@@ -31,6 +48,7 @@ abstract class Transformer(
 
    private val specs = CopyOnWriteArrayList<IrClass>()
    private var configs = CopyOnWriteArrayList<IrClass>()
+   private var configFile: IrFile? = null
 
    override fun visitClassNew(declaration: IrClass): IrStatement {
       super.visitClassNew(declaration)
@@ -38,11 +56,20 @@ abstract class Transformer(
       return declaration
    }
 
+   override fun visitFunctionNew(declaration: IrFunction): IrStatement {
+      if (declaration.name == Name.identifier("config") && declaration.getPackageFragment().packageFqName.asString() == "io.kotest.js") {
+         configFile = declaration.file
+      }
+      return super.visitFunctionNew(declaration)
+   }
+
    override fun visitFileNew(declaration: IrFile): IrFile {
       super.visitFileNew(declaration)
       val specs = declaration.specs()
-      messageCollector.toLogger()
-         .log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
+      messageCollector.report(
+         CompilerMessageSeverity.INFO,
+         "${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}"
+      )
       this.specs.addAll(specs)
       return declaration
    }
@@ -50,28 +77,21 @@ abstract class Transformer(
    override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
       val fragment: IrModuleFragment = super.visitModuleFragment(declaration)
 
-      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, declaration.name.asString())
-      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, declaration.descriptor.toString())
-
-      messageCollector.toLogger().log("Detected ${configs.size} configs:")
+      messageCollector.report(CompilerMessageSeverity.INFO, "Detected ${configs.size} configs:")
       configs.forEach {
-         messageCollector.toLogger().log(it.kotlinFqName.asString())
+         messageCollector.report(CompilerMessageSeverity.INFO, it.kotlinFqName.asString())
       }
 
-      messageCollector.toLogger().log("Detected ${specs.size} JS specs:")
+      messageCollector.report(CompilerMessageSeverity.INFO, "Detected ${specs.size} JS specs:")
       specs.forEach {
-         messageCollector.toLogger().log(it.kotlinFqName.asString())
+         messageCollector.report(CompilerMessageSeverity.INFO, it.kotlinFqName.asString())
       }
 
       if (specs.isEmpty()) {
          return fragment
       }
 
-      val file = declaration.files.first()
-      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file $file")
-      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file ${file.packageFqName.asString()}")
-      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file ${file.fileEntry.name}")
-
+      val file = configFile ?: error("config function was not declared in io.kotest.js")
       val launcher = generateLauncher(specs, configs, file)
       file.addChild(launcher)
 
@@ -149,5 +169,45 @@ abstract class Transformer(
    private val withBasicConsoleListenerFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithBasicConsoleTestEngineListener)
          ?: error("Cannot find function ${EntryPoint.WithBasicConsoleTestEngineListener}")
+   }
+}
+
+@OptIn(ExperimentalTopLevelDeclarationsGenerationApi::class)
+class SimpleClassGenerator(
+   session: FirSession,
+   private val messageCollector: MessageCollector
+) : FirDeclarationGenerationExtension(session) {
+
+   companion object {
+      val runKotestFn = CallableId(FqName("io.kotest.js"), Name.identifier("runKotest"))
+   }
+
+   override fun getTopLevelCallableIds(): Set<CallableId> {
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "getTopLevelCallableIds")
+      return setOf(runKotestFn)
+   }
+
+   override fun generateFunctions(
+      callableId: CallableId,
+      context: MemberGenerationContext?
+   ): List<FirNamedFunctionSymbol> {
+      messageCollector.report(
+         CompilerMessageSeverity.STRONG_WARNING,
+         "generateFunctions " + callableId.asFqNameForDebugInfo()
+      )
+      return listOf(createTopLevelFunction(Key, runKotestFn, ConeDynamicType.create(session)).symbol)
+   }
+
+   override fun hasPackage(packageFqName: FqName): Boolean {
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "has package = " + packageFqName.asString())
+      return packageFqName == FqName("io.kotest.js")
+   }
+
+   object Key : GeneratedDeclarationKey()
+}
+
+class ConfigClassRegistrar(private val messageCollector: MessageCollector) : FirExtensionRegistrar() {
+   override fun ExtensionRegistrarContext.configurePlugin() {
+      { session: FirSession -> SimpleClassGenerator(session, messageCollector) }.unaryPlus()
    }
 }
