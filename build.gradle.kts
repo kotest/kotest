@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-
 buildscript {
    repositories {
       mavenCentral()
@@ -111,9 +109,9 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "241.9959.2", // this version is 2024.1
+      since = "241.15989.150", // this version is 2024.1
       until = "241.*",
-      sdkVersion = "241.9959-EAP-CANDIDATE-SNAPSHOT",
+      sdkVersion = "IC-2024.1.1",
       sourceFolder = "IC-241",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
@@ -153,12 +151,13 @@ dependencies {
    // needed for the resource files which are loaded into java light tests
    testImplementation(libs.test.kotest.framework.api)
    testImplementation(libs.test.kotest.assertions.core)
+   runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 sourceSets {
    main {
-      withConvention(KotlinSourceSet::class) {
-         kotlin.srcDirs("src/${descriptor.sourceFolder}/kotlin")
+      kotlin {
+         srcDir("src/${descriptor.sourceFolder}/kotlin")
       }
       resources {
          srcDir("src/${descriptor.sourceFolder}/resources")
