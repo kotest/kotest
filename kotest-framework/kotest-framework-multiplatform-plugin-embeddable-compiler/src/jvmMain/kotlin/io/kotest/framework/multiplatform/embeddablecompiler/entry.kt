@@ -18,6 +18,8 @@ object EntryPoint {
     */
    const val TestEngineClassName = "io/kotest/engine/TestEngineLauncher"
 
+   const val JsExportAnnotationClassName = "kotlin/js/JsExport"
+
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
 

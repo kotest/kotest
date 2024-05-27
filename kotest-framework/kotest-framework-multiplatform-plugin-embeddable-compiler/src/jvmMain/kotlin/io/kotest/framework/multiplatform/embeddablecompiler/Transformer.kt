@@ -2,6 +2,7 @@ package io.kotest.framework.multiplatform.embeddablecompiler
 
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.IrStatement
@@ -15,6 +16,7 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
@@ -48,6 +50,9 @@ abstract class Transformer(
    override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
       val fragment: IrModuleFragment = super.visitModuleFragment(declaration)
 
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, declaration.name.asString())
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, declaration.descriptor.toString())
+
       messageCollector.toLogger().log("Detected ${configs.size} configs:")
       configs.forEach {
          messageCollector.toLogger().log(it.kotlinFqName.asString())
@@ -63,6 +68,10 @@ abstract class Transformer(
       }
 
       val file = declaration.files.first()
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file $file")
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file ${file.packageFqName.asString()}")
+      messageCollector.report(CompilerMessageSeverity.STRONG_WARNING, "file ${file.fileEntry.name}")
+
       val launcher = generateLauncher(specs, configs, file)
       file.addChild(launcher)
 
@@ -113,7 +122,7 @@ abstract class Transformer(
          ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
    }
 
-   protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
+   protected val launcherConstructor: IrConstructorSymbol by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
 
    protected abstract val withPlatformMethodName: String
 
