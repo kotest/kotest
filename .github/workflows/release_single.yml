@@ -5,7 +5,7 @@ on:
       inputs:
          sdk:
             type: string
-            description: "sdk folder eg IC-222"
+            description: "sdk folder eg IC-242"
             required: true
          java:
             type: string
