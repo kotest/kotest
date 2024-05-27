@@ -11,7 +11,7 @@ internal actual fun createSpecExecutorDelegate(
    context: EngineContext,
 ): SpecExecutorDelegate =
    if (kotlinJsTestFrameworkAvailable()) {
-      KotlinJsTestSpecExecutorDelegate(context)
+      DefaultSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
    } else {
       DefaultSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
    }

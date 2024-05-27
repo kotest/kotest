@@ -27,6 +27,8 @@ object EntryPoint {
    // the method invoked to set the team city listener, must exist on TestEngineLauncher
    const val WithTeamCityListenerMethodName = "withTeamCityListener"
 
+   const val WithBasicConsoleTestEngineListener = "withBasicConsoleTestEngineListener"
+
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
    const val WithJsMethodName = "withJs"
 

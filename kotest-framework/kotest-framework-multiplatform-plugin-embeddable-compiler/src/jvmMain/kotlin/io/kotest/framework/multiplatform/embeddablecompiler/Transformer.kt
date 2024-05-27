@@ -26,6 +26,7 @@ abstract class Transformer(
    private val messageCollector: MessageCollector,
    protected val pluginContext: IrPluginContext
 ) : IrElementTransformerVoidWithContext() {
+
    private val specs = CopyOnWriteArrayList<IrClass>()
    private var configs = CopyOnWriteArrayList<IrClass>()
 
@@ -45,7 +46,7 @@ abstract class Transformer(
    }
 
    override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
-      val fragment = super.visitModuleFragment(declaration)
+      val fragment: IrModuleFragment = super.visitModuleFragment(declaration)
 
       messageCollector.toLogger().log("Detected ${configs.size} configs:")
       configs.forEach {
@@ -90,15 +91,17 @@ abstract class Transformer(
                )
             )
             withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
-               withPlatform.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
-                  withConfig.putValueArgument(
-                     0,
-                     irVararg(
-                        pluginContext.irBuiltIns.stringType,
-                        configs.map { irCall(it.constructors.first()) }
+               withPlatform.dispatchReceiver = irCall(withBasicConsoleListenerFn).also { withBasicConsoleListenerFn ->
+                  withBasicConsoleListenerFn.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                     withConfig.putValueArgument(
+                        0,
+                        irVararg(
+                           pluginContext.irBuiltIns.stringType,
+                           configs.map { irCall(it.constructors.first()) }
+                        )
                      )
-                  )
-                  withConfig.dispatchReceiver = constructorGenerator()
+                     withConfig.dispatchReceiver = constructorGenerator()
+                  }
                }
             }
          }
@@ -127,5 +130,15 @@ abstract class Transformer(
    private val withConfigFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
          ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
+   }
+
+   private val withTeamCityListenerFn: IrSimpleFunctionSymbol by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
+         ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
+   }
+
+   private val withBasicConsoleListenerFn: IrSimpleFunctionSymbol by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WithBasicConsoleTestEngineListener)
+         ?: error("Cannot find function ${EntryPoint.WithBasicConsoleTestEngineListener}")
    }
 }

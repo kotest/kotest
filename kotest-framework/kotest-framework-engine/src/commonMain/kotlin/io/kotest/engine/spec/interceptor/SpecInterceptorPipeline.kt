@@ -1,7 +1,5 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.common.Platform
-import io.kotest.common.platform
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -11,7 +9,6 @@ import io.kotest.engine.spec.interceptor.instance.AfterSpecCallbackInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
-import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.SpecExtensionInterceptor
@@ -48,11 +45,7 @@ internal class SpecInterceptorPipeline(
    }
 
    private fun createPipeline(): List<SpecInterceptor> {
-      return listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(
-            listener,
-            configuration.registry
-         ) else null,
+      return listOf(
          EngineContextInterceptor(context),
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(configuration.registry),

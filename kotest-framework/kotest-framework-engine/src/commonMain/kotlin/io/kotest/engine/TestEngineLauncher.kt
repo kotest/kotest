@@ -16,6 +16,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.config.loadProjectConfigFromClassname
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.listener.BasicConsoleTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
@@ -69,6 +70,13 @@ class TestEngineLauncher(
     */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
+   }
+
+   /**
+    * Convenience function to be called by the native code gen to set up the TeamCity listener.
+    */
+   fun withBasicConsoleTestEngineListener(): TestEngineLauncher {
+      return withListener(BasicConsoleTestEngineListener())
    }
 
    /**
