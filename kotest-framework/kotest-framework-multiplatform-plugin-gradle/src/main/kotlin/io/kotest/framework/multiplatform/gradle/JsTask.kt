@@ -6,11 +6,11 @@ import org.gradle.api.tasks.options.Option
 
 abstract class JsTask : DefaultTask() {
 
-   private var testpath: String? = null
+   private var tests: String? = null
 
-   @Option(option = "testpath", description = "Specifies a subset of tests to execute")
-   fun setTestpath(testpath: String) {
-      this.testpath = testpath
+   @Option(option = "tests", description = "Specifies a subset of tests to execute")
+   fun setTests(tests: String) {
+      this.tests = tests
    }
 
    @TaskAction
@@ -23,7 +23,7 @@ abstract class JsTask : DefaultTask() {
       project.exec {
          val buildDir = project.layout.buildDirectory.asFile.get().toPath()
          val moduleFile = buildDir.resolve("js/packages/${testModule}/kotlin/${testModule}.js")
-         val testFilter = if (testpath == null) null else "'$testpath'"
+         val testFilter = if (tests == null) null else "'$tests'"
          val runKotestCommand = "require('${moduleFile}').$entryPackage.$runFnName($testFilter)"
          commandLine("node", "-e", runKotestCommand)
       }

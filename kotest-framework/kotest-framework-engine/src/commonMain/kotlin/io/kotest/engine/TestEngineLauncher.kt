@@ -176,7 +176,8 @@ class TestEngineLauncher(
       return this
    }
 
-   fun withTestFilter(testfilter: String?): TestEngineLauncher {
+   fun withTestFilter(testFilter: String?): TestEngineLauncher {
+      println("Adding test filter $testFilter")
       // todo add new test filter extension shared by all platform
       return this
    }
