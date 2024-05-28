@@ -11,6 +11,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.utils.io.core.use
 
+@Deprecated("Obsolete, has never been advertised or documented. Deprecated since 5.9.0")
 fun parseHttpRequest(lines: List<String>): HttpRequestBuilder {
    val builder = HttpRequestBuilder()
 
@@ -31,12 +32,14 @@ fun parseHttpRequest(lines: List<String>): HttpRequestBuilder {
    return builder
 }
 
+@Deprecated("Obsolete, has never been advertised or documented. Deprecated since 5.9.0")
 suspend fun runRequest(req: HttpRequestBuilder): HttpResponse {
    return HttpClient().use {
       it.request(req)
    }
 }
 
+@Deprecated("Obsolete, has never been advertised or documented. Deprecated since 5.9.0")
 suspend fun runRequest(req: HttpRequestBuilder, timeout: Long): HttpResponse {
    return HttpClient {
       install(HttpTimeout) {
@@ -47,4 +50,3 @@ suspend fun runRequest(req: HttpRequestBuilder, timeout: Long): HttpResponse {
       it.request(req)
    }
 }
-
