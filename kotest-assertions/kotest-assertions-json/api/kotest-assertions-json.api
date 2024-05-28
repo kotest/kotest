@@ -63,6 +63,20 @@ public final class io/kotest/assertions/json/ErrorsKt {
 	public static final fun asString (Lio/kotest/assertions/json/JsonError;)Ljava/lang/String;
 }
 
+public abstract interface class io/kotest/assertions/json/ExtractValueOutcome {
+}
+
+public final class io/kotest/assertions/json/ExtractedValue : io/kotest/assertions/json/ExtractValueOutcome {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lio/kotest/assertions/json/ExtractedValue;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/ExtractedValue;Ljava/lang/Object;ILjava/lang/Object;)Lio/kotest/assertions/json/ExtractedValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/json/FieldComparison : java/lang/Enum {
 	public static final field Lenient Lio/kotest/assertions/json/FieldComparison;
 	public static final field Strict Lio/kotest/assertions/json/FieldComparison;
@@ -351,6 +365,10 @@ public final class io/kotest/assertions/json/JsonNode$StringNode$Companion {
 public abstract interface class io/kotest/assertions/json/JsonNode$ValueNode {
 }
 
+public final class io/kotest/assertions/json/JsonPathNotFound : io/kotest/assertions/json/ExtractValueOutcome {
+	public static final field INSTANCE Lio/kotest/assertions/json/JsonPathNotFound;
+}
+
 public final class io/kotest/assertions/json/JsonTree {
 	public fun <init> (Lio/kotest/assertions/json/JsonNode;Ljava/lang/String;)V
 	public final fun component1 ()Lio/kotest/assertions/json/JsonNode;
@@ -368,6 +386,11 @@ public final class io/kotest/assertions/json/KeysKt {
 	public static final fun containJsonKey (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainJsonKey (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldNotContainJsonKey (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class io/kotest/assertions/json/KeyvaluesKt {
+	public static final fun findValidSubPath (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun removeLastPartFromPath (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/json/MatchersKt {
