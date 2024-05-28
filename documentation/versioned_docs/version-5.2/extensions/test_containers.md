@@ -106,7 +106,7 @@ class QueryDatastoreTest : FunSpec({
 
 :::tip
 This extension also supports the `LifecycleMode` flag to control when the container is started and stopped.
-See #lifecycle
+See [Lifecycle](#lifecycle)
 :::
 
 #### Initializing the Database Container
@@ -169,7 +169,7 @@ as a general container.
 
 :::tip
 This extension also supports the `LifecycleMode` flag to control when the container is started and stopped.
-See #lifecycle
+See [Lifecycle](#lifecycle)
 :::
 
 

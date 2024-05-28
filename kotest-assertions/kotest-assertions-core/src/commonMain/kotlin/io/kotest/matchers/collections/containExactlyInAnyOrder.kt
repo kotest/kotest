@@ -10,6 +10,7 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.similarity.possibleMatchesDescription
 
 
 /**
@@ -128,6 +129,10 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    }
    val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts, verifier)
    val passed = missing.isEmpty() && extra.isEmpty() && countMismatch.isEmpty()
+   val possibleMatches = extra
+      .map { possibleMatchesDescription(expected.toSet(), it) }
+      .filter { it.isNotEmpty() }
+      .joinToString("\n")
 
    val failureMessage = {
       buildString {
@@ -139,6 +144,10 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
          }
          if(countMismatch.isNotEmpty()) {
             append("CountMismatches: ${countMismatch.joinToString(", ")}")
+         }
+         if(possibleMatches.isNotEmpty()) {
+            appendLine()
+            append("Possible matches for unexpected elements:\n$possibleMatches")
          }
       }
    }
