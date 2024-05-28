@@ -9,6 +9,7 @@ import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
+import io.kotest.core.filter.TestFilter
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -22,6 +23,7 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.engine.test.status.TestFilterEnabledExtension
 import io.kotest.mpp.Logger
 import kotlin.reflect.KClass
 
@@ -171,6 +173,11 @@ class TestEngineLauncher(
     */
    fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
       extensions.forEach { projectConfiguration.registry.add(it) }
+      return this
+   }
+
+   fun withTestFilter(testfilter: String?): TestEngineLauncher {
+      // todo add new test filter extension shared by all platform
       return this
    }
 

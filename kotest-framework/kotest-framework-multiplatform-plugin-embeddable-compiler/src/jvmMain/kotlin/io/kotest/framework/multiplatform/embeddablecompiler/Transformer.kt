@@ -17,6 +17,8 @@ import org.jetbrains.kotlin.fir.types.create
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irGet
+import org.jetbrains.kotlin.ir.builders.irNull
 import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
@@ -24,6 +26,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
@@ -108,6 +111,7 @@ abstract class Transformer(
       launchFunction: IrSimpleFunctionSymbol,
       specs: Iterable<IrClass>,
       configs: Iterable<IrClass>,
+      testFilterArg: IrValueParameter?,
       constructorGenerator: IrBuilderWithScope.() -> IrExpression
    ): IrCall {
       return irCall(launchFunction).also { promise: IrCall ->
@@ -120,16 +124,22 @@ abstract class Transformer(
                )
             )
             withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
-               withPlatform.dispatchReceiver = irCall(withBasicConsoleListenerFn).also { withBasicConsoleListenerFn ->
-                  withBasicConsoleListenerFn.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
-                     withConfig.putValueArgument(
+               withPlatform.dispatchReceiver = irCall(withBasicConsoleListenerFn).also { withBasicConsoleListener ->
+                  withBasicConsoleListener.dispatchReceiver = irCall(withTestFilterFn).also { withTestFilter ->
+                     withTestFilter.putValueArgument(
                         0,
-                        irVararg(
-                           pluginContext.irBuiltIns.stringType,
-                           configs.map { irCall(it.constructors.first()) }
-                        )
+                        if (testFilterArg == null) irNull() else irGet(testFilterArg),
                      )
-                     withConfig.dispatchReceiver = constructorGenerator()
+                     withTestFilter.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                        withConfig.putValueArgument(
+                           0,
+                           irVararg(
+                              pluginContext.irBuiltIns.stringType,
+                              configs.map { irCall(it.constructors.first()) }
+                           )
+                        )
+                        withConfig.dispatchReceiver = constructorGenerator()
+                     }
                   }
                }
             }
@@ -159,6 +169,11 @@ abstract class Transformer(
    private val withConfigFn: IrSimpleFunctionSymbol by lazy {
       launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
          ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
+   }
+
+   private val withTestFilterFn: IrSimpleFunctionSymbol by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WithTestFilterFnName)
+         ?: error("Cannot find function ${EntryPoint.WithTestFilterFnName}")
    }
 
    private val withTeamCityListenerFn: IrSimpleFunctionSymbol by lazy {

@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildFun
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
@@ -13,6 +14,7 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
+import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.ClassId
@@ -41,9 +43,11 @@ class JsTransformer(
          visibility = DescriptorVisibilities.PUBLIC
          modality = Modality.FINAL
       }.also { func: IrSimpleFunction ->
-         func.annotations = listOf(DeclarationIrBuilder(pluginContext, func.symbol).irCallConstructor(jsExportConstructor, emptyList()))
+         val testFilterArg = func.addValueParameter("testFilter", pluginContext.irBuiltIns.stringType.makeNullable())
+         func.annotations =
+            listOf(DeclarationIrBuilder(pluginContext, func.symbol).irCallConstructor(jsExportConstructor, emptyList()))
          func.body = DeclarationIrBuilder(pluginContext, func.symbol).irBlockBody {
-            +callLauncher(promiseFn, specs, configs) {
+            +callLauncher(promiseFn, specs, configs, testFilterArg) {
                irCall(launcherConstructor)
             }
          }
