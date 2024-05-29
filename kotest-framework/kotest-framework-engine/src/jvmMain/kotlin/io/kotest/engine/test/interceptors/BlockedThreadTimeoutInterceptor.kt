@@ -1,12 +1,12 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
+import io.kotest.core.Logger
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.core.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,14 +51,13 @@ internal class BlockedThreadTimeoutInterceptor(
          // doesn't play havoc with a thread in use elsewhere
          val executor = Executors.newSingleThreadExecutor()
 
-         val timeoutJob = testCase.config.timeout?.let { timeout ->
-            logger.log { Pair(testCase.name.testName, "this test will time out in $timeout") }
+         val timeout = testCase.config.timeout
+         logger.log { Pair(testCase.name.testName, "this test will time out in $timeout") }
 
-            CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
-               delay(timeout)
-               logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
-               executor.shutdownNow()
-            }
+         val timeoutJob = CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
+            delay(timeout)
+            logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
+            executor.shutdownNow()
          }
 
          try {
@@ -67,7 +66,7 @@ internal class BlockedThreadTimeoutInterceptor(
                   try {
                      test(testCase, scope.withCoroutineContext(coroutineContext))
                   } finally {
-                     timeoutJob?.cancel()
+                     timeoutJob.cancel()
                   }
                }
             }
@@ -75,7 +74,7 @@ internal class BlockedThreadTimeoutInterceptor(
             logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
             TestResult.Error(
                start.elapsedNow(),
-               BlockedThreadTestTimeoutException(testCase.config.timeout ?: Duration.INFINITE, testCase.name.testName)
+               BlockedThreadTestTimeoutException(testCase.config.timeout, testCase.name.testName)
             )
          }
       } else {
