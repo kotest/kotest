@@ -15,7 +15,6 @@ import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
-import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
@@ -25,6 +24,7 @@ import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
+import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TestPathContextInterceptor
@@ -55,6 +55,7 @@ internal class TestCaseExecutor(
 
       val timeMark = MonotonicTimeSourceCompat.markNow()
 
+      val useCoroutineTestScope = platform != Platform.JS && testCase.config.coroutineTestScope
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
@@ -78,9 +79,10 @@ internal class TestCaseExecutor(
             context.configuration.registry,
             timeMark,
             listOfNotNull(
-               InvocationTimeoutInterceptor,
+               // Timeout will be handled inside TestCoroutineInterceptor if it is enabled
+               if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
                if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
-               if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+               if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),
          CoroutineDebugProbeInterceptor,
