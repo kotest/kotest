@@ -52,7 +52,7 @@ internal class TimeoutInterceptor(
       } catch (t: CancellationException) {
          if (t is WallclockTimeoutCancellationException || t is TimeoutCancellationException) {
             logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
-            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName))
+            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName, t))
          } else {
             throw t
          }
@@ -107,5 +107,10 @@ private class WallclockTimeoutCancellationException(message: String) : Cancellat
 /**
  * Exception used for when a test exceeds its timeout.
  */
-open class TestTimeoutException(val timeout: Duration, val testName: String) :
-   Exception("Test '${testName}' did not complete within $timeout")
+open class TestTimeoutException(val timeout: Duration, val testName: String, cause: Throwable? = null) :
+   Exception("Test '${testName}' did not complete within $timeout", cause) {
+
+   @Suppress("unused")
+   @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
+   constructor(timeout: Duration, testName: String) : this(timeout, testName, cause = null)
+}
