@@ -1,12 +1,14 @@
 package io.kotest.core.test.config
 
 import io.kotest.core.Tag
+import io.kotest.core.config.Defaults
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Runtime resolved config attached to a [io.kotest.core.test.TestCase].
@@ -30,13 +32,13 @@ data class ResolvedTestConfig(
     *
     * To set a timeout per invocation see [invocationTimeout].
     */
-   val timeout: Duration?,
+   val timeout: Duration,
 
    /**
     * This timeout applies to individual invocations of a test case. If invocations is 1, then this
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
-   val invocationTimeout: Duration?,
+   val invocationTimeout: Duration,
 
    /**
     * [Tag]s that are applied to this test case, in addition to any tags declared on
@@ -81,6 +83,9 @@ data class ResolvedTestConfig(
       require(threads > 0) { "Number of threads must be greater than 0" }
    }
 
+   // note: the invocation timeout can't be larger than the test case timeout
+   val resolvedInvocationTimeout: Duration = minOf(timeout, invocationTimeout)
+
    companion object {
       val default = ResolvedTestConfig(
          { Enabled.enabled },
@@ -92,8 +97,8 @@ data class ResolvedTestConfig(
          assertSoftly = false,
          blockingTest = false,
          extensions = emptyList(),
-         timeout = null,
-         invocationTimeout = null,
+         timeout = Defaults.defaultTimeoutMillis.milliseconds,
+         invocationTimeout = Defaults.defaultInvocationTimeoutMillis.milliseconds,
          tags = emptySet(),
          severity = TestCaseSeverityLevel.TRIVIAL,
          failfast = false,

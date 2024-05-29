@@ -74,5 +74,9 @@ data class TestConfig(
       require((threads ?: 0) <= (invocations ?: 1)) { "Number of threads must be <= number of invocations" }
       require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
       require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
+      require(timeout == null || invocationTimeout == null || invocationTimeout <= timeout) {
+         "Invocation timeout must not exceed the test case timeout: " +
+            "$invocationTimeout (invocationTimeout) > $timeout (timeout)"
+      }
    }
 }
