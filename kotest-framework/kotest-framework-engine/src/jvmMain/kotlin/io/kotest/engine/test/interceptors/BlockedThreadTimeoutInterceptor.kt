@@ -43,7 +43,7 @@ internal class BlockedThreadTimeoutInterceptor(
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-     return if (testCase.config.blockingTest) {
+      return if (testCase.config.blockingTest) {
          // we must switch execution onto a throwaway thread so an interruption
          // doesn't play havoc with a thread in use elsewhere
          val executor = Executors.newSingleThreadExecutor()
@@ -72,7 +72,7 @@ internal class BlockedThreadTimeoutInterceptor(
             logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
             TestResult.Error(
                start.elapsedNow(),
-               BlockedThreadTestTimeoutException(testCase.config.timeout ?: Duration.INFINITE, testCase.name.testName)
+               BlockedThreadTestTimeoutException(testCase.config.timeout ?: Duration.INFINITE, testCase.name.testName, t)
             )
          }
       } else {
@@ -84,4 +84,10 @@ internal class BlockedThreadTimeoutInterceptor(
 /**
  * Exception used for when a test exceeds its timeout.
  */
-class BlockedThreadTestTimeoutException(timeout: Duration, testName: String) : TestTimeoutException(timeout, testName)
+class BlockedThreadTestTimeoutException(timeout: Duration, testName: String, cause: Throwable? = null) :
+   TestTimeoutException(timeout, testName, cause) {
+
+   @Suppress("unused")
+   @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
+   constructor(timeout: Duration, testName: String) : this(timeout, testName, cause = null)
+}
