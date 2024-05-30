@@ -46,11 +46,16 @@ infix fun <T> Iterable<T>.shouldExist(p: (T) -> Boolean) = toList().shouldExist(
 infix fun <T> Array<T>.shouldExist(p: (T) -> Boolean) = asList().shouldExist(p)
 infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>) = MatcherResult(
-      value.any { p(it) },
-      { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
-      { "Collection ${value.print().value} should not contain an element that matches the predicate $p" }
-   )
+   override fun test(value: Collection<T>): MatcherResult {
+      val matchingElementsIndexes = value.mapIndexedNotNull { index, element ->
+         if(p(element)) index else null
+      }
+      return MatcherResult(
+         matchingElementsIndexes.isNotEmpty(),
+         { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
+         { "Collection ${value.print().value} should not contain an element that matches the predicate $p, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
+      )
+   }
 }
 
 fun <T> Iterable<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = toList().shouldMatchInOrder(assertions.toList())

@@ -36,6 +36,10 @@ jobs:
                - publishKotestBomPublicationToDeployRepository
                - publishLinuxX64PublicationToDeployRepository
                - publishLinuxArm64PublicationToDeployRepository
+               - publishAndroidNativeX86PublicationToDeployRepository
+               - publishAndroidNativeX64PublicationToDeployRepository
+               - publishAndroidNativeArm32PublicationToDeployRepository
+               - publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

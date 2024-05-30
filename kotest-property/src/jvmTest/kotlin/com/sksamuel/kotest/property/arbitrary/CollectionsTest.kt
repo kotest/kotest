@@ -8,10 +8,12 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
@@ -21,9 +23,11 @@ import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
+import kotlin.time.Duration.Companion.seconds
 
 class CollectionsTest : DescribeSpec({
 
@@ -91,6 +95,28 @@ class CollectionsTest : DescribeSpec({
             it.shouldHaveAtMostSize(500)
          }
       }
+
+      it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = 1.seconds) {
+         /*
+         if we revert the fix as follows, the test fails:
+         git revert 8ba8975 --no-commit 
+          */
+         val innerGen0 = arbitrary {
+            Box(
+               Arb.string().bind(),
+               Arb.list(Arb.string(), 0..5).bind()
+            )
+         }
+         val outerGen = arbitrary {
+            OuterBox(
+               Arb.string().bind(),
+               Arb.list(innerGen0, 0..5).bind()
+            )
+         }
+         checkAll(1000, outerGen) { box ->
+            box.shouldNotBeNull()
+         }
+      }
    }
 
    describe("Arb.set should") {
@@ -132,4 +158,13 @@ class CollectionsTest : DescribeSpec({
          }
       }
    }
-})
+}) {
+   private data class Box(
+      val name: String,
+      val contents: List<String>
+   )
+   private data class OuterBox(
+      val name: String,
+      val contents: List<Box>
+   )
+}

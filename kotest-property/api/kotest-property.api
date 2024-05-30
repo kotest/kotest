@@ -830,6 +830,7 @@ public final class io/kotest/property/arbitrary/CodepointsKt {
 	public static final fun katakana (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 	public static final fun katakana (Lio/kotest/property/arbitrary/Codepoint$Companion;)Lio/kotest/property/Arb;
 	public static final fun printableAscii (Lio/kotest/property/arbitrary/Codepoint$Companion;)Lio/kotest/property/Arb;
+	public static final fun whitespace (Lio/kotest/property/arbitrary/Codepoint$Companion;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/CollectionsKt {
