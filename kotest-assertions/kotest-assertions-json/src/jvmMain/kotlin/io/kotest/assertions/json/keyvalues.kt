@@ -69,7 +69,7 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
           }
           is JsonPathNotFound -> {
              val validSubPathDescription = findValidSubPath(value, path)?.let { subpath ->
-                " Found valid path: <'$subpath'>"
+                " Closest valid path: <'$subpath'>"
              } ?: ""
              return keyIsAbsentFailure(validSubPathDescription)
           }
