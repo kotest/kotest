@@ -52,5 +52,13 @@ class StableTest : FreeSpec({
          val unstable = Pair(Pair("a", "b"), Pair("c", arrayOf(1, 2)))
          isStable(unstable::class, unstable) shouldBe false
       }
+
+      "When class is private, it should still work" {
+         val foo = Foo("bar")
+         isStable(foo::class, foo) shouldBe true
+      }
    }
-})
+}){
+   private data class Foo(val bar: String)
+}
+
