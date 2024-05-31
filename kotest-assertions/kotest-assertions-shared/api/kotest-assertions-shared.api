@@ -309,20 +309,58 @@ public final class io/kotest/assertions/async/TimeoutKt {
 }
 
 public abstract interface class io/kotest/assertions/eq/Eq {
-	public abstract fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public abstract fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public abstract fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public abstract fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/Eq$DefaultImpls {
-	public static fun equals (Lio/kotest/assertions/eq/Eq;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public static synthetic fun equals$default (Lio/kotest/assertions/eq/Eq;Ljava/lang/Object;Ljava/lang/Object;ZILjava/lang/Object;)Ljava/lang/Throwable;
+	public static fun equals (Lio/kotest/assertions/eq/Eq;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public static synthetic fun equals$default (Lio/kotest/assertions/eq/Eq;Ljava/lang/Object;Ljava/lang/Object;ZILjava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/EqKt {
 	public static final fun actualIsNull (Ljava/lang/Object;)Ljava/lang/AssertionError;
-	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public static final fun and (Lio/kotest/assertions/eq/EqResult;[Lio/kotest/assertions/eq/EqResult;)Lio/kotest/assertions/eq/EqResult;
+	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
 	public static final fun expectedIsNull (Ljava/lang/Object;)Ljava/lang/AssertionError;
+}
+
+public abstract interface class io/kotest/assertions/eq/EqResult {
+	public static final field Companion Lio/kotest/assertions/eq/EqResult$Companion;
+	public abstract fun failureOrNull ()Ljava/lang/Throwable;
+	public abstract fun mapNotEqual (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/EqResult$Companion {
+	public final fun invoke (ZLkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/EqResult$DefaultImpls {
+	public static fun failureOrNull (Lio/kotest/assertions/eq/EqResult;)Ljava/lang/Throwable;
+	public static fun mapNotEqual (Lio/kotest/assertions/eq/EqResult;Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/EqResult$Equal : io/kotest/assertions/eq/EqResult {
+	public static final field INSTANCE Lio/kotest/assertions/eq/EqResult$Equal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureOrNull ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun mapNotEqual (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/eq/EqResult$NotEqual : io/kotest/assertions/eq/EqResult {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult$NotEqual;
+	public static synthetic fun copy$default (Lio/kotest/assertions/eq/EqResult$NotEqual;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/eq/EqResult$NotEqual;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureOrNull ()Ljava/lang/Throwable;
+	public final fun getErrorProducer ()Lkotlin/jvm/functions/Function0;
+	public fun hashCode ()I
+	public fun mapNotEqual (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/eq/IsOrderedSetKt {
@@ -333,41 +371,41 @@ public final class io/kotest/assertions/eq/IterableEq : io/kotest/assertions/eq/
 	public static final field INSTANCE Lio/kotest/assertions/eq/IterableEq;
 	public static final field trigger Ljava/lang/String;
 	public final fun asIterable (Ljava/lang/Object;)Ljava/lang/Iterable;
-	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;Z)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;Z)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
 	public final fun isValidIterable (Ljava/lang/Object;)Z
 }
 
 public final class io/kotest/assertions/eq/NullEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/NullEq;
-	public fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/NumberEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/NumberEq;
-	public fun equals (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/Number;Ljava/lang/Number;Z)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Number;Ljava/lang/Number;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/Number;Ljava/lang/Number;Z)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/SequenceEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/SequenceEq;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
-	public fun equals (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)Ljava/lang/Throwable;
-	public fun equals (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;Z)Ljava/lang/Throwable;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/StringEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/StringEq;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/Throwable;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/eq/StringEqKt {
@@ -376,10 +414,10 @@ public final class io/kotest/assertions/eq/StringEqKt {
 
 public final class io/kotest/assertions/eq/ThrowableEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/ThrowableEq;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
-	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/Throwable;Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public fun equals (Ljava/lang/Throwable;Ljava/lang/Throwable;Z)Ljava/lang/Throwable;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Z)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/eq/EqResult;
+	public fun equals (Ljava/lang/Throwable;Ljava/lang/Throwable;Z)Lio/kotest/assertions/eq/EqResult;
 }
 
 public final class io/kotest/assertions/jvmcounter {
