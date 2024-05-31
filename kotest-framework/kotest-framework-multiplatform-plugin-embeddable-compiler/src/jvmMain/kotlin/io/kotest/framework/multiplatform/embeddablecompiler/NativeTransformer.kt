@@ -21,9 +21,14 @@ import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
-class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) :
+   Transformer(messageCollector, pluginContext) {
 
-   override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
+   override fun generateLauncher(
+      specs: Iterable<IrClass>,
+      configs: Iterable<IrClass>,
+      declarationParent: IrDeclarationParent
+   ): IrDeclaration {
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
       }.apply {
@@ -47,7 +52,7 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
                startOffset,
                endOffset,
                DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
-                  +callLauncher(launchFn, specs, configs) {
+                  +callLauncher(launchFn, specs, configs, null) {
                      irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
                         withTeamCity.dispatchReceiver = irCall(launcherConstructor)
                      }

@@ -1,4 +1,0 @@
-POST http://localhost:1080/login
-Accept: application/json
-
-{username: 'foo', password: 'bar'}

@@ -18,14 +18,20 @@ object EntryPoint {
     */
    const val TestEngineClassName = "io/kotest/engine/TestEngineLauncher"
 
+   const val JsExportAnnotationClassName = "kotlin/js/JsExport"
+
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
 
    // the method invoked to add configs on the launcher, must exist on TestEngineLauncher
    const val WithConfigMethodName = "withProjectConfig"
 
+   const val WithTestFilterFnName = "withTestFilter"
+
    // the method invoked to set the team city listener, must exist on TestEngineLauncher
    const val WithTeamCityListenerMethodName = "withTeamCityListener"
+
+   const val WithBasicConsoleTestEngineListener = "withBasicConsoleTestEngineListener"
 
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
    const val WithJsMethodName = "withJs"

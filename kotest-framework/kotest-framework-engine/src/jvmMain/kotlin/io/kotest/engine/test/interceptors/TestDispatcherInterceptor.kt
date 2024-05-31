@@ -13,6 +13,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
+@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
+internal actual fun testDispatcherInterceptor(): TestExecutionInterceptor = TestDispatcherInterceptor()
+
 /**
  * A [TestExecutionInterceptor] that installs a [UnconfinedTestDispatcher] as the coroutine
  * dispatcher for the test.
@@ -21,7 +24,7 @@ import kotlin.coroutines.coroutineContext
  */
 @ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
-actual class TestDispatcherInterceptor : TestExecutionInterceptor {
+class TestDispatcherInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(TestDispatcherInterceptor::class)
 

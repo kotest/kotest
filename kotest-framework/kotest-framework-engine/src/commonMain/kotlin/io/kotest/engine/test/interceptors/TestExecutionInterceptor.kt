@@ -10,6 +10,18 @@ import io.kotest.core.test.TestScope
  * adjust test results.
  */
 internal interface TestExecutionInterceptor {
+
+   object Noop : TestExecutionInterceptor {
+      override suspend fun intercept(
+         testCase: TestCase,
+         scope: TestScope,
+         test: suspend (TestCase, TestScope) -> TestResult
+      ): TestResult {
+         return test(testCase, scope)
+      }
+
+   }
+
    suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
