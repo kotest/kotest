@@ -590,7 +590,7 @@ internal fun <T> checkEqualityOfFieldsRecursively(
       val heading = "${it.name}:"
 
       if (requiresUseOfDefaultEq(actual, expected, typeName, config.useDefaultShouldBeForFields)) {
-         val throwable = eq(actual, expected)
+         val throwable = eq(actual, expected).failureOrNull()
          if (throwable != null) {
             "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
          } else {

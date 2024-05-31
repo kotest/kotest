@@ -3,27 +3,29 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
+import io.kotest.assertions.eq.EqResult.Equal
+import io.kotest.assertions.eq.EqResult.NotEqual
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
 internal object MapEq : Eq<Map<*, *>?> {
-   override fun equals(actual: Map<*, *>?, expected: Map<*, *>?, strictNumberEq: Boolean): Throwable? {
+   override fun equals(actual: Map<*, *>?, expected: Map<*, *>?, strictNumberEq: Boolean): EqResult {
       return when {
-         actual == null && expected == null -> null
+         actual == null && expected == null -> Equal
          actual != null && expected != null -> {
             val haveUnequalKeys = eq(actual.keys, expected.keys, strictNumberEq)
-            if (haveUnequalKeys != null) generateError(actual, expected)
+            if (haveUnequalKeys is NotEqual) NotEqual { generateError(actual, expected) }
             else {
                val hasDifferentValue = actual.keys.any { key ->
-                  eq(actual[key], expected[key], strictNumberEq) != null
+                  eq(actual[key], expected[key], strictNumberEq) is NotEqual
                }
-               if (hasDifferentValue) generateError(actual, expected)
-               else null
+               if (hasDifferentValue) NotEqual { generateError(actual, expected) }
+               else Equal
             }
          }
 
-         else -> generateError(actual, expected)
+         else -> NotEqual { generateError(actual, expected) }
       }
    }
 }

@@ -10,21 +10,23 @@ import io.kotest.assertions.print.print
  * An implementation of [Eq] for comparing [Regex]s.
  */
 internal object RegexEq : Eq<Regex> {
-   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean): Throwable? {
-      return patternsAreNotEqual(actual, expected) ?: optionsAreNotEqual(actual, expected)
+   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean): EqResult {
+      return and(patternsAreEqual(actual, expected), optionsAreEqual(actual, expected))
    }
 }
 
-private fun patternsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
-   return if (actual.pattern == expected.pattern) null else failure(
-      Expected(Printed(expected.pattern)),
-      Actual(Printed(actual.pattern))
-   )
-}
+private fun patternsAreEqual(actual: Regex, expected: Regex) =
+   EqResult(actual.pattern == expected.pattern) {
+      failure(
+         Expected(Printed(expected.pattern)),
+         Actual(Printed(actual.pattern))
+      )
+   }
 
-private fun optionsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
-   return if (actual.options == expected.options) null else failure(
-      Expected(expected.options.print()),
-      Actual(actual.options.print())
-   )
-}
+private fun optionsAreEqual(actual: Regex, expected: Regex) =
+   EqResult(actual.options == expected.options) {
+      failure(
+         Expected(expected.options.print()),
+         Actual(actual.options.print())
+      )
+   }

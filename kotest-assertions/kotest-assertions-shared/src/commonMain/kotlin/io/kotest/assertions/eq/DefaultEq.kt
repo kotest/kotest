@@ -13,8 +13,8 @@ import io.kotest.assertions.print.printWithType
  * and in the case of inequality, delegates to [failure].
  */
 internal object DefaultEq : Eq<Any> {
-   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? {
-      return if (test(actual, expected)) null else {
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): EqResult {
+      return EqResult(test(actual, expected)) {
          failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
       }
    }

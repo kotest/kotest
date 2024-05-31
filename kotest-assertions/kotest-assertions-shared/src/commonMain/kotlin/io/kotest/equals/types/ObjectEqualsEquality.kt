@@ -10,7 +10,7 @@ open class ObjectEqualsEquality<T>(
    override fun name(): String = "object equality"
 
    override fun verify(actual: T, expected: T): EqualityResult {
-      val throwable = eq(actual, expected, strictNumberEquality) ?: return EqualityResult.equal(actual, expected, this)
+      val throwable = eq(actual, expected, strictNumberEquality).failureOrNull() ?: return EqualityResult.equal(actual, expected, this)
 
       return EqualityResult.notEqual(actual, expected, this).let { result ->
          throwable.message?.let { message ->

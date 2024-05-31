@@ -4,11 +4,13 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
+import io.kotest.mpp.stacktraces
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(expected: U?): T {
@@ -36,30 +38,38 @@ infix fun <T> T.should(matcher: Matcher<T>) {
 fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
-   if (!result.passed()) {
-      when (result) {
-         is ComparableMatcherResult -> errorCollector.collectOrThrow(
-            failure(
-               expected = Expected(Printed(result.expected())),
-               actual = Actual(Printed(result.actual())),
-               prependMessage = result.failureMessage() + "\n"
+   try {
+      if (!result.passed()) {
+         when (result) {
+            is ComparableMatcherResult -> errorCollector.collectOrThrow(
+               failure(
+                  expected = Expected(Printed(result.expected())),
+                  actual = Actual(Printed(result.actual())),
+                  prependMessage = result.failureMessage() + "\n"
+               )
             )
-         )
-         is EqualityMatcherResult -> errorCollector.collectOrThrow(
-            failure(
-               expected = Expected(result.expected().print()),
-               actual = Actual(result.actual().print()),
-               prependMessage = result.failureMessage() + "\n"
+
+            is EqualityMatcherResult -> errorCollector.collectOrThrow(
+               failure(
+                  expected = Expected(result.expected().print()),
+                  actual = Actual(result.actual().print()),
+                  prependMessage = result.failureMessage() + "\n"
+               )
             )
-         )
-         is MatcherResultWithError -> {
-            val error = result.error ?: failure(result.failureMessage())
-            errorCollector.collectOrThrow(error)
+
+            is EqMatcherResult -> {
+               val error = result.failureOrNull() ?: failure(result.failureMessage())
+               errorCollector.collectOrThrow(error)
+            }
+
+            else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
          }
-         else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
       }
+
+      return t
+   } catch (t: Throwable) {
+      throw stacktraces.cleanStackTrace(t)
    }
-   return t
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
@@ -70,11 +80,10 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val error = eq(value, expected)
+      val eqResult = eq(value, expected)
 
-      return MatcherResultWithError(
-         error = error,
-         passed = error == null,
+      return EqMatcherResult(
+         result = eqResult,
          failureMessageFn = { e ->
             e?.message ?: "${expected.print().value} should be equal to ${value.print().value}"
          },

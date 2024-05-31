@@ -70,7 +70,7 @@ fun <T, C : Collection<T>> containExactly(
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(IterableEq.trigger) == true
 
-   val failureReason = eq(actual, expected, strictNumberEq = true)
+   val failureReason = eq(actual, expected, strictNumberEq = true).failureOrNull()
 
    val missing = expected.filterNot { t ->
       actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }

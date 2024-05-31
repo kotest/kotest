@@ -7,13 +7,13 @@ import io.kotest.assertions.print.printWithType
 
 object NumberEq : Eq<Number> {
 
-   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? {
-      return if (compare(actual, expected, strictNumberEq)) null
-      else failureWithTypeInformation(
-         ExpectedWithType(expected.printWithType()),
-         ActualWithType(actual.printWithType()),
-      )
-   }
+   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean) =
+      EqResult(compare(actual, expected, strictNumberEq)) {
+         failureWithTypeInformation(
+            ExpectedWithType(expected.printWithType()),
+            ActualWithType(actual.printWithType()),
+         )
+      }
 
    private fun compare(a: Number, b: Number, strictNumberEq: Boolean): Boolean {
       if (strictNumberEq) {

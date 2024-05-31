@@ -67,7 +67,7 @@ private fun compareValue(
          type,
          config.useDefaultShouldBeForFields
       ) -> {
-         val throwable = eq(actual, expected)
+         val throwable = eq(actual, expected).failureOrNull()
          if (throwable == null) CompareResult.match(field) else CompareResult.single(field, throwable)
       }
 
