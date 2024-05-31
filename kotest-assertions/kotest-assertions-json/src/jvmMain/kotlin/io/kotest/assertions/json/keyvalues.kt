@@ -69,7 +69,7 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
           }
           is JsonPathNotFound -> {
              val validSubPathDescription = findValidSubPath(value, path)?.let { subpath ->
-                " Found shorter valid subpath: <'$subpath'>"
+                " Found valid path: <'$subpath'>"
              } ?: ""
              return keyIsAbsentFailure(validSubPathDescription)
           }
@@ -108,7 +108,30 @@ inline fun findValidSubPath(json: String?, path: String): String? {
 @KotestInternal
 fun removeLastPartFromPath(path: String): String {
    val tokens = path.split(".")
-   return tokens.take(tokens.size - 1).joinToString(".")
+   return tokens.mapIndexedNotNull { index, token ->
+      when {
+         index < tokens.size - 1 -> token
+         else -> decrementIndexOfJsonArray(token)
+      }
+   }.joinToString(".")
+}
+
+@KotestInternal
+fun decrementIndexOfJsonArray(pathElement: String): String? {
+   val tokens = pathElement.split("[")
+   when {
+      pathElement.last() != ']' -> return null
+      tokens.size != 2 -> return null
+      else -> {
+         val possibleNumber = tokens[1].takeWhile { it != ']' }
+         possibleNumber.toIntOrNull()?.let {
+            if(it > 0) {
+               return "${tokens[0]}[${it - 1}]"
+            }
+         }
+      }
+   }
+   return null
 }
 
 @KotestInternal
@@ -121,3 +144,23 @@ data class ExtractedValue<T>(
 
 @KotestInternal
 object JsonPathNotFound : ExtractValueOutcome
+
+//@KotestInternal
+//sealed interface SubPathSearchOutcome
+//
+//@KotestInternal
+//fun decreaseJsonArrayIndex
+//
+//@KotestInternal
+//data class SubPath(val subPath: String): SubPathSearchOutcome
+//
+//@KotestInternal
+//data class SubPathArrayIndexTooHigh(
+//   val indexTooHigh: Int,
+//   val arrayLength: Int,
+//   val subPath: String
+//): SubPathSearchOutcome
+//
+//@KotestInternal
+//object SubPathNotFound: SubPathSearchOutcome
+//
