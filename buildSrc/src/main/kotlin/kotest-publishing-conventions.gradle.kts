@@ -119,33 +119,30 @@ publishing {
       }
    }
 
-   publications.withType<MavenPublication>().forEach {
-      it.apply {
-         //if (Ci.isRelease)
-         pom {
-            name.set("Kotest")
-            description.set("Kotlin Test Framework")
-            url.set("https://github.com/kotest/kotest")
+   publications.withType<MavenPublication>().configureEach {
+      pom {
+         name.set("Kotest")
+         description.set("Kotlin Test Framework")
+         url.set("https://github.com/kotest/kotest")
 
-            scm {
-               connection.set("scm:git:https://github.com/kotest/kotest/")
-               developerConnection.set("scm:git:https://github.com/sksamuel/")
-               url.set("https://github.com/kotest/kotest/")
+         scm {
+            connection.set("scm:git:https://github.com/kotest/kotest/")
+            developerConnection.set("scm:git:https://github.com/sksamuel/")
+            url.set("https://github.com/kotest/kotest/")
+         }
+
+         licenses {
+            license {
+               name.set("Apache-2.0")
+               url.set("https://opensource.org/licenses/Apache-2.0")
             }
+         }
 
-            licenses {
-               license {
-                  name.set("Apache-2.0")
-                  url.set("https://opensource.org/licenses/Apache-2.0")
-               }
-            }
-
-            developers {
-               developer {
-                  id.set("sksamuel")
-                  name.set("Stephen Samuel")
-                  email.set("sam@sksamuel.com")
-               }
+         developers {
+            developer {
+               id.set("sksamuel")
+               name.set("Stephen Samuel")
+               email.set("sam@sksamuel.com")
             }
          }
       }
