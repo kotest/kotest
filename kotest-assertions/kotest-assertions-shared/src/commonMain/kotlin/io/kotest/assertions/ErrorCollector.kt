@@ -129,9 +129,10 @@ fun clueContextAsString() = errorCollector.clueContext().let {
  * throw immediately.
  */
 fun ErrorCollector.collectOrThrow(error: Throwable) {
+   val cleanedError = stacktraces.cleanStackTrace(error)
    when (getCollectionMode()) {
-      ErrorCollectionMode.Soft -> pushError(error)
-      ErrorCollectionMode.Hard -> throw error
+      ErrorCollectionMode.Soft -> pushError(cleanedError)
+      ErrorCollectionMode.Hard -> throw cleanedError
    }
 }
 
