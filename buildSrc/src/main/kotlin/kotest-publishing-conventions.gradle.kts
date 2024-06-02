@@ -144,6 +144,12 @@ publishing {
                name.set("Stephen Samuel")
                email.set("sam@sksamuel.com")
             }
+
+            developer {
+               id.set("Kantis")
+               name.set("Emil Kantis")
+               email.set("emil.kantis@protonmail.com")
+            }
          }
       }
    }
