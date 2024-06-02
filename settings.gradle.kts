@@ -100,13 +100,14 @@ include(
 )
 
 plugins {
-   id("com.gradle.enterprise") version "3.14.1"
+   id("com.gradle.develocity") version "3.17.4"
 }
 
-gradleEnterprise {
+develocity {
    buildScan {
-      termsOfServiceUrl = "https://gradle.com/terms-of-service"
-      termsOfServiceAgree = "yes"
+      termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
+      termsOfUseAgree = "yes"
+      publishing.onlyIf { false }
    }
 }
 
