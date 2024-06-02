@@ -6,7 +6,6 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
@@ -32,25 +31,10 @@ class TeamCityTestEngineListener(
    private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default(ProjectConfiguration()))
 
    // once a spec has completed, we want to be able to check whether any given test is
-   // a container or a leaf test, and so this map contains all test that have children
-   private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
-
-   private val results = mutableMapOf<Descriptor, TestResult>()
+   // a suite or not, and so this map marks all tests that have children
+   private val parents = mutableSetOf<TestCase>()
 
    private val started = mutableSetOf<Descriptor.TestDescriptor>()
-
-   // intellij has no method for failed suites, so if a container or spec fails we must insert
-   // a dummy "test" in order to tag the error against that
-   private fun insertPlaceholder(t: Throwable, parent: Descriptor) {
-
-      val (name, cause) = ExtensionExceptionExtractor.resolve(t)
-
-      writer.outputTestStarted(name, parent.path().value)
-      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
-      //t?.printStackTrace()
-      writer.outputTestFailed(name, cause, details, parent.path().value)
-      writer.outputTestFinished(name, parent.path().value)
-   }
 
    override suspend fun engineStarted() {}
 
@@ -90,49 +74,25 @@ class TeamCityTestEngineListener(
       }
 
       writer.outputTestSuiteFinished(kclass)
-      results.clear()
-      children.clear()
+      parents.clear()
    }
 
    override suspend fun testStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.testName, "testStarted $testCase") }
-      if (testCase.parent != null) addChild(testCase)
-      when (testCase.type) {
-         TestType.Container -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
-            writer.outputTestSuiteStarted(testCase)
-            started.add(testCase.descriptor)
-         }
 
-         TestType.Test -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start it
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
-            writer.outputTestStarted(testCase)
-            started.add(testCase.descriptor)
-         }
+      val p = testCase.parent
 
-         TestType.Dynamic -> {
-            val p = testCase.parent
-            // we might have a dynamic inside another dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
+      // we can start the parent right now if it has not been started, since we know for sure its a suite now
+      // we could start it later, but this means it'll appear in the test window sooner, which is a bit nicer
+      if (p != null) {
+
+         // we know any parent of this test obviously has a child (this is the child)
+         // we use that information later to know the parent should be marked as a suite
+         parents.add(p)
+
+         if (!started.contains(p.descriptor)) {
+            writer.outputTestSuiteStarted(p)
+            started.add(p.descriptor)
          }
       }
    }
@@ -141,41 +101,27 @@ class TeamCityTestEngineListener(
       writer.outputTestIgnored(testCase, TestResult.Ignored(reason))
    }
 
-   private fun addChild(testCase: TestCase) {
-      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
-   }
-
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.testName, "testFinished $testCase") }
-      results[testCase.descriptor] = result
-      when (testCase.type) {
-         TestType.Container -> {
-            failTestSuiteIfError(testCase, result)
-            writer.outputTestSuiteFinished(testCase, result)
-         }
 
-         TestType.Test -> {
-            if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
-            if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
-            writer.outputTestFinished(testCase, result)
+      // check if this test ended up being a suite or test
+      if (parents.contains(testCase)) {
+         // if a suite, it would have been marked started by the first child so we just need to finish it
+         failTestSuiteIfError(testCase, result)
+         writer.outputTestSuiteFinished(testCase, result)
+      } else {
+         // test would not have been started yet if it had no children
+         if (!started.contains(testCase.descriptor)) {
+            writer.outputTestStarted(testCase)
+            started.add(testCase.descriptor)
          }
-
-         TestType.Dynamic -> {
-            if (isParent(testCase)) {
-               if (!started.contains(testCase.descriptor)) writer.outputTestSuiteStarted(testCase)
-               failTestSuiteIfError(testCase, result)
-               writer.outputTestSuiteFinished(testCase, result)
-            } else {
-               if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
-               if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
-               writer.outputTestFinished(testCase, result)
-            }
-         }
+         if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
+         writer.outputTestFinished(testCase, result)
       }
    }
 
    private fun failTestSuiteIfError(testCase: TestCase, result: TestResult) {
-      // test suites cannot be in a failed state, so we must insert a placeholder to hold any error
+      // test suites don't support a failed state, so we must insert a placeholder test to hold any error
       when (val t = result.errorOrNull) {
          null -> Unit
          is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, testCase.descriptor) }
@@ -183,8 +129,14 @@ class TeamCityTestEngineListener(
       }
    }
 
-   // returns true if this test case contains child tests
-   private fun isParent(testCase: TestCase) = children.getOrElse(testCase.descriptor) { mutableListOf() }.isNotEmpty()
-
-
+   // intellij has no method for failed suites, so if a container or spec fails we must insert
+   // a dummy "test" in order to tag the error against that
+   private fun insertPlaceholder(t: Throwable, parent: Descriptor) {
+      val (name, cause) = ExtensionExceptionExtractor.resolve(t)
+      writer.outputTestStarted(name, parent.path().value)
+      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
+      //t?.printStackTrace()
+      writer.outputTestFailed(name, cause, details, parent.path().value)
+      writer.outputTestFinished(name, parent.path().value)
+   }
 }
