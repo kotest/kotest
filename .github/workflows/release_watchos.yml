@@ -33,6 +33,7 @@ jobs:
                - "publishWatchosArm64PublicationToDeployRepository"
                - "publishWatchosX64PublicationToDeployRepository"
                - "publishWatchosSimulatorArm64PublicationToDeployRepository"
+               - "publishWatchosDeviceArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4
