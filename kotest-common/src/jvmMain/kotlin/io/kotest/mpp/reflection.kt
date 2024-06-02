@@ -8,6 +8,7 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.superclasses
+import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.reflect
 
@@ -74,7 +75,12 @@ object JvmReflection : Reflection {
       val constructorParams = klass::primaryConstructor.get()?.parameters ?: emptyList()
       val membersByName = klass::members.get().associateBy(KCallable<*>::name)
       return constructorParams.mapNotNull { param ->
-         membersByName[param.name]?.let { callable -> Property(callable.name, param.type) { callable.call(it) } }
+         membersByName[param.name]?.let { callable ->
+            Property(callable.name, param.type) {
+               callable.isAccessible = true
+               callable.call(it)
+            }
+         }
       }
    }
 
