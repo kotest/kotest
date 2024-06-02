@@ -8,4 +8,5 @@ import java.util.*
 actual fun isOrderedSet(item: Iterable<*>) =
    item is LinkedHashSet ||
       item is SortedSet ||
+      item is SequencedSet ||
       (item is Set && item.size <= 1)
