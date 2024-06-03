@@ -36,3 +36,4 @@ system-test/
 /system/
 
 .DS_Store
+.intellijPlatform
