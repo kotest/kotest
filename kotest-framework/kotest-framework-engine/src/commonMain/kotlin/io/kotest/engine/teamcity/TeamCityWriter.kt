@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 /**
  * [TeamCityWriter] handles outputting in the team city format using a [TeamCityMessageBuilder].
  */
-class TeamCityWriter(
+internal class TeamCityWriter(
    private val prefix: String,
    private val formatter: FallbackDisplayNameFormatter
 ) {
