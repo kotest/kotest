@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.retry
+import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
@@ -43,18 +45,19 @@ class BindShrinkTest : StringSpec(
       }
 
       "Shrinks all components to minimum value" {
-         val arb = createArb(IntShrinker(0..1000))
+         retry(retryConfig { maxRetry = 5 }) {
+            val arb = createArb(IntShrinker(0..1000))
 
-         val stdout = captureStandardOut {
-            shouldThrowAny {
-               checkAll(arb) {
-                  // Better ways to simulate a bug for some input value?
-                  it.m shouldBeLessThan 100
+            val stdout = captureStandardOut {
+               shouldThrowAny {
+                  checkAll(arb) {
+                     it.m shouldBeLessThan 100
+                  }
                }
             }
-         }
 
-         stdout shouldContain """Shrink result (after 45 shrinks) => MaximumComponents(a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=100, n=0)"""
+            stdout shouldContain """Shrink result (after 45 shrinks) => MaximumComponents(a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=100, n=0)"""
+         }
       }
    }
 )

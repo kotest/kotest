@@ -2382,6 +2382,7 @@ public final class io/kotest/matchers/string/UUIDVersion : java/lang/Enum {
 	public static final field V3 Lio/kotest/matchers/string/UUIDVersion;
 	public static final field V4 Lio/kotest/matchers/string/UUIDVersion;
 	public static final field V5 Lio/kotest/matchers/string/UUIDVersion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getUuidRegex ()Lkotlin/text/Regex;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/string/UUIDVersion;
 	public static fun values ()[Lio/kotest/matchers/string/UUIDVersion;
@@ -2516,5 +2517,13 @@ public final class io/kotest/matchers/url/MatchersKt {
 	public static final fun shouldNotHaveProtocol (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveQuery (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveRef (Ljava/net/URL;Ljava/lang/String;)V
+}
+
+public final class io/kotest/similarity/PossibleMatchesForSetKt {
+	public static final fun possibleMatchesForSet (ZLjava/util/Set;Ljava/util/Set;Lio/kotest/equals/Equality;)Ljava/lang/String;
+}
+
+public final class io/kotest/similarity/PossibleMatchesKt {
+	public static final fun possibleMatchesDescription (Ljava/util/Set;Ljava/lang/Object;)Ljava/lang/String;
 }
 

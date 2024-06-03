@@ -15,23 +15,34 @@ fun <T> Array<T>.shouldNotHaveElementAt(index: Int, element: T) = asList().shoul
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
-   override fun test(value: L) =
-      MatcherResult(
-         index < value.size && value[index] == element,
-         { "Collection ${value.print().value} should contain ${element.print().value} at index $index" },
+   override fun test(value: L): MatcherResult {
+      val (passed, errorDescription) = when {
+         index >= value.size -> false to "but collection was shorter"
+         value[index] != element -> false to "but element was different. Expected: <${element.print().value}>, but was <${value[index].print().value}>"
+         else -> true to ""
+      }
+      return MatcherResult(
+         passed,
+         { "Collection ${value.print().value} should contain ${element.print().value} at index $index, $errorDescription" },
          { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
+   }
 }
 
 infix fun <T> Iterable<T>.shouldExist(p: (T) -> Boolean) = toList().shouldExist(p)
 infix fun <T> Array<T>.shouldExist(p: (T) -> Boolean) = asList().shouldExist(p)
 infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>) = MatcherResult(
-      value.any { p(it) },
-      { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
-      { "Collection ${value.print().value} should not contain an element that matches the predicate $p" }
-   )
+   override fun test(value: Collection<T>): MatcherResult {
+      val matchingElementsIndexes = value.mapIndexedNotNull { index, element ->
+         if(p(element)) index else null
+      }
+      return MatcherResult(
+         matchingElementsIndexes.isNotEmpty(),
+         { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
+         { "Collection ${value.print().value} should not contain an element that matches the predicate $p, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
+      )
+   }
 }
 
 fun <T> Iterable<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = toList().shouldMatchInOrder(assertions.toList())

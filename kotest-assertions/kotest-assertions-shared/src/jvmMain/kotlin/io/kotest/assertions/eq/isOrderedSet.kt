@@ -8,4 +8,4 @@ import java.util.SortedSet
 actual fun isOrderedSet(item: Iterable<*>) =
    item is LinkedHashSet ||
       item is SortedSet ||
-      (item is Set && item.size == 1)
+      (item is Set && item.size <= 1)
