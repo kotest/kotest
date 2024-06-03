@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.actions
 import com.intellij.execution.ExecutorRegistry
 import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.module.Module
@@ -23,6 +24,7 @@ class RunAction(text: String,
                 private val tree: JTree,
                 private val project: Project,
                 private val executorId: String) : AnAction(text, null, icon) {
+
    override fun actionPerformed(e: AnActionEvent) {
       runNode(tree, project, executorId, true)
    }
@@ -36,6 +38,10 @@ class RunAction(text: String,
             else -> false
          }
       }
+   }
+
+   override fun getActionUpdateThread(): ActionUpdateThread {
+      return ActionUpdateThread.BGT
    }
 }
 
