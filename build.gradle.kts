@@ -46,41 +46,6 @@ data class PluginDescriptor(
 
 val plugins = listOf(
    PluginDescriptor(
-      since = "211.6693.111", // this version is 2021.1
-      until = "211.*",
-      sdkVersion = "IC-2021.1",
-      sourceFolder = "IC-211",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-   ),
-   PluginDescriptor(
-      since = "212.3116.43", // this version is 2021.2
-      until = "212.*",
-      sdkVersion = "IC-2021.2.3",
-      sourceFolder = "IC-212",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-   ),
-   PluginDescriptor(
-      since = "213.3714", // this version is 2021.3
-      until = "213.*",
-      sdkVersion = "IC-2021.3",
-      sourceFolder = "IC-213",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:213-1.6.10-release-923-IJ5744.223")
-   ),
-   PluginDescriptor(
-      since = "221.3427.89", // this version is 2022.1
-      until = "221.*",
-      sdkVersion = "IC-2022.1",
-      sourceFolder = "IC-221",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-   ),
-   PluginDescriptor(
-      since = "222.2270.16", // this version is 2022.2
-      until = "222.*",
-      sdkVersion = "IC-2022.2",
-      sourceFolder = "IC-222",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-   ),
-   PluginDescriptor(
       since = "223.4884.69", // this version is 2022.3
       until = "223.*",
       sdkVersion = "IC-2022.3",
