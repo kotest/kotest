@@ -341,6 +341,7 @@ public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun matchEach (Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrder (Ljava/util/List;Z)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
@@ -593,9 +594,11 @@ public final class io/kotest/matchers/collections/MatchersKt {
 	public static final fun shouldHaveElementAt (Ljava/lang/Iterable;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt (Ljava/util/List;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt ([Ljava/lang/Object;ILjava/lang/Object;)V
+	public static final fun shouldMatchEach (Ljava/lang/Iterable;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function2;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach (Ljava/util/List;Ljava/util/List;)V
+	public static final fun shouldMatchEach (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;)V
 	public static final fun shouldMatchEach (Ljava/util/List;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldMatchEach ([Ljava/lang/Object;[Lkotlin/jvm/functions/Function1;)V
@@ -2142,6 +2145,9 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)V
 	public static final fun shouldHaveSize (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveUpperBound (Lkotlin/sequences/Sequence;Ljava/lang/Comparable;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;Ljava/util/List;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function2;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldNotBeEmpty (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotBeSorted (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotBeSortedWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)V
