@@ -40,9 +40,15 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
             expected = t.print().value,
          )
       } else {
+         val elementFoundAtIndexes = value.mapIndexedNotNull {
+            index, element ->
+            if(element == t) index else null
+         }
+         val foundAtMessage = if(elementFoundAtIndexes.isEmpty()) "Element not found in collection"
+            else "Element found at index(es): ${elementFoundAtIndexes.print().value}"
          MatcherResult(
             passed = false,
-            failureMessageFn = { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}" },
+            failureMessageFn = { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}. $foundAtMessage." },
             negatedFailureMessageFn = { "Collection should not be a single element of $t" },
          )
       }
