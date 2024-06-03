@@ -24,10 +24,7 @@ fun getLocationForFile(
    name: String,
    lineNumber: Int
 ): PsiLocation<PsiElement>? {
-   return FilenameIndex
-      .getVirtualFilesByName(name, scope)
-      .firstOrNull { it.isTestFile(project) }
-      ?.toPsiFile(project)
-      ?.elementAtLine(lineNumber)
-      ?.toPsiLocation()
+   val testFile = FilenameIndex.getVirtualFilesByName(name, scope).firstOrNull { it.isTestFile(project) } ?: return null
+   // element at line is 1 indexed, so we need to add one
+   return testFile.toPsiFile(project)?.elementAtLine(lineNumber + 1)?.toPsiLocation()
 }

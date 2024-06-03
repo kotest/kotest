@@ -25,6 +25,52 @@ import io.kotest.plugin.intellij.psi.toPsiLocation
  */
 class KotestTestLocator : SMTestLocator {
 
+   override fun getLocation(
+      protocol: String,
+      path: String,
+      project: Project,
+      scope: GlobalSearchScope
+   ): List<Location<PsiElement>> {
+      return when (protocol) {
+         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
+         else -> emptyList()
+      }
+   }
+
+   override fun getLocation(
+      protocol: String,
+      path: String,
+      metainfo: String?,
+      project: Project,
+      scope: GlobalSearchScope
+   ): List<Location<PsiElement>> {
+      return when (protocol) {
+         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
+         else -> emptyList()
+      }
+   }
+
+   override fun getLocationCacheModificationTracker(project: Project): ModificationTracker =
+      ModificationTracker.EVER_CHANGED
+
+   private fun parseFile(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
+      val tokens = path.split(':')
+      val ident = tokens[0]
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
+      return listOfNotNull(getLocationForFile(project, scope, ident, lineNumber))
+   }
+
+   private fun parseClass(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
+      val tokens = path.split(':')
+      val ident = tokens[0]
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
+      return listOfNotNull(getLocationForFqn(project, scope, ident, lineNumber))
+   }
+
    /**
     * Returns the PSI file that contains the class indicated by the fully qualified name.
     */
@@ -49,37 +95,6 @@ class KotestTestLocator : SMTestLocator {
       }
       return null
    }
-
-   override fun getLocation(
-      protocol: String,
-      path: String,
-      project: Project,
-      scope: GlobalSearchScope
-   ): List<Location<PsiElement>> {
-      return when (protocol) {
-         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
-         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
-         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
-         else -> emptyList()
-      }
-   }
-
-   private fun parseFile(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
-      val tokens = path.split(':')
-      val ident = tokens[0]
-      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
-      return listOfNotNull(getLocationForFile(project, scope, ident, lineNumber))
-   }
-
-   private fun parseClass(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
-      val tokens = path.split(':')
-      val ident = tokens[0]
-      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
-      return listOfNotNull(getLocationForFqn(project, scope, ident, lineNumber))
-   }
-
-   override fun getLocationCacheModificationTracker(project: Project): ModificationTracker =
-      ModificationTracker.EVER_CHANGED
 }
 
 
