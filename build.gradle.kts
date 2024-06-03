@@ -115,16 +115,16 @@ val plugins = listOf(
       sourceFolder = "IC-241",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
-   PluginDescriptor(
-      since = "241.17011.108", // this version is 2024.2
-      until = "242.*",
-      sdkVersion = "241.17011-EAP-CANDIDATE-SNAPSHOT",
-      sourceFolder = "IC-242",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-   ),
+//   PluginDescriptor(
+//      since = "241.17011.108", // this version is 2024.2
+//      until = "242.*",
+//      sdkVersion = "241.17011-EAP-CANDIDATE-SNAPSHOT",
+//      sourceFolder = "IC-242",
+//      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
+//   ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-241"
 val jvmTarget = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
