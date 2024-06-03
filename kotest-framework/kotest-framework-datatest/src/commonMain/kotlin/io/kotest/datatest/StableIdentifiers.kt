@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.common.KotestInternal
 import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
@@ -34,6 +35,7 @@ import io.kotest.mpp.isStable
  *
  * Therefore, to avoid this, data-testing requires data test elements to be stable.
  */
+@Deprecated("Internal class, will not be exposed in the future. Deprecated since 5.9")
 object StableIdentifiers {
 
    /**
@@ -43,7 +45,7 @@ object StableIdentifiers {
     * Note: If the user has overridden `toString()` and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
-      return if (isStable(t::class)) {
+      return if (isStable(t::class, t)) {
          t.toString()
       } else {
          t::class.bestName()
