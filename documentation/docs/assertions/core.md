@@ -27,7 +27,8 @@ Matchers provided by the `kotest-assertions-core` module.
 | `obj.shouldBeTypeOf<T>()`                   | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
 | `obj.shouldBeInstanceOf<T>()`               | Asserts that the given reference is of type T or a subclass of T. |
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
-| `obj.shouldBeNull()`                        | Asserts that a given reference is null.|
+| `obj.shouldBeNull()`                        | Asserts that a given reference is null. |
+| `obj shouldNotBeNull { block }`             | Asserts that a given reference is not null. |
 
 
 | Comparables                                        ||

@@ -1739,6 +1739,7 @@ public final class io/kotest/matchers/nulls/MatchersKt {
 	public static final fun beNull ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeNull (Ljava/lang/Object;)V
 	public static final fun shouldNotBeNull (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeNull (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/kotest/matchers/optional/MatchersKt {
