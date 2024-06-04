@@ -23,17 +23,9 @@ val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
-//region manually define accessors, because IntelliJ _still_ doesn't index them properly :(
-val Project.signing get() = extensions.getByType<SigningExtension>()
-fun Project.signing(configure: SigningExtension.() -> Unit = {}): Unit = signing.configure()
-val Project.publishing get() = extensions.getByType<PublishingExtension>()
-fun Project.publishing(configure: PublishingExtension.() -> Unit = {}): Unit = publishing.configure()
-//endregion
-
 signing {
    useGpgCmd()
    if (signingKey != null && signingPassword != null) {
-      @Suppress("UnstableApiUsage")
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
    if (Ci.isRelease) {
@@ -87,60 +79,17 @@ publishing {
    }
 }
 
-/**
- * Publish the platform JAR and POM so that consumers who depend on this module and can't read Gradle module
- * metadata can still get the platform artifact and transitive dependencies from the POM
- * (see details in https://youtrack.jetbrains.com/issue/KT-39184#focus=streamItem-27-4115233.0-0)
- */
-fun Project.publishPlatformArtifactsInRootModule() {
-   val platformPublication: MavenPublication? =
-      extensions
-         .findByType(PublishingExtension::class)
-         ?.publications
-         ?.getByName<MavenPublication>("jvm")
-   if (platformPublication != null) {
+publishPlatformArtifactsInRootModule(project)
 
-      lateinit var platformXml: XmlProvider
-      platformPublication.pom?.withXml { platformXml = this }
+//region Maven Central can't handle parallel uploads, so limit parallel uploads with a BuildService
+abstract class MavenPublishLimiter : BuildService<BuildServiceParameters.None>
 
-      extensions
-         .findByType(PublishingExtension::class)
-         ?.publications
-         ?.getByName("kotlinMultiplatform")
-         ?.let { it as MavenPublication }
-         ?.run {
-            // replace pom
-            pom.withXml {
-               val xmlProvider = this
-               val root = xmlProvider.asNode()
-               // Remove the original content and add the content from the platform POM:
-               root.children().toList().forEach { root.remove(it as Node) }
-               platformXml.asNode().children().forEach { root.append(it as Node) }
-
-               // Adjust the self artifact ID, as it should match the root module's coordinates:
-               ((root.get("artifactId") as NodeList).get(0) as Node).setValue(artifactId)
-
-               // Set packaging to POM to indicate that there's no artifact:
-               root.appendNode("packaging", "pom")
-
-               // Remove the original platform dependencies and add a single dependency on the platform
-               // module:
-               val dependencies = (root.get("dependencies") as NodeList).get(0) as Node
-               dependencies.children().toList().forEach { dependencies.remove(it as Node) }
-               val singleDependency = dependencies.appendNode("dependency")
-               singleDependency.appendNode("groupId", platformPublication.groupId)
-               singleDependency.appendNode("artifactId", platformPublication.artifactId)
-               singleDependency.appendNode("version", platformPublication.version)
-               singleDependency.appendNode("scope", "compile")
-            }
-         }
-
-      tasks
-         .matching { it.name == "generatePomFileForKotlinMultiplatformPublication" }
-         .configureEach {
-            dependsOn("generatePomFileFor${platformPublication.name.capitalized()}Publication")
-         }
+val mavenPublishLimiter =
+   gradle.sharedServices.registerIfAbsent("mavenPublishLimiter", MavenPublishLimiter::class) {
+      maxParallelUsages = 1
    }
-}
 
-publishPlatformArtifactsInRootModule()
+tasks.withType<PublishToMavenRepository>().configureEach {
+   usesService(mavenPublishLimiter)
+}
+//endregion
