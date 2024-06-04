@@ -1,7 +1,3 @@
-import groovy.util.Node
-import groovy.util.NodeList
-import org.gradle.configurationcache.extensions.capitalized
-
 plugins {
    signing
    `maven-publish`
