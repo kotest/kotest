@@ -9,12 +9,15 @@ import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.throwable.shouldHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldHaveCauseOfType
 import io.kotest.matchers.throwable.shouldHaveMessage
+import io.kotest.matchers.throwable.shouldHaveStackTraceContaining
 import io.kotest.matchers.throwable.shouldNotHaveCause
 import io.kotest.matchers.throwable.shouldNotHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldNotHaveCauseOfType
 import io.kotest.matchers.throwable.shouldNotHaveMessage
+import io.kotest.matchers.throwable.shouldNotHaveStackTraceContaining
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.text.RegexOption.DOT_MATCHES_ALL
 
 class ThrowableMatchersTest : FreeSpec() {
    init {
@@ -189,6 +192,26 @@ expected:<"foo"> but was:<"This is a test exception">"""
          }
          "shouldNotHaveCauseOfType" {
             Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!.shouldNotHaveCauseOfType<IOException>()
+         }
+         "shouldHaveStackTraceContaining" {
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldHaveStackTraceContaining("CompleteTestException")
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldHaveStackTraceContaining("Complete\\w+Exception".toRegex())
+            shouldThrow<AssertionError> { CompleteTestException().shouldHaveStackTraceContaining("SomeOtherException") }
+               .shouldHaveMessage("^Throwable stacktrace should contain substring: \"SomeOtherException\"\nActual was:\n\".+".toRegex(DOT_MATCHES_ALL))
+            shouldThrow<AssertionError> { CompleteTestException().shouldHaveStackTraceContaining("SomeOt.+Exception".toRegex()) }
+               .shouldHaveMessage("^Throwable stacktrace should contain regex: SomeOt.+Exception\nActual was:\n\".+".toRegex(DOT_MATCHES_ALL))
+         }
+         "shouldNotHaveStackTraceContaining" {
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldNotHaveStackTraceContaining("ProductionException")
+            Result.failure<Any>(CompleteTestException()).exceptionOrNull()!!
+               .shouldNotHaveStackTraceContaining("Prod\\w+Exception".toRegex())
+            shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveStackTraceContaining("file.txt not found") }
+               .shouldHaveMessage("Throwable stacktrace should not contain substring: \"file.txt not found\"")
+            shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveStackTraceContaining(".+ not found".toRegex()) }
+               .shouldHaveMessage("Throwable stacktrace should not contain regex: .+ not found")
          }
       }
 

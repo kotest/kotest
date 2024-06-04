@@ -127,8 +127,12 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    val extra = actual.filterNot { t ->
       expected.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
    }
+<<<<<<< HEAD
    val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts, verifier)
    val passed = missing.isEmpty() && extra.isEmpty() && countMismatch.isEmpty()
+=======
+   val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts)
+>>>>>>> master
    val possibleMatches = extra
       .map { possibleMatchesDescription(expected.toSet(), it) }
       .filter { it.isNotEmpty() }

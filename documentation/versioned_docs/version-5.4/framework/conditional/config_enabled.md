@@ -39,7 +39,7 @@ For example, if we wanted to disable all tests that begin with the word "danger"
 then we could do this:
 
 ```kotlin
-val disableDangerOnFridays: EnabledIf = { !(it.name.startsWith("danger") && isFriday()) }
+val disableDangerOnFridays: EnabledIf = { !(it.name.testName.startsWith("danger") && isFriday()) }
 
 "danger Will Robinson".config(enabledIf = disableDangerOnFridays) {
   // test here
@@ -60,7 +60,7 @@ For example, we can re-write the earlier 'danger' example like this:
 
 ```kotlin
 val disableDangerOnFridays: (TestCase) -> Enabled = {
-   if (it.name.startsWith("danger") && isFriday())
+   if (it.name.testName.startsWith("danger") && isFriday())
       Enabled.disabled("It's a friday, and we don't like danger!")
    else
       Enabled.enabled

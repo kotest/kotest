@@ -83,6 +83,16 @@ class RetryTest : StringSpec() {
 
          testClass.times shouldBe 1
       }
+
+      "should retry in case of subclass exception"{
+         val testClass = TestClass(3)
+         runSafely {
+            retry(2, 500.milliseconds, 20.milliseconds, 1, Exception::class) {
+               testClass.throwUnexpectedException()
+            }
+         }
+         testClass.times shouldBe 2
+      }
    }
 
    private class TestClass(private val readyAfter: Int) {
