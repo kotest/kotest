@@ -29,7 +29,11 @@ tasks {
       }
    }
    getByName("jvmJar") {
-      finalizedBy(getByName("shadowJar"))
+      finalizedBy(shadowJar)
+   }
+
+   startScripts {
+      dependsOn(shadowJar)
    }
 }
 
