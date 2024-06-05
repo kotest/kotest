@@ -5,6 +5,7 @@ import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
+import kotlin.time.times
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -21,9 +22,9 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override suspend fun afterProject() {
       val duration = start.elapsedNow()
-      // There are 8 specs, and each one has a 100ms delay.
+      // There are 8 specs, and each one has a 500ms delay.
       // If parallel is working, they should all block at the same time.
-      if (duration > 700.milliseconds) {
+      if (duration > 7 * 500.milliseconds) {
          error("Parallel execution failure: Execution time was $duration")
       }
    }
