@@ -5,9 +5,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -91,6 +94,11 @@ private suspend fun someCoroutine() {
          delay(10000000)
       }
    }
+}
+
+/** Delay using real (non-virtual) time. */
+suspend fun wallclockDelay(duration: Duration) {
+   withContext(Dispatchers.Default) { delay(duration) }
 }
 
 /**
