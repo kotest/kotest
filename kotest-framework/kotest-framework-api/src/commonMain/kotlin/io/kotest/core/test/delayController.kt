@@ -1,18 +1,15 @@
 package io.kotest.core.test
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 
-@ExperimentalStdlibApi
 val TestScope.testCoroutineScheduler: TestCoroutineScheduler
    get() = coroutineContext.testCoroutineScheduler
 
-@ExperimentalStdlibApi
 val CoroutineContext.testCoroutineScheduler: TestCoroutineScheduler
-   get() = when (val dispatcher = this[CoroutineDispatcher]) {
+   get() = when (val dispatcher = this[ContinuationInterceptor]) {
       is TestDispatcher -> dispatcher.scheduler
-      else -> error("CoroutineDispatcher is not a TestDispatcher [$dispatcher]")
+      else -> error("Dispatcher is not a TestDispatcher: $dispatcher")
    }
