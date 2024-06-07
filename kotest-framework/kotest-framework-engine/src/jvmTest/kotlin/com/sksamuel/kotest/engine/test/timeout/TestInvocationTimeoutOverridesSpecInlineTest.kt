@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 class TestInvocationTimeoutOverridesSpecInlineTest : FunSpec() {
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       invocationTimeout = 100000000
 
