@@ -2,8 +2,9 @@
 
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.spec.TestCaseExtensionFn
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.coroutineScope
@@ -16,7 +17,7 @@ class TimeoutTest : FunSpec() {
 
    init {
 
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       test("a testcase timeout should interrupt a blocked thread").config(
          timeout = 10.milliseconds,
@@ -97,9 +98,11 @@ suspend fun someCoroutine() {
 /**
  * A Test Case extension that expects each test to fail, and will invert the test result.
  */
-val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
-   when (execute(testCase)) {
-      is TestResult.Failure, is TestResult.Error -> TestResult.Success(0.milliseconds)
-      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
+object ExpectFailureExtension : TestCaseExtension {
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when (execute(testCase)) {
+         is TestResult.Failure, is TestResult.Error -> TestResult.Success(0.milliseconds)
+         else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
+      }
    }
 }

@@ -16,7 +16,7 @@ private val factory = funSpec {
  */
 class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       invocationTimeout = 1
 
