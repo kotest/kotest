@@ -14,6 +14,7 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.plugins.signing.SigningExtension
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
 //region manually define accessors, because IntelliJ _still_ doesn't index them properly :(
@@ -42,55 +43,81 @@ internal fun publishPlatformArtifactsInRootModule(project: Project) {
       doLast("re-write KMP common POM") {
          val original = destination.readText()
 
-         val jvmPomFile = jvmPom.get()
-
          val docFactory = DocumentBuilderFactory.newInstance()
          val docBuilder = docFactory.newDocumentBuilder()
 
-         val doc = docBuilder.parse(destination).apply {
+         val jvmPomFile = jvmPom.get()
+
+         val jvmDoc = docBuilder.parse(jvmPomFile)
+         val jvmGroupId = jvmDoc.getElement("groupId").textContent
+         val jvmArtifactId = jvmDoc.getElement("artifactId").textContent
+         val jvmVersion = jvmDoc.getElement("version").textContent
+
+         val kmpPomDoc = docBuilder.parse(destination).apply {
+            // strip whitespace, otherwise pretty-printing output has blank lines
             removeWhitespaceNodes()
             // set standalone=true to prevent `standalone="no"` in the output
             xmlStandalone = true
          }
 
-         val jvmDoc = docBuilder.parse(jvmPomFile)
-         val jvmGroupId = jvmDoc.getElementsByTagName("groupId").item(0).textContent
-         val jvmArtifactId = jvmDoc.getElementsByTagName("artifactId").item(0).textContent
-         val jvmVersion = jvmDoc.getElementsByTagName("version").item(0).textContent
+         val kmpPom = kmpPomDoc.documentElement
 
-         val root = doc.documentElement
+         val dependencies = kmpPom.getElement("dependencies")
 
-         val dependencies = root.getElementsByTagName("dependencies").item(0)
-
-         // Remove the original platform dependencies
+         // Remove the original platform dependencies...
          while (dependencies.hasChildNodes()) {
             dependencies.removeChild(dependencies.firstChild)
          }
-         // and add a single dependency on the platform module:
+         // instead, add a single dependency on the platform module
          dependencies.appendChild(
-            doc.createElement("dependency") {
-               appendChild(doc.createElement("groupId", jvmGroupId))
-               appendChild(doc.createElement("artifactId", jvmArtifactId))
-               appendChild(doc.createElement("version", jvmVersion))
-               appendChild(doc.createElement("scope", "compile"))
+            kmpPomDoc.createElement("dependency") {
+               appendChild(kmpPomDoc.createElement("groupId", jvmGroupId))
+               appendChild(kmpPomDoc.createElement("artifactId", jvmArtifactId))
+               appendChild(kmpPomDoc.createElement("version", jvmVersion))
+               appendChild(kmpPomDoc.createElement("scope", "compile"))
             }
          )
 
-         // Set packaging to POM to indicate that there's no artifact:
-         doc.createElement("packaging", "pom")
+         // Set packaging to POM to indicate that there's no artifact
+         kmpPom.appendChild(
+            kmpPomDoc.createElement("packaging", "pom")
+         )
 
          // Write the updated XML to the destination file
          val transformer = TransformerFactory.newInstance().newTransformer().apply {
+            // pretty printing options
             setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
             setOutputProperty(OutputKeys.INDENT, "yes")
             setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
          }
-         val source = DOMSource(doc)
-         val result = StreamResult(destination)
-         transformer.transform(source, result)
+
+         transformer.transform(DOMSource(kmpPomDoc), StreamResult(destination))
+
+         if (logger.isInfoEnabled) {
+            val updated = destination.readText()
+            logger.info(
+               """
+               [$path] Re-wrote KMP POM
+               ${"=".repeat(25)} original ${"=".repeat(25)}
+               $original
+               ${"=".repeat(25)} updated  ${"=".repeat(25)}
+               $updated
+               ${"=".repeat(25)}==========${"=".repeat(25)}
+               """.trimIndent()
+            )
+         }
       }
    }
 }
+
+
+private fun Document.getElement(tagName: String): Node =
+   getElementsByTagName(tagName).item(0)
+      ?: error("No element named '$tagName' in Document $this")
+
+private fun Element.getElement(tagName: String): Node =
+   getElementsByTagName(tagName).item(0)
+      ?: error("No element named '$tagName' in Element $this")
 
 private fun Document.createElement(name: String, content: String): Element {
    val element = createElement(name)
@@ -98,11 +125,11 @@ private fun Document.createElement(name: String, content: String): Element {
    return element
 }
 
-private fun Document.createElement(name: String, configure: Element.() -> Unit): Element =
+private fun Document.createElement(name: String, configure: Element.() -> Unit = {}): Element =
    createElement(name).apply(configure)
 
 // https://stackoverflow.com/a/979606/4161471
-private fun Document.removeWhitespaceNodes() {
+private fun Node.removeWhitespaceNodes() {
    val xpathFactory = XPathFactory.newInstance()
 
    // XPath to find empty text nodes
