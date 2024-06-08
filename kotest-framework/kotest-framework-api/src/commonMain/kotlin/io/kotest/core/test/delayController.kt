@@ -7,12 +7,10 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalStdlibApi
-@ExperimentalCoroutinesApi
 val TestScope.testCoroutineScheduler: TestCoroutineScheduler
    get() = coroutineContext.testCoroutineScheduler
 
 @ExperimentalStdlibApi
-@ExperimentalCoroutinesApi
 val CoroutineContext.testCoroutineScheduler: TestCoroutineScheduler
    get() = when (val dispatcher = this[CoroutineDispatcher]) {
       is TestDispatcher -> dispatcher.scheduler
