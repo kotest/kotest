@@ -1,3 +1,6 @@
+name: Gradle Task
+run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}"
+
 on:
    workflow_call:
       inputs:
@@ -14,6 +17,9 @@ on:
             required: true
             type: string
 
+permissions:
+   contents: read
+
 jobs:
    run-tests:
       runs-on: ${{ inputs.runs-on }}
@@ -21,13 +27,15 @@ jobs:
          -  name: Checkout the repo
             uses: actions/checkout@v4
             with:
-               fetch-depth: 0
                ref: ${{ github.event.inputs.ref }}
+
+         -  name: Validate Gradle Wrapper
+            uses: gradle/actions/wrapper-validation@v3
 
          -  name: Setup JDK
             uses: actions/setup-java@v4
             with:
-               distribution: 'temurin'
+               distribution: "temurin"
                java-version: "17"
 
          -  uses: gradle/actions/setup-gradle@v3
@@ -47,4 +55,9 @@ jobs:
                path: build-reports.zip
 
 env:
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
