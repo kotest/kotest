@@ -115,6 +115,7 @@ final fun io.kotest.mpp/env(kotlin/String): kotlin/String? // io.kotest.mpp/env|
 final fun io.kotest.mpp/isLoggingEnabled(): kotlin/Boolean // io.kotest.mpp/isLoggingEnabled|isLoggingEnabled(){}[0]
 final fun io.kotest.mpp/isPlatformStable(kotlin.reflect/KClass<*>): kotlin/Boolean // io.kotest.mpp/isPlatformStable|isPlatformStable(kotlin.reflect.KClass<*>){}[0]
 final fun io.kotest.mpp/isStable(kotlin.reflect/KClass<*>): kotlin/Boolean // io.kotest.mpp/isStable|isStable(kotlin.reflect.KClass<*>){}[0]
+final fun io.kotest.mpp/isStable(kotlin.reflect/KClass<*>, kotlin/Any? =...): kotlin/Boolean // io.kotest.mpp/isStable|isStable(kotlin.reflect.KClass<*>;kotlin.Any?){}[0]
 final fun io.kotest.mpp/isStable(kotlin.reflect/KType): kotlin/Boolean // io.kotest.mpp/isStable|isStable(kotlin.reflect.KType){}[0]
 final fun io.kotest.mpp/log(kotlin/Function0<kotlin/String>) // io.kotest.mpp/log|log(kotlin.Function0<kotlin.String>){}[0]
 final fun io.kotest.mpp/log(kotlin/Throwable?, kotlin/Function0<kotlin/String>) // io.kotest.mpp/log|log(kotlin.Throwable?;kotlin.Function0<kotlin.String>){}[0]
