@@ -75,7 +75,9 @@ publishing {
    }
 }
 
-publishPlatformArtifactsInRootModule(project)
+pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+   publishPlatformArtifactsInRootModule(project)
+}
 
 //region Maven Central can't handle parallel uploads, so limit parallel uploads with a BuildService
 abstract class MavenPublishLimiter : BuildService<BuildServiceParameters.None>
