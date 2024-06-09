@@ -63,8 +63,6 @@ jobs:
 
       steps:
          - uses: actions/checkout@v4
-           with:
-              fetch-depth: 0
 
          - name: Set up Java
            uses: actions/setup-java@v4
