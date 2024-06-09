@@ -49,8 +49,6 @@ publishing {
    }
 
    publications.withType<MavenPublication>().configureEach {
-      artifact(javadocJar)
-
       pom {
          name.set("Kotest")
          description.set("Kotlin Test Framework")
@@ -81,6 +79,10 @@ publishing {
 }
 
 pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+   publishing.publications.withType<MavenPublication>().configureEach {
+      artifact(javadocJar)
+   }
+
    publishPlatformArtifactsInRootModule(project)
 }
 
