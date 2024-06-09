@@ -33,7 +33,6 @@ class Logger(private val kclass: KClass<*>) {
    fun log(f: () -> String): Unit = log { Pair(null, f()) }
 }
 
-@OverloadResolutionByLambdaReturnType
 @KotestInternal
 fun log(f: () -> String) {
    log(null, f)
