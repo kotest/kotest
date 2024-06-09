@@ -44,46 +44,50 @@ internal data class Range<T: Comparable<T>>(
       else -> false
    }
 
-   companion object {
-      fun<T: Comparable<T>> ofClosedRange(range: ClosedRange<T>) = Range(
-          start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
-          end = RangeEdge(range.endInclusive, RangeEdgeType.INCLUSIVE)
-      )
-
-      @OptIn(ExperimentalStdlibApi::class)
-      fun<T: Comparable<T>> ofOpenEndRange(range: OpenEndRange<T>) = Range(
-          start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
-          end = RangeEdge(range.endExclusive, RangeEdgeType.EXCLUSIVE)
-      )
-
-      fun<T: Comparable<T>> openOpen(start: T, end: T) = Range(
-          start = RangeEdge(start, RangeEdgeType.EXCLUSIVE),
-          end = RangeEdge(end, RangeEdgeType.EXCLUSIVE)
-      )
-
-      fun<T: Comparable<T>> openClosed(start: T, end: T) = Range(
-          start = RangeEdge(start, RangeEdgeType.EXCLUSIVE),
-          end = RangeEdge(end, RangeEdgeType.INCLUSIVE)
-      )
-
-      fun<T: Comparable<T>> closedOpen(start: T, end: T) = Range(
-          start = RangeEdge(start, RangeEdgeType.INCLUSIVE),
-          end = RangeEdge(end, RangeEdgeType.EXCLUSIVE)
-      )
-
-      fun<T: Comparable<T>> closedClosed(start: T, end: T) = Range(
-          start = RangeEdge(start, RangeEdgeType.INCLUSIVE),
-          end = RangeEdge(end, RangeEdgeType.INCLUSIVE)
-      )
-   }
+   companion object
 }
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.ofClosedRange(range: ClosedRange<T>) = Range(
+   start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(range.endInclusive, RangeEdgeType.INCLUSIVE)
+)
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.ofOpenEndRange(range: OpenEndRange<T>) = Range(
+   start = RangeEdge(range.start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(range.endExclusive, RangeEdgeType.EXCLUSIVE)
+)
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.openOpen(start: T, end: T) = Range(
+   start = RangeEdge(start, RangeEdgeType.EXCLUSIVE),
+   end = RangeEdge(end, RangeEdgeType.EXCLUSIVE)
+)
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.openClosed(start: T, end: T) = Range(
+   start = RangeEdge(start, RangeEdgeType.EXCLUSIVE),
+   end = RangeEdge(end, RangeEdgeType.INCLUSIVE)
+)
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.closedOpen(start: T, end: T) = Range(
+   start = RangeEdge(start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(end, RangeEdgeType.EXCLUSIVE)
+)
+
+@PublishedApi
+internal fun<T: Comparable<T>> Range.Companion.closedClosed(start: T, end: T) = Range(
+   start = RangeEdge(start, RangeEdgeType.INCLUSIVE),
+   end = RangeEdge(end, RangeEdgeType.INCLUSIVE)
+)
 
 internal fun<T: Comparable<T>> ClosedRange<T>.toClosedClosedRange(): Range<T> = Range(
    start = RangeEdge(this.start, RangeEdgeType.INCLUSIVE),
    end = RangeEdge(this.endInclusive, RangeEdgeType.INCLUSIVE)
 )
 
-@OptIn(ExperimentalStdlibApi::class)
 internal fun<T: Comparable<T>> OpenEndRange<T>.toClosedOpenRange(): Range<T> = Range(
    start = RangeEdge(this.start, RangeEdgeType.INCLUSIVE),
    end = RangeEdge(this.endExclusive, RangeEdgeType.EXCLUSIVE)
