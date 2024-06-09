@@ -62,19 +62,12 @@ jobs:
       timeout-minutes: 60
 
       steps:
-         - uses: actions/checkout@v4
-
-         - name: Set up Java
-           uses: actions/setup-java@v4
-           with:
-              distribution: 'temurin'
-              java-version: 17
-
-         - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v3
-
          - name: Update API files
-           run: ./gradlew apiDump
+           uses: ./.github/workflows/run-gradle.yml
+           with:
+              runs-on: ubuntu-latest
+              ref: ${{ inputs.ref }}
+              task: apiCheck
 
          - name: Commit updated API files
            uses: stefanzweifel/git-auto-commit-action@v5
