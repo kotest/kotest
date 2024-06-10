@@ -62,6 +62,11 @@ jobs:
       timeout-minutes: 60
 
       steps:
+         - name: Checkout the repo
+           uses: actions/checkout@v4
+           with:
+              ref: ${{ github.event.inputs.ref }}
+
          - name: Update API files
            uses: ./.github/workflows/run-gradle.yml
            with:
