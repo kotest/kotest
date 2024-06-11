@@ -73,6 +73,17 @@ fun <T> T?.shouldNotBeNull(): T {
    return this!!
 }
 
+/**
+ * Verifies that this is not null and lets you use its value in [block]
+ *
+ * maybeNullString() shouldNotBeNull {
+ *     length should beEven()
+ * }
+ */
+infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit) {
+   this.shouldNotBeNull()
+   block()
+}
 
 /**
  * Matcher that verifies if a reference is null

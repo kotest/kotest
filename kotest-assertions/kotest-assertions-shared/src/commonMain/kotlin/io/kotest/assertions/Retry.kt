@@ -78,7 +78,7 @@ suspend fun <T> retry(
          when {
             // Not the kind of exceptions we were prepared to tolerate
             e::class.simpleName != "AssertionError" &&
-               e::class != config.exceptionClass &&
+               config.exceptionClass?.isInstance(e) == false &&
                e::class.bestName() != "org.opentest4j.AssertionFailedError" &&
                !e::class.bestName().endsWith("AssertionFailedError") -> throw e
          }

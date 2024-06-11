@@ -1,4 +1,4 @@
-name: release-windows
+name: release-watchos
 
 on:
    workflow_dispatch:
@@ -17,14 +17,19 @@ env:
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
    contents: read
 
 jobs:
-   publish_windows:
-      runs-on: windows-latest
+   publish_watchosDeviceArm64:
+      runs-on: macos-latest
+      strategy:
+         max-parallel: 1
+         matrix:
+            target:
+               - "publishWatchosDeviceArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4
@@ -40,5 +45,5 @@ jobs:
 
          -  uses: gradle/actions/setup-gradle@v3
 
-         -  name: publish mingwX64 release
-            run: ./gradlew publishMingwX64PublicationToDeployRepository
+         -  name: publish
+            run: ./gradlew ${{ matrix.target }}

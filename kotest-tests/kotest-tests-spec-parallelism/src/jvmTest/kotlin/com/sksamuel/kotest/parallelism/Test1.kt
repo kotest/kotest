@@ -4,6 +4,6 @@ import io.kotest.core.spec.style.StringSpec
 
 class Test1 : StringSpec({
    "a" {
-      Thread.sleep(100)
+      Thread.sleep(500)
    }
 })
