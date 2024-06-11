@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
+
 
 package com.sksamuel.kotest.tests.json
 
@@ -276,7 +276,7 @@ expected:<{
             }
          }
 
-
+         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
          test("Using old CompareMode flags") {
             a.shouldEqualJson(b, CompareMode.Lenient)
             c.shouldEqualJson(d, CompareMode.Lenient)
@@ -286,21 +286,26 @@ expected:<{
       test("comparing long to string with lenient mode") {
          val a = """ { "a" : "foo", "b" : 123 } """
          val b = """ { "a" : "foo", "b" : "123" } """
+         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
          a.shouldEqualJson(b, CompareMode.Lenient)
       }
 
+      @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
       test("comparing double to string with lenient mode") {
          val a = """ { "a" : "foo", "b" : 12.45 } """
          val b = """ { "a" : "foo", "b" : "12.45" } """
+         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
          a.shouldEqualJson(b, CompareMode.Lenient)
       }
 
       test("comparing string to long with lenient mode") {
          val a = """ { "a" : "foo", "b" : "12" } """
          val b = """ { "a" : "foo", "b" : 12 } """
+         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
          a.shouldEqualJson(b, CompareMode.Lenient)
       }
 
+      @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
       test("comparing string to boolean with lenient mode") {
          val a = """ { "a" : "foo", "b" : "true" } """
          val b = """ { "a" : "foo", "b" : true } """
@@ -314,6 +319,7 @@ expected:<{
       test("comparing string to double with lenient mode") {
          val a = """ { "a" : "foo", "b" : "12.45" } """
          val b = """ { "a" : "foo", "b" : 12.45 } """
+         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
          a.shouldEqualJson(b, CompareMode.Lenient)
       }
 
@@ -774,6 +780,7 @@ expected:<{
             """
          a.shouldEqualJson(b)
          shouldFail {
+            @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
             a.shouldEqualJson(b, CompareOrder.Strict)
          }.shouldHaveMessage(
             """The top level object expected field 0 to be 'sku' but was 'id'
