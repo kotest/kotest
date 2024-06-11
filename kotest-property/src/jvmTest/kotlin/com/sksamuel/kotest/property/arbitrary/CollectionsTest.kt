@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.retry
+import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
@@ -22,11 +24,12 @@ import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
-import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class CollectionsTest : DescribeSpec({
@@ -99,7 +102,7 @@ class CollectionsTest : DescribeSpec({
       it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = 1.seconds) {
          /*
          if we revert the fix as follows, the test fails:
-         git revert 8ba8975 --no-commit 
+         git revert 8ba8975 --no-commit
           */
          val innerGen0 = arbitrary {
             Box(
@@ -134,10 +137,13 @@ class CollectionsTest : DescribeSpec({
       }
 
       it("generate when sufficient cardinality is available, even if dups are periodically generated") {
-         // this arb will generate 100 ints, but the first 1000 we take are almost certain to not be unique,
-         // so this test will ensure, as long as the arb can still complete, it does.
-         val arbUnderlying = Arb.int(0..1000)
-         Arb.set(arbUnderlying, 1000).single()
+         // This test will fail with a small probability, adding retries to eliminate flakiness
+         retry(retryConfig { maxRetry = 20 }) {
+            // this arb will generate 100 ints, but the first 1000 we take are almost certain to not be unique,
+            // so this test will ensure, as long as the arb can still complete, it does.
+            val arbUnderlying = Arb.int(0..1000)
+            Arb.set(arbUnderlying, 1000).single()
+         }
       }
 
       it("generate when sufficient cardinality is available, regardless of size") {
@@ -163,6 +169,7 @@ class CollectionsTest : DescribeSpec({
       val name: String,
       val contents: List<String>
    )
+
    private data class OuterBox(
       val name: String,
       val contents: List<Box>
