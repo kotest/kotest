@@ -68,7 +68,7 @@ jobs:
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: ${{ matrix.target }}
+         task: ${{ matrix.target }} --info
 
    test_mac:
       needs: [ test_linux, determine-workflows-to-run ]
@@ -85,7 +85,7 @@ jobs:
       with:
          runs-on: macos-latest
          ref: ${{ inputs.ref }}
-         task: ${{ matrix.target }}
+         task: ${{ matrix.target }} --info
 
 
    test_windows:
@@ -95,7 +95,7 @@ jobs:
       with:
          runs-on: windows-latest
          ref: ${{ inputs.ref }}
-         task: mingwX64Test
+         task: mingwX64Test --info
 
    test_docs:
       needs: [ determine-workflows-to-run ]
