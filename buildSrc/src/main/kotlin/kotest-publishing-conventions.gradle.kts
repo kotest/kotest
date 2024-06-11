@@ -41,11 +41,14 @@ publishing {
             password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
          }
       }
+      maven(rootDir.resolve("build/maven-repo")) {
+         // Publish to a project-local directory, for easier verification of published artifacts
+         // Run ./gradlew publishAllPublicationsToRootBuildDirRepository, and check `$rootDir/build/maven-repo/`
+         name = "RootBuildDir"
+      }
    }
 
    publications.withType<MavenPublication>().configureEach {
-      artifact(javadocJar)
-
       pom {
          name.set("Kotest")
          description.set("Kotlin Test Framework")
@@ -75,7 +78,13 @@ publishing {
    }
 }
 
-publishPlatformArtifactsInRootModule(project)
+pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+   publishing.publications.withType<MavenPublication>().configureEach {
+      artifact(javadocJar)
+   }
+
+   publishPlatformArtifactsInRootModule(project)
+}
 
 //region Maven Central can't handle parallel uploads, so limit parallel uploads with a BuildService
 abstract class MavenPublishLimiter : BuildService<BuildServiceParameters.None>

@@ -7,7 +7,6 @@ import io.kotest.matchers.ranges.shouldBeWithin
 import io.kotest.matchers.ranges.shouldNotBeWithin
 import io.kotest.matchers.shouldBe
 
-@OptIn(ExperimentalStdlibApi::class)
 class ShouldBeWithinTest : WordSpec() {
    private val smallClosedRange: ClosedRange<Int> = 1..3
    private val smallOpenEndRange: OpenEndRange<Int> = 1 until 3
@@ -17,18 +16,18 @@ class ShouldBeWithinTest : WordSpec() {
    init {
       "shouldBeWithin" should {
          "fail" {
-               shouldThrowAny {
-                  bigClosedRange shouldBeWithin smallClosedRange
-               }.message shouldBe "Range [0, 4] should be within [1, 3], but it isn't"
-               shouldThrowAny {
-                  bigClosedRange shouldBeWithin smallOpenEndRange
-               }.message shouldBe "Range [0, 4] should be within [1, 3), but it isn't"
-               shouldThrowAny {
-                  bigOpenEndRange shouldBeWithin smallClosedRange
-               }.message shouldBe "Range [0, 4) should be within [1, 3], but it isn't"
-               shouldThrowAny {
-                  bigOpenEndRange shouldBeWithin smallOpenEndRange
-               }.message shouldBe "Range [0, 4) should be within [1, 3), but it isn't"
+            shouldThrowAny {
+               bigClosedRange shouldBeWithin smallClosedRange
+            }.message shouldBe "Range [0, 4] should be within [1, 3], but it isn't"
+            shouldThrowAny {
+               bigClosedRange shouldBeWithin smallOpenEndRange
+            }.message shouldBe "Range [0, 4] should be within [1, 3), but it isn't"
+            shouldThrowAny {
+               bigOpenEndRange shouldBeWithin smallClosedRange
+            }.message shouldBe "Range [0, 4) should be within [1, 3], but it isn't"
+            shouldThrowAny {
+               bigOpenEndRange shouldBeWithin smallOpenEndRange
+            }.message shouldBe "Range [0, 4) should be within [1, 3), but it isn't"
          }
 
          "succeed" {
@@ -51,7 +50,7 @@ class ShouldBeWithinTest : WordSpec() {
             val openEndRange: OpenEndRange<Long> = 1L until 3L
             openEndRange shouldBeWithin closedRange
          }
-       }
+      }
 
       "shouldNotBeWithin" should {
          "fail" {
