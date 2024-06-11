@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
+
 package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode

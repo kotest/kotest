@@ -412,7 +412,7 @@ infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostC
 
 
 @Deprecated(
-   "Use `forAny` inspection instead",
+   "Use `forAny` inspection instead. Will be removed in 6.0",
    ReplaceWith(
       "forAny { p() shouldBe true }",
       "io.kotest.matchers.shouldBe",

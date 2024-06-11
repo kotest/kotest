@@ -29,7 +29,6 @@ import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class CollectionsTest : DescribeSpec({

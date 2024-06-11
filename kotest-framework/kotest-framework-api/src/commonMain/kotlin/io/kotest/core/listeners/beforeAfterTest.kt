@@ -4,6 +4,7 @@ import io.kotest.common.SoftDeprecated
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 @SoftDeprecated("Use beforeAny")
 interface BeforeTestListener : Listener {
 
@@ -24,6 +25,7 @@ interface BeforeTestListener : Listener {
    suspend fun beforeAny(testCase: TestCase): Unit = Unit
 }
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 @SoftDeprecated("Use afterContainer, afterEach, or afterAny")
 interface AfterTestListener : Listener {
 

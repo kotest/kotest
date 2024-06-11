@@ -9,6 +9,7 @@ import kotlin.reflect.KClass
  * Invoked once per spec class if the spec has enabled root tests.
  * This listener is only invoked if the spec had at least one enabled test.
  */
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface FinalizeSpecListener : Listener {
 
    /**
