@@ -5,6 +5,17 @@ plugins {
 }
 
 kotlin {
+   val jdkVersionAttribute = Attribute.of("org.gradle.jvm.version", Int::class.javaObjectType)
+
+   jvm("jdk8") {
+      attributes.attribute(jdkVersionAttribute, 8)
+      jvmToolchain(8)
+   }
+
+   jvm("jdk21") {
+      attributes.attribute(jdkVersionAttribute, 21)
+      jvmToolchain(21)
+   }
 
    sourceSets {
 
@@ -25,6 +36,14 @@ kotlin {
             implementation(libs.diffutils)
             implementation(libs.opentest4j)
          }
+      }
+
+      val jdk8Main by getting {
+         dependsOn(jvmMain)
+      }
+
+      val jdk21Main by getting {
+         dependsOn(jvmMain)
       }
    }
 }
