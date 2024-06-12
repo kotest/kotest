@@ -1,0 +1,15 @@
+// Klib ABI Dump
+// Targets: [js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.kotest:kotest-property-lifecycle>
+abstract interface io.kotest.property.lifecycle/BeforeAndAfterPropertyTestInterceptExtension : io.kotest.core.extensions/SpecExtension { // io.kotest.property.lifecycle/BeforeAndAfterPropertyTestInterceptExtension|null[0]
+    abstract suspend fun afterProperty() // io.kotest.property.lifecycle/BeforeAndAfterPropertyTestInterceptExtension.afterProperty|afterProperty(){}[0]
+    abstract suspend fun beforeProperty() // io.kotest.property.lifecycle/BeforeAndAfterPropertyTestInterceptExtension.beforeProperty|beforeProperty(){}[0]
+    open suspend fun intercept(kotlin.reflect/KClass<out io.kotest.core.spec/Spec>, kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // io.kotest.property.lifecycle/BeforeAndAfterPropertyTestInterceptExtension.intercept|intercept(kotlin.reflect.KClass<out|io.kotest.core.spec.Spec>;kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+}
+final fun (io.kotest.core.spec/Spec).io.kotest.property.lifecycle/afterProperty(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // io.kotest.property.lifecycle/afterProperty|afterProperty@io.kotest.core.spec.Spec(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+final fun (io.kotest.core.spec/Spec).io.kotest.property.lifecycle/beforeProperty(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // io.kotest.property.lifecycle/beforeProperty|beforeProperty@io.kotest.core.spec.Spec(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]

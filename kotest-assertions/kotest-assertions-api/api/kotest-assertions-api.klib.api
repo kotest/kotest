@@ -1,0 +1,45 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.kotest:kotest-assertions-api>
+abstract interface <#A: in kotlin/Any?> io.kotest.matchers/Matcher { // io.kotest.matchers/Matcher|null[0]
+    abstract fun test(#A): io.kotest.matchers/MatcherResult // io.kotest.matchers/Matcher.test|test(1:0){}[0]
+    final object Companion { // io.kotest.matchers/Matcher.Companion|null[0]
+        final fun <#A2: kotlin/Any?> failure(kotlin/String): io.kotest.matchers/Matcher<#A2> // io.kotest.matchers/Matcher.Companion.failure|failure(kotlin.String){0§<kotlin.Any?>}[0]
+        final inline fun <#A2: kotlin/Any?> invoke(crossinline kotlin/Function1<#A2, io.kotest.matchers/MatcherResult>): io.kotest.matchers/Matcher<#A2> // io.kotest.matchers/Matcher.Companion.invoke|invoke(kotlin.Function1<0:0,io.kotest.matchers.MatcherResult>){0§<kotlin.Any?>}[0]
+    }
+    open fun <#A1: kotlin/Any?> (io.kotest.matchers/Matcher<#A1>).invertIf(kotlin/Boolean): io.kotest.matchers/Matcher<#A1> // io.kotest.matchers/Matcher.invertIf|invertIf@io.kotest.matchers.Matcher<0:0>(kotlin.Boolean){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> compose(kotlin/Function1<#A1, #A>): io.kotest.matchers/Matcher<#A1> // io.kotest.matchers/Matcher.compose|compose(kotlin.Function1<0:0,1:0>){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> contramap(kotlin/Function1<#A1, #A>): io.kotest.matchers/Matcher<#A1> // io.kotest.matchers/Matcher.contramap|contramap(kotlin.Function1<0:0,1:0>){0§<kotlin.Any?>}[0]
+    open fun invert(): io.kotest.matchers/Matcher<#A> // io.kotest.matchers/Matcher.invert|invert(){}[0]
+}
+abstract interface io.kotest.matchers/ComparableMatcherResult : io.kotest.matchers/MatcherResult { // io.kotest.matchers/ComparableMatcherResult|null[0]
+    abstract fun actual(): kotlin/String // io.kotest.matchers/ComparableMatcherResult.actual|actual(){}[0]
+    abstract fun expected(): kotlin/String // io.kotest.matchers/ComparableMatcherResult.expected|expected(){}[0]
+    final object Companion { // io.kotest.matchers/ComparableMatcherResult.Companion|null[0]
+        final fun invoke(kotlin/Boolean, kotlin/Function0<kotlin/String>, kotlin/Function0<kotlin/String>, kotlin/String, kotlin/String): io.kotest.matchers/ComparableMatcherResult // io.kotest.matchers/ComparableMatcherResult.Companion.invoke|invoke(kotlin.Boolean;kotlin.Function0<kotlin.String>;kotlin.Function0<kotlin.String>;kotlin.String;kotlin.String){}[0]
+    }
+}
+abstract interface io.kotest.matchers/EqualityMatcherResult : io.kotest.matchers/MatcherResult { // io.kotest.matchers/EqualityMatcherResult|null[0]
+    abstract fun actual(): kotlin/Any? // io.kotest.matchers/EqualityMatcherResult.actual|actual(){}[0]
+    abstract fun expected(): kotlin/Any? // io.kotest.matchers/EqualityMatcherResult.expected|expected(){}[0]
+    final object Companion { // io.kotest.matchers/EqualityMatcherResult.Companion|null[0]
+        final fun invoke(kotlin/Boolean, kotlin/Any?, kotlin/Any?, kotlin/Function0<kotlin/String>, kotlin/Function0<kotlin/String>): io.kotest.matchers/EqualityMatcherResult // io.kotest.matchers/EqualityMatcherResult.Companion.invoke|invoke(kotlin.Boolean;kotlin.Any?;kotlin.Any?;kotlin.Function0<kotlin.String>;kotlin.Function0<kotlin.String>){}[0]
+    }
+}
+abstract interface io.kotest.matchers/MatcherResult { // io.kotest.matchers/MatcherResult|null[0]
+    abstract fun failureMessage(): kotlin/String // io.kotest.matchers/MatcherResult.failureMessage|failureMessage(){}[0]
+    abstract fun negatedFailureMessage(): kotlin/String // io.kotest.matchers/MatcherResult.negatedFailureMessage|negatedFailureMessage(){}[0]
+    abstract fun passed(): kotlin/Boolean // io.kotest.matchers/MatcherResult.passed|passed(){}[0]
+    final object Companion { // io.kotest.matchers/MatcherResult.Companion|null[0]
+        final fun invoke(kotlin/Boolean, kotlin/Function0<kotlin/String>, kotlin/Function0<kotlin/String>): io.kotest.matchers/MatcherResult // io.kotest.matchers/MatcherResult.Companion.invoke|invoke(kotlin.Boolean;kotlin.Function0<kotlin.String>;kotlin.Function0<kotlin.String>){}[0]
+        final fun invoke(kotlin/Boolean, kotlin/String, kotlin/String): io.kotest.matchers/MatcherResult // io.kotest.matchers/MatcherResult.Companion.invoke|invoke(kotlin.Boolean;kotlin.String;kotlin.String){}[0]
+    }
+}
+final fun <#A: kotlin/Any> io.kotest.matchers/neverNullMatcher(kotlin/Function1<#A, io.kotest.matchers/MatcherResult>): io.kotest.matchers/Matcher<#A?> // io.kotest.matchers/neverNullMatcher|neverNullMatcher(kotlin.Function1<0:0,io.kotest.matchers.MatcherResult>){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any?> (io.kotest.matchers/Matcher<#A>).io.kotest.matchers/and(io.kotest.matchers/Matcher<#A>): io.kotest.matchers/Matcher<#A> // io.kotest.matchers/and|and@io.kotest.matchers.Matcher<0:0>(io.kotest.matchers.Matcher<0:0>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (io.kotest.matchers/Matcher<#A>).io.kotest.matchers/or(io.kotest.matchers/Matcher<#A>): io.kotest.matchers/Matcher<#A> // io.kotest.matchers/or|or@io.kotest.matchers.Matcher<0:0>(io.kotest.matchers.Matcher<0:0>){0§<kotlin.Any?>}[0]

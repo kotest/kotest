@@ -16,7 +16,7 @@ permissions:
 
 jobs:
    api_check:
-      runs-on: ubuntu-latest
+      runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
