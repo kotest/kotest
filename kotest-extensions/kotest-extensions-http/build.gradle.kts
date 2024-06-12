@@ -21,7 +21,6 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.mockserver.netty)
             implementation(libs.kotest.extensions.mockserver)
