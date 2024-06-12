@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing Listener
+
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension

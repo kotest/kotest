@@ -6,5 +6,5 @@ package com.sksamuel.kotest.engine.coroutines
  * This function is not suspending, but intended to be invoked in a coroutine exclusively.
  */
 internal fun provokeThreadSwitch() {
-   Thread.sleep(50)
+   Thread.sleep(200)
 }

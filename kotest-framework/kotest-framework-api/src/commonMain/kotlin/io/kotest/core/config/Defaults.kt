@@ -15,6 +15,7 @@ object Defaults {
    const val disableTestNestedJarScanning: Boolean = true
 
    val assertionMode: AssertionMode = AssertionMode.None
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    val testCaseConfig: TestCaseConfig = TestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance

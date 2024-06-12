@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing http extension
+
 package com.sksamuel.kotest.extensions.http
 
 import io.kotest.assertions.throwables.shouldThrow
