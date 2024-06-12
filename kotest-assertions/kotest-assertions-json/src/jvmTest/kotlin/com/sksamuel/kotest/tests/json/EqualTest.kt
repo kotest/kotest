@@ -1,4 +1,4 @@
-
+@file:Suppress("DEPRECATION") // Remove when removing legacy shouldEqualJson options
 
 package com.sksamuel.kotest.tests.json
 

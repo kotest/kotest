@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing shouldExist
+
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
