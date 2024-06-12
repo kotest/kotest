@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing shouldExist
+
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
@@ -41,7 +43,6 @@ import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -489,6 +490,7 @@ class SequenceMatchersTest : WordSpec() {
          }
       }
 
+      @Suppress("DEPRECATION") // Remove when removing shouldExist
       "exist" should {
          fail("for empty") {
             sampleData.empty.shouldExist { true }
