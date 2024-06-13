@@ -339,7 +339,7 @@ class ProjectConfiguration {
     */
    var tagInheritance: Boolean = false
 
-   var discoveryClasspathScanningEnabled: Boolean = Defaults.discoveryClasspathScanningEnabled
+   var discoveryClasspathFallbackEnabled: Boolean = Defaults.discoveryClasspathFallbackEnabled
    var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
 
    /**

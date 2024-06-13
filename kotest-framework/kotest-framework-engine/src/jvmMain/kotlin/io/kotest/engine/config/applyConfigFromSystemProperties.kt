@@ -35,7 +35,7 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
    duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
    projectTimeout()?.let { configuration.projectTimeout = it }
    logLevel(configuration.logLevel).let { configuration.logLevel = it }
-   discoveryClasspathScanningEnabled()?.let { configuration.discoveryClasspathScanningEnabled = it }
+   discoveryClasspathScanningEnabled()?.let { configuration.discoveryClasspathFallbackEnabled = it }
    disableTestNestedJarScanning()?.let { configuration.disableTestNestedJarScanning = it }
 }
 
@@ -58,7 +58,7 @@ internal fun allowMultilineTestName(): Boolean? =
    sysprop(KotestEngineProperties.allowMultilineTestName)?.let { it.uppercase() == "TRUE" }
 
 internal fun discoveryClasspathScanningEnabled(): Boolean? =
-   sysprop(KotestEngineProperties.discoveryClasspathScanningEnabled)?.toBoolean()
+   sysprop(KotestEngineProperties.discoveryClasspathFallbackEnabled)?.toBoolean()
 
 internal fun disableTestNestedJarScanning(): Boolean? =
    sysprop(KotestEngineProperties.disableTestNestedJarScanning)?.toBoolean()

@@ -80,7 +80,12 @@ class Discovery(
 
       log { "[Discovery] Starting spec discovery" }
 
-      val specsSelected = request.specsIfCompletelySpecifiedOrNull()
+      if (request.selectors.isEmpty() && !configuration.discoveryClasspathFallbackEnabled) {
+         log { "[Discovery] no specs discovered: no selectors provided and classpath fallback is disabled" }
+         return@runCatching DiscoveryResult(emptyList(), emptyList(), null)
+      }
+
+      val specsSelected = request.specsFromClassDiscoverySelectorsOnlyOrNull()
          ?: cachedSpecsFromClassPaths
             .asSequence()
             .filter(isSpecSubclassKt)
@@ -102,11 +107,9 @@ class Discovery(
    }
 
    /**
-    * Returns the request's [Spec]s if they are completely specified and a classpath scan is avoidable, null otherwise.
-    *
-    * Specs are completely specified if the request consists of class discovery selectors only.
+    * Returns the request's [Spec]s if they are completely specified by class selectors, null otherwise.
     */
-   private fun DiscoveryRequest.specsIfCompletelySpecifiedOrNull(): List<KClass<out Spec>>? {
+   private fun DiscoveryRequest.specsFromClassDiscoverySelectorsOnlyOrNull(): List<KClass<out Spec>>? {
       if (selectors.isEmpty() || !selectors.all { it is DiscoverySelector.ClassDiscoverySelector })
          return null
 
@@ -137,11 +140,6 @@ class Discovery(
     * locations specified by the uris param.
     */
    private fun specsFromClassGraph(): List<KClass<out Spec>> {
-      if (!configuration.discoveryClasspathScanningEnabled) {
-         log { "[Discovery] classpath scanning is disabled" }
-         return emptyList()
-      }
-
       val start = System.currentTimeMillis()
       val specs = classgraph().scan().use { scanResult ->
          scanResult
