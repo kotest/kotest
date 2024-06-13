@@ -18,8 +18,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
 
    setOf(
-      "1.9.23",
-//      "2.0.0-Beta2",
+      "1.9.24",
+      "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
@@ -58,7 +58,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             val taskNames = listOf(
                "jvmTest",
                "jsBrowserTest",
-               // "jsNodeTest", // FIXME: Enable when #3329 "Node JS tests do not report failures correctly" is resolved
+               "jsNodeTest",
                "wasmJsBrowserTest",
                "wasmJsNodeTest"
             )
