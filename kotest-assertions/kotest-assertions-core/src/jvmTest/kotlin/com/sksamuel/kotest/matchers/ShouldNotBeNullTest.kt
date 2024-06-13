@@ -50,6 +50,16 @@ class ShouldNotBeNullTest : WordSpec() {
                .shouldStartWith("fo")
                .shouldEndWith("oo")
          }
+
+         "accept a block" {
+            val a: String? = "foo"
+
+            a shouldNotBeNull {
+               shouldHaveLength(3)
+               shouldStartWith("fo")
+               shouldEndWith("oo")
+            }
+         }
       }
    }
 }

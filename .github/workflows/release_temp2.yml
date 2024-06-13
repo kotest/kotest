@@ -1,4 +1,4 @@
-name: release_ios
+name: release_base
 
 on:
    workflow_dispatch:
@@ -12,31 +12,32 @@ on:
             default: 'master'
 
 env:
-   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   RELEASE_VERSION: ${{ inputs.version }}
    OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
    contents: read
 
 jobs:
-   publish_ios:
-      runs-on: macos-latest
+   publish_base:
+      runs-on: ubuntu-latest
       strategy:
          max-parallel: 1
          matrix:
             target:
-               - "publishIosX64PublicationToDeployRepository"
-               - "publishIosSimulatorArm64PublicationToDeployRepository"
-               - "publishIosArm64PublicationToDeployRepository"
+               - publishAndroidNativeX86PublicationToDeployRepository
+               - publishAndroidNativeX64PublicationToDeployRepository
+               - publishAndroidNativeArm32PublicationToDeployRepository
+               - publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4
             with:
-               ref: ${{ github.event.inputs.branch }}
+               ref: ${{ inputs.branch }}
 
          -  name: Setup JDK
             uses: actions/setup-java@v4

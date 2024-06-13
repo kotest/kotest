@@ -53,6 +53,7 @@ enum class CompareOrder {
 /**
  * helper method for bridging old compare options into new
  */
+@Suppress("DEPRECATION") // Remove when removing legacy options
 internal fun legacyOptions(mode: CompareMode, order: CompareOrder) =
    compareJsonOptions {
       typeCoercion = when (mode) {

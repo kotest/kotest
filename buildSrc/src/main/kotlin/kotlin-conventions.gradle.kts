@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    `java-library`
@@ -8,12 +8,14 @@ plugins {
 }
 
 repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
    google()
+   mavenCentral()
+   maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+   maven("https://oss.sonatype.org/content/repositories/snapshots/") {
+      mavenContent { snapshotsOnly() }
+   }
    gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
+   mavenLocal()
 }
 
 testlogger {

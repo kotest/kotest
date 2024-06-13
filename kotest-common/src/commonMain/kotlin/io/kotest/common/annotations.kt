@@ -16,7 +16,12 @@ annotation class DelicateKotest
 /**
  * An internal Kotest feature that is public for operational reasons but should not be used by end users.
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPEALIAS)
+@Target(
+   AnnotationTarget.CLASS,
+   AnnotationTarget.FUNCTION,
+   AnnotationTarget.TYPEALIAS,
+   AnnotationTarget.PROPERTY,
+)
 @MustBeDocumented
 @Retention(value = AnnotationRetention.BINARY)
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)

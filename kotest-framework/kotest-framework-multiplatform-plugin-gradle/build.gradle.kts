@@ -4,10 +4,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-   kotlin("jvm")
-   `maven-publish`
-   `java-gradle-plugin`
    `kotlin-dsl`
+   `maven-publish`
    alias(libs.plugins.gradle.plugin.publish)
 }
 

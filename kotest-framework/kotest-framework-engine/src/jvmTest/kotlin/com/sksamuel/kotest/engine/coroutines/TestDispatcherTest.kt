@@ -5,8 +5,7 @@ import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalStdlibApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class TestDispatcherTest : FunSpec() {
    init {
       test("a test with TestDispatcher should advance time virtually").config(testCoroutineDispatcher = true) {
