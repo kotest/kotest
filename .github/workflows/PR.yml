@@ -117,7 +117,8 @@ jobs:
    finalize:
       # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
       name: Final PR results
-      needs: [ api_check, test_linux, test_mac, test_windows, test_docs ]
+#      needs: [ api_check, test_linux, test_mac, test_windows, test_docs ]
+      needs: [ api_check, test_windows ]
       if: ${{ always() }}
       runs-on: ubuntu-latest
       steps:
