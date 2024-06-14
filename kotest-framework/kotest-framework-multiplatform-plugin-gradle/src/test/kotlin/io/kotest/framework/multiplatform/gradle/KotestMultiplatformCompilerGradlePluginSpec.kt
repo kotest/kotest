@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.inspectors.forAtLeastOne
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -45,12 +45,12 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                //          testReportContents shouldStartWith """
                //      when running `gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test`
                //      on some platform locally (but works on CI)
-               testReportContents.startsWith(
+               testReportContents.shouldStartWith(
                   """
                   <?xml version="1.0" encoding="UTF-8"?>
                   <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
                   """.trimIndent()
-               ) shouldBe true
+               )
             }
          }
 
