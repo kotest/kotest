@@ -125,7 +125,9 @@ private data class GradleInvocation(
    val projectPath: Path,
    val arguments: List<String>
 ) {
-   private val wrapperScriptPath: Path = Paths.get("..", "..", "gradlew")
+   val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
+   private val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
+   private val wrapperScriptPath: Path = Paths.get("..", "..", wrapperScriptName)
 
    class Result(command: List<String>, val output: String, val exitCode: Int) {
       val clue = "Gradle process $command exited with code $exitCode and output:\n" + output.prependIndent("\t>>> ")
