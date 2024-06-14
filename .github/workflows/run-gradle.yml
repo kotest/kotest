@@ -44,17 +44,16 @@ jobs:
             run: ./gradlew ${{ inputs.task }} --scan
             shell: bash
 
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-            shell: bash
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v4
-            with:
-               name: error-report
-               path: build-reports.zip
+         - name: Upload build reports
+           if: failure()
+           uses: actions/upload-artifact@v4
+           with:
+              name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
+              path: |
+                 **/build/reports/
+                 **/*.hprof
+                 **/*.log
+              if-no-files-found: ignore
 
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
