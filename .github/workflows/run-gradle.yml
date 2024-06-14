@@ -42,10 +42,12 @@ jobs:
 
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
+            shell: bash
 
          -  name: Bundle the build report
             if: failure()
             run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+            shell: bash
 
          -  name: Upload the build report
             if: failure()

@@ -41,3 +41,4 @@ jobs:
 
          -  name: publish mingwX64 release
             run: ./gradlew publishMingwX64PublicationToDeployRepository
+            shell: bash
