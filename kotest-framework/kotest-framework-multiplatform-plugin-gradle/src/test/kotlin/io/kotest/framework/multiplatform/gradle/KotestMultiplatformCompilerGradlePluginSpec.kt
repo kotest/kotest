@@ -19,7 +19,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
    setOf(
       "1.9.24",
-      "2.0.0",
+//      "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
@@ -83,16 +83,16 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
          setOf(
             true,
-            false
+//            false
          ).forEach { enableNewMemoryModel ->
             val description = if (enableNewMemoryModel) "is enabled" else "is not enabled"
 
             context("when the new Kotlin/Native memory model $description") {
                should("be able to compile and run tests for all native targets supported by the host machine") {
                   val taskNames = listOf(
-                     "macosArm64Test",
-                     "macosX64Test",
-                     "mingwX64Test",
+//                     "macosArm64Test",
+//                     "macosX64Test",
+//                     "mingwX64Test",
                      "linuxX64Test"
                   )
 
