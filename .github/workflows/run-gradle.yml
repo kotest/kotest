@@ -38,22 +38,25 @@ jobs:
                distribution: "temurin"
                java-version: "17"
 
-         -  uses: gradle/actions/setup-gradle@v3
+         -  name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v3
+            with:
+               gradle-home-cache-cleanup: true
 
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
             shell: bash
 
-         - name: Upload build reports
-           if: failure()
-           uses: actions/upload-artifact@v4
-           with:
-              name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
-              path: |
-                 **/build/reports/
-                 **/*.hprof
-                 **/*.log
-              if-no-files-found: ignore
+         -  name: Upload build reports
+            if: failure()
+            uses: actions/upload-artifact@v4
+            with:
+               name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
+               path: |
+                  **/build/reports/
+                  **/*.hprof
+                  **/*.log
+               if-no-files-found: ignore
 
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
