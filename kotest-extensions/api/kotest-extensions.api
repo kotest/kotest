@@ -406,6 +406,7 @@ public final class io/kotest/extensions/system/SystemPropertyTestListener : io/k
 }
 
 public final class io/kotest/extensions/system/WireListenersKt {
+	public static final fun asCanonicalString (Ljava/io/ByteArrayOutputStream;)Ljava/lang/String;
 	public static final fun captureStandardErr (Lkotlin/jvm/functions/Function0;)Ljava/lang/String;
 	public static final fun captureStandardOut (Lkotlin/jvm/functions/Function0;)Ljava/lang/String;
 }
