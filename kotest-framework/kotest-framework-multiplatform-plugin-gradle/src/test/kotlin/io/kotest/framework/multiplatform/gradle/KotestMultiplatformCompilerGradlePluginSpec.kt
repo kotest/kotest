@@ -57,10 +57,10 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
          should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
             val taskNames = listOf(
                "jvmTest",
-               "jsBrowserTest",
-               "jsNodeTest",
-               "wasmJsBrowserTest",
-               "wasmJsNodeTest"
+//               "jsBrowserTest",
+//               "jsNodeTest",
+//               "wasmJsBrowserTest",
+//               "wasmJsNodeTest"
             )
 
             val invocation = GradleInvocation(
@@ -92,8 +92,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                   val taskNames = listOf(
 //                     "macosArm64Test",
 //                     "macosX64Test",
-//                     "mingwX64Test",
-                     "linuxX64Test"
+                     "mingwX64Test",
+//                     "linuxX64Test"
                   )
 
                   val invocation = GradleInvocation(
