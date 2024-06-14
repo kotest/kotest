@@ -37,7 +37,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
             testReportFile.toFile().shouldBeAFile()
 
-            val testReportContents = Files.readAllBytes(testReportFile).decodeToString()
+            val testReportContents = Files.readAllBytes(testReportFile).decodeToString().replace("\r\n", "\n")
 
             withClue("$taskName test report") {
                // FIXME: java.lang.NoClassDefFoundError: io/kotest/matchers/string/StartKt
