@@ -31,9 +31,7 @@ allure-results/
 !gradle/wrapper/gradle-wrapper.jar
 
 allure.log
-kotest.log
-kotest-tests-junit-report.log
-kotest-tests-core.log
+kotest-*.log
 
 local.properties
 .kotest
