@@ -98,7 +98,7 @@ class ExtractByPathTest: WordSpec() {
                JsonSubPathJsonArrayTooShort("$.steps", 1, 42)
          }
          "return null when nothing found" {
-            findValidSubPath2(json, "$.no.such.path") shouldBe null
+            findValidSubPath2(json, "$.no.such.path") shouldBe JsonSubPathNotFound
          }
       }
 
