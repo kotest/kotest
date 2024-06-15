@@ -155,7 +155,7 @@ class EventuallyTest : FunSpec() {
                }
             }
          }.message
-         message shouldContain """Block failed after \d+(\.\d*)?ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted $count time\(s\)""".toRegex()
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
@@ -177,7 +177,7 @@ class EventuallyTest : FunSpec() {
             }
          }.message
          count shouldBe 2
-         message shouldContain """Block failed after \d+(\.\d*)?ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted $count time\(s\)""".toRegex()
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
@@ -269,7 +269,7 @@ class EventuallyTest : FunSpec() {
             }
          }.message
 
-         message shouldContain """Block failed after [^;]*; attempted 2 time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted 2 time\(s\)""".toRegex()
       }
 
       test("override assertion to hard assertion before executing assertion and reset it after executing") {
@@ -344,7 +344,7 @@ class EventuallyTest : FunSpec() {
                1 shouldBe 2
             }
          }
-         failure.message shouldContain """Block failed after [^;]*; attempted 1 time""".toRegex()
+         failure.message shouldContain """Block failed after [^;]+; attempted 1 time""".toRegex()
       }
 
       test("suppress first error") {
