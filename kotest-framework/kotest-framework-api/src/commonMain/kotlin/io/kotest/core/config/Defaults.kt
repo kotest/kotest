@@ -12,6 +12,7 @@ import io.kotest.core.test.config.TestCaseConfig
 object Defaults {
 
    const val threads = 1
+   const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
 
    val assertionMode: AssertionMode = AssertionMode.None
