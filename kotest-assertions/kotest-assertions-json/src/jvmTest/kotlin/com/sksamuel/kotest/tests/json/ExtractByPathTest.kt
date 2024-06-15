@@ -5,6 +5,7 @@ import io.kotest.assertions.json.JsonPathNotFound
 import io.kotest.assertions.json.JsonSubPathFound
 import io.kotest.assertions.json.JsonSubPathNotFound
 import io.kotest.assertions.json.extractByPath
+import io.kotest.assertions.json.extractPossiblePathOfJsonArray
 import io.kotest.assertions.json.findValidSubPath
 import io.kotest.assertions.json.findValidSubPath2
 import io.kotest.assertions.json.removeLastPartFromPath
@@ -54,12 +55,15 @@ class ExtractByPathTest: WordSpec() {
       }
 
       "findValidSubPath" should {
-          "find valid sub path" {
-             findValidSubPath(json, "$.regime.temperature.unit.name.some.more.tokens") shouldBe "$.regime.temperature.unit"
-             findValidSubPath(json, "$.regime.temperature.unit.name") shouldBe "$.regime.temperature.unit"
-             findValidSubPath(json, "$.regime.temperature.name") shouldBe "$.regime.temperature"
-             findValidSubPath(json, "$.regime.no_such_element") shouldBe "$.regime"
-          }
+         "find valid sub path" {
+            findValidSubPath(
+               json,
+               "$.regime.temperature.unit.name.some.more.tokens"
+            ) shouldBe "$.regime.temperature.unit"
+            findValidSubPath(json, "$.regime.temperature.unit.name") shouldBe "$.regime.temperature.unit"
+            findValidSubPath(json, "$.regime.temperature.name") shouldBe "$.regime.temperature"
+            findValidSubPath(json, "$.regime.no_such_element") shouldBe "$.regime"
+         }
          "return null when nothing found" {
             findValidSubPath(json, "$.no.such.path") shouldBe null
          }
@@ -67,13 +71,37 @@ class ExtractByPathTest: WordSpec() {
 
       "findValidSubPath2" should {
          "find valid sub path" {
-            findValidSubPath2(json, "$.regime.temperature.unit.name.some.more.tokens") shouldBe JsonSubPathFound("$.regime.temperature.unit")
-            findValidSubPath2(json, "$.regime.temperature.unit.name") shouldBe JsonSubPathFound("$.regime.temperature.unit")
+            findValidSubPath2(
+               json,
+               "$.regime.temperature.unit.name.some.more.tokens"
+            ) shouldBe JsonSubPathFound("$.regime.temperature.unit")
+            findValidSubPath2(
+               json,
+               "$.regime.temperature.unit.name"
+            ) shouldBe JsonSubPathFound("$.regime.temperature.unit")
             findValidSubPath2(json, "$.regime.temperature.name") shouldBe JsonSubPathFound("$.regime.temperature")
             findValidSubPath2(json, "$.regime.no_such_element") shouldBe JsonSubPathFound("$.regime")
          }
          "return null when nothing found" {
             findValidSubPath2(json, "$.no.such.path") shouldBe JsonSubPathNotFound
+         }
+      }
+
+      "extractPossiblePathOfJsonArray" should {
+         "return null if not array" {
+            extractPossiblePathOfJsonArray("$.not.an.array") shouldBe null
+         }
+         "return null if not valid index" {
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[]") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients]") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[42") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[42[") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[42]]") shouldBe null
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[BAD-INDEX]") shouldBe null
+         }
+         "return path" {
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[42]") shouldBe "\$.recipe.ingredients"
          }
       }
    }

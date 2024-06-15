@@ -137,7 +137,23 @@ inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutc
    return JsonSubPathNotFound
 }
 
-
+@KotestInternal
+fun extractPossiblePathOfJsonArray(pathElement: String): String? {
+   val tokens = pathElement.split("[")
+   when {
+      pathElement.last() != ']' -> return null
+      tokens.size != 2 -> return null
+      else -> {
+         val possibleNumber = tokens[1].dropLast(1)
+         possibleNumber.toIntOrNull()?.let {
+            if(it > 0) {
+               return tokens[0]
+            }
+         }
+      }
+   }
+   return null
+}
 @KotestInternal
 sealed interface JsonSubPathSearchOutcome
 
