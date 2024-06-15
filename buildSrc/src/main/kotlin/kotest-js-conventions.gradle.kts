@@ -1,4 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
    id("kotlin-conventions")
@@ -11,6 +13,7 @@ kotlin {
          nodejs()
       }
 
+      @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
          browser()
          nodejs()
@@ -22,6 +25,7 @@ kotlin {
       }
       */
 
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
             group("jsHosted") {

@@ -7,5 +7,6 @@ object MapPrint : Print<Map<*, *>> {
          .toString())
    }
 
+   @Deprecated(PRINT_DEPRECATION_MSG)
    override fun print(a: Map<*, *>): Printed = print(a, 0)
 }
