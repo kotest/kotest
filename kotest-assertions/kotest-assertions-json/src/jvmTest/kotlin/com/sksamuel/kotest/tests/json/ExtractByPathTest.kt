@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.ExtractedValue
+import io.kotest.assertions.json.JsonArrayElementRef
 import io.kotest.assertions.json.JsonPathNotFound
 import io.kotest.assertions.json.JsonSubPathFound
 import io.kotest.assertions.json.JsonSubPathJsonArrayTooShort
@@ -93,9 +94,9 @@ class ExtractByPathTest: WordSpec() {
          }
          "return JsonSubPathJsonArrayTooShort" {
             findValidSubPath2(json, "$.steps[0].comments[2]") shouldBe
-               JsonSubPathJsonArrayTooShort("$.steps[0].comments", 2, 42)
+               JsonSubPathJsonArrayTooShort("$.steps[0].comments", 2, 2)
             findValidSubPath2(json, "$.steps[1].comments[2]") shouldBe
-               JsonSubPathJsonArrayTooShort("$.steps", 1, 42)
+               JsonSubPathJsonArrayTooShort("$.steps", 1, 1)
          }
          "return null when nothing found" {
             findValidSubPath2(json, "$.no.such.path") shouldBe JsonSubPathNotFound
@@ -130,10 +131,12 @@ class ExtractByPathTest: WordSpec() {
             extractPossiblePathOfJsonArray("$.recipe.ingredients[BAD-INDEX]") shouldBe null
          }
          "return path" {
-            extractPossiblePathOfJsonArray("$.recipe.ingredients[42]") shouldBe "\$.recipe.ingredients"
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[42]") shouldBe
+               JsonArrayElementRef("\$.recipe.ingredients", 42)
          }
          "handle nested JSONArray" {
-            extractPossiblePathOfJsonArray("$.recipe.ingredients[2].comments[3]") shouldBe "\$.recipe.ingredients[2].comments"
+            extractPossiblePathOfJsonArray("$.recipe.ingredients[2].comments[3]") shouldBe
+               JsonArrayElementRef("\$.recipe.ingredients[2].comments", 3)
          }
       }
    }

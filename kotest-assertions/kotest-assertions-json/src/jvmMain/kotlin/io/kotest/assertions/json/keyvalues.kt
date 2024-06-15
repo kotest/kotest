@@ -132,11 +132,11 @@ inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutc
          return JsonSubPathFound(subPath)
       } catch (e: PathNotFoundException) {
          extractPossiblePathOfJsonArray(subPath)?.let { possiblePathOfJsonArray ->
-            getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray)?.let { sizeOfJsonArray ->
+            getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray.pathToArray)?.let { sizeOfJsonArray ->
                return JsonSubPathJsonArrayTooShort(
-                  subPath = possiblePathOfJsonArray,
+                  subPath = possiblePathOfJsonArray.pathToArray,
                   arraySize = sizeOfJsonArray,
-                  expectedIndex = 42
+                  expectedIndex = possiblePathOfJsonArray.index
                )
             }
          }
@@ -159,7 +159,7 @@ fun getPossibleSizeOfJsonArray(json: String?, path: String): Int? {
 }
 
 @KotestInternal
-fun extractPossiblePathOfJsonArray(path: String): String? {
+fun extractPossiblePathOfJsonArray(path: String): JsonArrayElementRef? {
    val pathElements = path.split(".")
    val lastPathElement = pathElements.last()
    val tokens = lastPathElement.split("[")
@@ -169,14 +169,22 @@ fun extractPossiblePathOfJsonArray(path: String): String? {
       else -> {
          val possibleNumber = tokens[1].dropLast(1)
          possibleNumber.toIntOrNull()?.let {
-            if(it > 0) {
-               return (pathElements.dropLast(1) + tokens[0]).joinToString(".")
-            }
+            return JsonArrayElementRef(
+               pathToArray = (pathElements.dropLast(1) + tokens[0]).joinToString("."),
+               index = it
+            )
          }
       }
    }
    return null
 }
+
+@KotestInternal
+data class JsonArrayElementRef(
+   val pathToArray: String,
+   val index: Int
+)
+
 @KotestInternal
 sealed interface JsonSubPathSearchOutcome
 
