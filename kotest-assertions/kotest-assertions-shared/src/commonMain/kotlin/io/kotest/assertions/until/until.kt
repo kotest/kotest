@@ -1,10 +1,10 @@
 package io.kotest.assertions.until
 
 import io.kotest.assertions.failure
-import kotlin.time.Duration
-import io.kotest.common.MonotonicTimeSourceCompat
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface UntilListener<in T> {
@@ -114,7 +114,7 @@ private suspend fun <T> until(
    f: suspend () -> T
 ): T {
 
-   val start = MonotonicTimeSourceCompat.markNow()
+   val start = TimeSource.Monotonic.markNow()
    val end = start.plus(duration)
    var times = 0
 

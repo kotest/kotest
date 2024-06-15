@@ -67,7 +67,7 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    while (end.hasNotPassedNow()) {
       try {
          result = f()
-         listener?.invoke(ContinuallyState(result, 0L, 0L, times))
+         listener?.invoke(ContinuallyState(result, 0L, duration.inWholeMilliseconds, times))
       } catch (e: AssertionError) {
          // if this is the first time the check was executed then just rethrow the underlying error
          if (times == 0)

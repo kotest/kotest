@@ -111,10 +111,10 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
       return !config.suppressExceptions.any { it.isInstance(e) }
    }
 
-   fun <T> toState(result: T?) = EventuallyState<T>(
+   fun <T> toState(result: T?) = EventuallyState(
       result = result,
       start = 0L,
-      end = 0L, // TODO probably shouldn't be zero...
+      end = config.duration,
       times = times,
       firstError = firstError,
       thisError = lastError
