@@ -14,13 +14,6 @@ public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/
 public abstract interface annotation class io/kotest/common/KotestInternal : java/lang/annotation/Annotation {
 }
 
-public final class io/kotest/common/MonotonicTimeSourceCompat {
-	public static final field INSTANCE Lio/kotest/common/MonotonicTimeSourceCompat;
-	public final fun adjustReading-HG0u8IE (Lio/kotest/common/TimeMarkCompat;J)Lio/kotest/common/TimeMarkCompat;
-	public final fun elapsedFrom-5sfh64U (Lio/kotest/common/TimeMarkCompat;)J
-	public final fun markNow ()Lio/kotest/common/TimeMarkCompat;
-}
-
 public final class io/kotest/common/Platform : java/lang/Enum {
 	public static final field JS Lio/kotest/common/Platform;
 	public static final field JVM Lio/kotest/common/Platform;
@@ -78,18 +71,6 @@ public final class io/kotest/common/TestPathContextElement : kotlin/coroutines/A
 }
 
 public final class io/kotest/common/TestPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/common/TimeMarkCompat {
-	public final fun elapsedNow-UwyO8pc ()J
-	public final fun hasNotPassedNow ()Z
-	public final fun hasPassedNow ()Z
-	public final fun minus-LRDsOJo (J)Lio/kotest/common/TimeMarkCompat;
-	public final fun plus-LRDsOJo (J)Lio/kotest/common/TimeMarkCompat;
-}
-
-public final class io/kotest/common/TimingKt {
-	public static final fun measureTimeMillisCompat (Lkotlin/jvm/functions/Function0;)J
 }
 
 public abstract interface class io/kotest/common/errors/ComparisonError {
@@ -157,7 +138,7 @@ public final class io/kotest/mpp/Logger {
 }
 
 public final class io/kotest/mpp/LoggerKt {
-	public static final fun getStart ()Lio/kotest/common/TimeMarkCompat;
+	public static final fun getStart ()J
 	public static final fun isLoggingEnabled ()Z
 	public static final fun log (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 	public static final fun log (Lkotlin/jvm/functions/Function0;)V
@@ -244,10 +225,6 @@ public final class io/kotest/mpp/ThrowableUnwrappingKt {
 	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 }
 
-public final class io/kotest/mpp/TimeInMillisKt {
-	public static final fun timeInMillis ()J
-}
-
 public final class io/kotest/mpp/UserStackTraceConverter {
 	public static final field INSTANCE Lio/kotest/mpp/UserStackTraceConverter;
 	public final fun getUserStacktrace ([Ljava/lang/StackTraceElement;)[Ljava/lang/StackTraceElement;
@@ -259,7 +236,7 @@ public final class io/kotest/mpp/UuidKt {
 
 public final class io/kotest/mpp/WriteLogKt {
 	public static final fun getFile ()Ljava/io/FileWriter;
-	public static final fun writeLog (Lio/kotest/common/TimeMarkCompat;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class io/kotest/mpp/atomics/AtomicProperty : kotlin/properties/ReadWriteProperty {
