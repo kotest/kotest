@@ -182,14 +182,6 @@ class EventuallyTest : FunSpec() {
          message shouldContain "The last error was caused by: last"
       }
 
-      xtest("duration is displayed in whole seconds once past 1000ms") {
-         shouldFail {
-            eventually(1100.milliseconds) {
-               fail("")
-            }
-         }.message shouldContain "Block failed after 1s"
-      }
-
       test("allow suspendable functions") {
          eventually(100.milliseconds) {
             delay(1)
