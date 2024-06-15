@@ -28,7 +28,7 @@ inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: 
 inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
    private fun keyIsAbsentFailure(validSubPathDescription: String) = MatcherResult(
       false,
-      { "Expected given to contain json key <'$path'> but key was not found.$validSubPathDescription" },
+      { "Expected given to contain json key <'$path'> but key was not found. $validSubPathDescription" },
       { "Expected given to not contain json key <'$path'> but key was found." }
    )
 
@@ -37,16 +37,6 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
       { "Expected a valid JSON, but was ${if (actualJson == null) "null" else "empty" }" },
       { "Expected a valid JSON, but was ${if (actualJson == null) "null" else "empty" }" },
    )
-
-   private fun extractKey(value: String?): T? {
-      return try {
-         JsonPath.parse(value).read(path, T::class.java)
-      } catch (e: PathNotFoundException) {
-         null
-      } catch (e: InvalidPathException) {
-         throw AssertionError("$path is not a valid JSON path")
-      }
-   }
 
    override fun test(value: String?): MatcherResult {
       if (value.isNullOrEmpty()) return invalidJsonFailure(value)
@@ -68,10 +58,8 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
              )
           }
           is JsonPathNotFound -> {
-             val validSubPathDescription = findValidSubPath(value, path)?.let { subpath ->
-                " Found shorter valid subpath: <'$subpath'>"
-             } ?: ""
-             return keyIsAbsentFailure(validSubPathDescription)
+             val subPathDescription = findValidSubPath2(value, path).description()
+             return keyIsAbsentFailure(subPathDescription)
           }
       }
    }
@@ -186,12 +174,16 @@ data class JsonArrayElementRef(
 )
 
 @KotestInternal
-sealed interface JsonSubPathSearchOutcome
+sealed interface JsonSubPathSearchOutcome {
+   fun description(): String
+}
 
 @KotestInternal
 data class JsonSubPathFound(
    val subPath: String
-): JsonSubPathSearchOutcome
+): JsonSubPathSearchOutcome {
+   override fun description() = "Found shorter valid subpath: <'$subPath'>."
+}
 
 @KotestInternal
 data class JsonSubPathJsonArrayTooShort(
@@ -203,7 +195,10 @@ data class JsonSubPathJsonArrayTooShort(
       require(arraySize >= 0) { "Array size should be non-negative, was: $arraySize" }
       require(expectedIndex >= arraySize) { "Expected index should be out of bounds for array of size $arraySize, was: $expectedIndex" }
    }
+   override fun description() = "The array at path <'$subPath'> has size $arraySize, so index $expectedIndex is out of bounds."
 }
 
-object JsonSubPathNotFound: JsonSubPathSearchOutcome
+object JsonSubPathNotFound: JsonSubPathSearchOutcome {
+   override fun description() = ""
+}
 
