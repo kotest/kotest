@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test
 
 import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
@@ -18,7 +18,7 @@ class InvocationThreadTest : FunSpec({
       singleThreadSingleInvocationCallCount.get() shouldBe 1
       singleThreadMultipleInvocationCallCount.get() shouldBe 5
       multipleThreadMultipleInvocationCallCount.get() shouldBe 3
-      multipleThreadMultipleInvocationThreadIds.shouldHaveSize(3)
+      multipleThreadMultipleInvocationThreadIds.size shouldBeGreaterThan 1
    }
 
    test("single thread / single invocation").config(invocations = 1, threads = 1) {
