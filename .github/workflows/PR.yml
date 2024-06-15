@@ -96,7 +96,7 @@ jobs:
          runs-on: windows-latest
          ref: ${{ inputs.ref }}
 #         task: mingwX64Test
-         task: :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
+         task: check --continue
 
    #   test_docs:
 #      needs: [ determine-workflows-to-run ]
