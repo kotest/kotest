@@ -20,7 +20,7 @@ on:
             description: "The Gradle user home directory"
             required: false
             type: string
-            default: ~/.gradle
+            default: /home/runner/.gradle
 
 permissions:
    contents: read
