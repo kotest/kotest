@@ -97,6 +97,7 @@ jobs:
          ref: ${{ inputs.ref }}
 #         task: mingwX64Test
          task: check --continue
+         gradle-user-home: 'D:\.gradle'
 
    #   test_docs:
 #      needs: [ determine-workflows-to-run ]

@@ -1,5 +1,5 @@
 name: Gradle Task
-run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}"
+run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}, ${{ inputs.gradle-user-home }}"
 
 on:
    workflow_call:
@@ -16,6 +16,11 @@ on:
             description: "The Gradle task to run"
             required: true
             type: string
+         gradle-user-home:
+            description: "The Gradle user home directory"
+            required: false
+            type: string
+            default: ~/.gradle
 
 permissions:
    contents: read
@@ -65,3 +70,4 @@ env:
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_USER_HOME: ${{ github.event.inputs.gradle-user-home }}
