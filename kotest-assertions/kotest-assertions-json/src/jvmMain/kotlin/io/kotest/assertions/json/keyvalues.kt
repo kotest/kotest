@@ -6,7 +6,6 @@ import com.jayway.jsonpath.PathNotFoundException
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.intellijFormatError
-import io.kotest.assertions.json.schema.JsonSchema
 import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
 import io.kotest.matchers.Matcher
@@ -132,6 +131,16 @@ inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutc
          parsedJson.read(subPath, Any::class.java)
          return JsonSubPathFound(subPath)
       } catch (e: PathNotFoundException) {
+         extractPossiblePathOfJsonArray(subPath)?.let { possiblePathOfJsonArray ->
+            getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray)?.let { sizeOfJsonArray ->
+               return JsonSubPathJsonArrayTooShort(
+                  subPath = possiblePathOfJsonArray,
+                  arraySize = sizeOfJsonArray,
+                  expectedIndex = 42
+               )
+            }
+         }
+
          subPath = removeLastPartFromPath(subPath)
       }
    }
@@ -139,7 +148,7 @@ inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutc
 }
 
 @KotestInternal
-fun possibleSizeOfJsonArray(json: String?, path: String): Int? {
+fun getPossibleSizeOfJsonArray(json: String?, path: String): Int? {
    return try {
       val parsedJson = JsonPath.parse(json)
       val possibleJsonArray = parsedJson.read(path, List::class.java)
@@ -150,16 +159,18 @@ fun possibleSizeOfJsonArray(json: String?, path: String): Int? {
 }
 
 @KotestInternal
-fun extractPossiblePathOfJsonArray(pathElement: String): String? {
-   val tokens = pathElement.split("[")
+fun extractPossiblePathOfJsonArray(path: String): String? {
+   val pathElements = path.split(".")
+   val lastPathElement = pathElements.last()
+   val tokens = lastPathElement.split("[")
    when {
-      pathElement.last() != ']' -> return null
+      path.last() != ']' -> return null
       tokens.size != 2 -> return null
       else -> {
          val possibleNumber = tokens[1].dropLast(1)
          possibleNumber.toIntOrNull()?.let {
             if(it > 0) {
-               return tokens[0]
+               return (pathElements.dropLast(1) + tokens[0]).joinToString(".")
             }
          }
       }
