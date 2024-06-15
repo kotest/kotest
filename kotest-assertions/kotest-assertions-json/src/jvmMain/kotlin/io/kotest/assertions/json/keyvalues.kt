@@ -58,7 +58,7 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
              )
           }
           is JsonPathNotFound -> {
-             val subPathDescription = findValidSubPath2(value, path).description()
+             val subPathDescription = findValidSubPath(value, path).description()
              return keyIsAbsentFailure(subPathDescription)
           }
       }
@@ -96,7 +96,7 @@ data class ExtractedValue<T>(
 object JsonPathNotFound : ExtractValueOutcome
 
 @KotestInternal
-inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutcome {
+inline fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOutcome {
    val parsedJson = JsonPath.parse(json)
    var subPath = path
    while(subPath.isNotEmpty() && subPath != "$") {
