@@ -6,6 +6,7 @@ import com.jayway.jsonpath.PathNotFoundException
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.json.schema.JsonSchema
 import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
 import io.kotest.matchers.Matcher
@@ -135,6 +136,17 @@ inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutc
       }
    }
    return JsonSubPathNotFound
+}
+
+@KotestInternal
+fun possibleSizeOfJsonArray(json: String?, path: String): Int? {
+   return try {
+      val parsedJson = JsonPath.parse(json)
+      val possibleJsonArray = parsedJson.read(path, List::class.java)
+      return possibleJsonArray.size
+   } catch (ignore: Exception) {
+      null
+   }
 }
 
 @KotestInternal

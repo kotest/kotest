@@ -8,6 +8,7 @@ import io.kotest.assertions.json.extractByPath
 import io.kotest.assertions.json.extractPossiblePathOfJsonArray
 import io.kotest.assertions.json.findValidSubPath
 import io.kotest.assertions.json.findValidSubPath2
+import io.kotest.assertions.json.possibleSizeOfJsonArray
 import io.kotest.assertions.json.removeLastPartFromPath
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
@@ -26,9 +27,16 @@ class ExtractByPathTest: WordSpec() {
             "temperature": {
                 "degrees": 320,
                 "unit": "F"
-            }
+            },
+            "comments": []
           },
-          "comments": null
+          "steps": [
+            {
+               "name": "Boil",
+               "comments": ["Heat on 3", "No lid"]
+            }
+          ],
+    "comments": null
       }
    """.trimIndent()
 
@@ -84,6 +92,20 @@ class ExtractByPathTest: WordSpec() {
          }
          "return null when nothing found" {
             findValidSubPath2(json, "$.no.such.path") shouldBe JsonSubPathNotFound
+         }
+      }
+
+      "possibleSizeOfJsonArray" should {
+         "return size of array" {
+            possibleSizeOfJsonArray(json, "$.ingredients") shouldBe 3
+            possibleSizeOfJsonArray(json, "$.steps[0].comments") shouldBe 2
+            possibleSizeOfJsonArray(json, "$.steps") shouldBe 1
+            possibleSizeOfJsonArray(json, "$.regime.comments") shouldBe 0
+         }
+         "return null if not an array" {
+            possibleSizeOfJsonArray(json, "$.appliance.type") shouldBe null
+            possibleSizeOfJsonArray(json, "$.appliance") shouldBe null
+            possibleSizeOfJsonArray(json, "$.steps.name") shouldBe null
          }
       }
 
