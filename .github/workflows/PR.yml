@@ -97,7 +97,6 @@ jobs:
          ref: ${{ inputs.ref }}
 #         task: mingwX64Test
          task: check --continue
-         user-home: 'D:\'
 
    #   test_docs:
 #      needs: [ determine-workflows-to-run ]

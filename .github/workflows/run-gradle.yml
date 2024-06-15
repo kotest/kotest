@@ -1,6 +1,6 @@
 name: Gradle Task
 
-run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}, ${{ inputs.user-home }}"
+run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}"
 on:
    workflow_call:
       inputs:
@@ -16,11 +16,6 @@ on:
             description: "The Gradle task to run"
             required: true
             type: string
-         user-home:
-            description: "The user home directory used for Java and Gradle invocations"
-            required: false
-            type: string
-            default: /home/runner
 
 permissions:
    contents: read
@@ -29,6 +24,13 @@ jobs:
    run-tests:
       runs-on: ${{ inputs.runs-on }}
       steps:
+         -  name: Setup fast disk location for Gradle caches on Windows runners
+            if: runner.os == 'Windows'
+            shell: cmd
+            run: |
+               mkdir D:\.gradle
+               mklink /D D:\.gradle C:\.gradle
+
          -  name: Checkout the repo
             uses: actions/checkout@v4
             with:
@@ -70,6 +72,3 @@ env:
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
-   JAVA_TOOL_OPTIONS: -Duser.home="${{ inputs.user-home }}"
-   # The above persuades the setup-gradle action to accept a different home directory for its caches.
-   # https://github.com/gradle/actions/blob/31ae3562f68c96d481c31bc1a8a55cc1be162f83/sources/src/setup-gradle.ts#L90-L92
