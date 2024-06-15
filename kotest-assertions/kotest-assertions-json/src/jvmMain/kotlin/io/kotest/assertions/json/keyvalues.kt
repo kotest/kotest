@@ -121,3 +121,42 @@ data class ExtractedValue<T>(
 
 @KotestInternal
 object JsonPathNotFound : ExtractValueOutcome
+
+@KotestInternal
+inline fun findValidSubPath2(json: String?, path: String): JsonSubPathSearchOutcome {
+   val parsedJson = JsonPath.parse(json)
+   var subPath = path
+   while(subPath.isNotEmpty() && subPath != "$") {
+      try {
+         parsedJson.read(subPath, Any::class.java)
+         return JsonSubPathFound(subPath)
+      } catch (e: PathNotFoundException) {
+         subPath = removeLastPartFromPath(subPath)
+      }
+   }
+   return JsonSubPathNotFound
+}
+
+
+@KotestInternal
+sealed interface JsonSubPathSearchOutcome
+
+@KotestInternal
+data class JsonSubPathFound(
+   val subPath: String
+): JsonSubPathSearchOutcome
+
+@KotestInternal
+data class JsonSubPathJsonArrayTooShort(
+   val subPath: String,
+   val arraySize: Int,
+   val expectedIndex: Int
+): JsonSubPathSearchOutcome {
+   init {
+      require(arraySize >= 0) { "Array size should be non-negative, was: $arraySize" }
+      require(expectedIndex >= arraySize) { "Expected index should be out of bounds for array of size $arraySize, was: $expectedIndex" }
+   }
+}
+
+object JsonSubPathNotFound: JsonSubPathSearchOutcome
+
