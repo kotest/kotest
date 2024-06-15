@@ -8,7 +8,6 @@ import io.kotest.assertions.json.JsonSubPathJsonArrayTooShort
 import io.kotest.assertions.json.JsonSubPathNotFound
 import io.kotest.assertions.json.extractByPath
 import io.kotest.assertions.json.extractPossiblePathOfJsonArray
-import io.kotest.assertions.json.findValidSubPath
 import io.kotest.assertions.json.findValidSubPath2
 import io.kotest.assertions.json.getPossibleSizeOfJsonArray
 import io.kotest.assertions.json.removeLastPartFromPath
@@ -61,21 +60,6 @@ class ExtractByPathTest: WordSpec() {
             removeLastPartFromPath("$.regime.temperature.unit") shouldBe "$.regime.temperature"
             removeLastPartFromPath("$.regime.temperature") shouldBe "$.regime"
             removeLastPartFromPath("$.regime") shouldBe "$"
-         }
-      }
-
-      "findValidSubPath" should {
-         "find valid sub path" {
-            findValidSubPath(
-               json,
-               "$.regime.temperature.unit.name.some.more.tokens"
-            ) shouldBe "$.regime.temperature.unit"
-            findValidSubPath(json, "$.regime.temperature.unit.name") shouldBe "$.regime.temperature.unit"
-            findValidSubPath(json, "$.regime.temperature.name") shouldBe "$.regime.temperature"
-            findValidSubPath(json, "$.regime.no_such_element") shouldBe "$.regime"
-         }
-         "return null when nothing found" {
-            findValidSubPath(json, "$.no.such.path") shouldBe null
          }
       }
 

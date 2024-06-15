@@ -79,21 +79,6 @@ inline fun<reified T> extractByPath(json: String?, path: String): ExtractValueOu
 }
 
 @KotestInternal
-inline fun findValidSubPath(json: String?, path: String): String? {
-   val parsedJson = JsonPath.parse(json)
-   var subPath = path
-   while(subPath.isNotEmpty() && subPath != "$") {
-      try {
-         parsedJson.read(subPath, Any::class.java)
-         return subPath
-      } catch (e: PathNotFoundException) {
-         subPath = removeLastPartFromPath(subPath)
-      }
-   }
-   return null
-}
-
-@KotestInternal
 fun removeLastPartFromPath(path: String): String {
    val tokens = path.split(".")
    return tokens.take(tokens.size - 1).joinToString(".")
