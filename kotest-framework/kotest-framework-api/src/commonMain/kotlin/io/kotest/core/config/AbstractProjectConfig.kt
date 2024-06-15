@@ -273,6 +273,13 @@ abstract class AbstractProjectConfig {
    open var allowOutOfOrderCallbacks: Boolean? = null
 
    /**
+    * Set to true if you wish to enable classpath scanning for test discovery if no selectors are present.
+    *
+    * Note: JVM ONLY
+    */
+   open var discoveryClasspathFallbackEnabled: Boolean? = null
+
+   /**
     * Set to false if you wish to allow nested jar scanning for tests.
     *
     * Note: JVM ONLY
