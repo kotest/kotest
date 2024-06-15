@@ -19,7 +19,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
    setOf(
       "1.9.24",
-//      "2.0.0",
+      "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
@@ -34,18 +34,14 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
          }
 
          fun shouldHaveExpectedTestResultsFor(taskName: String) {
-            val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
-            testReportFile.toFile().shouldBeAFile()
-
-            val testReportContents = Files.readAllBytes(testReportFile).decodeToString().replace("\r\n", "\n")
-
             withClue("$taskName test report") {
-               // FIXME: java.lang.NoClassDefFoundError: io/kotest/matchers/string/StartKt
-               //      occurs with
-               //          testReportContents shouldStartWith """
-               //      when running `gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test`
-               //      on some platform locally (but works on CI)
-               testReportContents.shouldStartWith(
+               val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
+               testReportFile.toFile().shouldBeAFile()
+
+               val testReportContentBeginning =
+                  Files.readAllBytes(testReportFile).decodeToString().lineSequence().take(2).joinToString("\n")
+
+               testReportContentBeginning.shouldStartWith(
                   """
                   <?xml version="1.0" encoding="UTF-8"?>
                   <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
@@ -57,10 +53,10 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
          should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
             val taskNames = listOf(
                "jvmTest",
-//               "jsBrowserTest",
-//               "jsNodeTest",
-//               "wasmJsBrowserTest",
-//               "wasmJsNodeTest"
+               "jsBrowserTest",
+               "jsNodeTest",
+               "wasmJsBrowserTest",
+               "wasmJsNodeTest"
             )
 
             val invocation = GradleInvocation(
@@ -83,17 +79,17 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
          setOf(
             true,
-//            false
+            false
          ).forEach { enableNewMemoryModel ->
             val description = if (enableNewMemoryModel) "is enabled" else "is not enabled"
 
             context("when the new Kotlin/Native memory model $description") {
                should("be able to compile and run tests for all native targets supported by the host machine") {
                   val taskNames = listOf(
-//                     "macosArm64Test",
-//                     "macosX64Test",
+                     "macosArm64Test",
+                     "macosX64Test",
                      "mingwX64Test",
-//                     "linuxX64Test"
+                     "linuxX64Test"
                   )
 
                   val invocation = GradleInvocation(
