@@ -29,8 +29,8 @@ jobs:
             shell: cmd
             run: |
                mkdir D:\.gradle
-               mklink /D .gradle D:\.gradle
-               dir
+               mklink /D C:\Users\runneradmin\.gradle D:\.gradle
+               dir C:\Users\runneradmin
 
          -  name: Checkout the repo
             uses: actions/checkout@v4
