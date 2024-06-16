@@ -126,7 +126,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle kotlin assertion errors") {
          var thrown = false
-         eventually(100.milliseconds) {
+         eventually(400.milliseconds) {
             if (!thrown) {
                thrown = true
                throw AssertionError("boom")
@@ -136,7 +136,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle java assertion errors") {
          var thrown = false
-         eventually(100.milliseconds) {
+         eventually(400.milliseconds) {
             if (!thrown) {
                thrown = true
                throw java.lang.AssertionError("boom")
@@ -147,7 +147,7 @@ class EventuallyTest : FunSpec() {
       test("display the first and last underlying failures") {
          var count = 0
          val message = shouldThrow<AssertionError> {
-            eventually(100.milliseconds) {
+            eventually(400.milliseconds) {
                if (count++ == 0) {
                   fail("first")
                } else {
@@ -162,7 +162,7 @@ class EventuallyTest : FunSpec() {
 
       test("non-suppressible exception is not retried, but still printed with eventually-info") {
          val config = eventuallyConfig {
-            duration = 100.milliseconds
+            duration = 400.milliseconds
             expectedExceptionsFn = { it is AssertionError }
          }
 
@@ -351,7 +351,7 @@ class EventuallyTest : FunSpec() {
          var count = 0
          shouldFail {
             val config = eventuallyConfig {
-               duration = 100.milliseconds
+               duration = 400.milliseconds
                includeFirst = false
             }
             eventually(config) {

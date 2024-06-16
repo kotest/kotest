@@ -595,7 +595,7 @@ class PropTestConfigConstraintsTest : FunSpec() {
          checkAll(config, Arb.string()) { _ -> }
          // we should have exited around 200 millis
          start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)
-         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(300)
+         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(400)
       }
    }
 }

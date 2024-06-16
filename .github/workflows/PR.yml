@@ -95,7 +95,7 @@ jobs:
       with:
          runs-on: windows-latest
          ref: ${{ inputs.ref }}
-         task: mingwX64Test
+         task: check --continue
 
    test_docs:
       needs: [ determine-workflows-to-run ]
