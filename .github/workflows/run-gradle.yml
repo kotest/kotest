@@ -30,7 +30,7 @@ jobs:
             run: |
                @echo on
                mkdir D:\.gradle
-               mklink /D C:\.gradle D:\.gradle
+               mklink /D .gradle D:\.gradle
 
          -  name: Checkout the repo
             uses: actions/checkout@v4
