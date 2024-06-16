@@ -28,10 +28,9 @@ jobs:
             if: runner.os == 'Windows'
             shell: cmd
             run: |
-               dir C:\
-               dir D:\
-               if not exist "D:\.gradle\" mkdir D:\.gradle
-               mklink /D D:\.gradle C:\.gradle
+               @echo on
+               mkdir D:\.gradle
+               mklink /D C:\.gradle D:\.gradle
 
          -  name: Checkout the repo
             uses: actions/checkout@v4
