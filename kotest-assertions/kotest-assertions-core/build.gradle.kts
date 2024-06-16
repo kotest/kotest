@@ -19,6 +19,13 @@ kotlin {
          }
       }
 
+      val commonTest by getting {
+         dependencies {
+            implementation(projects.kotestFramework.kotestFrameworkApi)
+            implementation(projects.kotestProperty)
+         }
+      }
+
       val jvmMain by getting {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
