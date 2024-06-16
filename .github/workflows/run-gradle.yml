@@ -24,13 +24,14 @@ jobs:
    run-tests:
       runs-on: ${{ inputs.runs-on }}
       steps:
-         -  name: "Setup D: drive for Gradle caches"
+         -  name: "Setup fast D: drive for caches"
             if: runner.os == 'Windows'
-            shell: cmd
             run: |
                mkdir D:\.gradle
                mklink /D C:\Users\runneradmin\.gradle D:\.gradle
-               dir C:\Users\runneradmin
+               mkdir D:\.konan
+               mklink /D C:\Users\runneradmin\.konan D:\.konan
+            shell: cmd
 
          -  name: Checkout the repo
             uses: actions/checkout@v4
