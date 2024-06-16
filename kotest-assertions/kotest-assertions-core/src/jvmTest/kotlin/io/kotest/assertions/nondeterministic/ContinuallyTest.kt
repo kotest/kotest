@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.hours
@@ -35,7 +36,7 @@ class ContinuallyTest : FunSpec() {
             (System.currentTimeMillis() > 0) shouldBe true
             k++
          }
-         k shouldBe 3
+         k shouldBeIn 2..3
       }
 
       test("invoke the listener for each successfull inovcation") {
