@@ -1,4 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -18,24 +20,26 @@ tasks.withType<Test>().configureEach {
    }
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + listOf(
-         "-opt-in=kotlin.RequiresOptIn",
-         "-opt-in=io.kotest.common.KotestInternal",
-         "-opt-in=io.kotest.common.ExperimentalKotest",
+extensions.configure<KotlinMultiplatformExtension> {
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   compilerOptions {
+      allWarningsAsErrors = true
+      optIn.addAll(
+         "io.kotest.common.KotestInternal",
+         "io.kotest.common.ExperimentalKotest",
+         "kotlin.time.ExperimentalTime",
+         "kotlin.experimental.ExperimentalTypeInference",
+         "kotlin.contracts.ExperimentalContracts",
       )
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+      freeCompilerArgs.addAll(
+         "-Xexpect-actual-classes",
+      )
    }
 }
 
-kotlin {
-   sourceSets.configureEach {
-      languageSettings {
-         optIn("kotlin.time.ExperimentalTime")
-         optIn("kotlin.experimental.ExperimentalTypeInference")
-         optIn("kotlin.contracts.ExperimentalContracts")
-      }
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions {
+      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
    }
 }
 
