@@ -1,29 +1,41 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.ranges.shouldBeIn
+import io.kotest.core.test.TestScope
+import io.kotest.core.test.testCoroutineScheduler
+import io.kotest.inspectors.shouldForAll
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.throwable.shouldHaveMessage
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.hours
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class ContinuallyTest : FunSpec() {
 
    init {
+      coroutineTestScope = true
+
       test("pass tests that succeed for the entire duration") {
-         continually(500.milliseconds) {
-            (System.currentTimeMillis() > 0) shouldBe true
+         val result = testContinually(500.milliseconds) {
+            1 shouldBe 1
          }
+
+         result.value shouldBe 1
+         result.invocationTimes shouldHaveSize (500 / 25)
+         result.invocationTimes.shouldForAll { it <= 500.milliseconds }
       }
 
       test("pass tests with null values") {
-         continually(500.milliseconds) {
+         val result = testContinually(500.milliseconds) {
             null shouldBe null
          }
+         result.invocationTimes shouldHaveSize (500 / 25)
+         result.invocationTimes.shouldForAll { it <= 500.milliseconds }
       }
 
       test("use interval function") {
@@ -32,54 +44,103 @@ class ContinuallyTest : FunSpec() {
             intervalFn = DurationFn { 300.milliseconds }
          }
          var k = 0
-         continually(config) {
-            (System.currentTimeMillis() > 0) shouldBe true
+         val result = testContinually(config) {
+            1 shouldBe 1
             k++
          }
          k shouldBeIn 2..3
+         result.invocationTimes shouldHaveSize 3
+         result.invocationTimes.shouldForAll { it <= config.duration }
       }
 
-      test("invoke the listener for each successfull inovcation") {
+      test("invoke the listener for each successful invocation") {
          var listened = 0
          var invoked = 0
          val config = continuallyConfig<Unit> {
             duration = 500.milliseconds
             listener = { _, _ -> listened++ }
          }
-         continually(config) {
-            (System.currentTimeMillis() > 0) shouldBe true
+         val result = testContinually(config) {
+            1 shouldBe 1
             invoked++
          }
          invoked shouldBe listened
+         result.invocationTimes shouldHaveSize listened
       }
 
       test("fail broken tests immediately") {
-         shouldThrowAny {
-            continually(12.hours) {
+         val start = testCoroutineScheduler.timeSource.markNow()
+         val failure = shouldFail {
+            testContinually(1.minutes) {
                false shouldBe true
             }
          }
+         failure.shouldHaveMessage("expected:<true> but was:<false>")
+         start.elapsedNow() shouldBe Duration.ZERO
       }
 
       test("fail should throw the underlying error") {
-         shouldThrowExactly<AssertionError> {
-            continually(12.hours) {
+         val start = testCoroutineScheduler.timeSource.markNow()
+         shouldFail {
+            testContinually(1.minutes) {
                throw AssertionError("boom")
             }
          }.message shouldBe "boom"
+         start.elapsedNow() shouldBe Duration.ZERO
       }
 
       test("fail tests start off as passing then fail within the period") {
          var n = 0
-         val e = shouldThrow<Throwable> {
-            continually(3.seconds) {
+         val failure = shouldFail {
+            testContinually(3.seconds) {
                delay(10)
                (n++ < 10) shouldBe true
             }
          }
-         val r =
-            "Test failed after \\d+ms; expected to pass for 3000ms; attempted 100 times\nUnderlying failure was: 100 should be < 100".toRegex()
-         e.message?.matches(r) ?: (false shouldBe true)
+         n shouldBe 11
+         failure shouldHaveMessage "Test failed after 360ms; expected to pass for 3s; attempted 10 times\nUnderlying failure was: expected:<true> but was:<false>"
       }
    }
 }
+
+
+private suspend fun <T> TestScope.testContinually(
+   duration: Duration,
+   test: suspend () -> T,
+): TestContinuallyResult<T> = withContext(ContinuallyTimeSource(testCoroutineScheduler.timeSource)) {
+   val start = testCoroutineScheduler.timeSource.markNow()
+   val invocationTimes = mutableListOf<Duration>()
+
+   val value: T = continually(duration) {
+      invocationTimes += start.elapsedNow()
+      test()
+   }
+
+   TestContinuallyResult(
+      invocationTimes = invocationTimes,
+      value = value,
+   )
+}
+
+private suspend fun <T> TestScope.testContinually(
+   config: ContinuallyConfiguration<T>,
+   test: suspend () -> T,
+): TestContinuallyResult<T> = withContext(ContinuallyTimeSource(testCoroutineScheduler.timeSource)) {
+   val start = testCoroutineScheduler.timeSource.markNow()
+   val invocationTimes = mutableListOf<Duration>()
+
+   val value: T = continually(config = config) {
+      invocationTimes += start.elapsedNow()
+      test()
+   }
+
+   TestContinuallyResult(
+      invocationTimes = invocationTimes,
+      value = value,
+   )
+}
+
+private data class TestContinuallyResult<T>(
+   val value: T,
+   val invocationTimes: List<Duration>,
+)
