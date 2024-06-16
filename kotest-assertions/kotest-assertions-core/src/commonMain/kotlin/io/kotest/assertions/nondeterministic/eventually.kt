@@ -3,7 +3,10 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.assertions.nondeterministic.EventuallyTimeSource.Companion.getEventuallyTimeSource
 import kotlinx.coroutines.delay
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -48,7 +51,8 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val control = EventuallyControl(config)
+   val start = getEventuallyTimeSource().markNow()
+   val control = EventuallyControl(config, start)
 
    try {
       while (control.hasAttemptsRemaining()) {
@@ -130,30 +134,30 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the eventually function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
    /**
-    * A delay that is applied before the first invocation of the eventually function.
+    * A delay that is applied before the first invocation of the [eventually] function.
     */
    var initialDelay: Duration = EventuallyConfigurationDefaults.initialDelay
 
    /**
-    * The delay between invocations. This delay is overriden by the [intervalFn] if it is not null.
+    * The delay between invocations. This delay is override by the [intervalFn] if it is not `null`.
     */
    var interval: Duration = EventuallyConfigurationDefaults.interval
 
    /**
-    * A function that is invoked to calculate the next interval. This if this null, then the
+    * A function that is invoked to calculate the next interval. This if this `null`, then the
     * value of [interval] is used.
     *
-    * This function can be used to implement [fibonacci] or [exponential] backoffs.
+    * This function can be used to implement [fibonacci] or [exponential] backoff.
     */
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
@@ -182,7 +186,7 @@ class EventuallyConfigurationBuilder {
 
    /**
     * A function that is invoked after each failed invocation which causes no further
-    * invocations, but instead immediately fails the eventually function.
+    * invocations, but instead immediately fails the [eventually] function.
     *
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
@@ -202,9 +206,11 @@ object NoopEventuallyListener : EventuallyListener {
    override suspend fun invoke(iteration: Int, error: Throwable) {}
 }
 
-private class EventuallyControl(val config: EventuallyConfiguration) {
+private class EventuallyControl(
+   val config: EventuallyConfiguration,
+   private val start: TimeMark,
+) {
 
-   val start: TimeMark = TimeSource.Monotonic.markNow()
    val end: TimeMark = start.plus(config.duration)
 
    var iterations = 0
@@ -248,15 +254,41 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
       appendLine("Block failed after ${start.elapsedNow()}; attempted $iterations time(s)")
 
       firstError?.takeIf { config.includeFirst }?.run {
-         appendLine("The first error was caused by: ${this.message}")
+         appendLine("The first error was caused by: ${this.message ?: ""}")
          appendLine(this.stackTraceToString())
       }
 
       lastError?.run {
-         appendLine("The last error was caused by: ${this.message}")
+         appendLine("The last error was caused by: ${this.message ?: ""}")
          appendLine(this.stackTraceToString())
       }
    }
 }
 
 internal object ShortCircuitControlException : Throwable()
+
+
+/**
+ * Store a [TimeSource] to be used by [eventually].
+ */
+internal class EventuallyTimeSource(
+   val timeSource: TimeSource
+) : CoroutineContext.Element {
+
+   override val key: CoroutineContext.Key<EventuallyTimeSource>
+      get() = KEY
+
+   internal companion object {
+      /**
+       * Retrieves the [TimeSource] used by [eventually].
+       *
+       * For internal Kotest testing purposes the [TimeSource] can be overridden.
+       * For normal usage [TimeSource.Monotonic] is used.
+       */
+      internal suspend fun getEventuallyTimeSource(): TimeSource =
+         coroutineContext[KEY]?.timeSource
+            ?: TimeSource.Monotonic
+
+      internal val KEY = object : CoroutineContext.Key<EventuallyTimeSource> {}
+   }
+}
