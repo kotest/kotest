@@ -143,7 +143,7 @@ class EventuallyConfigurationBuilder {
    var initialDelay: Duration = EventuallyConfigurationDefaults.initialDelay
 
    /**
-    * The delay between invocations. This delay is override by the [intervalFn] if it is not `null`.
+    * The delay between invocations. This delay is overridden by the [intervalFn] if it is not `null`.
     */
    var interval: Duration = EventuallyConfigurationDefaults.interval
 
