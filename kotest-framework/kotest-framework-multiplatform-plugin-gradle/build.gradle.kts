@@ -102,33 +102,36 @@ tasks.withType<JavaCompile>().configureEach {
    options.release.set(8)
 }
 
-open class GeneratePluginConstants : DefaultTask() {
-   @get:Input
-   val kotestPluginConstantsFileContents =
-      """
-         |// Generated file, do not edit manually
-         |@file:org.gradle.api.Generated
-         |
-         |package io.kotest.framework.multiplatform.gradle
-         |
-         |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
-         |
-      """.trimMargin()
+val updateKotestPluginConstants by tasks.registering {
+   val kotestPluginConstants = """
+      |// Generated file, do not edit manually
+      |@file:org.gradle.api.Generated
+      |
+      |package io.kotest.framework.multiplatform.gradle
+      |
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+      |
+   """.trimMargin()
 
-   @get:OutputDirectory
-   val outputDirectory =
-      project.layout.buildDirectory.dir("generated/src/main/kotlin/io/kotest/framework/multiplatform/gradle")
+   inputs.property("kotestPluginConstants", kotestPluginConstants)
 
-   @TaskAction
-   fun createOutput() {
-      outputDirectory.get().file("kotestPluginConstants.kt").asFile.writeText(kotestPluginConstantsFileContents)
+   val outputDir = layout.buildDirectory.dir("generated/src/main/kotlin/")
+   outputs.dir(outputDir).withPropertyName("outputDir")
+
+   doLast {
+      val kotestPluginConstantsFile = outputDir.get().asFile
+         .resolve("io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt")
+
+      kotestPluginConstantsFile.apply {
+         parentFile.deleteRecursively()
+         parentFile.mkdirs()
+         writeText(kotestPluginConstants)
+      }
    }
 }
 
-val updateKotestPluginConstants by tasks.registering(GeneratePluginConstants::class)
-
 kotlin.sourceSets.main {
-   kotlin.srcDir(updateKotestPluginConstants.map { it.outputDirectory })
+   kotlin.srcDir(updateKotestPluginConstants)
 }
 
 tasks.clean.configure {
