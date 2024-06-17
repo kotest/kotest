@@ -42,7 +42,7 @@ suspend fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: suspe
 suspend fun <A> shouldCompleteBetween(from: Long, to: Long, unit: TimeUnit, thunk: suspend () -> A): A {
    return shouldCompleteBetween(
       durationRange = from.toDuration(unit.toDurationUnit())..to.toDuration(unit.toDurationUnit()),
-      thunk = thunk,
+      operation = thunk,
    )
 }
 

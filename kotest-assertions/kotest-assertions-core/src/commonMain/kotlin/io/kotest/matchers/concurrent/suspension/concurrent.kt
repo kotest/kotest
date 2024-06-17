@@ -11,15 +11,15 @@ import kotlin.time.TimeSource
 import kotlin.time.measureTimedValue
 
 /**
- * Assert [thunk] completes within [duration].
+ * Assert [operation] completes within [duration].
  *
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
  */
-suspend fun <A> shouldCompleteWithin(duration: Duration, thunk: suspend () -> A): A {
+suspend fun <A> shouldCompleteWithin(duration: Duration, operation: suspend () -> A): A {
    try {
       return withTimeout(duration) {
-         thunk()
+         operation()
       }
    } catch (ex: TimeoutCancellationException) {
       throw failure("Operation should have completed within $duration")
@@ -27,20 +27,20 @@ suspend fun <A> shouldCompleteWithin(duration: Duration, thunk: suspend () -> A)
 }
 
 /**
- * Assert [thunk] completes within [durationRange].
+ * Assert [operation] completes within [durationRange].
  *
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
  */
 suspend fun <A> shouldCompleteBetween(
    durationRange: ClosedRange<Duration>,
-   thunk: suspend () -> A,
+   operation: suspend () -> A,
 ): A {
    try {
       val timeSource = ShouldCompleteBetweenTimeSource.current()
       val (value, timeElapsed) = timeSource.measureTimedValue {
          withTimeout(durationRange.endInclusive) {
-            thunk()
+            operation()
          }
       }
 
@@ -56,15 +56,15 @@ suspend fun <A> shouldCompleteBetween(
 }
 
 /**
- * Assert [thunk] does not complete within [duration].
+ * Assert [operation] does not complete within [duration].
  *
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
  */
-suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A) {
+suspend fun <A> shouldTimeout(duration: Duration, operation: suspend () -> A) {
    try {
       withTimeout(duration) {
-         thunk()
+         operation()
       }
       throw failure("Operation should not have completed before $duration")
    } catch (_: TimeoutCancellationException) {
