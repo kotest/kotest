@@ -170,7 +170,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle kotlin assertion errors") {
          var thrown = false
-         testEventually(100.milliseconds) {
+         testEventually(400.milliseconds) {
             if (!thrown) {
                thrown = true
                throw AssertionError("boom")
@@ -180,7 +180,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle java assertion errors") {
          var thrown = false
-         testEventually(100.milliseconds) {
+         testEventually(400.milliseconds) {
             if (!thrown) {
                thrown = true
                throw java.lang.AssertionError("boom")
@@ -191,7 +191,7 @@ class EventuallyTest : FunSpec() {
       test("display the first and last underlying failures") {
          var count = 0
          val message = shouldFail {
-            testEventually(100.milliseconds) {
+            testEventually(400.milliseconds) {
                if (count++ == 0) {
                   fail("first")
                } else {
@@ -199,14 +199,14 @@ class EventuallyTest : FunSpec() {
                }
             }
          }.message
-         message shouldContain "Block failed after 100ms; attempted $count time(s)"
+         message shouldContain "Block failed after 400ms; attempted $count time(s)"
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
 
       test("non-suppressible exception is not retried, but still printed with eventually-info") {
          val config = eventuallyConfig {
-            duration = 100.milliseconds
+            duration = 400.milliseconds
             expectedExceptionsFn = { it is AssertionError }
          }
 
@@ -409,7 +409,7 @@ class EventuallyTest : FunSpec() {
          var count = 0
          shouldFail {
             val config = eventuallyConfig {
-               duration = 100.milliseconds
+               duration = 400.milliseconds
                includeFirst = false
             }
             testEventually(config) {

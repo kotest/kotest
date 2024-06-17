@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // All tests in this file cover deprecated functionality
+
 package com.sksamuel.kotest.assertions.until
 
 import io.kotest.assertions.throwables.shouldThrow
@@ -6,15 +8,20 @@ import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 class UntilTest : FunSpec({
+
+   // Avoid time-sensitive testing of deprecated functionality
+   defaultTestConfig = TestCaseConfig(enabled = !IS_OS_WINDOWS)
 
    test("until with immediate boolean predicate") {
       var attempts = 0

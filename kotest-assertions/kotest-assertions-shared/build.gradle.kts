@@ -24,6 +24,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.jdk8)
             implementation(libs.diffutils)
             implementation(libs.opentest4j)
+            implementation(libs.apache.commons.lang)
          }
       }
    }
