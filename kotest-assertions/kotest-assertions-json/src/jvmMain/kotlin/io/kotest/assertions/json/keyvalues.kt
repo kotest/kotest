@@ -28,7 +28,7 @@ inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: 
 inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
    private fun keyIsAbsentFailure(validSubPathDescription: String) = MatcherResult(
       false,
-      { "Expected given to contain json key <'$path'> but key was not found.$validSubPathDescription" },
+      { "Expected given to contain json key <'$path'> but key was not found. $validSubPathDescription" },
       { "Expected given to not contain json key <'$path'> but key was found." }
    )
 
@@ -37,16 +37,6 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
       { "Expected a valid JSON, but was ${if (actualJson == null) "null" else "empty" }" },
       { "Expected a valid JSON, but was ${if (actualJson == null) "null" else "empty" }" },
    )
-
-   private fun extractKey(value: String?): T? {
-      return try {
-         JsonPath.parse(value).read(path, T::class.java)
-      } catch (e: PathNotFoundException) {
-         null
-      } catch (e: InvalidPathException) {
-         throw AssertionError("$path is not a valid JSON path")
-      }
-   }
 
    override fun test(value: String?): MatcherResult {
       if (value.isNullOrEmpty()) return invalidJsonFailure(value)
@@ -68,10 +58,8 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
              )
           }
           is JsonPathNotFound -> {
-             val validSubPathDescription = findValidSubPath(value, path)?.let { subpath ->
-                " Found shorter valid subpath: <'$subpath'>"
-             } ?: ""
-             return keyIsAbsentFailure(validSubPathDescription)
+             val subPathDescription = findValidSubPath(value, path).description()
+             return keyIsAbsentFailure(subPathDescription)
           }
       }
    }
@@ -91,21 +79,6 @@ inline fun<reified T> extractByPath(json: String?, path: String): ExtractValueOu
 }
 
 @KotestInternal
-inline fun findValidSubPath(json: String?, path: String): String? {
-   val parsedJson = JsonPath.parse(json)
-   var subPath = path
-   while(subPath.isNotEmpty() && subPath != "$") {
-      try {
-         parsedJson.read(subPath, Any::class.java)
-         return subPath
-      } catch (e: PathNotFoundException) {
-         subPath = removeLastPartFromPath(subPath)
-      }
-   }
-   return null
-}
-
-@KotestInternal
 fun removeLastPartFromPath(path: String): String {
    val tokens = path.split(".")
    return tokens.take(tokens.size - 1).joinToString(".")
@@ -121,3 +94,96 @@ data class ExtractedValue<T>(
 
 @KotestInternal
 object JsonPathNotFound : ExtractValueOutcome
+
+@KotestInternal
+inline fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOutcome {
+   val parsedJson = JsonPath.parse(json)
+   var subPath = path
+   while(subPath.isNotEmpty() && subPath != "$") {
+      try {
+         parsedJson.read(subPath, Any::class.java)
+         return JsonSubPathFound(subPath)
+      } catch (e: PathNotFoundException) {
+         extractPossiblePathOfJsonArray(subPath)?.let { possiblePathOfJsonArray ->
+            getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray.pathToArray)?.let { sizeOfJsonArray ->
+               return JsonSubPathJsonArrayTooShort(
+                  subPath = possiblePathOfJsonArray.pathToArray,
+                  arraySize = sizeOfJsonArray,
+                  expectedIndex = possiblePathOfJsonArray.index
+               )
+            }
+         }
+
+         subPath = removeLastPartFromPath(subPath)
+      }
+   }
+   return JsonSubPathNotFound
+}
+
+@KotestInternal
+fun getPossibleSizeOfJsonArray(json: String?, path: String): Int? {
+   return try {
+      val parsedJson = JsonPath.parse(json)
+      val possibleJsonArray = parsedJson.read(path, List::class.java)
+      return possibleJsonArray.size
+   } catch (ignore: Exception) {
+      null
+   }
+}
+
+@KotestInternal
+fun extractPossiblePathOfJsonArray(path: String): JsonArrayElementRef? {
+   val pathElements = path.split(".")
+   val lastPathElement = pathElements.last()
+   val tokens = lastPathElement.split("[")
+   when {
+      path.last() != ']' -> return null
+      tokens.size != 2 -> return null
+      else -> {
+         val possibleNumber = tokens[1].dropLast(1)
+         possibleNumber.toIntOrNull()?.let {
+            return JsonArrayElementRef(
+               pathToArray = (pathElements.dropLast(1) + tokens[0]).joinToString("."),
+               index = it
+            )
+         }
+      }
+   }
+   return null
+}
+
+@KotestInternal
+data class JsonArrayElementRef(
+   val pathToArray: String,
+   val index: Int
+)
+
+@KotestInternal
+sealed interface JsonSubPathSearchOutcome {
+   fun description(): String
+}
+
+@KotestInternal
+data class JsonSubPathFound(
+   val subPath: String
+): JsonSubPathSearchOutcome {
+   override fun description() = "Found shorter valid subpath: <'$subPath'>."
+}
+
+@KotestInternal
+data class JsonSubPathJsonArrayTooShort(
+   val subPath: String,
+   val arraySize: Int,
+   val expectedIndex: Int
+): JsonSubPathSearchOutcome {
+   init {
+      require(arraySize >= 0) { "Array size should be non-negative, was: $arraySize" }
+      require(expectedIndex >= arraySize) { "Expected index should be out of bounds for array of size $arraySize, was: $expectedIndex" }
+   }
+   override fun description() = "The array at path <'$subPath'> has size $arraySize, so index $expectedIndex is out of bounds."
+}
+
+object JsonSubPathNotFound: JsonSubPathSearchOutcome {
+   override fun description() = ""
+}
+
