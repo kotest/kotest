@@ -16,8 +16,8 @@ permissions:
 
 jobs:
 
-   validate-abi:
-      name: Run ABI validations
+   validate-api:
+      name: Validate API
       if: github.repository == 'kotest/kotest'
       uses: ./.github/workflows/run-gradle.yml
       with:
@@ -28,7 +28,7 @@ jobs:
    validate-primary:
       name: Validate on primary runner
       if: github.repository == 'kotest/kotest'
-      needs: validate-abi
+      needs: validate-api
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
    validate-secondary:
       name: Validate on secondary runners
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-abi, validate-primary ]
+      needs: [ validate-api, validate-primary ]
       strategy:
          matrix:
             include:
@@ -54,7 +54,7 @@ jobs:
    publish-sonatype:
       name: Publish all artifacts to Sonatype (Maven Central)
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-abi, validate-primary, validate-secondary ]
+      needs: [ validate-api, validate-primary, validate-secondary ]
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
