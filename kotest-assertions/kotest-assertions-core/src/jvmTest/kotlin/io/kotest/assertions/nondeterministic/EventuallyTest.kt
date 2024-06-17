@@ -87,12 +87,20 @@ class EventuallyTest : FunSpec() {
 
          test("AssertionError") {
             val start = testCoroutineScheduler.timeSource.markNow()
-            val end = start.plus(1.seconds)
+            val end = start.plus(150.milliseconds)
             val result = testEventually(5.days) {
                if (end.hasNotPassedNow())
                   assert(false)
             }
-            result.invocationTimes.shouldContainExactly(0.milliseconds)
+            result.invocationTimes.shouldContainExactly(
+               0.milliseconds,
+               25.milliseconds,
+               50.milliseconds,
+               75.milliseconds,
+               100.milliseconds,
+               125.milliseconds,
+               150.milliseconds,
+            )
          }
 
          test("custom expected exception") {
@@ -117,7 +125,8 @@ class EventuallyTest : FunSpec() {
                100.milliseconds,
                125.milliseconds,
                150.milliseconds,
-            ) }
+            )
+         }
       }
 
       test("fail tests that do not complete within the time allowed") {
