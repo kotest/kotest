@@ -9,6 +9,7 @@ import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toDuration
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -112,7 +113,12 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+) {
+   init {
+      require(duration.inWholeMilliseconds >= 0) { "Duration must be greater than or equal to 0" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0" }
+   }
+}
 
 object EventuallyConfigurationDefaults {
    var duration: Duration = Duration.INFINITE
@@ -130,7 +136,7 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the eventually function can take to complete successfully.
+    * The total time that the eventually function can take to complete successfully. Must be greater than or equal to 0.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -153,7 +159,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default this is set to max retries. Must be greater than or equal to 0.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
@@ -205,7 +211,7 @@ object NoopEventuallyListener : EventuallyListener {
 private class EventuallyControl(val config: EventuallyConfiguration) {
 
    val start = timeInMillis()
-   val end = start + config.duration.inWholeMilliseconds
+   val end = (start.milliseconds + config.duration).inWholeMilliseconds
 
    var iterations = 0
 
