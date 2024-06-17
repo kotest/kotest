@@ -98,13 +98,9 @@ tasks.withType<KotlinCompile>().configureEach {
    }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
-}
-
-val updateKotestPluginConstants by tasks.registering(Sync::class) {
-
-   val kotestPluginConstantsFileContents: TextResource = resources.text.fromString(
+open class GeneratePluginConstants : DefaultTask() {
+   @get:Input
+   val kotestPluginConstantsFileContents =
       """
          |// Generated file, do not edit manually
          |@file:org.gradle.api.Generated
@@ -114,31 +110,24 @@ val updateKotestPluginConstants by tasks.registering(Sync::class) {
          |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
          |
       """.trimMargin()
-   )
 
-   from(kotestPluginConstantsFileContents) {
-      rename { "kotestPluginConstants.kt" }
-      into("io/kotest/framework/multiplatform/gradle/")
-   }
-   into(layout.buildDirectory.dir("generated/src/main/kotlin/"))
+   @get:OutputDirectory
+   val outputDirectory =
+      project.layout.buildDirectory.dir("generated/src/main/kotlin/io/kotest/framework/multiplatform/gradle")
 
-   doFirst {
-      logger.debug(
-         """
-            Updating Kotest Gradle plugin constants
-            ${kotestPluginConstantsFileContents.asString().prependIndent("  > ")}
-         """.trimIndent()
-      )
+   @TaskAction
+   fun createOutput() {
+      outputDirectory.get().file("kotestPluginConstants.kt").asFile.writeText(kotestPluginConstantsFileContents)
    }
 }
 
+val updateKotestPluginConstants by tasks.registering(GeneratePluginConstants::class)
 
-sourceSets.main {
-   java.srcDir(updateKotestPluginConstants.map { it.destinationDir })
+kotlin.sourceSets.main {
+   kotlin.srcDir(updateKotestPluginConstants.map { it.outputDirectory })
 }
 
-
-tasks.clean {
-   delete("$projectDir/test-project/build/")
-   delete("$projectDir/test-project/.gradle/")
+tasks.clean.configure {
+   delete("${project.layout.projectDirectory}/test-project/build/")
+   delete("${project.layout.projectDirectory}/test-project/.gradle/")
 }
