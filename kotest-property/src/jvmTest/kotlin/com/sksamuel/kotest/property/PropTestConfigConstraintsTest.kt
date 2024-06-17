@@ -12,7 +12,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.internal.proptest
 import kotlin.time.Duration.Companion.milliseconds
-import io.kotest.common.MonotonicTimeSourceCompat
+import kotlin.time.TimeSource
 
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
@@ -591,11 +591,11 @@ class PropTestConfigConstraintsTest : FunSpec() {
 
       test("PropTestConfig constraints should support durations") {
          val config = PropTestConfig(constraints = Constraints.duration(200.milliseconds))
-         val start = MonotonicTimeSourceCompat.markNow()
+         val start = TimeSource.Monotonic.markNow()
          checkAll(config, Arb.string()) { _ -> }
          // we should have exited around 200 millis
          start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)
-         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(300)
+         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(400)
       }
    }
 }

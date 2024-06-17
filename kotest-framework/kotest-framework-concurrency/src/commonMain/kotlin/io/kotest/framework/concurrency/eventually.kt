@@ -3,10 +3,13 @@ package io.kotest.framework.concurrency
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.mpp.timeInMillis
+import io.kotest.common.KotestInternal
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias EventuallyStateFunction<T, U> = (EventuallyState<T>) -> U
@@ -57,6 +60,11 @@ class EventuallyBuilder<T> {
       suppressExceptions = suppressExceptions, suppressExceptionIf = suppressExceptionIf,
       listener = listener, predicate = predicate, shortCircuit = shortCircuit
    )
+
+   @KotestInternal
+   internal fun duration(duration: Duration) {
+      this.duration = duration.inWholeMilliseconds
+   }
 }
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
@@ -74,8 +82,7 @@ data class EventuallyState<T>(
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 private class EventuallyControl(val config: EventuallyConfig<*>) {
-   val start = timeInMillis()
-   val end = start + config.duration
+   val start: TimeMark = TimeSource.Monotonic.markNow()
 
    var times = 0
    var predicateFailedTimes = 0
@@ -104,23 +111,30 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
       return !config.suppressExceptions.any { it.isInstance(e) }
    }
 
-   fun <T> toState(result: T?) = EventuallyState<T>(result = result, start = start, end = end, times = times, firstError = firstError, thisError = lastError)
+   fun <T> toState(result: T?) = EventuallyState(
+      result = result,
+      start = 0L,
+      end = config.duration,
+      times = times,
+      firstError = firstError,
+      thisError = lastError
+   )
 
    suspend fun step() {
       lastInterval = config.interval.next(++times)
-      val delayMark = timeInMillis()
       delay(lastInterval)
-      lastDelayPeriod = timeInMillis() - delayMark
+      lastDelayPeriod = lastInterval
    }
 
-   fun attemptsRemaining() = timeInMillis() < end && times < config.retries
+   fun attemptsRemaining(): Boolean = start.elapsedNow() < config.duration.milliseconds && times < config.retries
 
    /**
-    * if we only executed once, and the last delay was > last interval, we didn't get a chance to run again so we run once more before exiting
+    * If we only executed once, and [lastDelayPeriod] was > [lastInterval], we didn't get a chance to run again,
+    * so we run once more before exiting.
     */
    fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
 
-   fun buildFailureMessage() = StringBuilder().apply {
+   fun buildFailureMessage(): String = buildString {
       appendLine("Eventually block failed after ${config.duration}ms; attempted $times time(s); ${config.interval} delay between attempts")
 
       if (predicateFailedTimes > 0) {
@@ -136,7 +150,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
          appendLine("The last error was caused by: ${this.message}")
          appendLine(this.stackTraceToString())
       }
-   }.toString()
+   }
 }
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
@@ -216,7 +230,9 @@ suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventuall
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 suspend fun until(
-   config: EventuallyConfig<Boolean>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
+   config: EventuallyConfig<Boolean>,
+   configure: EventuallyBuilder<Boolean>.() -> Unit,
+   @BuilderInference test: suspend () -> Boolean
 ) {
    val builder = config.toBuilder()
    builder.predicate = { it.result == true }

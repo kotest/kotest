@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.assertions.timing
 
 import io.kotest.assertions.ErrorCollectionMode
@@ -5,12 +7,12 @@ import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
-import io.kotest.common.MonotonicTimeSourceCompat
-import io.kotest.common.TimeMarkCompat
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
@@ -86,7 +88,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T {
 
-   val start = MonotonicTimeSourceCompat.markNow()
+   val start = TimeSource.Monotonic.markNow()
    val end = start.plus(config.duration)
    var times = 0
    var firstError: Throwable? = null
@@ -128,14 +130,14 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      val delayMark = MonotonicTimeSourceCompat.markNow()
+      val delayMark = TimeSource.Monotonic.markNow()
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
    }
 
    errorCollector.setCollectionMode(originalAssertionMode)
 
-   val message = StringBuilder().apply {
+   val message = buildString {
       appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")
 
       if (predicateFailedTimes > 0) {
@@ -153,7 +155,7 @@ suspend fun <T> eventually(
       }
    }
 
-   throw failure(message.toString())
+   throw failure(message)
 }
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
@@ -172,8 +174,8 @@ data class EventuallyConfig(
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 data class EventuallyState<T>(
    val result: T?,
-   val start: TimeMarkCompat,
-   val end: TimeMarkCompat,
+   val start: TimeMark,
+   val end: TimeMark,
    val iteration: Int,
    val firstError: Throwable?,
    val thisError: Throwable?,

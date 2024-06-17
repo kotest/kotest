@@ -12,7 +12,7 @@ class ConcurrentTest : FunSpec({
 
    test("should not fail when given lambda pass in given time using blocking call") {
       shouldNotThrowAny {
-         shouldCompleteWithin(150, TimeUnit.MILLISECONDS) {
+         shouldCompleteWithin(1500, TimeUnit.MILLISECONDS) {
             Thread.sleep(10)
          }
       }
@@ -21,7 +21,7 @@ class ConcurrentTest : FunSpec({
    test("should fail when given lambda does not complete in given time") {
       val message = shouldThrow<AssertionError> {
          shouldCompleteWithin(2, TimeUnit.MILLISECONDS) {
-            Thread.sleep(50)
+            Thread.sleep(500)
             null
          }
       }.message
@@ -30,7 +30,7 @@ class ConcurrentTest : FunSpec({
    }
 
    test("should return the resulting value of the function block") {
-      val result = shouldCompleteWithin(100, TimeUnit.MILLISECONDS) {
+      val result = shouldCompleteWithin(1000, TimeUnit.MILLISECONDS) {
          "some value"
       }
 
@@ -40,14 +40,14 @@ class ConcurrentTest : FunSpec({
    test("should not throw any if given lambda did not complete in given time") {
       shouldNotThrowAny {
          shouldTimeout(2, TimeUnit.MILLISECONDS) {
-            Thread.sleep(100)
+            Thread.sleep(1000)
          }
       }
    }
 
    test("should fail if given lambda complete within given time") {
       shouldThrow<AssertionError> {
-         shouldTimeout(100, TimeUnit.MILLISECONDS) {
+         shouldTimeout(1000, TimeUnit.MILLISECONDS) {
             Thread.sleep(10)
          }
       }

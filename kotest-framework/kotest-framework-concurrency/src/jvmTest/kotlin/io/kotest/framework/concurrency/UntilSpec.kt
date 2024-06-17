@@ -2,21 +2,19 @@ package io.kotest.framework.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import java.time.Duration
-
-private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
-private fun Int.milliseconds(): Long = this.toLong()
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 @ExperimentalKotest
 class UntilSpec : FunSpec({
    test("until with immediate boolean predicate") {
       var attempts = 0
-      until(1.seconds()) {
+      until(1.seconds) {
          attempts++
          System.currentTimeMillis() > 0
       }
@@ -25,7 +23,7 @@ class UntilSpec : FunSpec({
 
    test("until with boolean predicate that resolves before time duration") {
       var attempts = 0
-      until(3.seconds()) {
+      until(3.seconds) {
          attempts++
          attempts == 2
       }
@@ -35,8 +33,8 @@ class UntilSpec : FunSpec({
    test("until with boolean predicate and interval") {
       var attempts = 0
       until({
-         duration = 2.seconds()
-         interval = 10.milliseconds().fixed()
+         duration = 2.seconds.inWholeMicroseconds
+         interval = 10L.fixed()
       }) {
          ++attempts == 100
       }
@@ -47,7 +45,7 @@ class UntilSpec : FunSpec({
    test("until with predicate") {
       var attempts = 0
       var t = ""
-      until(5.seconds()) {
+      until(5.seconds) {
          attempts++
          t += "x"
          t == "xxx"
@@ -56,12 +54,12 @@ class UntilSpec : FunSpec({
    }
 
    test("until with predicate and interval") {
-      measureTimeMillisCompat {
+      measureTime {
          var attempts = 0
          var t = ""
          until({
-            duration = 1.seconds()
-            interval = 10.milliseconds().fixed()
+            duration = 1.seconds.inWholeMilliseconds
+            interval = 10L.fixed()
          }) {
             attempts++
             t += "x"
@@ -69,24 +67,24 @@ class UntilSpec : FunSpec({
          }
 
          attempts shouldBe 4
-      }.shouldBeLessThan(100)
+      }.shouldBeLessThan(100.milliseconds)
    }
 
    test("until should throw when the predicate doesn't equal true in the time period") {
       shouldThrow<AssertionError> {
-         until(1.seconds()) {
+         until(1.seconds) {
             false
          }
       }
    }
 
    test("until should support fibonacci intervals") {
-      measureTimeMillisCompat {
+      measureTime {
          var t = ""
          var attempts = 0
          until({
-            duration = 10.seconds()
-            interval = 10.milliseconds().fibonacci()
+            duration = 10.seconds.inWholeMilliseconds
+            interval = 10L.fibonacci()
          }) {
             attempts++
             t += "x"
@@ -94,7 +92,6 @@ class UntilSpec : FunSpec({
          }
          attempts shouldBe 6
          t shouldBe "xxxxxx"
-      }.shouldBeGreaterThan(100)
+      }.shouldBeGreaterThan(100.milliseconds)
    }
-
 })

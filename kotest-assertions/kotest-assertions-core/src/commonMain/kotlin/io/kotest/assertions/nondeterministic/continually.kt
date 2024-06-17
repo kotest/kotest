@@ -1,11 +1,11 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.failure
-import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 /**
  * Runs the [test] function continually for the given [duration], failing if an exception is
@@ -32,12 +32,12 @@ suspend fun <T> continually(
 
    delay(config.initialDelay)
 
-   val start = timeInMillis()
-   val end = start + config.duration.inWholeMilliseconds
+   val start = TimeSource.Monotonic.markNow()
+   val end = start.plus(config.duration)
    var iterations = 0
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
 
-   while (timeInMillis() < end) {
+   while (end.hasNotPassedNow()) {
       runCatching {
          test()
       }.onSuccess {
@@ -48,10 +48,11 @@ suspend fun <T> continually(
             is AssertionError -> {
                if (iterations == 0) throw it
                throw failure(
-                  "Test failed after ${start}ms; expected to pass for ${config.duration}; attempted $iterations times\nUnderlying failure was: ${it.message}",
+                  "Test failed after ${start}; expected to pass for ${config.duration}; attempted $iterations times\nUnderlying failure was: ${it.message}",
                   it
                )
             }
+
             else -> throw it
          }
       }
