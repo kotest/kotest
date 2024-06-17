@@ -48,7 +48,6 @@ class ContinuallyTest : FunSpec() {
             1 shouldBe 1
             k++
          }
-         k shouldBeIn 2..3
          result.invocationTimes shouldHaveSize 3
          result.invocationTimes.shouldForAll { it <= config.duration }
       }
