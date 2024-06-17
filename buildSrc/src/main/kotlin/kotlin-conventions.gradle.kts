@@ -13,6 +13,12 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
+
+   // Tests run in a separate JVM which does not inherit the JVM arguments from the main build:
+   // https://docs.gradle.org/current/userguide/java_testing.html
+   maxHeapSize = "3G"
+   jvmArgs = listOf("-XX:MaxMetaspaceSize=756m", "-XX:+HeapDumpOnOutOfMemoryError", "-Dfile.encoding=UTF-8")
+
    filter {
       isFailOnNoMatchingTests = false
    }
