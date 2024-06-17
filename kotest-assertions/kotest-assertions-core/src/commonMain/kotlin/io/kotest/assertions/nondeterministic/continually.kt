@@ -1,7 +1,6 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.failure
-import io.kotest.assertions.nondeterministic.ContinuallyTimeSource.Companion.getContinuallyTimeSource
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -34,7 +33,7 @@ suspend fun <T> continually(
 ): T {
    delay(config.initialDelay)
 
-   val start = getContinuallyTimeSource().markNow()
+   val start = ContinuallyTimeSource.current().markNow()
    val end = start.plus(config.duration)
    var iterations = 0
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
@@ -133,7 +132,7 @@ private fun <T> ContinuallyConfigurationBuilder<T>.build(): ContinuallyConfigura
 /**
  * Store the [TimeSource] used by [continually].
  *
- * @see getContinuallyTimeSource
+ * @see ContinuallyTimeSource.Companion.current
  */
 internal class ContinuallyTimeSource(
    val timeSource: TimeSource
@@ -149,7 +148,7 @@ internal class ContinuallyTimeSource(
        * For internal Kotest testing purposes the [TimeSource] can be overridden.
        * For normal usage [TimeSource.Monotonic] is used.
        */
-      internal suspend fun getContinuallyTimeSource(): TimeSource =
+      internal suspend fun current(): TimeSource =
          coroutineContext[KEY]?.timeSource
             ?: TimeSource.Monotonic
 
