@@ -98,6 +98,10 @@ tasks.withType<KotlinCompile>().configureEach {
    }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+   options.release.set(8)
+}
+
 open class GeneratePluginConstants : DefaultTask() {
    @get:Input
    val kotestPluginConstantsFileContents =
