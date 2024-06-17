@@ -712,15 +712,15 @@ public final class io/kotest/assertions/timing/ContinuallyListener$Companion {
 }
 
 public final class io/kotest/assertions/timing/ContinuallyState {
-	public fun <init> (Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;I)V
-	public final fun component1 ()Lio/kotest/common/TimeMarkCompat;
-	public final fun component2 ()Lio/kotest/common/TimeMarkCompat;
+	public fun <init> (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)V
+	public final fun component1 ()Lkotlin/time/TimeMark;
+	public final fun component2 ()Lkotlin/time/TimeMark;
 	public final fun component3 ()I
-	public final fun copy (Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;I)Lio/kotest/assertions/timing/ContinuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/ContinuallyState;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;IILjava/lang/Object;)Lio/kotest/assertions/timing/ContinuallyState;
+	public final fun copy (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)Lio/kotest/assertions/timing/ContinuallyState;
+	public static synthetic fun copy$default (Lio/kotest/assertions/timing/ContinuallyState;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;IILjava/lang/Object;)Lio/kotest/assertions/timing/ContinuallyState;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lio/kotest/common/TimeMarkCompat;
-	public final fun getStart ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getEnd ()Lkotlin/time/TimeMark;
+	public final fun getStart ()Lkotlin/time/TimeMark;
 	public final fun getTimes ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -762,21 +762,21 @@ public abstract interface class io/kotest/assertions/timing/EventuallyListener {
 }
 
 public final class io/kotest/assertions/timing/EventuallyState {
-	public fun <init> (Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)V
 	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Lio/kotest/common/TimeMarkCompat;
-	public final fun component3 ()Lio/kotest/common/TimeMarkCompat;
+	public final fun component2 ()Lkotlin/time/TimeMark;
+	public final fun component3 ()Lkotlin/time/TimeMark;
 	public final fun component4 ()I
 	public final fun component5 ()Ljava/lang/Throwable;
 	public final fun component6 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/timing/EventuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/EventuallyState;Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyState;
+	public final fun copy (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/timing/EventuallyState;
+	public static synthetic fun copy$default (Lio/kotest/assertions/timing/EventuallyState;Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyState;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getEnd ()Lkotlin/time/TimeMark;
 	public final fun getFirstError ()Ljava/lang/Throwable;
 	public final fun getIteration ()I
 	public final fun getResult ()Ljava/lang/Object;
-	public final fun getStart ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getStart ()Lkotlin/time/TimeMark;
 	public final fun getThisError ()Ljava/lang/Throwable;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

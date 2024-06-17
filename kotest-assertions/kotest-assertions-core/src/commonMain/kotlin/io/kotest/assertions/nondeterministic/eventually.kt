@@ -3,12 +3,12 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
-import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -67,7 +67,7 @@ suspend fun <T> eventually(
 
          control.step()
       }
-   } catch (e : ShortCircuitControlException) {
+   } catch (e: ShortCircuitControlException) {
       // Short-circuited out from retries, will throw below
 
       // If we terminated due to an exception, we are missing an iteration in the counter
@@ -204,8 +204,8 @@ object NoopEventuallyListener : EventuallyListener {
 
 private class EventuallyControl(val config: EventuallyConfiguration) {
 
-   val start = timeInMillis()
-   val end = start + config.duration.inWholeMilliseconds
+   val start: TimeMark = TimeSource.Monotonic.markNow()
+   val end: TimeMark = start.plus(config.duration)
 
    var iterations = 0
 
@@ -236,19 +236,16 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
 
    suspend fun step() {
       lastInterval = config.intervalFn.next(++iterations)
-      val delayMark = timeInMillis()
+      val delayMark = start.elapsedNow()
       // cap the interval at remaining time
-      delay(min(lastInterval.inWholeMilliseconds, end - delayMark))
-      lastDelayPeriod = (timeInMillis() - delayMark).milliseconds
+      delay(minOf(lastInterval, config.duration - delayMark))
+      lastDelayPeriod = (start.elapsedNow() - delayMark)
    }
 
-   fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
+   fun hasAttemptsRemaining(): Boolean = end.hasNotPassedNow() && iterations < config.retries
 
-   fun buildFailureMessage() = StringBuilder().apply {
-      val totalDuration = timeInMillis() - start
-      val printedDuration = if (totalDuration >= 1000) "${totalDuration / 1000}s" else "${totalDuration}ms"
-
-      appendLine("Block failed after $printedDuration; attempted $iterations time(s)")
+   fun buildFailureMessage(): String = buildString {
+      appendLine("Block failed after ${start.elapsedNow()}; attempted $iterations time(s)")
 
       firstError?.takeIf { config.includeFirst }?.run {
          appendLine("The first error was caused by: ${this.message}")
@@ -259,7 +256,7 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
          appendLine("The last error was caused by: ${this.message}")
          appendLine(this.stackTraceToString())
       }
-   }.toString()
+   }
 }
 
 internal object ShortCircuitControlException : Throwable()

@@ -21,7 +21,7 @@ class ContinuallyTest : FunSpec() {
       }
 
       test("pass tests with null values") {
-         val test = continually(500.milliseconds) {
+         continually(500.milliseconds) {
             null shouldBe null
          }
       }
