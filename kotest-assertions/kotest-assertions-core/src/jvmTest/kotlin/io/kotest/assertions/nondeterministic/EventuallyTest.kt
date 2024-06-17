@@ -227,10 +227,11 @@ class EventuallyTest : FunSpec() {
       }
 
       test("allow suspendable functions") {
+         val start = testCoroutineScheduler.timeSource.markNow()
          testEventually(100.milliseconds) {
-            delay(1)
-            System.currentTimeMillis()
+            delay(47.milliseconds)
          }
+         start.elapsedNow() shouldBe 47.milliseconds
       }
 
       test("allow configuring interval delay") {
