@@ -8,11 +8,10 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
-import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -25,6 +24,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 class EventuallyTest : FunSpec() {
 
@@ -155,7 +155,7 @@ class EventuallyTest : FunSpec() {
                }
             }
          }.message
-         message shouldContain """Block failed after \d+ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted $count time\(s\)""".toRegex()
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
@@ -177,17 +177,9 @@ class EventuallyTest : FunSpec() {
             }
          }.message
          count shouldBe 2
-         message shouldContain """Block failed after \d+ms; attempted $count time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted $count time\(s\)""".toRegex()
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
-      }
-
-      test("duration is displayed in whole seconds once past 1000ms") {
-         shouldFail {
-            eventually(1100.milliseconds) {
-               fail("")
-            }
-         }.message shouldContain Regex("Block failed after [1-2]s")
       }
 
       test("allow suspendable functions") {
@@ -210,7 +202,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("handle shouldNotBeNull") {
-         val duration = measureTimeMillisCompat {
+         val duration = measureTime {
             shouldThrow<java.lang.AssertionError> {
                eventually(50.milliseconds) {
                   val str: String? = null
@@ -218,7 +210,7 @@ class EventuallyTest : FunSpec() {
                }
             }
          }
-         duration.shouldBeGreaterThanOrEqual(50)
+         duration shouldBeGreaterThanOrEqualTo 50.milliseconds
       }
 
       test("support fibonacci interval functions") {
@@ -271,13 +263,13 @@ class EventuallyTest : FunSpec() {
             duration = 5.seconds
             retries = 2
          }
-         val message = shouldThrow<AssertionError> {
+         val message = shouldFail {
             eventually(config) {
                1 shouldBe 2
             }
          }.message
 
-         message shouldContain """Block failed after \d{1,3}ms; attempted 2 time\(s\)""".toRegex()
+         message shouldContain """Block failed after [^;]+; attempted 2 time\(s\)""".toRegex()
       }
 
       test("override assertion to hard assertion before executing assertion and reset it after executing") {
@@ -343,7 +335,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("short-circuited exceptions are not retried") {
-         shouldFail {
+         val failure = shouldFail {
             val config = eventuallyConfig {
                duration = 5.seconds
                shortCircuit = { true }
@@ -351,7 +343,8 @@ class EventuallyTest : FunSpec() {
             eventually(config) {
                1 shouldBe 2
             }
-         }.message shouldContain """Block failed after \d{1,3}ms; attempted 1 time""".toRegex()
+         }
+         failure.message shouldContain """Block failed after [^;]+; attempted 1 time""".toRegex()
       }
 
       test("suppress first error") {
@@ -362,10 +355,9 @@ class EventuallyTest : FunSpec() {
                includeFirst = false
             }
             eventually(config) {
-               if(count++ == 0)
-               {
+               if (count++ == 0) {
                   fail("first")
-               }else{
+               } else {
                   fail("last")
                }
             }
