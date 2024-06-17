@@ -2,7 +2,6 @@ package io.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.failure
-import io.kotest.matchers.concurrent.suspension.ShouldCompleteBetweenTimeSource.Companion.getShouldCompleteBetweenTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
@@ -38,7 +37,7 @@ suspend fun <A> shouldCompleteBetween(
    thunk: suspend () -> A,
 ): A {
    try {
-      val timeSource = getShouldCompleteBetweenTimeSource()
+      val timeSource = ShouldCompleteBetweenTimeSource.current()
       val (value, timeElapsed) = timeSource.measureTimedValue {
          withTimeout(durationRange.endInclusive) {
             thunk()
@@ -91,7 +90,7 @@ internal class ShouldCompleteBetweenTimeSource(
        * For internal Kotest testing purposes the [TimeSource] can be overridden.
        * For normal usage [TimeSource.Monotonic] is used.
        */
-      internal suspend fun getShouldCompleteBetweenTimeSource(): TimeSource =
+      internal suspend fun current(): TimeSource =
          coroutineContext[KEY]?.timeSource
             ?: TimeSource.Monotonic
 

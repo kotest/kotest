@@ -1,4 +1,4 @@
-// Remove when shouldCompleteWithin/shouldCompleteBetween/shouldTimeout are removed
+// Remove when shouldCompleteWithin/shouldCompleteBetween/shouldTimeout are removed in 6.0
 @file:Suppress("DEPRECATION")
 
 package com.sksamuel.kotest.matchers.concurrent.suspension
