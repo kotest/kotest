@@ -3,7 +3,6 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.assertions.nondeterministic.EventuallyTimeSource.Companion.getEventuallyTimeSource
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -51,7 +50,7 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val start = getEventuallyTimeSource().markNow()
+   val start = EventuallyTimeSource.current().markNow()
    val control = EventuallyControl(config, start)
 
    try {
@@ -285,7 +284,7 @@ internal class EventuallyTimeSource(
        * For internal Kotest testing purposes the [TimeSource] can be overridden.
        * For normal usage [TimeSource.Monotonic] is used.
        */
-      internal suspend fun getEventuallyTimeSource(): TimeSource =
+      internal suspend fun current(): TimeSource =
          coroutineContext[KEY]?.timeSource
             ?: TimeSource.Monotonic
 
