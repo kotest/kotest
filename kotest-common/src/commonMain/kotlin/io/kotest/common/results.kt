@@ -5,7 +5,7 @@ inline fun <A, B> Result<A>.flatMap(fn: (A) -> Result<B>): Result<B> {
 }
 
 @KotestInternal
-inline fun <A> Result<Result<A>>.flatten(): Result<A> {
+fun <A> Result<Result<A>>.flatten(): Result<A> {
    return when {
       isSuccess -> getOrThrow()
       else -> Result.failure(exceptionOrNull()!!)
