@@ -102,43 +102,39 @@ tasks.withType<JavaCompile>().configureEach {
    options.release.set(8)
 }
 
-val updateKotestPluginConstants by tasks.registering(Sync::class) {
+val updateKotestPluginConstants by tasks.registering {
+   val kotestPluginConstants = """
+      |// Generated file, do not edit manually
+      |@file:org.gradle.api.Generated
+      |
+      |package io.kotest.framework.multiplatform.gradle
+      |
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+      |
+   """.trimMargin()
 
-   val kotestPluginConstantsFileContents: TextResource = resources.text.fromString(
-      """
-         |// Generated file, do not edit manually
-         |@file:org.gradle.api.Generated
-         |
-         |package io.kotest.framework.multiplatform.gradle
-         |
-         |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
-         |
-      """.trimMargin()
-   )
+   inputs.property("kotestPluginConstants", kotestPluginConstants)
 
-   from(kotestPluginConstantsFileContents) {
-      rename { "kotestPluginConstants.kt" }
-      into("io/kotest/framework/multiplatform/gradle/")
-   }
-   into(layout.buildDirectory.dir("generated/src/main/kotlin/"))
+   val outputDir = layout.buildDirectory.dir("generated/src/main/kotlin/")
+   outputs.dir(outputDir).withPropertyName("outputDir")
 
-   doFirst {
-      logger.debug(
-         """
-            Updating Kotest Gradle plugin constants
-            ${kotestPluginConstantsFileContents.asString().prependIndent("  > ")}
-         """.trimIndent()
-      )
+   doLast {
+      val kotestPluginConstantsFile = outputDir.get().asFile
+         .resolve("io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt")
+
+      kotestPluginConstantsFile.apply {
+         parentFile.deleteRecursively()
+         parentFile.mkdirs()
+         writeText(kotestPluginConstants)
+      }
    }
 }
 
-
-sourceSets.main {
-   java.srcDir(updateKotestPluginConstants.map { it.destinationDir })
+kotlin.sourceSets.main {
+   kotlin.srcDir(updateKotestPluginConstants)
 }
 
-
-tasks.clean {
-   delete("$projectDir/test-project/build/")
-   delete("$projectDir/test-project/.gradle/")
+tasks.clean.configure {
+   delete("${project.layout.projectDirectory}/test-project/build/")
+   delete("${project.layout.projectDirectory}/test-project/.gradle/")
 }
