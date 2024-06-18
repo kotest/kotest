@@ -3052,6 +3052,15 @@ public final class io/kotest/inspectors/RunTestsKt {
 	public static final fun runTests (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }
 
+public abstract interface class io/kotest/matchers/MatcherResultWithError : io/kotest/matchers/MatcherResult {
+	public static final field Companion Lio/kotest/matchers/MatcherResultWithError$Companion;
+	public abstract fun getError ()Ljava/lang/Throwable;
+}
+
+public final class io/kotest/matchers/MatcherResultWithError$Companion {
+	public final fun invoke (Ljava/lang/Throwable;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/MatcherResultWithError;
+}
+
 public final class io/kotest/matchers/ShouldKt {
 	public static final fun be (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun equalityMatcher (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
