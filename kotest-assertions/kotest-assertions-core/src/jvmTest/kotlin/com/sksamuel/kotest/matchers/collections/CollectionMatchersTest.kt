@@ -61,6 +61,7 @@ import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.string.shouldContainInOrder
+import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class CollectionMatchersTest : WordSpec() {
@@ -753,12 +754,14 @@ class CollectionMatchersTest : WordSpec() {
                   { it shouldBe 1 },
                   { it shouldBe 3 }
                )
-            }.message shouldBe """
-               Expected each element to pass its assertion, but found issues at indexes: [1, 2]
+            }.message shouldMatch """
+               Expected each element to pass its assertion, but found issues at indexes: \[1, 2]
 
-               1 => expected:<1> but was:<3>
-               2 => expected:<3> but was:<1>
-            """.trimIndent()
+               1 => .*expected:<1> but was:<3>
+               \s*at.*
+               2 => .*expected:<3> but was:<1>
+               \s*at.*
+            """.multiLineRegex()
          }
 
          "gaps cause errors" {
@@ -768,15 +771,17 @@ class CollectionMatchersTest : WordSpec() {
                   { it shouldBe 2 },
                   { it shouldBe 3 }
                )
-            }.message shouldBe """
-               Expected each element to pass its assertion, but found issues at indexes: [1, 2, 3, 4, 5]
+            }.message shouldMatch """
+               Expected each element to pass its assertion, but found issues at indexes: \[1, 2, 3, 4, 5]
 
-               1 => expected:<2> but was:<1>
-               2 => expected:<3> but was:<2>
+               1 => .*expected:<2> but was:<1>
+               \s*at.*
+               2 => .*expected:<3> but was:<2>
+               \s*at.*
                3 => Element has no corresponding assertion. Only 3 assertions provided
                4 => Element has no corresponding assertion. Only 3 assertions provided
                5 => Element has no corresponding assertion. Only 3 assertions provided
-            """.trimIndent()
+            """.multiLineRegex()
          }
       }
 
@@ -786,14 +791,18 @@ class CollectionMatchersTest : WordSpec() {
                listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
                   actual shouldBe expected
                }
-            }.message shouldBe """
-               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+            }.message shouldMatch """
+               Expected each element to pass its assertion, but found issues at indexes: \[0, 1, 2, 3]
 
-               0 => expected:<1> but was:<4>
-               1 => expected:<2> but was:<3>
-               2 => expected:<3> but was:<2>
-               3 => expected:<4> but was:<1>
-            """.trimIndent()
+               0 => .*expected:<1> but was:<4>
+               \s*at.*
+               1 => .*expected:<2> but was:<3>
+               \s*at.*
+               2 => .*expected:<3> but was:<2>
+               \s*at.*
+               3 => .*expected:<4> but was:<1>
+               \s*at.*
+            """.multiLineRegex()
          }
 
          "element missing on expected list" {
@@ -801,14 +810,17 @@ class CollectionMatchersTest : WordSpec() {
                listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3)) { actual, expected ->
                   actual shouldBe expected
                }
-            }.message shouldBe """
-               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+            }.message shouldMatch """
+               Expected each element to pass its assertion, but found issues at indexes: \[0, 1, 2, 3]
 
-               0 => expected:<1> but was:<4>
-               1 => expected:<2> but was:<3>
-               2 => expected:<3> but was:<2>
+               0 => .*expected:<1> but was:<4>
+               \s*at.*
+               1 => .*expected:<2> but was:<3>
+               \s*at.*
+               2 => .*expected:<3> but was:<2>
+               \s*at.*
                3 => Element has no corresponding assertion. Only 3 assertions provided
-            """.trimIndent()
+            """.multiLineRegex()
          }
 
          "element missing on actual list" {
@@ -816,14 +828,17 @@ class CollectionMatchersTest : WordSpec() {
                listOf(4, 3, 2) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
                   actual shouldBe expected
                }
-            }.message shouldBe """
-               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+            }.message shouldMatch """
+               Expected each element to pass its assertion, but found issues at indexes: \[0, 1, 2, 3]
 
-               0 => expected:<1> but was:<4>
-               1 => expected:<2> but was:<3>
-               2 => expected:<3> but was:<2>
+               0 => .*expected:<1> but was:<4>
+               \s*at.*
+               1 => .*expected:<2> but was:<3>
+               \s*at.*
+               2 => .*expected:<3> but was:<2>
+               \s*at.*
                3 => No actual element for assertion at index 3
-            """.trimIndent()
+            """.multiLineRegex()
          }
       }
 
@@ -1083,3 +1098,5 @@ sealed class TestSealed {
    data class Test1(val value: String) : TestSealed()
    data class Test2(val value: Int) : TestSealed()
 }
+
+private fun String.multiLineRegex() = trimIndent().replace("\n", System.lineSeparator()).toRegex(RegexOption.DOT_MATCHES_ALL)
