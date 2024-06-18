@@ -12,6 +12,7 @@ import io.kotest.mpp.log
 import io.kotest.mpp.syspropOrEnv
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.time.measureTimedValue
 
 /**
  * Contains the results of a discovery request scan.
@@ -113,22 +114,21 @@ class Discovery(
       if (selectors.isEmpty() || !selectors.all { it is DiscoverySelector.ClassDiscoverySelector })
          return null
 
-      val start = System.currentTimeMillis()
-
-      // first filter down to spec instances only, then load the full class
-      val specs = selectors
-         .asSequence()
-         .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
-         .map { Class.forName(it.className, false, this::class.java.classLoader) }
-         .filter(isSpecSubclass)
-         .map { Class.forName(it.name).kotlin }
-         .filterIsInstance<KClass<out Spec>>()
-         .filterNot(isAbstract)
-         .toList()
+      val (specs, duration) = measureTimedValue {
+         // first filter down to spec instances only, then load the full class
+         selectors
+            .asSequence()
+            .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
+            .map { Class.forName(it.className, false, this::class.java.classLoader) }
+            .filter(isSpecSubclass)
+            .map { Class.forName(it.name).kotlin }
+            .filterIsInstance<KClass<out Spec>>()
+            .filterNot(isAbstract)
+            .toList()
+      }
 
       log {
-         val duration = System.currentTimeMillis() - start
-         "[Discovery] Collected specs via ${selectors.size} class discovery selectors in ${duration}ms," +
+         "[Discovery] Collected specs via ${selectors.size} class discovery selectors in ${duration}," +
             " found ${specs.size} specs"
       }
 
@@ -140,17 +140,17 @@ class Discovery(
     * locations specified by the uris param.
     */
    private fun specsFromClassGraph(): List<KClass<out Spec>> {
-      val start = System.currentTimeMillis()
-      val specs = classgraph().scan().use { scanResult ->
-         scanResult
-            .getSubclasses(Spec::class.java.name)
-            .map { Class.forName(it.name).kotlin }
-            .filterIsInstance<KClass<out Spec>>()
+      val (specs, duration) = measureTimedValue {
+         classgraph().scan().use { scanResult ->
+            scanResult
+               .getSubclasses(Spec::class.java.name)
+               .map { Class.forName(it.name).kotlin }
+               .filterIsInstance<KClass<out Spec>>()
+         }
       }
 
       log {
-         val duration = System.currentTimeMillis() - start
-         "[Discovery] Scanned classgraph for specs in ${duration}ms, found ${specs.size} specs"
+         "[Discovery] Scanned classgraph for specs in ${duration}, found ${specs.size} specs"
       }
 
       return specs
