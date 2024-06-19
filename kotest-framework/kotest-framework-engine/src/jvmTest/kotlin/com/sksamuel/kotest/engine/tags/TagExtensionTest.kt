@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 
@@ -16,7 +17,7 @@ class TagExtensionTest : StringSpec() {
    init {
       "tag extensions should be used when calculating runtime tags" {
 
-         withSystemProperty("kotest.tags", null) {
+         withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrIgnore) {
             val c = ProjectConfiguration().apply {
                registry.add(TagExtension { TagExpression(setOf(TagA), setOf(TagB)) })
                registry.add(SpecifiedTagsTagExtension(TagExpression("!SpecExcluded")))
