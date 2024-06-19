@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -43,16 +44,18 @@ class RequiresTagTest : FunSpec({
    }
 
    test("RequiresTagInterceptor should exclude spec if the tag expression is blank") {
-      val collector = CollectingTestEngineListener()
+      withSystemProperty("kotest.tags", null) {
+         val collector = CollectingTestEngineListener()
 
-      TestEngineLauncher(collector)
-         .withClasses(TaggedSpec::class)
-         .withTagExpression(TagExpression.Empty)
-         .launch()
+         TestEngineLauncher(collector)
+            .withClasses(TaggedSpec::class)
+            .withTagExpression(TagExpression.Empty)
+            .launch()
 
-      collector
-         .specs[TaggedSpec::class].shouldNotBeNull()
-         .isIgnored.shouldBeTrue()
+         collector
+            .specs[TaggedSpec::class].shouldNotBeNull()
+            .isIgnored.shouldBeTrue()
+      }
    }
 })
 
