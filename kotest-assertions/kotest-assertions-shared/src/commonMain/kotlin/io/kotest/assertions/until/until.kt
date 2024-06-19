@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // FIXME remove deprecation suppression when io.kotest.assertions.until.Interval is removed
+
 package io.kotest.assertions.until
 
 import io.kotest.assertions.failure
