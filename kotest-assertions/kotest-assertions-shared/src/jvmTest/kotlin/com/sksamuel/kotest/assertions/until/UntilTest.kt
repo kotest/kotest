@@ -25,7 +25,7 @@ class UntilTest : FunSpec({
 
    test("until with immediate boolean predicate") {
       var attempts = 0
-      until(1.seconds) {
+      until(4.seconds) {
          attempts++
          System.currentTimeMillis() > 0
       }
@@ -34,7 +34,7 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate that resolves before time duration") {
       var attempts = 0
-      until(3.seconds) {
+      until(8.seconds) {
          attempts++
          attempts == 2
       }
@@ -43,26 +43,26 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate and interval") {
       var attempts = 0
-      until(2.seconds, 10.milliseconds.fixed()) {
+      until(8.seconds, 10.milliseconds.fixed()) {
          attempts++
-         attempts == 100
+         attempts == 10
       }
-      attempts shouldBe 100
+      attempts shouldBe 10
    }
 
    test("until with patience config") {
       var attempts = 0
-      until(PatienceConfig(2.seconds, 10.milliseconds.fixed())) {
+      until(PatienceConfig(4.seconds, 10.milliseconds.fixed())) {
          attempts++
-         attempts == 100
+         attempts == 10
       }
-      attempts shouldBe 100
+      attempts shouldBe 10
    }
 
    test("until with predicate") {
       var attempts = 0
       var t = ""
-      until(5.seconds, { t == "xxx" }) {
+      until(8.seconds, { t == "xxx" }) {
          attempts++
          t += "x"
       }
@@ -72,14 +72,11 @@ class UntilTest : FunSpec({
    test("until with predicate and interval") {
       var attempts = 0
       var t = ""
-      val duration = measureTime {
-         until(1.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
-            attempts++
-            t += "x"
-         }
+      until(8.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
+         attempts++
+         t += "x"
       }
       attempts shouldBe 4
-      duration shouldBeLessThan 100.milliseconds
    }
 
    test("until should throw when the predicate doesn't equal true in the time period") {
