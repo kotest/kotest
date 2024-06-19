@@ -53,31 +53,53 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck --continue
 
-   validate-primary:
-      name: Validate on primary runner
+   validate-primary-regular:
+      name: Regular tests on primary runner
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       needs: [ determine-workflows-to-run, validate-api ]
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: check --continue
+         task: check -Dkotest.tags=!Deprecated --continue
 
-   validate-secondary:
-      name: Validate on secondary runners
+   validate-primary-deprecated:
+      name: Deprecated tests on primary runner
+      if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      needs: [ determine-workflows-to-run, validate-api, validate-primary ]
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: ubuntu-latest
+         ref: ${{ inputs.ref }}
+         task: check -Dkotest.tags=Deprecated --continue
+
+   validate-secondary-regular:
+      name: Regular tests on secondary runners
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       needs: [ determine-workflows-to-run, validate-api, validate-primary ]
       strategy:
          matrix:
-            include:
-               -  os: macos-latest
-               -  os: windows-latest
+            os: [ macos-latest, windows-latest ]
          fail-fast: false
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: check --continue
+         task: check -Dkotest.tags=!Deprecated --continue
+
+   validate-secondary-deprecated:
+      name: Deprecated tests on secondary runners
+      if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      needs: [ determine-workflows-to-run, validate-api, validate-primary ]
+      strategy:
+         matrix:
+            os: [ macos-latest, windows-latest ]
+         fail-fast: false
+      uses: ./.github/workflows/run-gradle.yml
+      with:
+         runs-on: ${{ matrix.os }}
+         ref: ${{ inputs.ref }}
+         task: check -Dkotest.tags=Deprecated --continue
 
    validate-docs:
       needs: [ determine-workflows-to-run ]
@@ -98,7 +120,7 @@ jobs:
    finalize:
       # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
       name: Final PR results
-      needs: [ validate-api, validate-primary, validate-secondary, validate-docs ]
+      needs: [ validate-api, validate-primary-regular, validate-secondary-regular, validate-docs ]
       if: ${{ always() }}
       runs-on: ubuntu-latest
       steps:
