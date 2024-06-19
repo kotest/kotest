@@ -38,7 +38,7 @@ jobs:
    validate-primary-deprecated:
       name: Deprecated tests on primary runner
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary ]
+      needs: [ validate-api, validate-primary-regular ]
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
    validate-secondary-regular:
       name: Regular tests on secondary runners
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary ]
+      needs: [ validate-api, validate-primary-regular ]
       strategy:
          matrix:
             os: [ macos-latest, windows-latest ]
@@ -62,7 +62,7 @@ jobs:
    validate-secondary-deprecated:
       name: Deprecated tests on secondary runners
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary ]
+      needs: [ validate-api, validate-primary-regular ]
       strategy:
          matrix:
             os: [ macos-latest, windows-latest ]
