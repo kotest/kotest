@@ -17,7 +17,7 @@ class TagExtensionTest : StringSpec() {
    init {
       "tag extensions should be used when calculating runtime tags" {
 
-         withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrIgnore) {
+         withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
             val c = ProjectConfiguration().apply {
                registry.add(TagExtension { TagExpression(setOf(TagA), setOf(TagB)) })
                registry.add(SpecifiedTagsTagExtension(TagExpression("!SpecExcluded")))

@@ -17,7 +17,7 @@ import io.kotest.matchers.shouldBe
 
 class RequiresTagTest : FunSpec({
    test("RequiresTagInterceptor should include spec if the tag expression contains the required tag") {
-      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrIgnore) {
+      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher(collector)
@@ -32,7 +32,7 @@ class RequiresTagTest : FunSpec({
    }
 
    test("RequiresTagInterceptor should exclude spec if the tag expression does not contain the required tag") {
-      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrIgnore) {
+      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher(collector)
@@ -49,7 +49,7 @@ class RequiresTagTest : FunSpec({
    }
 
    test("RequiresTagInterceptor should exclude spec if the tag expression is blank") {
-      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrIgnore) {
+      withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher(collector)
