@@ -2,6 +2,7 @@ plugins {
    id("kotest-multiplatform-library-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
+   id("io.kotest.multiplatform")
 }
 
 kotlin {
@@ -21,8 +22,7 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkApi)
-            implementation(projects.kotestProperty)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 
