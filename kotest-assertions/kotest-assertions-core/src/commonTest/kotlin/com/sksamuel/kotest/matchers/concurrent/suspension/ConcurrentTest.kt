@@ -2,6 +2,12 @@ package com.sksamuel.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.common.Platform
+import io.kotest.common.Platform.JS
+import io.kotest.common.Platform.JVM
+import io.kotest.common.Platform.Native
+import io.kotest.common.Platform.WasmJs
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.concurrent.suspension.ShouldCompleteBetweenTimeSource
@@ -18,7 +24,7 @@ class ConcurrentTest : FunSpec({
 
    coroutineTestScope = true
 
-   test("should not fail when given lambda pass in given time") {
+   test("should not fail when given lambda pass in given time").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       shouldNotThrowAny {
          shouldCompleteWithin(2.seconds) {
@@ -28,7 +34,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 1.seconds
    }
 
-   test("should fail when given lambda does not complete in given time") {
+   test("should fail when given lambda does not complete in given time").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       val message = shouldFail {
          shouldCompleteWithin(1.seconds) {
@@ -40,7 +46,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 1.seconds
    }
 
-   test("should not fail when given lambda pass in given time range") {
+   test("should not fail when given lambda pass in given time range").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       withContext(ShouldCompleteBetweenTimeSource(testCoroutineScheduler.timeSource)) {
          shouldNotThrowAny {
@@ -52,7 +58,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 1.5.seconds
    }
 
-   test("should fail when given lambda pass before the given time range") {
+   test("should fail when given lambda pass before the given time range").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       val message = shouldFail {
          shouldCompleteBetween(1.seconds..2.seconds) {
@@ -64,7 +70,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 0.5.seconds
    }
 
-   test("should fail when given lambda did not complete with in the given time range") {
+   test("should fail when given lambda did not complete with in the given time range").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       val message = shouldFail {
          shouldCompleteBetween(1.seconds..2.seconds) {
@@ -76,7 +82,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 2.seconds
    }
 
-   test("should not throw any if given lambda did not complete in given time") {
+   test("should not throw any if given lambda did not complete in given time").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       shouldNotThrowAny {
          shouldTimeout(1.seconds) {
@@ -86,7 +92,7 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 1.seconds
    }
 
-   test("should fail if given lambda complete within given time") {
+   test("should fail if given lambda complete within given time").config(enabled = platform.supportsTestScheduler) {
       val start = testCoroutineScheduler.timeSource.markNow()
       val failure = shouldFail {
          shouldTimeout(1.seconds) {
@@ -97,3 +103,11 @@ class ConcurrentTest : FunSpec({
       start.elapsedNow() shouldBe 0.1.seconds
    }
 })
+
+
+private val Platform.supportsTestScheduler: Boolean
+   get() =
+      when (this) {
+         Native, JVM -> true
+         WasmJs, JS -> false
+      }
