@@ -25,58 +25,36 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck
 
-   validate-primary-regular:
-      name: Regular tests on primary runner
+   validate-primary:
+      name: Validate on primary runner
       if: github.repository == 'kotest/kotest'
       needs: validate-api
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: check -Dkotest.tags=!Deprecated
+         task: check
 
-   validate-primary-deprecated:
-      name: Deprecated tests on primary runner
+   validate-secondary:
+      name: Validate on secondary runners
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary-regular ]
-      uses: ./.github/workflows/run-gradle.yml
-      with:
-         runs-on: ubuntu-latest
-         ref: ${{ inputs.ref }}
-         task: check -Dkotest.tags=Deprecated
-
-   validate-secondary-regular:
-      name: Regular tests on secondary runners
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary-regular ]
+      needs: [ validate-api, validate-primary ]
       strategy:
          matrix:
-            os: [ macos-latest, windows-latest ]
+            include:
+               -  os: macos-latest
+               -  os: windows-latest
          fail-fast: false
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: check -Dkotest.tags=!Deprecated
-
-   validate-secondary-deprecated:
-      name: Deprecated tests on secondary runners
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary-regular ]
-      strategy:
-         matrix:
-            os: [ macos-latest, windows-latest ]
-         fail-fast: false
-      uses: ./.github/workflows/run-gradle.yml
-      with:
-         runs-on: ${{ matrix.os }}
-         ref: ${{ inputs.ref }}
-         task: check -Dkotest.tags=Deprecated
+         task: check
 
    publish-sonatype:
       name: Publish all artifacts to Sonatype (Maven Central)
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary-regular, validate-secondary-regular ]
+      needs: [ validate-api, validate-primary, validate-secondary ]
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
