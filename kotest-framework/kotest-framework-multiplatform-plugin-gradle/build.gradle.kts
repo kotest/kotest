@@ -5,17 +5,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    `kotlin-dsl`
-   `maven-publish`
+   id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
 }
 
 group = "io.kotest"
 version = Ci.gradleVersion
-
-repositories {
-   mavenCentral()
-   mavenLocal()
-}
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
