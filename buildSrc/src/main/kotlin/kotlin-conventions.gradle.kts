@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
    `java-library`
@@ -13,15 +14,9 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-   // Pass "kotest.*" system properties from the Gradle invocation to the test launcher.
-   // https://junit.org/junit5/docs/current/user-guide/#running-tests-config-params
-   for ((name, value) in System.getProperties()) {
-      if (name is String && name.startsWith("kotest.")) {
-         value as String
-         inputs.property(name, value)
-         systemProperty(name, value)
-      }
-   }
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }
