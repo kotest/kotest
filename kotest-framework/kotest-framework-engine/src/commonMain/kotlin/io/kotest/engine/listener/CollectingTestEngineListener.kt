@@ -5,7 +5,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
@@ -18,10 +17,14 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    var errors = false
 
    /**
-    * An active [Job] that will be completed when [engineFinished] is invoked.
+    * A [Mutex] that will remain locked until [engineFinished] is invoked.
+    *
+    * (Using a read-write mutex would be more appropriate, but it's not available yet.
+    * See https://github.com/Kotlin/kotlinx.coroutines/issues/94)
+    *
     * @see waitForEngineFinished
     */
-   private val engineFinishedJob = Job()
+   private val engineFinishedLock = Mutex(locked = true)
 
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
    fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
@@ -48,7 +51,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
 
    override suspend fun engineFinished(t: List<Throwable>): Unit = withLock {
       if (t.isNotEmpty()) errors = true
-      engineFinishedJob.complete()
+      engineFinishedLock.unlock()
    }
 
    /**
@@ -67,6 +70,8 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
 
    /** Suspends until [engineFinished] is invoked. */
    internal suspend fun waitForEngineFinished() {
-      engineFinishedJob.join()
+      // Immediately lock and unlock the mutex without doing any work.
+      // We just want to wait until the mutex is unlocked (which happens when engineFinished has been called).
+      engineFinishedLock.withLock { }
    }
 }
