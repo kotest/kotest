@@ -5,6 +5,9 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
@@ -17,14 +20,14 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    var errors = false
 
    /**
-    * A [Mutex] that will remain locked until [engineFinished] is invoked.
+    * Counts the number of times [engineStarted] and [engineFinished] have been invoked.
     *
     * (Using a read-write mutex would be more appropriate, but it's not available yet.
     * See https://github.com/Kotlin/kotlinx.coroutines/issues/94)
     *
     * @see waitForEngineFinished
     */
-   private val engineFinishedLock = Mutex(locked = true)
+   private val activeEngines = MutableStateFlow<Int?>(null)
 
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
    fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
@@ -49,9 +52,13 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
       names += testCase.name.testName
    }
 
+   override suspend fun engineStarted() {
+      activeEngines.update { (it ?: 0) + 1 }
+   }
+
    override suspend fun engineFinished(t: List<Throwable>): Unit = withLock {
       if (t.isNotEmpty()) errors = true
-      engineFinishedLock.unlock()
+      activeEngines.update { (it ?: 0) - 1 }
    }
 
    /**
@@ -68,10 +75,9 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
       return TestCaseKey(this.descriptor, this.name, this.spec::class)
    }
 
-   /** Suspends until [engineFinished] is invoked. */
+   /** Suspends until all engines have finished. */
    internal suspend fun waitForEngineFinished() {
-      // Immediately lock and unlock the mutex without doing any work.
-      // We just want to wait until the mutex is unlocked (which happens when engineFinished has been called).
-      engineFinishedLock.withLock { }
+      // wait until `engineFinished()` has been invoked the same number of times as `engineStarted()`
+      activeEngines.first { it == 0 }
    }
 }
