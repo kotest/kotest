@@ -56,6 +56,9 @@ jobs:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
          task: apiCheck --continue
+      secrets:
+         GRADLE_BUILD_CACHE_USER: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
+         GRADLE_BUILD_CACHE_PASS: ${{ secrets.GRADLE_BUILD_CACHE_PASS }}
 
    gradle-check:
       name: Run gradle check
@@ -73,6 +76,9 @@ jobs:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
          task: check --continue
+      secrets:
+         GRADLE_BUILD_CACHE_USER: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
+         GRADLE_BUILD_CACHE_PASS: ${{ secrets.GRADLE_BUILD_CACHE_PASS }}
 
    validate-docs:
       needs: [ determine-workflows-to-run ]

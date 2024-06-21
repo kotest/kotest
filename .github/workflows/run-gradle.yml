@@ -16,6 +16,11 @@ on:
             description: "The Gradle task to run"
             required: true
             type: string
+      secrets:
+         GRADLE_BUILD_CACHE_USER:
+            required: false
+         GRADLE_BUILD_CACHE_PASS:
+            required: false
 
 permissions:
    contents: read
