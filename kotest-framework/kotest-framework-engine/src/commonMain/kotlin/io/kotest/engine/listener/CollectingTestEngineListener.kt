@@ -22,7 +22,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    /**
     * Counts the number of times [engineStarted] and [engineFinished] have been invoked.
     *
-    * Used by [waitForEngineFinished], so that internal Kotest tests can wait until engines
+    * Used by [waitForEnginesFinished], so that internal Kotest tests can wait until engines
     * are finished before performing assertions.
     */
    private val activeEngineCount = MutableStateFlow<Int?>(null)
@@ -74,7 +74,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    }
 
    /** Suspends until at least one engine has started, and all engines have finished. */
-   internal suspend fun waitForEngineFinished() {
+   internal suspend fun waitForEnginesFinished() {
       // wait until `engineFinished()` has been invoked the same number of times as `engineStarted()`
       activeEngineCount.first { it == 0 }
    }

@@ -18,7 +18,7 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(DannyDelay::class)
             .launch()
-         collector.waitForEngineFinished()
+         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
@@ -30,7 +30,7 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(LarryLauncher::class)
             .launch()
-         collector.waitForEngineFinished()
+         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
@@ -42,7 +42,7 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(BillyBlocked::class)
             .launch()
-         collector.waitForEngineFinished()
+         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "sleep interrupted"
