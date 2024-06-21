@@ -1,8 +1,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeLessThan
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Constraints
@@ -590,12 +589,11 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should support durations") {
-         val config = PropTestConfig(constraints = Constraints.duration(200.milliseconds))
+         val config = PropTestConfig(constraints = Constraints.duration(400.milliseconds))
          val start = TimeSource.Monotonic.markNow()
          checkAll(config, Arb.string()) { _ -> }
-         // we should have exited around 200 millis
-         start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)
-         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(400)
+         // we should have exited around 400 millis
+         start.elapsedNow() shouldBeIn 200.milliseconds..800.milliseconds
       }
    }
 }
