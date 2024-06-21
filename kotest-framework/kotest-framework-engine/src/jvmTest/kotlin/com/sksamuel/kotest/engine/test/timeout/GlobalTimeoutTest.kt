@@ -33,15 +33,8 @@ class GlobalTimeoutTest : FunSpec() {
 
 private class TestTimeouts : StringSpec() {
    init {
-
-      "blocked".config(blockingTest = true) {
-         // Long delay, to ensure tests will be interrupted. We'd notice a test that runs for a month.
-         Thread.sleep(28.days.inWholeMilliseconds)
-      }
-
-      "suspend" {
-         // Long delay, to ensure tests will be interrupted. We'd notice a test that runs for a month.
-         delay(28.days)
-      }
+      // Long delays, to ensure tests will be interrupted. We'd notice a test that runs for a month.
+      "blocked".config(blockingTest = true) { Thread.sleep(28.days.inWholeMilliseconds) }
+      "suspend" { delay(28.days) }
    }
 }
