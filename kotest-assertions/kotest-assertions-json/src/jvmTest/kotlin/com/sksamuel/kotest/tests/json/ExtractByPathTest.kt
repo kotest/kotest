@@ -1,8 +1,9 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.ExtractedValue
+import io.kotest.assertions.json.ExtractValueOutcome
+import io.kotest.assertions.json.ExtractValueOutcome.ExtractedValue
+import io.kotest.assertions.json.ExtractValueOutcome.JsonPathNotFound
 import io.kotest.assertions.json.JsonArrayElementRef
-import io.kotest.assertions.json.JsonPathNotFound
 import io.kotest.assertions.json.JsonSubPathFound
 import io.kotest.assertions.json.JsonSubPathJsonArrayTooShort
 import io.kotest.assertions.json.JsonSubPathNotFound
@@ -15,42 +16,43 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
-class ExtractByPathTest: WordSpec() {
+class ExtractByPathTest : WordSpec() {
    @Language("JSON")
-   private val json = """
-      {
-          "ingredients": ["Rice", "Water", "Salt"],
-          "appliance": {
-             "type": "Stove",
-             "kind": "Electric"
-          },
-          "regime": {
-            "temperature": {
-                "degrees": 320,
-                "unit": "F"
+   private val json =
+      """
+        {
+            "ingredients": ["Rice", "Water", "Salt"],
+            "appliance": {
+               "type": "Stove",
+               "kind": "Electric"
             },
-            "comments": []
-          },
-          "steps": [
-            {
-               "name": "Boil",
-               "comments": ["Heat on 3", "No lid"]
-            }
-          ],
-    "comments": null
-      }
-   """.trimIndent()
+            "regime": {
+              "temperature": {
+                  "degrees": 320,
+                  "unit": "F"
+              },
+              "comments": []
+            },
+            "steps": [
+              {
+                 "name": "Boil",
+                 "comments": ["Heat on 3", "No lid"]
+              }
+            ],
+      "comments": null
+        }
+      """.trimIndent()
 
    init {
       "extractByPath" should {
          "find not null value by valid path" {
-            extractByPath<String>(json, "$.regime.temperature.unit") shouldBe ExtractedValue("F")
+            extractByPath(json, "$.regime.temperature.unit", String::class.java) shouldBe ExtractValueOutcome.ExtractedValue("F")
          }
          "find null value by valid path" {
-            extractByPath<String>(json, "$.comments") shouldBe ExtractedValue(null)
+            extractByPath(json, "$.comments", String::class.java) shouldBe ExtractedValue(null)
          }
          "path not found" {
-            extractByPath<String>(json, "$.regime.temperature.unit.name") shouldBe JsonPathNotFound
+            extractByPath(json, "$.regime.temperature.unit.name", String::class.java) shouldBe JsonPathNotFound
          }
       }
 
@@ -67,11 +69,11 @@ class ExtractByPathTest: WordSpec() {
          "find valid sub path" {
             findValidSubPath(
                json,
-               "$.regime.temperature.unit.name.some.more.tokens"
+               "$.regime.temperature.unit.name.some.more.tokens",
             ) shouldBe JsonSubPathFound("$.regime.temperature.unit")
             findValidSubPath(
                json,
-               "$.regime.temperature.unit.name"
+               "$.regime.temperature.unit.name",
             ) shouldBe JsonSubPathFound("$.regime.temperature.unit")
             findValidSubPath(json, "$.regime.temperature.name") shouldBe JsonSubPathFound("$.regime.temperature")
             findValidSubPath(json, "$.regime.no_such_element") shouldBe JsonSubPathFound("$.regime")
