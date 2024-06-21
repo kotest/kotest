@@ -85,6 +85,19 @@ public final class io/kotest/assertions/json/FieldComparison : java/lang/Enum {
 	public static fun values ()[Lio/kotest/assertions/json/FieldComparison;
 }
 
+public final class io/kotest/assertions/json/JsonArrayElementRef {
+	public fun <init> (Ljava/lang/String;I)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun copy (Ljava/lang/String;I)Lio/kotest/assertions/json/JsonArrayElementRef;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/JsonArrayElementRef;Ljava/lang/String;IILjava/lang/Object;)Lio/kotest/assertions/json/JsonArrayElementRef;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndex ()I
+	public final fun getPathToArray ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class io/kotest/assertions/json/JsonError {
 	public abstract fun getPath ()Ljava/util/List;
 }
@@ -369,6 +382,43 @@ public final class io/kotest/assertions/json/JsonPathNotFound : io/kotest/assert
 	public static final field INSTANCE Lio/kotest/assertions/json/JsonPathNotFound;
 }
 
+public final class io/kotest/assertions/json/JsonSubPathFound : io/kotest/assertions/json/JsonSubPathSearchOutcome {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/assertions/json/JsonSubPathFound;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/JsonSubPathFound;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/assertions/json/JsonSubPathFound;
+	public fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSubPath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/json/JsonSubPathJsonArrayTooShort : io/kotest/assertions/json/JsonSubPathSearchOutcome {
+	public fun <init> (Ljava/lang/String;II)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;II)Lio/kotest/assertions/json/JsonSubPathJsonArrayTooShort;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/JsonSubPathJsonArrayTooShort;Ljava/lang/String;IIILjava/lang/Object;)Lio/kotest/assertions/json/JsonSubPathJsonArrayTooShort;
+	public fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getArraySize ()I
+	public final fun getExpectedIndex ()I
+	public final fun getSubPath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/json/JsonSubPathNotFound : io/kotest/assertions/json/JsonSubPathSearchOutcome {
+	public static final field INSTANCE Lio/kotest/assertions/json/JsonSubPathNotFound;
+	public fun description ()Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/assertions/json/JsonSubPathSearchOutcome {
+	public abstract fun description ()Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/json/JsonTree {
 	public fun <init> (Lio/kotest/assertions/json/JsonNode;Ljava/lang/String;)V
 	public final fun component1 ()Lio/kotest/assertions/json/JsonNode;
@@ -389,7 +439,9 @@ public final class io/kotest/assertions/json/KeysKt {
 }
 
 public final class io/kotest/assertions/json/KeyvaluesKt {
-	public static final fun findValidSubPath (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun extractPossiblePathOfJsonArray (Ljava/lang/String;)Lio/kotest/assertions/json/JsonArrayElementRef;
+	public static final fun findValidSubPath (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/assertions/json/JsonSubPathSearchOutcome;
+	public static final fun getPossibleSizeOfJsonArray (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Integer;
 	public static final fun removeLastPartFromPath (Ljava/lang/String;)Ljava/lang/String;
 }
 
