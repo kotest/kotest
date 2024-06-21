@@ -7,6 +7,10 @@ on:
 permissions:
    contents: read
 
+concurrency:
+   group: "PR-Test: ${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+   cancel-in-progress: true
+
 jobs:
    determine-workflows-to-run:
       name: Determine workflows to run
