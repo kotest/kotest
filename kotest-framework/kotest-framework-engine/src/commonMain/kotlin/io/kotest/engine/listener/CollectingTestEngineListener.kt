@@ -22,10 +22,8 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    /**
     * Counts the number of times [engineStarted] and [engineFinished] have been invoked.
     *
-    * (Using a read-write mutex would be more appropriate, but it's not available yet.
-    * See https://github.com/Kotlin/kotlinx.coroutines/issues/94)
-    *
-    * @see waitForEngineFinished
+    * Used by [waitForEngineFinished], so that internal Kotest tests can wait until engines
+    * are finished before performing assertions.
     */
    private val activeEngines = MutableStateFlow<Int?>(null)
 
