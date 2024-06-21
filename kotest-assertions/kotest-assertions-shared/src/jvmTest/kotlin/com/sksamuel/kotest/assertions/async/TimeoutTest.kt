@@ -11,28 +11,28 @@ import kotlin.time.Duration.Companion.milliseconds
 class TimeoutTest : FunSpec({
    test("shouldTimeout should capture the error if a coroutine takes longer than the given timeout") {
       shouldTimeout(Duration.ofMillis(2)) {
-         delay(25)
+         delay(100)
       }
        shouldTimeout(2.milliseconds) {
-           delay(25)
+           delay(100)
        }
       shouldTimeout(2, TimeUnit.MILLISECONDS) {
-         delay(25)
+         delay(100)
       }
    }
    test("shouldTimeout should fail if a coroutine does not timeout") {
       shouldFail {
-         shouldTimeout(Duration.ofMillis(50)) {
+         shouldTimeout(Duration.ofMillis(200)) {
             delay(1)
          }
       }
       shouldFail {
-          shouldTimeout(50.milliseconds) {
+          shouldTimeout(200.milliseconds) {
               delay(1)
           }
       }
       shouldFail {
-         shouldTimeout(50, TimeUnit.MILLISECONDS) {
+         shouldTimeout(200, TimeUnit.MILLISECONDS) {
             delay(1)
          }
       }

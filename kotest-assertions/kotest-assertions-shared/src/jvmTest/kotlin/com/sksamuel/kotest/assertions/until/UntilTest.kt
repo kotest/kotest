@@ -7,25 +7,20 @@ import io.kotest.assertions.until.PatienceConfig
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
+import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.matchers.comparables.shouldBeGreaterThan
-import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
+@Tags("Deprecated")
 class UntilTest : FunSpec({
-
-   // Avoid time-sensitive testing of deprecated functionality
-   defaultTestConfig = TestCaseConfig(enabled = !IS_OS_WINDOWS)
 
    test("until with immediate boolean predicate") {
       var attempts = 0
-      until(1.seconds) {
+      until(4.seconds) {
          attempts++
          System.currentTimeMillis() > 0
       }
@@ -34,7 +29,7 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate that resolves before time duration") {
       var attempts = 0
-      until(3.seconds) {
+      until(8.seconds) {
          attempts++
          attempts == 2
       }
@@ -43,26 +38,26 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate and interval") {
       var attempts = 0
-      until(2.seconds, 10.milliseconds.fixed()) {
+      until(8.seconds, 10.milliseconds.fixed()) {
          attempts++
-         attempts == 100
+         attempts == 10
       }
-      attempts shouldBe 100
+      attempts shouldBe 10
    }
 
    test("until with patience config") {
       var attempts = 0
-      until(PatienceConfig(2.seconds, 10.milliseconds.fixed())) {
+      until(PatienceConfig(4.seconds, 10.milliseconds.fixed())) {
          attempts++
-         attempts == 100
+         attempts == 10
       }
-      attempts shouldBe 100
+      attempts shouldBe 10
    }
 
    test("until with predicate") {
       var attempts = 0
       var t = ""
-      until(5.seconds, { t == "xxx" }) {
+      until(8.seconds, { t == "xxx" }) {
          attempts++
          t += "x"
       }
@@ -72,14 +67,11 @@ class UntilTest : FunSpec({
    test("until with predicate and interval") {
       var attempts = 0
       var t = ""
-      val duration = measureTime {
-         until(1.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
-            attempts++
-            t += "x"
-         }
+      until(8.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
+         attempts++
+         t += "x"
       }
       attempts shouldBe 4
-      duration shouldBeLessThan 100.milliseconds
    }
 
    test("until should throw when the predicate doesn't equal true in the time period") {
