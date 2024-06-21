@@ -1,7 +1,7 @@
 package io.kotest.mpp
 
-import io.kotest.common.TimeMarkCompat
 import java.io.FileWriter
+import kotlin.time.TimeMark
 
 /**
  * Kotest debug log file ("kotest-PID.log" by default, with PID representing the runner's process ID).
@@ -18,7 +18,7 @@ private val file: FileWriter by lazy {
    )
 }
 
-actual fun writeLog(start: TimeMarkCompat, t: Throwable?, f: () -> String) {
+actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
    file.write(start.elapsedNow().inWholeMicroseconds.toString())
    file.write("  ")
    file.write(f())

@@ -43,61 +43,43 @@ jobs:
                  fi
                done < files.txt
 
-   api_check:
+   validate-api:
+      name: Validate API
       needs: [ determine-workflows-to-run ]
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: apiCheck
+         task: apiCheck --continue
 
-   test_linux:
-      needs: [ api_check, determine-workflows-to-run ]
+   validate-primary:
+      name: Validate on primary runner
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
-      strategy:
-         matrix:
-            target:
-               - jvmTest
-               - jsTest
-               - wasmJsTest
-               - linuxX64Test linuxArm64TestKlibrary
-               - androidNativeX86TestKlibrary androidNativeX64TestKlibrary androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary
-               - :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test
+      needs: [ determine-workflows-to-run, validate-api ]
       uses: ./.github/workflows/run-gradle.yml
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: ${{ matrix.target }}
+         task: check --continue
 
-   test_mac:
-      needs: [ test_linux, determine-workflows-to-run ]
+   validate-secondary:
+      name: Validate on secondary runners
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
+      needs: [ determine-workflows-to-run, validate-api, validate-primary ]
       strategy:
-         fail-fast: true
          matrix:
-            target:
-               - macosX64Test macosArm64Test
-               - iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary
-               - tvosX64Test tvosArm64TestKlibrary tvosSimulatorArm64Test
-               - watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX64Test watchosSimulatorArm64Test watchosDeviceArm64TestKlibrary
+            include:
+               -  os: macos-latest
+               -  os: windows-latest
+         fail-fast: false
       uses: ./.github/workflows/run-gradle.yml
       with:
-         runs-on: macos-latest
+         runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: ${{ matrix.target }}
+         task: check --continue
 
-
-   test_windows:
-      needs: [ api_check, determine-workflows-to-run ]
-      if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
-      uses: ./.github/workflows/run-gradle.yml
-      with:
-         runs-on: windows-latest
-         ref: ${{ inputs.ref }}
-         task: mingwX64Test
-
-   test_docs:
+   validate-docs:
       needs: [ determine-workflows-to-run ]
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
       runs-on: ubuntu-latest
@@ -116,7 +98,7 @@ jobs:
    finalize:
       # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
       name: Final PR results
-      needs: [ api_check, test_linux, test_mac, test_windows, test_docs ]
+      needs: [ validate-api, validate-primary, validate-secondary, validate-docs ]
       if: ${{ always() }}
       runs-on: ubuntu-latest
       steps:

@@ -9,22 +9,15 @@ pluginManagement {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-   repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+   repositoriesMode = RepositoriesMode.PREFER_SETTINGS
 
    repositories {
-      google()
       mavenCentral()
-      maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental") {
-         name = "JetBrainsKotlinWasm"
-      }
       maven("https://oss.sonatype.org/content/repositories/snapshots/") {
          name = "SonatypeSnapshots"
          mavenContent { snapshotsOnly() }
       }
-
-      gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
-
-      // workaround for https://youtrack.jetbrains.com/issue/KT-51379
+      //region workaround for https://youtrack.jetbrains.com/issue/KT-51379
       // FIXME remove when updating to Kotlin 2.0
       ivy("https://download.jetbrains.com/kotlin/native/builds") {
          name = "KotlinNative"
@@ -45,6 +38,7 @@ dependencyResolutionManagement {
          content { includeModuleByRegex(".*", ".*kotlin-native-prebuilt.*") }
          metadataSources { artifact() }
       }
+      //endregion
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/

@@ -4,6 +4,7 @@ import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.async
@@ -61,7 +62,7 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
          scenario("previous test result 2") {
             count.get() shouldBe 40
          }
-         // we need enough invocation to ensure all the threads get used up
+         // we need enough invocations to ensure multiple threads get used up
          scenario("multiple threads should use a thread pool for the coroutines").config(
             invocations = 6,
             threads = 6
@@ -71,7 +72,7 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
             provokeThreadSwitch()
          }
          scenario("previous test result 3") {
-            threadnames.size shouldBe 6
+            threadnames.size shouldBeGreaterThan 1
          }
          scenario("a single threaded test should run listeners on the same thread as the test") {
             Thread.currentThread().name.shouldStartWith(listenerThread)

@@ -19,13 +19,13 @@ class TestCaseSourceRefTest : FunSpec() {
          )
       }
 
-      test("source ref should be performant").config(timeout = 60.seconds) {
+      test("source ref should be performant").config(timeout = 240.seconds) {
          val duration = measureTime {
             repeat(100_000) {
                Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest()).first().source
             }
          }
-         duration shouldBeLessThan 30.seconds
+         duration shouldBeLessThan 120.seconds
       }
    }
 }

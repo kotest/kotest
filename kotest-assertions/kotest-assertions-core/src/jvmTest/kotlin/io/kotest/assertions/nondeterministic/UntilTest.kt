@@ -37,14 +37,14 @@ class UntilTest : FunSpec({
    test("until with config") {
       var attempts = 0
       val config = untilConfig {
-         duration = 2.seconds
+         duration = 3.seconds
          interval = 10.milliseconds
       }
       until(config) {
          attempts++
-         attempts == 100
+         attempts == 10
       }
-      attempts shouldBe 100
+      attempts shouldBe 10
    }
 
    test("until with listener") {

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
    `java-library`
@@ -15,6 +16,9 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }

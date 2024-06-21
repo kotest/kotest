@@ -2,7 +2,6 @@
 
 package io.kotest.engine.test
 
-import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
@@ -35,6 +34,7 @@ import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
 import io.kotest.mpp.Logger
 import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 /**
  * Executes a single [TestCase].
@@ -53,7 +53,7 @@ internal class TestCaseExecutor(
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
 
-      val timeMark = MonotonicTimeSourceCompat.markNow()
+      val timeMark = TimeSource.Monotonic.markNow()
 
       // JS platforms require extra care when runTest is used, so skip it for now.
       // Issue: https://github.com/kotest/kotest/issues/4077
