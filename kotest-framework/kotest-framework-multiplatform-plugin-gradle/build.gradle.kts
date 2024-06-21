@@ -67,7 +67,6 @@ tasks.withType<Test>().configureEach {
    }
 
    useJUnitPlatform()
-
    systemProperty("kotestVersion", Ci.publishVersion)
 
    testLogging {
