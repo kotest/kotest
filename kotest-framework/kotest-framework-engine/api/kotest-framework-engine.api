@@ -314,6 +314,7 @@ public abstract class io/kotest/engine/listener/AbstractTestEngineListener : io/
 public final class io/kotest/engine/listener/CollectingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener, kotlinx/coroutines/sync/Mutex {
 	public fun <init> ()V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getErrors ()Z
 	public final fun getNames ()Ljava/util/List;
 	public fun getOnLock ()Lkotlinx/coroutines/selects/SelectClause2;
