@@ -36,6 +36,8 @@ import kotlin.time.measureTime
 @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
+   coroutineTestScope = true
+
    test("eventually should immediately pass working tests") {
       eventually(5.seconds) {
          System.currentTimeMillis()
@@ -128,8 +130,7 @@ class EventuallySpec : FunSpec({
          }
       }.message
 
-      // TODO: add this assertion when we can use kotlin.time again
-//         message.shouldContain("Eventually block failed after 400ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+      message.shouldContain("Eventually block failed after 400ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25\\) delay between attempts".toRegex())
       message.shouldContain("The first error was caused by: first")
       message.shouldContain("The last error was caused by: last")
    }
@@ -338,8 +339,7 @@ class EventuallySpec : FunSpec({
          }
       }.message
 
-      // TODO: re-enable this when we have kotlin.time again
-//         message.shouldContain("Eventually block failed after Infinity")
+      message.shouldContain("Eventually block failed after")
       message.shouldContain("attempted 2 time(s)")
    }
 
