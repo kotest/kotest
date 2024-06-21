@@ -21,7 +21,6 @@ class GlobalTimeoutTest : FunSpec() {
             .withConfiguration(c)
             .launch()
 
-         // wait until the engine has finished
          collector.waitForEngineFinished()
 
          collector.names.shouldContainExactly("blocked", "suspend")
