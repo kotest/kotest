@@ -25,7 +25,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
     * Used by [waitForEngineFinished], so that internal Kotest tests can wait until engines
     * are finished before performing assertions.
     */
-   private val activeEngines = MutableStateFlow<Int?>(null)
+   private val activeEngineCount = MutableStateFlow<Int?>(null)
 
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
    fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
@@ -51,12 +51,12 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    }
 
    override suspend fun engineStarted() {
-      activeEngines.update { (it ?: 0) + 1 }
+      activeEngineCount.update { (it ?: 0) + 1 }
    }
 
    override suspend fun engineFinished(t: List<Throwable>): Unit = withLock {
       if (t.isNotEmpty()) errors = true
-      activeEngines.update { (it ?: 0) - 1 }
+      activeEngineCount.update { (it ?: 0) - 1 }
    }
 
    /**
@@ -76,6 +76,6 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    /** Suspends until at least one engine has started, and all engines have finished. */
    internal suspend fun waitForEngineFinished() {
       // wait until `engineFinished()` has been invoked the same number of times as `engineStarted()`
-      activeEngines.first { it == 0 }
+      activeEngineCount.first { it == 0 }
    }
 }
