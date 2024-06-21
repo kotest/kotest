@@ -165,4 +165,20 @@ develocity {
    }
 }
 
+buildCache {
+   val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
+   val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
+   remote<HttpBuildCache> {
+      // FIXME DO NOT MERGE - need to create kotest.io URL, set up SSL cert, and disable insecure options:
+      url = uri("http://5.161.201.26:5071/cache")
+      isAllowUntrustedServer = true
+      isAllowInsecureProtocol = true
+      credentials {
+         username = kotestUser
+         password = kotestPass
+      }
+      isPush = kotestUser != null && kotestPass != null
+   }
+}
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
