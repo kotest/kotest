@@ -73,7 +73,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
       return TestCaseKey(this.descriptor, this.name, this.spec::class)
    }
 
-   /** Suspends until all engines have finished. */
+   /** Suspends until at least one engine has started, and all engines have finished. */
    internal suspend fun waitForEngineFinished() {
       // wait until `engineFinished()` has been invoked the same number of times as `engineStarted()`
       activeEngines.first { it == 0 }
