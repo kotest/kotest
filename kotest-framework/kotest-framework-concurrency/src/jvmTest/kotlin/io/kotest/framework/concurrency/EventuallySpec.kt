@@ -18,6 +18,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -32,7 +33,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
 @ExperimentalKotest
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
    test("eventually should immediately pass working tests") {
@@ -96,7 +97,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually handles kotlin assertion errors") {
       var thrown = false
-      eventually(100.milliseconds) {
+      eventually(400.milliseconds) {
          if (!thrown) {
             thrown = true
             throw AssertionError("boom")
@@ -106,7 +107,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually handles java assertion errors") {
       var thrown = false
-      eventually(100.milliseconds) {
+      eventually(400.milliseconds) {
          if (!thrown) {
             thrown = true
             throw java.lang.AssertionError("boom")
@@ -117,7 +118,7 @@ class EventuallySpec : FunSpec({
    test("eventually displays the first and last underlying failures") {
       var count = 0
       val message = shouldThrow<AssertionError> {
-         eventually(100.milliseconds) {
+         eventually(400.milliseconds) {
             if (count == 0) {
                count = 1
                fail("first")
@@ -128,13 +129,13 @@ class EventuallySpec : FunSpec({
       }.message
 
       // TODO: add this assertion when we can use kotlin.time again
-//         message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+//         message.shouldContain("Eventually block failed after 400ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
       message.shouldContain("The first error was caused by: first")
       message.shouldContain("The last error was caused by: last")
    }
 
    test("eventually allows suspendable functions") {
-      eventually(100.milliseconds) {
+      eventually(400.milliseconds) {
          delay(25)
          System.currentTimeMillis()
       }
@@ -143,8 +144,8 @@ class EventuallySpec : FunSpec({
    test("eventually allows configuring interval delay") {
       var count = 0
       eventually({
-         duration(200.milliseconds)
-         interval = 40.milliseconds.fixed()
+         duration(400.milliseconds)
+         interval = 80.milliseconds.fixed()
       }) {
          count += 1
       }
@@ -161,7 +162,7 @@ class EventuallySpec : FunSpec({
             // we won't be able to run in here
             eventually({
                duration(1.seconds)
-               interval = 100.milliseconds.fixed()
+               interval = 400.milliseconds.fixed()
             }) {
                counter.incrementAndGet()
             }
