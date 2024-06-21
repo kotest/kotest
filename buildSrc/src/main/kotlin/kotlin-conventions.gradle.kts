@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
    `java-library`
@@ -13,7 +14,9 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-   maxHeapSize = "4G"
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }

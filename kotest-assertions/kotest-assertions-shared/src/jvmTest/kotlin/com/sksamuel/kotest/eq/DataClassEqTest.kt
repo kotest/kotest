@@ -136,7 +136,7 @@ class DataClassEqTest : StringSpec({
 
 class `DataClassEq AssertionConfig Tests` : StringSpec({
 
-   afterTest { (test, result) ->
+   afterTest { (_, _) ->
       System.setProperty("kotest.assertions.show-data-class-diffs", "true")
    }
 

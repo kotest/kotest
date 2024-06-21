@@ -12,7 +12,7 @@ class TimeoutTest : FunSpec({
       shouldThrow<TimeoutCancellationException> {
          withTimeout(50) {
             launch {
-               Thread.sleep(100)
+               Thread.sleep(400)
             }
          }
          println("no timeout detected")
@@ -23,7 +23,7 @@ class TimeoutTest : FunSpec({
       shouldThrow<TimeoutCancellationException> {
          withTimeout(50) {
             launch {
-               delay(100)
+               delay(400)
             }
          }
          println("no timeout detected")
