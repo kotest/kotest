@@ -179,6 +179,12 @@ buildCache {
       }
       isPush = kotestUser != null && kotestPass != null
    }
+   local {
+      // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
+      // and to ensure that CI builds updates the remote cache.
+      val isCI = System.getenv("CI") == "true"
+      isEnabled = !isCI
+   }
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
