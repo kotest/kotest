@@ -16,7 +16,6 @@ import io.kotest.common.nonConstantTrue
 import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
-import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -179,7 +178,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "handle shouldNotBeNull" {
-            val duration = measureTime {
+            val duration = testTimeSource().measureTime {
                shouldThrow<java.lang.AssertionError> {
                   eventually(50.milliseconds) {
                      val str: String? = null
@@ -187,7 +186,7 @@ class EventuallyTest : WordSpec() {
                   }
                }
             }
-            duration shouldBeGreaterThanOrEqualTo 50.milliseconds
+            duration shouldBe 50.milliseconds
          }
 
          "eventually with boolean predicate" {

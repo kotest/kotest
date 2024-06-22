@@ -54,7 +54,7 @@ class ContinuallyTest : WordSpec() {
                }
             }
             val r =
-               ("Test failed after [\\d\\.]+ms; expected to pass for 3s;" +
+               ("Test failed after [\\d\\.]+\\w; expected to pass for 3s;" +
                   " attempted 100 times\nUnderlying failure was: 100 should be < 100").toRegex()
             e.message shouldMatch r
          }

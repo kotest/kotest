@@ -1,10 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.failure
+import io.kotest.common.testTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias ContinuallyListener<T> = (ContinuallyState<T>) -> Unit
@@ -59,7 +61,7 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    delay(initialDelay)
 
    val duration = duration.milliseconds
-   val start = TimeSource.Monotonic.markNow()
+   val start = testTimeSource().markNow()
    val end = start.plus(duration)
    var times = 0
    var result: T? = null

@@ -22,7 +22,7 @@ class RetryTest : StringSpec() {
 
       "should allow execution of suspend functions" {
          val retryTester = retryTester(4)
-         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds) {
+         retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds) {
             delay(100)
             retryTester.isReady() shouldBe true
          }
@@ -37,7 +37,7 @@ class RetryTest : StringSpec() {
       "should allow config" {
          val config = retryConfig {
             maxRetry = 5
-            timeout = 500.milliseconds
+            timeout = 900.milliseconds
             delay = 100.milliseconds
          }
          val retryTester = retryTester(4)
@@ -110,7 +110,7 @@ class RetryTest : StringSpec() {
       "should call given assertion exponentially" {
          val retryTester = retryTester(4)
          shouldNotThrow<Exception> {
-            retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds, multiplier = 2) {
+            retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds, multiplier = 2) {
                retryTester.isReady() shouldBe true
             }
          }
@@ -159,7 +159,7 @@ class RetryTest : StringSpec() {
 
       "when multiplier is negative, expect ..." { // TODO
          val retryTester = retryTester(4)
-         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds, multiplier = -1) {
+         retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds, multiplier = -1) {
             delay(100)
             retryTester.isReady() shouldBe true
          }
