@@ -90,7 +90,7 @@ val plugins = listOf(
 )
 
 val productName = System.getenv("PRODUCT_NAME") ?: "IC-241"
-val jvmTarget = System.getenv("JVM_TARGET") ?: "11"
+val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -137,20 +137,13 @@ sourceSets {
    }
 }
 
+kotlin {
+   compilerOptions {
+      jvmToolchain(JavaLanguageVersion.of(jvmTargetVersion).asInt())
+   }
+}
+
 tasks {
-
-   compileKotlin {
-      kotlinOptions {
-         jvmTarget = jvmTarget
-      }
-   }
-
-   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-      kotlinOptions {
-         jvmTarget = jvmTarget
-      }
-   }
-
    buildPlugin {
       archiveClassifier.set(descriptor.sdkVersion)
    }
