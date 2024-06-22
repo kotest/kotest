@@ -12,7 +12,7 @@ class GlobalTimeoutTest : FunSpec() {
    init {
       test("global timeouts should apply if no other timeout is set")
       {
-         val c = ProjectConfiguration().apply { timeout = 3 }
+         val c = ProjectConfiguration().apply { timeout = 2000 }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(TestTimeouts::class)
