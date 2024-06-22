@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -18,7 +19,9 @@ class EngineTimeoutTest : FunSpec() {
             .withClasses(DannyDelay::class)
             .launch()
          collector.names shouldBe listOf("a")
-         collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 400ms"
+         collector.result("a").asClue { result ->
+            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
+         }
       }
 
       test("timeouts should be applied by the engine to suspend inside launched coroutines") {
@@ -27,7 +30,9 @@ class EngineTimeoutTest : FunSpec() {
             .withClasses(LarryLauncher::class)
             .launch()
          collector.names shouldBe listOf("a")
-         collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 400ms"
+         collector.result("a").asClue { result ->
+            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
+         }
       }
 
       test("timeouts should be applied by the engine to blocked threads") {
@@ -36,7 +41,9 @@ class EngineTimeoutTest : FunSpec() {
             .withClasses(BillyBlocked::class)
             .launch()
          collector.names shouldBe listOf("a")
-         collector.result("a")!!.errorOrNull!!.message!! shouldBe "sleep interrupted"
+         collector.result("a").asClue { result ->
+            result?.errorOrNull?.message shouldBe "sleep interrupted"
+         }
       }
    }
 }
