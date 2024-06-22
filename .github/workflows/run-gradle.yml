@@ -52,6 +52,12 @@ jobs:
             with:
                gradle-home-cache-cleanup: true
 
+         -  name: Cache Kotlin Konan
+            uses: actions/cache@v4
+            with:
+               path: ~/.konan
+               key: ${{ runner.os }}-kotlin-konan
+
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
             shell: bash
