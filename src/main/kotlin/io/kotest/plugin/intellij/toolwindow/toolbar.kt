@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -53,6 +54,8 @@ class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand All", n
 class FilterCallbacksAction(private val tree: TestFileTree) :
    ToggleAction("Filter Vallbacks", null, AllIcons.Nodes.Controller) {
 
+   override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showCallbacks
    }
@@ -66,6 +69,8 @@ class FilterCallbacksAction(private val tree: TestFileTree) :
 class FilterModulesAction(private val tree: TestFileTree) :
    ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
 
+   override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showModules
    }
@@ -77,6 +82,7 @@ class FilterModulesAction(private val tree: TestFileTree) :
 }
 
 class FilterTagsAction(private val tree: TestFileTree) : ToggleAction("Filter Tags", null, AllIcons.Nodes.Tag) {
+   override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showTags
@@ -89,6 +95,7 @@ class FilterTagsAction(private val tree: TestFileTree) : ToggleAction("Filter Ta
 }
 
 class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter Includes", null, AllIcons.Nodes.Tag) {
+   override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showIncludes
@@ -105,6 +112,7 @@ class NavigateToNodeAction : ToggleAction(
    null,
    AllIcons.General.AutoscrollToSource
 ) {
+   override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.autoscrollToSource
