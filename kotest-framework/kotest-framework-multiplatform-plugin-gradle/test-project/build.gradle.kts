@@ -77,17 +77,8 @@ if (useNewNativeMemoryModel.toBoolean()) {
    }
 }
 
-// FIXME: WORKAROUND https://youtrack.jetbrains.com/issue/KT-65864
-//     Use a Node.js version current enough to support Kotlin/Wasm
-
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-   rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-      nodeVersion = "22.0.0-nightly2024010568c8472ed9"
-      println("Using Node.js $nodeVersion to support Kotlin/Wasm")
-      nodeDownloadBaseUrl = "https://nodejs.org/download/nightly"
-   }
-}
-
-rootProject.tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-   args.add("--ignore-engines") // Prevent Yarn from complaining about newer Node.js versions.
+rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java) {
+   // yarn.lock will change when running tests with multiple Kotlin versions
+   rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().yarnLockMismatchReport =
+      org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
 }

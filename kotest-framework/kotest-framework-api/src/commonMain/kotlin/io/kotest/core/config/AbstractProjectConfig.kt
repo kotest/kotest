@@ -44,12 +44,14 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Listener] instances.
     */
+   @Suppress("DEPRECATION") // Remove when removing function
    @Deprecated("Use extensions. This will be removed in 6.0")
    open fun listeners(): List<Listener> = emptyList()
 
    /**
     * List of project wide [Filter] instances.
     */
+   @Suppress("DEPRECATION") // Remove when removing function
    @Deprecated("Use extensions. This will be removed in 6.0")
    open fun filters(): List<Filter> = emptyList()
 
@@ -202,6 +204,7 @@ abstract class AbstractProjectConfig {
     * Any [TestCaseConfig] set here is used as the default for tests, unless overridden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    @Deprecated("use the individual settings instead of the test case config class. Deprecated since 5.8.1")
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
@@ -268,6 +271,13 @@ abstract class AbstractProjectConfig {
    open var displayFullTestPath: Boolean? = null
 
    open var allowOutOfOrderCallbacks: Boolean? = null
+
+   /**
+    * Set to true if you wish to enable classpath scanning for test discovery if no selectors are present.
+    *
+    * Note: JVM ONLY
+    */
+   open var discoveryClasspathFallbackEnabled: Boolean? = null
 
    /**
     * Set to false if you wish to allow nested jar scanning for tests.

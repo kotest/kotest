@@ -108,19 +108,23 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
  * regardless of order.
  *
  */
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, options: CompareJsonOptions) {
    this should equalJson(expected, options)
 }
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, options: CompareJsonOptions) {
    this shouldNot equalJson(expected, options)

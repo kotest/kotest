@@ -11,12 +11,12 @@ import io.kotest.matchers.shouldNot
  *
  * Assertion to check that this [ClosedRange] intersects with another [ClosedRange].
  *
- * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldIntersect]
  * @see [intersect]
  */
-infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T>): ClosedRange<T> {
+infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should intersect(Range.ofClosedRange(range))
    return this
 }
@@ -26,13 +26,12 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T
  *
  * Assertion to check that this [OpenEndRange] intersects with a [ClosedRange].
  *
- * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<T>): OpenEndRange<T> {
+infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) should intersect(Range.ofClosedRange(range))
    return this
 }
@@ -45,8 +44,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<
  * @see [shouldIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<T>): ClosedRange<T> {
+infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
 }
@@ -59,8 +57,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<
  * @see [shouldIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
+infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
 }
@@ -70,12 +67,12 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange
  *
  * Assertion to check that this [ClosedRange] does not intersect with another [ClosedRange].
  *
- * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
-infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRange<T>): ClosedRange<T> {
+infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
 }
@@ -88,8 +85,7 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRang
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRange<T>): ClosedRange<T> {
+infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this
 }
@@ -99,13 +95,12 @@ infix fun <T: Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRan
  *
  * Assertion to check that this [OpenEndRange] does not intersect with a [ClosedRange].
  *
- * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRange<T>): OpenEndRange<T> {
+infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
 }
@@ -118,8 +113,7 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRan
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
-@OptIn(ExperimentalStdlibApi::class)
-infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
+infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this
 }
@@ -129,10 +123,9 @@ infix fun <T: Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRa
  *
  * Assertion to check that this [range] intersects with another [range].
  *
- * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
- *
+ * An empty range will always fail.
  */
-internal fun <T: Comparable<T>> intersect(range: Range<T>) = object : Matcher<Range<T>> {
+internal fun <T : Comparable<T>> intersect(range: Range<T>) = object : Matcher<Range<T>> {
    override fun test(value: Range<T>): MatcherResult {
       if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
 
@@ -145,4 +138,3 @@ internal fun <T: Comparable<T>> intersect(range: Range<T>) = object : Matcher<Ra
       )
    }
 }
-

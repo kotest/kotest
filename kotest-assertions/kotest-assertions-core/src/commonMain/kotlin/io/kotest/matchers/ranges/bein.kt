@@ -13,7 +13,7 @@ import io.kotest.matchers.shouldNot
  * therefore even if the exact instance is not in [ClosedRange] but another instance with same value is present, the
  * test will pass.
  *
- * An empty range will always fail. If you need to check for empty range, use [ClosedRange.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -29,7 +29,7 @@ infix fun <T: Comparable<T>> T.shouldBeIn(range: ClosedRange<T>): T {
  * Assertion to check that this element is not any of [range]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [range], or this will fail.
  *
- * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
+ * An empty range will always fail.
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -46,7 +46,7 @@ infix fun <T: Comparable<T>> T.shouldNotBeIn(range: ClosedRange<T>): T {
  * therefore even if the exact instance is not in [range] but another instance with same value is present, the
  * test will pass.
  *
- * An empty range will always fail. If you need to check for empty range, use [Iterable.shouldBeEmpty]
+ * An empty range will always fail.
  *
  */
 fun <T: Comparable<T>> beIn(range: ClosedRange<T>) = object : Matcher<T> {

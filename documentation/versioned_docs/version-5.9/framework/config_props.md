@@ -133,6 +133,9 @@ object KotestEngineProperties {
     */
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
 
+   /**
+    * Disable scanning for project config in (third-party) JARs on the classpath.
+    */
    const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"
 }
 ```

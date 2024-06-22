@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.inspectors.forAtLeastOne
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -18,8 +18,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
 
    setOf(
-      "1.9.23",
-//      "2.0.0-Beta2",
+      "1.9.24",
+      "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
@@ -34,23 +34,19 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
          }
 
          fun shouldHaveExpectedTestResultsFor(taskName: String) {
-            val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
-            testReportFile.toFile().shouldBeAFile()
-
-            val testReportContents = Files.readAllBytes(testReportFile).decodeToString()
-
             withClue("$taskName test report") {
-               // FIXME: java.lang.NoClassDefFoundError: io/kotest/matchers/string/StartKt
-               //      occurs with
-               //          testReportContents shouldStartWith """
-               //      when running `gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:test`
-               //      on some platform locally (but works on CI)
-               testReportContents.startsWith(
+               val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
+               testReportFile.toFile().shouldBeAFile()
+
+               val testReportContentBeginning =
+                  Files.readAllBytes(testReportFile).decodeToString().lineSequence().take(2).joinToString("\n")
+
+               testReportContentBeginning.shouldStartWith(
                   """
                   <?xml version="1.0" encoding="UTF-8"?>
                   <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
                   """.trimIndent()
-               ) shouldBe true
+               )
             }
          }
 
@@ -58,7 +54,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             val taskNames = listOf(
                "jvmTest",
                "jsBrowserTest",
-               // "jsNodeTest", // FIXME: Enable when #3329 "Node JS tests do not report failures correctly" is resolved
+               "jsNodeTest",
                "wasmJsBrowserTest",
                "wasmJsNodeTest"
             )
@@ -125,7 +121,9 @@ private data class GradleInvocation(
    val projectPath: Path,
    val arguments: List<String>
 ) {
-   private val wrapperScriptPath: Path = Paths.get("..", "..", "gradlew")
+   val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
+   private val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
+   private val wrapperScriptPath: Path = Paths.get("..", "..", wrapperScriptName)
 
    class Result(command: List<String>, val output: String, val exitCode: Int) {
       val clue = "Gradle process $command exited with code $exitCode and output:\n" + output.prependIndent("\t>>> ")
