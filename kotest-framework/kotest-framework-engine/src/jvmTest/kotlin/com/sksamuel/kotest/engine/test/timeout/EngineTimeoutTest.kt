@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -18,11 +17,8 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(DannyDelay::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
-         collector.result("a").asClue { result ->
-            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
-         }
+         collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 1ms"
       }
 
       test("timeouts should be applied by the engine to suspend inside launched coroutines") {
@@ -30,11 +26,8 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(LarryLauncher::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
-         collector.result("a").asClue { result ->
-            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
-         }
+         collector.result("a")!!.errorOrNull!!.message!! shouldBe "Test 'a' did not complete within 1ms"
       }
 
       test("timeouts should be applied by the engine to blocked threads") {
@@ -42,11 +35,8 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(BillyBlocked::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
-         collector.result("a").asClue { result ->
-            result?.errorOrNull?.message shouldBe "sleep interrupted"
-         }
+         collector.result("a")!!.errorOrNull!!.message!! shouldBe "sleep interrupted"
       }
    }
 }
