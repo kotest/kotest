@@ -3,14 +3,12 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.common.testTimeSource
 import kotlinx.coroutines.delay
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -50,7 +48,7 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val start = EventuallyTimeSource.current().markNow()
+   val start = testTimeSource().markNow()
    val control = EventuallyControl(config, start)
 
    try {
@@ -161,7 +159,7 @@ class EventuallyConfigurationBuilder {
    var retries: Int = EventuallyConfigurationDefaults.retries
 
    /**
-    * A set of exceptions, which if thrown, will cause the test function to be retried.
+    * A set of exceptions, which, if thrown, will cause the test function to be retried.
     * By default, all exceptions are retried.
     *
     * This set is applied in addition to the values specified by [expectedExceptionsFn].
@@ -265,29 +263,3 @@ private class EventuallyControl(
 }
 
 internal object ShortCircuitControlException : Throwable()
-
-
-/**
- * Store a [TimeSource] to be used by [eventually].
- */
-internal class EventuallyTimeSource(
-   val timeSource: TimeSource
-) : CoroutineContext.Element {
-
-   override val key: CoroutineContext.Key<EventuallyTimeSource>
-      get() = KEY
-
-   internal companion object {
-      /**
-       * Retrieves the [TimeSource] used by [eventually].
-       *
-       * For internal Kotest testing purposes the [TimeSource] can be overridden.
-       * For normal usage [TimeSource.Monotonic] is used.
-       */
-      internal suspend fun current(): TimeSource =
-         coroutineContext[KEY]?.timeSource
-            ?: TimeSource.Monotonic
-
-      internal val KEY = object : CoroutineContext.Key<EventuallyTimeSource> {}
-   }
-}

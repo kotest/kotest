@@ -1,7 +1,4 @@
-@file:Suppress(
-   "DEPRECATION",
-   "BlockingMethodInNonBlockingContext",
-)
+@file:Suppress("DEPRECATION")
 
 package io.kotest.framework.concurrency
 
@@ -10,10 +7,12 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantTrue
+import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -40,14 +39,14 @@ class EventuallySpec : FunSpec({
 
    test("eventually should immediately pass working tests") {
       eventually(5.seconds) {
-         System.currentTimeMillis()
+         nonConstantTrue() shouldBe true
       }
    }
 
    test("eventually passes tests that complete within the time allowed") {
-      val end = System.currentTimeMillis() + 250L
+      val start = testTimeSource().markNow()
       eventually(5.seconds) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             1 shouldBe 2
       }
    }
@@ -68,9 +67,9 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that completed within the time allowed, AssertionError") {
-      val end = System.currentTimeMillis() + 250
+      val start = testTimeSource().markNow()
       eventually(5.seconds) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             assert(false)
       }
    }
@@ -87,12 +86,12 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
-      val end = System.currentTimeMillis() + 250
+      val start = testTimeSource().markNow()
       eventually({
          duration(5.seconds)
          suppressExceptions = setOf(FileNotFoundException::class)
       }) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             throw FileNotFoundException("foo")
       }
    }
@@ -138,7 +137,7 @@ class EventuallySpec : FunSpec({
    test("eventually allows suspendable functions") {
       eventually(400.milliseconds) {
          delay(25)
-         System.currentTimeMillis()
+         nonConstantTrue() shouldBe true
       }
    }
 
@@ -195,7 +194,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually handles shouldNotBeNull") {
-      measureTime {
+       testTimeSource().measureTime {
          shouldThrow<java.lang.AssertionError> {
             eventually(50.milliseconds) {
                val str: String? = null
@@ -207,7 +206,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with boolean predicate") {
       eventually(5.seconds) {
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
    }
 
@@ -215,7 +214,7 @@ class EventuallySpec : FunSpec({
       eventually({
          duration(5.seconds)
          interval = 1.seconds.fixed()
-         predicate = { System.currentTimeMillis() > 0 }
+         predicate = { nonConstantTrue() }
       }) {}
    }
 
@@ -344,12 +343,12 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually overrides assertion to hard assertion before executing assertion and reset it after executing") {
-      val target = System.currentTimeMillis() + 1000
+      val start = testTimeSource().markNow()
       val message = shouldThrow<AssertionError> {
          all {
             withClue("Eventually that should pass") {
                eventually(2.seconds) {
-                  System.currentTimeMillis() shouldBeGreaterThan target
+                  start.elapsedNow() shouldBeGreaterThan 1000.milliseconds
                }
             }
             withClue("1 should never be 2") {

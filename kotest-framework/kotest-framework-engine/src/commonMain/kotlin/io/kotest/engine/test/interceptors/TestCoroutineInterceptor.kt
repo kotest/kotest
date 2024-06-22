@@ -1,9 +1,11 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.TestTimeSourceContextElement
 import io.kotest.core.coroutines.TestScopeElement
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.test.runTest
@@ -28,10 +30,11 @@ class TestCoroutineInterceptor : TestExecutionInterceptor {
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }
       runTest {
          withContext(TestScopeElement(this)) {
-            result = test(testCase, scope.withCoroutineContext(coroutineContext))
+            withContext(TestTimeSourceContextElement(coroutineContext.testCoroutineScheduler.timeSource)) {
+               result = test(testCase, scope.withCoroutineContext(coroutineContext))
+            }
          }
       }
       return result
    }
 }
-

@@ -14,6 +14,11 @@ public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/
 public abstract interface annotation class io/kotest/common/KotestInternal : java/lang/annotation/Annotation {
 }
 
+public final class io/kotest/common/NonConstantResultsKt {
+	public static final fun nonConstantFalse ()Z
+	public static final fun nonConstantTrue ()Z
+}
+
 public final class io/kotest/common/Platform : java/lang/Enum {
 	public static final field JS Lio/kotest/common/Platform;
 	public static final field JVM Lio/kotest/common/Platform;
@@ -71,6 +76,18 @@ public final class io/kotest/common/TestPathContextElement : kotlin/coroutines/A
 }
 
 public final class io/kotest/common/TestPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/common/TestTimeSourceContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
+	public static final field Key Lio/kotest/common/TestTimeSourceContextElement$Key;
+	public fun <init> (Lkotlin/time/TimeSource;)V
+}
+
+public final class io/kotest/common/TestTimeSourceContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/common/TestTimeSourceContextElementKt {
+	public static final fun testTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/common/errors/ComparisonError {

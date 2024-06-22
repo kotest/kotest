@@ -1,4 +1,5 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
+@file:Suppress("DEPRECATION")
+@file:OptIn(ExperimentalCoroutinesApi::class)
 
 package com.sksamuel.kotest.assertions.timing
 
@@ -11,15 +12,18 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.withClue
+import io.kotest.common.nonConstantTrue
+import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -38,16 +42,18 @@ import kotlin.time.measureTime
 class EventuallyTest : WordSpec() {
 
    init {
+      coroutineTestScope = true
+
       "eventually" should {
          "pass working tests" {
             eventually(5.days) {
-               System.currentTimeMillis()
+               nonConstantTrue() shouldBe true
             }
          }
          "pass tests that completed within the time allowed" {
-            val end = System.currentTimeMillis() + 150
+            val start = testTimeSource().markNow()
             eventually(1.seconds) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw RuntimeException("foo")
             }
          }
@@ -65,16 +71,16 @@ class EventuallyTest : WordSpec() {
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError" {
-            val end = System.currentTimeMillis() + 150
+            val start = testTimeSource().markNow()
             eventually(5.days) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception" {
-            val end = System.currentTimeMillis() + 150
+            val start = testTimeSource().markNow()
             eventually(5.seconds, FileNotFoundException::class) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException()
             }
          }
@@ -86,9 +92,9 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that throws FileNotFoundException for some time" {
-            val end = System.currentTimeMillis() + 150
+            val start = testTimeSource().markNow()
             eventually(5.days) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException("foo")
             }
          }
@@ -129,7 +135,7 @@ class EventuallyTest : WordSpec() {
          "allow suspendable functions" {
             eventually(100.milliseconds) {
                delay(1)
-               System.currentTimeMillis()
+               nonConstantTrue() shouldBe true
             }
          }
          "allow configuring interval delay" {
@@ -186,13 +192,13 @@ class EventuallyTest : WordSpec() {
 
          "eventually with boolean predicate" {
             eventually(5.seconds) {
-               System.currentTimeMillis() > 0
+               nonConstantTrue() shouldBe true
             }
          }
 
          "eventually with boolean predicate and interval" {
             eventually(5.seconds, 1.seconds.fixed()) {
-               System.currentTimeMillis() > 0
+               nonConstantTrue() shouldBe true
             }
          }
 
@@ -289,12 +295,12 @@ class EventuallyTest : WordSpec() {
          }
 
          "override assertion to hard assertion before executing assertion and reset it after executing" {
-            val target = System.currentTimeMillis() + 150
+            val start = testTimeSource().markNow()
             val message = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("Eventually which should pass") {
                      eventually(2.seconds) {
-                        System.currentTimeMillis() shouldBeGreaterThan target
+                        start.elapsedNow() shouldBeGreaterThan 150.milliseconds
                      }
                   }
                   withClue("1 should never be 2") {
