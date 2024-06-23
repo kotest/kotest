@@ -78,15 +78,8 @@ public final class io/kotest/common/TestPathContextElement : kotlin/coroutines/A
 public final class io/kotest/common/TestPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
 }
 
-public final class io/kotest/common/TestTimeSourceContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
-	public static final field Key Lio/kotest/common/TestTimeSourceContextElement$Key;
-	public fun <init> (Lkotlin/time/TimeSource;)V
-}
-
-public final class io/kotest/common/TestTimeSourceContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/common/TestTimeSourceContextElementKt {
+public final class io/kotest/common/TestTimeSourceKt {
+	public static final fun getTestCoroutineSchedulerOrNull (Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
 	public static final fun testTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
