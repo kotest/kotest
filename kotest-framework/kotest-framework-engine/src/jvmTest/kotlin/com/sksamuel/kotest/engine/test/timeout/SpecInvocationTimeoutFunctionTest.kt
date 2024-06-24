@@ -18,7 +18,7 @@ class FunctionOverrideInvocationTimeoutTest : FunSpec() {
    }
 
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
       test("should take timeout from spec setting").config(invocations = 3) {
          delay(10.hours)
       }

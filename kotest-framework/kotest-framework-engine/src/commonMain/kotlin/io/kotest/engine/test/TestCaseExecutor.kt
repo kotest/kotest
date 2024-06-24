@@ -62,6 +62,7 @@ internal class TestCaseExecutor(
          Platform.JS, Platform.WasmJs -> false
       }
 
+      val useCoroutineTestScope = platform != Platform.JS && testCase.config.coroutineTestScope
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
@@ -85,7 +86,8 @@ internal class TestCaseExecutor(
             context.configuration.registry,
             timeMark,
             listOfNotNull(
-               InvocationTimeoutInterceptor,
+               // Timeout will be handled inside TestCoroutineInterceptor if it is enabled
+               if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
                if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
