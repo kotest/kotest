@@ -33,10 +33,8 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
-   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
-      if (test(actual, expected)) {
-         null
-      } else {
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): EqResult =
+      EqResult(test(actual, expected)) {
          val detailedDiffMsg = runCatching {
             dataClassDiff(actual, expected, strictNumberEq = strictNumberEq)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
          }.getOrElse { "" }
@@ -64,8 +62,9 @@ internal object DataClassEq : Eq<Any> {
                Pair(prop, diff)
             }
          else {
-            eq(actualPropertyValue, expectedPropertyValue, strictNumberEq)
-               ?.let { Pair(prop, StandardDifference(it)) }
+            eq(actualPropertyValue, expectedPropertyValue, strictNumberEq).failureOrNull()?.let {
+               Pair(prop, StandardDifference(it))
+            }
          }
       }
 

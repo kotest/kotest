@@ -12,7 +12,13 @@ object SequenceEq : Eq<Sequence<*>> {
     * compared only with custom code.
     */
 
-   override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): Throwable? =
-      failure(Expected(expected.print()), Actual(actual.print()), "Sequence type is not supported: use custom test code")
+   override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): EqResult =
+      EqResult.NotEqual {
+         failure(
+            Expected(expected.print()),
+            Actual(actual.print()),
+            "Sequence type is not supported: use custom test code"
+         )
+      }
 
 }

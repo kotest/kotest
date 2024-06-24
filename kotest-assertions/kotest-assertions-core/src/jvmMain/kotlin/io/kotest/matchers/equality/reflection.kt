@@ -1,5 +1,6 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
@@ -555,7 +556,7 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
 
-      val isEqual = eq(actual, expected) == null
+      val isEqual = eq(actual, expected) is EqResult.Equal
 
       if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
    }
@@ -590,7 +591,7 @@ internal fun <T> checkEqualityOfFieldsRecursively(
       val heading = "${it.name}:"
 
       if (requiresUseOfDefaultEq(actual, expected, typeName, config.useDefaultShouldBeForFields)) {
-         val throwable = eq(actual, expected)
+         val throwable = eq(actual, expected).failureOrNull()
          if (throwable != null) {
             "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
          } else {

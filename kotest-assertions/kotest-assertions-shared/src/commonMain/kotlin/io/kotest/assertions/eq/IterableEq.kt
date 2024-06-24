@@ -60,17 +60,18 @@ object IterableEq : Eq<Iterable<*>> {
       }
    }
 
-   override fun equals(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
-      return when {
-         actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
-         isOrderedSet(actual) || isOrderedSet(expected) -> {
-            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
-         }
-         actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
-         else -> {
-            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
-         }
-      }
+   override fun equals(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): EqResult {
+      TODO()
+//      return when {
+//         actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
+//         isOrderedSet(actual) || isOrderedSet(expected) -> {
+//            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
+//         }
+//         actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
+//         else -> {
+//            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
+//         }
+//      }
    }
 
    private fun checkSetEquality(actual: Set<*>, expected: Set<*>, strictNumberEq: Boolean): Throwable? {
@@ -84,7 +85,7 @@ object IterableEq : Eq<Iterable<*>> {
       val isCompatible =
          ((actual is Collection || actual is Array<*>) && (expected is Collection) || (expected is Array<*>))
             || (actual::class.isInstance(expected) && expected::class.isInstance(actual))
-      return if (isCompatible) null else errorWithTypeDetails(actual,expected)
+      return if (isCompatible) null else errorWithTypeDetails(actual, expected)
    }
 
    // when comparing sets we need to consider that {1,2,3} is the same set as {3,2,1}.
@@ -98,7 +99,7 @@ object IterableEq : Eq<Iterable<*>> {
 
       fun equalWithDetection(elementInActualSet: Any?, it: Any?) =
          eq(elementInActualSet, it, strictNumberEq)?.let {
-            if (null == innerError && (it.message?.startsWith(trigger) == true)) innerError = it
+            if (null == innerError && (it.failureOrNull()?.message?.startsWith(trigger) == true)) innerError = it.failureOrNull()
             false
          } ?: true
 
@@ -109,14 +110,17 @@ object IterableEq : Eq<Iterable<*>> {
             is Set<*> -> expected.any {
                it is Set<*> && equalWithDetection(elementInActualSet, it)
             }
-            is Map<*,*> -> expected.any {
-               it is Map<*,*> && equalWithDetection(elementInActualSet, it)
+
+            is Map<*, *> -> expected.any {
+               it is Map<*, *> && equalWithDetection(elementInActualSet, it)
             }
+
             is Collection<*>, is Array<*> -> expected.any {
                it !is Set<*>
                   && (it is Collection<*> || it is Array<*>)
                   && equalWithDetection(elementInActualSet, it)
             }
+
             is Iterable<*> -> expected.any {
                it !is Set<*>
                   && it !is Collection<*>
@@ -124,6 +128,7 @@ object IterableEq : Eq<Iterable<*>> {
                   && it is Iterable<*>
                   && equalWithDetection(elementInActualSet, it)
             }
+
             else -> expected.contains(elementInActualSet)
          }
       }, innerError)
@@ -144,6 +149,7 @@ object IterableEq : Eq<Iterable<*>> {
 
             "$trigger: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
          }
+
          (actual is Collection || actual is Array<*>) || (expected is Collection || expected is Array<*>) -> "$trigger typed contract\nMay not compare $tag"
          else -> "$trigger promiscuous iterators\nMay not compare $tag"
       }
@@ -159,9 +165,13 @@ object IterableEq : Eq<Iterable<*>> {
       val elementDifferAtIndex = mutableListOf<Int>()
 
       fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
-         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(it))) {
-         """$disallowed $it (${it::class.simpleName ?: "anonymous" }) within $oracle (${oracle::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
-      } else null }
+         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(
+               it
+            ))
+         ) {
+            """$disallowed $it (${it::class.simpleName ?: "anonymous"}) within $oracle (${oracle::class.simpleName ?: "anonymous"}); (use custom test code instead)"""
+         } else null
+      }
 
       var nestedIteratorError: String? = null
       var accrueDetails = true
@@ -191,7 +201,7 @@ object IterableEq : Eq<Iterable<*>> {
                a?.equals(b) == true -> null
                nestedIterator(a, actual)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
-               else -> equalXorDisallowed(eq(a, b, strictNumberEq))
+               else -> TODO() //equalXorDisallowed(eq(a, b, strictNumberEq))
             }
             if (!accrueDetails) break
             if (t != null) elementDifferAtIndex.add(index)
