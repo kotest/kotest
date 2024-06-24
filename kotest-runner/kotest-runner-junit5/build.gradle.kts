@@ -4,9 +4,7 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
-
       val commonMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
@@ -40,6 +38,11 @@ kotlin {
             implementation("dev.gradleplugins:gradle-api:8.4")
          }
       }
-
    }
+}
+
+tasks.withType<Test>().configureEach {
+   systemProperty("kotest.framework.discovery.jar.scan.disable", "false")
+   systemProperty("kotest.framework.classpath.scanning.config.disable", "false")
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

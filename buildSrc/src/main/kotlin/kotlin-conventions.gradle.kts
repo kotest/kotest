@@ -20,6 +20,10 @@ tasks.withType<Test>().configureEach {
    filter {
       isFailOnNoMatchingTests = false
    }
+
+   systemProperty("kotest.framework.discovery.jar.scan.disable", "true")
+   systemProperty("kotest.framework.classpath.scanning.config.disable", "true")
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
