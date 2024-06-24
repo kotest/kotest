@@ -51,6 +51,7 @@ jobs:
             uses: gradle/actions/setup-gradle@v3
             with:
                gradle-home-cache-cleanup: true
+               cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
 
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
