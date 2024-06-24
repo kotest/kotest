@@ -147,10 +147,13 @@ class ShouldContainExactlyTest : WordSpec() {
             } shouldHaveMessage
                """
                   |Collection should contain exactly: [1, 2] but was: [1L, 2L]
-                  |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                   |
-                  |expected:<[1, 2]> but was:<[1L, 2L]>
-               """.trimMargin()
+                  |Mismatch:
+                  |expected[0] = 1L
+                  |expected[1] = 2L
+                  |actual[0] = 1
+                  |actual[1] = 2
+                  """.trimMargin()
          }
 
          "print dataclasses" {
@@ -165,11 +168,15 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)] but was: [Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)]
                   |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
-               """.trimMargin()
+                  |Match:
+                  |expected[0] == actual[0]: Blonde(a=foo, b=true, c=23423, p=a/b/c)
+                  |expected[1] == actual[1]: Blonde(a=woo, b=true, c=97821, p=a/b/c)
+                  |
+                  |Mismatch:
+                  |expected[2] = Blonde(a=goo, b=true, c=51984, p=a/b/c)
+                  """.trimMargin()
          }
 
          "include extras when too many" {
@@ -182,11 +189,14 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)] but was: [Blonde(a=foo, b=true, c=23423, p=a/b/c)]
                   |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
-               """.trimMargin()
+                  |Match:
+                  |expected[0] == actual[0]: Blonde(a=foo, b=true, c=23423, p=a/b/c)
+                  |
+                  |Mismatch:
+                  |actual[1] = Blonde(a=woo, b=true, c=97821, p=a/b/c)
+""".trimMargin()
          }
 
          "include missing when too few" {
@@ -200,11 +210,13 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=a/b/c)] but was: [Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]
                   |
-                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
-               """.trimMargin()
+                  |Mismatch:
+                  |expected[0] = Blonde(a=foo, b=true, c=23423, p=a/b/c)
+                  |expected[1] = Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+                  |actual[0] = Blonde(a=woo, b=true, c=97821, p=a/b/c)
+""".trimMargin()
          }
 
          "include missing and extras when not the right amount" {
@@ -218,11 +230,14 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim() shouldBe
                """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)] but was: [Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]
                   |
-                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
-               """.trimMargin()
+                  |Mismatch:
+                  |expected[0] = Blonde(a=foo, b=true, c=23423, p=a/b/c)
+                  |expected[1] = Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+                  |actual[0] = Blonde(a=woo, b=true, c=97821, p=a/b/c)
+                  |actual[1] = Blonde(a=goo, b=true, c=51984, p=a/b/c)
+                  """.trimMargin()
          }
 
          "exclude full print with warning on large collections" {
@@ -280,6 +295,26 @@ class ShouldContainExactlyTest : WordSpec() {
                """.trimMargin()
          }
 
+         "find matching sub-lists" {
+            val expected = listOf(sweetGreenApple, sweetRedApple, sweetGreenPear)
+            val actual = listOf(sweetGreenPear, sweetGreenApple, sweetRedApple)
+            shouldThrow<AssertionError> {
+               actual shouldContainExactly expected
+            }.shouldHaveMessage("""
+               |Collection should contain exactly: [Fruit(name=apple, color=green, taste=sweet), Fruit(name=apple, color=red, taste=sweet), Fruit(name=pear, color=green, taste=sweet)] but was: [Fruit(name=pear, color=green, taste=sweet), Fruit(name=apple, color=green, taste=sweet), Fruit(name=apple, color=red, taste=sweet)]
+               |
+               |Mismatch:
+               |expected[0] = Fruit(name=pear, color=green, taste=sweet)
+               |
+               |Match:
+               |expected[1] == actual[0]: Fruit(name=apple, color=green, taste=sweet)
+               |expected[2] == actual[1]: Fruit(name=apple, color=red, taste=sweet)
+               |
+               |Mismatch:
+               |actual[2] = Fruit(name=pear, color=green, taste=sweet)
+               |
+               |""".trimMargin())
+         }
       }
 
       "containExactlyInAnyOrder" should {
@@ -421,6 +456,11 @@ class ShouldContainExactlyTest : WordSpec() {
       val expectedPath = listOf("a", "b", "c").joinToString(File.separator)
 
    }
+
+   private val sweetGreenApple = Fruit("apple", "green", "sweet")
+   private val sweetRedApple = Fruit("apple", "red", "sweet")
+   private val sweetGreenPear = Fruit("pear", "green", "sweet")
+   private val sourYellowLemon = Fruit("lemon", "yellow", "sour")
 }
 
 data class Blonde(val a: String, val b: Boolean, val c: Int, val p: Path)
