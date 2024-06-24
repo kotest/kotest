@@ -1,5 +1,4 @@
 @file:Suppress("DEPRECATION")
-@file:OptIn(ExperimentalCoroutinesApi::class)
 
 package com.sksamuel.kotest.assertions.timing
 
@@ -21,8 +20,6 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -34,7 +31,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
-@OptIn(DelicateCoroutinesApi::class)
 class EventuallyTest : WordSpec() {
 
    init {

@@ -16,8 +16,6 @@ import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -29,7 +27,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
 @ExperimentalKotest
-@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
    coroutineTestScope = true
