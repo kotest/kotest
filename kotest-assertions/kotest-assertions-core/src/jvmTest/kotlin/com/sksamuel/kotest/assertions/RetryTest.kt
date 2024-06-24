@@ -4,9 +4,8 @@ import io.kotest.assertions.retry
 import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.TestScope
-import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
@@ -23,7 +22,7 @@ class RetryTest : StringSpec() {
 
       "should allow execution of suspend functions" {
          val retryTester = retryTester(4)
-         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds) {
+         retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds) {
             delay(100)
             retryTester.isReady() shouldBe true
          }
@@ -38,7 +37,7 @@ class RetryTest : StringSpec() {
       "should allow config" {
          val config = retryConfig {
             maxRetry = 5
-            timeout = 500.milliseconds
+            timeout = 900.milliseconds
             delay = 100.milliseconds
          }
          val retryTester = retryTester(4)
@@ -85,12 +84,13 @@ class RetryTest : StringSpec() {
 
       "should not call given assertion beyond given max duration" {
 
+         val testTimeSource = testTimeSource()
          val config = retryConfig {
             maxRetry = 5
             timeout = 500.milliseconds
             delay = 400.milliseconds
             multiplier = 1
-            timeSource = testCoroutineScheduler.timeSource
+            timeSource = testTimeSource
          }
 
          val retryTester = retryTester(4)
@@ -110,7 +110,7 @@ class RetryTest : StringSpec() {
       "should call given assertion exponentially" {
          val retryTester = retryTester(4)
          shouldNotThrow<Exception> {
-            retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds, multiplier = 2) {
+            retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds, multiplier = 2) {
                retryTester.isReady() shouldBe true
             }
          }
@@ -159,7 +159,7 @@ class RetryTest : StringSpec() {
 
       "when multiplier is negative, expect ..." { // TODO
          val retryTester = retryTester(4)
-         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds, multiplier = -1) {
+         retry(maxRetry = 5, timeout = 900.milliseconds, delay = 100.milliseconds, multiplier = -1) {
             delay(100)
             retryTester.isReady() shouldBe true
          }
@@ -216,10 +216,10 @@ class RetryTest : StringSpec() {
       }
    }
 
-   private fun TestScope.retryTester(readyAfter: Int): RetryTester {
+   private suspend fun retryTester(readyAfter: Int): RetryTester {
       return RetryTester(
          readyAfter = readyAfter,
-         timeMark = testCoroutineScheduler.timeSource.markNow()
+         timeMark = testTimeSource().markNow()
       )
    }
 }

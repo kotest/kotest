@@ -14,6 +14,7 @@ import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.
@@ -22,7 +23,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
 
    private var errors = 0
-   private var start = System.currentTimeMillis()
+   private var start = TimeSource.Monotonic.markNow()
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
    private var testsIgnored = 0
    private var testsPassed = 0
@@ -95,8 +96,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
          }
       }
 
-      val duration = System.currentTimeMillis() - start
-      val seconds = duration / 1000
+      val duration = start.elapsedNow()
 
       if (errors == 0) {
          println(bold(">> All tests passed"))
@@ -115,7 +115,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       printSpecCounts()
       printTestsCounts()
       print("Time:    ")
-      println(bold("${seconds}s"))
+      println(bold("$duration"))
    }
 
    private fun printThrowable(error: Throwable?, padding: Int) {

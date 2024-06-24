@@ -34,4 +34,3 @@ class TestCoroutineInterceptor : TestExecutionInterceptor {
       return result
    }
 }
-

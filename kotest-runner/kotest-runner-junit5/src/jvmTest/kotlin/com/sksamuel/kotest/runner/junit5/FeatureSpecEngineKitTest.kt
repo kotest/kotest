@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -181,7 +182,7 @@ private class FeatureSpecHappyPathSample : FeatureSpec() {
             scenario("2.1.1") {
             }
          }
-         scenario("2.1.2").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         scenario("2.1.2").config(enabledIf = { nonConstantFalse() }) {
          }
       }
    }

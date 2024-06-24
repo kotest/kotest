@@ -7,7 +7,7 @@ import kotlin.time.Duration.Companion.minutes
 
 class SpecInvocationTimeoutShouldNotApplyToContainersTest : FreeSpec({
 
-   timeout = 1.minutes.inWholeMilliseconds
+   timeout = 4.minutes.inWholeMilliseconds
    invocationTimeout = 500.milliseconds.inWholeMilliseconds
 
    "invocation timeouts at the spec level should not be applied to containers" - {

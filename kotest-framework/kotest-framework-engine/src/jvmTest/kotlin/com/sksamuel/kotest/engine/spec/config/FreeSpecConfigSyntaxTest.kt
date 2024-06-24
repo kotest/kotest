@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
@@ -25,7 +26,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          error("boom")
       }
 
-      "a test disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      "a test disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
@@ -85,7 +86,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          error("boom")
       }
 
-      "an outer context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+      "an outer context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
          error("boom")
       }
 
@@ -121,7 +122,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
             error("boom")
          }
 
-         "an inner context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+         "an inner context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
             error("boom")
          }
       }

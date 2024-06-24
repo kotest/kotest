@@ -12,7 +12,7 @@ object ProjectConfig : AbstractProjectConfig() {
    private lateinit var start: TimeMark
 
    override suspend fun beforeProject() {
-      start = TimeSource.Monotonic.markNow()
+      start = TimeSource.Monotonic.markNow() // We cannot use virtual time with concurrency
    }
 
    // set the number of threads so that each test runs in its own thread

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.TestConfig
@@ -29,7 +30,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          error("boom")
       }
 
-      test("a test disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      test("a test disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
@@ -79,7 +80,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          test("an inner test") { error("boom") }
       }
 
-      context("an outer context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      context("an outer context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
          test("an inner test") { error("boom") }
       }
@@ -119,7 +120,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
             test("an inner test") { error("boom") }
          }
 
-         context("an inner context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         context("an inner context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
             error("boom")
             test("an inner test") { error("boom") }
          }

@@ -1,9 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -14,7 +17,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class ContinuallySpec : FunSpec({
    test("continually passes working tests") {
       continually(100.milliseconds) {
-         (System.currentTimeMillis() > 0) shouldBe true
+         nonConstantTrue() shouldBe true
       }
    }
 

@@ -31,8 +31,8 @@ class TestCoroutineDispatcherInterceptorTest : FunSpec() {
          )
 
          var fired = false
-         TestDispatcherInterceptor().intercept(tc, NoopTestScope(tc, coroutineContext)) { _, context ->
-            context.testCoroutineScheduler.shouldNotBeNull()
+         TestDispatcherInterceptor().intercept(tc, NoopTestScope(tc, coroutineContext)) { _, testScope ->
+            testScope.testCoroutineScheduler.shouldNotBeNull()
             fired = true
             TestResult.Success(0.milliseconds)
          }

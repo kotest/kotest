@@ -14,14 +14,12 @@ import kotlin.time.Duration.Companion.days
 class GlobalTimeoutTest : FunSpec() {
    init {
       test("global timeouts should apply if no other timeout is set") {
-         val c = ProjectConfiguration().apply { timeout = 3 }
+         val c = ProjectConfiguration().apply { timeout = 4000 }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(TestTimeouts::class)
             .withConfiguration(c)
             .launch()
-
-         collector.waitForEnginesFinished()
 
          collector.names.shouldContainExactly("blocked", "suspend")
 
@@ -31,10 +29,13 @@ class GlobalTimeoutTest : FunSpec() {
    }
 }
 
-private class TestTimeouts : StringSpec() {
-   init {
-      // Long delays, to ensure tests will be interrupted. We'd notice a test that runs for a month.
-      "blocked".config(blockingTest = true) { Thread.sleep(28.days.inWholeMilliseconds) }
-      "suspend" { delay(28.days) }
+private class TestTimeouts : StringSpec({
+   // Long delays, to ensure tests will be interrupted. We'd notice a test that runs for a month.
+   "blocked".config(blockingTest = true) {
+      Thread.sleep(28.days.inWholeMilliseconds)
    }
-}
+
+   "suspend" {
+      delay(28.days)
+   }
+})

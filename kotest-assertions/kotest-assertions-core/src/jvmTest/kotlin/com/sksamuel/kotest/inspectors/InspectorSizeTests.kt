@@ -2,6 +2,7 @@ package com.sksamuel.kotest.inspectors
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.inspectors.forAll
@@ -46,7 +47,7 @@ The following elements failed:
    test("failed results are truncated when failed array size is over 10") {
       shouldThrowAny {
          arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
-            if (System.currentTimeMillis() > 0) throw NullPointerException()
+            if (nonConstantTrue()) throw NullPointerException()
          }
       }.message shouldBe """0 elements passed but expected 12
 
@@ -72,7 +73,7 @@ The following elements failed:
       withSystemProperty("kotest.assertions.output.max", "3") {
          shouldThrowAny {
             arrayOf(1, 2, 3, 4, 5).forAll {
-               if (System.currentTimeMillis() > 0) throw NullPointerException()
+              if (nonConstantTrue()) throw NullPointerException()
             }
          }.message shouldBe """0 elements passed but expected 5
 

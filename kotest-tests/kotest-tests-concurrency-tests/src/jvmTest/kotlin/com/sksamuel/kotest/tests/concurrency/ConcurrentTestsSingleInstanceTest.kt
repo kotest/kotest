@@ -8,10 +8,13 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.matchers.longs.shouldBeLessThan
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 // asserts that tests can be launched concurrently and before/after callbacks are handled properly
 @ExperimentalKotest
@@ -19,7 +22,7 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
 
    private var befores = ""
    private var afters = ""
-   private var start = 0L
+   private lateinit var start: TimeMark
 
    override fun isolationMode() = IsolationMode.SingleInstance
    override fun concurrency(): Int = ProjectConfiguration.MaxConcurrency
@@ -34,17 +37,16 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    }
 
    override suspend fun beforeSpec(spec: Spec) {
-      start = System.currentTimeMillis()
+      start = TimeSource.Monotonic.markNow() // We cannot use virtual time with concurrency
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      val end = System.currentTimeMillis()
-      // total of delays is 1500 but should run concurrently
-      (end - start).shouldBeLessThan(1499)
+      // The sum all delays is 1500 ms, but tests should run concurrently.
+      start.elapsedNow() shouldBeLessThan 1499.milliseconds
       befores.shouldHaveLength(4)
       // beforeTest should be called in declaration order
       befores shouldBe "abcd"
-      // all tests should be launched together and so the delay will decide which finishes first
+      // all tests should be launched together, and so the delay will decide which finishes first
       afters shouldBe "cbad"
    }
 

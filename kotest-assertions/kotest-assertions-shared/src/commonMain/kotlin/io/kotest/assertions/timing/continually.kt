@@ -7,11 +7,11 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import io.kotest.common.KotestInternal
+import io.kotest.common.testTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 @KotestInternal
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
@@ -33,7 +33,7 @@ data class Continually<T>(
    val listener: ContinuallyListener<T> = ContinuallyListener.noop,
 ) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
-      val start = TimeSource.Monotonic.markNow()
+      val start = testTimeSource().markNow()
       val end = start.plus(duration)
       var times = 0
       var result: T? = null

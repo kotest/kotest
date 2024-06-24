@@ -18,10 +18,9 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(DannyDelay::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
-            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
+            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
          }
       }
 
@@ -30,10 +29,9 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(LarryLauncher::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
-            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
+            result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
          }
       }
 
@@ -42,7 +40,6 @@ class EngineTimeoutTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(BillyBlocked::class)
             .launch()
-         collector.waitForEnginesFinished()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "sleep interrupted"
@@ -53,7 +50,7 @@ class EngineTimeoutTest : FunSpec() {
 
 private class DannyDelay : FunSpec() {
    init {
-      test("a").config(timeout = 1.milliseconds) {
+      test("a").config(timeout = 400.milliseconds) {
          delay(24.hours)
       }
    }
@@ -61,7 +58,7 @@ private class DannyDelay : FunSpec() {
 
 private class LarryLauncher : FunSpec() {
    init {
-      test("a").config(timeout = 1.milliseconds) {
+      test("a").config(timeout = 400.milliseconds) {
          launch {
             delay(24.hours)
          }
@@ -71,7 +68,7 @@ private class LarryLauncher : FunSpec() {
 
 private class BillyBlocked : FunSpec() {
    init {
-      test("a").config(timeout = 1.milliseconds, blockingTest = true) {
+      test("a").config(timeout = 400.milliseconds, blockingTest = true) {
          Thread.sleep(1_000_000)
       }
    }
