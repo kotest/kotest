@@ -1,3 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
+
 plugins {
    signing
    `maven-publish`
@@ -97,4 +101,56 @@ val mavenPublishLimiter =
 tasks.withType<PublishToMavenRepository>().configureEach {
    usesService(mavenPublishLimiter)
 }
+//endregion
+
+
+//region KotestBomService
+
+/**
+ * Create a service for collecting the coordinates of all Kotest artifacts that should be included in the kotest-bom.
+ */
+abstract class KotestBomService : BuildService<BuildServiceParameters.None> {
+   /** Coordinates that will be included in the Kotest BOM. */
+   abstract val coordinates: SetProperty<String>
+}
+
+val kotestBomService: KotestBomService =
+   gradle.sharedServices.registerIfAbsent("kotestBomService", KotestBomService::class) { }.get()
+
+extensions.add("kotestBomService", kotestBomService)
+
+val includeInKotestBom: Property<Boolean> =
+   objects.property<Boolean>().convention(project.name != "kotest-bom")
+
+extensions.add<Property<Boolean>>("includeInKotestBom", includeInKotestBom)
+
+pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+
+   extensions.configure<KotlinMultiplatformExtension> {
+      targets
+         .matching { target ->
+            target.publishable &&
+               // Skip platform artifacts (like *-linuxx64, *-macosx64)
+               // It leads to inconsistent bom when publishing from different platforms
+               // (e.g. on linux it will include only linuxx64 artifacts and no macosx64)
+               // It shouldn't be a problem as usually consumers need to use generic *-native artifact
+               // Gradle will choose correct variant by using metadata attributes
+               (target.platformType == common || target.platformType == jvm)
+         }
+         .all {
+            mavenPublication publication@{
+               kotestBomService.coordinates.addAll(
+                  providers
+                     .provider {
+                        "${this@publication.groupId}:${this@publication.artifactId}:${this@publication.version}"
+                     }
+                     .zip(includeInKotestBom) { coords, enabled ->
+                        if (enabled) listOf(coords) else emptyList()
+                     }
+               )
+            }
+         }
+   }
+}
+
 //endregion
