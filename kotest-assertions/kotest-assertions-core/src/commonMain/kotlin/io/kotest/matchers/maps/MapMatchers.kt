@@ -2,6 +2,7 @@ package io.kotest.matchers.maps
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -69,14 +70,44 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
 }
 
 fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
-   override fun test(value: Map<K, V>) = MatcherResult(
-      value[key] == v,
-      { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
-      { "Map should not contain mapping $key=$v but was $value" }
-   )
+   override fun test(value: Map<K, V>): MatcherResult {
+      val passed = value[key] == v
+      val possibleMatches = if(passed) "" else describePossibleMatches(key, v, value)
+      return MatcherResult(
+         passed,
+         { "Map should contain mapping $key=$v but was ${buildActualValue(value)}$possibleMatches" },
+         { "Map should not contain mapping $key=$v but was $value" }
+      )
+   }
 
    private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
+
+   private fun describePossibleMatches(key: K, v: V, map: Map<K, V>): String {
+      val similarKeys = if(key in map) "" else possibleMatchesDescription(map.keys, key)
+      val similarOrSameMatches = if(v in map.values) sameValueForOtherKeys(v, map) else similarValues(v, map)
+      val matchesToInclude = listOf(similarKeys, similarOrSameMatches).filter { it.isNotEmpty() }
+      return if(matchesToInclude.isEmpty()) "" else "\n${matchesToInclude.joinToString("\n")}"
+   }
+
+   private fun sameValueForOtherKeys(v: V, map: Map<K, V>): String = prettyPrintIfNotEmpty(
+      list = map.entries.filter { it.value == v },
+      prefix = "\nSame value found for the following entries: "
+   )
+
+   private fun similarValues(v: V, map: Map<K, V>): String = printIfNotEmpty(
+      string = possibleMatchesDescription(map.values.toSet(), v),
+      prefix = "\nSimilar values found:\n"
+   )
+
 }
+
+internal fun printIfNotEmpty(string: String, prefix: String = "", suffix: String = ""): String =
+   if(string.isEmpty()) "" else
+      "$prefix$string$suffix"
+
+internal fun<T> prettyPrintIfNotEmpty(list: List<T>, prefix: String = "", suffix: String = ""): String =
+   if(list.isEmpty()) "" else
+      "$prefix${list.print().value}$suffix"
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
    MapContainsMatcher(expected, ignoreExtraKeys = true)
