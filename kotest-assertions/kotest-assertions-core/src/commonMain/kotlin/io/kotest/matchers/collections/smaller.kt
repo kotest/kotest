@@ -4,7 +4,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
-infix fun <T, U> Iterable<T>.shouldBeSmallerThan(other: Collection<U>): Iterable<T> {
+infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Collection<U>): I {
    toList().shouldBeSmallerThan(other)
    return this
 }
@@ -14,7 +14,7 @@ infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Collection<U>): Array<T> {
    return this
 }
 
-infix fun <T, U> Iterable<T>.shouldBeSmallerThan(other: Iterable<U>): Iterable<T> {
+infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Iterable<U>): I {
    toList().shouldBeSmallerThan(other.toList())
    return this
 }
@@ -24,7 +24,7 @@ infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>): Array<T> {
    return this
 }
 
-infix fun <T, U> Collection<T>.shouldBeSmallerThan(other: Collection<U>): Collection<T> {
+infix fun <T, U, C : Collection<T>> C.shouldBeSmallerThan(other: Collection<U>): C {
    this should beSmallerThan(other)
    return this
 }

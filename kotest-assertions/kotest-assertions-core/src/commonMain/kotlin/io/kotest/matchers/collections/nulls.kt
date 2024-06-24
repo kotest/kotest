@@ -5,7 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T> Iterable<T>.shouldContainOnlyNulls(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I {
    toList().shouldContainOnlyNulls()
    return this
 }
@@ -15,12 +15,12 @@ fun <T> Array<T>.shouldContainOnlyNulls(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldContainOnlyNulls(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldContainOnlyNulls(): C {
    this should containOnlyNulls()
    return this
 }
 
-fun <T> Iterable<T>.shouldNotContainOnlyNulls(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I {
    toList().shouldNotContainOnlyNulls()
    return this
 }
@@ -30,7 +30,7 @@ fun <T> Array<T>.shouldNotContainOnlyNulls(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldNotContainOnlyNulls(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotContainOnlyNulls(): C {
    this shouldNot containOnlyNulls()
    return this
 }
@@ -45,7 +45,7 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
          })
 }
 
-fun <T> Iterable<T>.shouldContainNull(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldContainNull(): I {
    toList().shouldContainNull()
    return this
 }
@@ -55,12 +55,12 @@ fun <T> Array<T>.shouldContainNull(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldContainNull(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldContainNull(): C {
    this should containNull()
    return this
 }
 
-fun <T> Iterable<T>.shouldNotContainNull(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotContainNull(): I {
    toList().shouldNotContainNull()
    return this
 }
@@ -70,7 +70,7 @@ fun <T> Array<T>.shouldNotContainNull(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldNotContainNull(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotContainNull(): C {
    this shouldNot containNull()
    return this
 }
@@ -83,7 +83,7 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
          { "Collection should not contain any nulls" })
 }
 
-fun <T> Iterable<T>.shouldContainNoNulls(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I {
    toList().shouldContainNoNulls()
    return this
 }
@@ -93,12 +93,12 @@ fun <T> Array<T>.shouldContainNoNulls(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldContainNoNulls(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldContainNoNulls(): C {
    this should containNoNulls()
    return this
 }
 
-fun <T> Iterable<T>.shouldNotContainNoNulls(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I {
    toList().shouldNotContainNoNulls()
    return this
 }
@@ -108,7 +108,7 @@ fun <T> Array<T>.shouldNotContainNoNulls(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldNotContainNoNulls(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotContainNoNulls(): C {
    this shouldNot containNoNulls()
    return this
 }

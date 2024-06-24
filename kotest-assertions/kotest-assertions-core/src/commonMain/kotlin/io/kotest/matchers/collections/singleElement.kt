@@ -7,7 +7,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-infix fun <T> Iterable<T>.shouldHaveSingleElement(t: T): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldHaveSingleElement(t: T): I {
    toList().shouldHaveSingleElement(t)
    return this
 }
@@ -17,7 +17,7 @@ infix fun <T> Array<T>.shouldHaveSingleElement(t: T): Array<T> {
    return this
 }
 
-infix fun <T> Iterable<T>.shouldHaveSingleElement(p: (T) -> Boolean): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldHaveSingleElement(p: (T) -> Boolean): I {
    toList().shouldHaveSingleElement(p)
    return this
 }

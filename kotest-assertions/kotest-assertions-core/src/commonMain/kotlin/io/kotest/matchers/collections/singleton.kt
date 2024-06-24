@@ -15,12 +15,12 @@ package io.kotest.matchers.collections
  * @see [shouldNotBeSingleton]
  * @see [shouldHaveSingleElement]
  */
-fun <T> Collection<T>.shouldBeSingleton(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldBeSingleton(): C {
    this shouldHaveSize 1
    return this
 }
 
-fun <T> Iterable<T>.shouldBeSingleton(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldBeSingleton(): I {
    toList().shouldBeSingleton()
    return this
 }
@@ -47,12 +47,12 @@ fun <T> Array<T>.shouldBeSingleton(): Array<T> {
  * @see [shouldBeSingleton]
  * @see [shouldNotHaveSingleElement]
  */
-fun <T> Collection<T>.shouldNotBeSingleton(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotBeSingleton(): C {
    this shouldNotHaveSize 1
    return this
 }
 
-fun <T> Iterable<T>.shouldNotBeSingleton(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotBeSingleton(): I {
    toList().shouldNotBeSingleton()
    return this
 
@@ -67,7 +67,7 @@ fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
-inline fun <T> Collection<T>.shouldBeSingleton(fn: (T) -> Unit): Collection<T> {
+inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
    this.shouldBeSingleton()
    fn(this.first())
    return this
@@ -76,7 +76,7 @@ inline fun <T> Collection<T>.shouldBeSingleton(fn: (T) -> Unit): Collection<T> {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
-inline fun <T> Iterable<T>.shouldBeSingleton(fn: (T) -> Unit): Iterable<T> {
+inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
    toList().shouldBeSingleton(fn)
    return this
 }

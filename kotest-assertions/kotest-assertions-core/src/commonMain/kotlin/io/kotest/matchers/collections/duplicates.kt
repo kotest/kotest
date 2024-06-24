@@ -6,7 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T> Iterable<T>.shouldContainDuplicates(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
    toList().shouldContainDuplicates()
    return this
 }
@@ -15,12 +15,12 @@ fun <T> Array<T>.shouldContainDuplicates() {
    asList().shouldContainDuplicates()
 }
 
-fun <T> Collection<T>.shouldContainDuplicates(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldContainDuplicates(): C {
    this should containDuplicates()
    return this
 }
 
-fun <T> Iterable<T>.shouldNotContainDuplicates(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
    toList().shouldNotContainDuplicates()
    return this
 }
@@ -30,7 +30,7 @@ fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldNotContainDuplicates(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotContainDuplicates(): C {
    this shouldNot containDuplicates()
    return this
 }
@@ -47,7 +47,7 @@ fun <T> containDuplicates() = object : Matcher<Collection<T>> {
    }
 }
 
-internal fun<T> Collection<T>.duplicates(): Collection<T> = this.groupingBy { it }
+internal fun<T> Collection<T>.duplicates(): List<T> = this.groupingBy { it }
    .eachCount().entries
    .filter { it.value > 1 }
    .map { it.key }

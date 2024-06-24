@@ -26,7 +26,7 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List
    }
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldBeSorted(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeSorted(): I {
    toList().shouldBeSorted()
    return this
 }
@@ -41,7 +41,7 @@ fun <T : Comparable<T>> List<T>.shouldBeSorted(): List<T> {
    return this
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldBeSortedDescending(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeSortedDescending(): I {
    toList().shouldBeSortedDescending()
    return this
 }
@@ -56,7 +56,7 @@ fun <T : Comparable<T>> List<T>.shouldBeSortedDescending(): List<T> {
    return this
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldNotBeSorted(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeSorted(): I {
    toList().shouldNotBeSorted()
    return this
 }
@@ -71,7 +71,7 @@ fun <T : Comparable<T>> List<T>.shouldNotBeSorted(): List<T> {
    return this
 }
 
-infix fun <T, E : Comparable<E>> Iterable<T>.shouldBeSortedBy(transform: (T) -> E): Iterable<T> {
+infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedBy(transform: (T) -> E): I {
    toList().shouldBeSortedBy(transform)
    return this
 }
@@ -86,7 +86,7 @@ infix fun <T, E : Comparable<E>> List<T>.shouldBeSortedBy(transform: (T) -> E): 
    return this
 }
 
-infix fun <T, E : Comparable<E>> Iterable<T>.shouldBeSortedDescendingBy(transform: (T) -> E): Iterable<T> {
+infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedDescendingBy(transform: (T) -> E): I {
    toList().shouldBeSortedDescendingBy(transform)
    return this
 }
@@ -101,7 +101,7 @@ infix fun <T, E : Comparable<E>> List<T>.shouldBeSortedDescendingBy(transform: (
    return this
 }
 
-infix fun <T, E : Comparable<E>> Iterable<T>.shouldNotBeSortedBy(transform: (T) -> E): Iterable<T> {
+infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldNotBeSortedBy(transform: (T) -> E): I {
    toList().shouldNotBeSortedBy(transform)
    return this
 }
@@ -116,7 +116,7 @@ infix fun <T, E : Comparable<E>> List<T>.shouldNotBeSortedBy(transform: (T) -> E
    return this
 }
 
-infix fun <T> Iterable<T>.shouldBeSortedWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldBeSortedWith(comparator: Comparator<in T>): I {
    toList().shouldBeSortedWith(comparator)
    return this
 }
@@ -131,7 +131,7 @@ infix fun <T> List<T>.shouldBeSortedWith(comparator: Comparator<in T>): List<T> 
    return this
 }
 
-infix fun <T> Iterable<T>.shouldNotBeSortedWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeSortedWith(comparator)
    return this
 }
@@ -146,7 +146,7 @@ infix fun <T> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>): List<
    return this
 }
 
-infix fun <T> Iterable<T>.shouldBeSortedWith(cmp: (T, T) -> Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldBeSortedWith(cmp: (T, T) -> Int): I {
    toList().shouldBeSortedWith(cmp)
    return this
 }
@@ -161,7 +161,7 @@ infix fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int): List<T> {
    return this
 }
 
-infix fun <T> Iterable<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(cmp: (T, T) -> Int): I {
    toList().shouldNotBeSortedWith(cmp)
    return this
 }
