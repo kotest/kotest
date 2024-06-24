@@ -86,6 +86,12 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
    publishPlatformArtifactsInRootModule(project)
 }
 
+pluginManager.withPlugin("java-gradle-plugin") {
+   extensions.configure<JavaPluginExtension> {
+      withSourcesJar()
+   }
+}
+
 //region Maven Central can't handle parallel uploads, so limit parallel uploads with a BuildService
 abstract class MavenPublishLimiter : BuildService<BuildServiceParameters.None>
 
