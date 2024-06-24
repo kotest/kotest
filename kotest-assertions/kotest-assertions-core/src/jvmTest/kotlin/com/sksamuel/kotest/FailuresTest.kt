@@ -2,8 +2,11 @@ package com.sksamuel.kotest
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
+import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -35,22 +38,26 @@ class FailuresTest : StringSpec({
       t.message shouldBe "expected:<1> but was:<2>"
    }
 
-   "failure(msg) should filter the stack trace removing io.kotest" {
-      val failure = failure("msg")
+   "When failing with failure(msg), errorCollector should filter the stack trace removing io.kotest" {
+      val failure = shouldThrow<AssertionError> { errorCollector.collectOrThrow(failure("msg")) }
       failure.stackTrace[0].className.shouldStartWith("com.sksamuel.kotest.FailuresTest")
    }
 
-   "failure(msg, cause) should filter the stack trace removing io.kotest" {
+   "When failing with failure(msg, cause), errorCollector should filter the stack trace removing io.kotest" {
       val cause = RuntimeException()
-      val t = failure("msg", cause)
+      val t = shouldThrow<AssertionError> {
+         errorCollector.collectOrThrow(failure("msg", cause))
+      }
       t.cause shouldBe cause
       t.stackTrace[0].className.shouldStartWith("com.sksamuel.kotest.FailuresTest")
    }
 
-   "failure(expected, actual) should filter the stack trace removing io.kotest" {
+   "When failing with failure(expected, actual), errorCollector should filter the stack trace removing io.kotest" {
       val expected = Expected(Printed("1"))
       val actual = Actual(Printed("2"))
-      val t = failure(expected, actual)
+      val t = shouldThrow<AssertionError> {
+         errorCollector.collectOrThrow(failure(expected, actual))
+      }
       t.stackTrace[0].className.shouldStartWith("com.sksamuel.kotest.FailuresTest")
    }
 
