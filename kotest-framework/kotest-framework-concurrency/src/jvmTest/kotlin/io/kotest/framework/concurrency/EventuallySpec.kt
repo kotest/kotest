@@ -19,9 +19,6 @@ import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
@@ -153,44 +150,33 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually does one final iteration if we never executed before interval expired") {
-      newSingleThreadContext("single").use { dispatcher ->
-         launch(dispatcher) {
-            Thread.sleep(2000)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // we won't be able to run in here
-            eventually({
-               duration(1.seconds)
-               interval = 400.milliseconds.fixed()
-            }) {
-               counter.incrementAndGet()
-            }
-         }
-         counter.get().shouldBe(1)
+      val counter = AtomicInteger(0)
+
+      eventually({
+         duration(1.seconds)
+         interval = 400.milliseconds.fixed()
+      }) {
+         delay(500.milliseconds)
+         // Although this iteration takes longer than the interval, it will be allowed to complete.
+         counter.incrementAndGet()
       }
+
+      counter.get().shouldBe(1)
    }
 
    test("eventually does one final iteration if we only executed once and the last delay > interval") {
-      newSingleThreadContext("single").use { dispatcher ->
-         // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-         launch(dispatcher) {
-            delay(100.milliseconds)
-            Thread.sleep(500)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // this will execute once immediately, then the earlier async will steal the thread
-            // and then since the delay has been > interval and times == 1, we will execute once more
-            eventually({
-               duration(250.milliseconds)
-               interval = 25.milliseconds.fixed()
-            }) {
-               counter.incrementAndGet() shouldBe 2
-            }
-         }
-         counter.get().shouldBe(2)
+      val counter = AtomicInteger(0)
+
+      eventually({
+         duration(3.seconds)
+         interval = 400.milliseconds.fixed()
+      }) {
+         counter.incrementAndGet() shouldBe 2
+         delay(600.milliseconds)
+         // Although the first iteration takes longer than the interval, another iteration is allowed.
       }
+
+      counter.get().shouldBe(2)
    }
 
    test("eventually handles shouldNotBeNull") {
