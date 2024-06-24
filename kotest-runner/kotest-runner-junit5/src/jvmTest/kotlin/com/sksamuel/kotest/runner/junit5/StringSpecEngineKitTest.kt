@@ -112,9 +112,9 @@ class StringSpecEngineKitTest : FunSpec({
             failed().shouldHaveNames(
                "a failing test",
                "Before Spec Error",
+               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecOverride",
             )
             succeeded().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecOverride",
                "Kotest"
             )
             finished().shouldHaveNames(
@@ -150,9 +150,9 @@ class StringSpecEngineKitTest : FunSpec({
             failed().shouldHaveNames(
                "a failing test",
                "Before Spec Error",
+               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecFunction",
             )
             succeeded().shouldHaveNames(
-               "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecFunction",
                "Kotest"
             )
             finished().shouldHaveNames(

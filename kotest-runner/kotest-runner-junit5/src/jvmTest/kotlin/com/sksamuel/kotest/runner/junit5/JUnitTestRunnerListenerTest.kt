@@ -10,11 +10,10 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.createTestResult
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
-import io.kotest.runner.junit.platform.KotestEngineDescriptor
+import io.kotest.runner.junit.platform.createEngineDescriptor
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -28,12 +27,11 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
    describe("as per the JUnit spec") {
       it("a failing test should not fail the parent test or parent spec") {
 
-         val root = KotestEngineDescriptor(
+         val root = createEngineDescriptor(
             UniqueId.forEngine("kotest"),
             ProjectConfiguration(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
+            listOf(JUnitTestRunnerListenerTest::class),
+            null,
             null,
          )
 
