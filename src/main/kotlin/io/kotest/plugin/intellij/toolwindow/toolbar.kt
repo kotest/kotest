@@ -12,16 +12,26 @@ import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.actions.RunAction
 import javax.swing.JComponent
 
-fun createToolbar(tree: TestFileTree, project: Project): JComponent {
+fun createToolbar(
+   toolbarOwner: JComponent,
+   tree: TestFileTree,
+   project: Project,
+): JComponent {
    val actionManager = ActionManager.getInstance()
-   return actionManager.createActionToolbar(
-      ActionPlaces.STRUCTURE_VIEW_TOOLBAR,
-      createActionGroup(tree, project),
-      true
-   ).component
+   val toolbar =
+      actionManager.createActionToolbar(
+         ActionPlaces.STRUCTURE_VIEW_TOOLBAR,
+         createActionGroup(tree, project),
+         true,
+      )
+   toolbar.targetComponent = toolbarOwner
+   return toolbar.component
 }
 
-private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActionGroup {
+private fun createActionGroup(
+   tree: TestFileTree,
+   project: Project,
+): DefaultActionGroup {
    val result = DefaultActionGroup()
    result.add(RunAction("Run", AllIcons.Actions.Execute, tree, project, "Run"))
    result.add(RunAction("Debug", AllIcons.Actions.StartDebugger, tree, project, "Debug"))
@@ -30,95 +40,112 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
    result.add(ExpandAllAction(tree))
    result.add(CollapseAction(tree))
    result.addSeparator()
-   result.add(FilterCallbacksAction(tree))
-   result.add(FilterIncludesAction(tree))
-   result.add(FilterModulesAction(tree))
-   result.add(FilterTagsAction(tree))
+   result.add(FilterCallbacksAction(project))
+   result.add(FilterIncludesAction(project))
+   result.add(FilterModulesAction(project))
+   result.add(FilterTagsAction(project))
    result.addSeparator()
-   result.add(NavigateToNodeAction())
+   result.add(NavigateToNodeAction(project))
    return result
 }
 
-class CollapseAction(private val tree: TestFileTree) : AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
+class CollapseAction(
+   private val tree: TestFileTree,
+) : AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
    override fun actionPerformed(e: AnActionEvent) {
       tree.collapseTopLevelNodes()
    }
 }
 
-class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand All", null, AllIcons.Actions.Expandall) {
+class ExpandAllAction(
+   private val tree: TestFileTree,
+) : AnAction("Expand All", null, AllIcons.Actions.Expandall) {
    override fun actionPerformed(e: AnActionEvent) {
       tree.expandAllNodes()
    }
 }
 
-class FilterCallbacksAction(private val tree: TestFileTree) :
-   ToggleAction("Filter Vallbacks", null, AllIcons.Nodes.Controller) {
+class FilterCallbacksAction(
+   project: Project,
+) : ToggleAction("Filter Callbacks", null, AllIcons.Nodes.Controller) {
+   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
 
    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-   override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.showCallbacks
-   }
+   override fun isSelected(e: AnActionEvent): Boolean = kotestTestExplorerService.showCallbacks
 
-   override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.showCallbacks = state
-      tree.reloadModel()
+   override fun setSelected(
+      e: AnActionEvent,
+      state: Boolean,
+   ) {
+      kotestTestExplorerService.showCallbacks = state
    }
 }
 
-class FilterModulesAction(private val tree: TestFileTree) :
-   ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
+class FilterModulesAction(
+   project: Project,
+) : ToggleAction("Filter Modules", null, AllIcons.Nodes.ModuleGroup) {
+   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
 
    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-   override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.showModules
-   }
+   override fun isSelected(e: AnActionEvent): Boolean = kotestTestExplorerService.showModules
 
-   override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.showModules = state
-      tree.reloadModel()
+   override fun setSelected(
+      e: AnActionEvent,
+      state: Boolean,
+   ) {
+      kotestTestExplorerService.showModules = state
    }
 }
 
-class FilterTagsAction(private val tree: TestFileTree) : ToggleAction("Filter Tags", null, AllIcons.Nodes.Tag) {
+class FilterTagsAction(
+   project: Project,
+) : ToggleAction("Filter Tags", null, AllIcons.Nodes.Tag) {
    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-   override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.showTags
-   }
+   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
 
-   override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.showTags = state
-      tree.reloadModel()
+   override fun isSelected(e: AnActionEvent): Boolean = kotestTestExplorerService.showTags
+
+   override fun setSelected(
+      e: AnActionEvent,
+      state: Boolean,
+   ) {
+      kotestTestExplorerService.showTags = state
    }
 }
 
-class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter Includes", null, AllIcons.Nodes.Tag) {
+class FilterIncludesAction(
+   project: Project,
+) : ToggleAction("Filter Includes", null, AllIcons.Nodes.Tag) {
+   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
+
    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-   override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.showIncludes
-   }
+   override fun isSelected(e: AnActionEvent): Boolean = kotestTestExplorerService.showIncludes
 
-   override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.showIncludes = state
-      tree.reloadModel()
+   override fun setSelected(
+      e: AnActionEvent,
+      state: Boolean,
+   ) {
+      kotestTestExplorerService.showIncludes = state
    }
 }
 
-class NavigateToNodeAction : ToggleAction(
-   "Autoscroll To Source",
-   null,
-   AllIcons.General.AutoscrollToSource
-) {
+class NavigateToNodeAction(
+   project: Project,
+) : ToggleAction("Autoscroll To Source", null, AllIcons.General.AutoscrollToSource) {
+   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
+
    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-   override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.autoscrollToSource
-   }
+   override fun isSelected(e: AnActionEvent): Boolean = kotestTestExplorerService.autoscrollToSource
 
-   override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.autoscrollToSource = state
+   override fun setSelected(
+      e: AnActionEvent,
+      state: Boolean,
+   ) {
+      kotestTestExplorerService.autoscrollToSource = state
    }
 }

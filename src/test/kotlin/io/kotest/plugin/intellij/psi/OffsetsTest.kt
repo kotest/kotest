@@ -8,7 +8,6 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import java.nio.file.Paths
 
 class OffsetsTest : LightJavaCodeInsightFixtureTestCase() {
-
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
       return path.toString()

@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent
  * The main panel for the test explorer 'tool window'.
  */
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
+   val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
 
    private val fileEditorManager = FileEditorManager.getInstance(project)
    private val tree = TestFileTree(project)
@@ -37,7 +38,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       })
 
       background = JBColor.WHITE
-      toolbar = createToolbar(tree, project)
+      toolbar = createToolbar(this, tree, project)
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
       listenForFileChanges()
@@ -55,7 +56,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   val files = events.mapNotNull { it.file }
                   val modified = files.firstOrNull { it.name == selectedFile.name }
                   if (modified != null)
-                     tree.setVirtualFile(modified)
+                     kotestTestExplorerService.currentFile = modified
                }
             }
          }
@@ -73,7 +74,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
             override fun selectionChanged(event: FileEditorManagerEvent) {
                val file = fileEditorManager.selectedEditor?.file
                if (file != null) {
-                  tree.setVirtualFile(file)
+                  kotestTestExplorerService.currentFile = file
                }
             }
          }
@@ -87,7 +88,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                val selectedFile = fileEditorManager.selectedEditor?.file
                if (selectedFile != null) {
                   if (file.virtualFile.name == selectedFile.name) {
-                     tree.setVirtualFile(file.virtualFile)
+                     kotestTestExplorerService.currentFile = file.virtualFile
                   }
                }
             }
@@ -101,8 +102,9 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun refreshContent() {
-      scanTags(project)
-      val file = fileEditorManager.selectedEditor?.file
-      tree.setVirtualFile(file)
+      kotestTestExplorerService.scanTags()
+      fileEditorManager.selectedEditor?.file?.let {
+         kotestTestExplorerService.currentFile = it
+      }
    }
 }
