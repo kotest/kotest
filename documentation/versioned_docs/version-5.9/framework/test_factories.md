@@ -120,6 +120,9 @@ Each included test appears in the test output and reports as if it was individua
 Tests from factories are included in the order they are defined in the spec class.
 :::
 
+:::note
+```include``` is only supported at the top level of a spec
+:::
 
 ## Listeners
 
