@@ -1,3 +1,6 @@
+name: Gradle Task
+run-name: "Gradle Task ${{ inputs.task }}, ${{ inputs.runs-on }}, ${{ inputs.ref }}"
+
 on:
    workflow_call:
       inputs:
@@ -14,37 +17,60 @@ on:
             required: true
             type: string
 
+permissions:
+   contents: read
+
 jobs:
    run-tests:
       runs-on: ${{ inputs.runs-on }}
       steps:
+         -  name: "Redirect caches to fast D: drive for Windows runners"
+            if: runner.os == 'Windows'
+            run: |
+               mkdir D:\.gradle
+               mklink /D C:\Users\runneradmin\.gradle D:\.gradle
+               mkdir D:\.konan
+               mklink /D C:\Users\runneradmin\.konan D:\.konan
+            shell: cmd
+
          -  name: Checkout the repo
             uses: actions/checkout@v4
             with:
-               fetch-depth: 0
                ref: ${{ github.event.inputs.ref }}
+
+         -  name: Validate Gradle Wrapper
+            uses: gradle/actions/wrapper-validation@v3
 
          -  name: Setup JDK
             uses: actions/setup-java@v4
             with:
-               distribution: 'temurin'
+               distribution: "temurin"
                java-version: "17"
 
-         -  uses: gradle/actions/setup-gradle@v3
+         -  name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v3
+            with:
+               gradle-home-cache-cleanup: true
+               cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
 
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
+            shell: bash
 
-         -  name: Bundle the build report
+         -  name: Upload build reports
             if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@v3
+            uses: actions/upload-artifact@v4
             with:
-               name: error-report
-               path: build-reports.zip
+               name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
+               path: |
+                  **/build/reports/
+                  **/*.hprof
+                  **/*.log
+               if-no-files-found: ignore
 
 env:
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}

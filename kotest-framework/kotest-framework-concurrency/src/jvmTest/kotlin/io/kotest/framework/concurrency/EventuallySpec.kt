@@ -1,4 +1,7 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
+@file:Suppress(
+   "DEPRECATION",
+   "BlockingMethodInNonBlockingContext",
+)
 
 package io.kotest.framework.concurrency
 
@@ -7,42 +10,43 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.time.Duration
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-
-private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
-private fun Int.milliseconds(): Long = this.toLong()
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 @ExperimentalKotest
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
+   coroutineTestScope = true
+
    test("eventually should immediately pass working tests") {
-      eventually(5.seconds()) {
+      eventually(5.seconds) {
          System.currentTimeMillis()
       }
    }
 
    test("eventually passes tests that complete within the time allowed") {
       val end = System.currentTimeMillis() + 250L
-      eventually(5.seconds()) {
+      eventually(5.seconds) {
          if (System.currentTimeMillis() < end)
             1 shouldBe 2
       }
@@ -57,7 +61,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually returns the result computed inside") {
-      val result = eventually(2.seconds()) {
+      val result = eventually(2.seconds) {
          1
       }
       result shouldBe 1
@@ -65,7 +69,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually passes tests that completed within the time allowed, AssertionError") {
       val end = System.currentTimeMillis() + 250
-      eventually(5.seconds()) {
+      eventually(5.seconds) {
          if (System.currentTimeMillis() < end)
             assert(false)
       }
@@ -74,7 +78,7 @@ class EventuallySpec : FunSpec({
    test("eventually fails tests that throw unexpected exception type") {
       shouldThrow<NullPointerException> {
          eventually({
-            duration = 2.seconds()
+            duration(2.seconds)
             suppressExceptions = setOf(IOException::class)
          }) {
             (null as String?)!!.length
@@ -85,7 +89,7 @@ class EventuallySpec : FunSpec({
    test("eventually passes tests that throws FileNotFoundException for some time") {
       val end = System.currentTimeMillis() + 250
       eventually({
-         duration = 5.seconds()
+         duration(5.seconds)
          suppressExceptions = setOf(FileNotFoundException::class)
       }) {
          if (System.currentTimeMillis() < end)
@@ -95,7 +99,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually handles kotlin assertion errors") {
       var thrown = false
-      eventually(100.milliseconds()) {
+      eventually(400.milliseconds) {
          if (!thrown) {
             thrown = true
             throw AssertionError("boom")
@@ -105,7 +109,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually handles java assertion errors") {
       var thrown = false
-      eventually(100.milliseconds()) {
+      eventually(400.milliseconds) {
          if (!thrown) {
             thrown = true
             throw java.lang.AssertionError("boom")
@@ -116,7 +120,7 @@ class EventuallySpec : FunSpec({
    test("eventually displays the first and last underlying failures") {
       var count = 0
       val message = shouldThrow<AssertionError> {
-         eventually(100.milliseconds()) {
+         eventually(400.milliseconds) {
             if (count == 0) {
                count = 1
                fail("first")
@@ -126,14 +130,13 @@ class EventuallySpec : FunSpec({
          }
       }.message
 
-      // TODO: add this assertion when we can use kotlin.time again
-//         message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+      message.shouldContain("Eventually block failed after 400ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25\\) delay between attempts".toRegex())
       message.shouldContain("The first error was caused by: first")
       message.shouldContain("The last error was caused by: last")
    }
 
    test("eventually allows suspendable functions") {
-      eventually(100.milliseconds()) {
+      eventually(400.milliseconds) {
          delay(25)
          System.currentTimeMillis()
       }
@@ -142,8 +145,8 @@ class EventuallySpec : FunSpec({
    test("eventually allows configuring interval delay") {
       var count = 0
       eventually({
-         duration = 200.milliseconds()
-         interval = 40.milliseconds().fixed()
+         duration(400.milliseconds)
+         interval = 80.milliseconds.fixed()
       }) {
          count += 1
       }
@@ -159,8 +162,8 @@ class EventuallySpec : FunSpec({
          withContext(dispatcher) {
             // we won't be able to run in here
             eventually({
-               duration = 1.seconds()
-               interval = 100.milliseconds().fixed()
+               duration(1.seconds)
+               interval = 400.milliseconds.fixed()
             }) {
                counter.incrementAndGet()
             }
@@ -173,7 +176,7 @@ class EventuallySpec : FunSpec({
       newSingleThreadContext("single").use { dispatcher ->
          // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
          launch(dispatcher) {
-            delay(100.milliseconds())
+            delay(100.milliseconds)
             Thread.sleep(500)
          }
          val counter = AtomicInteger(0)
@@ -181,8 +184,8 @@ class EventuallySpec : FunSpec({
             // this will execute once immediately, then the earlier async will steal the thread
             // and then since the delay has been > interval and times == 1, we will execute once more
             eventually({
-               duration = 250.milliseconds()
-               interval = 25.milliseconds().fixed()
+               duration(250.milliseconds)
+               interval = 25.milliseconds.fixed()
             }) {
                counter.incrementAndGet() shouldBe 2
             }
@@ -192,26 +195,26 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually handles shouldNotBeNull") {
-      measureTimeMillisCompat {
+      measureTime {
          shouldThrow<java.lang.AssertionError> {
-            eventually(50.milliseconds()) {
+            eventually(50.milliseconds) {
                val str: String? = null
                str.shouldNotBeNull()
             }
          }
-      }.shouldBeGreaterThanOrEqual(50)
+      }.shouldBeGreaterThanOrEqualTo(50.milliseconds)
    }
 
    test("eventually with boolean predicate") {
-      eventually(5.seconds()) {
+      eventually(5.seconds) {
          System.currentTimeMillis() > 0
       }
    }
 
    test("eventually with boolean predicate and interval") {
       eventually({
-         duration = 5.seconds()
-         interval = 1.seconds().fixed()
+         duration(5.seconds)
+         interval = 1.seconds.fixed()
          predicate = { System.currentTimeMillis() > 0 }
       }) {}
    }
@@ -219,7 +222,7 @@ class EventuallySpec : FunSpec({
    test("eventually with T predicate") {
       var t = ""
       eventually<String>({
-         duration = 5.seconds()
+         duration(5.seconds)
          predicate = { it.result == "xxxxxxxxxxx" }
       }) {
          t += "x"
@@ -230,8 +233,8 @@ class EventuallySpec : FunSpec({
    test("eventually with T predicate and interval") {
       var t = ""
       val result = eventually({
-         duration = 5.seconds()
-         interval = 250.milliseconds().fixed()
+         duration(5.seconds)
+         interval = 250.milliseconds.fixed()
          predicate = { it.result == "xxxxxxxxxxx" }
       }) {
          t += "x"
@@ -245,8 +248,8 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
       val result = eventually({
-         duration = 5.seconds()
-         interval = 250.milliseconds().fixed()
+         duration(5.seconds)
+         interval = 250.milliseconds.fixed()
          listener = { latch.countDown() }
          predicate = { it.result == "xxxxxxxxxxx" }
       }) {
@@ -262,8 +265,8 @@ class EventuallySpec : FunSpec({
       var t = ""
       val message = shouldThrow<EventuallyShortCircuitException> {
          eventually({
-            duration = 5.seconds()
-            interval = 250.milliseconds().fixed()
+            duration(5.seconds)
+            interval = 250.milliseconds.fixed()
             shortCircuit = { it.result == "xx" }
             predicate = { it.result == "xxxxxxxxxxx" }
          }) {
@@ -281,7 +284,7 @@ class EventuallySpec : FunSpec({
    test("eventually fails tests that fail a predicate") {
       shouldThrow<AssertionError> {
          eventually({
-            duration = 1.seconds()
+            duration(1.seconds)
             predicate = { it.result == 2 }
          }) {
             1
@@ -294,8 +297,8 @@ class EventuallySpec : FunSpec({
       val latch = CountDownLatch(5)
 
       val result = eventually({
-         duration = 10.seconds()
-         interval = 200.milliseconds().fibonacci()
+         duration(10.seconds)
+         interval = 200.milliseconds.fibonacci()
          predicate = { it.result == "xxxxxx" }
          listener = { latch.countDown() }
       }) {
@@ -307,7 +310,7 @@ class EventuallySpec : FunSpec({
       result shouldBe "xxxxxx"
    }
 
-   fun <T> slow() = EventuallyConfig<T>(interval = 250.seconds().fixed())
+   fun <T> slow() = EventuallyConfig<T>(interval = 250.seconds.fixed())
 
    test("eventually can accept shareable configuration with Unit as the type and overrides") {
       val a = eventually(slow()) {
@@ -336,8 +339,7 @@ class EventuallySpec : FunSpec({
          }
       }.message
 
-      // TODO: re-enable this when we have kotlin.time again
-//         message.shouldContain("Eventually block failed after Infinity")
+      message.shouldContain("Eventually block failed after")
       message.shouldContain("attempted 2 time(s)")
    }
 
@@ -346,7 +348,7 @@ class EventuallySpec : FunSpec({
       val message = shouldThrow<AssertionError> {
          all {
             withClue("Eventually that should pass") {
-               eventually(2.seconds()) {
+               eventually(2.seconds) {
                   System.currentTimeMillis() shouldBeGreaterThan target
                }
             }
@@ -368,9 +370,13 @@ class EventuallySpec : FunSpec({
 
       shouldThrow<Throwable> {
          eventually({
-            duration = 250.milliseconds()
+            duration(250.milliseconds)
             retries = 1
-            listener = { if (state == null) { state = it } }
+            listener = {
+               if (state == null) {
+                  state = it
+               }
+            }
          }) {
             withClue("1 should never be 2") {
                1 shouldBe 2
@@ -385,7 +391,7 @@ class EventuallySpec : FunSpec({
    test("allows exception if predicate is satisfied") {
       var i = 0
       eventually({
-         duration = 2.seconds()
+         duration(2.seconds)
          suppressExceptionIf = { it.message == "foo" }
       }) {
          if (i++ < 3) {
@@ -398,7 +404,7 @@ class EventuallySpec : FunSpec({
       shouldThrow<AssertionError> {
          var i = 0
          eventually({
-            duration = 2.seconds()
+            duration(2.seconds)
             suppressExceptionIf = { it.message == "bar" }
          }) {
             if (i++ < 3) {
@@ -416,7 +422,7 @@ class EventuallySpec : FunSpec({
       )
       var i = 0
       eventually({
-         duration = 5.seconds()
+         duration(5.seconds)
          suppressExceptions = exceptions.map { it.first }.toSet()
       }) {
          exceptions.elementAtOrNull(i++)?.run {
@@ -430,7 +436,7 @@ class EventuallySpec : FunSpec({
    test("short circuit exception cannot be suppressed") {
       shouldThrow<EventuallyShortCircuitException> {
          eventually({
-            duration = 5.seconds()
+            duration(5.seconds)
             suppressExceptions = setOf(EventuallyShortCircuitException::class)
             shortCircuit = { true }
          }) {

@@ -16,8 +16,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.time.Duration.Companion.milliseconds
 
-@ExperimentalStdlibApi
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
 class TestCoroutineDispatcherInterceptorTest : FunSpec() {
    init {
       test("TestCoroutineDispatcherInterceptor should install a DelayController") {

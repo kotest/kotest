@@ -16,7 +16,7 @@ object Ci {
       else -> "$snapshotBase.${githubBuildNumber}"
    }
 
-   private val releaseVersion = System.getenv("RELEASE_VERSION")
+   private val releaseVersion = System.getenv("RELEASE_VERSION")?.ifBlank { null }
 
    val isRelease = releaseVersion != null
    val publishVersion = releaseVersion ?: snapshotVersion

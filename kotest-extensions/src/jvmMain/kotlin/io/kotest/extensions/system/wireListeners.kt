@@ -1,5 +1,6 @@
 package io.kotest.extensions.system
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -18,7 +19,7 @@ inline fun captureStandardOut(fn: () -> Unit): String {
    try {
       fn()
       System.out.flush()
-      return String(buffer.toByteArray())
+      return buffer.asCanonicalString()
    } finally {
       System.setOut(previous)
    }
@@ -35,7 +36,7 @@ inline fun captureStandardErr(fn: () -> Unit): String {
    try {
       fn()
       System.err.flush()
-      return String(buffer.toByteArray())
+      return buffer.asCanonicalString()
    } finally {
       System.setErr(previous)
    }
@@ -55,7 +56,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
    private var buffer = ByteArrayOutputStream()
    private var previous = System.out
 
-   fun output(): String = String(buffer.toByteArray())
+   fun output(): String = buffer.asCanonicalString()
 
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
@@ -84,7 +85,7 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
    private var buffer = ByteArrayOutputStream()
    private var previous = System.err
 
-   fun output(): String = String(buffer.toByteArray())
+   fun output(): String = buffer.asCanonicalString()
 
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
@@ -107,7 +108,6 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
  *
  * (avoids pulling in commons-io:commons-io just for a single class)
  */
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class TeeOutputStream(
    private val firstOutput: OutputStream,
    private val secondOutput: OutputStream
@@ -138,3 +138,7 @@ internal class TeeOutputStream(
       secondOutput.close()
    }
 }
+
+/** Returns the stream's content as a UTF-8 string with normalized line breaks. */
+@KotestInternal
+fun ByteArrayOutputStream.asCanonicalString(): String = String(toByteArray()).replace("\r\n", "\n")

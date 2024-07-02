@@ -2,6 +2,7 @@ package io.kotest.core.listeners
 
 import io.kotest.core.test.TestCase
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface BeforeInvocationListener : Listener {
 
    /**
@@ -18,6 +19,7 @@ interface BeforeInvocationListener : Listener {
    suspend fun beforeInvocation(testCase: TestCase, iteration: Int): Unit = Unit
 }
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface AfterInvocationListener : Listener {
 
    /**
