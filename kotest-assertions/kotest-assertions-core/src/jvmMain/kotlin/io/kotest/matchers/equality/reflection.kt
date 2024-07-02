@@ -583,53 +583,67 @@ internal fun <T> checkEqualityOfFieldsRecursively(
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
-      val typeName = when (val classifier = it.returnType.classifier) {
-         is KClass<*> -> classifier.qualifiedName ?: classifier.jvmName
-         else -> it.returnType.toString().replace("?", "")
-      }
       val heading = "${it.name}:"
 
-      if (requiresUseOfDefaultEq(actual, expected, typeName, config.useDefaultShouldBeForFields)) {
-         val throwable = eq(actual, expected)
-         if (throwable != null) {
-            "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
-         } else {
-            null
+      when(comparisonToUse(actual, expected, config.useDefaultShouldBeForFields)) {
+         FieldComparison.RECURSIVE -> {
+            val (errorMessage, _) = checkEqualityOfFieldsRecursively(
+               actual,
+               expected,
+               config,
+               level + 1
+            )
+            if (errorMessage.isEmpty()) {
+               null
+            } else {
+               val innerErrorMessage = errorMessage.joinToString("\n") { msg -> "\t".repeat(level + 1) + msg }
+               "$heading${"\t".repeat(level)}\n$innerErrorMessage"
+            }
          }
-      } else {
-         val (errorMessage, _) = checkEqualityOfFieldsRecursively(
-            actual,
-            expected,
-            config,
-            level + 1
-         )
-         if (errorMessage.isEmpty()) {
-            null
-         } else {
-            val innerErrorMessage = errorMessage.joinToString("\n") { msg -> "\t".repeat(level + 1) + msg }
-            "$heading${"\t".repeat(level)}\n$innerErrorMessage"
+         else -> {
+            val throwable = eq(actual, expected)
+            if (throwable != null) {
+               "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
+            } else {
+               null
+            }
          }
       }
+
    } to fields
 }
 
-private fun requiresUseOfDefaultEq(
+internal fun comparisonToUse(
    actual: Any?,
    expected: Any?,
-   typeName: String,
    useDefaultEqualForFields: List<String>
-): Boolean {
-   val expectedOrActualIsNull = actual == null || expected == null
-   val typeIsJavaOrKotlinBuiltIn by lazy { typeName.startsWith("kotlin.") || typeName.startsWith("java.") }
-   val expectedOrActualIsEnum = actual is Enum<*>
-      || expected is Enum<*>
-      || (actual != null && actual::class.java.isEnum)
-      || (expected != null && expected::class.java.isEnum)
-   return expectedOrActualIsNull
-      || typeIsJavaOrKotlinBuiltIn
-      || useDefaultEqualForFields.contains(typeName)
-      || expectedOrActualIsEnum
+): FieldComparison = when {
+   actual == null || expected == null -> FieldComparison.DEFAULT
+   isEnum(expected) || isEnum(actual) -> FieldComparison.DEFAULT
+   (expected is List<*> && actual is List<*>) -> FieldComparison.LIST
+   (expected is Map<*, *> && actual is Map<*, *>) -> FieldComparison.MAP
+   (expected is Set<*> && actual is Set<*>) -> FieldComparison.SET
+   (expected is Array<*> && actual is Array<*>) -> FieldComparison.ARRAY
+   typeIsJavaOrKotlinBuiltIn(expected) || typeIsJavaOrKotlinBuiltIn(actual) -> FieldComparison.DEFAULT
+   useDefaultEqualForFields.contains(expected::class.java.canonicalName) ||
+      useDefaultEqualForFields.contains(actual::class.java.canonicalName) -> FieldComparison.DEFAULT
+   actual::class != expected::class -> FieldComparison.DEFAULT
+   else -> FieldComparison.RECURSIVE
 }
+
+internal fun isEnum(value: Any?) = when(value) {
+   null -> false
+   is Enum<*> -> true
+   value::class.java.isEnum -> true
+   else -> false
+}
+
+internal fun typeIsJavaOrKotlinBuiltIn(value: Any): Boolean {
+   val typeName = value::class.java.canonicalName
+   return typeName.startsWith("kotlin.") || typeName.startsWith("java.")
+}
+
+internal enum class FieldComparison { DEFAULT, RECURSIVE, LIST, MAP, SET, ARRAY }
 
 /**
  * A config for controlling the way shouldBeEqualToComparingFields compare fields.
