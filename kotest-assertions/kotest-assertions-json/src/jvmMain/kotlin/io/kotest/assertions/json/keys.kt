@@ -3,6 +3,10 @@ package io.kotest.assertions.json
 import com.jayway.jsonpath.InvalidPathException
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.PathNotFoundException
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -28,17 +32,27 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
          else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
       }
 
-      val passed = value != null && try {
-         JsonPath.read<String>(value, path)
-         true
-      } catch (t: PathNotFoundException) {
-         false
-      } catch (t: InvalidPathException) {
-         throw AssertionError("$path is not a valid JSON path")
-      }
+      return value?.let {
+         when(extractByPath(json = value, path = path, Any::class.java)) {
+            is ExtractValueOutcome.ExtractedValue<*> -> {
+               MatcherResult(
+                  true,
+                  { "$sub should contain the key $path" },
+                  { "$sub should not contain the key $path" }
+               )
+            }
+            is ExtractValueOutcome.JsonPathNotFound -> {
+               val subPathDescription = findValidSubPath(value, path).description()
+               MatcherResult(
+                  false,
+                  { "Expected given to contain json key <'$path'> but key was not found. $subPathDescription" },
+                  { "Expected given to not contain json key <'$path'> but key was found." }
+               )
 
-      return MatcherResult(
-         passed,
+            }
+         }
+      } ?: MatcherResult(
+         false,
          { "$sub should contain the path $path" },
          { "$sub should not contain the path $path" },
       )
