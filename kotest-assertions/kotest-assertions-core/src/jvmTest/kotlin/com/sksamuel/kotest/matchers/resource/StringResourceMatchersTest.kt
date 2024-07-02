@@ -11,6 +11,7 @@ import io.kotest.matchers.resource.shouldNotMatchResource
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.startWith
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import java.io.File
 
 @Suppress("RegExpRepeatedSpace")
@@ -30,7 +31,7 @@ class StringResourceMatchersTest : ShouldSpec({
          givenValue shouldMatchResource "/resourceMatchersTest/expected/binary42.bin"
       }
 
-      should("should return message with both resource and actual value files paths") {
+      should("should return message with both resource and actual value files paths").config(enabled = !IS_OS_WINDOWS) {
          val givenValue = "not a test resource"
 
          val errorMessage = shouldThrow<AssertionError> {
@@ -41,7 +42,7 @@ class StringResourceMatchersTest : ShouldSpec({
          errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/testResource\\.txt".toRegex()
       }
 
-      should("should write temp file with contents of actual value") {
+      should("should write temp file with contents of actual value").config(enabled = !IS_OS_WINDOWS) {
          val givenValue = "not a test resource"
 
          val errorMessage = shouldThrow<AssertionError> {
@@ -68,7 +69,7 @@ class StringResourceMatchersTest : ShouldSpec({
             { s -> startWith(s.lowercase()) })
       }
 
-      should("should return message with both resource and actual value files paths") {
+      should("should return message with both resource and actual value files paths").config(enabled = !IS_OS_WINDOWS) {
          val givenValue = "not a test resource"
 
          val errorMessage = shouldThrow<AssertionError> {

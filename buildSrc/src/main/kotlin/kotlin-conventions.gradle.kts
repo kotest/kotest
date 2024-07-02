@@ -1,19 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
    `java-library`
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
-   google()
-   gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
 
 testlogger {
@@ -22,6 +14,9 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }

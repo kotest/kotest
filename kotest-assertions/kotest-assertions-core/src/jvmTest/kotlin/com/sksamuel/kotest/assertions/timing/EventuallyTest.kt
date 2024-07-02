@@ -11,11 +11,10 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.withClue
-import io.kotest.common.measureTimeMillisCompat
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -33,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 @OptIn(DelicateCoroutinesApi::class)
 class EventuallyTest : WordSpec() {
@@ -173,7 +173,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "handle shouldNotBeNull" {
-            val duration = measureTimeMillisCompat {
+            val duration = measureTime {
                shouldThrow<java.lang.AssertionError> {
                   eventually(50.milliseconds) {
                      val str: String? = null
@@ -181,7 +181,7 @@ class EventuallyTest : WordSpec() {
                   }
                }
             }
-            duration.shouldBeGreaterThanOrEqual(50)
+            duration shouldBeGreaterThanOrEqualTo 50.milliseconds
          }
 
          "eventually with boolean predicate" {

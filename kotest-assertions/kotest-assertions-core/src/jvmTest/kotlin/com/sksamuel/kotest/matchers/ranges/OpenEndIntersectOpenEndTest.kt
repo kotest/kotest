@@ -7,20 +7,20 @@ import io.kotest.matchers.ranges.shouldIntersect
 import io.kotest.matchers.ranges.shouldNotIntersect
 import io.kotest.matchers.shouldBe
 
-@OptIn(ExperimentalStdlibApi::class)
-class OpenEndIntersectOpenEndTest: WordSpec() {
+class OpenEndIntersectOpenEndTest : WordSpec() {
    private val oneThree: OpenEndRange<Double> = 1.0.rangeUntil(3.0)
    private val twoFour: OpenEndRange<Double> = 2.0.rangeUntil(4.0)
    private val threeFour: OpenEndRange<Double> = 3.0.rangeUntil(4.0)
    private val fourSix: OpenEndRange<Double> = 4.0.rangeUntil(6.0)
+
    init {
       "should" should {
          "fail" {
-             shouldThrowAny {
-                val openEndRange = oneThree
-                println(openEndRange)
-                openEndRange shouldIntersect fourSix
-             }.message shouldBe "Range [1.0, 3.0) should intersect [4.0, 6.0), but doesn't"
+            shouldThrowAny {
+               val openEndRange = oneThree
+               println(openEndRange)
+               openEndRange shouldIntersect fourSix
+            }.message shouldBe "Range [1.0, 3.0) should intersect [4.0, 6.0), but doesn't"
          }
 
          "pass" {
@@ -45,4 +45,3 @@ class OpenEndIntersectOpenEndTest: WordSpec() {
       }
    }
 }
-

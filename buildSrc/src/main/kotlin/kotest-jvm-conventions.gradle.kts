@@ -3,7 +3,6 @@ plugins {
 }
 
 kotlin {
-
    jvm {
       withJava()
    }
