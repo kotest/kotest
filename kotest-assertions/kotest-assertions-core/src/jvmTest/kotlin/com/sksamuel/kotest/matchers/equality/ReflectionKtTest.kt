@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.equality
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.*
@@ -279,6 +280,18 @@ class ReflectionKtTest : FunSpec() {
          }.message shouldNotContain "random"
       }
 
+      test("shouldBeEqualToComparingFields fails if generic fields are different") {
+         shouldFail {
+            KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "amber"))
+         }.message shouldNotContain "random"
+      }
+
+      test("shouldBeEqualToComparingFields passes if generic fields are same") {
+         shouldNotThrowAny {
+            KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "green"))
+         }
+      }
+
       test("shouldBeEqualToWithEnums") {
          shouldFail {
             EnumWrapper(SimpleEnum.ONE).shouldBeEqualToComparingFields(EnumWrapper(SimpleEnum.TWO))
@@ -290,6 +303,10 @@ class ReflectionKtTest : FunSpec() {
             EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
          }.message.shouldContain("expected:<TWO> but was:<ONE>")
       }
-
    }
+
+   data class KeyValuePair<T : Any>(
+      val key: String,
+      val value: T
+      )
 }
