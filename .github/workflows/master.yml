@@ -20,6 +20,7 @@ jobs:
       name: Validate API
       if: github.repository == 'kotest/kotest'
       uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
@@ -30,6 +31,7 @@ jobs:
       if: github.repository == 'kotest/kotest'
       needs: validate-api
       uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
@@ -46,6 +48,7 @@ jobs:
                -  os: windows-latest
          fail-fast: false
       uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
