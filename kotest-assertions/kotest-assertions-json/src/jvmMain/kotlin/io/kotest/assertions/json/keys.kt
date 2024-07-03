@@ -28,12 +28,15 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
       val sub = when (value) {
-         null -> value
+         null -> return MatcherResult(
+            false,
+            { "null should contain the path $path" },
+            { "null should not contain the path $path" },
+         )
          else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
       }
 
-      return value?.let {
-         when(extractByPath(json = value, path = path, Any::class.java)) {
+      return when(extractByPath(json = value, path = path, Any::class.java)) {
             is ExtractValueOutcome.ExtractedValue<*> -> {
                MatcherResult(
                   true,
@@ -51,10 +54,5 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
 
             }
          }
-      } ?: MatcherResult(
-         false,
-         { "$sub should contain the path $path" },
-         { "$sub should not contain the path $path" },
-      )
    }
 }
