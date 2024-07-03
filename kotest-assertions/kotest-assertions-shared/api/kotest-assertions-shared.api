@@ -2837,6 +2837,16 @@ public final class io/kotest/data/blocking/ForAll7Kt {
 	public static final fun forNone ([Lio/kotest/data/Row7;Lkotlin/jvm/functions/Function7;)V
 }
 
+public final class io/kotest/equals/CommutativeEquality : io/kotest/equals/Equality {
+	public fun <init> (Lio/kotest/equals/Equality;)V
+	public fun name ()Ljava/lang/String;
+	public fun verify (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/equals/EqualityResult;
+}
+
+public final class io/kotest/equals/CountByEqualityKt {
+	public static final fun countByEquality (Ljava/lang/Iterable;Lio/kotest/equals/Equality;)Ljava/util/Map;
+}
+
 public abstract interface class io/kotest/equals/Equality {
 	public static final field Companion Lio/kotest/equals/Equality$Companion;
 	public abstract fun name ()Ljava/lang/String;
