@@ -9,7 +9,6 @@ import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.toDuration
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -139,7 +138,7 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the [eventually] function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully. Must be greater than or equal to 0.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -162,7 +161,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default, this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. And Must be greater than or equal to 0.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
