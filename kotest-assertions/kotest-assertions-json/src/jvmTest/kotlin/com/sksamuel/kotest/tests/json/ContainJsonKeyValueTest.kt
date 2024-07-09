@@ -25,7 +25,8 @@ class ContainJsonKeyValueTest : StringSpec({
                     "category": "fiction",
                     "author": "Evelyn Waugh",
                     "title": "Sword of Honour",
-                    "price": 12.99
+                    "price": 12.99,
+                    "comments": []
                  }
               ],
               "bicycle": {
@@ -50,17 +51,33 @@ class ContainJsonKeyValueTest : StringSpec({
    "Failure message states if key is missing, when it's missing" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.bicycle.engine", "V2")
-      }.message shouldBe """
-         Expected given to contain json key <'$.bicycle.engine'> but key was not found.
-      """.trimIndent()
+      }.message shouldBe "Expected given to contain json key <'$.bicycle.engine'> but key was not found. "
    }
 
    "Failure message states if key is missing, shows valid subpath" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.bicycle.engine", "V2")
       }.message shouldBe """
-         Expected given to contain json key <'$.store.bicycle.engine'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>
+         Expected given to contain json key <'$.store.bicycle.engine'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>.
       """.trimIndent()
+   }
+
+   "Failure message states if key is missing, shows json array index out of bounds" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.book[2].category", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.book[2].category'> but key was not found. The array at path <'$.store.book'> has size 2, so index 2 is out of bounds."
+   }
+
+   "Failure message states if key is missing, shows element is not json array" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.bicycle[0].color", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store'>."
+   }
+
+   "Failure message states if key is missing, shows json array index out of bounds when array is empty" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.book[1].comments[0]", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.book[1].comments[0]'> but key was not found. The array at path <'$.store.book[1].comments'> has size 0, so index 0 is out of bounds."
    }
 
    "Failure message states states value mismatch if key is present with different value" {
