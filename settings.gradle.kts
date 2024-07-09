@@ -169,10 +169,7 @@ buildCache {
    val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
    val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
    remote<HttpBuildCache> {
-      // FIXME DO NOT MERGE - need to set up SSL cert, and disable insecure options:
-      url = uri("https://gradle-build-cache.kotest.io/cache")
-      isAllowUntrustedServer = true
-      isAllowInsecureProtocol = true
+      url = uri("https://kotest-gradle.duckdns.org/cache")
       credentials {
          username = kotestUser
          password = kotestPass
