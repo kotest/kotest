@@ -18,7 +18,7 @@ import kotlin.time.TimeSource
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
  */
 suspend fun <T> eventually(
-   test: suspend () -> T,
+   test: suspend () -> T
 ): T {
    val config = eventuallyConfig { }
    return eventually(config, test)
@@ -86,7 +86,7 @@ suspend fun <T> eventually(
 }
 
 fun eventuallyConfig(
-   configure: EventuallyConfigurationBuilder.() -> Unit,
+   configure: EventuallyConfigurationBuilder.() -> Unit
 ): EventuallyConfiguration {
    val config = EventuallyConfigurationBuilder()
    config.configure()
@@ -207,7 +207,7 @@ class EventuallyConfigurationBuilder {
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
 
 object NoopEventuallyListener : EventuallyListener {
-   override suspend fun invoke(iteration: Int, error: Throwable) {}
+   override suspend fun invoke(iteration: Int, error: Throwable, ) {}
 }
 
 private class EventuallyControl(
@@ -271,14 +271,12 @@ private class EventuallyControl(
 
 internal object ShortCircuitControlException : Throwable()
 
-
 /**
  * Store a [TimeSource] to be used by [eventually].
  */
 internal class EventuallyTimeSource(
-   val timeSource: TimeSource
+   val timeSource: TimeSource,
 ) : CoroutineContext.Element {
-
    override val key: CoroutineContext.Key<EventuallyTimeSource>
       get() = KEY
 
