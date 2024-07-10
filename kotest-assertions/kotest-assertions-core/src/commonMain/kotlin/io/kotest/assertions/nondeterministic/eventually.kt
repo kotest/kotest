@@ -138,7 +138,7 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the [eventually] function can take to complete successfully. Must be greater than or equal to 0.
+    * The total time that the [eventually] function can take to complete successfully. Must be non-negative.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
