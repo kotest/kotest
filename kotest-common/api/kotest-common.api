@@ -19,6 +19,16 @@ public final class io/kotest/common/NonConstantResultsKt {
 	public static final fun nonConstantTrue ()Z
 }
 
+public final class io/kotest/common/NonDeterministicTestVirtualTimeEnabled : kotlin/coroutines/CoroutineContext$Element, kotlin/coroutines/CoroutineContext$Key {
+	public static final field INSTANCE Lio/kotest/common/NonDeterministicTestVirtualTimeEnabled;
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/common/Platform : java/lang/Enum {
 	public static final field JS Lio/kotest/common/Platform;
 	public static final field JVM Lio/kotest/common/Platform;
@@ -80,6 +90,7 @@ public final class io/kotest/common/TestPathContextElement$Key : kotlin/coroutin
 
 public final class io/kotest/common/TestTimeSourceKt {
 	public static final fun getTestCoroutineSchedulerOrNull (Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
+	public static final fun nonDeterministicTestTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun testTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
