@@ -7,7 +7,7 @@ import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -88,7 +88,7 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T {
 
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(config.duration)
    var times = 0
    var firstError: Throwable? = null
@@ -130,7 +130,7 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      val delayMark = testTimeSource().markNow()
+      val delayMark = nonDeterministicTestTimeSource().markNow()
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
    }

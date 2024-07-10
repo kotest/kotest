@@ -8,7 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.nonConstantTrue
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
@@ -30,6 +30,7 @@ import kotlin.time.measureTime
 class EventuallySpec : FunSpec({
 
    coroutineTestScope = true
+   nonDeterministicTestVirtualTimeEnabled = true
 
    test("eventually should immediately pass working tests") {
       eventually(5.seconds) {
@@ -38,7 +39,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that complete within the time allowed") {
-      val start = testTimeSource().markNow()
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually(5.seconds) {
          if (start.elapsedNow() < 250.milliseconds)
             1 shouldBe 2
@@ -61,7 +62,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that completed within the time allowed, AssertionError") {
-      val start = testTimeSource().markNow()
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually(5.seconds) {
          if (start.elapsedNow() < 250.milliseconds)
             assert(false)
@@ -80,7 +81,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
-      val start = testTimeSource().markNow()
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually({
          duration(5.seconds)
          suppressExceptions = setOf(FileNotFoundException::class)
@@ -177,7 +178,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually handles shouldNotBeNull") {
-       testTimeSource().measureTime {
+       nonDeterministicTestTimeSource().measureTime {
          shouldThrow<java.lang.AssertionError> {
             eventually(50.milliseconds) {
                val str: String? = null
@@ -326,7 +327,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually overrides assertion to hard assertion before executing assertion and reset it after executing") {
-      val start = testTimeSource().markNow()
+      val start = nonDeterministicTestTimeSource().markNow()
       val message = shouldThrow<AssertionError> {
          all {
             withClue("Eventually that should pass") {

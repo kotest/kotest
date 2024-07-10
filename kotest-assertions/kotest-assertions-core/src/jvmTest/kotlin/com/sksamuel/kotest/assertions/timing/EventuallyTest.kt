@@ -12,7 +12,7 @@ import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.withClue
 import io.kotest.common.nonConstantTrue
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
@@ -35,6 +35,7 @@ class EventuallyTest : WordSpec() {
 
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       "eventually" should {
          "pass working tests" {
@@ -43,7 +44,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that completed within the time allowed" {
-            val start = testTimeSource().markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(1.seconds) {
                if (start.elapsedNow() < 150.milliseconds)
                   throw RuntimeException("foo")
@@ -63,14 +64,14 @@ class EventuallyTest : WordSpec() {
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError" {
-            val start = testTimeSource().markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.days) {
                if (start.elapsedNow() < 150.milliseconds)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception" {
-            val start = testTimeSource().markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.seconds, FileNotFoundException::class) {
                if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException()
@@ -84,7 +85,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that throws FileNotFoundException for some time" {
-            val start = testTimeSource().markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.days) {
                if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException("foo")
@@ -160,7 +161,7 @@ class EventuallyTest : WordSpec() {
             counter.get().shouldBe(2)
          }
          "handle shouldNotBeNull" {
-            val duration = testTimeSource().measureTime {
+            val duration = nonDeterministicTestTimeSource().measureTime {
                shouldThrow<java.lang.AssertionError> {
                   eventually(50.milliseconds) {
                      val str: String? = null
@@ -276,7 +277,7 @@ class EventuallyTest : WordSpec() {
          }
 
          "override assertion to hard assertion before executing assertion and reset it after executing" {
-            val start = testTimeSource().markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             val message = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("Eventually which should pass") {

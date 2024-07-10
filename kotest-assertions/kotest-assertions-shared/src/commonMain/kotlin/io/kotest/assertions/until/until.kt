@@ -3,7 +3,7 @@
 package io.kotest.assertions.until
 
 import io.kotest.assertions.failure
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -116,7 +116,7 @@ private suspend fun <T> until(
    f: suspend () -> T
 ): T {
 
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(duration)
    var times = 0
 

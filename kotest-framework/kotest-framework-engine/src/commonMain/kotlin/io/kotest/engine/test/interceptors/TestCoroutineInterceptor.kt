@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.NonDeterministicTestVirtualTimeEnabled
 import io.kotest.core.coroutines.TestScopeElement
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,6 +9,7 @@ import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [TestExecutionInterceptor] that uses [runTest] from the coroutine library
@@ -27,7 +29,11 @@ class TestCoroutineInterceptor : TestExecutionInterceptor {
       var result: TestResult = TestResult.Ignored
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }
       runTest {
-         withContext(TestScopeElement(this)) {
+         var additionalContext: CoroutineContext = TestScopeElement(this)
+         if (testCase.spec.nonDeterministicTestVirtualTimeEnabled) {
+            additionalContext += NonDeterministicTestVirtualTimeEnabled
+         }
+         withContext(additionalContext) {
             result = test(testCase, scope.withCoroutineContext(coroutineContext))
          }
       }

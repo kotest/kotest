@@ -3,7 +3,7 @@
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.failure
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -61,7 +61,7 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    delay(initialDelay)
 
    val duration = duration.milliseconds
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(duration)
    var times = 0
    var result: T? = null

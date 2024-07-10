@@ -6,7 +6,7 @@ import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.common.KotestInternal
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -160,7 +160,7 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val control = EventuallyControl(this, testTimeSource().markNow())
+   val control = EventuallyControl(this, nonDeterministicTestTimeSource().markNow())
 
    try {
       while (control.attemptsRemaining() || control.isLongWait()) {

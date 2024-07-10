@@ -4,7 +4,7 @@ import io.kotest.assertions.retry
 import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
@@ -19,6 +19,7 @@ import kotlin.time.TimeMark
 class RetryTest : StringSpec() {
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       "should allow execution of suspend functions" {
          val retryTester = retryTester(4)
@@ -84,7 +85,7 @@ class RetryTest : StringSpec() {
 
       "should not call given assertion beyond given max duration" {
 
-         val testTimeSource = testTimeSource()
+         val testTimeSource = nonDeterministicTestTimeSource()
          val config = retryConfig {
             maxRetry = 5
             timeout = 500.milliseconds
@@ -219,7 +220,7 @@ class RetryTest : StringSpec() {
    private suspend fun retryTester(readyAfter: Int): RetryTester {
       return RetryTester(
          readyAfter = readyAfter,
-         timeMark = testTimeSource().markNow()
+         timeMark = nonDeterministicTestTimeSource().markNow()
       )
    }
 }

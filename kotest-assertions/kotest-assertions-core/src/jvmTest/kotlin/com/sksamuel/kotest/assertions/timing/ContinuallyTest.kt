@@ -21,6 +21,7 @@ class ContinuallyTest : WordSpec() {
 
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       "continually" should {
          "pass working tests" {

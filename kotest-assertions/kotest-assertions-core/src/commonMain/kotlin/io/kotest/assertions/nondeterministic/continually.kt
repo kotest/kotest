@@ -1,7 +1,7 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.failure
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -31,7 +31,7 @@ suspend fun <T> continually(
 ): T {
    delay(config.initialDelay)
 
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(config.duration)
    var iterations = 0
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))

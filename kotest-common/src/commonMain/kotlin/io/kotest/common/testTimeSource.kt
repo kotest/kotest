@@ -22,3 +22,29 @@ val CoroutineContext.testCoroutineSchedulerOrNull: TestCoroutineScheduler?
       is TestDispatcher -> dispatcher.scheduler
       else -> null
    }
+
+/**
+ * Returns the [TimeSource] used for non-deterministic test functions.
+ *
+ * This is [TimeSource.Monotonic] or – if separately enabled – virtual time, depending on the scheduler in use.
+ */
+@OptIn(KotestInternal::class)
+suspend fun nonDeterministicTestTimeSource(): TimeSource =
+   coroutineContext.nonDeterministicTestCoroutineSchedulerOrNull?.timeSource ?: TimeSource.Monotonic
+
+@OptIn(KotestInternal::class)
+private val CoroutineContext.nonDeterministicTestCoroutineSchedulerOrNull: TestCoroutineScheduler?
+   get() = if (this[NonDeterministicTestVirtualTimeEnabled] != null) testCoroutineSchedulerOrNull else null
+
+/**
+ * A coroutine context key denoting that virtual time is enabled in non-deterministic test functions.
+ */
+@KotestInternal
+object NonDeterministicTestVirtualTimeEnabled :
+   CoroutineContext.Key<NonDeterministicTestVirtualTimeEnabled>, CoroutineContext.Element {
+
+   override val key: CoroutineContext.Key<*>
+      get() = this
+
+   override fun toString(): String = "NonDeterministicTestVirtualTimeEnabled"
+}

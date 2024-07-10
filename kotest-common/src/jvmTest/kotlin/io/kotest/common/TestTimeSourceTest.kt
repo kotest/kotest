@@ -17,6 +17,42 @@ class TestTimeSourceTest : FunSpec({
       testTimeSource() shouldNotBe TimeSource.Monotonic
    }
 
+   test("using real time with test dispatcher for non-deterministic functions") {
+      nonDeterministicTestTimeSource() shouldBe TimeSource.Monotonic
+   }
+
+   context("using real time on other dispatchers") {
+      test("withContext") {
+         testTimeSource() shouldNotBe TimeSource.Monotonic
+         withContext(Dispatchers.IO) {
+            testTimeSource() shouldBe TimeSource.Monotonic
+         }
+      }
+
+      test("launch") {
+         coroutineScope {
+            testTimeSource() shouldNotBe TimeSource.Monotonic
+            launch(Dispatchers.IO) {
+               testTimeSource() shouldBe TimeSource.Monotonic
+            }
+         }
+      }
+   }
+})
+
+class NonDeterministicVirtualTimeEnabledTest : FunSpec({
+
+   coroutineTestScope = true
+   nonDeterministicTestVirtualTimeEnabled = true
+
+   test("using virtual time with test dispatcher") {
+      testTimeSource() shouldNotBe TimeSource.Monotonic
+   }
+
+   test("using virtual time with test dispatcher for non-deterministic functions") {
+      nonDeterministicTestTimeSource() shouldNotBe TimeSource.Monotonic
+   }
+
    context("using real time on other dispatchers") {
       test("withContext") {
          testTimeSource() shouldNotBe TimeSource.Monotonic

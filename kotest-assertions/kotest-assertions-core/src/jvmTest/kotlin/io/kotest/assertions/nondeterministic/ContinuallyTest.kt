@@ -1,7 +1,7 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.shouldFail
-import io.kotest.common.testTimeSource
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
@@ -17,6 +17,7 @@ class ContinuallyTest : FunSpec() {
 
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       test("pass tests that succeed for the entire duration") {
          val result = testContinually(500.milliseconds) {
@@ -66,7 +67,7 @@ class ContinuallyTest : FunSpec() {
       }
 
       test("fail broken tests immediately") {
-         val start = testTimeSource().markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val failure = shouldFail {
             testContinually(1.minutes) {
                false shouldBe true
@@ -77,7 +78,7 @@ class ContinuallyTest : FunSpec() {
       }
 
       test("fail should throw the underlying error") {
-         val start = testTimeSource().markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          shouldFail {
             testContinually(1.minutes) {
                throw AssertionError("boom")
@@ -105,7 +106,7 @@ private suspend fun <T> testContinually(
    duration: Duration,
    test: suspend () -> T,
 ): TestContinuallyResult<T> {
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = continually(duration) {
@@ -123,7 +124,7 @@ private suspend fun <T> testContinually(
    config: ContinuallyConfiguration<T>,
    test: suspend () -> T,
 ): TestContinuallyResult<T> {
-   val start = testTimeSource().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = continually(config = config) {
