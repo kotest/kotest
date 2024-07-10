@@ -117,8 +117,8 @@ data class EventuallyConfiguration(
    val includeFirst: Boolean,
 ) {
    init {
-      require(duration.inWholeMilliseconds >= 0) { "Duration must be greater than or equal to 0" }
-      require(retries >= 0) { "Retries must be greater than or equal to 0" }
+      require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
    }
 }
 
