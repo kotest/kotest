@@ -52,6 +52,7 @@ jobs:
       needs: [ determine-workflows-to-run ]
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
@@ -69,6 +70,7 @@ jobs:
                -  os: windows-latest
          fail-fast: false
       uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
