@@ -42,6 +42,6 @@ class ContinuallySpec : FunSpec({
          }
       }
 
-      e.shouldHaveMessage("Test failed after \\d+(\\.\\d*)?ms; expected to pass for 12h; attempted 10 times\nUnderlying failure was: expected:<true> but was:<false>".toRegex())
+      e.shouldHaveMessage("Test failed after \\d+(\\.\\d*)?\\w+; expected to pass for 12h; attempted 10 times\nUnderlying failure was: expected:<true> but was:<false>".toRegex())
    }
 })

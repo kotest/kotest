@@ -49,10 +49,8 @@ class JvmJsonAssertionsTest : StringSpec({
 
       shouldThrow<AssertionError> {
          json.shouldContainJsonKey("$.store.table")
-      }.message shouldBe """{
-    "store": {
-        "book": [
-            {... should contain the path ${'$'}.store.table"""
+      }.message shouldBe
+         """Expected given to contain json key <'${'$'}.store.table'> but key was not found. Found shorter valid subpath: <'${'$'}.store'>."""
 
       shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
 

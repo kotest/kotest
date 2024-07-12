@@ -11,7 +11,6 @@ env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
    "ORG_GRADLE_PROJECT_gradle.publish.key": ${{ secrets.GRADLE_PUBLISH_KEY }}
    "ORG_GRADLE_PROJECT_gradle.publish.secret": ${{ secrets.GRADLE_PUBLISH_SECRET }}
-   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
   contents: read
