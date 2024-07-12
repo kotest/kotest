@@ -93,18 +93,22 @@ infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOpti
    return this
 }
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, mode: CompareMode) =
    shouldEqualJson(expected, legacyOptions(mode, CompareOrder.Strict))
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, mode: CompareMode) =
    shouldNotEqualJson(expected, legacyOptions(mode, CompareOrder.Strict))
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, order: CompareOrder) =
    shouldEqualJson(expected, legacyOptions(CompareMode.Strict, order))
 
+@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, legacyOptions(CompareMode.Strict, order))

@@ -86,12 +86,14 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
    }
 
+   @Suppress("DEPRECATION")  // remove when removing Listeners
    suspend fun specInstantiated(spec: Spec) = runCatching {
       logger.log { Pair(spec::class.bestName(), "specInstantiated $spec") }
       registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
       registry.all().filterIsInstance<InstantiationListener>().forEach { it.specInstantiated(spec) }
    }
 
+   @Suppress("DEPRECATION")  // remove when removing Listeners
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
       logger.log { Pair(kclass.bestName(), "specInstantiationError $t") }
       registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }

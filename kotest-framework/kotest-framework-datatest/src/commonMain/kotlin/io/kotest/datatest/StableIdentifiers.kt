@@ -45,6 +45,7 @@ object StableIdentifiers {
     * Note: If the user has overridden `toString()` and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
+      @Suppress("DEPRECATION") // Remove when isStable has been marked as internal
       return if (isStable(t::class, t)) {
          t.toString()
       } else {

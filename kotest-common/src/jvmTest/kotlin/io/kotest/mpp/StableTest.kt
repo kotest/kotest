@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when making isStable internal
+
 package io.kotest.mpp
 
 import io.kotest.core.spec.style.FreeSpec

@@ -8,6 +8,7 @@ import io.kotest.core.test.TestCase
  *
  * A descriptor must be included by all filters for it to be considered enabled at runtime.
  */
+@Suppress("DEPRECATION") // Remove when removing Filter
 interface TestFilter : Filter {
 
    /**

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when isStable has been marked as internal
+
 package io.kotest.mpp
 
 import kotlin.reflect.KClass

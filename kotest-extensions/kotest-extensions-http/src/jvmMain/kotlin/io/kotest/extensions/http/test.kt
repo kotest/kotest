@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing http extension
+
 package io.kotest.extensions.http
 
 import io.ktor.client.statement.HttpResponse

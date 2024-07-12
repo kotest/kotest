@@ -4,6 +4,8 @@ import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.ConfigValue
 
 class ListPrint<T>(private val limitConfigValue: ConfigValue<Int> = AssertionsConfig.maxCollectionPrintSize) : Print<List<T>> {
+
+   @Deprecated(PRINT_DEPRECATION_MSG)
    override fun print(a: List<T>): Printed = print(a, 0)
 
    override fun print(a: List<T>, level: Int): Printed {
