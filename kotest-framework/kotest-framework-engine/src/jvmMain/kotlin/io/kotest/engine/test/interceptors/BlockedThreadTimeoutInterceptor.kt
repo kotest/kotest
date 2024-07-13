@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -27,6 +28,7 @@ private val timeoutDispatcher = newSingleThreadContext("blocking-thread-timeout"
  * If [io.kotest.core.test.config.ResolvedTestConfig.blockingTest] is enabled, then switches the execution
  * to a new thread, so it can be interrupted if the test times out.
  */
+@JVMOnly
 internal actual fun blockedThreadTimeoutInterceptor(
    configuration: ProjectConfiguration,
    start: TimeMark,
