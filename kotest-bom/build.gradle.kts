@@ -4,14 +4,15 @@ plugins {
 }
 
 configurations.api.configure {
+   // lazily add the coords from all subprojects to the kotest-bom
    dependencyConstraints.addAllLater(
       kotestBomService.coordinates.map { coords ->
-         logger.info("[$path] adding ${coords.size} coords: $coords")
+         logger.info("[$path] adding ${coords.size} coords to kotest-bom: $coords")
          coords
             .distinct()
             .sorted()
-            .map {
-               project.dependencies.constraints.create(it)
+            .map { coord ->
+               project.dependencies.constraints.create(coord)
             }
       }
    )

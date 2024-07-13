@@ -125,6 +125,7 @@ val kotestBomService: KotestBomService =
 
 extensions.add("kotestBomService", kotestBomService)
 
+/** Controls whether the current subproject will be included in the kotest-bom. */
 val includeInKotestBom: Property<Boolean> =
    objects.property<Boolean>().convention(project.name != "kotest-bom")
 
