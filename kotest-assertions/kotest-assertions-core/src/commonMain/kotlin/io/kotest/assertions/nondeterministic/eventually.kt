@@ -275,7 +275,7 @@ internal object ShortCircuitControlException : Throwable()
  * Store a [TimeSource] to be used by [eventually].
  */
 internal class EventuallyTimeSource(
-   val timeSource: TimeSource,
+   val timeSource: TimeSource
 ) : CoroutineContext.Element {
    override val key: CoroutineContext.Key<EventuallyTimeSource>
       get() = KEY
