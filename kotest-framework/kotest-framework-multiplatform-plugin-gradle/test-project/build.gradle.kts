@@ -7,12 +7,17 @@ plugins {
    id("io.kotest.multiplatform")
 }
 
+val kotestVersion: String by project
+val devMavenRepoPath: String by project
+val useNewNativeMemoryModel: String by project
+
 repositories {
+   maven(file(devMavenRepoPath)) {
+      name = "DevMavenRepo"
+      mavenContent { includeGroupAndSubgroups("io.kotest") }
+   }
    mavenCentral()
 }
-
-val kotestVersion: String by project
-val useNewNativeMemoryModel: String by project
 
 kotlin {
 

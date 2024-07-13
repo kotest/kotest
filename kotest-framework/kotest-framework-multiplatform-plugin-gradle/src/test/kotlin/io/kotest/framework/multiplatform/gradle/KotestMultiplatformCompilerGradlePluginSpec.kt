@@ -3,8 +3,8 @@ package io.kotest.framework.multiplatform.gradle
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.matchers.string.shouldStartWith
 import java.io.InputStreamReader
 import java.nio.file.Files
@@ -16,6 +16,7 @@ import java.nio.file.Paths
 // See https://youtrack.jetbrains.com/issue/KT-24327 for one example.
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
+   val devMavenRepoPath = System.getProperty("devMavenRepoPath")
 
    setOf(
       "1.9.24",
@@ -65,6 +66,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                   "-PkotlinVersion=$kotlinVersion",
                   "-PkotestVersion=$kotestVersion",
                   "-PuseNewNativeMemoryModel=false",
+                  "-PdevMavenRepoPath=$devMavenRepoPath",
                ) + taskNames
             )
 
@@ -97,7 +99,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                      listOf(
                         "-PkotlinVersion=$kotlinVersion",
                         "-PkotestVersion=$kotestVersion",
-                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel"
+                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
+                        "-PdevMavenRepoPath=$devMavenRepoPath",
                      ) + taskNames
                   )
 
