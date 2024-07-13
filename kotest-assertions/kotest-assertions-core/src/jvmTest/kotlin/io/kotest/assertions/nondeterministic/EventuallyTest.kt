@@ -472,12 +472,12 @@ class EventuallyTest : FunSpec() {
 
       test("test eventually without configuration") {
          // linked to issue #3988
-         var cnt = 0
+         var count = 0
          eventually {
-            cnt += 1
-            cnt shouldBe 100
+            count += 1
+            count shouldBe 100
          }
-         cnt shouldBe 100
+         count shouldBe 100
       }
    }
 }

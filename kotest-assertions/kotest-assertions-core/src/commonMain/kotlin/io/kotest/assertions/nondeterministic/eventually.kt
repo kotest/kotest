@@ -161,7 +161,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default, this is set to max retries. And Must be greater than or equal to 0.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. MUST be non-negative.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
@@ -207,7 +207,7 @@ class EventuallyConfigurationBuilder {
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
 
 object NoopEventuallyListener : EventuallyListener {
-   override suspend fun invoke(iteration: Int, error: Throwable, ) {}
+   override suspend fun invoke(iteration: Int, error: Throwable) {}
 }
 
 private class EventuallyControl(
