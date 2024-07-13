@@ -121,7 +121,7 @@ abstract class KotestBomService : BuildService<BuildServiceParameters.None> {
 }
 
 val kotestBomService: KotestBomService =
-   gradle.sharedServices.registerIfAbsent("kotestBomService", KotestBomService::class) { }.get()
+   gradle.sharedServices.registerIfAbsent("kotestBomService", KotestBomService::class).get()
 
 extensions.add("kotestBomService", kotestBomService)
 
@@ -131,7 +131,6 @@ val includeInKotestBom: Property<Boolean> =
 extensions.add<Property<Boolean>>("includeInKotestBom", includeInKotestBom)
 
 pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
-
    extensions.configure<KotlinMultiplatformExtension> {
       targets
          .matching { target ->
