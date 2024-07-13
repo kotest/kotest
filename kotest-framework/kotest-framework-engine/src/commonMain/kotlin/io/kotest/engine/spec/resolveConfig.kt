@@ -19,7 +19,7 @@ internal fun resolveConfig(
    config: TestConfig?,
    xdisabled: Boolean?,
    parent: TestCase?,
-   spec:Spec,
+   spec: Spec,
    projectConfiguration: ProjectConfiguration
 ): ResolvedTestConfig {
 
@@ -62,6 +62,12 @@ internal fun resolveConfig(
       ?: spec.invocationTimeout()?.toMillis()
       ?: defaultTestConfig.invocationTimeout
       ?: projectConfiguration.invocationTimeout?.toMillis()
+
+   if (timeout != null && invocationTimeout != null) {
+      check(invocationTimeout <= timeout) {
+         "The invocationTimeout cannot exceed the test case timeout: $invocationTimeout > $timeout"
+      }
+   }
 
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
