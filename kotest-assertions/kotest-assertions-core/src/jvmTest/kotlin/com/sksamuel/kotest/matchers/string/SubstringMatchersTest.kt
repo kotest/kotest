@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.conflateSubMatchWithMapping
 import io.kotest.matchers.string.describeMatchedSubstrings
+import io.kotest.matchers.string.prefixIfNotEmpty
 import io.kotest.matchers.string.rangeWithMargin
 import io.kotest.matchers.string.rangeWithMarginMapping
 import io.kotest.matchers.string.submatchWithMarginMapping
@@ -93,6 +94,14 @@ class SubstringMatchersTest: WordSpec() {
          }
          "work at the end" {
             rangeWithMarginMapping(3..8,  0..8) shouldBe ">>>++++++"
+         }
+      }
+      "prefixIfNotEmpty" should {
+         "handle empty string" {
+            prefixIfNotEmpty("") { "Prefix: " } shouldBe ""
+         }
+         "handle non-empty string" {
+            prefixIfNotEmpty("apple") { "Prefix: " } shouldBe "Prefix: apple"
          }
       }
    }

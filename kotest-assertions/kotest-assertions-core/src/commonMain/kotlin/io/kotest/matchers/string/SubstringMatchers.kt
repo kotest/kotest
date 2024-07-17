@@ -51,3 +51,6 @@ internal fun rangeWithMarginMapping(range: IntRange, rangeWithMargin: IntRange):
 
 internal fun rangeWithMargin(range: IntRange, margin: Int, maxIndex: Int): IntRange =
    maxOf(0, range.first - margin)..minOf(range.last + margin, maxIndex)
+
+internal fun prefixIfNotEmpty(value: String, getPrefix: () -> String) =
+   if(value.isEmpty()) "" else "${getPrefix()}$value"
