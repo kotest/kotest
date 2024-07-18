@@ -17,7 +17,6 @@ dependencyResolutionManagement {
          name = "SonatypeSnapshots"
          mavenContent { snapshotsOnly() }
       }
-
       //region workaround for https://youtrack.jetbrains.com/issue/KT-51379
       // FIXME remove when updating to Kotlin 2.0
       ivy("https://download.jetbrains.com/kotlin/native/builds") {
