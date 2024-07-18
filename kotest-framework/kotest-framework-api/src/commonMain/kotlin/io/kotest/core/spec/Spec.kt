@@ -311,7 +311,7 @@ abstract class Spec : TestConfiguration() {
     * This is for Kotest-internal testing only and should not be used outside Kotest.
     */
    @KotestInternal
-   var nonDeterministicTestVirtualTimeEnabled = false
+   var nonDeterministicTestVirtualTimeEnabled: Boolean = false
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
