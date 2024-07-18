@@ -2039,6 +2039,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getFailfast ()Ljava/lang/Boolean;
 	public final fun getInvocationTimeout ()Ljava/lang/Long;
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public final fun getNonDeterministicTestVirtualTimeEnabled ()Z
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTestCoroutineDispatcher ()Ljava/lang/Boolean;
 	public final fun getTestOrder ()Lio/kotest/core/test/TestCaseOrder;
@@ -2059,6 +2060,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setFailfast (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
 	public final fun setIsolationMode (Lio/kotest/core/spec/IsolationMode;)V
+	public final fun setNonDeterministicTestVirtualTimeEnabled (Z)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
 	public final fun setTestCoroutineDispatcher (Ljava/lang/Boolean;)V
 	public final fun setTestOrder (Lio/kotest/core/test/TestCaseOrder;)V

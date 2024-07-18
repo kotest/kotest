@@ -1,13 +1,11 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.failure
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
 
 /**
  * Runs the [test] function continually for the given [duration], failing if an exception is
@@ -33,7 +31,7 @@ suspend fun <T> continually(
 ): T {
    delay(config.initialDelay)
 
-   val start = ContinuallyTimeSource.current().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(config.duration)
    var iterations = 0
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
@@ -126,32 +124,4 @@ private fun <T> ContinuallyConfigurationBuilder<T>.build(): ContinuallyConfigura
          override suspend fun invoke(iteration: Int, t: T) {}
       },
    )
-}
-
-
-/**
- * Store the [TimeSource] used by [continually].
- *
- * @see ContinuallyTimeSource.Companion.current
- */
-internal class ContinuallyTimeSource(
-   val timeSource: TimeSource
-) : CoroutineContext.Element {
-
-   override val key: CoroutineContext.Key<ContinuallyTimeSource>
-      get() = KEY
-
-   internal companion object {
-      /**
-       * Retrieves the [TimeSource] used by [continually].
-       *
-       * For internal Kotest testing purposes the [TimeSource] can be overridden.
-       * For normal usage [TimeSource.Monotonic] is used.
-       */
-      internal suspend fun current(): TimeSource =
-         coroutineContext[KEY]?.timeSource
-            ?: TimeSource.Monotonic
-
-      internal val KEY = object : CoroutineContext.Key<ContinuallyTimeSource> {}
-   }
 }
