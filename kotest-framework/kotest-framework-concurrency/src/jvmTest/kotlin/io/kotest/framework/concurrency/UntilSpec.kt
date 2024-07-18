@@ -3,6 +3,7 @@
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -17,7 +18,7 @@ class UntilSpec : FunSpec({
       var attempts = 0
       until(4.seconds) {
          attempts++
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
       attempts shouldBe 1
    }
