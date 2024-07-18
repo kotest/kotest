@@ -1,15 +1,17 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.common.KotestInternal
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 typealias EventuallyStateFunction<T, U> = (EventuallyState<T>) -> U
@@ -81,9 +83,7 @@ data class EventuallyState<T>(
 )
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
-private class EventuallyControl(val config: EventuallyConfig<*>) {
-   val start: TimeMark = TimeSource.Monotonic.markNow()
-
+private class EventuallyControl(val config: EventuallyConfig<*>, val start: TimeMark) {
    var times = 0
    var predicateFailedTimes = 0
 
@@ -160,7 +160,7 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val control = EventuallyControl(this)
+   val control = EventuallyControl(this, nonDeterministicTestTimeSource().markNow())
 
    try {
       while (control.attemptsRemaining() || control.isLongWait()) {
