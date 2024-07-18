@@ -1,15 +1,16 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 
 class NullTests : WordSpec() {
 
   // don't want compiler to compile this away
-  private fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()
+  private fun getNull(): String? = if (nonConstantTrue()) null else throw RuntimeException()
 
-  private fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
+  private fun notNull(): String? = if (nonConstantTrue()) "qwerty" else throw RuntimeException()
 
   init {
 

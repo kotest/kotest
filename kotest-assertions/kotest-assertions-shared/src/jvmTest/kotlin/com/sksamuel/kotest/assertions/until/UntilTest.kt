@@ -7,6 +7,7 @@ import io.kotest.assertions.until.PatienceConfig
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -22,7 +23,7 @@ class UntilTest : FunSpec({
       var attempts = 0
       until(4.seconds) {
          attempts++
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
       attempts shouldBe 1
    }
