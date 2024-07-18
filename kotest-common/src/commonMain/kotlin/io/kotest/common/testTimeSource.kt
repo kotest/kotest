@@ -28,11 +28,11 @@ val CoroutineContext.testCoroutineSchedulerOrNull: TestCoroutineScheduler?
  *
  * This is [TimeSource.Monotonic] or – if separately enabled – virtual time, depending on the scheduler in use.
  */
-@OptIn(KotestInternal::class)
+@KotestInternal
 suspend fun nonDeterministicTestTimeSource(): TimeSource =
    coroutineContext.nonDeterministicTestCoroutineSchedulerOrNull?.timeSource ?: TimeSource.Monotonic
 
-@OptIn(KotestInternal::class)
+@KotestInternal
 private val CoroutineContext.nonDeterministicTestCoroutineSchedulerOrNull: TestCoroutineScheduler?
    get() = if (this[NonDeterministicTestVirtualTimeEnabled] != null) testCoroutineSchedulerOrNull else null
 
