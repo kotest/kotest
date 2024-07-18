@@ -1,6 +1,7 @@
 package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
@@ -304,6 +305,13 @@ abstract class Spec : TestConfiguration() {
    var testCoroutineDispatcher: Boolean? = null
 
    var coroutineTestScope: Boolean? = null
+
+   /**
+    * Flag controlling whether virtual time is enabled for non-deterministic test functions (`eventually`, ...).
+    * This is for Kotest-internal testing only and should not be used outside Kotest.
+    */
+   @KotestInternal
+   var nonDeterministicTestVirtualTimeEnabled: Boolean = false
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
