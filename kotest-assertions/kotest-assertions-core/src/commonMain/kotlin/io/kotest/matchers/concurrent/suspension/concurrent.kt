@@ -28,7 +28,6 @@ suspend fun <A> shouldCompleteWithin(
          operation()
       }
    } catch (ex: TimeoutCancellationException) {
-      ex.message
       throw failure(
          "Operation took longer than expected. " +
             "Expected that operation completed within $duration, but it took longer and was cancelled."
