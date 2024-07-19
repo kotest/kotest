@@ -66,7 +66,8 @@ jobs:
             with:
                path: ${{ env.KONAN_DATA_DIR }}
                key: kotlin-konan-${{ runner.os }}
-               restore-path: |
+               enableCrossOsArchive: true
+               restore-keys: |
                   kotlin-konan-
 
          -  name: Run tests
