@@ -3,7 +3,7 @@ package com.sksamuel.kotest.assertions.async
 import io.kotest.assertions.async.shouldTimeout
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -18,7 +18,6 @@ import kotlin.time.toJavaDuration
 class TimeoutJvmTest : FunSpec({
 
    coroutineTestScope = true
-   nonDeterministicTestVirtualTimeEnabled = true
 
    setOf(
       InvokeShouldTimeout.WithMillis,
@@ -26,7 +25,7 @@ class TimeoutJvmTest : FunSpec({
    ).forEach { shouldTimeoutWrapper ->
 
       test("${shouldTimeoutWrapper.description} - should not throw any if operation did not complete in given time") {
-         val testDuration = nonDeterministicTestTimeSource().measureTime {
+         val testDuration = testTimeSource().measureTime {
             shouldNotThrowAny {
                shouldTimeoutWrapper(1.seconds) {
                   delay(1.1.seconds)
@@ -37,7 +36,7 @@ class TimeoutJvmTest : FunSpec({
       }
 
       test("${shouldTimeoutWrapper.description} - should fail if operation completes within given time") {
-         val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
+         val (failure, testDuration) = testTimeSource().measureTimedValue {
             shouldFail {
                shouldTimeoutWrapper(1.seconds) {
                   delay(0.1.seconds)

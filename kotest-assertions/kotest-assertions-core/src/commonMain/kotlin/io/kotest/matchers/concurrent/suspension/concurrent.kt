@@ -2,13 +2,12 @@ package io.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.failure
-import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.common.testTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
 import kotlin.time.Duration
-import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 /**
@@ -47,7 +46,7 @@ suspend fun <A> shouldCompleteBetween(
 ): A {
    contract { callsInPlace(operation, EXACTLY_ONCE) }
 
-   val timeSource = nonDeterministicTestTimeSource()
+   val timeSource = testTimeSource()
    val (value, timeElapsed) = timeSource.measureTimedValue {
       shouldCompleteWithin(durationRange.endInclusive) {
          operation()

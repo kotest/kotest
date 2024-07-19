@@ -2,7 +2,7 @@ package io.kotest.assertions.async
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.failure
-import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.common.testTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
@@ -23,7 +23,7 @@ suspend fun shouldTimeout(
    contract { callsInPlace(operation, EXACTLY_ONCE) }
 
    try {
-      val timeSource = nonDeterministicTestTimeSource()
+      val timeSource = testTimeSource()
       val timeElapsed = timeSource.measureTime {
          withTimeout(duration) {
             operation()

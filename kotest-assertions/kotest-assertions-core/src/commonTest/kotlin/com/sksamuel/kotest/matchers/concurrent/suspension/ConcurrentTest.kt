@@ -2,13 +2,11 @@ package com.sksamuel.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.concurrent.suspension.shouldCompleteBetween
 import io.kotest.matchers.concurrent.suspension.shouldCompleteWithin
-import io.kotest.matchers.concurrent.suspension.shouldTimeout
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -17,10 +15,9 @@ import kotlin.time.measureTimedValue
 class ConcurrentTest : FunSpec({
 
    coroutineTestScope = true
-   nonDeterministicTestVirtualTimeEnabled = true
 
    test("shouldCompleteWithin - should not fail when operation completes in given time") {
-      val testDuration = nonDeterministicTestTimeSource().measureTime {
+      val testDuration = testTimeSource().measureTime {
          shouldNotThrowAny {
             shouldCompleteWithin(2.seconds) {
                delay(1.seconds)
@@ -31,7 +28,7 @@ class ConcurrentTest : FunSpec({
    }
 
    test("shouldCompleteWithin - should fail when operation does not complete in given time") {
-      val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
+      val (failure, testDuration) = testTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteWithin(1.seconds) {
                delay(1.5.seconds)
@@ -44,7 +41,7 @@ class ConcurrentTest : FunSpec({
    }
 
    test("shouldCompleteBetween - should not fail when operation completes in given time range") {
-      val testDuration = nonDeterministicTestTimeSource().measureTime {
+      val testDuration = testTimeSource().measureTime {
          shouldNotThrowAny {
             shouldCompleteBetween(1.seconds..2.seconds) {
                delay(1.5.seconds)
@@ -55,7 +52,7 @@ class ConcurrentTest : FunSpec({
    }
 
    test("shouldCompleteBetween - should fail when operation completes before the given time range") {
-      val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
+      val (failure, testDuration) = testTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteBetween(1.seconds..2.seconds) {
                delay(0.5.seconds)
@@ -68,7 +65,7 @@ class ConcurrentTest : FunSpec({
    }
 
    test("shouldCompleteBetween - should fail when operation did not complete with in the given time range") {
-      val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
+      val (failure, testDuration) = testTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteBetween(1.seconds..2.seconds) {
                delay(2.5.seconds)

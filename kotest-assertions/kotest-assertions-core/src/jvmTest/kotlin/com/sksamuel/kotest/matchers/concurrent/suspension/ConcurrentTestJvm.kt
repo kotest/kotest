@@ -18,7 +18,6 @@ import kotlin.time.Duration.Companion.seconds
 class ConcurrentTestJvm : FunSpec({
 
    coroutineTestScope = true
-   nonDeterministicTestVirtualTimeEnabled = true
 
    test("should not fail when given lambda pass in given time") {
       shouldNotThrowAny {
