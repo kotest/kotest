@@ -12,7 +12,7 @@ import kotlin.time.measureTimedValue
  * Assert [operation] completes within [duration].
  *
  * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
+ * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
 suspend fun <A> shouldCompleteWithin(duration: Duration, operation: suspend () -> A): A {
    try {
@@ -28,7 +28,7 @@ suspend fun <A> shouldCompleteWithin(duration: Duration, operation: suspend () -
  * Assert [operation] completes within [durationRange].
  *
  * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
+ * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
 suspend fun <A> shouldCompleteBetween(
    durationRange: ClosedRange<Duration>,
@@ -57,7 +57,7 @@ suspend fun <A> shouldCompleteBetween(
  * Assert [operation] does not complete within [duration].
  *
  * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any subsequent assertion won't run.
+ * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
 suspend fun <A> shouldTimeout(duration: Duration, operation: suspend () -> A) {
    try {
