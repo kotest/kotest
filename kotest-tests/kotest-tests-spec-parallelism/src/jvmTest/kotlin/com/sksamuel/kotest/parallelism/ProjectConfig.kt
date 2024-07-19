@@ -77,16 +77,27 @@ object ProjectConfig : AbstractProjectConfig() {
    override suspend fun afterProject() {
       val messages = testStateMessages.replayCache
 
+      val expectedTestNames = listOf(
+         "test 1",
+         "test 2",
+         "test 3",
+         "test 4",
+         "test 5",
+         "test 6",
+         "test 7",
+         "test 8",
+      )
+
       StateMsg.Status.entries.forEach { status ->
+         val actualTestNames =
+            messages.filter { it.status == status }.map { it.testName }
+
          withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-            messages
-               .filter { it.status == status }
-               .map { it.testName }
-               .shouldContainExactlyInAnyOrder(List(EXPECTED_TEST_COUNT) { "test ${it + 1}" })
+            actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
          }
       }
 
-      withClue("Expect that all tests started before any test finished") {
+      withClue("Expect that all tests had started before any test had finished") {
          val startedTests = messages.filter { it.status == Started }
          val finishedTests = messages.filter { it.status == Finished }
 
