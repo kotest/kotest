@@ -26,12 +26,15 @@ jobs:
       steps:
          -  name: "Redirect caches to fast D: drive for Windows runners"
             if: runner.os == 'Windows'
+            shell: cmd
             run: |
                mkdir D:\.gradle
                mklink /D C:\Users\runneradmin\.gradle D:\.gradle
-               mkdir D:\.konan
-               mklink /D C:\Users\runneradmin\.konan D:\.konan
-            shell: cmd
+
+               set KONAN_DATA_DIR=D:\.konan
+               mkdir %KONAN_DATA_DIR%
+               mklink /D C:\Users\runneradmin\.konan %KONAN_DATA_DIR%
+               echo "KONAN_DATA_DIR=%KONAN_DATA_DIR%" >> %GITHUB_ENV%
 
          -  name: Checkout the repo
             uses: actions/checkout@v4
@@ -56,7 +59,7 @@ jobs:
          -  name: Cache Kotlin Konan
             uses: actions/cache@v4
             with:
-               path: ~/.konan
+               path: ${{ env.KONAN_DATA_DIR }}
                key: ${{ runner.os }}-kotlin-konan
 
          -  name: Run tests
@@ -82,3 +85,4 @@ env:
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
    ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_pass: ${{ secrets.GRADLE_BUILD_CACHE_PASS }}
+   KONAN_DATA_DIR: "~/.konan"
