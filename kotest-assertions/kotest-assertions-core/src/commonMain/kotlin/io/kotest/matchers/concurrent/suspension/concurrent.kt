@@ -5,6 +5,8 @@ import io.kotest.assertions.failure
 import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
+import kotlin.contracts.InvocationKind.EXACTLY_ONCE
+import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.measureTimedValue
 
@@ -14,7 +16,12 @@ import kotlin.time.measureTimedValue
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
-suspend fun <A> shouldCompleteWithin(duration: Duration, operation: suspend () -> A): A {
+suspend fun <A> shouldCompleteWithin(
+   duration: Duration,
+   operation: suspend () -> A,
+): A {
+   contract { callsInPlace(operation, EXACTLY_ONCE) }
+
    try {
       return withTimeout(duration) {
          operation()
@@ -34,6 +41,8 @@ suspend fun <A> shouldCompleteBetween(
    durationRange: ClosedRange<Duration>,
    operation: suspend () -> A,
 ): A {
+   contract { callsInPlace(operation, EXACTLY_ONCE) }
+
    try {
       val timeSource = nonDeterministicTestTimeSource()
       val (value, timeElapsed) = timeSource.measureTimedValue {
@@ -43,13 +52,13 @@ suspend fun <A> shouldCompleteBetween(
       }
 
       if (durationRange.start > timeElapsed) {
-         throw failure("Operation should not have completed before ${durationRange.start}")
+         throw failure("Operation did not complete before ${durationRange.start}")
       }
 
       return value
 
    } catch (ex: TimeoutCancellationException) {
-      throw failure("Operation should have completed within $durationRange")
+      throw failure("Operation did not complete within $durationRange")
    }
 }
 
@@ -59,7 +68,12 @@ suspend fun <A> shouldCompleteBetween(
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
-suspend fun <A> shouldTimeout(duration: Duration, operation: suspend () -> A) {
+suspend fun <A> shouldTimeout(
+   duration: Duration,
+   operation: suspend () -> A,
+) {
+   contract { callsInPlace(operation, EXACTLY_ONCE) }
+
    try {
       withTimeout(duration) {
          operation()
