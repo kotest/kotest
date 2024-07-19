@@ -31,12 +31,11 @@ jobs:
                mkdir D:\.gradle
                mklink /D C:\Users\runneradmin\.gradle D:\.gradle
 
-               set KONAN_DATA_DIR=D:\.konan
-               mkdir %KONAN_DATA_DIR%
-               mklink /D C:\Users\runneradmin\.konan %KONAN_DATA_DIR%
-               echo "KONAN_DATA_DIR=%KONAN_DATA_DIR%" >> %GITHUB_ENV%
+               mkdir D:\.konan
+               mklink /D C:\Users\runneradmin\.konan D:\.konan
+               echo "KONAN_DATA_DIR=D:\.konan" >> %GITHUB_ENV%
 
-         -  name: "Set KONAN_DATA_DIR"
+         -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
             run: |
                echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
