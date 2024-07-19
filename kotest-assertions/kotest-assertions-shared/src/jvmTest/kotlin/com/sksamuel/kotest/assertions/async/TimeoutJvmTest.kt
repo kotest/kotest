@@ -63,6 +63,7 @@ private sealed class InvokeShouldTimeout {
    data object WithJavaDuration : InvokeShouldTimeout() {
       override val description: String = "shouldTimeout (with Java duration)"
       override suspend fun invoke(timeout: Duration, operation: suspend () -> Unit) {
+         @Suppress("DEPRECATION")
          shouldTimeout(duration = timeout.toJavaDuration(), thunk = operation)
       }
    }
@@ -70,6 +71,7 @@ private sealed class InvokeShouldTimeout {
    data object WithMillis : InvokeShouldTimeout() {
       override val description: String = "shouldTimeout (with TimeUnit)"
       override suspend fun invoke(timeout: Duration, operation: suspend () -> Unit) {
+         @Suppress("DEPRECATION")
          shouldTimeout(timeout = timeout.inWholeMilliseconds, unit = TimeUnit.MILLISECONDS, thunk = operation)
       }
    }
