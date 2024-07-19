@@ -30,6 +30,13 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 object ProjectConfig : AbstractProjectConfig() {
+   // set the number of threads so that each test runs in its own thread
+   override val parallelism = 10
+
+   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
+
+   /** The expected number of test cases. All should be launched simultaneously. */
+   private const val EXPECTED_TEST_COUNT = 8
 
    /**
     * Listen for test [StateMsg]s in an independent [CoroutineScope].
@@ -37,16 +44,8 @@ object ProjectConfig : AbstractProjectConfig() {
    private val TestMsgCollectorScope: CoroutineScope =
       CoroutineScope(Dispatchers.IO) + CoroutineName("TestMsgCollector")
 
-   // set the number of threads so that each test runs in its own thread
-   override val parallelism = 10
-
-   /** The expected number of test cases. All should be launched simultaneously. */
-   private const val EXPECTED_TEST_COUNT = 8
-
-   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
-
    /** Marks the start of the entire tests, when [beforeProject] is called, before any tests are launched. */
-   lateinit var projectStart: TimeMark
+   internal lateinit var projectStart: TimeMark
       private set
 
    init {
