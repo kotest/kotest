@@ -33,7 +33,7 @@ jobs:
 
                mkdir D:\.konan
                mklink /D C:\Users\runneradmin\.konan D:\.konan
-               echo "KONAN_DATA_DIR=D:\.konan" >> %GITHUB_ENV%
+               echo KONAN_DATA_DIR=D:\.konan >> %GITHUB_ENV%
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
