@@ -75,20 +75,5 @@ suspend fun shouldTimeout(
    duration: Duration,
    operation: suspend () -> Unit,
 ) {
-   contract { callsInPlace(operation, EXACTLY_ONCE) }
-
-   try {
-      val timeSource = nonDeterministicTestTimeSource()
-      val timeElapsed = timeSource.measureTime {
-         withTimeout(duration) {
-            operation()
-         }
-      }
-      throw failure(
-         "Operation completed too quickly. " +
-            "Expected that operation completed faster than $duration, but it took $timeElapsed."
-      )
-   } catch (_: TimeoutCancellationException) {
-      // ignore timeout
-   }
+   io.kotest.assertions.async.shouldTimeout(duration, operation)
 }

@@ -19,7 +19,7 @@ class ConcurrentTest : FunSpec({
    coroutineTestScope = true
    nonDeterministicTestVirtualTimeEnabled = true
 
-   test("should not fail when given lambda pass in given time") {
+   test("shouldCompleteWithin - should not fail when operation completes in given time") {
       val testDuration = nonDeterministicTestTimeSource().measureTime {
          shouldNotThrowAny {
             shouldCompleteWithin(2.seconds) {
@@ -30,7 +30,7 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 1.seconds
    }
 
-   test("should fail when given lambda does not complete in given time") {
+   test("shouldCompleteWithin - should fail when operation does not complete in given time") {
       val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteWithin(1.seconds) {
@@ -43,7 +43,7 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 1.seconds
    }
 
-   test("should not fail when given lambda pass in given time range") {
+   test("shouldCompleteBetween - should not fail when operation completes in given time range") {
       val testDuration = nonDeterministicTestTimeSource().measureTime {
          shouldNotThrowAny {
             shouldCompleteBetween(1.seconds..2.seconds) {
@@ -54,7 +54,7 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 1.5.seconds
    }
 
-   test("should fail when given lambda pass before the given time range") {
+   test("shouldCompleteBetween - should fail when operation completes before the given time range") {
       val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteBetween(1.seconds..2.seconds) {
@@ -67,7 +67,7 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 0.5.seconds
    }
 
-   test("should fail when given lambda did not complete with in the given time range") {
+   test("shouldCompleteBetween - should fail when operation did not complete with in the given time range") {
       val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
          shouldFail {
             shouldCompleteBetween(1.seconds..2.seconds) {
@@ -78,28 +78,5 @@ class ConcurrentTest : FunSpec({
 
       failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 2s, but it took longer and was cancelled."
       testDuration shouldBe 2.seconds
-   }
-
-   test("should not throw any if given lambda did not complete in given time") {
-      val testDuration = nonDeterministicTestTimeSource().measureTime {
-         shouldNotThrowAny {
-            shouldTimeout(1.seconds) {
-               delay(1.1.seconds)
-            }
-         }
-      }
-      testDuration shouldBe 1.seconds
-   }
-
-   test("should fail if operation completes within given time") {
-      val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
-         shouldFail {
-            shouldTimeout(1.seconds) {
-               delay(0.1.seconds)
-            }
-         }
-      }
-      failure.message shouldContain "Operation completed too quickly. Expected that operation completed faster than 1s, but it took 100ms."
-      testDuration shouldBe 0.1.seconds
    }
 })
