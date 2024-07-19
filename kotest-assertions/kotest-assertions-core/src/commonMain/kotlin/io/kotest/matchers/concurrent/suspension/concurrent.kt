@@ -8,6 +8,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
 import kotlin.time.Duration
+import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 /**
@@ -27,7 +28,11 @@ suspend fun <A> shouldCompleteWithin(
          operation()
       }
    } catch (ex: TimeoutCancellationException) {
-      throw failure("Operation should have completed within $duration")
+      ex.message
+      throw failure(
+         "Operation took longer than expected. " +
+            "Expected that operation completed within $duration, but it took longer and was cancelled."
+      )
    }
 }
 
@@ -43,23 +48,21 @@ suspend fun <A> shouldCompleteBetween(
 ): A {
    contract { callsInPlace(operation, EXACTLY_ONCE) }
 
-   try {
-      val timeSource = nonDeterministicTestTimeSource()
-      val (value, timeElapsed) = timeSource.measureTimedValue {
-         withTimeout(durationRange.endInclusive) {
-            operation()
-         }
+   val timeSource = nonDeterministicTestTimeSource()
+   val (value, timeElapsed) = timeSource.measureTimedValue {
+      shouldCompleteWithin(durationRange.endInclusive) {
+         operation()
       }
-
-      if (durationRange.start > timeElapsed) {
-         throw failure("Operation did not complete before ${durationRange.start}")
-      }
-
-      return value
-
-   } catch (ex: TimeoutCancellationException) {
-      throw failure("Operation did not complete within $durationRange")
    }
+
+   if (durationRange.start > timeElapsed) {
+      throw failure(
+         "Operation completed too quickly. " +
+            "Expected that operation lasted at least ${durationRange.start}, but it took $timeElapsed."
+      )
+   }
+
+   return value
 }
 
 /**
@@ -68,17 +71,23 @@ suspend fun <A> shouldCompleteBetween(
  * Note: It does not work well within [assertSoftly].
  * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
  */
-suspend fun <A> shouldTimeout(
+suspend fun shouldTimeout(
    duration: Duration,
-   operation: suspend () -> A,
+   operation: suspend () -> Unit,
 ) {
    contract { callsInPlace(operation, EXACTLY_ONCE) }
 
    try {
-      withTimeout(duration) {
-         operation()
+      val timeSource = nonDeterministicTestTimeSource()
+      val timeElapsed = timeSource.measureTime {
+         withTimeout(duration) {
+            operation()
+         }
       }
-      throw failure("Operation should not have completed before $duration")
+      throw failure(
+         "Operation completed too quickly. " +
+            "Expected that operation completed faster than $duration, but it took $timeElapsed."
+      )
    } catch (_: TimeoutCancellationException) {
       // ignore timeout
    }

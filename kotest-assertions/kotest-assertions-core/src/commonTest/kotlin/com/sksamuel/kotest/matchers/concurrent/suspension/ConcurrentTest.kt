@@ -39,7 +39,7 @@ class ConcurrentTest : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should have completed within 1s"
+      failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 1s, but it took longer and was cancelled."
       testDuration shouldBe 1.seconds
    }
 
@@ -63,7 +63,7 @@ class ConcurrentTest : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should not have completed before 1s"
+      failure.message shouldBe "Operation completed too quickly. Expected that operation lasted at least 1s, but it took 500ms."
       testDuration shouldBe 0.5.seconds
    }
 
@@ -76,7 +76,7 @@ class ConcurrentTest : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should have completed within 1s..2s"
+      failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 2s, but it took longer and was cancelled."
       testDuration shouldBe 2.seconds
    }
 
@@ -91,7 +91,7 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 1.seconds
    }
 
-   test("should fail if given lambda complete within given time") {
+   test("should fail if operation completes within given time") {
       val (failure, testDuration) = nonDeterministicTestTimeSource().measureTimedValue {
          shouldFail {
             shouldTimeout(1.seconds) {
@@ -99,7 +99,7 @@ class ConcurrentTest : FunSpec({
             }
          }
       }
-      failure.message shouldContain "Operation should not have completed before 1s"
+      failure.message shouldContain "Operation completed too quickly. Expected that operation completed faster than 1s, but it took 100ms."
       testDuration shouldBe 0.1.seconds
    }
 })

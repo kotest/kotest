@@ -35,7 +35,7 @@ class ConcurrentTestJvm : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should have completed within 1s"
+      failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 1s, but it took longer and was cancelled."
    }
 
    test("should not fail when given lambda pass in given time range") {
@@ -53,7 +53,7 @@ class ConcurrentTestJvm : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should not have completed before 1s"
+      failure.message shouldBe "Operation completed too quickly. Expected that operation lasted at least 1s, but it took 500ms."
    }
 
    test("should fail when given lambda did not complete with in the given time range") {
@@ -63,7 +63,7 @@ class ConcurrentTestJvm : FunSpec({
          }
       }
 
-      failure.message shouldBe "Operation should have completed within 1s..2s"
+      failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 2s, but it took longer and was cancelled."
    }
 
    test("should not throw any if given lambda did not complete in given time") {
@@ -80,6 +80,6 @@ class ConcurrentTestJvm : FunSpec({
             delay(0.1.seconds)
          }
       }
-      failure.message shouldContain "Operation should not have completed before 1s"
+      failure.message shouldContain "Operation completed too quickly. Expected that operation completed faster than 1s, but it took 100ms."
    }
 })
