@@ -87,7 +87,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should not give error for kotlin ordered set comparison with list") {
-      val error = IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
+      IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
    }
 
    test("should give error for unordered set comparison with list") {

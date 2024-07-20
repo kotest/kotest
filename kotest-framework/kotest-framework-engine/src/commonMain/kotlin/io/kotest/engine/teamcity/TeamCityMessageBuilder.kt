@@ -1,12 +1,11 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.TestResult
 import kotlin.time.Duration
 
 /**
- * Creates a TeamCity message builder to be used for a single string.
+ * [TeamCityMessageBuilder] generates team city style strings that intellij parses for test results.
  *
  * Message format:
  *

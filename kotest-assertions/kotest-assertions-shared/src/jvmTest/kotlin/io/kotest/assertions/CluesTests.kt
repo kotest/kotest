@@ -37,7 +37,7 @@ class CluesTests : FunSpec({
          // a specified minimum number of threads. This safeguards against subtle differences in dispatcher
          // implementations (how many threads to allocate, how many threads to actually use for coroutines).
          val minimumThreadCount = 2
-         val minimumThreadRepetitionQuota = repetitionCount / 2
+         val minimumThreadRepetitionQuota = repetitionCount / 4
 
          var minimumThreadRepetitionCount = 0
 

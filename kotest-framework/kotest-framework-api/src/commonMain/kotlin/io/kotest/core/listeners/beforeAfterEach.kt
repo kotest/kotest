@@ -4,6 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface BeforeEachListener : Listener {
 
    /**
@@ -14,6 +15,7 @@ interface BeforeEachListener : Listener {
    suspend fun beforeEach(testCase: TestCase): Unit = Unit
 }
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface AfterEachListener : Listener {
 
    /**

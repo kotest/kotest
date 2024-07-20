@@ -34,7 +34,10 @@ If you execute a test, then that test and all nested tests will be executed.
 
 ![gutter_icon_picture](../images/gutter_run.png)
 
-
+:::note
+For Gradle based projects: to run tests with the KoTest runner ensure your project's Gradle Settings are set to run tests with IntelliJ, not Gradle:
+![gradle_settings_picture](../images/gradle-settings.png)
+:::
 
 ## Duplicated Test Highlighting
 

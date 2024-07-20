@@ -897,6 +897,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
 	public fun getDefaultTestCaseConfig ()Lio/kotest/core/test/config/TestCaseConfig;
 	public fun getDisableTestNestedJarScanning ()Ljava/lang/Boolean;
+	public fun getDiscoveryClasspathFallbackEnabled ()Ljava/lang/Boolean;
 	public fun getDispatcherAffinity ()Ljava/lang/Boolean;
 	public fun getDisplayFullTestPath ()Ljava/lang/Boolean;
 	public fun getDisplaySpecIfNoActiveTests ()Ljava/lang/Boolean;
@@ -924,6 +925,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun listeners ()Ljava/util/List;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
 	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
+	public fun setDiscoveryClasspathFallbackEnabled (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
@@ -971,6 +973,7 @@ public final class io/kotest/core/config/Defaults {
 	public static final field defaultInvocationTimeoutMillis J
 	public static final field defaultTimeoutMillis J
 	public static final field disableTestNestedJarScanning Z
+	public static final field discoveryClasspathFallbackEnabled Z
 	public static final field dispatcherAffinity Z
 	public static final field displayFullTestPath Z
 	public static final field displaySpecIfNoActiveTests Z
@@ -1076,6 +1079,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getCoroutineTestScope ()Z
 	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/TestCaseConfig;
 	public final fun getDisableTestNestedJarScanning ()Z
+	public final fun getDiscoveryClasspathFallbackEnabled ()Z
 	public final fun getDispatcherAffinity ()Z
 	public final fun getDisplayFullTestPath ()Z
 	public final fun getDisplaySpecIfNoActiveTests ()Z
@@ -1116,6 +1120,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setCoroutineTestScope (Z)V
 	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/TestCaseConfig;)V
 	public final fun setDisableTestNestedJarScanning (Z)V
+	public final fun setDiscoveryClasspathFallbackEnabled (Z)V
 	public final fun setDispatcherAffinity (Z)V
 	public final fun setDisplayFullTestPath (Z)V
 	public final fun setDisplaySpecIfNoActiveTests (Z)V
@@ -1576,6 +1581,7 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field disableJarDiscovery Ljava/lang/String;
 	public static final field disableSourceRef Ljava/lang/String;
 	public static final field disableTestNestedJarScanning Ljava/lang/String;
+	public static final field discoveryClasspathFallbackEnabled Ljava/lang/String;
 	public static final field dumpConfig Ljava/lang/String;
 	public static final field duplicateTestNameMode Ljava/lang/String;
 	public static final field excludeTags Ljava/lang/String;
@@ -2033,6 +2039,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getFailfast ()Ljava/lang/Boolean;
 	public final fun getInvocationTimeout ()Ljava/lang/Long;
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public final fun getNonDeterministicTestVirtualTimeEnabled ()Z
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTestCoroutineDispatcher ()Ljava/lang/Boolean;
 	public final fun getTestOrder ()Lio/kotest/core/test/TestCaseOrder;
@@ -2053,6 +2060,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setFailfast (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
 	public final fun setIsolationMode (Lio/kotest/core/spec/IsolationMode;)V
+	public final fun setNonDeterministicTestVirtualTimeEnabled (Z)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
 	public final fun setTestCoroutineDispatcher (Ljava/lang/Boolean;)V
 	public final fun setTestOrder (Lio/kotest/core/test/TestCaseOrder;)V

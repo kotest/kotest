@@ -260,20 +260,22 @@ public final class io/kotest/assertions/OneKt {
 }
 
 public final class io/kotest/assertions/RetryConfig {
-	public synthetic fun <init> (IJJILkotlin/reflect/KClass;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IJJILkotlin/reflect/KClass;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IJJILkotlin/reflect/KClass;Lkotlin/time/TimeSource;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IJJILkotlin/reflect/KClass;Lkotlin/time/TimeSource;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()I
 	public final fun component2-UwyO8pc ()J
 	public final fun component3-UwyO8pc ()J
 	public final fun component4 ()I
 	public final fun component5 ()Lkotlin/reflect/KClass;
-	public final fun copy-jKevqZI (IJJILkotlin/reflect/KClass;)Lio/kotest/assertions/RetryConfig;
-	public static synthetic fun copy-jKevqZI$default (Lio/kotest/assertions/RetryConfig;IJJILkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/assertions/RetryConfig;
+	public final fun component6 ()Lkotlin/time/TimeSource;
+	public final fun copy-FbhrOv8 (IJJILkotlin/reflect/KClass;Lkotlin/time/TimeSource;)Lio/kotest/assertions/RetryConfig;
+	public static synthetic fun copy-FbhrOv8$default (Lio/kotest/assertions/RetryConfig;IJJILkotlin/reflect/KClass;Lkotlin/time/TimeSource;ILjava/lang/Object;)Lio/kotest/assertions/RetryConfig;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDelay-UwyO8pc ()J
 	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
 	public final fun getMaxRetry ()I
 	public final fun getMultiplier ()I
+	public final fun getTimeSource ()Lkotlin/time/TimeSource;
 	public final fun getTimeout-UwyO8pc ()J
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -285,27 +287,30 @@ public final class io/kotest/assertions/RetryConfigBuilder {
 	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
 	public final fun getMaxRetry ()I
 	public final fun getMultiplier ()I
+	public final fun getTimeSource ()Lkotlin/time/TimeSource;
 	public final fun getTimeout-UwyO8pc ()J
 	public final fun setDelay-LRDsOJo (J)V
 	public final fun setExceptionClass (Lkotlin/reflect/KClass;)V
 	public final fun setMaxRetry (I)V
 	public final fun setMultiplier (I)V
+	public final fun setTimeSource (Lkotlin/time/TimeSource;)V
 	public final fun setTimeout-LRDsOJo (J)V
 }
 
 public final class io/kotest/assertions/RetryKt {
 	public static final fun retry (Lio/kotest/assertions/RetryConfig;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun retry-FbhrOv8 (IJJILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun retry-FbhrOv8$default (IJJILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun retry-G6guFE4 (IJJILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun retry-G6guFE4$default (IJJILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun retryConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/RetryConfig;
 }
 
 public final class io/kotest/assertions/async/TimeoutKt {
+	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/assertions/async/Timeout_jvmKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldTimeout (Ljava/time/Duration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/assertions/eq/Eq {
@@ -710,15 +715,15 @@ public final class io/kotest/assertions/timing/ContinuallyListener$Companion {
 }
 
 public final class io/kotest/assertions/timing/ContinuallyState {
-	public fun <init> (Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;I)V
-	public final fun component1 ()Lio/kotest/common/TimeMarkCompat;
-	public final fun component2 ()Lio/kotest/common/TimeMarkCompat;
+	public fun <init> (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)V
+	public final fun component1 ()Lkotlin/time/TimeMark;
+	public final fun component2 ()Lkotlin/time/TimeMark;
 	public final fun component3 ()I
-	public final fun copy (Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;I)Lio/kotest/assertions/timing/ContinuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/ContinuallyState;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;IILjava/lang/Object;)Lio/kotest/assertions/timing/ContinuallyState;
+	public final fun copy (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)Lio/kotest/assertions/timing/ContinuallyState;
+	public static synthetic fun copy$default (Lio/kotest/assertions/timing/ContinuallyState;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;IILjava/lang/Object;)Lio/kotest/assertions/timing/ContinuallyState;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lio/kotest/common/TimeMarkCompat;
-	public final fun getStart ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getEnd ()Lkotlin/time/TimeMark;
+	public final fun getStart ()Lkotlin/time/TimeMark;
 	public final fun getTimes ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -760,21 +765,21 @@ public abstract interface class io/kotest/assertions/timing/EventuallyListener {
 }
 
 public final class io/kotest/assertions/timing/EventuallyState {
-	public fun <init> (Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)V
 	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Lio/kotest/common/TimeMarkCompat;
-	public final fun component3 ()Lio/kotest/common/TimeMarkCompat;
+	public final fun component2 ()Lkotlin/time/TimeMark;
+	public final fun component3 ()Lkotlin/time/TimeMark;
 	public final fun component4 ()I
 	public final fun component5 ()Ljava/lang/Throwable;
 	public final fun component6 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/timing/EventuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/EventuallyState;Ljava/lang/Object;Lio/kotest/common/TimeMarkCompat;Lio/kotest/common/TimeMarkCompat;ILjava/lang/Throwable;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyState;
+	public final fun copy (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/timing/EventuallyState;
+	public static synthetic fun copy$default (Lio/kotest/assertions/timing/EventuallyState;Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyState;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getEnd ()Lkotlin/time/TimeMark;
 	public final fun getFirstError ()Ljava/lang/Throwable;
 	public final fun getIteration ()I
 	public final fun getResult ()Ljava/lang/Object;
-	public final fun getStart ()Lio/kotest/common/TimeMarkCompat;
+	public final fun getStart ()Lkotlin/time/TimeMark;
 	public final fun getThisError ()Ljava/lang/Throwable;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

@@ -1,11 +1,10 @@
+@file:Suppress("DEPRECATION") // FIXME remove deprecation suppression when io.kotest.assertions.json.JsonMatchersKt.shouldMatchJson is removed
+
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.shouldMatchJson
-import io.kotest.assertions.json.shouldNotMatchJson
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.string.shouldStartWith
-import kotlinx.serialization.json.Json
 
 class MatchTest : StringSpec() {
 
@@ -29,7 +28,7 @@ class MatchTest : StringSpec() {
 
       "test json equality throws with invalid actual json" {
          shouldThrow<AssertionError> {
-         """
+            """
                   {
                     "merchant_or_brand": "BIGJIMS",
                     "input_source": "Scraper",
@@ -102,7 +101,7 @@ class MatchTest : StringSpec() {
                     ]
                   }
             """.shouldMatchJson(
-            """
+               """
                  {
                     "merchant_or_brand": "BIGJIMS",
                     "input_source": "Scraper",
@@ -139,7 +138,7 @@ class MatchTest : StringSpec() {
                     ]
                   }
             """
-         )
+            )
          }.message shouldStartWith "expected: actual json to be valid json: "
 
       }

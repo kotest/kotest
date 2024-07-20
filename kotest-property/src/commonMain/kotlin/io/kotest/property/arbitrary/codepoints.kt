@@ -177,6 +177,16 @@ fun Codepoint.Companion.egyptianHieroglyphs(): Arb<Codepoint> =
    Arb.of((0x13000..0x1342E).map(::Codepoint))
       .withEdgecases(Codepoint(0x13000))
 
+fun Codepoint.Companion.whitespace(): Arb<Codepoint> =
+   Arb.of(listOf(
+      9,  // TAB
+      10, // LINE FEED
+      11, // LINE TABULATION
+      12, // FORM FEED
+      13, // CARRIAGE RETURN
+      32, // SPACE
+   ).map(::Codepoint))
+
 data class Codepoint(val value: Int) {
    companion object
 }
