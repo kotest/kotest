@@ -1,19 +1,22 @@
 package com.sksamuel.kotest.parallelism
 
 import com.sksamuel.kotest.parallelism.ProjectConfig.projectStart
-import com.sksamuel.kotest.parallelism.StateMsg.Status.Finished
-import com.sksamuel.kotest.parallelism.StateMsg.Status.Started
+import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
+import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
+import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestScope
-import io.kotest.inspectors.shouldForAll
+import io.kotest.inspectors.shouldForNone
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.matchers.shouldBe
 import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -39,7 +42,7 @@ object ProjectConfig : AbstractProjectConfig() {
    private const val EXPECTED_TEST_COUNT = 8
 
    /**
-    * Listen for test [StateMsg]s in an independent [CoroutineScope].
+    * Listen for test [TestStatus]s in an independent [CoroutineScope].
     */
    private val TestMsgCollectorScope: CoroutineScope =
       CoroutineScope(Dispatchers.IO) + CoroutineName("TestMsgCollector")
@@ -50,7 +53,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
    init {
       // Start listening for launched tests in an independent CoroutineScope.
-      testStateMessages
+      testStatuses
          .onEach { msg -> log { "$msg" } }
          .filter { msg -> msg.status == Started }
          // Count the number of started tests by name
@@ -75,7 +78,13 @@ object ProjectConfig : AbstractProjectConfig() {
    }
 
    override suspend fun afterProject() {
-      val messages = testStateMessages.replayCache
+      val statuses = testStatuses.replayCache
+
+      println("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" })
+
+      withClue("Expect no tests timed out") {
+         statuses.shouldForNone { it.status shouldBe TimedOut }
+      }
 
       val expectedTestNames = listOf(
          "test 1",
@@ -88,57 +97,57 @@ object ProjectConfig : AbstractProjectConfig() {
          "test 8",
       )
 
-      StateMsg.Status.entries.forEach { status ->
-         val actualTestNames =
-            messages.filter { it.status == status }.map { it.testName }
+      listOf(Started, Finished).forEach { status ->
+         val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
 
          withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
             actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
          }
       }
 
-      withClue("Expect that all tests had started before any test had finished") {
-         val startedTests = messages.filter { it.status == Started }
-         val finishedTests = messages.filter { it.status == Finished }
+      withClue("Expect that no test finished before all tests had started") {
+         val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
+         val firstFinishedTest = statuses.filter { it.status == Finished }.maxOf { it.elapsed }
 
-         startedTests.forEach { startedTest ->
-            finishedTests.shouldForAll { finishedTest ->
-               startedTest.elapsed shouldBeLessThan finishedTest.elapsed
-            }
-         }
+         lastStartedTest shouldBeLessThan firstFinishedTest
       }
    }
 }
 
 /**
- * Register the start of a test, and wait until all other test cases have been launched.
+ * Register the start of a test, and suspend until [testCompletionLock] is unlocked.
  *
- * Only when all tests have been launched simultaneously will the test be unlocked and permitted to finish.
+ * Only when all tests have been launched simultaneously will [testCompletionLock] be unlocked,
+ * and the test is permitted to finish.
  */
 suspend fun TestScope.startAndLockTest() {
-   withTimeout(10.seconds) {
-      testStateMessages.emit(StateMsg(testCase.name.testName, Started))
-      testCompletionLock.withLock {
-         testStateMessages.emit(StateMsg(testCase.name.testName, Finished))
+   testStatuses.emit(TestStatus(testCase.name.testName, Started))
+   try {
+      withTimeout(10.seconds) {
+         testCompletionLock.withLock {
+            testStatuses.emit(TestStatus(testCase.name.testName, Finished))
+         }
       }
+   } catch (ex: TimeoutCancellationException) {
+      testStatuses.emit(TestStatus(testCase.name.testName, TimedOut))
    }
 }
 
 /**
  * Once a test has launched, stop it from completing by using this [Mutex].
- * We want to stop tests from completing to ensure that all tests are launched in parallel.
+ * We want to stop tests from completing to ensure that all tests are launched simultaneously.
  */
 private val testCompletionLock = Mutex(locked = true)
 
-private val testStateMessages = MutableSharedFlow<StateMsg>(replay = 100)
+private val testStatuses = MutableSharedFlow<TestStatus>(replay = 100)
 
 /**
  * Information about the execution status of a test.
  */
-private data class StateMsg(
+private data class TestStatus(
    val testName: String,
    val status: Status,
    val elapsed: Duration = projectStart.elapsedNow(),
 ) {
-   enum class Status { Started, Finished }
+   enum class Status { Started, Finished, TimedOut }
 }
