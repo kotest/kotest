@@ -1,9 +1,11 @@
+@file:Suppress("DEPRECATION") // FIXME remove deprecation suppression when io.kotest.assertions.until.Interval is removed
+
 package io.kotest.assertions.until
 
 import io.kotest.assertions.failure
-import kotlin.time.Duration
-import io.kotest.common.MonotonicTimeSourceCompat
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
@@ -114,7 +116,7 @@ private suspend fun <T> until(
    f: suspend () -> T
 ): T {
 
-   val start = MonotonicTimeSourceCompat.markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val end = start.plus(duration)
    var times = 0
 

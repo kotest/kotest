@@ -49,10 +49,8 @@ class JvmJsonAssertionsTest : StringSpec({
 
       shouldThrow<AssertionError> {
          json.shouldContainJsonKey("$.store.table")
-      }.message shouldBe """{
-    "store": {
-        "book": [
-            {... should contain the path ${'$'}.store.table"""
+      }.message shouldBe
+         """Expected given to contain json key <'${'$'}.store.table'> but key was not found. Found shorter valid subpath: <'${'$'}.store'>."""
 
       shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
 
@@ -61,41 +59,6 @@ class JvmJsonAssertionsTest : StringSpec({
 
          val nullableJson = """{"data": "value"}"""
          nullableJson.shouldContainJsonKey("data")
-         use(nullableJson)
-      }
-   }
-
-   "test json key value" {
-      json.shouldContainJsonKeyValue("$.store.bicycle.color", "red")
-      json.shouldContainJsonKeyValue("$.store.book[0].category", "reference")
-      json.shouldContainJsonKeyValue("$.store.book[0].price", 8.95)
-      json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
-      json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
-      json.shouldContainJsonKeyValue("$.store.bicycle.code", 1L)
-
-      json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
-
-      shouldFail { json.shouldContainJsonKeyValue("$.store.bicycle.wheels", 2) }
-         .message shouldBe """{
-    "store": {
-        "book": [
-            {... should contain the element ${'$'}.store.bicycle.wheels = 2
-      """.trimIndent()
-
-      shouldThrow<AssertionError> {
-         json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
-      }.message shouldBe """{
-    "store": {
-        "book": [
-            {... should contain the element ${'$'}.store.book[1].author = JK Rowling"""
-
-      shouldThrow<AssertionError> { null.shouldContainJsonKeyValue("ab", "cd") }
-
-      "contract should work".asClue {
-         fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
-
-         val nullableJson = """{"data": "value"}"""
-         nullableJson.shouldContainJsonKeyValue("data", "value")
          use(nullableJson)
       }
    }

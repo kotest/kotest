@@ -341,6 +341,7 @@ public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun matchEach (Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrder (Ljava/util/List;Z)Lio/kotest/matchers/Matcher;
 	public static final fun matchInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
@@ -593,9 +594,11 @@ public final class io/kotest/matchers/collections/MatchersKt {
 	public static final fun shouldHaveElementAt (Ljava/lang/Iterable;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt (Ljava/util/List;ILjava/lang/Object;)V
 	public static final fun shouldHaveElementAt ([Ljava/lang/Object;ILjava/lang/Object;)V
+	public static final fun shouldMatchEach (Ljava/lang/Iterable;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function2;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldMatchEach (Ljava/lang/Iterable;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach (Ljava/util/List;Ljava/util/List;)V
+	public static final fun shouldMatchEach (Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;)V
 	public static final fun shouldMatchEach (Ljava/util/List;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldMatchEach ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldMatchEach ([Ljava/lang/Object;[Lkotlin/jvm/functions/Function1;)V
@@ -917,6 +920,12 @@ public final class io/kotest/matchers/concurrent/ThreadsKt {
 }
 
 public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
+	public static final fun shouldCompleteBetween (Lkotlin/ranges/ClosedRange;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldCompleteWithin-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/matchers/concurrent/suspension/Concurrent_jvmKt {
 	public static final fun shouldCompleteBetween (JJLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1736,6 +1745,7 @@ public final class io/kotest/matchers/nulls/MatchersKt {
 	public static final fun beNull ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeNull (Ljava/lang/Object;)V
 	public static final fun shouldNotBeNull (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeNull (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/kotest/matchers/optional/MatchersKt {
@@ -1860,12 +1870,20 @@ public final class io/kotest/matchers/ranges/BeinKt {
 }
 
 public final class io/kotest/matchers/ranges/BewithinKt {
+	public static final fun beWithin (Lio/kotest/matchers/ranges/Range;)Lio/kotest/matchers/Matcher;
+	public static final fun beWithinRangeOfInt (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun beWithinRangeOfLong (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun resultForWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;Ljava/lang/Comparable;)Lio/kotest/matchers/MatcherResult;
 	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldBeWithinRangeOfInt (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
+	public static final fun shouldBeWithinRangeOfLong (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotBeWithinRangeOfInt (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
+	public static final fun shouldNotBeWithinRangeOfLong (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 }
 
 public final class io/kotest/matchers/ranges/IntersectKt {
@@ -1877,6 +1895,15 @@ public final class io/kotest/matchers/ranges/IntersectKt {
 	public static final fun shouldNotIntersect (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/OpenEndRange;
 	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+}
+
+public final class io/kotest/matchers/ranges/RangeKt {
+	public static final fun closedClosed (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public static final fun closedOpen (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public static final fun ofClosedRange (Lio/kotest/matchers/ranges/Range$Companion;Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/ranges/Range;
+	public static final fun ofOpenEndRange (Lio/kotest/matchers/ranges/Range$Companion;Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/ranges/Range;
+	public static final fun openClosed (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
+	public static final fun openOpen (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
 }
 
 public final class io/kotest/matchers/reflection/CallableMatchersKt {
@@ -2142,6 +2169,9 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)V
 	public static final fun shouldHaveSize (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveUpperBound (Lkotlin/sequences/Sequence;Ljava/lang/Comparable;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;Ljava/util/List;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function2;)V
+	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;[Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldNotBeEmpty (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotBeSorted (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotBeSortedWith (Lkotlin/sequences/Sequence;Ljava/util/Comparator;)V
@@ -2392,14 +2422,20 @@ public final class io/kotest/matchers/throwable/MatchersKt {
 	public static final fun haveCause ()Lio/kotest/matchers/Matcher;
 	public static final fun haveMessage (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveMessage (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
+	public static final fun haveStackTraceContaining (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveStackTraceContaining (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
 	public static final fun resultForThrowable (Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResult;
 	public static final fun shouldHaveCause (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun shouldHaveCause$default (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
 	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
+	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
+	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
 	public static final fun shouldNotHaveCause (Ljava/lang/Throwable;)V
 	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
 	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
+	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
+	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
 }
 
 public final class io/kotest/matchers/time/DurationKt {
@@ -2517,5 +2553,13 @@ public final class io/kotest/matchers/url/MatchersKt {
 	public static final fun shouldNotHaveProtocol (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveQuery (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveRef (Ljava/net/URL;Ljava/lang/String;)V
+}
+
+public final class io/kotest/similarity/PossibleMatchesForSetKt {
+	public static final fun possibleMatchesForSet (ZLjava/util/Set;Ljava/util/Set;Lio/kotest/equals/Equality;)Ljava/lang/String;
+}
+
+public final class io/kotest/similarity/PossibleMatchesKt {
+	public static final fun possibleMatchesDescription (Ljava/util/Set;Ljava/lang/Object;)Ljava/lang/String;
 }
 

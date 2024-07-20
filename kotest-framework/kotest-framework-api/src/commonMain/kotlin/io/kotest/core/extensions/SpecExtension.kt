@@ -1,5 +1,3 @@
-@file:Suppress("DeprecatedCallableAddReplaceWith")
-
 package io.kotest.core.extensions
 
 import io.kotest.core.spec.Spec
@@ -27,6 +25,7 @@ interface SpecExtension : Extension {
     * @param process callback function required to continue spec processing
     */
    @Deprecated("This function had ambiguous specifications. Instead prefer intercept(spec: Spec, execute: suspend (Spec) -> Unit) which is guaranteed to run once per spec instance or use SpecRefExtension which runs once per spec class. This function was deprecated in 5.0")
+   @Suppress("DeprecatedCallableAddReplaceWith")
    suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
       process()
    }

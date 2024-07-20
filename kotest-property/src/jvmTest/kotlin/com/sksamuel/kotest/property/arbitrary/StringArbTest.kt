@@ -18,6 +18,7 @@ import io.kotest.property.arbitrary.katakana
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.printableAscii
 import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.whitespace
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import kotlin.streams.toList
@@ -147,6 +148,22 @@ class StringArbTest : FunSpec() {
          checkAll(Arb.string(10..20, Codepoint.cyrillic())) { a ->
             a.codepoints().forEach {
                Character.isValidCodePoint(it)
+            }
+         }
+      }
+
+      test("all strings generated with whitespace codepoints should be valid code codepoints") {
+         checkAll(Arb.string(10..20, Codepoint.whitespace())) { a ->
+            a.codepoints().forEach {
+               Character.isValidCodePoint(it)
+            }
+         }
+      }
+
+      test("all strings generated with whitespace codepoints should be whitespace only") {
+         checkAll(Arb.string(10..20, Codepoint.whitespace())) { a ->
+            a.codepoints().forEach {
+               Character.isWhitespace(it)
             }
          }
       }

@@ -32,19 +32,22 @@ With *System Environment Extension* you can simulate how the System Environment 
 Kotest provides some extension functions that provides a System Environment in a specific scope:
 
 ```kotlin
-withEnvironment("FooKey", "BarValue") {
-    System.getenv("FooKey") shouldBe "BarValue" // System environment overridden!
+test("foo") {
+  withEnvironment("FooKey", "BarValue") {
+      System.getenv("FooKey") shouldBe "BarValue" // System environment overridden!
+  }
 }
 ```
 
 :::info
-To use `withEnvironment` with JDK17 you need to add `--add-opens=java.base/java.util=ALL-UNNAMED` to the arguments for the JVM that runs the tests.
+To use `withEnvironment` with JDK17+ you need to add `--add-opens=java.base/java.util=ALL-UNNAMED`
+and `--add-opens=java.base/java.lang=ALL-UNNAMED` to the arguments for the JVM that runs the tests.
 
 If you run tests with gradle, you can add the following to your `build.gradle.kts`:
 
 ```kotlin
 tasks.withType<Test>().configureEach {
-    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED")
 }
 ```
 :::
@@ -52,8 +55,10 @@ tasks.withType<Test>().configureEach {
 You can also use multiple values in this extension, through a map or list of pairs.
 
 ```kotlin
-withEnvironment(mapOf("FooKey" to "BarValue", "BarKey" to "FooValue")) {
-    // Use FooKey and BarKey
+test("foo") {
+  withEnvironment(mapOf("FooKey" to "BarValue", "BarKey" to "FooValue")) {
+      // Use FooKey and BarKey
+  }
 }
 ```
 

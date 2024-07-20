@@ -370,6 +370,10 @@ public final class io/kotest/assertions/json/KeysKt {
 	public static final fun shouldNotContainJsonKey (Ljava/lang/String;Ljava/lang/String;)V
 }
 
+public final class io/kotest/assertions/json/KeyvaluesKt {
+	public static final fun containJsonKeyValue (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Class;)Lio/kotest/matchers/Matcher;
+}
+
 public final class io/kotest/assertions/json/MatchersKt {
 	public static final fun equalJson (Ljava/lang/String;Lio/kotest/assertions/json/CompareJsonOptions;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
