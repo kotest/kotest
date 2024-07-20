@@ -15,7 +15,8 @@ import java.nio.file.Paths
 // It embeds a particular version of Kotlin, which causes all kinds of pain.
 // See https://youtrack.jetbrains.com/issue/KT-24327 for one example.
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
-   val kotestVersion = System.getProperty("kotestVersion")
+   val kotestLibraryVersion = System.getProperty("kotestLibraryVersion")
+   val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
    val devMavenRepoPath = System.getProperty("devMavenRepoPath")
 
    setOf(
@@ -64,7 +65,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                testProjectPath,
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
-                  "-PkotestVersion=$kotestVersion",
+                  "-PkotestGradlePluginVersion=$kotestGradlePluginVersion",
+                  "-PkotestLibraryVersion=$kotestLibraryVersion",
                   "-PuseNewNativeMemoryModel=false",
                   "-PdevMavenRepoPath=$devMavenRepoPath",
                ) + taskNames
@@ -98,7 +100,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                      testProjectPath,
                      listOf(
                         "-PkotlinVersion=$kotlinVersion",
-                        "-PkotestVersion=$kotestVersion",
+                        "-PkotestGradlePluginVersion=$kotestGradlePluginVersion",
+                        "-PkotestLibraryVersion=$kotestLibraryVersion",
                         "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
                         "-PdevMavenRepoPath=$devMavenRepoPath",
                      ) + taskNames
@@ -134,7 +137,12 @@ private data class GradleInvocation(
 
    fun run(): Result {
       val command =
-         listOf(wrapperScriptPath.toAbsolutePath().toString(), "--console=plain", "--no-daemon", "--continue") +
+         listOf(
+            wrapperScriptPath.toAbsolutePath().toString(),
+            "--console=plain",
+            "--no-daemon",
+            "--continue"
+         ) +
             arguments
 
       val process = ProcessBuilder(command)

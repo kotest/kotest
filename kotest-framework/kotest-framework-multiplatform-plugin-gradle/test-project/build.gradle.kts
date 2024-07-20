@@ -7,7 +7,7 @@ plugins {
    id("io.kotest.multiplatform")
 }
 
-val kotestVersion: String by project
+val kotestLibraryVersion: String by project
 val devMavenRepoPath: String by project
 val useNewNativeMemoryModel: String by project
 
@@ -47,15 +47,15 @@ kotlin {
    sourceSets {
       val commonTest by getting {
          dependencies {
-            implementation("io.kotest:kotest-assertions-core:$kotestVersion")
-            implementation("io.kotest:kotest-framework-api:$kotestVersion")
-            implementation("io.kotest:kotest-framework-engine:$kotestVersion")
+            implementation("io.kotest:kotest-assertions-core:$kotestLibraryVersion")
+            implementation("io.kotest:kotest-framework-api:$kotestLibraryVersion")
+            implementation("io.kotest:kotest-framework-engine:$kotestLibraryVersion")
          }
       }
 
       val jvmTest by getting {
          dependencies {
-            implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+            implementation("io.kotest:kotest-runner-junit5:$kotestLibraryVersion")
          }
       }
    }
