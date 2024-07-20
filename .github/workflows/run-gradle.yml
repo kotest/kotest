@@ -53,6 +53,15 @@ jobs:
                gradle-home-cache-cleanup: true
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
 
+         -  name: Cache Kotest user directory
+            uses: actions/cache@v4
+            with:
+               path: ~/.kotest
+               key: kotest-user-dir-${{ runner.os }}
+               enableCrossOsArchive: true
+               restore-keys: |
+                  kotest-user-dir-
+
          -  name: Run tests
             run: ./gradlew ${{ inputs.task }} --scan
             shell: bash
