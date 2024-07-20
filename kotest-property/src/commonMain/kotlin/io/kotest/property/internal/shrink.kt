@@ -9,15 +9,14 @@ import io.kotest.property.ShrinkingMode
 import io.kotest.property.isEmpty
 
 /**
- * Accepts a value of type A and a function that varies in type A (fixed in any other types) and attempts
- * to shrink the value to find the smallest failing case.
+ * Accepts a value of type [A] and a function that varies in type [A] (fixed in any other types)
+ * and attempts to shrink the value to find the smallest failing case.
  *
  * For each step in the shrinker, we test all the values. If they all pass then the shrinking ends.
  * Otherwise, the next batch is taken and the shrinks continue.
  *
  * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case
  * along with the reason for the failure.
- *
  */
 suspend fun <A> doShrinking(
    initial: RTree<A>,
@@ -49,14 +48,14 @@ class Counter {
 
 /**
  * The result of shrinking a failed arg.
- * If no shrinking took place, shrink should be set to the same as iniital
+ * If no shrinking took place, shrink should be set to the same as initial
  */
 data class ShrinkResult<out A>(val initial: A, val shrink: A, val cause: Throwable?)
 
 data class StepResult<A>(val failed: A, val cause: Throwable)
 
 /**
- * Performs shrinking on the given RTree. Recurses into the tree for failing cases.
+ * Performs shrinking on the given [RTree]. Recurses into the tree for failing cases.
  * Returns the last candidate to fail as a [StepResult] or null if the initial passes.
  */
 suspend fun <A> doStep(
@@ -94,7 +93,7 @@ suspend fun <A> doStep(
 }
 
 /**
- * Returns true if we should continue shrinking given the count.
+ * Returns `true` if we should continue shrinking given the [count].
  */
 private fun ShrinkingMode.isShrinking(count: Int): Boolean = when (this) {
    ShrinkingMode.Off -> false
@@ -121,14 +120,13 @@ private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
 }
 
 /**
- * The contextual shrinking is  only used for output purposes for the time being.
+ * The contextual shrinking is only used for output purposes for the time being.
  * Contextual arb shrinking is theoretically possible. A strategy that may work is to treat shrinks
  * as a standard Vector of arbitrary dimension. However, this will need to be discussed and addressed separately.
  */
-internal suspend fun PropertyContext.doContextualShrinking(
-   mode: ShrinkingMode,
-   test: suspend PropertyContext.() -> Unit
+internal fun PropertyContext.doContextualShrinking(
+//   mode: ShrinkingMode,
+//   test: suspend PropertyContext.() -> Unit
 ): List<ShrinkResult<*>> = generatedSamples().map {
    ShrinkResult(it.value, it.value, null)
 }
-
