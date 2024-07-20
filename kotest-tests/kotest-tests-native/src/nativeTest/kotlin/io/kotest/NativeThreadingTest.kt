@@ -7,7 +7,7 @@ import io.kotest.data.row
 import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.mpp.atomics.AtomicProperty
+import kotlin.native.concurrent.ObsoleteWorkersApi
 import kotlin.native.concurrent.TransferMode.SAFE
 import kotlin.native.concurrent.Worker
 import kotlin.test.Test
@@ -77,6 +77,9 @@ class NativeThreadingTest {
 //   }
 
    // https://jakewharton.com/litmus-testing-kotlins-many-memory-models/
+   // Workers API is deprecated, but has no replacement yet. Workers are safe to use, so long as they
+   // don't get exposed in a public API.
+   @OptIn(ObsoleteWorkersApi::class)
    private fun threadedTest(body: () -> Unit) {
       // Run once on the main thread
       body()

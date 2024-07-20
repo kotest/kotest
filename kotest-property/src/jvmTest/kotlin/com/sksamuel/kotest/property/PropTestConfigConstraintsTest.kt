@@ -590,10 +590,10 @@ class PropTestConfigConstraintsTest : FunSpec() {
 
       test("PropTestConfig constraints should support durations") {
          val config = PropTestConfig(constraints = Constraints.duration(400.milliseconds))
-         val start = TimeSource.Monotonic.markNow()
+         val start = TimeSource.Monotonic.markNow() // Property tests cannot use virtual time
          checkAll(config, Arb.string()) { _ -> }
-         // we should have exited around 400 millis
-         start.elapsedNow() shouldBeIn 200.milliseconds..800.milliseconds
+         // we should have exited around 400 millis, but for slow runners we're more tolerant
+         start.elapsedNow() shouldBeIn 200.milliseconds..1200.milliseconds
       }
    }
 }

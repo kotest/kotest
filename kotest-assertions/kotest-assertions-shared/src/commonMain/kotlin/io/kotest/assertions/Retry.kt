@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -39,7 +40,7 @@ suspend fun <T> retry(
    config: RetryConfig,
    test: suspend () -> T,
 ): T {
-   val mark = config.timeSource?.markNow() ?: TimeSource.Monotonic.markNow()
+   val mark = config.timeSource?.markNow() ?: nonDeterministicTestTimeSource().markNow()
    val end = mark.plus(config.timeout)
    var attemptedRetries = 0
    var nextAwaitDuration = config.delay

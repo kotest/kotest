@@ -1,15 +1,13 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.shouldFail
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestScope
-import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.throwable.shouldHaveMessage
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -19,6 +17,7 @@ class ContinuallyTest : FunSpec() {
 
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       test("pass tests that succeed for the entire duration") {
          val result = testContinually(500.milliseconds) {
@@ -68,7 +67,7 @@ class ContinuallyTest : FunSpec() {
       }
 
       test("fail broken tests immediately") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val failure = shouldFail {
             testContinually(1.minutes) {
                false shouldBe true
@@ -79,7 +78,7 @@ class ContinuallyTest : FunSpec() {
       }
 
       test("fail should throw the underlying error") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          shouldFail {
             testContinually(1.minutes) {
                throw AssertionError("boom")
@@ -103,11 +102,11 @@ class ContinuallyTest : FunSpec() {
 }
 
 
-private suspend fun <T> TestScope.testContinually(
+private suspend fun <T> testContinually(
    duration: Duration,
    test: suspend () -> T,
-): TestContinuallyResult<T> = withContext(ContinuallyTimeSource(testCoroutineScheduler.timeSource)) {
-   val start = testCoroutineScheduler.timeSource.markNow()
+): TestContinuallyResult<T> {
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = continually(duration) {
@@ -115,17 +114,17 @@ private suspend fun <T> TestScope.testContinually(
       test()
    }
 
-   TestContinuallyResult(
+   return TestContinuallyResult(
       invocationTimes = invocationTimes,
       value = value,
    )
 }
 
-private suspend fun <T> TestScope.testContinually(
+private suspend fun <T> testContinually(
    config: ContinuallyConfiguration<T>,
    test: suspend () -> T,
-): TestContinuallyResult<T> = withContext(ContinuallyTimeSource(testCoroutineScheduler.timeSource)) {
-   val start = testCoroutineScheduler.timeSource.markNow()
+): TestContinuallyResult<T> {
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = continually(config = config) {
@@ -133,7 +132,7 @@ private suspend fun <T> TestScope.testContinually(
       test()
    }
 
-   TestContinuallyResult(
+   return TestContinuallyResult(
       invocationTimes = invocationTimes,
       value = value,
    )

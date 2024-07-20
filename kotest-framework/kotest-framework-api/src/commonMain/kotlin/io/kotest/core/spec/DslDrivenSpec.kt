@@ -108,6 +108,8 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    @Deprecated("This has no effect and will be removed in 6.0", level = DeprecationLevel.ERROR)
    fun aroundSpec(aroundSpecFn: AroundSpecFn) {
       extension(object : SpecExtension {
+         @Deprecated("See `SpecExtension.intercept(spec: KClass<out Spec>, process: suspend () -> Unit)`")
+         @Suppress("DeprecatedCallableAddReplaceWith")
          override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
             aroundSpecFn(Tuple2(spec, process))
          }
