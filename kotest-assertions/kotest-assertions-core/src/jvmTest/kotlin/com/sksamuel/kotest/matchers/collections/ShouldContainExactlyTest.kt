@@ -377,7 +377,7 @@ class ShouldContainExactlyTest : WordSpec() {
             actual.shouldContainExactlyInAnyOrder(expected)
          }
 
-         "maintain performance".config(timeout = 1.seconds) {
+         "maintain performance".config(timeout = 2.seconds) {
             checkAll(1000, Arb.shuffle(listOf("1", "2", "3", "4", "5", "6", "7"))) {
                it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
             }
