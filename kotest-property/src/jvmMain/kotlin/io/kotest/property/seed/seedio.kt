@@ -5,7 +5,6 @@ import io.kotest.common.TestPath
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
-import kotlin.io.path.createFile
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
@@ -57,18 +56,13 @@ internal actual fun clearSeed(path: TestPath) {
 
 internal fun seedDirectory(): Path = seedDirectory
 
-private val kotestConfigDir by lazy {
-   val xdgCacheHome = System.getenv("XDG_CACHE_HOME")?.ifBlank { null }
-
-   Path(
-      xdgCacheHome ?: System.getProperty("user.home")
-   ).apply {
-      createDirectories()
-   }
-}
-
 private val seedDirectory: Path by lazy {
-   kotestConfigDir.resolve(".kotest/seeds/").apply {
+   val baseDir = System.getenv("XDG_CACHE_HOME")?.ifBlank { null }
+      ?: System.getProperty("user.home")
+
+   val kotestConfigDir = Path(baseDir).resolve(".kotest")
+
+   kotestConfigDir.resolve("seeds").apply {
       createDirectories()
    }
 }
