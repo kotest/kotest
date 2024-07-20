@@ -4,20 +4,20 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 
 /**
- * Asserts that this [Channel] is closed
+ * Asserts that this [Channel] is closed.
  *
- * Opposite of [Channel.shouldBeOpen]
- *
+ * Opposite of [Channel.shouldBeOpen].
  */
-@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 fun <T> Channel<T>.shouldBeClosed() = this should beClosed()
 
-@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 fun <T> beClosed() = object : Matcher<Channel<T>> {
    override fun test(value: Channel<T>) = MatcherResult(
       value.isClosedForSend && value.isClosedForReceive,
@@ -27,12 +27,11 @@ fun <T> beClosed() = object : Matcher<Channel<T>> {
 }
 
 /**
- * Asserts that this [Channel] is open
+ * Asserts that this [Channel] is open.
  *
- * Opposite of [Channel.shouldBeClosed]
- *
+ * Opposite of [Channel.shouldBeClosed].
  */
-@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 fun <T> Channel<T>.shouldBeOpen() = this shouldNot beClosed()
 
 /**
@@ -53,9 +52,8 @@ fun <T> beEmpty() = object : Matcher<Channel<T>> {
 
 /**
  * Asserts that this [Channel] should receive [n] elements, then is closed.
- *
  */
-@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
    repeat(n) {
       this@shouldHaveSize.receive()
@@ -64,18 +62,16 @@ suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
 }
 
 /**
- * Asserts that this [Channel] should receive at least [n] elements
- *
+ * Asserts that this [Channel] should receive at least [n] elements.
  */
 suspend fun <T> Channel<T>.shouldReceiveAtLeast(n: Int) {
    repeat(n) { this@shouldReceiveAtLeast.receive() }
 }
 
 /**
- * Asserts that this [Channel] should receive at most [n] elements, then close
- *
+ * Asserts that this [Channel] should receive at most [n] elements, then is closed.
  */
-@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 suspend fun <T> Channel<T>.shouldReceiveAtMost(n: Int) {
    var count = 0
    for (value in this@shouldReceiveAtMost) {

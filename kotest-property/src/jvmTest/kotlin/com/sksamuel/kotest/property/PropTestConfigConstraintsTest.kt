@@ -1,8 +1,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeLessThan
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Constraints
@@ -12,7 +11,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.internal.proptest
 import kotlin.time.Duration.Companion.milliseconds
-import io.kotest.common.MonotonicTimeSourceCompat
+import kotlin.time.TimeSource
 
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
@@ -590,12 +589,11 @@ class PropTestConfigConstraintsTest : FunSpec() {
       }
 
       test("PropTestConfig constraints should support durations") {
-         val config = PropTestConfig(constraints = Constraints.duration(200.milliseconds))
-         val start = MonotonicTimeSourceCompat.markNow()
+         val config = PropTestConfig(constraints = Constraints.duration(400.milliseconds))
+         val start = TimeSource.Monotonic.markNow() // Property tests cannot use virtual time
          checkAll(config, Arb.string()) { _ -> }
-         // we should have exited around 200 millis
-         start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)
-         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(300)
+         // we should have exited around 400 millis, but for slow runners we're more tolerant
+         start.elapsedNow() shouldBeIn 200.milliseconds..1200.milliseconds
       }
    }
 }

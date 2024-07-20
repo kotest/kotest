@@ -2,6 +2,7 @@ package io.kotest.core.listeners
 
 import io.kotest.core.spec.Spec
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface AfterSpecListener : Listener {
 
    /**

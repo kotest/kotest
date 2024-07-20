@@ -74,6 +74,13 @@ object KotestEngineProperties {
     */
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
+   /**
+    * Use classpath scanning for test discovery if no selectors are present (defaults to "false").
+    * - Do not enable this when using Gradle with `maxParallelForks > 1`. Gradle might inadvertently invoke one
+    *   Kotest instance with an empty class list, resulting in duplicate test runs (#3973).
+    */
+   const val discoveryClasspathFallbackEnabled = "kotest.framework.discovery.classpath.fallback.enabled"
+
    const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
 
    const val concurrentSpecs = "kotest.framework.spec.concurrent"

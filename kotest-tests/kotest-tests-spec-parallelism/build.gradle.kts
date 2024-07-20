@@ -3,10 +3,7 @@ plugins {
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
+   jvm()
 
    sourceSets {
       val jvmTest by getting {

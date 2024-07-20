@@ -5,8 +5,14 @@ package io.kotest.matchers.sequences
 import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
-import io.kotest.matchers.*
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.duplicates
+import io.kotest.matchers.collections.shouldMatchEach
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldHave
+import io.kotest.matchers.shouldNot
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -407,7 +413,7 @@ infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostC
 
 
 @Deprecated(
-   "Use `forAny` inspection instead",
+   "Use `forAny` inspection instead. Will be removed in 6.0",
    ReplaceWith(
       "forAny { p() shouldBe true }",
       "io.kotest.matchers.shouldBe",
@@ -490,3 +496,7 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
       return MatcherResult(remaining.isEmpty(), failure, negFailure)
    }
 }
+
+fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
+infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
+fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) = toList().shouldMatchEach(expected.toList(), asserter)

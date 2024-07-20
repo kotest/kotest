@@ -1,0 +1,47 @@
+name: release-watchos
+
+on:
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version"
+            required: true
+         branch:
+            description: "The branch to release from"
+            required: true
+            default: 'master'
+
+env:
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+permissions:
+   contents: read
+
+jobs:
+   publish_watchosDeviceArm64:
+      runs-on: macos-latest
+      strategy:
+         max-parallel: 1
+         matrix:
+            target:
+               - "publishWatchosDeviceArm64PublicationToDeployRepository"
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v4
+            with:
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v4
+            with:
+               distribution: 'adopt'
+               java-version: '17'
+
+         -  uses: gradle/actions/setup-gradle@v3
+
+         -  name: publish
+            run: ./gradlew ${{ matrix.target }}

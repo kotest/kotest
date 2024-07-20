@@ -3,10 +3,7 @@ plugins {
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
+   jvm()
 
    sourceSets {
       val jvmTest by getting {
@@ -17,4 +14,8 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<Test>().configureEach {
+   systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.tag.ProjectConfig")
 }
