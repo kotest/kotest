@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing Listener
+
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
@@ -108,6 +110,8 @@ internal class SpecWrapperExtension(
       if (delegate is PrepareSpecListener && kclass == target) delegate.prepareSpec(kclass)
    }
 
+   @Deprecated("See `SpecExtension.intercept(spec: KClass<out Spec>, process: suspend () -> Unit)`")
+   @Suppress("DeprecatedCallableAddReplaceWith")
    override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
       if (delegate is SpecExtension && spec == target) delegate.intercept(spec, process) else process()
    }

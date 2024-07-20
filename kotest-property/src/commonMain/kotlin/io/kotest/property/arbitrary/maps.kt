@@ -20,7 +20,6 @@ import io.kotest.property.Shrinker
  *        The slippage factor determines how many times we continue after retrieving a duplicate key.
  *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
  *        If this value is not specified, then the default slippage value of 10 will be used.
- * @param includeEmpty include empty map as edgecase or not
  */
 fun <K, V> Arb.Companion.map(
    arb: Arb<Pair<K, V>>,
@@ -73,7 +72,6 @@ fun <K, V> Arb.Companion.map(
  *        The slippage factor determines how many times we continue after retrieving a duplicate key.
  *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
  *        If this value is not specified, then the default slippage value of 10 will be used.
- * @param includeEmpty include empty map as edgecase or not
  */
 fun <K, V> Arb.Companion.map(
    keyArb: Arb<K>,

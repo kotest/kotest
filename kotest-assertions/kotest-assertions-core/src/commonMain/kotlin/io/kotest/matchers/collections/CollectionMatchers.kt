@@ -165,11 +165,22 @@ fun <T> matchInOrder(assertions: List<(T) -> Unit>, allowGaps: Boolean): Matcher
    }
 
 /**
+ * Asserts that each element of the collection matches with the element of [expected].
+ * Elements will be compared sequentially by passing the actual / expected pairs to the
+ * [asserter] in the order given by the iterators of the collections.
+ */
+fun <T> matchEach(expected: List<T>, asserter: (T, T) -> Unit): Matcher<Collection<T>?> =
+   matchEach(expected.map { expectedElement ->
+      { actualElement: T ->
+         asserter(actualElement, expectedElement)
+      }
+   })
+
+/**
  * Asserts that each element in the collection matches its corresponding matcher in [assertions].
  * Elements will be compared sequentially in the order given by the iterators of the collections.
  */
 fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-   data class ElementPass(val atIndex: Int)
    data class MatchEachProblem(val atIndex: Int, val problem: String?)
 
    val problems = errorCollector.runWithMode(ErrorCollectionMode.Hard) {
@@ -187,7 +198,7 @@ fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neve
             }
          }
       }
-   } + (actual.size..assertions.size - 1).map {
+   } + (actual.size until assertions.size).map {
       MatchEachProblem(
          it,
          "No actual element for assertion at index $it"
@@ -198,7 +209,7 @@ fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neve
       problems.isEmpty(),
       {
          "Expected each element to pass its assertion, but found issues at indexes: [${problems.joinToString { it.atIndex.toString() }}]\n\n" +
-            "${problems.joinToString(separator = "\n") { "${it.atIndex} => ${it.problem}" }}"
+            problems.joinToString(separator = "\n") { "${it.atIndex} => ${it.problem}" }
       },
       { "Expected some element to fail its assertion, but all passed." },
    )

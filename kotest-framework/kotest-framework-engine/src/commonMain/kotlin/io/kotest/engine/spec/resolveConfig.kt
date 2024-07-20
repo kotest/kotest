@@ -23,6 +23,7 @@ internal fun resolveConfig(
    projectConfiguration: ProjectConfiguration
 ): ResolvedTestConfig {
 
+   @Suppress("DEPRECATION")  // remove when removing TestCaseConfig
    val defaultTestConfig = spec.defaultTestConfig
       ?: spec.defaultTestCaseConfig()
       ?: projectConfiguration.defaultTestConfig
@@ -67,6 +68,7 @@ internal fun resolveConfig(
       defaultTestConfig.extensions +
       defaultTestConfig.listeners
 
+   @Suppress("DEPRECATION") // Remove when removing testCoroutineDispatcher
    return ResolvedTestConfig(
       enabled = enabled,
       threads = threads,

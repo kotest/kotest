@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing http extension
+
 package com.sksamuel.kotest.extensions.http
 
 import io.kotest.core.spec.style.FunSpec
@@ -67,7 +69,7 @@ class HttpRequestTest : FunSpec({
    test("post http request unknown path") {
       http(
          "/example_post_with_params.http",
-         mapOf("path" to "loginAgain%$#", "username" to "foo")
+         mapOf("path" to "loginAgain%41$#", "username" to "foo")
       ) {
          it.status shouldBe HttpStatusCode.NotFound
       }

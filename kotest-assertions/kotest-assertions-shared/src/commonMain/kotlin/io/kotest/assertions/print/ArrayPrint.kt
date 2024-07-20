@@ -2,6 +2,7 @@ package io.kotest.assertions.print
 
 object ArrayPrint : Print<Any> {
 
+   @Deprecated(PRINT_DEPRECATION_MSG)
    override fun print(a: Any): Printed = print(a, 0)
 
    @Suppress("UNCHECKED_CAST")

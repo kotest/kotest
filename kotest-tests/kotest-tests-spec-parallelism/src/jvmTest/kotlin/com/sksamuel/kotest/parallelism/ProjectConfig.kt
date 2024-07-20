@@ -2,13 +2,17 @@ package com.sksamuel.kotest.parallelism
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
+import kotlin.time.times
 
 object ProjectConfig : AbstractProjectConfig() {
 
-   private var start = 0L
+   private lateinit var start: TimeMark
 
    override suspend fun beforeProject() {
-      start = System.currentTimeMillis()
+      start = TimeSource.Monotonic.markNow() // We cannot use virtual time with concurrency
    }
 
    // set the number of threads so that each test runs in its own thread
@@ -17,10 +21,11 @@ object ProjectConfig : AbstractProjectConfig() {
    override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
 
    override suspend fun afterProject() {
-      val duration = System.currentTimeMillis() - start
-      // there are 8 specs, and each one has a delay
-      // if parallel is working they should all block at the same time
-      if (duration > 700)
+      val duration = start.elapsedNow()
+      // There are 8 specs, and each one has a 500ms delay.
+      // If parallel is working, they should all block at the same time.
+      if (duration > 7 * 500.milliseconds) {
          error("Parallel execution failure: Execution time was $duration")
+      }
    }
 }

@@ -39,4 +39,4 @@ fun <A> Arb<A>.filterNot(f: (A) -> Boolean): Arb<A> = filter { !f(it) }
  * a particular subtype.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <A, reified B : A> Arb<A>.filterIsInstance(): Arb<B> = filter { it is B }.map { it as B }
+inline fun <reified B> Arb<*>.filterIsInstance(): Arb<B> = filter { it is B } as Arb<B>

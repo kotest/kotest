@@ -89,6 +89,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withSpecs ([Lio/kotest/core/spec/Spec;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/core/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
+	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
 }
 
 public final class io/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory {
@@ -445,26 +446,8 @@ public final class io/kotest/engine/project/ProjectExtensions {
 	public final fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/spec/AnnotatedSpecSorter : io/kotest/engine/spec/SpecSorter {
-	public static final field INSTANCE Lio/kotest/engine/spec/AnnotatedSpecSorter;
-	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
-	public fun sort (Ljava/util/List;)Ljava/util/List;
-}
-
-public final class io/kotest/engine/spec/FailureFirstSorter : io/kotest/engine/spec/SpecSorter {
-	public fun <init> ()V
-	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
-	public fun sort (Ljava/util/List;)Ljava/util/List;
-}
-
 public final class io/kotest/engine/spec/InstantiateSpecKt {
 	public static final fun createAndInitializeSpec (Lkotlin/reflect/KClass;Lio/kotest/core/config/ExtensionRegistry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/spec/LexicographicSpecSorter : io/kotest/engine/spec/SpecSorter {
-	public static final field INSTANCE Lio/kotest/engine/spec/LexicographicSpecSorter;
-	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
-	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/spec/Materializer {
@@ -477,6 +460,11 @@ public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spe
 	public fun <init> (Lkotlin/random/Random;)V
 	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
 	public fun sort (Ljava/util/List;)Ljava/util/List;
+}
+
+public final class io/kotest/engine/spec/Sorters_jvmKt {
+	public static final fun getAnnotatedSpecSorter ()Lio/kotest/engine/spec/SpecSorter;
+	public static final fun getFailureFirstSorter ()Lio/kotest/engine/spec/SpecSorter;
 }
 
 public final class io/kotest/engine/spec/SpecExecutorKt {
@@ -615,6 +603,7 @@ public final class io/kotest/engine/tags/TagExpressionResult : java/lang/Enum {
 	public static final field Include Lio/kotest/engine/tags/TagExpressionResult;
 	public static final field Inconclusive Lio/kotest/engine/tags/TagExpressionResult;
 	public final fun and (Lio/kotest/engine/tags/TagExpressionResult;)Lio/kotest/engine/tags/TagExpressionResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun not ()Lio/kotest/engine/tags/TagExpressionResult;
 	public final fun or (Lio/kotest/engine/tags/TagExpressionResult;)Lio/kotest/engine/tags/TagExpressionResult;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/engine/tags/TagExpressionResult;
@@ -645,6 +634,7 @@ public final class io/kotest/engine/tags/TokenType : java/lang/Enum {
 	public static final field Identifier Lio/kotest/engine/tags/TokenType;
 	public static final field OpenParen Lio/kotest/engine/tags/TokenType;
 	public static final field Pipe Lio/kotest/engine/tags/TokenType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/engine/tags/TokenType;
 	public static fun values ()[Lio/kotest/engine/tags/TokenType;
 }

@@ -18,6 +18,7 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
+import io.kotest.matchers.collections.exist
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
@@ -143,6 +144,16 @@ class CollectionMatchersTest : WordSpec() {
             tests should haveElementAt(0, TestSealed.Test1("test1"))
             tests.shouldHaveElementAt(1, TestSealed.Test2(2))
          }
+         "indicate that collection is too short" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(3, "b")
+            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 3, but collection was shorter"
+         }
+         "indicate that elements differ" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(2, "b")
+            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 2, but element was different. Expected: <\"b\">, but was <\"c\">"
+         }
       }
 
       "containNull()" should {
@@ -250,7 +261,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
-            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]")
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]. Element found at index(es): [1].")
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2) shouldBe singleElement(3)
+            }.shouldHaveMessage("Collection should be a single element of 3 but has 2 elements: [1, 2]. Element not found in collection.")
          }
       }
 
@@ -261,11 +276,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 0 elements: [1]")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate, but no elements matched, and the whole collection was: [1]")
 
             shouldThrow<AssertionError> {
                listOf(2, 2) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 2 elements: [2, 2]")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate, but elements with the following indexes matched: [0, 1], and the whole collection was: [2, 2]")
          }
       }
 
@@ -489,6 +504,11 @@ class CollectionMatchersTest : WordSpec() {
          "test that a collection contains at least one element that matches a predicate" {
             val list = listOf(1, 2, 3)
             list.shouldExist { it == 2 }
+         }
+         "give descriptive message when predicate should not match" {
+            shouldThrowAny {
+               listOf(1, 2, 3, 2) shouldNot exist { it == 2}
+            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate (kotlin.Int) -> kotlin.Boolean, but elements with the following indexes matched: [1, 3]"
          }
       }
 
@@ -857,6 +877,53 @@ class CollectionMatchersTest : WordSpec() {
                3 => Element has no corresponding assertion. Only 3 assertions provided
                4 => Element has no corresponding assertion. Only 3 assertions provided
                5 => Element has no corresponding assertion. Only 3 assertions provided
+            """.trimIndent()
+         }
+      }
+
+      "matchEach with actual / expected pairs" should {
+         "create proper matchers for collections of the same size" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => expected:<4> but was:<1>
+            """.trimIndent()
+         }
+
+         "element missing on expected list" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2, 1) should matchEach(listOf(1, 2, 3)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => Element has no corresponding assertion. Only 3 assertions provided
+            """.trimIndent()
+         }
+
+         "element missing on actual list" {
+            shouldThrow<AssertionError> {
+               listOf(4, 3, 2) should matchEach(listOf(1, 2, 3, 4)) { actual, expected ->
+                  actual shouldBe expected
+               }
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [0, 1, 2, 3]
+
+               0 => expected:<1> but was:<4>
+               1 => expected:<2> but was:<3>
+               2 => expected:<3> but was:<2>
+               3 => No actual element for assertion at index 3
             """.trimIndent()
          }
       }

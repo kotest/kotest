@@ -40,59 +40,65 @@ kotlin {
    }
 }
 
-tasks.create("buildConfigDocs") {
-   // find config files
-   val fileNames = listOf("KotestEngineProperties.kt")
-
-   val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
-      if (fileNames.contains(file.name)) {
-         file
-      } else {
-         null
-      }
-   }.filterNotNull()
-      .toList()
-
-   if (foundFiles.size != fileNames.size)
-      throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
-
-   // replace in docs
-
-   val docName = "config_props.md"
-   val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
-   val docFileFullPath = File(docsFolder.absolutePath, docName)
-
-   val configTemplate = """
----
-id: framework_config_props
-title: Framework configuration properties
-sidebar_label: System properties
-slug: framework-config-props.html
----
-
-   """.trimIndent()
-
-   val fileTemplate = """
-
-      ---
-      #### %s
-      ```kotlin
-      %s
-      ```
-
-   """.trimIndent()
-
-   val sb = StringBuilder(configTemplate)
-
-   foundFiles.forEach { file ->
-      val name = file.name
-      // intentionally use \n instead of System.lineSeparator to respect .editorconfig
-      val content = file.readLines().joinToString(separator = "\n")
-
-      sb.append(fileTemplate.format(name, content))
-   }
-
-   docFileFullPath.writeText(sb.toString())
-}
-
-tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
+// TODO reimplement buildConfigDocs task
+//      - It is supposed to update `config_props.md` files, but it's not triggered by anything.
+//        (Replace `mustRunAfter()` with `dependsOn()`)
+//      - It does work in the configuration phase.
+//        (Add a `doLast {}` block)
+//      - Should properly register Task inputs/outputs.
+//tasks.create("buildConfigDocs") {
+//   // find config files
+//   val fileNames = listOf("KotestEngineProperties.kt")
+//
+//   val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
+//      if (fileNames.contains(file.name)) {
+//         file
+//      } else {
+//         null
+//      }
+//   }.filterNotNull()
+//      .toList()
+//
+//   if (foundFiles.size != fileNames.size)
+//      throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
+//
+//   // replace in docs
+//
+//   val docName = "config_props.md"
+//   val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
+//   val docFileFullPath = File(docsFolder.absolutePath, docName)
+//
+//   val configTemplate = """
+//---
+//id: framework_config_props
+//title: Framework configuration properties
+//sidebar_label: System properties
+//slug: framework-config-props.html
+//---
+//
+//   """.trimIndent()
+//
+//   val fileTemplate = """
+//
+//      ---
+//      #### %s
+//      ```kotlin
+//      %s
+//      ```
+//
+//   """.trimIndent()
+//
+//   val sb = StringBuilder(configTemplate)
+//
+//   foundFiles.forEach { file ->
+//      val name = file.name
+//      // intentionally use \n instead of System.lineSeparator to respect .editorconfig
+//      val content = file.readLines().joinToString(separator = "\n")
+//
+//      sb.append(fileTemplate.format(name, content))
+//   }
+//
+//   docFileFullPath.writeText(sb.toString())
+//}
+//
+//tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
