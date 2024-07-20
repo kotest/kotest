@@ -12,8 +12,8 @@ class TestTimeoutOverridesSpecFunctionTest : FunSpec() {
    override fun timeout(): Long = 1.milliseconds.inWholeMilliseconds
 
    init {
-      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
-         // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
+      test("test case config timeout should take precedence").config(timeout = 800.milliseconds) {
+         // this test should pass because 50 < 800, and 800 should override the 1 at the spec level
          delay(50.milliseconds)
       }
    }

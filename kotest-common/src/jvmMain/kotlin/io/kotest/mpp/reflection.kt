@@ -4,6 +4,7 @@ package io.kotest.mpp
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
@@ -78,7 +79,7 @@ object JvmReflection : Reflection {
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> {
       // gets the parameters for the primary constructor and then associates them with the member callable
       val constructorParams = klass::primaryConstructor.get()?.parameters ?: emptyList()
-      val membersByName = klass::members.get().associateBy(KCallable<*>::name)
+      val membersByName = getPropertiesByName(klass)
       return constructorParams.mapNotNull { param ->
          membersByName[param.name]?.let { callable ->
             Property(callable.name, param.type) {
@@ -88,6 +89,10 @@ object JvmReflection : Reflection {
          }
       }
    }
+
+   internal fun <T : Any> getPropertiesByName(klass: KClass<T>) = klass::members.get()
+      .filter { it is KProperty<*> }
+      .associateBy(KCallable<*>::name)
 
    // ignored because on JDK 8 newInstance is the only option
    @Suppress("DEPRECATION")

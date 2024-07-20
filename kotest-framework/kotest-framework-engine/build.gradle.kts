@@ -57,4 +57,6 @@ kotlin {
 
 tasks.withType<Test>().configureEach {
    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED")
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }
