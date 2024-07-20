@@ -15,3 +15,7 @@ kotlin {
       }
    }
 }
+
+tasks.withType<Test>().configureEach {
+   systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.tag.ProjectConfig")
+}

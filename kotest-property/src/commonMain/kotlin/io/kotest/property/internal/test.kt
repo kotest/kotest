@@ -67,26 +67,7 @@ internal suspend fun handleException(
    config: PropTestConfig
 ) {
    if (config.maxFailure == 0) {
-
-      println("Property test failed for inputs\n")
-      val allInputs = buildList {
-         addAll(inputs.map { it.print().value })
-         context.generatedSamples().forEach { add("${it.value.print().value} (generated within property context)") }
-      }
-      allInputs.withIndex().forEach { (index, value) ->
-         println("$index) $value")
-      }
-      println()
-
-      val cause = stacktraces.root(e)
-      when (val stack = stacktraces.throwableLocation(cause, 4)) {
-         null -> println("Caused by $e")
-         else -> {
-            println("Caused by $e at")
-            stack.forEach { println("\t$it") }
-         }
-      }
-      println()
+      printFailureMessage(context, inputs, e)
       writeFailedSeedIfEnabled(seed)
       throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
    } else if (context.failures() > config.maxFailure) {
@@ -98,4 +79,38 @@ internal suspend fun handleException(
       writeFailedSeedIfEnabled(seed)
       throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
    }
+}
+
+private fun printFailureMessage(
+   context: PropertyContext,
+   inputs: List<Any?>,
+   e: Throwable,
+) {
+   println(
+      buildString {
+         appendLine("Property test failed for inputs\n")
+
+         iterator {
+            inputs.forEach { input ->
+               yield(input.print().value)
+            }
+            context.generatedSamples().forEach { sample ->
+               yield("${sample.value.print().value} (generated within property context)")
+            }
+         }.withIndex().forEach { (index, input) ->
+            appendLine("$index) $input")
+         }
+         appendLine()
+
+         val cause = stacktraces.root(e)
+         when (val stack = stacktraces.throwableLocation(cause, 4)) {
+            null -> appendLine("Caused by $e")
+            else -> {
+               appendLine("Caused by $e at")
+               stack.forEach { appendLine("\t$it") }
+            }
+         }
+         appendLine()
+      }
+   )
 }

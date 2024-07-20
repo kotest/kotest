@@ -68,7 +68,9 @@ tasks.withType<Test>().configureEach {
    }
 }
 
+@Suppress("UnstableApiUsage")
 gradlePlugin {
+   isAutomatedPublishing = true
    website.set("https://kotest.io")
    vcsUrl.set("https://github.com/kotest")
    plugins {
@@ -76,8 +78,8 @@ gradlePlugin {
          id = "io.kotest.multiplatform"
          implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
          displayName = "Kotest Multiplatform Compiler Plugin"
-         description = "Adds support for Javascript and Native tests in Kotest"
-         tags.set(listOf("kotest", "kotlin", "testing", "integrationtesting", "javascript"))
+         description = "Adds support for JavaScript and Native tests in Kotest"
+         tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
       }
    }
 }

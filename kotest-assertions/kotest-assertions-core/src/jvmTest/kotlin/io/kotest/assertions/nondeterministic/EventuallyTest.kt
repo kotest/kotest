@@ -383,7 +383,7 @@ class EventuallyTest : FunSpec() {
          val exceptions = setOf(
             Pair(FileNotFoundException::class, FileNotFoundException()),
             Pair(AssertionError::class, AssertionError()),
-            Pair(java.lang.RuntimeException::class, java.lang.RuntimeException())
+            Pair(java.lang.RuntimeException::class, java.lang.RuntimeException()),
          )
          var i = 0
          val config = eventuallyConfig {
@@ -427,6 +427,54 @@ class EventuallyTest : FunSpec() {
                }
             }
          }.message shouldNotContain "The first error was caused by: first"
+      }
+
+      test("raise error if duration is less than 0") {
+         val message =
+            shouldThrow<IllegalArgumentException> {
+               eventually((-1).milliseconds) {
+                  1 shouldBe 2
+               }
+            }.message
+
+         message shouldContain "Duration must be greater than or equal to 0"
+      }
+
+      test("raise error if retries is less than 0") {
+         val message =
+            shouldThrow<IllegalArgumentException> {
+               eventuallyConfig {
+                  retries = -1
+               }
+            }.message
+
+         message shouldContain "Retries must be greater than or equal to 0"
+      }
+
+      test("when duration is set to default it cannot end test until iteration is done") {
+         val finalCount = 100
+         var count = 0
+         val config = eventuallyConfig {
+               retries = finalCount
+            }
+         shouldThrow<AssertionError> {
+            eventually(config) {
+               count++
+               1 shouldBe 2
+            }
+         }
+
+         count shouldBe finalCount
+      }
+
+      test("test eventually without configuration") {
+         // linked to issue #3988
+         var count = 0
+         eventually {
+            count += 1
+            count shouldBe 100
+         }
+         count shouldBe 100
       }
    }
 }

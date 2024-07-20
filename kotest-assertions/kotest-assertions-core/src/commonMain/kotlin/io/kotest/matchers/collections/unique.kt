@@ -49,7 +49,7 @@ fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> {
    return this
 }
 
-fun <T> Iterable<T>.shouldNotBeUnique(): Iterable<T> {
+fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I {
    toList().shouldNotBeUnique()
    return this
 }
@@ -59,7 +59,7 @@ fun <T> Array<T>.shouldNotBeUnique(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>.shouldNotBeUnique(): Collection<T> {
+fun <T, C : Collection<T>> C.shouldNotBeUnique(): C {
    this shouldNot beUnique()
    return this
 }

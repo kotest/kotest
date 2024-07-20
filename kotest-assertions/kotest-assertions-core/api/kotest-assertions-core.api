@@ -920,6 +920,12 @@ public final class io/kotest/matchers/concurrent/ThreadsKt {
 }
 
 public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
+	public static final fun shouldCompleteBetween (Lkotlin/ranges/ClosedRange;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldCompleteWithin-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/matchers/concurrent/suspension/Concurrent_jvmKt {
 	public static final fun shouldCompleteBetween (JJLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
