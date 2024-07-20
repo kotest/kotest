@@ -8,10 +8,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
-import io.kotest.property.checkMaxDiscards
-import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.createRandom
-import io.kotest.property.statistics.outputStatistics
 
 suspend fun <A> proptest(
    genA: Gen<A>,
@@ -51,6 +48,7 @@ suspend fun <A> proptest(
                config.listeners.forEach { it.afterTest() }
             }
       }
+
       is Exhaustive -> {
          genA.values.forEach { a ->
             config.listeners.forEach { it.beforeTest() }
@@ -70,9 +68,10 @@ suspend fun <A> proptest(
       }
    }
 
-   outputStatistics(context, 1, true)
-   context.outputClassifications(1, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
+//   outputStatistics(context, 1, true)
+//   context.outputClassifications(1, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+   context.onSuccess(1, random)
    return context
 }
 
@@ -134,10 +133,11 @@ suspend fun <A, B> proptest(
          }
    }
 
-   outputStatistics(context, 2, true)
-   context.outputClassifications(2, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 2, true)
+//   context.outputClassifications(2, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(2, random)
    return context
 }
 
@@ -204,10 +204,11 @@ suspend fun <A, B, C> proptest(
          }
    }
 
-   outputStatistics(context, 3, true)
-   context.outputClassifications(3, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 3, true)
+//   context.outputClassifications(3, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(3, random)
    return context
 }
 
@@ -274,10 +275,11 @@ suspend fun <A, B, C, D> proptest(
          }
    }
 
-   outputStatistics(context, 4, true)
-   context.outputClassifications(4, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 4, true)
+//   context.outputClassifications(4, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(4, random)
    return context
 }
 
@@ -366,10 +368,11 @@ suspend fun <A, B, C, D, E> proptest(
          }
    }
 
-   outputStatistics(context, 5, true)
-   context.outputClassifications(5, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 5, true)
+//   context.outputClassifications(5, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(5, random)
    return context
 }
 
@@ -465,10 +468,11 @@ suspend fun <A, B, C, D, E, F> proptest(
          }
    }
 
-   outputStatistics(context, 6, true)
-   context.outputClassifications(6, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 6, true)
+//   context.outputClassifications(6, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(6, random)
    return context
 }
 
@@ -571,10 +575,11 @@ suspend fun <A, B, C, D, E, F, G> proptest(
          }
    }
 
-   outputStatistics(context, 7, true)
-   context.outputClassifications(7, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 7, true)
+//   context.outputClassifications(7, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(7, random)
    return context
 }
 
@@ -684,10 +689,11 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
          }
    }
 
-   outputStatistics(context, 8, true)
-   context.outputClassifications(8, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 8, true)
+//   context.outputClassifications(8, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(8, random)
    return context
 }
 
@@ -804,10 +810,11 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
          }
    }
 
-   outputStatistics(context, 9, true)
-   context.outputClassifications(9, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 9, true)
+//   context.outputClassifications(9, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(9, random)
    return context
 }
 
@@ -942,10 +949,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
          }
    }
 
-   outputStatistics(context, 10, true)
-   context.outputClassifications(10, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 10, true)
+//   context.outputClassifications(10, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(10, random)
    return context
 }
 
@@ -1100,10 +1108,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
          }
    }
 
-   outputStatistics(context, 11, true)
-   context.outputClassifications(11, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 11, true)
+//   context.outputClassifications(11, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(11, random)
    return context
 }
 
@@ -1267,10 +1276,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
          }
    }
 
-   outputStatistics(context, 12, true)
-   context.outputClassifications(12, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 12, true)
+//   context.outputClassifications(12, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(12, random)
    return context
 }
 
@@ -1384,7 +1394,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn =
+               shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1443,10 +1454,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
          }
    }
 
-   outputStatistics(context, 13, true)
-   context.outputClassifications(13, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 13, true)
+//   context.outputClassifications(13, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(13, random)
    return context
 }
 
@@ -1566,7 +1578,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn =
+               shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1628,10 +1641,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
          }
    }
 
-   outputStatistics(context, 14, true)
-   context.outputClassifications(14, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 14, true)
+//   context.outputClassifications(14, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(14, random)
    return context
 }
 
@@ -1757,7 +1771,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn =
+               shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1822,10 +1837,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
          }
    }
 
-   outputStatistics(context, 15, true)
-   context.outputClassifications(15, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 15, true)
+//   context.outputClassifications(15, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(15, random)
    return context
 }
 
@@ -1974,7 +1990,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn =
+               shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2042,10 +2059,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
          }
    }
 
-   outputStatistics(context, 16, true)
-   context.outputClassifications(16, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 16, true)
+//   context.outputClassifications(16, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(16, random)
    return context
 }
 
@@ -2201,7 +2219,28 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2272,10 +2311,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
          }
    }
 
-   outputStatistics(context, 17, true)
-   context.outputClassifications(17, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 17, true)
+//   context.outputClassifications(17, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(17, random)
    return context
 }
 
@@ -2457,7 +2497,29 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2531,10 +2593,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
          }
    }
 
-   outputStatistics(context, 18, true)
-   context.outputClassifications(18, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 18, true)
+//   context.outputClassifications(18, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(18, random)
    return context
 }
 
@@ -2724,7 +2787,30 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2801,10 +2887,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
          }
    }
 
-   outputStatistics(context, 19, true)
-   context.outputClassifications(19, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 19, true)
+//   context.outputClassifications(19, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(19, random)
    return context
 }
 
@@ -3002,7 +3089,31 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3082,10 +3193,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
          }
    }
 
-   outputStatistics(context, 20, true)
-   context.outputClassifications(20, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 20, true)
+//   context.outputClassifications(20, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(20, random)
    return context
 }
 
@@ -3291,7 +3403,32 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3374,10 +3511,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
          }
    }
 
-   outputStatistics(context, 21, true)
-   context.outputClassifications(21, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 21, true)
+//   context.outputClassifications(21, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(21, random)
    return context
 }
 
@@ -3591,7 +3729,33 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v,
+               property,
+               config.shrinkingMode,
+               contextualSeed
+            )
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3677,9 +3841,10 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
          }
    }
 
-   outputStatistics(context, 22, true)
-   context.outputClassifications(22, config, random.seed)
-   context.checkMinSuccess(config, random.seed)
-   context.checkMaxDiscards()
+//   outputStatistics(context, 22, true)
+//   context.outputClassifications(22, config, random.seed)
+//   context.checkMinSuccess(config, random.seed)
+//   context.checkMaxDiscards()
+   context.onSuccess(22, random)
    return context
 }

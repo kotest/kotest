@@ -28,9 +28,12 @@ fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
             { "$value should not be a non empty directory" }
          )
       } else {
+         val x = if (value.isFile) "was a file"
+         else if (!value.exists()) "it does not exist"
+         else "<unknown>"
          MatcherResult(
             false,
-            { "$value should be an empty directory but was a file" },
+            { "$value should be an empty directory but $x" },
             { "$value should not be a non empty directory" }
          )
       }

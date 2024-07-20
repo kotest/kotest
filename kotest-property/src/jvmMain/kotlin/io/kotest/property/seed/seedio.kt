@@ -2,59 +2,105 @@ package io.kotest.property.seed
 
 import io.kotest.assertions.print.print
 import io.kotest.common.TestPath
-import java.nio.file.Files
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.nio.file.Path
-import java.nio.file.Paths
+import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.readLines
+import kotlin.io.path.writeText
 
-actual fun readSeed(path: TestPath): Long? {
+
+internal actual fun readSeed(path: TestPath): Long? {
    return try {
-      val p = seedPath(path)
-      if (p.exists())
-         Files.readAllLines(p).firstOrNull()?.trim()?.toLongOrNull()
-      else null
+      return path.seedPath()
+         .takeIf { it !in seedsMarkedForDeletion && it.exists() }
+         ?.readLines()
+         ?.firstOrNull()
+         ?.trim()
+         ?.toLongOrNull()
    } catch (e: Exception) {
-      println("Error reading seed")
+      println("Error reading seed for $path")
       e.print()
       null
    }
 }
 
-internal fun xdgCacheHomeOrNull(): String? = System.getenv("XDG_CACHE_HOME")?.takeIf { it.isNotBlank() }
-internal fun userHome(): String = System.getProperty("user.home")
-internal fun configDirectory(): String = xdgCacheHomeOrNull() ?: userHome()
-internal fun seedDirectory(): Path = Paths.get(configDirectory()).resolve(".kotest").resolve("seeds")
-
-fun seedPath(path: TestPath): Path {
-   return seedDirectory().resolve(escape(path.value))
-}
-
-private fun escape(path: String) = path
-   .replace('/', '_')
-   .replace('\\', '_')
-   .replace('<', '_')
-   .replace('>', '_')
-   .replace(':', '_')
-   .replace('(', '_')
-   .replace(')', '_')
-
-actual fun writeSeed(path: TestPath, seed: Long) {
+internal actual fun writeSeed(path: TestPath, seed: Long) {
    try {
-      val f = seedPath(path)
-      f.parent.toFile().mkdirs()
-      Files.write(f, seed.toString().encodeToByteArray())
+      val f = path.seedPath()
+      f.writeText(seed.toString())
+      seedsMarkedForDeletion.remove(f)
    } catch (e: Exception) {
-      println("Error writing seed")
+      println("Error writing seed $seed for $path")
       e.printStackTrace()
    }
 }
 
-actual fun clearSeed(path: TestPath) {
+internal actual fun clearSeed(path: TestPath) {
    try {
-      val f = seedPath(path)
-      f.toFile().deleteRecursively()
+      val f = path.seedPath()
+      seedsMarkedForDeletion.add(f)
    } catch (e: Exception) {
-      println("Error clearing seed")
+      println("Error clearing seed for $path")
       e.printStackTrace()
    }
 }
+
+private val seedsMarkedForDeletion = mutableSetOf<Path>()
+
+internal actual suspend fun cleanUpSeedFiles(): Unit = coroutineScope {
+   seedsMarkedForDeletion
+      .map { path ->
+         async {
+            try {
+               if (
+                  path.isRegularFile()
+                  && path != seedDirectory
+                  && path.startsWith(seedDirectory)
+               ) {
+                  path.deleteIfExists()
+               }
+            } catch (e: Exception) {
+               println("Error deleting seed $path")
+               e.printStackTrace()
+            }
+         }
+      }
+      .awaitAll()
+}
+
+
+internal fun seedDirectory(): Path = seedDirectory
+
+private val kotestConfigDir by lazy {
+   Path(
+      System.getenv("XDG_CACHE_HOME")
+         ?.ifBlank { null }
+         ?: System.getProperty("user.home")
+   ).apply {
+      createDirectories()
+   }
+}
+
+private val seedDirectory: Path by lazy {
+   kotestConfigDir.resolve(".kotest/seeds/").apply {
+      createDirectories()
+   }
+}
+
+private fun TestPath.seedPath(): Path {
+   return testPathsValueCache.getOrPut(this) {
+      seedDirectory.resolve(escapeValue())
+   }
+}
+
+private val testPathsValueCache = WeakHashMap<TestPath, Path>()
+
+private fun TestPath.escapeValue(): String =
+   value.replace(Regex("""[/\\<>:()]"""), "_")

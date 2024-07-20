@@ -14,6 +14,7 @@ suspend fun createRandom(config: PropTestConfig): RandomSource {
    return config.seed?.random() ?: getFailedSeedIfEnabled()?.random() ?: RandomSource.default()
 }
 
+@ExperimentalKotest
 suspend fun getFailedSeedIfEnabled(): Long? {
    return if (PropertyTesting.writeFailedSeed) getFailedSeed() else null
 }
@@ -26,8 +27,9 @@ suspend fun getFailedSeed(): Long? {
 
 @ExperimentalKotest
 suspend fun writeFailedSeedIfEnabled(seed: Long) {
-   if (PropertyTesting.writeFailedSeed)
+   if (PropertyTesting.writeFailedSeed) {
       writeFailedSeed(seed)
+   }
 }
 
 @ExperimentalKotest
@@ -42,6 +44,10 @@ suspend fun clearFailedSeed() {
    clearSeed(path)
 }
 
-expect fun readSeed(path: TestPath): Long?
-expect fun writeSeed(path: TestPath, seed: Long)
-expect fun clearSeed(path: TestPath)
+internal expect fun readSeed(path: TestPath): Long?
+
+internal expect fun writeSeed(path: TestPath, seed: Long)
+
+internal expect fun clearSeed(path: TestPath)
+
+internal expect suspend fun cleanUpSeedFiles()
