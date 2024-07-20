@@ -30,6 +30,8 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
+import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
 
 
 class ShouldContainExactlyTest : WordSpec() {
@@ -405,17 +407,33 @@ class ShouldContainExactlyTest : WordSpec() {
                it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
             }
          }
+
+         "use custom verifier correctly" {
+            val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
+               override fun name() = "Case Insensitive String Matcher"
+
+               override fun verify(actual: String, expected: String): EqualityResult {
+                  return if(actual.uppercase() == expected.uppercase())
+                     EqualityResult.equal(actual, expected, this)
+                  else
+                     EqualityResult.notEqual(actual, expected, this)
+               }
+            }
+            listOf("apple", "orange", "Apple") should containExactlyInAnyOrder(listOf("APPLE", "APPLE", "Orange"), caseInsensitiveStringEquality)
+            listOf("apple", "orange", "Orange") shouldNot containExactlyInAnyOrder(listOf("APPLE", "APPLE", "Orange"), caseInsensitiveStringEquality)
+         }
       }
 
       "countMismatch" should {
          "return empty list for a complete match" {
             val counts = mapOf("apple" to 1, "orange" to 2)
-            countMismatch(counts, counts).shouldBeEmpty()
+            countMismatch(counts, counts, Equality.default()).shouldBeEmpty()
          }
          "return differences for not null key" {
             countMismatch(
                mapOf("apple" to 1, "orange" to 2, "banana" to 3),
-               mapOf("apple" to 2, "orange" to 2, "peach" to 1)
+               mapOf("apple" to 2, "orange" to 2, "peach" to 1),
+               Equality.default()
             ) shouldBe listOf(
                CountMismatch("apple", 1, 2)
             )
@@ -423,7 +441,8 @@ class ShouldContainExactlyTest : WordSpec() {
          "return differences for null key" {
             countMismatch(
                mapOf(null to 1, "orange" to 2, "banana" to 3),
-               mapOf(null to 2, "orange" to 2, "peach" to 1)
+               mapOf(null to 2, "orange" to 2, "peach" to 1),
+               Equality.default()
             ) shouldBe listOf(
                CountMismatch(null, 1, 2)
             )
