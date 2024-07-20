@@ -25,13 +25,18 @@ fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
          MatcherResult(
             contents.isEmpty(),
             { "$value should be an empty directory but contained ${contents.size} file(s) [${contents.joinToString(", ")}]" },
-            { "$value should not be a non empty directory" }
+            { "$value should not be a non-empty directory" },
          )
       } else {
+         val reason = when {
+            value.isFile -> "was a regular file"
+            !value.exists() -> "it does not exist"
+            else -> "could not determine type"
+         }
          MatcherResult(
             false,
-            { "$value should be an empty directory but was a file" },
-            { "$value should not be a non empty directory" }
+            { "$value should be an empty directory, but $reason" },
+            { "$value should not be a non-empty directory, but $reason" },
          )
       }
    }
