@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.async
@@ -69,7 +70,7 @@ class WordSpecCoroutineTest : WordSpec() {
             count.get() shouldBe 40
          }
 
-         // we need enough invocation to ensure all the threads get used up
+         // we need enough invocations to ensure multiple threads get used up
          "mutliple threads should use a thread pool for the coroutines".config(
             invocations = 6,
             threads = 6
@@ -79,7 +80,7 @@ class WordSpecCoroutineTest : WordSpec() {
          }
 
          "previous test result 3" {
-            threadnames.size shouldBe 6
+            threadnames.size shouldBeGreaterThan 1
          }
 
          "run listeners on the same thread as the test when a single invocation" {

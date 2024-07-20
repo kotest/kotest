@@ -5,12 +5,6 @@ plugins {
    alias(libs.plugins.shadowjar)
 }
 
-kotlin {
-   targets {
-      jvm()
-   }
-}
-
 application {
    mainClass.set("io.kotest.engine.launcher.MainKt")
 }
@@ -29,7 +23,11 @@ tasks {
       }
    }
    getByName("jvmJar") {
-      finalizedBy(getByName("shadowJar"))
+      finalizedBy(shadowJar)
+   }
+
+   startScripts {
+      dependsOn(shadowJar)
    }
 }
 

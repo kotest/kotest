@@ -21,6 +21,10 @@ class KotestBlockHoundIntegration : BlockHoundIntegration {
          allowBlockingCallsInside("io.kotest.runner.junit.platform.SynchronizedEngineExecutionListener", method)
       }
 
+      // Allow blocking calls used when running Kotest in debug mode.
+      allowBlockingCallsInside("io.kotest.mpp.WriteLogKt", "writeLog")
+      allowBlockingCallsInside("kotlin.jvm.internal.Reflection", "renderLambdaToString")
+
       blockingMethodCallback {
          when (BlockHound.effectiveMode) {
             BlockHoundMode.ERROR -> throw BlockingOperationError(it)
