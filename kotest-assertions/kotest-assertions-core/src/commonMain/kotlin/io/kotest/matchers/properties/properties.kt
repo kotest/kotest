@@ -2,6 +2,7 @@ package io.kotest.matchers.properties
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.print
@@ -32,7 +33,7 @@ fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
       val actual = value.get()
       return object : MatcherResult {
          override fun passed(): Boolean =
-            eq(actual, expected) == null
+            eq(actual, expected) is EqResult.Equal
 
          override fun failureMessage(): String =
             prependMessage() + "\n" + intellijFormatError(Expected(expected.print()), Actual(actual.print()))

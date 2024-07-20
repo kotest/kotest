@@ -1,22 +1,21 @@
 package io.kotest.matchers
 
-internal interface MatcherResultWithError : MatcherResult {
+import io.kotest.assertions.eq.EqResult
+import io.kotest.assertions.eq.EqResult.Equal
 
-   val error: Throwable?
+internal interface EqMatcherResult : MatcherResult {
+   fun failureOrNull(): Throwable?
 
    companion object {
       operator fun invoke(
-         error: Throwable?,
-         passed: Boolean,
+         result: EqResult,
          failureMessageFn: (error: Throwable?) -> String,
          negatedFailureMessageFn: (error: Throwable?) -> String,
-      ): MatcherResultWithError = object : MatcherResultWithError {
-
-         override val error: Throwable? = error
-
-         override fun passed(): Boolean = passed
-         override fun failureMessage(): String = failureMessageFn(error)
-         override fun negatedFailureMessage(): String = negatedFailureMessageFn(error)
+      ): EqMatcherResult = object : EqMatcherResult {
+         override fun failureOrNull(): Throwable? = result.failureOrNull()
+         override fun passed(): Boolean = result is Equal
+         override fun failureMessage(): String = failureMessageFn(result.failureOrNull())
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn(result.failureOrNull())
       }
    }
 }

@@ -1,6 +1,13 @@
 package io.kotest.assertions.eq
 
-import io.kotest.assertions.*
+import io.kotest.assertions.Actual
+import io.kotest.assertions.ActualWithType
+import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.Expected
+import io.kotest.assertions.ExpectedWithType
+import io.kotest.assertions.diffLargeString
+import io.kotest.assertions.failure
+import io.kotest.assertions.failureWithTypeInformation
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.assertions.print.printWithType
@@ -20,18 +27,24 @@ import io.kotest.common.isIntellij
  */
 object StringEq : Eq<String> {
 
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? {
-      return when {
-         actual == expected -> null
-         equalIgnoringWhitespace(actual, expected) -> {
-            failure(
-               Expected(Printed(escapeLineBreaks(expected))),
-               Actual(Printed(escapeLineBreaks(actual))),
-               "(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n"
+   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): EqResult {
+      return EqResult(actual == expected){
+         when {
+            equalIgnoringWhitespace(actual, expected) -> {
+               failure(
+                  Expected(Printed(escapeLineBreaks(expected))),
+                  Actual(Printed(escapeLineBreaks(actual))),
+                  "(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n"
+               )
+            }
+
+            useDiff(expected, actual) -> diff(expected, actual)
+
+            else -> failureWithTypeInformation(
+               ExpectedWithType(expected.printWithType()),
+               ActualWithType(actual.printWithType())
             )
          }
-         useDiff(expected, actual) -> diff(expected, actual)
-         else -> failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
       }
    }
 

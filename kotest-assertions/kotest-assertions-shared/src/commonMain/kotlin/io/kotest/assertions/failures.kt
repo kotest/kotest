@@ -30,7 +30,7 @@ fun failure(message: String): AssertionError = failure(message, null)
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(message: String, cause: Throwable?): AssertionError {
-   return stacktraces.cleanStackTrace(Exceptions.createAssertionError(clueContextAsString() + message, cause))
+   return Exceptions.createAssertionError(clueContextAsString() + message, cause)
 }
 
 /**
@@ -47,24 +47,29 @@ fun failure(message: String, cause: Throwable?): AssertionError {
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Throwable {
-   return stacktraces.cleanStackTrace(
-      Exceptions.createAssertionError(
-         prependMessage + clueContextAsString() + intellijFormatError(expected, actual),
-         null,
-         expected,
-         actual
-      )
+   return Exceptions.createAssertionError(
+      prependMessage + clueContextAsString() + intellijFormatError(expected, actual),
+      null,
+      expected,
+      actual
    )
 }
 
-fun failureWithTypeInformation(expected: ExpectedWithType, actual: ActualWithType, prependMessage: String = ""): Throwable {
-   if (actual.value.type == expected.value.type) return failure(expected.toExpected(), actual.toActual(), prependMessage)
-   return stacktraces.cleanStackTrace(
-      Exceptions.createAssertionError(
-         prependMessage + clueContextAsString() + intellijFormatErrorWithTypeInformation(expected, actual),
-         null,
-         expected.toExpected(),
-         actual.toActual()
-      )
+fun failureWithTypeInformation(
+   expected: ExpectedWithType,
+   actual: ActualWithType,
+   prependMessage: String = ""
+): Throwable {
+   if (actual.value.type == expected.value.type) return failure(
+      expected.toExpected(),
+      actual.toActual(),
+      prependMessage
+   )
+
+   return Exceptions.createAssertionError(
+      prependMessage + clueContextAsString() + intellijFormatErrorWithTypeInformation(expected, actual),
+      null,
+      expected.toExpected(),
+      actual.toActual()
    )
 }
