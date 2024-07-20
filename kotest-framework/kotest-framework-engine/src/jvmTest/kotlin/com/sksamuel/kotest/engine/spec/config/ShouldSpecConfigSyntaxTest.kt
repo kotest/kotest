@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -25,7 +25,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
          error("boom")
       }
 
-      should("a test disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      should("a test disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
@@ -73,7 +73,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
          should("an inner test") { error("boom") }
       }
 
-      context("an outer context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      context("an outer context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
          should("an inner test") { error("boom") }
       }
@@ -106,7 +106,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
             should("an inner test") { error("boom") }
          }
 
-         context("an inner context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         context("an inner context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
             error("boom")
             should("an inner test") { error("boom") }
          }
