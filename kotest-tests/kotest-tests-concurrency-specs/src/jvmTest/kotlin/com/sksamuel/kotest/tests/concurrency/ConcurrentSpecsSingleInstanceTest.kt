@@ -101,3 +101,34 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
       }
    }
 }
+
+// asserts that specs can be executed concurrently safely
+class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
+
+   private var befores = ""
+   private var afters = ""
+
+   override fun isolationMode() = IsolationMode.SingleInstance
+   override fun testCaseOrder() = TestCaseOrder.Sequential
+
+   override suspend fun beforeTest(testCase: TestCase) {
+      befores += testCase.name.testName
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      afters += testCase.name.testName
+   }
+
+   override suspend fun afterSpec(spec: Spec) {
+      befores shouldBe "ab"
+      afters shouldBe "ab"
+   }
+
+   init {
+      test("a") {
+         delay(500)
+      }
+      test("b") {
+      }
+   }
+}

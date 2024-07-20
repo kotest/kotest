@@ -1,4 +1,4 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
+@file:Suppress("DEPRECATION")
 
 package com.sksamuel.kotest.assertions.timing
 
@@ -11,20 +11,16 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.withClue
-import io.kotest.common.measureTimeMillisCompat
+import io.kotest.common.nonConstantTrue
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
@@ -33,21 +29,24 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
-@OptIn(DelicateCoroutinesApi::class)
 class EventuallyTest : WordSpec() {
 
    init {
+      coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
+
       "eventually" should {
          "pass working tests" {
             eventually(5.days) {
-               System.currentTimeMillis()
+               nonConstantTrue() shouldBe true
             }
          }
          "pass tests that completed within the time allowed" {
-            val end = System.currentTimeMillis() + 150
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(1.seconds) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw RuntimeException("foo")
             }
          }
@@ -65,16 +64,16 @@ class EventuallyTest : WordSpec() {
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError" {
-            val end = System.currentTimeMillis() + 150
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.days) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception" {
-            val end = System.currentTimeMillis() + 150
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.seconds, FileNotFoundException::class) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException()
             }
          }
@@ -86,9 +85,9 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that throws FileNotFoundException for some time" {
-            val end = System.currentTimeMillis() + 150
+            val start = nonDeterministicTestTimeSource().markNow()
             eventually(5.days) {
-               if (System.currentTimeMillis() < end)
+               if (start.elapsedNow() < 150.milliseconds)
                   throw FileNotFoundException("foo")
             }
          }
@@ -129,7 +128,7 @@ class EventuallyTest : WordSpec() {
          "allow suspendable functions" {
             eventually(100.milliseconds) {
                delay(1)
-               System.currentTimeMillis()
+               nonConstantTrue() shouldBe true
             }
          }
          "allow configuring interval delay" {
@@ -140,40 +139,29 @@ class EventuallyTest : WordSpec() {
             count.shouldBeLessThan(3)
          }
          "do one final iteration if we never executed before interval expired" {
-            newSingleThreadContext("single").use { dispatcher ->
-               launch(dispatcher) {
-                  Thread.sleep(250)
-               }
-               val counter = AtomicInteger(0)
-               withContext(dispatcher) {
-                  // we won't be able to run in here
-                  eventually(1.seconds, 5.milliseconds) {
-                     counter.incrementAndGet()
-                  }
-               }
-               counter.get().shouldBe(1)
+            val counter = AtomicInteger(0)
+
+            eventually(1.seconds, 400.milliseconds) {
+               delay(500.milliseconds)
+               // Although this iteration takes longer than the interval, it will be allowed to complete.
+               counter.incrementAndGet()
             }
+
+            counter.get().shouldBe(1)
          }
          "do one final iteration if we only executed once and the last delay > interval" {
-            newSingleThreadContext("single").use { dispatcher ->
-               // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-               launch(dispatcher) {
-                  delay(100.milliseconds)
-                  Thread.sleep(500)
-               }
-               val counter = AtomicInteger(0)
-               withContext(dispatcher) {
-                  // this will execute once immediately, then the earlier async will steal the thread
-                  // and then since the delay has been > interval and times == 1, we will execute once more
-                  eventually(250.milliseconds, 25.milliseconds) {
-                     counter.incrementAndGet() shouldBe 2
-                  }
-               }
-               counter.get().shouldBe(2)
+            val counter = AtomicInteger(0)
+
+            eventually(3.seconds, 400.milliseconds) {
+               counter.incrementAndGet() shouldBe 2
+               delay(600.milliseconds)
+               // Although the first iteration takes longer than the interval, another iteration is allowed.
             }
+
+            counter.get().shouldBe(2)
          }
          "handle shouldNotBeNull" {
-            val duration = measureTimeMillisCompat {
+            val duration = nonDeterministicTestTimeSource().measureTime {
                shouldThrow<java.lang.AssertionError> {
                   eventually(50.milliseconds) {
                      val str: String? = null
@@ -181,18 +169,18 @@ class EventuallyTest : WordSpec() {
                   }
                }
             }
-            duration.shouldBeGreaterThanOrEqual(50)
+            duration shouldBe 50.milliseconds
          }
 
          "eventually with boolean predicate" {
             eventually(5.seconds) {
-               System.currentTimeMillis() > 0
+               nonConstantTrue() shouldBe true
             }
          }
 
          "eventually with boolean predicate and interval" {
             eventually(5.seconds, 1.seconds.fixed()) {
-               System.currentTimeMillis() > 0
+               nonConstantTrue() shouldBe true
             }
          }
 
@@ -289,12 +277,12 @@ class EventuallyTest : WordSpec() {
          }
 
          "override assertion to hard assertion before executing assertion and reset it after executing" {
-            val target = System.currentTimeMillis() + 150
+            val start = nonDeterministicTestTimeSource().markNow()
             val message = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("Eventually which should pass") {
                      eventually(2.seconds) {
-                        System.currentTimeMillis() shouldBeGreaterThan target
+                        start.elapsedNow() shouldBeGreaterThan 150.milliseconds
                      }
                   }
                   withClue("1 should never be 2") {

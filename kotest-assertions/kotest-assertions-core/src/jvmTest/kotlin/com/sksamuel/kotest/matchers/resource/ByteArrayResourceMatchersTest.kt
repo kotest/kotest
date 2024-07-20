@@ -12,6 +12,7 @@ import io.kotest.matchers.resource.shouldMatchResource
 import io.kotest.matchers.resource.shouldNotMatchResource
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 
 @Suppress("RegExpRepeatedSpace")
 class ByteArrayResourceMatchersTest : ShouldSpec({
@@ -30,7 +31,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
          givenValue shouldMatchResource "/resourceMatchersTest/expected/binary42.bin"
       }
 
-      should("should return message with both resource and actual value files paths") {
+      should("should return message with both resource and actual value files paths").config(enabled = !IS_OS_WINDOWS) {
          val givenValue = byteArrayOf(1, 2)
 
          val errorMessage = shouldThrow<AssertionError> {
@@ -41,7 +42,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
          errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/binary42\\.bin".toRegex()
       }
 
-      should("should write temp file with contents of actual value") {
+      should("should write temp file with contents of actual value").config(enabled = !IS_OS_WINDOWS) {
          val givenValue = byteArrayOf(1, 2)
 
          val errorMessage = shouldThrow<AssertionError> {

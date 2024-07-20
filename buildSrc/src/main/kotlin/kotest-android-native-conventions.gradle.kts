@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
 
 
@@ -14,6 +15,7 @@ kotlin {
 
       // TODO: The "desktop" intermediate source set can be integrated into "native". In this case
       //     the following block can be replaced with `applyDefaultHierarchyTemplate()`.
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
             group("desktop") {

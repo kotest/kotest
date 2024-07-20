@@ -41,13 +41,13 @@ class PrimitivePrintsTest : FunSpec() {
       }
 
       test("BooleanPrint.print") {
-         BooleanPrint.print(true).value shouldBe "true"
-         BooleanPrint.print(false).value shouldBe "false"
+         BooleanPrint.print(true, 0).value shouldBe "true"
+         BooleanPrint.print(false, 0).value shouldBe "false"
       }
 
       test("CharPrint.char") {
-         CharPrint.print('a').value shouldBe "'a'"
-         CharPrint.print('w').value shouldBe "'w'"
+         CharPrint.print('a', 0).value shouldBe "'a'"
+         CharPrint.print('w', 0).value shouldBe "'w'"
       }
 
       test("detect show for BooleanArray") {

@@ -48,6 +48,24 @@ fun haveCause() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = resultForThrowable(value.cause)
 }
 
+infix fun Throwable.shouldHaveStackTraceContaining(substr: String) = this should haveStackTraceContaining(substr)
+infix fun Throwable.shouldNotHaveStackTraceContaining(substr: String) = this shouldNot haveStackTraceContaining(substr)
+fun haveStackTraceContaining(substr: String) = object : Matcher<Throwable> {
+   override fun test(value: Throwable) = MatcherResult(
+      value.stackTraceToString().contains(substr),
+      { "Throwable stacktrace should contain substring: ${substr.print().value}\nActual was:\n${value.stackTraceToString().print().value}" },
+      { "Throwable stacktrace should not contain substring: ${substr.print().value}" })
+}
+
+infix fun Throwable.shouldHaveStackTraceContaining(regex: Regex) = this should haveStackTraceContaining(regex)
+infix fun Throwable.shouldNotHaveStackTraceContaining(regex: Regex) = this shouldNot haveStackTraceContaining(regex)
+fun haveStackTraceContaining(regex: Regex) = object : Matcher<Throwable> {
+   override fun test(value: Throwable) = MatcherResult(
+      value.stackTraceToString().contains(regex),
+      { "Throwable stacktrace should contain regex: ${regex.print().value}\nActual was:\n${value.stackTraceToString().print().value}" },
+      { "Throwable stacktrace should not contain regex: ${regex.print().value}" })
+}
+
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf() = this should haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf() = this shouldNot haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Throwable> {

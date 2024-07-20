@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
  * is set to create multiple instances, then this listener will not be
  * invoked multiple times.
  */
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface PrepareSpecListener : Listener {
 
    /**
