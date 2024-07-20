@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,6 +13,7 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext
 
 @ExperimentalStdlibApi
+@JVMOnly
 internal actual fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ): TestExecutionInterceptor = CoroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory)

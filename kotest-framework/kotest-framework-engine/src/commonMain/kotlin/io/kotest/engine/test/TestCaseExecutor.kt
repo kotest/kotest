@@ -2,7 +2,6 @@
 
 package io.kotest.engine.test
 
-import io.kotest.common.MonotonicTimeSourceCompat
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
@@ -15,7 +14,6 @@ import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
-import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
@@ -25,6 +23,7 @@ import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
+import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TestPathContextInterceptor
@@ -35,6 +34,7 @@ import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
 import io.kotest.mpp.Logger
 import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 /**
  * Executes a single [TestCase].
@@ -53,7 +53,14 @@ internal class TestCaseExecutor(
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
 
-      val timeMark = MonotonicTimeSourceCompat.markNow()
+      val timeMark = TimeSource.Monotonic.markNow()
+
+      // JS platforms require extra care when runTest is used, so skip it for now.
+      // Issue: https://github.com/kotest/kotest/issues/4077
+      val useCoroutineTestScope = when (platform) {
+         Platform.JVM, Platform.Native -> testCase.config.coroutineTestScope
+         Platform.JS, Platform.WasmJs -> false
+      }
 
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
@@ -80,7 +87,7 @@ internal class TestCaseExecutor(
             listOfNotNull(
                InvocationTimeoutInterceptor,
                if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
-               if (platform != Platform.JS && testCase.config.coroutineTestScope) TestCoroutineInterceptor() else null,
+               if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),
          CoroutineDebugProbeInterceptor,

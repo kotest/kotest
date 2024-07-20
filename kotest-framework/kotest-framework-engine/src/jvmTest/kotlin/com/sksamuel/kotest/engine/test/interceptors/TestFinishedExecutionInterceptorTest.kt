@@ -32,6 +32,8 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             finished = true
          }
       }
+      
+      @Suppress("DEPRECATION") // Remove when removing listeners
       TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.success(0) }
       finished shouldBe true
    }
