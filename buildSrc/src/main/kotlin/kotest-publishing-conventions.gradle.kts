@@ -31,7 +31,7 @@ signing {
    setRequired { Ci.isRelease } // only require signing when releasing
 }
 
-// Only enabling signing when publishing to Maven Central.
+//region Only enabling signing when publishing to Maven Central.
 // (Otherwise signing is required for dev-publish, which prevents testing if the credentials aren't present.)
 gradle.taskGraph.whenReady {
    val isPublishingToMavenCentral = allTasks
@@ -47,6 +47,7 @@ gradle.taskGraph.whenReady {
       onlyIf("publishing to Maven Central") { isPublishingToMavenCentral_ }
    }
 }
+//endregion
 
 publishing {
    repositories {
