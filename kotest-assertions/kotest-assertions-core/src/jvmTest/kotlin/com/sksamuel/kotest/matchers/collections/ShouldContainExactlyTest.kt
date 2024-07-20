@@ -30,9 +30,6 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
-import io.kotest.equals.Equality
-import io.kotest.equals.EqualityResult
-
 
 class ShouldContainExactlyTest : WordSpec() {
    private val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
