@@ -16,14 +16,27 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
    override fun test(value: L): MatcherResult {
-      val (passed, errorDescription) = when {
-         index >= value.size -> false to "but collection was shorter"
-         value[index] != element -> false to "but element was different. Expected: <${element.print().value}>, but was <${value[index].print().value}>"
-         else -> true to ""
+      val passed = index < value.size && value[index] == element
+      val listTooShortMsg = if(index < value.size) "" else "But it is too short: only ${value.size} elements"
+      val unexpectedElementMsg = when {
+         passed -> ""
+         index < value.size -> "Expected: <${value[index].print().value}>, but was <${element.print().value}>"
+         else -> ""
       }
+      val indexesForElement = value.mapIndexedNotNull { index, current ->
+         if(current == element) index else null
+      }
+      val indexesForElementMsg = if(passed || indexesForElement.isEmpty())
+         ""
+      else "Element was found at index(es): ${indexesForElement.print().value}"
+      val additionalDescriptions = listOf(listTooShortMsg, unexpectedElementMsg, indexesForElementMsg).filter {
+         it.isNotEmpty()
+      }
+      val additionalDescriptionsMsg = if(additionalDescriptions.isEmpty()) ""
+      else "\n${additionalDescriptions.joinToString("\n")}"
       return MatcherResult(
          passed,
-         { "Collection ${value.print().value} should contain ${element.print().value} at index $index, $errorDescription" },
+         { "Collection ${value.print().value} should contain ${element.print().value} at index $index$additionalDescriptionsMsg" },
          { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
    }
