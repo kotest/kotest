@@ -1,10 +1,8 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
-import io.kotest.property.resolution.default
 import io.kotest.property.internal.proptest
+import io.kotest.property.resolution.default
 
 suspend fun <A, B, C> checkAll(
    genA: Gen<A>,

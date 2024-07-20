@@ -9,18 +9,19 @@ import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
-import io.kotest.property.seed.cleanUpSeedFiles
-import io.kotest.property.seed.clearFailedSeed
-import io.kotest.property.seed.writeFailedSeedIfEnabled
+import io.kotest.property.seed.writeFailedSeed
 import io.kotest.property.statistics.outputStatistics
 import kotlin.coroutines.coroutineContext
 
 /**
  * Performs a property test for a single set of values, tracking the min success and max failure rates.
- * Will perform shrinking and throw when the property test is deemed to have failed.
- * If a classifier is provided, will classify each value.
  *
- * If registered, will invoke beforeProperty and afterProperty lifecycle methods.
+ * Will perform shrinking and throw when the property test is deemed to have failed.
+ *
+ * If a [Classifier] is provided, will classify each value.
+ *
+ * If registered, will invoke [io.kotest.property.lifecycle.beforeProperty] and
+ * [io.kotest.property.lifecycle.afterProperty] lifecycle methods.
  */
 internal suspend fun test(
    context: PropertyContext,
@@ -30,7 +31,7 @@ internal suspend fun test(
    classifiers: List<Classifier<out Any?>?>,
    seed: Long,
    contextualSeed: Long,
-   testFn: suspend () -> Any
+   testFn: suspend () -> Any,
 ) {
    require(inputs.size == classifiers.size)
    context.markEvaluation()
@@ -38,11 +39,11 @@ internal suspend fun test(
    try {
 
       inputs.indices.forEach { k ->
-         val value = inputs[k]
          val classifier = classifiers[k]
          if (classifier != null) {
             @Suppress("UNCHECKED_CAST")
             classifier as Classifier<Any?>
+            val value = inputs[k]
             val label = classifier.classify(value)
             if (label != null) context.classify(k, label)
          }
@@ -52,13 +53,11 @@ internal suspend fun test(
       testFn()
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
-      clearFailedSeed()
    } catch (e: AssumptionFailedException) {
       // we don't mark failed assumptions as errors
    } catch (e: Throwable) {
       // we track any throwables and try to shrink them
       context.markFailure()
-      cleanUpSeedFiles()
       outputStatistics(context, inputs.size, false)
       handleException(context, shrinkfn, inputs, seed, e, config)
    }
@@ -72,17 +71,12 @@ internal suspend fun handleException(
    e: Throwable,
    config: PropTestConfig
 ) {
+   writeFailedSeed(seed)
    if (config.maxFailure == 0) {
       printFailureMessage(context, inputs, e)
-      writeFailedSeedIfEnabled(seed)
       throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
    } else if (context.failures() > config.maxFailure) {
-      var error = "Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})\n"
-      error += "Last error was caused by args:\n"
-      inputs.withIndex().forEach { (index, value) ->
-         error += "  $index) ${value.print().value}\n"
-      }
-      writeFailedSeedIfEnabled(seed)
+      val error = buildMaxFailureErrorMessage(context, config, inputs)
       throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
    }
 }
@@ -119,4 +113,18 @@ private fun printFailureMessage(
          appendLine()
       }
    )
+}
+
+private fun buildMaxFailureErrorMessage(
+   context: PropertyContext,
+   config: PropTestConfig,
+   inputs: List<Any?>,
+): String {
+   return buildString {
+      appendLine("Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})")
+      appendLine("Last error was caused by args:")
+      inputs.withIndex().forEach { (index, value) ->
+         appendLine("  $index) ${value.print().value}")
+      }
+   }
 }

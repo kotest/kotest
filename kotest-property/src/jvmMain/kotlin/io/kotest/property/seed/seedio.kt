@@ -2,26 +2,23 @@ package io.kotest.property.seed
 
 import io.kotest.assertions.print.print
 import io.kotest.common.TestPath
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import java.nio.file.Path
-import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.createParentDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
-import kotlin.io.path.readLines
+import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
 
 internal actual fun readSeed(path: TestPath): Long? {
    return try {
       return path.seedPath()
-         .takeIf { it !in seedsMarkedForDeletion && it.exists() }
-         ?.readLines()
-         ?.firstOrNull()
+         .takeIf(Path::exists)
+         ?.readText()
          ?.trim()
          ?.toLongOrNull()
    } catch (e: Exception) {
@@ -34,8 +31,9 @@ internal actual fun readSeed(path: TestPath): Long? {
 internal actual fun writeSeed(path: TestPath, seed: Long) {
    try {
       val f = path.seedPath()
+      f.createParentDirectories()
+      f.createFile()
       f.writeText(seed.toString())
-      seedsMarkedForDeletion.remove(f)
    } catch (e: Exception) {
       println("Error writing seed $seed for $path")
       e.printStackTrace()
@@ -45,44 +43,26 @@ internal actual fun writeSeed(path: TestPath, seed: Long) {
 internal actual fun clearSeed(path: TestPath) {
    try {
       val f = path.seedPath()
-      seedsMarkedForDeletion.add(f)
+      if (
+         f.isRegularFile()
+         && f != seedDirectory
+         && f.startsWith(seedDirectory)
+      ) {
+         f.deleteIfExists()
+      }
    } catch (e: Exception) {
-      println("Error clearing seed for $path")
+      println("Error clearing seed $path")
       e.printStackTrace()
    }
 }
 
-private val seedsMarkedForDeletion = mutableSetOf<Path>()
-
-internal actual suspend fun cleanUpSeedFiles(): Unit = coroutineScope {
-   seedsMarkedForDeletion
-      .map { path ->
-         async {
-            try {
-               if (
-                  path.isRegularFile()
-                  && path != seedDirectory
-                  && path.startsWith(seedDirectory)
-               ) {
-                  path.deleteIfExists()
-               }
-            } catch (e: Exception) {
-               println("Error deleting seed $path")
-               e.printStackTrace()
-            }
-         }
-      }
-      .awaitAll()
-}
-
-
 internal fun seedDirectory(): Path = seedDirectory
 
 private val kotestConfigDir by lazy {
+   val xdgCacheHome = System.getenv("XDG_CACHE_HOME")?.ifBlank { null }
+
    Path(
-      System.getenv("XDG_CACHE_HOME")
-         ?.ifBlank { null }
-         ?: System.getProperty("user.home")
+      xdgCacheHome ?: System.getProperty("user.home")
    ).apply {
       createDirectories()
    }
@@ -94,13 +74,8 @@ private val seedDirectory: Path by lazy {
    }
 }
 
-private fun TestPath.seedPath(): Path {
-   return testPathsValueCache.getOrPut(this) {
-      seedDirectory.resolve(escapeValue())
-   }
-}
+private fun TestPath.seedPath(): Path =
+   seedDirectory.resolve(seedFileName())
 
-private val testPathsValueCache = WeakHashMap<TestPath, Path>()
-
-private fun TestPath.escapeValue(): String =
+private fun TestPath.seedFileName(): String =
    value.replace(Regex("""[/\\<>:()]"""), "_")
