@@ -94,16 +94,17 @@ private fun printFailureMessage(
 ) {
    println(
       buildString {
-         appendLine("Property test failed for inputs")
-         appendLine()
+         appendLine("Property test failed for inputs\n")
 
-         var inputIndex = 0
-         inputs.forEach { input ->
-            appendLine("${inputIndex++}) ${input.print().value}")
-         }
-         context.generatedSamples().forEach { sample ->
-            val printed = "${sample.value.print().value} (generated within property context)"
-            appendLine("${inputIndex++}) $printed")
+         iterator {
+            inputs.forEach { input ->
+               yield(input.print().value)
+            }
+            context.generatedSamples().forEach { sample ->
+               yield("${sample.value.print().value} (generated within property context)")
+            }
+         }.withIndex().forEach { (index, input) ->
+            appendLine("$index) $input")
          }
          appendLine()
 
