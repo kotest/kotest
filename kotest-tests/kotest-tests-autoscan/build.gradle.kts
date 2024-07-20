@@ -13,6 +13,10 @@ kotlin {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
-
    }
+}
+
+tasks.withType<Test>().configureEach {
+   // These tests in this subproject actually test autoscanning, so autoscanning needs to be enabled.
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

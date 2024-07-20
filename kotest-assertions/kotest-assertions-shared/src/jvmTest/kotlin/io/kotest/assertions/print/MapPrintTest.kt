@@ -7,7 +7,7 @@ class MapPrintTest : FunSpec() {
    init {
 
       test("MapPrint should handle maps") {
-         MapPrint.print(mapOf("foo" to "a", "bar" to 33L)) shouldBe Printed("""[("foo", "a"), ("bar", 33L)]""")
+         MapPrint.print(mapOf("foo" to "a", "bar" to 33L), 0) shouldBe Printed("""[("foo", "a"), ("bar", 33L)]""")
       }
 
       test("detect should handle maps") {

@@ -11,9 +11,12 @@ import io.kotest.core.test.config.TestCaseConfig
 
 object Defaults {
 
+   const val threads = 1
+   const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
 
    val assertionMode: AssertionMode = AssertionMode.None
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    val testCaseConfig: TestCaseConfig = TestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
@@ -36,7 +39,7 @@ object Defaults {
    const val parallelism: Int = 1
 
    const val defaultTimeoutMillis = 10 * 60 * 1000L
-   const val defaultInvocationTimeoutMillis =  10 * 60 * 1000L
+   const val defaultInvocationTimeoutMillis = 10 * 60 * 1000L
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false

@@ -237,6 +237,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.testCaseConfig]
     */
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
@@ -338,6 +339,7 @@ class ProjectConfiguration {
     */
    var tagInheritance: Boolean = false
 
+   var discoveryClasspathFallbackEnabled: Boolean = Defaults.discoveryClasspathFallbackEnabled
    var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
 
    /**
@@ -351,6 +353,12 @@ class ProjectConfiguration {
    var displayFullTestPath: Boolean = Defaults.displayFullTestPath
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
+
+   @Suppress("DEPRECATION") // Remove when removing legacy option
+   var threads: Int = defaultTestConfig.threads
+
+   @Suppress("DEPRECATION") // Remove when removing legacy option
+   var invocations: Int = defaultTestConfig.invocations
 
    /**
     * Returns all globally registered [Listener]s.

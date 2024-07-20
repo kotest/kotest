@@ -17,7 +17,6 @@ env:
    OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=756m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 permissions:
    contents: read
@@ -32,23 +31,27 @@ jobs:
                - publishKotlinMultiplatformPublicationToDeployRepository
                - publishJvmPublicationToDeployRepository
                - publishJsPublicationToDeployRepository
+               - publishWasmJsPublicationToDeployRepository
                - publishKotestBomPublicationToDeployRepository
                - publishLinuxX64PublicationToDeployRepository
                - publishLinuxArm64PublicationToDeployRepository
+               - publishAndroidNativeX86PublicationToDeployRepository
+               - publishAndroidNativeX64PublicationToDeployRepository
+               - publishAndroidNativeArm32PublicationToDeployRepository
+               - publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
             with:
-               fetch-depth: 0
                ref: ${{ inputs.branch }}
 
          -  name: Setup JDK
-            uses: actions/setup-java@v3
+            uses: actions/setup-java@v4
             with:
                distribution: 'adopt'
                java-version: '17'
 
-         -  uses: gradle/gradle-build-action@v2
+         -  uses: gradle/actions/setup-gradle@v3
 
          -  name: publish
             run: ./gradlew ${{ matrix.target }}

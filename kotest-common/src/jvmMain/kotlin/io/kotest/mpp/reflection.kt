@@ -8,6 +8,8 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.superclasses
+import kotlin.reflect.jvm.ExperimentalReflectionOnLambdas
+import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.reflect
 
@@ -67,14 +69,23 @@ object JvmReflection : Reflection {
 
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = kclass.isSubclassOf(Enum::class)
 
-   override fun paramNames(fn: Function<*>): List<String>? = fn.reflect()?.parameters?.mapNotNull { it.name }
+   override fun paramNames(fn: Function<*>): List<String>? {
+      @OptIn(ExperimentalReflectionOnLambdas::class)
+      val fnReflect = fn.reflect()
+      return fnReflect?.parameters?.mapNotNull { it.name }
+   }
 
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> {
       // gets the parameters for the primary constructor and then associates them with the member callable
       val constructorParams = klass::primaryConstructor.get()?.parameters ?: emptyList()
       val membersByName = klass::members.get().associateBy(KCallable<*>::name)
       return constructorParams.mapNotNull { param ->
-         membersByName[param.name]?.let { callable -> Property(callable.name, param.type) { callable.call(it) } }
+         membersByName[param.name]?.let { callable ->
+            Property(callable.name, param.type) {
+               callable.isAccessible = true
+               callable.call(it)
+            }
+         }
       }
    }
 

@@ -3,13 +3,9 @@ plugins {
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
+   jvm()
 
    sourceSets {
-
       val jvmTest by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)

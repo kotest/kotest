@@ -53,7 +53,7 @@ This feature can be disabled by setting `PropertyTesting.writeFailedSeed = false
 ### Failing when seeds set
 
 Some users prefer to avoid manually specifying seeds. They want to use them locally only, when developing, but to avoid
-checking them in. If is your style, then set `PropertyTesting.failOnSeed = false` or the env
+checking them in. If this is your style, then set `PropertyTesting.failOnSeed = false` or the env
 var `kotest.proptest.seed.fail-if-set` to `false` on your server.
 
 Then if a seed is detected, the test suite will fail.

@@ -9,4 +9,8 @@ class TestSpec : ShouldSpec({
    should("be able to use main source set") {
       TestStrings.helloWorld shouldBe "Hello world!"
    }
+
+   should("break") {
+      true shouldBe false
+   }
 })

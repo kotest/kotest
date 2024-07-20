@@ -15,6 +15,7 @@ package io.kotest.core.names
  * @param prefix if the test style includes a test name prefix, such as "should"
  * @param suffix if the test style includes a test name suffix, such as "when"
  * @param defaultAffixes if the test style recommends test affixes by default, such as [BehaviorSpec][io.kotest.core.spec.style.BehaviorSpec]
+ * @param originalName the name exactly as the user entered it
  */
 data class TestName(
    val testName: String,
@@ -23,6 +24,7 @@ data class TestName(
    val prefix: String?,
    val suffix: String?,
    val defaultAffixes: Boolean,
+   val originalName: String,
 ) {
 
    companion object {
@@ -46,7 +48,7 @@ data class TestName(
             else -> Triple(first = false, second = false, third = trimmed)
          }
 
-         return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes)
+         return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes, name)
       }
    }
 

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
+import com.sksamuel.kotest.engine.spec.multilinename.DescribeSpecMultiLineTestTest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
@@ -23,6 +24,13 @@ class UnfinishedTestDefinitionTest : FunSpec() {
             .withClasses(FunSpecUnfinishedTestDefinitionTest::class)
             .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished test") }
+      }
+
+      test("fun spec with override") {
+         val result = TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(FunSpecUnfinishedTestWithDuplicatedLeafNamesDefinitionTest::class)
+            .launch()
+         result.errors.forAtLeastOne { it.message!!.shouldContain("abc") }
       }
 
       test("describe spec") {
@@ -61,6 +69,16 @@ private class FunSpecUnfinishedTestDefinitionTest : FunSpec({
    }
 })
 
+private class FunSpecUnfinishedTestWithDuplicatedLeafNamesDefinitionTest : FunSpec({
+   context("context1") {
+      test("abc")
+   }
+   context("context2") {
+      test("abc") {
+      }
+   }
+})
+
 private class FeatureSpecUnfinishedTestDefinitionTest : FeatureSpec({
    feature("feature") {
       scenario("unfinished scenario")
@@ -88,3 +106,4 @@ private class DescribeSpecUnfinishedTestDefinitionTest : DescribeSpec({
    }
 
 })
+

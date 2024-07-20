@@ -56,6 +56,7 @@ abstract class TestConfiguration {
     *
     * Any test case config set a test itself will override any value here.
     */
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig? = null
 
@@ -150,7 +151,7 @@ abstract class TestConfiguration {
     * When applied in a factory, only tests generated from that factory will have the tags applied.
     * When applied to a spec, all tests will have the tags applied.
     */
-   fun tags(vararg tags: Tag) {
+   open fun tags(vararg tags: Tag) {
       _tags = _tags + tags.toSet()
    }
 

@@ -1,4 +1,6 @@
-@file:Suppress("UNUSED_VARIABLE")
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
+
 
 plugins {
    id("kotlin-conventions")
@@ -7,17 +9,16 @@ plugins {
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY)) {
       watchosDeviceArm64()
-      sourceSets {
 
-         // Main source sets
-         val commonMain by getting {}
-         val desktopMain by getting { dependsOn(commonMain) }
-         val watchosDeviceArm64Main by getting { dependsOn(desktopMain) }
-
-         // Test sourcesets
-         val commonTest by getting
-         val nativeTest by getting { dependsOn(commonTest) }
-         val watchosDeviceArm64Test by getting { dependsOn(nativeTest) }
+      // TODO: The "desktop" intermediate source set can be integrated into "native". In this case
+      //     the following block can be replaced with `applyDefaultHierarchyTemplate()`.
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
+      applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
+         group("common") {
+            group("desktop") {
+               withNative()
+            }
+         }
       }
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
