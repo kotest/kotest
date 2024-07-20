@@ -21,7 +21,7 @@ class ExpectSpecDataTest : ExpectSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 108
+         count shouldBe 110
       }
 
       context("inside a context") {

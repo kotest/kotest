@@ -19,7 +19,7 @@ class WordSpecDataTest : WordSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 34
+         count shouldBe 36
       }
    }
 }
