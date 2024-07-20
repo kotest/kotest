@@ -7,7 +7,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 
-infix fun <T> Iterable<T>.shouldHaveSize(size: Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldHaveSize(size: Int): I {
    toList().shouldHaveSize(size)
    return this
 }
@@ -57,12 +57,12 @@ infix fun DoubleArray.shouldHaveSize(size: Int): DoubleArray {
    return this
 }
 
-infix fun <T> Collection<T>.shouldHaveSize(size: Int): Collection<T> {
+infix fun <T, C : Collection<T>> C.shouldHaveSize(size: Int): C {
    this should haveSize(size = size)
    return this
 }
 
-infix fun <T> Iterable<T>.shouldNotHaveSize(size: Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldNotHaveSize(size: Int): I {
    toList().shouldNotHaveSize(size)
    return this
 }
@@ -112,12 +112,12 @@ infix fun DoubleArray.shouldNotHaveSize(size: Int): DoubleArray {
    return this
 }
 
-infix fun <T> Collection<T>.shouldNotHaveSize(size: Int): Collection<T> {
+infix fun <T, C : Collection<T>> C.shouldNotHaveSize(size: Int): C {
    this shouldNot haveSize(size)
    return this
 }
 
-infix fun <T, U> Iterable<T>.shouldBeSameSizeAs(other: Collection<U>): Iterable<T> {
+infix fun <T, U, I : Iterable<T>> I.shouldBeSameSizeAs(other: Collection<U>): I {
    toList().shouldBeSameSizeAs(other)
    return this
 }
@@ -127,7 +127,7 @@ infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Collection<U>): Array<T> {
    return this
 }
 
-infix fun <T, U> Iterable<T>.shouldBeSameSizeAs(other: Iterable<U>): Iterable<T> {
+infix fun <T, U, I : Iterable<T>> I.shouldBeSameSizeAs(other: Iterable<U>): I {
    toList().shouldBeSameSizeAs(other.toList())
    return this
 }
@@ -177,7 +177,7 @@ infix fun DoubleArray.shouldBeSameSizeAs(other: DoubleArray): DoubleArray {
    return this
 }
 
-infix fun <T, U> Collection<T>.shouldBeSameSizeAs(other: Collection<U>): Collection<T> {
+infix fun <T, U, C : Collection<T>> C.shouldBeSameSizeAs(other: Collection<U>): C {
    this should beSameSizeAs(other)
    return this
 }
@@ -189,7 +189,7 @@ fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> 
       { "Collection of size ${value.size} should not be the same size as collection of size ${other.size}" })
 }
 
-infix fun <T> Iterable<T>.shouldHaveAtLeastSize(n: Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldHaveAtLeastSize(n: Int): I {
    toList().shouldHaveAtLeastSize(n)
    return this
 }
@@ -239,7 +239,7 @@ infix fun DoubleArray.shouldHaveAtLeastSize(size: Int): DoubleArray {
    return this
 }
 
-infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int): Collection<T> {
+infix fun <T, C : Collection<T>> C.shouldHaveAtLeastSize(n: Int): C {
    this shouldHave atLeastSize(n)
    return this
 }
@@ -253,7 +253,7 @@ fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
       })
 }
 
-infix fun <T> Iterable<T>.shouldHaveAtMostSize(n: Int): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldHaveAtMostSize(n: Int): I {
    toList().shouldHaveAtMostSize(n)
    return this
 }
@@ -303,7 +303,7 @@ infix fun DoubleArray.shouldHaveAtMostSize(size: Int): DoubleArray {
    return this
 }
 
-infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int): Collection<T> {
+infix fun <T, C : Collection<T>> C.shouldHaveAtMostSize(n: Int): C {
    this shouldHave atMostSize(n)
    return this
 }
