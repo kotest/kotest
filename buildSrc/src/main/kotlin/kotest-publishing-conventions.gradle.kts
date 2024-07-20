@@ -28,9 +28,8 @@ signing {
    if (signingKey != null && signingPassword != null) {
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
-   if (Ci.isRelease) {
-      sign(publishing.publications)
-   }
+   sign(publishing.publications)
+   setRequired { Ci.isRelease } // only require signing when releasing
 }
 
 publishing {
@@ -159,4 +158,10 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
    }
 }
 
+//region Fix Gradle error Reason: Task <publish> uses this output of task <sign> without declaring an explicit or implicit dependency.
+// https://github.com/gradle/gradle/issues/26091
+tasks.withType<AbstractPublishToMaven>().configureEach {
+   val signingTasks = tasks.withType<Sign>()
+   mustRunAfter(signingTasks)
+}
 //endregion

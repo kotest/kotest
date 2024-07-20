@@ -4,10 +4,18 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 
 data class PythagTriple(val a: Int, val b: Int, val c: Int)
+
+internal data class FruitWithMemberNameCollision(
+   val name: String,
+   val weight: Int
+) {
+   fun weight() = 42
+}
 
 @ExperimentalKotest
 fun RootScope.registerRootTests(): MutableList<String> {
@@ -75,6 +83,14 @@ fun RootScope.registerRootTests(): MutableList<String> {
             results.add(a + b + c)
          }
       }
+   }
+
+   // handle collision between function name and property name
+   withData(
+      FruitWithMemberNameCollision("apple", 11),
+      FruitWithMemberNameCollision("orange", 12),
+   ) { (_, weight) ->
+      weight shouldBeGreaterThan 10
    }
 
    return results

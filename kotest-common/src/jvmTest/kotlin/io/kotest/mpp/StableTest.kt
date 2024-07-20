@@ -31,6 +31,15 @@ class StableTest : FreeSpec({
       isStable(UnstableDataClass::class) shouldBe false
    }
 
+   "data class where function and field have same name" {
+      data class ExoticClass(val a: Int, val b: String) {
+         fun b(value: String) = copy(b = value)
+      }
+
+      val edgeCase = ExoticClass(1, "a")
+      isStable(ExoticClass::class, edgeCase) shouldBe true
+   }
+
    "Given a data class with generics" - {
       "When all members are stable, then the class should be considered stable" {
          val x = Row3("x", 1, 2.0)
