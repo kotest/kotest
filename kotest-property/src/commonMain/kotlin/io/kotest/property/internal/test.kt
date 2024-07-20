@@ -41,7 +41,9 @@ internal suspend fun test(
          val value = inputs[k]
          val classifier = classifiers[k]
          if (classifier != null) {
-            val label = (classifier as Classifier<Any?>).classify(value)
+            @Suppress("UNCHECKED_CAST")
+            classifier as Classifier<Any?>
+            val label = classifier.classify(value)
             if (label != null) context.classify(k, label)
          }
       }
