@@ -63,7 +63,7 @@ jobs:
                   kotest-user-dir-
 
          -  name: Run tests
-            run: ./gradlew ${{ inputs.task }} --scan
+            run: ./gradlew ${{ inputs.task }} --scan --stacktrace
             shell: bash
 
          -  name: Upload build reports
