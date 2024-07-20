@@ -44,8 +44,8 @@ object ProjectConfig : AbstractProjectConfig() {
    /**
     * Listen for test [TestStatus]s in an independent [CoroutineScope].
     */
-   private val TestMsgCollectorScope: CoroutineScope =
-      CoroutineScope(Dispatchers.IO) + CoroutineName("TestMsgCollector")
+   private val TestStatusCollectorScope: CoroutineScope =
+      CoroutineScope(Dispatchers.IO) + CoroutineName("TestStatusCollector")
 
    /** Marks the start of the entire tests, when [beforeProject] is called, before any tests are launched. */
    internal lateinit var projectStart: TimeMark
@@ -70,7 +70,7 @@ object ProjectConfig : AbstractProjectConfig() {
                testCompletionLock.unlock()
             }
          }
-         .launchIn(TestMsgCollectorScope)
+         .launchIn(TestStatusCollectorScope)
    }
 
    override suspend fun beforeProject() {
