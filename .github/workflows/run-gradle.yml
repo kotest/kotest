@@ -31,8 +31,6 @@ jobs:
                mklink /D C:\Users\runneradmin\.gradle D:\.gradle
                mkdir D:\.konan
                mklink /D C:\Users\runneradmin\.konan D:\.konan
-               mkdir D:\.kotest
-               mklink /D C:\Users\runneradmin\.kotest D:\.kotest
             shell: cmd
 
          -  name: Checkout the repo
