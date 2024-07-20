@@ -21,7 +21,7 @@ class FreeSpecDataTest : FreeSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 108
+         count shouldBe 110
       }
 
       "inside a context" - {
