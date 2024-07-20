@@ -6,12 +6,15 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotBeIn
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.beInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.filterIsInstance
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.of
@@ -67,5 +70,12 @@ class FilterTest : FunSpec({
       }
       val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
       result shouldBe 0
+   }
+
+   test("Arb.filterIsInstance should only keep instances of the given type") {
+      val arb: Arb<Any> = Arb.of(1, "2", 3.0, "4", 5)
+      val filtered = arb.filterIsInstance<String>()
+      val result = filtered.samples().take(100).map { it.value }
+      result.forAll { it should beInstanceOf(String::class) }
    }
 })

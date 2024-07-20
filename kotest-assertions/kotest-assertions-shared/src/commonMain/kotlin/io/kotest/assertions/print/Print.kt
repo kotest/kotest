@@ -15,15 +15,18 @@ import kotlin.reflect.KClass
  */
 interface Print<in A> {
 
-   @Deprecated("Use print(a, level) to respect level hints. Deprecated in 5.0.3")
+   @Deprecated(PRINT_DEPRECATION_MSG)
    fun print(a: A): Printed
 
    /**
     * Returns a [Printed] for the given instance [a], with a recursion
     * level hint.
     */
+   @Suppress("DEPRECATION")
    fun print(a: A, level: Int): Printed = print(a)
 }
+
+internal const val PRINT_DEPRECATION_MSG = "Use print(a, level) to respect level hints. Deprecated in 5.0.3"
 
 /**
  * Represents a value that has been appropriately formatted

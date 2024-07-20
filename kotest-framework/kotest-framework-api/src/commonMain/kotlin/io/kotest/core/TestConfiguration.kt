@@ -56,6 +56,7 @@ abstract class TestConfiguration {
     *
     * Any test case config set a test itself will override any value here.
     */
+   @Suppress("DEPRECATION") // Remove when removing legacy option
    @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig? = null
 

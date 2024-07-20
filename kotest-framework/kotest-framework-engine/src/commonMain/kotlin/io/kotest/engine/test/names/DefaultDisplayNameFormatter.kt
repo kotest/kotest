@@ -75,8 +75,7 @@ class DefaultDisplayNameFormatter(
    override fun format(kclass: KClass<*>): String {
       return when (platform) {
          Platform.JVM -> kclass.annotation<DisplayName>()?.wrapper ?: kclass.bestName()
-         Platform.JS -> kclass.bestName()
-         Platform.Native -> kclass.bestName()
+         else -> kclass.bestName()
       }
    }
 }

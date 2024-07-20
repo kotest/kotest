@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.names.TestName
 
+@Suppress("DEPRECATION") // Internal deprecation usage. Remove when deprecated functions are removed.
 @Deprecated("use TestName directly, eg TestName(name). Deprecated in 5.0", ReplaceWith("TestName(name)"))
 fun createTestName(name: String): TestName = createTestName(null, name, false)
 
@@ -16,6 +17,7 @@ fun createTestName(prefix: String?, name: String, defaultIncludeAffix: Boolean):
       defaultIncludeAffix
    )
 
+@Suppress("DEPRECATION") // Internal deprecation usage. Remove when deprecated functions are removed.
 @Deprecated(
    "use TestName directly, eg TestName(prefix, name, includeAffixesInDisplayName). Deprecated in 5.0",
    ReplaceWith("TestName(prefix, name, includeAffixesInDisplayName)")

@@ -1,8 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
@@ -20,11 +18,21 @@ kotlin {
 
    jvm()
 
-   js(IR) {
-      // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-      // browser()
+   js {
+      browser()
       nodejs()
    }
+
+   wasmJs {
+      browser()
+      nodejs()
+   }
+
+   /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
+   wasmWasi {
+      nodejs()
+   }
+   */
 
    linuxX64()
    macosX64()
@@ -67,4 +75,10 @@ if (useNewNativeMemoryModel.toBoolean()) {
          binaryOptions["memoryModel"] = "experimental"
       }
    }
+}
+
+rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java) {
+   // yarn.lock will change when running tests with multiple Kotlin versions
+   rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().yarnLockMismatchReport =
+      org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
 }

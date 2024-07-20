@@ -3,9 +3,7 @@ package io.kotest.core.coroutines
 import io.kotest.common.KotestInternal
 import io.kotest.core.test.TestScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @OptIn(KotestInternal::class)
 val TestScope.backgroundScope: CoroutineScope
    get() {

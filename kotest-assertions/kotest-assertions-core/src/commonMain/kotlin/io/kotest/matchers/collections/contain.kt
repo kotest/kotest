@@ -6,6 +6,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.similarity.possibleMatchesDescription
 
 // Infix
 infix fun <T> Iterable<T>.shouldNotContain(t: T): Iterable<T> = shouldNotContain(t, Equality.default())
@@ -33,12 +34,19 @@ fun <T> Array<T>.shouldContain(t: T, comparator: Equality<T>): Array<T> = apply 
 
 // Matcher
 fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.default()) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      value.any { verifier.verify(it, t).areEqual() },
-      {
-         "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
-            "but the collection is ${value.print().value}"
-      },
-      { "Collection should not contain element ${t.print().value} based on ${verifier.name()}" }
-   )
+   override fun test(value: C) : MatcherResult {
+      val passed = value.any { verifier.verify(it, t).areEqual() }
+      val possibleMatches = if(!passed && (verifier.name() == Equality.default<T>().name())) {
+         val candidates = possibleMatchesDescription(value.toSet(), t)
+         if(candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
+      } else ""
+      return MatcherResult(
+         passed,
+         {
+            "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
+               "but the collection is ${value.print().value}$possibleMatches"
+         },
+         { "Collection should not contain element ${t.print().value} based on ${verifier.name()}" }
+      )
+   }
 }

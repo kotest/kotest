@@ -1,17 +1,12 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
+   `java-library`
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
-   google()
-   gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
 
 testlogger {
@@ -20,9 +15,14 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -32,14 +32,16 @@ tasks.withType<KotlinCompile>().configureEach {
          "-opt-in=io.kotest.common.KotestInternal",
          "-opt-in=io.kotest.common.ExperimentalKotest",
       )
-      apiVersion = "1.8"
-      languageVersion = "1.8"
       compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
    }
 }
 
 kotlin {
    sourceSets.configureEach {
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
+      compilerOptions {
+         freeCompilerArgs.add("-Xexpect-actual-classes")
+      }
       languageSettings {
          optIn("kotlin.time.ExperimentalTime")
          optIn("kotlin.experimental.ExperimentalTypeInference")

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.assertions.timing
 
 import io.kotest.assertions.SuspendingProducer
@@ -5,15 +7,15 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import io.kotest.common.KotestInternal
-import io.kotest.common.MonotonicTimeSourceCompat
-import io.kotest.common.TimeMarkCompat
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
 
 @KotestInternal
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
-data class ContinuallyState(val start: TimeMarkCompat, val end: TimeMarkCompat, val times: Int)
+data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
 
 @Deprecated("Replaced with the io.kotest.assertions.nondeterministic utils. Deprecated in 5.7")
 fun interface ContinuallyListener<in T> {
@@ -31,7 +33,7 @@ data class Continually<T>(
    val listener: ContinuallyListener<T> = ContinuallyListener.noop,
 ) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
-      val start = MonotonicTimeSourceCompat.markNow()
+      val start = nonDeterministicTestTimeSource().markNow()
       val end = start.plus(duration)
       var times = 0
       var result: T? = null
@@ -45,7 +47,7 @@ data class Continually<T>(
                throw e
             // if not the first attempt then include how many times/for how long the test passed
             throw failure(
-               "Test failed after ${start.elapsedNow()}; expected to pass for ${duration.inWholeMilliseconds}ms; attempted $times times\nUnderlying failure was: ${e.message}",
+               "Test failed after ${start.elapsedNow()}; expected to pass for ${duration}; attempted $times times\nUnderlying failure was: ${e.message}",
                e
             )
          }

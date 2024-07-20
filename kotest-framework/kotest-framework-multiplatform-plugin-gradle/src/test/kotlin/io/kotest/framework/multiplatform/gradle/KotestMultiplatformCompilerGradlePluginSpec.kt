@@ -1,9 +1,11 @@
 package io.kotest.framework.multiplatform.gradle
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.file.shouldBeAFile
-import io.kotest.matchers.string.shouldStartWith
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.string.shouldStartWith
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -16,7 +18,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    val kotestVersion = System.getProperty("kotestVersion")
 
    setOf(
-      "1.8.10",
+      "1.9.24",
+      "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
          val testProjectPath = Paths.get("test-project").toAbsolutePath()
@@ -30,38 +33,48 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             }
          }
 
-         fun shouldHavePassingTestResultsFor(taskName: String) {
-            val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
-            testReportFile.toFile().shouldBeAFile()
+         fun shouldHaveExpectedTestResultsFor(taskName: String) {
+            withClue("$taskName test report") {
+               val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
+               testReportFile.toFile().shouldBeAFile()
 
-            val testReportContents = Files.readAllBytes(testReportFile).decodeToString()
+               val testReportContentBeginning =
+                  Files.readAllBytes(testReportFile).decodeToString().lineSequence().take(2).joinToString("\n")
 
-            testReportContents shouldStartWith """
-               <?xml version="1.0" encoding="UTF-8"?>
-               <testsuite name="TestSpec" tests="2" skipped="0" failures="0" errors="0"
-            """.trimIndent()
+               testReportContentBeginning.shouldStartWith(
+                  """
+                  <?xml version="1.0" encoding="UTF-8"?>
+                  <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
+                  """.trimIndent()
+               )
+            }
          }
 
-         should("be able to compile and run tests for the JVM and JS targets") {
+         should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
+            val taskNames = listOf(
+               "jvmTest",
+               "jsBrowserTest",
+               "jsNodeTest",
+               "wasmJsBrowserTest",
+               "wasmJsNodeTest"
+            )
+
             val invocation = GradleInvocation(
                testProjectPath,
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
                   "-PkotestVersion=$kotestVersion",
                   "-PuseNewNativeMemoryModel=false",
-                  "jvmTest",
-                  // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-                  // "jsBrowserTest",
-                  "jsNodeTest",
-               )
+               ) + taskNames
             )
 
-            invocation.run()
+            val result = invocation.run()
 
-            shouldHavePassingTestResultsFor("jvmTest")
-            // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-            // shouldHavePassingTestResultsFor("jsBrowserTest")
-            shouldHavePassingTestResultsFor("jsNodeTest")
+            withClue(result.clue) {
+               taskNames.forAll {
+                  shouldHaveExpectedTestResultsFor(it)
+               }
+            }
          }
 
          setOf(
@@ -72,29 +85,30 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
             context("when the new Kotlin/Native memory model $description") {
                should("be able to compile and run tests for all native targets supported by the host machine") {
+                  val taskNames = listOf(
+                     "macosArm64Test",
+                     "macosX64Test",
+                     "mingwX64Test",
+                     "linuxX64Test"
+                  )
+
                   val invocation = GradleInvocation(
                      testProjectPath,
                      listOf(
                         "-PkotlinVersion=$kotlinVersion",
                         "-PkotestVersion=$kotestVersion",
-                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
-                        "macosArm64Test",
-                        "macosX64Test",
-                        "mingwX64Test",
-                        "linuxX64Test"
-                     )
+                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel"
+                     ) + taskNames
                   )
 
-                  invocation.run()
+                  val result = invocation.run()
 
-                  setOf(
-                     "mingwX64Test",
-                     "macosX64Test",
-                     "macosArm64Test",
-                     "linuxX64Test"
-                  ).forAtLeastOne { taskName ->
-                     // Depending on the host machine these tests are running on, only one of the test targets will be built and executed.
-                     shouldHavePassingTestResultsFor(taskName)
+                  withClue(result.clue) {
+                     taskNames.forAtLeastOne { taskName ->
+                        // Depending on the host machine these tests are running on,
+                        // only one of the test targets will be built and executed.
+                        shouldHaveExpectedTestResultsFor(taskName)
+                     }
                   }
                }
             }
@@ -103,14 +117,22 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    }
 })
 
-data class GradleInvocation(
+private data class GradleInvocation(
    val projectPath: Path,
    val arguments: List<String>
 ) {
-   private val wrapperScriptPath: Path = Paths.get("..", "..", "gradlew")
+   val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
+   private val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
+   private val wrapperScriptPath: Path = Paths.get("..", "..", wrapperScriptName)
 
-   fun run() {
-      val command = listOf(wrapperScriptPath.toAbsolutePath().toString(), "--console=plain", "--no-daemon") + arguments
+   class Result(command: List<String>, val output: String, val exitCode: Int) {
+      val clue = "Gradle process $command exited with code $exitCode and output:\n" + output.prependIndent("\t>>> ")
+   }
+
+   fun run(): Result {
+      val command =
+         listOf(wrapperScriptPath.toAbsolutePath().toString(), "--console=plain", "--no-daemon", "--continue") +
+            arguments
 
       val process = ProcessBuilder(command)
          .directory(projectPath.toFile())
@@ -119,11 +141,10 @@ data class GradleInvocation(
          .redirectErrorStream(true)
          .start()
 
-      val output = InputStreamReader(process.inputStream).use { reader -> reader.readText() }
-      val exitCode = process.waitFor()
-
-      if (exitCode != 0) {
-         throw RuntimeException("Gradle process $command exited with code $exitCode and output:\n$output")
-      }
+      return Result(
+         command = command,
+         output = InputStreamReader(process.inputStream).use { reader -> reader.readText() },
+         exitCode = process.waitFor()
+      )
    }
 }

@@ -57,8 +57,10 @@ class TestEngine(private val config: TestEngineConfig) {
                config.configuration.concurrentSpecs ?: config.configuration.parallelism,
                context,
             )
-            Platform.JS -> SequentialTestSuiteScheduler(context)
-            Platform.Native -> SequentialTestSuiteScheduler(context)
+
+            Platform.JS,
+            Platform.Native,
+            Platform.WasmJs -> SequentialTestSuiteScheduler(context)
          }
          scheduler.schedule(context.suite)
       }
