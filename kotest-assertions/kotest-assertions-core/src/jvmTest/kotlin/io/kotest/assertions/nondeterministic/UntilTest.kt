@@ -1,5 +1,6 @@
 package io.kotest.assertions.nondeterministic
 
+import io.kotest.common.nonConstantTrue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
@@ -14,14 +15,14 @@ class UntilTest : FunSpec({
       var attempts = 0
       until(1.seconds) {
          attempts++
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
       attempts shouldBe 1
    }
 
    test("until should exit as soon as predicate passes") {
       until(1.days) {
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
    }
 
