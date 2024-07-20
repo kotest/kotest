@@ -113,7 +113,12 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+){
+   init {
+      require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
+   }
+}
 
 object EventuallyConfigurationDefaults {
    var duration: Duration = Duration.INFINITE
@@ -131,7 +136,7 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the [eventually] function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully. Must be non-negative.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -154,7 +159,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default, this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. MUST be non-negative.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
