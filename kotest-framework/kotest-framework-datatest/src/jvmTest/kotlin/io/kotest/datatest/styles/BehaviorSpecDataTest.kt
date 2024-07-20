@@ -21,7 +21,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 199
+         count shouldBe 201
       }
 
       given("inside a given") {
