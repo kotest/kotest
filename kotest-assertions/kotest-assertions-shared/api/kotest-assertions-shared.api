@@ -305,9 +305,12 @@ public final class io/kotest/assertions/RetryKt {
 }
 
 public final class io/kotest/assertions/async/TimeoutKt {
+	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/assertions/async/Timeout_jvmKt {
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun shouldTimeout (Ljava/time/Duration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/assertions/eq/Eq {

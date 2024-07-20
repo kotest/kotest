@@ -1,7 +1,4 @@
-@file:Suppress(
-   "DEPRECATION",
-   "BlockingMethodInNonBlockingContext",
-)
+@file:Suppress("DEPRECATION")
 
 package io.kotest.framework.concurrency
 
@@ -10,19 +7,16 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantTrue
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
@@ -33,21 +27,21 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
 @ExperimentalKotest
-@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 class EventuallySpec : FunSpec({
 
    coroutineTestScope = true
+   nonDeterministicTestVirtualTimeEnabled = true
 
    test("eventually should immediately pass working tests") {
       eventually(5.seconds) {
-         System.currentTimeMillis()
+         nonConstantTrue() shouldBe true
       }
    }
 
    test("eventually passes tests that complete within the time allowed") {
-      val end = System.currentTimeMillis() + 250L
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually(5.seconds) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             1 shouldBe 2
       }
    }
@@ -68,9 +62,9 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that completed within the time allowed, AssertionError") {
-      val end = System.currentTimeMillis() + 250
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually(5.seconds) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             assert(false)
       }
    }
@@ -87,12 +81,12 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
-      val end = System.currentTimeMillis() + 250
+      val start = nonDeterministicTestTimeSource().markNow()
       eventually({
          duration(5.seconds)
          suppressExceptions = setOf(FileNotFoundException::class)
       }) {
-         if (System.currentTimeMillis() < end)
+         if (start.elapsedNow() < 250.milliseconds)
             throw FileNotFoundException("foo")
       }
    }
@@ -138,7 +132,7 @@ class EventuallySpec : FunSpec({
    test("eventually allows suspendable functions") {
       eventually(400.milliseconds) {
          delay(25)
-         System.currentTimeMillis()
+         nonConstantTrue() shouldBe true
       }
    }
 
@@ -154,48 +148,37 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually does one final iteration if we never executed before interval expired") {
-      newSingleThreadContext("single").use { dispatcher ->
-         launch(dispatcher) {
-            Thread.sleep(2000)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // we won't be able to run in here
-            eventually({
-               duration(1.seconds)
-               interval = 400.milliseconds.fixed()
-            }) {
-               counter.incrementAndGet()
-            }
-         }
-         counter.get().shouldBe(1)
+      val counter = AtomicInteger(0)
+
+      eventually({
+         duration(1.seconds)
+         interval = 400.milliseconds.fixed()
+      }) {
+         delay(500.milliseconds)
+         // Although this iteration takes longer than the interval, it will be allowed to complete.
+         counter.incrementAndGet()
       }
+
+      counter.get().shouldBe(1)
    }
 
    test("eventually does one final iteration if we only executed once and the last delay > interval") {
-      newSingleThreadContext("single").use { dispatcher ->
-         // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-         launch(dispatcher) {
-            delay(100.milliseconds)
-            Thread.sleep(500)
-         }
-         val counter = AtomicInteger(0)
-         withContext(dispatcher) {
-            // this will execute once immediately, then the earlier async will steal the thread
-            // and then since the delay has been > interval and times == 1, we will execute once more
-            eventually({
-               duration(250.milliseconds)
-               interval = 25.milliseconds.fixed()
-            }) {
-               counter.incrementAndGet() shouldBe 2
-            }
-         }
-         counter.get().shouldBe(2)
+      val counter = AtomicInteger(0)
+
+      eventually({
+         duration(3.seconds)
+         interval = 400.milliseconds.fixed()
+      }) {
+         counter.incrementAndGet() shouldBe 2
+         delay(600.milliseconds)
+         // Although the first iteration takes longer than the interval, another iteration is allowed.
       }
+
+      counter.get().shouldBe(2)
    }
 
    test("eventually handles shouldNotBeNull") {
-      measureTime {
+       nonDeterministicTestTimeSource().measureTime {
          shouldThrow<java.lang.AssertionError> {
             eventually(50.milliseconds) {
                val str: String? = null
@@ -207,7 +190,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with boolean predicate") {
       eventually(5.seconds) {
-         System.currentTimeMillis() > 0
+         nonConstantTrue() shouldBe true
       }
    }
 
@@ -215,7 +198,7 @@ class EventuallySpec : FunSpec({
       eventually({
          duration(5.seconds)
          interval = 1.seconds.fixed()
-         predicate = { System.currentTimeMillis() > 0 }
+         predicate = { nonConstantTrue() }
       }) {}
    }
 
@@ -344,12 +327,12 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually overrides assertion to hard assertion before executing assertion and reset it after executing") {
-      val target = System.currentTimeMillis() + 1000
+      val start = nonDeterministicTestTimeSource().markNow()
       val message = shouldThrow<AssertionError> {
          all {
             withClue("Eventually that should pass") {
                eventually(2.seconds) {
-                  System.currentTimeMillis() shouldBeGreaterThan target
+                  start.elapsedNow() shouldBeGreaterThan 1000.milliseconds
                }
             }
             withClue("1 should never be 2") {
