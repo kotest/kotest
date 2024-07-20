@@ -24,9 +24,8 @@ signing {
    if (signingKey != null && signingPassword != null) {
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
-   if (Ci.isRelease) {
-      sign(publishing.publications)
-   }
+   sign(publishing.publications)
+   setRequired { Ci.isRelease } // only require signing when releasing
 }
 
 publishing {
