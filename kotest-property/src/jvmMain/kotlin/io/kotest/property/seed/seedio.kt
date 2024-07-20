@@ -32,7 +32,6 @@ internal actual fun writeSeed(path: TestPath, seed: Long) {
    try {
       val f = path.seedPath()
       f.createParentDirectories()
-      f.createFile()
       f.writeText(seed.toString())
    } catch (e: Exception) {
       println("Error writing seed $seed for $path")
