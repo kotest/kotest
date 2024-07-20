@@ -80,36 +80,37 @@ object ProjectConfig : AbstractProjectConfig() {
    override suspend fun afterProject() {
       val statuses = testStatuses.replayCache
 
-      println("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" })
+      withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
 
-      withClue("Expect no tests timed out") {
-         statuses.shouldForNone { it.status shouldBe TimedOut }
-      }
-
-      val expectedTestNames = listOf(
-         "test 1",
-         "test 2",
-         "test 3",
-         "test 4",
-         "test 5",
-         "test 6",
-         "test 7",
-         "test 8",
-      )
-
-      listOf(Started, Finished).forEach { status ->
-         val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
-
-         withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-            actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
+         withClue("Expect no tests timed out") {
+            statuses.shouldForNone { it.status shouldBe TimedOut }
          }
-      }
 
-      withClue("Expect that no test finished before all tests had started") {
-         val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
-         val firstFinishedTest = statuses.filter { it.status == Finished }.maxOf { it.elapsed }
+         val expectedTestNames = listOf(
+            "test 1",
+            "test 2",
+            "test 3",
+            "test 4",
+            "test 5",
+            "test 6",
+            "test 7",
+            "test 8",
+         )
 
-         lastStartedTest shouldBeLessThan firstFinishedTest
+         listOf(Started, Finished).forEach { status ->
+            val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
+
+            withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
+               actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
+            }
+         }
+
+         withClue("Expect that no test finished before all tests had started") {
+            val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
+            val firstFinishedTest = statuses.filter { it.status == Finished }.maxOf { it.elapsed }
+
+            lastStartedTest shouldBeLessThan firstFinishedTest
+         }
       }
    }
 }
