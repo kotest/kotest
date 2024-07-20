@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property.seed
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.paths.shouldBeEmptyDirectory
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
 import io.kotest.property.PropTestConfig
@@ -54,7 +53,7 @@ class PersistSeedsTest : FunSpec({
             a shouldBe b
          }
       }
-      seedDirectory().shouldBeEmptyDirectory()
+      seedDirectory().shouldNotExist()
    }
 
    test("a successful test should not write seed") {
