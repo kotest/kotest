@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider
@@ -35,6 +36,10 @@ tasks.withType<KotlinCompile>().configureEach {
 
 kotlin {
    sourceSets.configureEach {
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
+      compilerOptions {
+         freeCompilerArgs.add("-Xexpect-actual-classes")
+      }
       languageSettings {
          optIn("kotlin.time.ExperimentalTime")
          optIn("kotlin.experimental.ExperimentalTypeInference")

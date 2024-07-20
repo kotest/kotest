@@ -21,7 +21,7 @@ fun interface Constraints {
        * Returns a [Constraints] that executes the property test for a certain duration.
        */
       fun duration(duration: Duration) = object : Constraints {
-         val mark = TimeSource.Monotonic.markNow() + duration
+         val mark = TimeSource.Monotonic.markNow() + duration // Property tests cannot use virtual time
          override fun evaluate(context: PropertyContext): Boolean {
             return mark.hasNotPassedNow()
          }

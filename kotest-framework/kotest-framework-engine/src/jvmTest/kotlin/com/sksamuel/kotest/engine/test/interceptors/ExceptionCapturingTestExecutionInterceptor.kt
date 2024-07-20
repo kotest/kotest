@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
+import io.kotest.common.testTimeSource
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -10,7 +11,6 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
-import kotlin.time.TimeSource
 
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
@@ -26,7 +26,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(testTimeSource().markNow())
          .intercept(tc, context) { _, _ -> throw AssertionError("boom") }
          .isFailure.shouldBeTrue()
 
@@ -44,7 +44,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
 
-      ExceptionCapturingInterceptor(TimeSource.Monotonic.markNow())
+      ExceptionCapturingInterceptor(testTimeSource().markNow())
          .intercept(tc, context) { _, _ -> error("boom") }
          .isError.shouldBeTrue()
 

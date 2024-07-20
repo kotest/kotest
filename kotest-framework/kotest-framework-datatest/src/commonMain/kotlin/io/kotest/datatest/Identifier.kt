@@ -9,6 +9,9 @@ fun getStableIdentifier(t: Any?): String {
       t == null -> "<null>"
       t::class.hasAnnotation<IsStableType>() || platform != Platform.JVM -> t.toString()
       t is WithDataTestName -> t.dataTestName()
-      else -> StableIdentifiers.stableIdentifier(t)
+      else ->
+         // FIXME Remove deprecation suppression when StableIdentifiers is marked as internal
+         @Suppress("DEPRECATION")
+         StableIdentifiers.stableIdentifier(t)
    }
 }
