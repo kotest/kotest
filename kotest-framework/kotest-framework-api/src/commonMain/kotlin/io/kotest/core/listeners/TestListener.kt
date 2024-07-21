@@ -1,6 +1,7 @@
 package io.kotest.core.listeners
 
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 
 @Deprecated("Renamed to IgnoredSpecListener. Deprecated since 5.0")
 typealias SpecIgnoredListner = IgnoredSpecListener
@@ -16,6 +17,8 @@ typealias SpecIgnoredListner = IgnoredSpecListener
  */
 @Suppress("DEPRECATION") // Remove when removing Listener
 interface TestListener :
+   BeforeListener,
+   AfterListener,
    BeforeTestListener,
    AfterTestListener,
    BeforeContainerListener,

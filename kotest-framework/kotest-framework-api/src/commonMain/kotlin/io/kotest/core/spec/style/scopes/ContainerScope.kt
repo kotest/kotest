@@ -5,10 +5,12 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.project.projectContext
 import io.kotest.core.source.sourceRef
+import io.kotest.core.spec.After
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
 import io.kotest.core.spec.AfterTest
+import io.kotest.core.spec.Before
 import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
@@ -171,6 +173,36 @@ interface ContainerScope : TestScope {
       })
    }
 
+   fun before(f: Before) {
+      if (hasChildren()) throw outOfOrderCallbacksException
+      val thisTestCase = this.testCase
+      var hasRun = false
+
+      appendExtension(object : TestListener {
+         override suspend fun before(testCase: TestCase) {
+            if (!hasRun && thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
+               hasRun = true
+               f(testCase)
+            }
+         }
+      })
+   }
+
+   fun after(f: After) {
+      if (hasChildren()) throw outOfOrderCallbacksException
+      val thisTestCase = this.testCase
+      var hasRun = false
+
+      prependExtension(object : TestListener {
+         override suspend fun after(testCase: TestCase, result: TestResult) {
+            if (!hasRun && thisTestCase == testCase) {
+               hasRun = true
+               f(Tuple2(testCase, result))
+            }
+         }
+      })
+   }
+
    /**
     * Registers a [BeforeEach] function that executes before every test with type [TestType.Test] in this scope.
     * Only applies to tests registered after this callback is added.
@@ -195,7 +227,7 @@ interface ContainerScope : TestScope {
     *
     * After-each callbacks are executed in reverse order. That is callbacks registered
     * first are executed last, which allows for nested test blocks to add callbacks that run before
-    * top level callbacks.
+    * top level callbacks.`
     */
    fun afterEach(f: AfterEach) {
       if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
