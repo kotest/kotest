@@ -1,11 +1,11 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package io.kotest.mpp
+package io.kotest.engine
 
 /**
  * Instantiates an instance of the given class, or if it is an object, returns that object instance
  */
-fun <T> instantiateOrObject(klass: Class<T>): Result<T> = runCatching {
+internal fun <T> instantiateOrObject(klass: Class<T>): Result<T> = runCatching {
    when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
       // if the static field for an object cannot be found, then instantiate
       null -> {

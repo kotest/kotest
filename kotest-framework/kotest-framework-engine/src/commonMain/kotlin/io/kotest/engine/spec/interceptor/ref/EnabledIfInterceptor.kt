@@ -11,7 +11,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
-import io.kotest.mpp.newInstanceNoArgConstructor
+import io.kotest.engine.newInstanceNoArgConstructor
 
 /**
  * Evaluates any spec annotated with [EnabledIf] if the condition fails, skips the spec

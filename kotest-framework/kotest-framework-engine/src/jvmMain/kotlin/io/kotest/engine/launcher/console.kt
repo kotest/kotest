@@ -1,7 +1,6 @@
 package io.kotest.engine.launcher
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.common.isIntellij
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
@@ -42,4 +41,7 @@ internal fun colours(args: LauncherArgs): TermColors {
 // If we are running from intellij, we use an IDEA compatible team city writer
 // otherwise we use the default enhanced writer
 internal fun defaultConsoleListener(): TestEngineListener =
-   if (isIntellij()) TeamCityTestEngineListener() else EnhancedConsoleTestEngineListener(TermColors())
+   if (System.getProperty("idea.active") != null)
+      TeamCityTestEngineListener()
+   else
+      EnhancedConsoleTestEngineListener(TermColors())

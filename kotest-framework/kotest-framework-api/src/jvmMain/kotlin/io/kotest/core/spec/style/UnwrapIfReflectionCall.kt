@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.core.spec.style
 
 import java.lang.reflect.InvocationTargetException
 
@@ -9,8 +9,8 @@ import java.lang.reflect.InvocationTargetException
  * By verifying if this is an InvocationTargetException, we can unwrap it and throw the cause instead
  */
 fun Throwable.unwrapIfReflectionCall(): Throwable {
-  return when (this) {
-    is InvocationTargetException -> cause ?: this
-    else -> this
-  }
+   return when (this) {
+      is InvocationTargetException -> cause ?: this
+      else -> this
+   }
 }

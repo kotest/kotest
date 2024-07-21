@@ -4,7 +4,7 @@ import io.kotest.core.annotation.AutoScan
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.mpp.instantiateOrObject
+import io.kotest.engine.instantiateOrObject
 import io.kotest.mpp.log
 
 /**

@@ -1516,6 +1516,10 @@ public abstract class io/kotest/core/factory/TestFactoryConfiguration : io/kotes
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 }
 
+public final class io/kotest/core/factory/UuidKt {
+	public static final fun uniqueId ()Ljava/lang/String;
+}
+
 public abstract interface class io/kotest/core/filter/Filter : io/kotest/core/extensions/Extension {
 }
 
@@ -2402,6 +2406,10 @@ public final class io/kotest/core/spec/style/StringSpecTestFactoryConfiguration 
 	public fun <init> ()V
 	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class io/kotest/core/spec/style/UnwrapIfReflectionCallKt {
+	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 }
 
 public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/WordSpecRootScope {
