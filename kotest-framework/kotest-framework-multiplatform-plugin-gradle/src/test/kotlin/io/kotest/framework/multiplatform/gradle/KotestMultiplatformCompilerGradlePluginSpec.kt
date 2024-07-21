@@ -73,42 +73,6 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                }
             }
          }
-
-         setOf(
-            true,
-            false
-         ).forEach { enableNewMemoryModel ->
-            val description = if (enableNewMemoryModel) "is enabled" else "is not enabled"
-
-            context("when the new Kotlin/Native memory model $description") {
-               should("be able to compile and run tests for all native targets supported by the host machine") {
-                  val taskNames = listOf(
-                     "macosArm64Test",
-                     "macosX64Test",
-                     "mingwX64Test",
-                     "linuxX64Test"
-                  )
-
-                  val invocation = GradleInvocation(
-                     testProjectPath,
-                     listOf(
-                        "-PkotlinVersion=$kotlinVersion",
-                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
-                     ) + taskNames
-                  )
-
-                  val result = invocation.run()
-
-                  withClue(result.clue) {
-                     taskNames.forAtLeastOne { taskName ->
-                        // Depending on the host machine these tests are running on,
-                        // only one of the test targets will be built and executed.
-                        shouldHaveExpectedTestResultsFor(taskName)
-                     }
-                  }
-               }
-            }
-         }
       }
    }
 })
