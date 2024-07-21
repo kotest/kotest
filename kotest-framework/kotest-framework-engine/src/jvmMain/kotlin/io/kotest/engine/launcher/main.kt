@@ -1,7 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.runBlocking
+import io.kotest.engine.runBlocking
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener

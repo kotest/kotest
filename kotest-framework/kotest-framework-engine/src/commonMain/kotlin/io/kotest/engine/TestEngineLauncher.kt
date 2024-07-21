@@ -3,8 +3,6 @@
 package io.kotest.engine
 
 import io.kotest.common.Platform
-import io.kotest.common.runBlocking
-import io.kotest.common.runPromise
 import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
