@@ -12,9 +12,6 @@ plugins {
    alias(libs.plugins.gradle.plugin.publish)
 }
 
-group = "io.kotest"
-version = Ci.gradleVersion
-
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
 
