@@ -128,7 +128,7 @@ private data class GradleInvocation(
    fun run(): Result {
       val command = buildList {
          add(wrapperScriptPath.toAbsolutePath().toString())
-         //add("--continue")
+         add("--continue")
          add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
          add("-PkotestLibraryVersion=$kotestLibraryVersion")
          add("-PdevMavenRepoPath=$devMavenRepoPath")
