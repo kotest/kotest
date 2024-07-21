@@ -62,6 +62,17 @@ tasks.withType<Test>().configureEach {
    systemProperty("kotestVersion", Ci.publishVersion)
    systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
+   //region remote Gradle build cache
+   jvmArgumentProviders.add(
+      SystemPropertiesArgumentProvider(
+         objects.mapProperty<String, String>().apply {
+            put("Kotest_GradleBuildCache_user", providers.gradleProperty("Kotest_GradleBuildCache_user"))
+            put("Kotest_GradleBuildCache_pass", providers.gradleProperty("Kotest_GradleBuildCache_pass"))
+         }
+      )
+   )
+   //endregion
+
    testLogging {
       showExceptions = true
       showStandardStreams = true

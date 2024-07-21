@@ -140,6 +140,12 @@ private data class GradleInvocation(
          .redirectOutput(ProcessBuilder.Redirect.PIPE)
          .redirectError(ProcessBuilder.Redirect.PIPE)
          .redirectErrorStream(true)
+         .apply {
+            environment().apply {
+               put("ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user", buildCacheUser)
+               put("ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_pass", buildCachePass)
+            }
+         }
          .start()
 
       return Result(
@@ -153,5 +159,7 @@ private data class GradleInvocation(
       private val kotestVersion = System.getProperty("kotestVersion")
       private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
+      private val buildCacheUser = System.getProperty("Kotest_GradleBuildCache_user")
+      private val buildCachePass = System.getProperty("Kotest_GradleBuildCache_pass")
    }
 }
