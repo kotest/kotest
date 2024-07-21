@@ -82,12 +82,12 @@ internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(engineId: UniqueId)
    return DiscoveryRequest(selectors, filters)
 }
 
-fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
+internal fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
    is LauncherDiscoveryRequest -> engineFilters.toList()
    else -> emptyList()
 }
 
-fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
+internal fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
    is LauncherDiscoveryRequest -> postDiscoveryFilters.toList()
    else -> emptyList()
 }
