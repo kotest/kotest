@@ -63,7 +63,6 @@ tasks.withType<Test>().configureEach {
    systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
    //region remote Gradle build cache
-
    jvmArgumentProviders.add(
       SystemPropertiesArgumentProvider(
          objects.mapProperty<String, String>().apply {
