@@ -19,11 +19,7 @@ object Ci {
    private val releaseVersion = System.getenv("RELEASE_VERSION")?.ifBlank { null }
 
    val isRelease = releaseVersion != null
-
-   /** Kotest libraries version */
    val publishVersion = releaseVersion ?: snapshotVersion
-
-   /** Kotest Gradle Plugin version */
    val gradleVersion = releaseVersion ?: snapshotGradleVersion
 
    /**

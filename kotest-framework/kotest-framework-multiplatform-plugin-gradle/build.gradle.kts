@@ -59,7 +59,7 @@ tasks.withType<Test>().configureEach {
 
    useJUnitPlatform()
 
-   systemProperty("kotestLibraryVersion", Ci.publishVersion)
+   systemProperty("kotestVersion", Ci.publishVersion)
    systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
    testLogging {
