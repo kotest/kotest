@@ -42,6 +42,24 @@ class MapMatchersTest : WordSpec() {
             val map = mapOf("a" to "b")
             map.shouldHaveKey("a")
          }
+
+         "find similarities if key not in map" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  sweetGreenApple to 1,
+                  sweetRedApple to 2,
+                  sourYellowLemon to 3
+               ).shouldContainKey(sweetGreenPear)
+            }.message.shouldBe("""
+            |Map should contain key Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing key:
+            |
+            | expected: Fruit(name=apple, color=green, taste=sweet),
+            |  but was: Fruit(name=pear, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"apple">, but was: <"pear">
+            """.trimMargin())
+         }
       }
 
       "haveValue" should {
@@ -142,6 +160,24 @@ class MapMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                map.shouldContainKeys(1, 4, 5, 6)
             }.message.shouldBe("Map did not contain the keys 4, 5, 6")
+         }
+
+         "find similar keys for keys not in map" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  sweetGreenApple to 1,
+                  sweetRedApple to 2,
+                  sourYellowLemon to 3
+               ).shouldContainKeys(sweetGreenApple, sweetGreenPear)
+            }.message.shouldBe("""
+            |Map did not contain the keys Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing keys:
+            |
+            | expected: Fruit(name=apple, color=green, taste=sweet),
+            |  but was: Fruit(name=pear, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"apple">, but was: <"pear">
+            """.trimMargin())
          }
       }
 
