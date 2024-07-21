@@ -7,7 +7,7 @@ import io.kotest.matchers.invokeMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T> Iterable<T>?.shouldBeEmpty(): Iterable<T> {
+fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail()
    toList().shouldBeEmpty()
    return this
@@ -19,13 +19,13 @@ fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>?.shouldBeEmpty(): Collection<T> {
+fun <T, C : Collection<T>> C?.shouldBeEmpty(): C {
    if (this == null) fail()
    this should beEmpty()
    return this
 }
 
-fun <T> Iterable<T>?.shouldNotBeEmpty(): Iterable<T> {
+fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    if (this == null) fail()
    toList().shouldNotBeEmpty()
    return this
@@ -37,7 +37,7 @@ fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
    return this
 }
 
-fun <T> Collection<T>?.shouldNotBeEmpty(): Collection<T> {
+fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
    if (this == null) fail()
    this shouldNot beEmpty()
    return this

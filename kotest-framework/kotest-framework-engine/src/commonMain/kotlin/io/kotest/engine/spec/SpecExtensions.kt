@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.mapError
+import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -18,7 +18,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

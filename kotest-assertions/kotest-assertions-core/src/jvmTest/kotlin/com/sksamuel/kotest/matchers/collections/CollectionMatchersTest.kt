@@ -144,15 +144,39 @@ class CollectionMatchersTest : WordSpec() {
             tests should haveElementAt(0, TestSealed.Test1("test1"))
             tests.shouldHaveElementAt(1, TestSealed.Test2(2))
          }
-         "indicate that collection is too short" {
+         "print if list is too short" {
             shouldThrowAny {
-               listOf("a", "b", "c").shouldHaveElementAt(3, "b")
-            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 3, but collection was shorter"
+               listOf("a", "b", "c").shouldHaveElementAt(3, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 3
+            |But it is too short: only 3 elements
+            """.trimMargin()
          }
-         "indicate that elements differ" {
+         "print if element does not match" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(2, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 2
+            |Expected: <"c">, but was <"d">
+            """.trimMargin()
+         }
+         "print if element found at another index" {
             shouldThrowAny {
                listOf("a", "b", "c").shouldHaveElementAt(2, "b")
-            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 2, but element was different. Expected: <\"b\">, but was <\"c\">"
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1]
+            """.trimMargin()
+         }
+         "print if element found at multiple other indexes" {
+            shouldThrowAny {
+               listOf("a", "b", "c", "b").shouldHaveElementAt(2, "b")
+            }.message shouldBe """
+            |Collection ["a", "b", "c", "b"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1, 3]
+            """.trimMargin()
          }
       }
 
@@ -350,7 +374,8 @@ class CollectionMatchersTest : WordSpec() {
             val col2 = setOf(1, 2, 3)
             val col3 = listOf(1, 2, 3, 4)
 
-            col1.shouldBeSameSizeAs(col2)
+            val (_, _, third) = col1 shouldBeSameSizeAs col2
+            third.shouldBe(3)
             col1 should beSameSizeAs(col2)
             col1 shouldNot beSameSizeAs(col3)
 
@@ -358,13 +383,27 @@ class CollectionMatchersTest : WordSpec() {
                col1.shouldBeSameSizeAs(col3)
             }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
          }
+         "test that an iterable is the same size as another iterable"  {
+            class Group(val name: String, memberIds: Iterable<Int>) : Iterable<Int> by memberIds
+            val group = Group("group 1", listOf(1, 2, 3))
+            val col2 = setOf(1, 2, 3)
+            val col3 = listOf(1, 2, 3, 4)
+            group.shouldBeSameSizeAs(col2).name shouldBe "group 1"
+
+            shouldThrow<AssertionError> {
+               group.shouldBeSameSizeAs(col3)
+            }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
+         }
+
       }
 
       "haveSize" should {
          "test that a collection has a certain size" {
             val col1 = listOf(1, 2, 3)
             col1 should haveSize(3)
-            col1.shouldHaveSize(3)
+            val (first, _, third) = col1.shouldHaveSize(3)
+            first shouldBe 1
+            third shouldBe 3
             shouldThrow<AssertionError> {
                col1 should haveSize(2)
             }

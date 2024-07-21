@@ -12,9 +12,6 @@ import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
-@Deprecated("Renamed to StringSpecRootScope. Deprecated since 5.0")
-typealias StringSpecRootContext = StringSpecRootScope
-
 /**
  * Defines the DSL for creating tests in the 'StringSpec' style.
  *

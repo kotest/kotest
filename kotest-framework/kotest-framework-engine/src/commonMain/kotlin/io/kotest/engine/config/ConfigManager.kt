@@ -1,9 +1,9 @@
 package io.kotest.engine.config
 
-import io.kotest.common.mapError
+import io.kotest.engine.mapError
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.mpp.log
+import io.kotest.core.log
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal

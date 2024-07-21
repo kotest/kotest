@@ -2,6 +2,7 @@ package io.kotest.matchers.maps
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -10,19 +11,35 @@ import io.kotest.matchers.string.stringify
 import io.kotest.similarity.possibleMatchesDescription
 
 fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
-   override fun test(value: Map<K, Any?>) = MatcherResult(
-      value.containsKey(key),
-      { "Map should contain key $key" },
-      { "Map should not contain key $key" }
-   )
+   override fun test(value: Map<K, Any?>): MatcherResult {
+      val passed = value.containsKey(key)
+      val possibleMatchesDescription = if(passed) "" else
+         possibleMatchesForMissingElements(
+         setOf(key),
+         value.keys,
+         "key"
+      )
+
+      return MatcherResult(
+         passed,
+         { "Map should contain key $key$possibleMatchesDescription" },
+         { "Map should not contain key $key" }
+      )
+   }
 }
 
 fun <K> haveKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
    override fun test(value: Map<K, Any?>): MatcherResult {
       val keysNotPresentInMap = keys.filterNot { value.containsKey(it) }
+      val possibleMatchesDescription = possibleMatchesForMissingElements(
+         keysNotPresentInMap.toSet(),
+         value.keys,
+         "keys"
+      )
+
       return MatcherResult(
          keysNotPresentInMap.isEmpty(),
-         { "Map did not contain the keys ${keysNotPresentInMap.joinToString(", ")}" },
+         { "Map did not contain the keys ${keysNotPresentInMap.joinToString(", ")}$possibleMatchesDescription" },
          { "Map should not contain the keys ${keys.filter { value.containsKey(it) }.joinToString(", ")}" }
       )
    }
@@ -68,7 +85,45 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
    }
 }
 
-fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = mapcontain(key, v)
+fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
+   override fun test(value: Map<K, V>): MatcherResult {
+      val passed = value[key] == v
+      val possibleMatches = if(passed) "" else describePossibleMatches(key, v, value)
+      return MatcherResult(
+         passed,
+         { "Map should contain mapping $key=$v but was ${buildActualValue(value)}$possibleMatches" },
+         { "Map should not contain mapping $key=$v but was $value" }
+      )
+   }
+
+   private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
+
+   private fun describePossibleMatches(key: K, v: V, map: Map<K, V>): String {
+      val similarKeys = if(key in map) "" else possibleMatchesDescription(map.keys, key)
+      val similarOrSameMatches = if(v in map.values) sameValueForOtherKeys(v, map) else similarValues(v, map)
+      val matchesToInclude = listOf(similarKeys, similarOrSameMatches).filter { it.isNotEmpty() }
+      return if(matchesToInclude.isEmpty()) "" else "\n${matchesToInclude.joinToString("\n")}"
+   }
+
+   private fun sameValueForOtherKeys(v: V, map: Map<K, V>): String = prettyPrintIfNotEmpty(
+      list = map.entries.filter { it.value == v },
+      prefix = "\nSame value found for the following entries: "
+   )
+
+   private fun similarValues(v: V, map: Map<K, V>): String = printIfNotEmpty(
+      string = possibleMatchesDescription(map.values.toSet(), v),
+      prefix = "\nSimilar values found:\n"
+   )
+
+}
+
+internal fun printIfNotEmpty(string: String, prefix: String = "", suffix: String = ""): String =
+   if(string.isEmpty()) "" else
+      "$prefix$string$suffix"
+
+internal fun<T> prettyPrintIfNotEmpty(list: List<T>, prefix: String = "", suffix: String = ""): String =
+   if(list.isEmpty()) "" else
+      "$prefix${list.print().value}$suffix"
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
    MapContainsMatcher(expected, ignoreExtraKeys = true)
@@ -95,11 +150,7 @@ class MapContainsMatcher<K, V>(
    override fun test(value: Map<K, V>): MatcherResult {
       val diff = Diff.create(value, expected, ignoreExtraMapKeys = ignoreExtraKeys)
       val unexpectedKeys = (value.keys - expected.keys)
-      val possibleMatches = unexpectedKeys.joinToString("\n") {
-         possibleMatchesDescription(expected.keys, it)
-      }
-      val possibleMatchesDescription = if(possibleMatches.isEmpty()) ""
-      else "\nPossible matches for missing keys:\n$possibleMatches"
+      val possibleMatchesDescription = possibleMatchesForMissingElements(unexpectedKeys, expected.keys, "keys")
       val (expectMsg, negatedExpectMsg) = if (ignoreExtraKeys) {
          "should contain all of" to "should not contain all of"
       } else {
@@ -137,6 +188,22 @@ class MapContainsMatcher<K, V>(
          })
    }
 }
+
+internal fun <K> possibleMatchesForMissingElements(
+   unexpected: Set<K>,
+   expected: Set<K>,
+   elementTypeDescription: String
+): String {
+   val possibleMatches = unexpected.
+      map {
+         possibleMatchesDescription(expected, it)
+      }.filter {
+         it.isNotEmpty()
+   }.joinToString("\n")
+   return if (possibleMatches.isEmpty()) ""
+   else "\nPossible matches for missing $elementTypeDescription:\n$possibleMatches"
+}
+
 
 fun <K, V> matchAll(
    vararg matchers: Pair<K, (V) -> Unit>

@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.common.flatMap
+import io.kotest.engine.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.ExpectSpec
@@ -14,7 +14,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
-import io.kotest.mpp.log
+import io.kotest.core.log
 
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
