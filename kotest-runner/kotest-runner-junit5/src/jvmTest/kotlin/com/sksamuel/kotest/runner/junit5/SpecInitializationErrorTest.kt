@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.common.Platform
+import io.kotest.core.Platform
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
@@ -10,7 +10,6 @@ import io.kotest.engine.spec.testSpecExecutor
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
-import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.createEngineDescriptor
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult

@@ -1,6 +1,7 @@
-package io.kotest.mpp
+package io.kotest.core
 
 import io.kotest.common.KotestInternal
+import io.kotest.mpp.syspropOrEnv
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 import kotlin.time.TimeMark

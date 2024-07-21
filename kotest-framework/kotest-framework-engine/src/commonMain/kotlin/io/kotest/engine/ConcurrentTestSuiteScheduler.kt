@@ -11,7 +11,7 @@ import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

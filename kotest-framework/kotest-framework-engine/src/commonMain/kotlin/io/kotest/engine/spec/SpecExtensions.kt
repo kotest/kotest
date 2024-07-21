@@ -17,7 +17,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

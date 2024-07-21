@@ -10,7 +10,7 @@ import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestLogger
 import io.kotest.engine.test.logging.TestScopeLoggingCoroutineContextElement
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import kotlinx.coroutines.withContext
 
 @ExperimentalKotest

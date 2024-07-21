@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.withDebugProbe
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * If configured, then the kotlinx debug probe is installed for coroutines.
