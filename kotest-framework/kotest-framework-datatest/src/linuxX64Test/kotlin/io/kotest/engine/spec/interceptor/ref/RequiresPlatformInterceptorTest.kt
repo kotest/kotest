@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.Platform
+import io.kotest.core.Platform
 import io.kotest.core.annotation.RequiresPlatform
 import io.kotest.core.spec.style.FunSpec
 

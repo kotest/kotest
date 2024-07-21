@@ -25,8 +25,9 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.absolute
 import kotlin.reflect.KClass
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 @Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
 typealias JunitXmlListener = JunitXmlReporter
@@ -58,7 +59,7 @@ class JunitXmlReporter(
    }
 
    private val formatter = getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
-   private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
+   private var marks = ConcurrentHashMap<KClass<out Spec>, TimeMark>()
 
    private fun outputDir(): Path {
       val buildDir = System.getProperty(BuildDirKey)
@@ -69,7 +70,7 @@ class JunitXmlReporter(
    }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      marks[kclass] = System.currentTimeMillis()
+      marks[kclass] = TimeSource.Monotonic.markNow()
    }
 
    private fun filterResults(results: Map<TestCase, TestResult>) = when (includeContainers) {
@@ -78,15 +79,15 @@ class JunitXmlReporter(
    }
 
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      val start = marks[kclass] ?: System.currentTimeMillis()
-      val duration = System.currentTimeMillis() - start
+      val start = marks[kclass] ?: TimeSource.Monotonic.markNow()
+      val duration = start.elapsedNow()
 
       val filtered = filterResults(results)
 
       val document = Document()
       val testSuite = Element("testsuite")
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
-      testSuite.setAttribute("time", (duration.milliseconds.toDouble(DurationUnit.SECONDS)).toString())
+      testSuite.setAttribute("time", (duration.toDouble(DurationUnit.SECONDS)).toString())
       testSuite.setAttribute("hostname", hostname())
       testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
       testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())

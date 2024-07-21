@@ -6,6 +6,7 @@ actual fun <A : Any> dataClassPrint(): Print<A> = DataClassPrintJvm()
 
 class DataClassPrintJvm : Print<Any> {
 
+   @Deprecated(PRINT_DEPRECATION_MSG)
    override fun print(a: Any): Printed = print(a, 0)
 
    override fun print(a: Any, level: Int): Printed {

@@ -1,11 +1,12 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.Enabled
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -41,12 +42,19 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
          it("an inner test") {}
       }
 
+      describe("a describe with overloaded config") {
+         val config = TestConfig(enabled = false)
+         it("disabled from config object").config(config) {
+            error("boom")
+         }
+      }
+
       describe("a describe disabled by an enabled flag").config(enabled = false) {
          error("boom")
          it("an inner test") { error("boom") }
       }
 
-      describe("a describe disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      describe("a describe disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
          it("an inner test") { error("boom") }
       }
@@ -88,7 +96,7 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
             it("an inner test") { error("boom") }
          }
 
-         describe("a describe disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         describe("a describe disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
             error("boom")
             it("an inner test") { error("boom") }
          }
@@ -153,7 +161,7 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
          }
       }
 
-      context("a context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      context("a context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          counter.incrementAndGet()
          describe("a describe") {
             counter.incrementAndGet()

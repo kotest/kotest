@@ -15,87 +15,54 @@ permissions:
    contents: read
 
 jobs:
-   api_check:
-      runs-on: ubuntu-latest
+
+   validate-api:
+      name: Validate API
       if: github.repository == 'kotest/kotest'
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: ubuntu-latest
+         ref: ${{ inputs.ref }}
+         task: apiCheck
 
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'temurin'
-               java-version: '17'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: Run api check
-            run: ./gradlew apiCheck
-
-   linux:
-      needs: api_check
-      runs-on: ubuntu-latest
+   validate-primary:
+      name: Validate on primary runner
       if: github.repository == 'kotest/kotest'
+      needs: validate-api
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: ubuntu-latest
+         ref: ${{ inputs.ref }}
+         task: check
+
+   validate-secondary:
+      name: Validate on secondary runners
+      if: github.repository == 'kotest/kotest'
+      needs: [ validate-api, validate-primary ]
       strategy:
-         fail-fast: false
          matrix:
-            target:
-               - jvmTest publishJvmPublicationToDeployRepository publishKotlinMultiplatformPublicationToDeployRepository publishKotestBomPublicationToDeployRepository
-               - jsTest publishJsPublicationToDeployRepository
-               - linuxX64Test publishLinuxX64PublicationToDeployRepository
-               - linuxArm64TestKlibrary publishLinuxArm64PublicationToDeployRepository
-               - androidNativeX86TestKlibrary androidNativeX64TestKlibrary publishAndroidNativeX64PublicationToDeployRepository publishAndroidNativeX86PublicationToDeployRepository
-               - androidNativeArm32TestKlibrary androidNativeArm64TestKlibrary publishAndroidNativeArm32PublicationToDeployRepository publishAndroidNativeArm64PublicationToDeployRepository
-      steps:
-         -  uses: kotest/kotest-action@master
-            with:
-               gradle-command: ${{ matrix.target }}
-               java-version: "17"
-
-   mac:
-      needs: api_check
-      runs-on: macos-latest
-      if: github.repository == 'kotest/kotest'
-      strategy:
+            include:
+               -  os: macos-latest
+               -  os: windows-latest
          fail-fast: false
-         matrix:
-            target:
-               - macosX64Test publishMacosX64PublicationToDeployRepository
-               - macosArm64Test publishMacosArm64PublicationToDeployRepository
-               - iosX64Test publishIosX64PublicationToDeployRepository
-               - iosSimulatorArm64Test publishIosSimulatorArm64PublicationToDeployRepository
-               - iosArm64TestKlibrary publishIosArm64PublicationToDeployRepository
-               - iosArm32TestKlibrary publishIosArm32PublicationToDeployRepository
-               - tvosX64Test publishTvosX64PublicationToDeployRepository
-               - tvosArm64TestKlibrary publishTvosArm64PublicationToDeployRepository
-               - watchosArm32TestKlibrary publishWatchosArm32PublicationToDeployRepository
-               - watchosArm64TestKlibrary publishWatchosArm64PublicationToDeployRepository
-               - watchosX86Test publishWatchosX86PublicationToDeployRepository
-               - watchosX64Test publishWatchosX64PublicationToDeployRepository
-               - watchosSimulatorArm64Test publishWatchosSimulatorArm64PublicationToDeployRepository
-               - tvosSimulatorArm64Test publishTvosSimulatorArm64PublicationToDeployRepository
-      steps:
-         -  uses: kotest/kotest-action@master
-            with:
-               gradle-command: ${{ matrix.target }}
-               java-version: "17"
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: ${{ matrix.os }}
+         ref: ${{ inputs.ref }}
+         task: check
 
-   windows:
-      needs: api_check
-      runs-on: windows-latest
+   publish-sonatype:
+      name: Publish all artifacts to Sonatype (Maven Central)
       if: github.repository == 'kotest/kotest'
-      steps:
-         -  uses: kotest/kotest-action@master
-            with:
-               gradle-command: "mingwX64Test publishMingwX64PublicationToDeployRepository"
-               java-version: "17"
-
-env:
-   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+      needs: [ validate-api, validate-primary, validate-secondary ]
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: macos-latest
+         ref: ${{ inputs.ref }}
+         # TODO remove `--continue` when Kotest Gradle Plugin publishing works
+         #      https://github.com/kotest/kotest/issues/4012#issuecomment-2241294938
+         task: publishAllPublicationsToDeployRepository --continue

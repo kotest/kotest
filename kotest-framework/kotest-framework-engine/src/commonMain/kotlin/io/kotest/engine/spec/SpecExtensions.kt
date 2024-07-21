@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.mapError
+import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -18,7 +18,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -86,12 +86,14 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
    }
 
+   @Suppress("DEPRECATION")  // remove when removing Listeners
    suspend fun specInstantiated(spec: Spec) = runCatching {
       logger.log { Pair(spec::class.bestName(), "specInstantiated $spec") }
       registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
       registry.all().filterIsInstance<InstantiationListener>().forEach { it.specInstantiated(spec) }
    }
 
+   @Suppress("DEPRECATION")  // remove when removing Listeners
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
       logger.log { Pair(kclass.bestName(), "specInstantiationError $t") }
       registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }

@@ -9,7 +9,7 @@ class NullsPrintTest : FunSpec() {
          null.print().value shouldBe "<null>"
       }
       test("NullPrint should output properly") {
-         NullPrint.print(null) shouldBe Printed("<null>")
+         NullPrint.print(null, 0) shouldBe Printed("<null>")
       }
    }
 }

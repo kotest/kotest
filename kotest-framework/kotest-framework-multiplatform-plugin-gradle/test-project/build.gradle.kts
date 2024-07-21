@@ -1,30 +1,44 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
    id("io.kotest.multiplatform")
 }
 
+val kotestVersion: String by project
+val devMavenRepoPath: String by project
+val useNewNativeMemoryModel: String by project
+
 repositories {
+   maven(file(devMavenRepoPath)) {
+      name = "DevMavenRepo"
+      mavenContent { includeGroupAndSubgroups("io.kotest") }
+   }
    mavenCentral()
 }
-
-val kotestVersion: String by project
-val useNewNativeMemoryModel: String by project
 
 kotlin {
 
    jvm()
 
-   js(IR) {
-      // FIXME: re-enable this once the issue described in https://github.com/kotest/kotest/pull/3107#issue-1301849119 is fixed
-      // browser()
+   js {
+      browser()
       nodejs()
    }
+
+   @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
+   wasmJs {
+      browser()
+      nodejs()
+   }
+
+   /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
+   wasmWasi {
+      nodejs()
+   }
+   */
 
    linuxX64()
    macosX64()
@@ -48,23 +62,30 @@ kotlin {
    }
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-}
 
-tasks.withType<AbstractTestTask>().configureEach {
    testLogging {
       showExceptions = true
       showStandardStreams = true
       events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 if (useNewNativeMemoryModel.toBoolean()) {
-   kotlin.targets.withType(KotlinNativeTarget::class.java) {
+   kotlin.targets.withType<KotlinNativeTarget>().configureEach {
       binaries.all {
          binaryOptions["memoryModel"] = "experimental"
       }
+   }
+}
+
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
+   // yarn.lock will change when running tests with multiple Kotlin versions
+   extensions.configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
+      yarnLockMismatchReport = org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
    }
 }

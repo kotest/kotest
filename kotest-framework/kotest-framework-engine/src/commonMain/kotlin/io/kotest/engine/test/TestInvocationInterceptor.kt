@@ -1,19 +1,19 @@
 package io.kotest.engine.test
 
-import io.kotest.common.TimeMarkCompat
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
-import io.kotest.mpp.Logger
-import io.kotest.mpp.replay
+import io.kotest.core.Logger
+import io.kotest.engine.concurrency.replay
 import kotlinx.coroutines.coroutineScope
 import kotlin.time.Duration
+import kotlin.time.TimeMark
 
 internal class TestInvocationInterceptor(
    registry: ExtensionRegistry,
-   private val timeMark: TimeMarkCompat,
+   private val timeMark: TimeMark,
    private val invocationInterceptors: List<TestExecutionInterceptor>,
 ) : TestExecutionInterceptor {
 

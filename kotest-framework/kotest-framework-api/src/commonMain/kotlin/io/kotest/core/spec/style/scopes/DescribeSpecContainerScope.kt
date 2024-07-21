@@ -1,16 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
-
-@Deprecated("This interface has been renamed to DescribeSpecContainerScope. Deprecated since 4.5")
-typealias DescribeScope = DescribeSpecContainerScope
-
-@Deprecated("This interface has been renamed to DescribeSpecContainerScope. Deprecated since 5.0")
-typealias DescribeSpecContainerContext = DescribeSpecContainerScope
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -92,7 +85,7 @@ class DescribeSpecContainerScope(
       ) { DescribeSpecContainerScope(it) }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,
@@ -101,7 +94,7 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,

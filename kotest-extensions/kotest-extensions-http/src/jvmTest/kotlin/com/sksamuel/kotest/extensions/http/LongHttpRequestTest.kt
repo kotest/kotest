@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Remove when removing http extension
+
 package com.sksamuel.kotest.extensions.http
 
 import io.kotest.assertions.throwables.shouldThrow
@@ -29,7 +31,7 @@ class LongHttpRequestTest : FunSpec({
             .withCookie(
                "sessionId", "2By8LOhBmaW5nZXJwcmludCIlMDAzMW"
             )
-            .withDelay(TimeUnit.MILLISECONDS, 25)
+            .withDelay(TimeUnit.MILLISECONDS, 2000)
             .withHeader(
                "X-Test", "foo"
             )
@@ -46,7 +48,7 @@ class LongHttpRequestTest : FunSpec({
    }
 
    test("post http request") {
-      http("/example_post.http", mapOf(), 5000) {
+      http("/example_post.http", mapOf(), 8000) {
          it.status shouldBe HttpStatusCode.Accepted
          it.headers["X-Test"] shouldBe "foo"
       }

@@ -6,12 +6,12 @@ import io.kotest.matchers.collections.shouldHaveLowerBound
 import io.kotest.matchers.collections.shouldHaveUpperBound
 import io.kotest.matchers.throwable.shouldHaveMessage
 
-class BoundsTest: WordSpec() {
+class BoundsTest : WordSpec() {
    init {
       "haveUpperBound" should {
          "pass" {
             listOf(1, 2, 3) shouldHaveUpperBound 3
-        }
+         }
 
          "fail" {
             shouldThrowAny {

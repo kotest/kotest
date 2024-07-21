@@ -1,11 +1,8 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 plugins {
    id("kotlin-conventions")
 }
 
 kotlin {
-
    jvm {
       withJava()
    }

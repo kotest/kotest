@@ -1,16 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
-
-@Deprecated("This interface has been renamed to ShouldSpecContainerScope. Deprecated since 4.5")
-typealias ShouldSpecContextScope = ShouldSpecContainerScope
-
-@Deprecated("This interface has been renamed to ShouldSpecContainerScope. Deprecated since 5.0")
-typealias ShouldSpecContainerContext = ShouldSpecContainerScope
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -51,12 +44,12 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testScope.testCase.descriptor.append(name))
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, true)
    }
 

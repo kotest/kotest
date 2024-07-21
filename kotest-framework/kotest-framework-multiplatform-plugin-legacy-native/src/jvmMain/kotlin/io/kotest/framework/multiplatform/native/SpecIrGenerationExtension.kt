@@ -63,7 +63,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
                   ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
 
-            val eagerAnnotationName = ClassId.fromString("kotlin.native.EagerInitialization")
+            val eagerAnnotationName = ClassId.fromString("kotlin/native/EagerInitialization")
             val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
                ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
 

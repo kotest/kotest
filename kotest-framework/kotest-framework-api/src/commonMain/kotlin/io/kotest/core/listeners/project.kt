@@ -6,6 +6,7 @@ package io.kotest.core.listeners
  */
 interface ProjectListener : BeforeProjectListener, AfterProjectListener
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface BeforeProjectListener : Listener {
    /**
     * Callback which is invoked before the first test of the project.
@@ -13,6 +14,7 @@ interface BeforeProjectListener : Listener {
    suspend fun beforeProject() {}
 }
 
+@Suppress("DEPRECATION") // Remove when removing Listener
 interface AfterProjectListener : Listener {
    /**
     * Callback which is invoked after the last test of the project.

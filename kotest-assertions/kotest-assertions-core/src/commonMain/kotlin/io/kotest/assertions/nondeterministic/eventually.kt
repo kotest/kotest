@@ -3,12 +3,12 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
-import io.kotest.mpp.timeInMillis
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
-import kotlin.math.min
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -48,7 +48,8 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val control = EventuallyControl(config)
+   val start = nonDeterministicTestTimeSource().markNow()
+   val control = EventuallyControl(config, start)
 
    try {
       while (control.hasAttemptsRemaining()) {
@@ -67,7 +68,7 @@ suspend fun <T> eventually(
 
          control.step()
       }
-   } catch (e : ShortCircuitControlException) {
+   } catch (e: ShortCircuitControlException) {
       // Short-circuited out from retries, will throw below
 
       // If we terminated due to an exception, we are missing an iteration in the counter
@@ -112,7 +113,12 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+){
+   init {
+      require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
+   }
+}
 
 object EventuallyConfigurationDefaults {
    var duration: Duration = Duration.INFINITE
@@ -130,35 +136,35 @@ object EventuallyConfigurationDefaults {
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the eventually function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully. Must be non-negative.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
    /**
-    * A delay that is applied before the first invocation of the eventually function.
+    * A delay that is applied before the first invocation of the [eventually] function.
     */
    var initialDelay: Duration = EventuallyConfigurationDefaults.initialDelay
 
    /**
-    * The delay between invocations. This delay is overriden by the [intervalFn] if it is not null.
+    * The delay between invocations. This delay is overridden by the [intervalFn] if it is not `null`.
     */
    var interval: Duration = EventuallyConfigurationDefaults.interval
 
    /**
-    * A function that is invoked to calculate the next interval. This if this null, then the
+    * A function that is invoked to calculate the next interval. This if this `null`, then the
     * value of [interval] is used.
     *
-    * This function can be used to implement [fibonacci] or [exponential] backoffs.
+    * This function can be used to implement [fibonacci] or [exponential] backoff.
     */
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. MUST be non-negative.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
    /**
-    * A set of exceptions, which if thrown, will cause the test function to be retried.
+    * A set of exceptions, which, if thrown, will cause the test function to be retried.
     * By default, all exceptions are retried.
     *
     * This set is applied in addition to the values specified by [expectedExceptionsFn].
@@ -182,7 +188,7 @@ class EventuallyConfigurationBuilder {
 
    /**
     * A function that is invoked after each failed invocation which causes no further
-    * invocations, but instead immediately fails the eventually function.
+    * invocations, but instead immediately fails the [eventually] function.
     *
     * This is useful for unrecoverable failures, where retrying would not have any effect.
     */
@@ -202,10 +208,12 @@ object NoopEventuallyListener : EventuallyListener {
    override suspend fun invoke(iteration: Int, error: Throwable) {}
 }
 
-private class EventuallyControl(val config: EventuallyConfiguration) {
+private class EventuallyControl(
+   val config: EventuallyConfiguration,
+   private val start: TimeMark,
+) {
 
-   val start = timeInMillis()
-   val end = start + config.duration.inWholeMilliseconds
+   val end: TimeMark = start.plus(config.duration)
 
    var iterations = 0
 
@@ -236,30 +244,27 @@ private class EventuallyControl(val config: EventuallyConfiguration) {
 
    suspend fun step() {
       lastInterval = config.intervalFn.next(++iterations)
-      val delayMark = timeInMillis()
+      val delayMark = start.elapsedNow()
       // cap the interval at remaining time
-      delay(min(lastInterval.inWholeMilliseconds, end - delayMark))
-      lastDelayPeriod = (timeInMillis() - delayMark).milliseconds
+      delay(minOf(lastInterval, config.duration - delayMark))
+      lastDelayPeriod = (start.elapsedNow() - delayMark)
    }
 
-   fun hasAttemptsRemaining() = timeInMillis() < end && iterations < config.retries
+   fun hasAttemptsRemaining(): Boolean = end.hasNotPassedNow() && iterations < config.retries
 
-   fun buildFailureMessage() = StringBuilder().apply {
-      val totalDuration = timeInMillis() - start
-      val printedDuration = if (totalDuration >= 1000) "${totalDuration / 1000}s" else "${totalDuration}ms"
-
-      appendLine("Block failed after $printedDuration; attempted $iterations time(s)")
+   fun buildFailureMessage(): String = buildString {
+      appendLine("Block failed after ${start.elapsedNow()}; attempted $iterations time(s)")
 
       firstError?.takeIf { config.includeFirst }?.run {
-         appendLine("The first error was caused by: ${this.message}")
+         appendLine("The first error was caused by: ${this.message ?: ""}")
          appendLine(this.stackTraceToString())
       }
 
       lastError?.run {
-         appendLine("The last error was caused by: ${this.message}")
+         appendLine("The last error was caused by: ${this.message ?: ""}")
          appendLine(this.stackTraceToString())
       }
-   }.toString()
+   }
 }
 
 internal object ShortCircuitControlException : Throwable()

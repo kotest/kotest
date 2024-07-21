@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
@@ -24,7 +26,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          error("boom")
       }
 
-      "a test disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      "a test disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
@@ -46,6 +48,17 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
 
       "a test with multiple tags".config(tags = setOf(Tag1, Tag2)) {
          counter.incrementAndGet()
+      }
+
+      val config = TestConfig(enabled = false)
+      "a test with overloaded config".config(config) {
+         error("boom")
+      }
+
+      "a context with overloaded config" - {
+         "disabled from config object".config(config) {
+            error("boom")
+         }
       }
 
       "an outer context with timeout".config(timeout = 2.seconds) - {
@@ -73,7 +86,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          error("boom")
       }
 
-      "an outer context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+      "an outer context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
          error("boom")
       }
 
@@ -109,7 +122,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
             error("boom")
          }
 
-         "an inner context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+         "an inner context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
             error("boom")
          }
       }

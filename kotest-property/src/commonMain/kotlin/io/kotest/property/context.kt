@@ -4,8 +4,8 @@ import io.kotest.property.statistics.Label
 import kotlin.math.roundToInt
 
 /**
- * A [PropertyContext] is used when executing a propery test.
- * It allows feedback and tracking of the state of the property test.
+ * A [PropertyContext] is used when executing a property test.
+ * It allows feedback and state-tracking of the property test.
  */
 class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
 
@@ -53,10 +53,10 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
       return sample.value
    }
 
-   fun markEvaluation() = evals++
+   fun markEvaluation(): Int = evals++
 
-   fun successes() = successes
-   fun failures() = failures
+   fun successes(): Int = successes
+   fun failures(): Int = failures
 
    /**
     * Returns the number of invocations of the test function was invoked after checking for assumptions.

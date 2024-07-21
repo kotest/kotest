@@ -1,19 +1,19 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.common.TimeMarkCompat
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
+import kotlin.time.TimeMark
 
 /**
  * A [TestExecutionInterceptor] that installs a general timeout for all invocations of a test.
  */
 internal class TimeoutInterceptor(
-   private val mark: TimeMarkCompat,
+   private val mark: TimeMark,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(TimeoutInterceptor::class)

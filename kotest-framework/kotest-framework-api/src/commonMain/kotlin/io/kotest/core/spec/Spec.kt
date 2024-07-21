@@ -1,6 +1,7 @@
 package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
@@ -26,7 +27,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
-import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import kotlin.js.JsName
 
 /**
@@ -104,6 +105,7 @@ abstract class Spec : TestConfiguration() {
     *
     * Any test case config set a test itself will override any value here.
     */
+   @Suppress("DEPRECATION") // Remove when removing TestCaseConfig
    @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
    open fun defaultTestCaseConfig(): TestCaseConfig? = null
 
@@ -305,6 +307,13 @@ abstract class Spec : TestConfiguration() {
    var coroutineTestScope: Boolean? = null
 
    /**
+    * Flag controlling whether virtual time is enabled for non-deterministic test functions (`eventually`, ...).
+    * This is for Kotest-internal testing only and should not be used outside Kotest.
+    */
+   @KotestInternal
+   var nonDeterministicTestVirtualTimeEnabled: Boolean = false
+
+   /**
     * Sets the number of threads that will be used for executing root tests in this spec.
     *
     * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
@@ -438,6 +447,6 @@ data class RootTest(
    val type: TestType,
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
-   val config: UnresolvedTestConfig?, // if specified by the test, may be null
+   val config: TestConfig?, // if specified by the test, may be null
    val factoryId: FactoryId?, // if this root test was added from a factory
 )
