@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
@@ -60,6 +61,18 @@ tasks.withType<Test>().configureEach {
 
    systemProperty("kotestLibraryVersion", Ci.publishVersion)
    systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
+
+   //region remote Gradle build cache
+
+   jvmArgumentProviders.add(
+      SystemPropertiesArgumentProvider(
+         objects.mapProperty<String, String>().apply {
+            put("Kotest_GradleBuildCache_user", providers.gradleProperty("Kotest_GradleBuildCache_user"))
+            put("Kotest_GradleBuildCache_pass", providers.gradleProperty("Kotest_GradleBuildCache_pass"))
+         }
+      )
+   )
+   //endregion
 
    testLogging {
       showExceptions = true

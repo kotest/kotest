@@ -15,10 +15,6 @@ import java.nio.file.Paths
 // It embeds a particular version of Kotlin, which causes all kinds of pain.
 // See https://youtrack.jetbrains.com/issue/KT-24327 for one example.
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
-   val kotestLibraryVersion = System.getProperty("kotestLibraryVersion")
-   val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
-   val devMavenRepoPath = System.getProperty("devMavenRepoPath")
-
    setOf(
       "1.9.24",
       "2.0.0",
@@ -65,10 +61,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                testProjectPath,
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
-                  "-PkotestGradlePluginVersion=$kotestGradlePluginVersion",
-                  "-PkotestLibraryVersion=$kotestLibraryVersion",
                   "-PuseNewNativeMemoryModel=false",
-                  "-PdevMavenRepoPath=$devMavenRepoPath",
                ) + taskNames
             )
 
@@ -100,10 +93,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                      testProjectPath,
                      listOf(
                         "-PkotlinVersion=$kotlinVersion",
-                        "-PkotestGradlePluginVersion=$kotestGradlePluginVersion",
-                        "-PkotestLibraryVersion=$kotestLibraryVersion",
                         "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
-                        "-PdevMavenRepoPath=$devMavenRepoPath",
                      ) + taskNames
                   )
 
@@ -125,7 +115,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
 
 private data class GradleInvocation(
    val projectPath: Path,
-   val arguments: List<String>
+   val arguments: List<String>,
 ) {
    val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
    private val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
@@ -136,14 +126,16 @@ private data class GradleInvocation(
    }
 
    fun run(): Result {
-      val command =
-         listOf(
-            wrapperScriptPath.toAbsolutePath().toString(),
-            "--console=plain",
-            "--no-daemon",
-            "--continue"
-         ) +
-            arguments
+      val command = buildList {
+         add(wrapperScriptPath.toAbsolutePath().toString())
+         //add("--continue")
+         add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
+         add("-PkotestLibraryVersion=$kotestLibraryVersion")
+         add("-PdevMavenRepoPath=$devMavenRepoPath")
+         add("-PKotest_GradleBuildCache_user=$buildCacheUser")
+         add("-PKotest_GradleBuildCache_pass=$buildCachePass")
+         addAll(arguments)
+      }
 
       val process = ProcessBuilder(command)
          .directory(projectPath.toFile())
@@ -157,5 +149,13 @@ private data class GradleInvocation(
          output = InputStreamReader(process.inputStream).use { reader -> reader.readText() },
          exitCode = process.waitFor()
       )
+   }
+
+   companion object {
+      private val kotestLibraryVersion = System.getProperty("kotestLibraryVersion")
+      private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
+      private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
+      private val buildCacheUser = System.getProperty("Kotest_GradleBuildCache_user")
+      private val buildCachePass = System.getProperty("Kotest_GradleBuildCache_pass")
    }
 }
