@@ -21,7 +21,6 @@ kotlin {
             api(projects.kotestFramework.kotestFrameworkDiscovery)
             api(projects.kotestAssertions.kotestAssertionsCore)
             api(projects.kotestExtensions)
-            api(projects.kotestFramework.kotestFrameworkConcurrency)
             api(libs.kotlinx.coroutines.core)
             api(libs.junit.platform.engine)
             api(libs.junit.platform.api)
