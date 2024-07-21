@@ -2,59 +2,73 @@ package io.kotest.property.seed
 
 import io.kotest.assertions.print.print
 import io.kotest.common.TestPath
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
-actual fun readSeed(path: TestPath): Long? {
+
+internal actual fun readSeed(path: TestPath): Long? {
    return try {
-      val p = seedPath(path)
-      if (p.exists())
-         Files.readAllLines(p).firstOrNull()?.trim()?.toLongOrNull()
-      else null
+      return path.seedPath()
+         .takeIf(Path::exists)
+         ?.readText()
+         ?.trim()
+         ?.toLongOrNull()
    } catch (e: Exception) {
-      println("Error reading seed")
+      println("Error reading seed for $path")
       e.print()
       null
    }
 }
 
-internal fun xdgCacheHomeOrNull(): String? = System.getenv("XDG_CACHE_HOME")?.takeIf { it.isNotBlank() }
-internal fun userHome(): String = System.getProperty("user.home")
-internal fun configDirectory(): String = xdgCacheHomeOrNull() ?: userHome()
-internal fun seedDirectory(): Path = Paths.get(configDirectory()).resolve(".kotest").resolve("seeds")
-
-fun seedPath(path: TestPath): Path {
-   return seedDirectory().resolve(escape(path.value))
-}
-
-private fun escape(path: String) = path
-   .replace('/', '_')
-   .replace('\\', '_')
-   .replace('<', '_')
-   .replace('>', '_')
-   .replace(':', '_')
-   .replace('(', '_')
-   .replace(')', '_')
-
-actual fun writeSeed(path: TestPath, seed: Long) {
+internal actual fun writeSeed(path: TestPath, seed: Long) {
    try {
-      val f = seedPath(path)
-      f.parent.toFile().mkdirs()
-      Files.write(f, seed.toString().encodeToByteArray())
+      val f = path.seedPath()
+      f.createParentDirectories()
+      f.writeText(seed.toString())
    } catch (e: Exception) {
-      println("Error writing seed")
+      println("Error writing seed $seed for $path")
       e.printStackTrace()
    }
 }
 
-actual fun clearSeed(path: TestPath) {
+internal actual fun clearSeed(path: TestPath) {
    try {
-      val f = seedPath(path)
-      f.toFile().deleteRecursively()
+      val f = path.seedPath()
+      if (
+         f.isRegularFile()
+         && f != seedDirectory
+         && f.startsWith(seedDirectory)
+      ) {
+         f.deleteIfExists()
+      }
    } catch (e: Exception) {
-      println("Error clearing seed")
+      println("Error clearing seed $path")
       e.printStackTrace()
    }
 }
+
+internal fun seedDirectory(): Path = seedDirectory
+
+private val seedDirectory: Path by lazy {
+   val baseDir = System.getenv("XDG_CACHE_HOME")?.ifBlank { null }
+      ?: System.getProperty("user.home")
+
+   val kotestConfigDir = Path(baseDir).resolve(".kotest")
+
+   kotestConfigDir.resolve("seeds").apply {
+      createDirectories()
+   }
+}
+
+private fun TestPath.seedPath(): Path =
+   seedDirectory.resolve(seedFileName())
+
+private fun TestPath.seedFileName(): String =
+   value.replace(Regex("""[/\\<>:()]"""), "_")

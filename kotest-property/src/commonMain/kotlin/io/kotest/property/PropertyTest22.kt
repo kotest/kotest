@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
