@@ -3,7 +3,7 @@ package io.kotest.engine.test.status
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isRootTest
-import io.kotest.mpp.log
+import io.kotest.core.log
 
 /**
  * This [TestEnabledExtension] disables tests if the containing spec has focused tests,

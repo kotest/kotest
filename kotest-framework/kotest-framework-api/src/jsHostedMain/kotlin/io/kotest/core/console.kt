@@ -1,7 +1,7 @@
-package io.kotest.common
+package io.kotest.core
 
 object console {
    fun log(message: Any?) = jsConsoleLog(message as? String ?: "(null)")
 }
 
-expect internal fun jsConsoleLog(message: String)
+internal expect fun jsConsoleLog(message: String)

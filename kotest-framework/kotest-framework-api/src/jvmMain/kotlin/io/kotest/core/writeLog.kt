@@ -1,5 +1,6 @@
-package io.kotest.mpp
+package io.kotest.core
 
+import io.kotest.mpp.syspropOrEnv
 import java.io.FileWriter
 import kotlin.time.TimeMark
 
