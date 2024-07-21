@@ -1,6 +1,6 @@
-package io.kotest.mpp
+package io.kotest.core.factory
 
 /**
  * Returns a unique id. Defaults to UUID implementations where available.
  */
-expect fun uniqueId(): String
+internal expect fun uniqueId(): String

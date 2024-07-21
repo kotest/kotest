@@ -9,7 +9,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
@@ -287,3 +286,4 @@ internal fun KClass<*>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<
 
 internal fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
    annotations.any { it.annotationClass in annotation }
+
