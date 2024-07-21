@@ -11,16 +11,10 @@ object Ci {
       else -> "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
    }
 
-   private val snapshotGradleVersion = when (githubBuildNumber) {
-      null -> "$snapshotBase-LOCAL"
-      else -> "$snapshotBase.${githubBuildNumber}"
-   }
-
    private val releaseVersion = System.getenv("RELEASE_VERSION")?.ifBlank { null }
 
    val isRelease = releaseVersion != null
    val publishVersion = releaseVersion ?: snapshotVersion
-   val gradleVersion = releaseVersion ?: snapshotGradleVersion
 
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.
