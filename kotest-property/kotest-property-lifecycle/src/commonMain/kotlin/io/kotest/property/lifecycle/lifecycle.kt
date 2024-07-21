@@ -13,6 +13,7 @@ interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
    suspend fun beforeProperty()
    suspend fun afterProperty()
 
+   /** See [SpecExtension.intercept]. */
    @Deprecated("See `SpecExtension.intercept(spec: KClass<out Spec>, process: suspend () -> Unit)`")
    override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
       val before = coroutineContext[BeforePropertyContextElement]?.before
