@@ -4,11 +4,12 @@ package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.test.TestScope
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.matchers.string.shouldStartWith
-import java.io.InputStreamReader
+import org.gradle.testkit.runner.GradleRunner
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -17,17 +18,17 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.Path
 import kotlin.io.path.absolute
 import kotlin.io.path.copyToRecursively
+import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempDirectory
+import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteRecursively
 import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
+import kotlin.io.path.writer
 
-// Why don't we use Gradle's TestKit here?
-// It embeds a particular version of Kotlin, which causes all kinds of pain.
-// See https://youtrack.jetbrains.com/issue/KT-24327 for one example.
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
       "1.9.24",
@@ -107,13 +108,17 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    }
 })
 
-private fun runGradle(
+private fun TestScope.runGradle(
    arguments: List<String>,
    block: (result: GradleInvocation.Result) -> Unit,
 ) {
-   GradleInvocation(arguments).use {
-      val result = it.run()
-      withClue(result.clue) {
+   GradleInvocation(
+      arguments = arguments,
+      testId = testCase.descriptor.id.value,
+   ).use { gradle ->
+      val result = gradle.run()
+      println("[${testCase.name.testName}] result log ${result.output.absolute()}")
+      withClue({ result.clue() }) {
          block(result)
       }
    }
@@ -121,43 +126,69 @@ private fun runGradle(
 
 private data class GradleInvocation(
    val arguments: List<String>,
+   val testId: String,
 ) : AutoCloseable {
    val projectDir = createTempDirectory("kotest-gradle-plugin-test")
 
    data class Result(
-      val command: List<String>,
-      val output: String,
-      val exitCode: Int,
+//      val command: List<String>,
+      val output: Path,
+//      val exitCode: Int,
       val projectDir: Path,
    ) {
       val testReportsDirectory: Path = projectDir.resolve("build/test-results")
 
-      val clue = "Gradle process $command exited with code $exitCode and output:\n" + output.prependIndent("\t>>> ")
+      fun clue(): String =
+         output.readText().prependIndent("\t>>> ")
+//         "Gradle process $command exited with code $exitCode and output:\n" + output.readText().prependIndent("\t>>> ")
    }
 
    fun run(): Result {
       prepareProjectDir(projectDir)
 
-      val command = buildList {
-         add(wrapperScriptPath.toString())
-         add("--continue")
-         add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
-         add("-PkotestVersion=$kotestVersion")
-         add("-PdevMavenRepoPath=$devMavenRepoPath")
-         addAll(arguments)
-      }
+      val logFile = createTempFile(testLogDir, testId.replaceNonAlphanumeric(), ".log")
 
-      val process = ProcessBuilder(command)
-         .directory(projectDir.toFile())
-         .redirectOutput(ProcessBuilder.Redirect.PIPE)
-         .redirectError(ProcessBuilder.Redirect.PIPE)
-         .redirectErrorStream(true)
-         .start()
+      val result =
+         GradleRunner.create()
+            .withProjectDir(projectDir.toFile())
+            .forwardStdOutput(logFile.writer())
+            .withEnvironment(
+               mapOf(
+//                  "GRADLE_USER_HOME" to gradleUserHome.toString(),
+                  "GRADLE_RO_DEP_CACHE" to hostGradleUserHome.resolve("caches").toString(),
+               )
+            )
+            .withArguments(
+               buildList {
+                  add("--continue")
+                  add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
+                  add("-PkotestVersion=$kotestVersion")
+                  add("-PdevMavenRepoPath=$devMavenRepoPath")
+                  addAll(arguments)
+               }
+            )
+            .build()
+
+//      val command = buildList {
+//         add(wrapperScriptPath.toString())
+//      }
+
+//      val process = ProcessBuilder(command)
+//         .directory(projectDir.toFile())
+//         .redirectOutput(logFile.toFile())
+//         .redirectError(logFile.toFile())
+//         .redirectErrorStream(true)
+//         .apply {
+//            environment().apply {
+//            }
+//         }
+//         .start()
+
 
       return Result(
-         command = command,
-         output = InputStreamReader(process.inputStream).use { reader -> reader.readText() },
-         exitCode = process.waitFor(),
+//         command = command,
+         output = logFile,
+//         exitCode = process.waitFor(),
          projectDir = projectDir,
       )
    }
@@ -167,6 +198,19 @@ private data class GradleInvocation(
    }
 
    companion object {
+
+      /** Access the current host's Gradle user dir, to use as a read-only cache. */
+      private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
+
+      private val testLogDir = Path(System.getProperty("testLogDir"))
+         .resolve(System.currentTimeMillis().toString())
+         .apply {
+            createDirectories()
+         }
+
+      /** Use a stable Gradle user home for each test. */
+      private val gradleUserHome = Files.createTempDirectory("test-gradle-user-home")
+
       private val kotestVersion = System.getProperty("kotestVersion")
       private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
@@ -212,5 +256,10 @@ private data class GradleInvocation(
 
          return projectDir
       }
+
+      private fun String.replaceNonAlphanumeric(
+         replacement: String = "-"
+      ): String =
+         map { if (it.isLetterOrDigit()) it else replacement }.joinToString("")
    }
 }

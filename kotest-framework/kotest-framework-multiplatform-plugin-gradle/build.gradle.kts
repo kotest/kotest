@@ -3,13 +3,13 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import utils.SystemPropertiesArgumentProvider
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
    `kotlin-dsl`
    id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
+   `java-test-fixtures`
 }
 
 group = "io.kotest"
@@ -25,6 +25,8 @@ dependencies {
    testImplementation(projects.kotestRunner.kotestRunnerJunit5)
 
    testImplementation(libs.mockk)
+
+   testImplementation(gradleTestKit())
 
    devPublication(projects.kotestAssertions.kotestAssertionsApi)
    devPublication(projects.kotestAssertions.kotestAssertionsCore)
@@ -67,6 +69,9 @@ tasks.withType<Test>().configureEach {
       .withPropertyName("testProjectDir")
       .withPathSensitivity(RELATIVE)
    systemProperty("testProjectDir", testProjectDir.asFile.invariantSeparatorsPath)
+
+   systemProperty("gradleUserHomeDir", gradle.gradleUserHomeDir.invariantSeparatorsPath)
+   systemProperty("testLogDir", temporaryDir.resolve("logs").invariantSeparatorsPath)
 
    testLogging {
       showExceptions = true
@@ -135,6 +140,14 @@ kotlin.sourceSets.main {
 }
 
 tasks.clean.configure {
-   delete("${project.layout.projectDirectory}/test-project/build/")
-   delete("${project.layout.projectDirectory}/test-project/.gradle/")
+   delete(
+      layout.projectDirectory.dir("test-project/build"),
+      layout.projectDirectory.dir("test-project/.gradle"),
+   )
 }
+
+// Don't publish test fixtures (we don't need to share them, and they cause warnings when publishing)
+// https://docs.gradle.org/current/userguide/java_testing.html#publishing_test_fixtures
+val javaComponent = components["java"] as AdhocComponentWithVariants
+javaComponent.withVariantsFromConfiguration(configurations["testFixturesApiElements"]) { skip() }
+javaComponent.withVariantsFromConfiguration(configurations["testFixturesRuntimeElements"]) { skip() }
