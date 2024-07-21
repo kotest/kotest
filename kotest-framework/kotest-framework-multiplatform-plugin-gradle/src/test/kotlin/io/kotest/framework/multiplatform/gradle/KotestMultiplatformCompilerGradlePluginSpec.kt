@@ -132,8 +132,6 @@ private data class GradleInvocation(
          add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
          add("-PkotestLibraryVersion=$kotestLibraryVersion")
          add("-PdevMavenRepoPath=$devMavenRepoPath")
-         add("-PKotest_GradleBuildCache_user=$buildCacheUser")
-         add("-PKotest_GradleBuildCache_pass=$buildCachePass")
          addAll(arguments)
       }
 
@@ -142,6 +140,12 @@ private data class GradleInvocation(
          .redirectOutput(ProcessBuilder.Redirect.PIPE)
          .redirectError(ProcessBuilder.Redirect.PIPE)
          .redirectErrorStream(true)
+         .apply {
+            environment().apply {
+               put("ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user", buildCacheUser)
+               put("ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_pass", buildCachePass)
+            }
+         }
          .start()
 
       return Result(
