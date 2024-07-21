@@ -1,4 +1,4 @@
-package io.kotest.common
+package io.kotest.engine
 
 expect fun <T> runBlocking(f: suspend () -> T): T
 

@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.flatMap
+import io.kotest.engine.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.wrapper
