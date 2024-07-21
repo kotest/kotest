@@ -1570,13 +1570,6 @@ public final class io/kotest/property/seed/SeedKt {
 	public static final fun writeFailedSeedIfEnabled (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/property/seed/SeedioKt {
-	public static final fun clearSeed (Lio/kotest/common/TestPath;)V
-	public static final fun readSeed (Lio/kotest/common/TestPath;)Ljava/lang/Long;
-	public static final fun seedPath (Lio/kotest/common/TestPath;)Ljava/nio/file/Path;
-	public static final fun writeSeed (Lio/kotest/common/TestPath;J)V
-}
-
 public final class io/kotest/property/statistics/CoverageKt {
 	public static final fun withCoverageCount (Ljava/lang/Object;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withCoverageCounts (Ljava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

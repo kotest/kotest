@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.core.factory
 
 import java.util.UUID
 

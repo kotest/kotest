@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.engine.concurrency
 
 actual suspend fun replay(
    times: Int,

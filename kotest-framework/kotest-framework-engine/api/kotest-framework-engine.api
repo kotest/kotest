@@ -41,6 +41,22 @@ public final class io/kotest/engine/KotestEngineLauncher$Companion {
 	public final fun default (Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;)Lio/kotest/engine/KotestEngineLauncher;
 }
 
+public final class io/kotest/engine/ReflectionKt {
+	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/ResultsKt {
+	public static final fun collect (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun flatMap (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/RunBlockingKt {
+	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class io/kotest/engine/TestEngine {
 	public fun <init> (Lio/kotest/engine/TestEngineConfig;)V
 }
@@ -108,6 +124,10 @@ public final class io/kotest/engine/concurrency/NoopCoroutineDispatcherFactory :
 	public static final field INSTANCE Lio/kotest/engine/concurrency/NoopCoroutineDispatcherFactory;
 	public fun close ()V
 	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/concurrency/ReplayKt {
+	public static final fun replay (IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/config/ConfigManager {

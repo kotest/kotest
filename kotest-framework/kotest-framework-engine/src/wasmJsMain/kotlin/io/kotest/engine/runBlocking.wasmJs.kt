@@ -1,5 +1,6 @@
-package io.kotest.common
+package io.kotest.engine
 
+import io.kotest.common.console
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise

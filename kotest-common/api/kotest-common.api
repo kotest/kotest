@@ -4,10 +4,6 @@ public abstract interface annotation class io/kotest/common/DelicateKotest : jav
 public abstract interface annotation class io/kotest/common/ExperimentalKotest : java/lang/annotation/Annotation {
 }
 
-public final class io/kotest/common/IntellijKt {
-	public static final fun isIntellij ()Z
-}
-
 public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/annotation/Annotation {
 }
 
@@ -41,18 +37,6 @@ public final class io/kotest/common/Platform : java/lang/Enum {
 
 public final class io/kotest/common/PlatformKt {
 	public static final fun getPlatform ()Lio/kotest/common/Platform;
-}
-
-public final class io/kotest/common/ResultsKt {
-	public static final fun collect (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun flatMap (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun flatten (Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
-public final class io/kotest/common/RunBlockingKt {
-	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
@@ -131,10 +115,6 @@ public final class io/kotest/mpp/IncludingSuperclasses : io/kotest/mpp/Annotatio
 	public static final field INSTANCE Lio/kotest/mpp/IncludingSuperclasses;
 }
 
-public final class io/kotest/mpp/InstantiateKt {
-	public static final fun instantiateOrObject (Ljava/lang/Class;)Ljava/lang/Object;
-}
-
 public final class io/kotest/mpp/IsPlatformStableKt {
 	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
 }
@@ -163,13 +143,6 @@ public final class io/kotest/mpp/LoggerKt {
 	public static final fun isLoggingEnabled ()Z
 	public static final fun log (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 	public static final fun log (Lkotlin/jvm/functions/Function0;)V
-}
-
-public final class io/kotest/mpp/NamedThreadFactory : java/util/concurrent/ThreadFactory {
-	public fun <init> (Ljava/lang/String;Z)V
-	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getName ()Ljava/lang/String;
-	public fun newThread (Ljava/lang/Runnable;)Ljava/lang/Thread;
 }
 
 public final class io/kotest/mpp/Property {
@@ -201,13 +174,6 @@ public abstract interface class io/kotest/mpp/Reflection {
 
 public final class io/kotest/mpp/ReflectionKt {
 	public static final fun bestName (Lkotlin/reflect/KClass;)Ljava/lang/String;
-	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public static final fun qualifiedNameOrNull (Lkotlin/reflect/KClass;)Ljava/lang/String;
-}
-
-public final class io/kotest/mpp/ReplayKt {
-	public static final fun replay (IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/mpp/StableKt {
@@ -242,17 +208,9 @@ public final class io/kotest/mpp/SyspropKt {
 	public static final fun syspropOrEnv (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class io/kotest/mpp/ThrowableUnwrappingKt {
-	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
-}
-
 public final class io/kotest/mpp/UserStackTraceConverter {
 	public static final field INSTANCE Lio/kotest/mpp/UserStackTraceConverter;
 	public final fun getUserStacktrace ([Ljava/lang/StackTraceElement;)[Ljava/lang/StackTraceElement;
-}
-
-public final class io/kotest/mpp/UuidKt {
-	public static final fun uniqueId ()Ljava/lang/String;
 }
 
 public final class io/kotest/mpp/WriteLogKt {

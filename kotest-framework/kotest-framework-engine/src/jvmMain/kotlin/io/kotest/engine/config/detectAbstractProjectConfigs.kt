@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.mpp.instantiateOrObject
+import io.kotest.engine.instantiateOrObject
 import io.kotest.mpp.log
 import org.jetbrains.annotations.ApiStatus.Internal
 
