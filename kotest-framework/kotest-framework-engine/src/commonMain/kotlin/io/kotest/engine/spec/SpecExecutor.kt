@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.flatMap
+import io.kotest.engine.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.Spec
