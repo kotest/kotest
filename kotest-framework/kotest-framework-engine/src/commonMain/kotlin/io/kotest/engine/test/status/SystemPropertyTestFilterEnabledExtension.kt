@@ -6,7 +6,7 @@ import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.syspropOrEnv
 
 /**

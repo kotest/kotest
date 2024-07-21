@@ -2,7 +2,7 @@ package io.kotest.engine.test.scheduler
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.log
+import io.kotest.core.log
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore

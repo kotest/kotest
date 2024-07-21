@@ -1,3 +1,16 @@
+public final class io/kotest/core/Logger {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public final fun log (Lkotlin/jvm/functions/Function0;)V
+	public final fun logsimple (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class io/kotest/core/LoggerKt {
+	public static final fun getStart ()J
+	public static final fun isLoggingEnabled ()Z
+	public static final fun log (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun log (Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -7,6 +20,20 @@ public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/core/Platform : java/lang/Enum {
+	public static final field JS Lio/kotest/core/Platform;
+	public static final field JVM Lio/kotest/core/Platform;
+	public static final field Native Lio/kotest/core/Platform;
+	public static final field WasmJs Lio/kotest/core/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
+	public static fun values ()[Lio/kotest/core/Platform;
+}
+
+public final class io/kotest/core/PlatformKt {
+	public static final fun getPlatform ()Lio/kotest/core/Platform;
 }
 
 public final class io/kotest/core/StringTag : io/kotest/core/Tag {
@@ -808,6 +835,10 @@ public final class io/kotest/core/TupleKt {
 	public static final fun tuple (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/core/Tuple22;
 }
 
+public final class io/kotest/core/WriteLogKt {
+	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/core/annotation/AlwaysEnabledCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
@@ -843,7 +874,7 @@ public abstract interface annotation class io/kotest/core/annotation/Isolate : j
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresPlatform : java/lang/annotation/Annotation {
-	public abstract fun values ()[Lio/kotest/common/Platform;
+	public abstract fun values ()[Lio/kotest/core/Platform;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresTag : java/lang/annotation/Annotation {

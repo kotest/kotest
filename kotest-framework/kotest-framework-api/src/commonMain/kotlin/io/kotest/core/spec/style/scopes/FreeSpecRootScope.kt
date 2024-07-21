@@ -9,9 +9,6 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-@Deprecated("Renamed to FreeSpecRootContext. Deprecated since 5.0")
-typealias FreeSpecRootContext = FreeSpecRootScope
-
 data class FreeSpecContextConfigBuilder(val name: String, val config: TestConfig)
 
 interface FreeSpecRootScope : RootScope {

@@ -10,12 +10,11 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

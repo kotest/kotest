@@ -7,9 +7,6 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 
-@Deprecated("Renamed to RootContext. Deprecated since 5.0")
-typealias RootContext = RootScope
-
 /**
  * A [RootScope] allows for [RootTest]s to be registered via a DSL.
  */
