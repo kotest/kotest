@@ -5,12 +5,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
-@Deprecated("This interface has been renamed to FunSpecContainerScope. Deprecated since 4.5")
-typealias FunSpecContextScope = FunSpecContainerScope
-
-@Deprecated("This interface has been renamed to FunSpecContainerScope. Deprecated since 5.0")
-typealias FunSpecContainerContext = FunSpecContainerScope
-
 /**
  * A context that allows tests to be registered using the syntax:
  *
