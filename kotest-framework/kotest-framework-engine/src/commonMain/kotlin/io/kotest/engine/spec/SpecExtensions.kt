@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.mapError
+import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension

@@ -70,7 +70,11 @@ fun <T, C : Collection<T>> containExactly(
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(IterableEq.trigger) == true
 
-   val failureReason = eq(actual, expected, strictNumberEq = true)
+   val failureReason = if(verifier == null) {
+      eq(actual, expected, strictNumberEq = true)
+   } else {
+      matchCollectionsWithVerifier(actual, expected, verifier)
+   }
 
    val missing = expected.filterNot { t ->
       actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
@@ -88,6 +92,11 @@ fun <T, C : Collection<T>> containExactly(
             append(
                "Collection should contain exactly: ${expected.print().value} but was: ${actual.print().value}"
             )
+            appendLine()
+         }
+
+         if (failureReason is CollectionMismatchWithCustomVerifier) {
+            append(failureReason.message)
             appendLine()
          }
 
@@ -128,6 +137,37 @@ fun <T, C : Collection<T>> containExactly(
       )
    }
 }
+
+internal fun<T> matchCollectionsWithVerifier(
+   actual: Collection<T>,
+   expected: Collection<T>,
+   verifier: Equality<T>
+): CollectionMismatchWithCustomVerifier? {
+   val actualIterator = actual.iterator()
+   val expectedIterator = expected.iterator()
+   var index = 0
+   while (actualIterator.hasNext()) {
+      val actualElement = actualIterator.next()
+      if (expectedIterator.hasNext()) {
+         val expectedElement = expectedIterator.next()
+         val equalityResult = verifier.verify(actualElement, expectedElement)
+         if(!equalityResult.areEqual()) {
+            return CollectionMismatchWithCustomVerifier(
+               "Elements differ at index $index, expected: <${expectedElement.print().value}>, but was <${actualElement.print().value}>, ${equalityResult.details().explain()}"
+            )
+         }
+      } else {
+         return CollectionMismatchWithCustomVerifier("Actual has an element at index $index, expected is shorter")
+      }
+      index++
+   }
+   if (expectedIterator.hasNext()) {
+      return CollectionMismatchWithCustomVerifier("Expected has an element at index $index, actual is shorter")
+   }
+   return null
+}
+
+internal class CollectionMismatchWithCustomVerifier(message: String): Exception(message)
 
 @JvmName("shouldNotContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldNotContainExactly(expected: Iterable<T>) =

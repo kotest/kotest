@@ -1,7 +1,7 @@
 package io.kotest.engine.test
 
-import io.kotest.common.collect
-import io.kotest.common.mapError
+import io.kotest.engine.collect
+import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension

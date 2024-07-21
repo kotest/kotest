@@ -43,18 +43,6 @@ public final class io/kotest/common/PlatformKt {
 	public static final fun getPlatform ()Lio/kotest/common/Platform;
 }
 
-public final class io/kotest/common/ResultsKt {
-	public static final fun collect (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun flatMap (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun flatten (Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
-public final class io/kotest/common/RunBlockingKt {
-	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
-}
-
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
 	public abstract fun message ()Ljava/lang/String;
 }
@@ -204,10 +192,6 @@ public final class io/kotest/mpp/ReflectionKt {
 	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun qualifiedNameOrNull (Lkotlin/reflect/KClass;)Ljava/lang/String;
-}
-
-public final class io/kotest/mpp/ReplayKt {
-	public static final fun replay (IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/mpp/StableKt {
