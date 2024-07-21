@@ -59,34 +59,6 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
-@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5.")
-object StringShrinker : Shrinker<String> {
-
-   override fun shrink(value: String): List<String> {
-      return when {
-         value == "" -> emptyList()
-         value == "a" -> listOf("")
-         value.length == 1 -> listOf("", "a")
-         else -> {
-            val firstHalf = value.take(value.length / 2 + value.length % 2)
-            val secondHalf = value.takeLast(value.length / 2)
-            val secondHalfAs = firstHalf.padEnd(value.length, 'a')
-            val firstHalfAs = secondHalf.padStart(value.length, 'a')
-            val dropFirstChar = value.drop(1)
-            val dropLastChar = value.dropLast(1)
-            listOf(
-               firstHalf,
-               firstHalfAs,
-               secondHalf,
-               secondHalfAs,
-               dropFirstChar,
-               dropLastChar
-            )
-         }
-      }
-   }
-}
-
 /**
  * Shrinks a string. Shrunk variants will be shorter and simplified.
  *
