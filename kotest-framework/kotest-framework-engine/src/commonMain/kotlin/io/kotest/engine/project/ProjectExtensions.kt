@@ -4,7 +4,7 @@ import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.engine.extensions.ExtensionException
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 class ProjectExtensions(private val registry: ExtensionRegistry) {
 

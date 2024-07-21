@@ -1,8 +1,7 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * Notifies the test listener that the engine is ready to execute tests,

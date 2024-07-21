@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import java.util.regex.Pattern
 
 /**

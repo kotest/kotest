@@ -5,7 +5,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.mpp.log
+import io.kotest.core.log
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor

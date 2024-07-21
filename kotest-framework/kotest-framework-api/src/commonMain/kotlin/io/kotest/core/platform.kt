@@ -1,4 +1,4 @@
-package io.kotest.common
+package io.kotest.core
 
 enum class Platform {
    JVM, JS, Native, WasmJs

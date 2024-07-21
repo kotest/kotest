@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.status.isEnabled
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
