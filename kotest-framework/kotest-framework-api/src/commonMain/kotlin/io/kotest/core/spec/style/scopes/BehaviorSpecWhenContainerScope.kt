@@ -4,12 +4,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
-@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerScope. Deprecated since 4.5")
-typealias WhenScope = BehaviorSpecWhenContainerScope
-
-@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerScope. Deprecated since 5.0")
-typealias BehaviorSpecWhenContainerContext = BehaviorSpecWhenContainerScope
-
 /**
  * A context that allows tests to be registered using the syntax:
  *
