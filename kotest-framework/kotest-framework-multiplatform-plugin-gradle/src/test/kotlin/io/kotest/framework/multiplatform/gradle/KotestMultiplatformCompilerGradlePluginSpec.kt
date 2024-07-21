@@ -129,7 +129,6 @@ private data class GradleInvocation(
       val command = buildList {
          add(wrapperScriptPath.toAbsolutePath().toString())
          add("--continue")
-         add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
          add("-PkotestVersion=$kotestVersion")
          add("-PdevMavenRepoPath=$devMavenRepoPath")
          addAll(arguments)
@@ -151,7 +150,6 @@ private data class GradleInvocation(
 
    companion object {
       private val kotestVersion = System.getProperty("kotestVersion")
-      private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
    }
 }

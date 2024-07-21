@@ -57,7 +57,6 @@ tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
-   systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
    testLogging {
       showExceptions = true
