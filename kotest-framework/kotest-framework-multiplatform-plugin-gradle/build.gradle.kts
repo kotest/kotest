@@ -62,6 +62,12 @@ tasks.withType<Test>().configureEach {
    systemProperty("kotestVersion", Ci.publishVersion)
    systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
+   val testProjectDir = layout.projectDirectory.dir("test-project")
+   inputs.dir(testProjectDir)
+      .withPropertyName("testProjectDir")
+      .withPathSensitivity(RELATIVE)
+   systemProperty("testProjectDir", testProjectDir.asFile.invariantSeparatorsPath)
+
    testLogging {
       showExceptions = true
       showStandardStreams = true
