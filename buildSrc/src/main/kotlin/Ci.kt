@@ -4,23 +4,18 @@ object Ci {
    // .buildnumber-snapshot will be appended
    private const val snapshotBase = "5.10.0"
 
-   private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
 
-   private val snapshotVersion = when (githubBuildNumber) {
-      null -> "$snapshotBase-LOCAL"
-      else -> "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
-   }
+   private val isCI = System.getenv("CI").toBoolean()
 
-   private val snapshotGradleVersion = when (githubBuildNumber) {
-      null -> "$snapshotBase-LOCAL"
-      else -> "$snapshotBase.${githubBuildNumber}"
-   }
+   private val snapshotVersion =
+      snapshotBase + if (isCI) "-SNAPSHOT" else "-LOCAL"
 
    private val releaseVersion = System.getenv("RELEASE_VERSION")?.ifBlank { null }
 
    val isRelease = releaseVersion != null
+
+   /** The published version of Kotest dependencies. */
    val publishVersion = releaseVersion ?: snapshotVersion
-   val gradleVersion = releaseVersion ?: snapshotGradleVersion
 
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.

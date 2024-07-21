@@ -10,7 +10,6 @@ plugins {
 }
 
 group = "io.kotest"
-version = Ci.gradleVersion
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
@@ -105,7 +104,7 @@ val updateKotestPluginConstants by tasks.registering {
       |
       |package io.kotest.framework.multiplatform.gradle
       |
-      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.publishVersion}"
       |
    """.trimMargin()
 
