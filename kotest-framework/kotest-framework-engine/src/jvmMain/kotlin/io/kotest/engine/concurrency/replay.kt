@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.engine.concurrency
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
