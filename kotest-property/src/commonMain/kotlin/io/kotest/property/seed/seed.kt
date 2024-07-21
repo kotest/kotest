@@ -15,19 +15,11 @@ suspend fun createRandom(config: PropTestConfig): RandomSource {
 }
 
 @ExperimentalKotest
-@Deprecated("Renamed", ReplaceWith("getFailedSeed()"))
-suspend fun getFailedSeedIfEnabled(): Long? = getFailedSeed()
-
-@ExperimentalKotest
 suspend fun getFailedSeed(): Long? {
    if (!PropertyTesting.writeFailedSeed) return null
    val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
    return readSeed(path)
 }
-
-@ExperimentalKotest
-@Deprecated("Renamed", ReplaceWith("writeFailedSeed(seed)"))
-suspend fun writeFailedSeedIfEnabled(seed: Long): Unit = writeFailedSeed(seed)
 
 @ExperimentalKotest
 suspend fun writeFailedSeed(seed: Long) {

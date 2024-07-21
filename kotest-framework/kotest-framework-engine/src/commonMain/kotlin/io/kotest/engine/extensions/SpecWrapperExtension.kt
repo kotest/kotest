@@ -16,7 +16,6 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.PrepareSpecListener
-import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -28,8 +27,7 @@ import kotlin.reflect.KClass
 internal class SpecWrapperExtension(
    val delegate: Extension,
    val target: KClass<*>
-) : SpecInstantiationListener,
-   InstantiationErrorListener,
+) : InstantiationErrorListener,
    SpecExtension,
    IgnoredSpecListener,
    AfterSpecListener,
@@ -98,10 +96,6 @@ internal class SpecWrapperExtension(
       if (delegate is FinalizeSpecListener && kclass == target) delegate.finalizeSpec(kclass, results)
    }
 
-   override fun specInstantiated(spec: Spec) {
-      if (delegate is SpecInstantiationListener && spec::class == target) delegate.specInstantiated(spec)
-   }
-
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       if (delegate is SpecExtension && spec::class == target) delegate.intercept(spec, execute) else execute(spec)
    }
@@ -114,9 +108,5 @@ internal class SpecWrapperExtension(
    @Suppress("DeprecatedCallableAddReplaceWith")
    override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
       if (delegate is SpecExtension && spec == target) delegate.intercept(spec, process) else process()
-   }
-
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
-      if (delegate is SpecInstantiationListener && kclass == target) delegate.specInstantiationError(kclass, t)
    }
 }

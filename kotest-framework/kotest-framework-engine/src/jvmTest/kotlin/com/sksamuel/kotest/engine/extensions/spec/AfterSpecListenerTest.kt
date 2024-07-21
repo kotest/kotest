@@ -85,7 +85,6 @@ class AfterSpecListenerTest : FunSpec() {
 private val counter = AtomicInteger(0)
 
 private object MyAfterSpecListener : AfterSpecListener {
-   override val name: String = "MyAfterSpecListener"
    override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }

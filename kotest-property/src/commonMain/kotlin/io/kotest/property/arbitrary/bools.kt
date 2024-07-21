@@ -8,9 +8,6 @@ import io.kotest.property.Gen
  */
 fun Arb.Companion.boolean(): Arb<Boolean> = arbitrary(listOf(true, false)) { it.random.nextBoolean() }
 
-@Deprecated("use boolean", ReplaceWith("boolean()"))
-fun Arb.Companion.bool(): Arb<Boolean> = boolean()
-
 /**
  * Returns an [Arb] that produces [BooleanArray]s where [length] produces the length of the arrays and
  * [content] produces the content of the arrays.
