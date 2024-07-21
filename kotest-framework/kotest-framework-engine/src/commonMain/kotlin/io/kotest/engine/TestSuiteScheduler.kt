@@ -6,7 +6,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * A [TestSuiteScheduler] is responsible for launching each spec from a [TestSuite] into a coroutine.

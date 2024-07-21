@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.flatMap
+import io.kotest.engine.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.annotation.requirestag.wrapper

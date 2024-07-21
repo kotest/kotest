@@ -1,10 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigsJVM
@@ -12,10 +9,9 @@ import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -25,9 +21,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
-import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import java.util.Optional
-import kotlin.reflect.KClass
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -68,11 +62,11 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
             JUnitTestEngineListener(
-               SynchronizedEngineExecutionListener(
+               listener = SynchronizedEngineExecutionListener(
                   request.engineExecutionListener
                ),
-               root,
-               root.formatter
+               root = root,
+               formatter = FallbackDisplayNameFormatter.default(root.configuration)
             )
          )
       )
@@ -109,7 +103,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
       if (!isKotest)
-         return KotestEngineDescriptor(uniqueId, configuration, emptyList(), emptyList(), emptyList(), null)
+         return createEmptyEngineDescriptor(uniqueId, configuration)
 
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
@@ -129,16 +123,15 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
          val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
 
-         KotestEngineDescriptor(
+         createEngineDescriptor(
             uniqueId,
             configuration,
             result.specs,
-            result.scripts,
-            listOf(gradleClassMethodTestFilter),
-            result.error
+            gradleClassMethodTestFilter,
+            result.error,
          )
       } else {
-         KotestEngineDescriptor(uniqueId, configuration, emptyList(), emptyList(), emptyList(), null)
+         createEmptyEngineDescriptor(uniqueId, configuration)
       }
 
       logger.log { "JUnit discovery completed [descriptor=$descriptor]" }
@@ -168,28 +161,3 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 }
 
-class KotestEngineDescriptor(
-   id: UniqueId,
-   internal val configuration: ProjectConfiguration,
-   val classes: List<KClass<out Spec>>,
-   val scripts: List<KClass<*>>,
-   val testFilters: List<TestFilter>,
-   val error: Throwable?, // an error during discovery
-) : EngineDescriptor(id, "Kotest") {
-
-   private val logger = Logger(KotestEngineDescriptor::class)
-
-   internal val formatter: FallbackDisplayNameFormatter by lazy {
-      getFallbackDisplayNameFormatter(configuration.registry, configuration)
-   }
-
-   init {
-      logger.log { "Adding ${classes.size} children to the root descriptor ${KotestEngineDescriptor::class}@${this.hashCode()}" }
-      classes.forEach {
-         addChild(getSpecDescriptor(this, it.toDescriptor(), formatter.format(it)))
-      }
-   }
-
-   // Only reports dynamic children (see ExtensionExceptionExtractor) if there are any test classes to run
-   override fun mayRegisterTests(): Boolean = classes.isNotEmpty()
-}

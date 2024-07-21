@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.common.flatMap
+import io.kotest.engine.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
@@ -11,7 +11,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv
 import kotlin.reflect.KClass

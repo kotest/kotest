@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
+import io.kotest.property.resolution.CommonTypeArbResolver
 import io.kotest.property.resolution.GlobalArbResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
@@ -9,6 +10,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.typeOf
 
 /**
@@ -145,7 +147,8 @@ internal fun Arb.Companion.forType(
    arbsForProperties: Map<KProperty1<*, *>, Arb<*>>,
    type: KType
 ): Arb<*>? {
-   return (type.classifier as? KClass<*>)?.let { providedArbs[it] ?: defaultForClass(it) }
+   return (type.classifier as? KClass<*>)
+      ?.let { providedArbs[it] ?: CommonTypeArbResolver.resolve(it.starProjectedType) }
       ?: GlobalArbResolver.resolve(type)
       ?: targetDefaultForType(providedArbs, arbsForProperties, type)
 }
