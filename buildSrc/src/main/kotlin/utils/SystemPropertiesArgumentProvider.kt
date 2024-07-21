@@ -32,4 +32,9 @@ class SystemPropertiesArgumentProvider(
          .filterValues { v -> v != null }
          .map { (k, v) -> "-D$k=$v" }
    }
+
+   companion object {
+      fun SystemPropertiesArgumentProvider(keyValue: Provider<Pair<String, String?>>) =
+         SystemPropertiesArgumentProvider(keyValue.map { mapOf(it) })
+   }
 }

@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 plugins {
    signing
    `maven-publish`
+   id("dev.adamko.dev-publish")
 }
 
 group = "io.kotest"
@@ -23,21 +24,41 @@ val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
+val mavenCentralRepoName = "Deploy"
+
 signing {
-   useGpgCmd()
    if (signingKey != null && signingPassword != null) {
+      useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
    sign(publishing.publications)
    setRequired { Ci.isRelease } // only require signing when releasing
 }
 
+//region Only enabling signing when publishing to Maven Central.
+// (Otherwise signing is required for dev-publish, which prevents testing if the credentials aren't present.)
+gradle.taskGraph.whenReady {
+   val isPublishingToMavenCentral = allTasks
+      .filterIsInstance<PublishToMavenRepository>()
+      .any { it.repository?.name == mavenCentralRepoName }
+
+   signing.setRequired({ isPublishingToMavenCentral })
+
+   tasks.withType<Sign>().configureEach {
+      // redefine val for Config Cache compatibility
+      val isPublishingToMavenCentral_ = isPublishingToMavenCentral
+      inputs.property("isPublishingToMavenCentral", isPublishingToMavenCentral_)
+      onlyIf("publishing to Maven Central") { isPublishingToMavenCentral_ }
+   }
+}
+//endregion
+
 publishing {
    repositories {
       maven {
          val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
          val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-         name = "deploy"
+         name = mavenCentralRepoName
          url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
          credentials {
             username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
@@ -103,9 +124,11 @@ val mavenPublishLimiter =
       maxParallelUsages = 1
    }
 
-tasks.withType<PublishToMavenRepository>().configureEach {
-   usesService(mavenPublishLimiter)
-}
+tasks.withType<PublishToMavenRepository>()
+   .matching { it.name.endsWith("PublicationTo${mavenCentralRepoName}Repository") }
+   .configureEach {
+      usesService(mavenPublishLimiter)
+   }
 //endregion
 
 

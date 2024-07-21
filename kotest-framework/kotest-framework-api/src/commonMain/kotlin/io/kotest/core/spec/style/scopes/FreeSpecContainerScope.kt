@@ -10,12 +10,6 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-@Deprecated("Renamed to FreeSpecContainerScope. Deprecated since 4.5")
-typealias FreeScope = FreeSpecContainerScope
-
-@Deprecated("Renamed to FreeSpecContainerScope. Deprecated since 5.0")
-typealias FreeSpecContainerContext = FreeSpecContainerScope
-
 @KotestTestScope
 class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
