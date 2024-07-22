@@ -12,7 +12,10 @@ dependencyResolutionManagement {
    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
 
    repositories {
-      mavenCentral()
+      // use a caching mirror for maven central. https://www.sonatype.com/blog/maven-central-and-the-tragedy-of-the-commons
+      maven("https://cache-redirector.jetbrains.com/repo1.maven.org/maven2") {
+         name = "JetBrains Maven Central mirror"
+      }
       maven("https://oss.sonatype.org/content/repositories/snapshots/") {
          name = "SonatypeSnapshots"
          mavenContent { snapshotsOnly() }
