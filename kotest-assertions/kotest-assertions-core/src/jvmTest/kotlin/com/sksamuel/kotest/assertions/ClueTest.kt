@@ -13,7 +13,6 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
-import java.util.*
 
 class ClueTest : FreeSpec({
 
@@ -90,7 +89,6 @@ class ClueTest : FreeSpec({
 
       "should invoke { .. } clue if an assertion fails" {
          var counter = 1
-         @Suppress("DEPRECATION")
          withClue({
             counter -= 1
             if (counter == 0) {

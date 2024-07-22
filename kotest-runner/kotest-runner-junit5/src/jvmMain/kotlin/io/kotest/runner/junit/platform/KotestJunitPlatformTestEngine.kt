@@ -9,10 +9,9 @@ import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest

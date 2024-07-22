@@ -21,10 +21,6 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
-@Suppress("UNCHECKED_CAST")
-@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
-actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(type = typeOf<A>()) as Arb<A>?
-
 fun targetDefaultForType(
    providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(),
    arbsForProps: Map<KProperty1<*, *>, Arb<*>> = emptyMap(),

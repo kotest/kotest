@@ -20,11 +20,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 /**
- * Returns an [Arb] for well known common platform types such as Int, Long, String.
+ * Returns an [Arb] for well-known common platform types
+ * such as [Int], [Long], [String].
  *
- * Any types available on all platforms can be added here.
+ * Other types that are available for all platforms can be added here.
  */
-@Suppress("UNCHECKED_CAST")
 internal object CommonTypeArbResolver : ArbResolver {
    override fun resolve(type: KType): Arb<*>? {
       val kclass = type.classifier as? KClass<*> ?: return null

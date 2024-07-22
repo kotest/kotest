@@ -28,7 +28,6 @@ dependencies {
    devPublication(projects.kotestAssertions.kotestAssertionsShared)
    devPublication(projects.kotestExtensions)
    devPublication(projects.kotestFramework.kotestFrameworkDiscovery)
-   devPublication(projects.kotestFramework.kotestFrameworkConcurrency)
    devPublication(projects.kotestCommon)
    devPublication(projects.kotestFramework.kotestFrameworkApi)
    devPublication(projects.kotestFramework.kotestFrameworkEngine)

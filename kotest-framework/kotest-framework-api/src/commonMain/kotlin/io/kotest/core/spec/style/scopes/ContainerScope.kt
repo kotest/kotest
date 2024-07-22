@@ -23,9 +23,6 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated("Renamed to ContainerScope in 5.0")
-typealias ContainerContext = ContainerScope
-
 private val outOfOrderCallbacksException =
    InvalidDslException("Cannot use afterTest after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true")
 

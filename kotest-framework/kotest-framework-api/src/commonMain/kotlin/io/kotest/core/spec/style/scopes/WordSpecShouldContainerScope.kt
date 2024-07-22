@@ -9,12 +9,6 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import kotlin.time.Duration
 
-@Deprecated("This interface has been renamed to WordSpecShouldContainerScope. Deprecated since 4.5")
-typealias WordSpecShouldScope = WordSpecShouldContainerScope
-
-@Deprecated("This interface has been renamed to WordSpecShouldContainerScope. Deprecated since 5.0")
-typealias WordSpecShouldContainerContext = WordSpecShouldContainerScope
-
 /**
  * A scope that allows tests to be registered using the syntax:
  *

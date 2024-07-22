@@ -62,27 +62,27 @@ public final class io/kotest/engine/TestEngine {
 }
 
 public final class io/kotest/engine/TestEngineConfig {
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/common/Platform;)V
+	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/core/Platform;)V
 	public final fun component1 ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lio/kotest/core/config/ProjectConfiguration;
 	public final fun component4 ()Lio/kotest/core/TagExpression;
-	public final fun component5 ()Lio/kotest/common/Platform;
-	public final fun copy (Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineConfig;
-	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineConfig;Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/common/Platform;ILjava/lang/Object;)Lio/kotest/engine/TestEngineConfig;
+	public final fun component5 ()Lio/kotest/core/Platform;
+	public final fun copy (Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/core/Platform;)Lio/kotest/engine/TestEngineConfig;
+	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineConfig;Lio/kotest/engine/listener/TestEngineListener;Ljava/util/List;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/TagExpression;Lio/kotest/core/Platform;ILjava/lang/Object;)Lio/kotest/engine/TestEngineConfig;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConfiguration ()Lio/kotest/core/config/ProjectConfiguration;
 	public final fun getExplicitTags ()Lio/kotest/core/TagExpression;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getListener ()Lio/kotest/engine/listener/TestEngineListener;
-	public final fun getPlatform ()Lio/kotest/common/Platform;
+	public final fun getPlatform ()Lio/kotest/core/Platform;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;Z)V
+	public fun <init> (Lio/kotest/core/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/ProjectConfiguration;Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;Z)V
 	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun launch ()Lio/kotest/engine/EngineResult;
@@ -100,7 +100,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withPlatform (Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withPlatform (Lio/kotest/core/Platform;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withProjectConfig ([Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecs ([Lio/kotest/core/spec/Spec;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/core/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
@@ -243,20 +243,20 @@ public final class io/kotest/engine/interceptors/EmptyTestSuiteException : java/
 
 public final class io/kotest/engine/interceptors/EngineContext {
 	public static final field Companion Lio/kotest/engine/interceptors/EngineContext$Companion;
-	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/common/Platform;)V
-	public fun <init> (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/common/Platform;Ljava/util/Map;)V
+	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/Platform;)V
+	public fun <init> (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/Platform;Ljava/util/Map;)V
 	public final fun component1 ()Lio/kotest/core/project/TestSuite;
 	public final fun component2 ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun component3 ()Lio/kotest/core/TagExpression;
 	public final fun component4 ()Lio/kotest/core/config/ProjectConfiguration;
-	public final fun component5 ()Lio/kotest/common/Platform;
+	public final fun component5 ()Lio/kotest/core/Platform;
 	public final fun component6 ()Ljava/util/Map;
-	public final fun copy (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/common/Platform;Ljava/util/Map;)Lio/kotest/engine/interceptors/EngineContext;
-	public static synthetic fun copy$default (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/common/Platform;Ljava/util/Map;ILjava/lang/Object;)Lio/kotest/engine/interceptors/EngineContext;
+	public final fun copy (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/Platform;Ljava/util/Map;)Lio/kotest/engine/interceptors/EngineContext;
+	public static synthetic fun copy$default (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;Lio/kotest/core/Platform;Ljava/util/Map;ILjava/lang/Object;)Lio/kotest/engine/interceptors/EngineContext;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConfiguration ()Lio/kotest/core/config/ProjectConfiguration;
 	public final fun getListener ()Lio/kotest/engine/listener/TestEngineListener;
-	public final fun getPlatform ()Lio/kotest/common/Platform;
+	public final fun getPlatform ()Lio/kotest/core/Platform;
 	public final fun getState ()Ljava/util/Map;
 	public final fun getSuite ()Lio/kotest/core/project/TestSuite;
 	public final fun getTags ()Lio/kotest/core/TagExpression;
@@ -464,6 +464,11 @@ public final class io/kotest/engine/project/ProjectExtensions {
 	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
 	public final fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/spec/ClassVisibilitySpecRefInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
+	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
+	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/spec/InstantiateSpecKt {
