@@ -9,8 +9,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import kotlin.reflect.KVisibility
 
 /**
- * A [SpecRefInterceptor] which will ignore private specs unless the include private flag
- * is true in project config.
+ * A [SpecRefInterceptor] which will ignore private specs when the configuration values are set.
  */
 class ClassVisibilitySpecRefInterceptor(private val context: EngineContext) : SpecRefInterceptor {
 
@@ -19,7 +18,7 @@ class ClassVisibilitySpecRefInterceptor(private val context: EngineContext) : Sp
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
       return when {
-         ref.kclass.visibility == KVisibility.PRIVATE && !allowPrivate() -> Result.success(emptyMap())
+         ref.kclass.visibility == KVisibility.PRIVATE && ignorePrivate() -> Result.success(emptyMap())
          else -> fn(ref)
       }
    }
@@ -27,7 +26,7 @@ class ClassVisibilitySpecRefInterceptor(private val context: EngineContext) : Sp
    /**
     * We allow private classes if the configuration flag or system property to ignore is set to true.
     */
-   private fun allowPrivate(): Boolean {
+   private fun ignorePrivate(): Boolean {
       return context.configuration.ignorePrivateClasses ||
          System.getProperty(KotestEngineProperties.ignorePrivateClasses) == "true"
    }

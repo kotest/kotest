@@ -301,7 +301,7 @@ abstract class AbstractProjectConfig {
     * If set to false then private spec classes will be ignored by the test engine.
     * Defaults to true.
     */
-   open var includePrivateClasses: Boolean? = null
+   open var ignorePrivateClasses: Boolean? = null
 
    /**
     * Executed before the first test of the project, but after the
