@@ -2089,7 +2089,6 @@ public final class io/kotest/matchers/result/SuccessKt {
 	public static final fun shouldBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldBeSuccess (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun shouldNotBeSuccess (Ljava/lang/Object;)V
-	public static final fun shouldNotBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)V
 }
 
 public final class io/kotest/matchers/result/SuccessMatcher : io/kotest/matchers/Matcher {
@@ -2121,8 +2120,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun containDuplicates ()Lio/kotest/matchers/Matcher;
 	public static final fun containExactly (Lkotlin/sequences/Sequence;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactly ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun containExactlyInAnyOrder (Lkotlin/sequences/Sequence;)Lio/kotest/matchers/Matcher;
-	public static final fun containExactlyInAnyOrder ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun containNoNulls ()Lio/kotest/matchers/Matcher;
 	public static final fun containNull ()Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyNulls ()Lio/kotest/matchers/Matcher;
@@ -2151,8 +2148,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldContainDuplicates (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainExactly (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainExactly (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
-	public static final fun shouldContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
-	public static final fun shouldContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
 	public static final fun shouldContainInOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainInOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Comparable;)V
 	public static final fun shouldContainNoNulls (Lkotlin/sequences/Sequence;)V
@@ -2186,8 +2181,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldNotContainDuplicates (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainExactly (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainExactly (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
-	public static final fun shouldNotContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainInOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainNoNulls (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainNull (Lkotlin/sequences/Sequence;)V
