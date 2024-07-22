@@ -42,6 +42,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // discovery
    config.discoveryClasspathFallbackEnabled?.let { configuration.discoveryClasspathFallbackEnabled = it }
    config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
+   config.includePrivateClasses?.let { configuration.ignorePrivateClasses = it }
 
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
