@@ -54,14 +54,13 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                "jsBrowserTest",
                "jsNodeTest",
                "wasmJsBrowserTest",
-               "wasmJsNodeTest"
+               "wasmJsNodeTest",
             )
 
             val invocation = GradleInvocation(
                testProjectPath,
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
-                  "-PuseNewNativeMemoryModel=false",
                ) + taskNames
             )
 
@@ -70,6 +69,32 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             withClue(result.clue) {
                taskNames.forAll {
                   shouldHaveExpectedTestResultsFor(it)
+               }
+            }
+         }
+
+         should("be able to compile and run tests for all native targets supported by the host machine") {
+            val taskNames = listOf(
+               "macosArm64Test",
+               "macosX64Test",
+               "mingwX64Test",
+               "linuxX64Test",
+            )
+
+            val invocation = GradleInvocation(
+               testProjectPath,
+               listOf(
+                  "-PkotlinVersion=$kotlinVersion",
+               ) + taskNames
+            )
+
+            val result = invocation.run()
+
+            withClue(result.clue) {
+               taskNames.forAtLeastOne { taskName ->
+                  // Depending on the host machine these tests are running on,
+                  // only one of the test targets will be built and executed.
+                  shouldHaveExpectedTestResultsFor(taskName)
                }
             }
          }
