@@ -46,7 +46,6 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(projects.kotestFramework.kotestFrameworkDatatest)
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)

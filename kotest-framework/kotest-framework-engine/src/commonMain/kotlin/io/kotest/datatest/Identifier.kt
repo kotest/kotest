@@ -12,6 +12,6 @@ fun getStableIdentifier(t: Any?): String {
       else ->
          // FIXME Remove deprecation suppression when StableIdentifiers is marked as internal
          @Suppress("DEPRECATION")
-         StableIdentifiers.stableIdentifier(t)
+         (StableIdentifiers.stableIdentifier(t))
    }
 }

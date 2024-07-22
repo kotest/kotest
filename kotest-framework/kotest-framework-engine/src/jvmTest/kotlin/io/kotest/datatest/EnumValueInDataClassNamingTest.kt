@@ -1,13 +1,11 @@
 package io.kotest.datatest
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
-@ExperimentalKotest
 class EnumValueInDataClassNamingTest : FunSpec() {
 
    private val names = mutableListOf<String>()

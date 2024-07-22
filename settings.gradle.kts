@@ -83,9 +83,6 @@ include(
    ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
 
-   // contains data driven testing that builds on top of the kotest test framework
-   ":kotest-framework:kotest-framework-datatest",
-
    // contains the matcher interface and is intended as a lightweight dependency for library authors
    // to depend on when writing matcher libraries
    ":kotest-assertions:kotest-assertions-api",
