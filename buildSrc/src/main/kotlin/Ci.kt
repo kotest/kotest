@@ -5,7 +5,7 @@ object Ci {
     *
     * `-SNAPSHOT` or `-LOCAL` will be appended.
     */
-   private const val snapshotBase = "5.10.0"
+   private const val snapshotBase = "6.0.0"
 
    /** Is the build currently running on CI. */
    private val isCI = System.getenv("CI").toBoolean()
