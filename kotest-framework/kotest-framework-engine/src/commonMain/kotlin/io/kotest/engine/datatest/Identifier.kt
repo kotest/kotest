@@ -1,4 +1,4 @@
-package datatest
+package io.kotest.engine.datatest
 
 import io.kotest.core.Platform
 import io.kotest.core.platform

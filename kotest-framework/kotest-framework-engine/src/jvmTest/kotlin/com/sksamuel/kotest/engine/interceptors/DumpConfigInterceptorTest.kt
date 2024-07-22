@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
-import datatest.withData
+import io.kotest.engine.datatest.withData
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext

@@ -1,6 +1,6 @@
 package io.kotest.datatest.styles
 
-import datatest.withData
+import io.kotest.engine.datatest.withData
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests

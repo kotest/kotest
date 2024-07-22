@@ -1,8 +1,8 @@
 package io.kotest.datatest
 
-import datatest.IsStableType
-import datatest.WithDataTestName
-import datatest.withData
+import io.kotest.engine.datatest.IsStableType
+import io.kotest.engine.datatest.WithDataTestName
+import io.kotest.engine.datatest.withData
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase

@@ -1,6 +1,6 @@
 package io.kotest.datatest
 
-import datatest.withData
+import io.kotest.engine.datatest.withData
 import io.kotest.core.spec.style.FunSpec
 
 class NullableDataTest : FunSpec() {

@@ -1,4 +1,4 @@
-package datatest
+package io.kotest.engine.datatest
 
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.ContainerScope

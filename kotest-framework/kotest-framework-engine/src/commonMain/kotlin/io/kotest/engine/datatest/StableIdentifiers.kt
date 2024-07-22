@@ -1,4 +1,4 @@
-package datatest
+package io.kotest.engine.datatest
 
 import io.kotest.common.KotestInternal
 import io.kotest.mpp.bestName

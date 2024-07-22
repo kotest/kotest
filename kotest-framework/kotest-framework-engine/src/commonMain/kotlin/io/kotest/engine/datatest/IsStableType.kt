@@ -1,4 +1,4 @@
-package datatest
+package io.kotest.engine.datatest
 
 /**
  *  Indicates that a type is stable type. If a type is annotated with this annotation, kotest will

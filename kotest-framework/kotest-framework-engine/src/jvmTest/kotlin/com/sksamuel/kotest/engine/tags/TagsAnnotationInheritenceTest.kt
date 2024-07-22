@@ -9,11 +9,9 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
-import datatest.withData
+import io.kotest.engine.datatest.withData
 import io.kotest.engine.spec.Materializer
-import io.kotest.engine.tags.tags
 import io.kotest.engine.test.status.isEnabledInternal
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 
 @Isolate
