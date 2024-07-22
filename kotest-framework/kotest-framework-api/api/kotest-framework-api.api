@@ -936,7 +936,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getFailOnEmptyTestSuite ()Ljava/lang/Boolean;
 	public fun getFailOnIgnoredTests ()Ljava/lang/Boolean;
 	public fun getGlobalAssertSoftly ()Ljava/lang/Boolean;
-	public fun getIncludePrivateClasses ()Ljava/lang/Boolean;
+	public fun getIgnorePrivateClasses ()Ljava/lang/Boolean;
 	public fun getIncludeTestScopePrefixes ()Ljava/lang/Boolean;
 	public fun getInvocationTimeout ()Ljava/lang/Long;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
@@ -960,7 +960,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun setDiscoveryClasspathFallbackEnabled (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
-	public fun setIncludePrivateClasses (Ljava/lang/Boolean;)V
+	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
 	public fun setRandomOrderSeed (Ljava/lang/Long;)V
 	public fun setTestCoroutineDispatcher (Z)V
