@@ -24,7 +24,7 @@ class ClassVisibilitySpecRefInterceptor(private val context: EngineContext) : Sp
    }
 
    /**
-    * We allow private classes if the configuration flag or system property to ignore is set to true.
+    * We ignore private classes if the configuration flag or system property to ignore is set to true.
     */
    private fun ignorePrivate(): Boolean {
       return context.configuration.ignorePrivateClasses ||
