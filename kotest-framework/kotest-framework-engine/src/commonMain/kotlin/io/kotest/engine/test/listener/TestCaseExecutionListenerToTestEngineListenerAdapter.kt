@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutionListener
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * Converts events fired to a [TestCaseExecutionListener] into events fired to a [TestEngineListener]

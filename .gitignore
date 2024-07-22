@@ -21,6 +21,7 @@ out/
 build
 target
 .gradle
+.kotlin/
 
 build/test-results
 kotest-tests/kotest-tests-htmlreporter/reports/

@@ -5,9 +5,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.TestScope
 
-@Deprecated("Renamed to FunSpecRootContext. Deprecated since 5.0")
-typealias FunSpecRootContext = FunSpecRootScope
-
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
  */

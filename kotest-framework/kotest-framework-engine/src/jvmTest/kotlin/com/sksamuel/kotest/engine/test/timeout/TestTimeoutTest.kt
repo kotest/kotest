@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.common.Platform
+import io.kotest.core.Platform
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor

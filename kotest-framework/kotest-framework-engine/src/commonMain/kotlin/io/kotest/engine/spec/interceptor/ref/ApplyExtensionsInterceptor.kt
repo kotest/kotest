@@ -10,7 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.SpecWrapperExtension
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
-import io.kotest.mpp.newInstanceNoArgConstructorOrObjectInstance
+import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 
 /**
  * If the spec is annotated with the [ApplyExtension] annotation, registers any extensions

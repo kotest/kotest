@@ -7,7 +7,7 @@ import kotlinx.coroutines.promise
 @OptIn(DelicateCoroutinesApi::class)
 actual fun runPromise(f: suspend () -> Unit) {
    GlobalScope.promise { f() }.catch {
-      io.kotest.common.console.log(it)
+      io.kotest.core.console.log(it)
       throw it
    }
 }

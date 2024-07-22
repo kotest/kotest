@@ -1,7 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.core.platform
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -20,7 +19,8 @@ import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.mpp.bestName
 
 internal class SpecRefInterceptorPipeline(

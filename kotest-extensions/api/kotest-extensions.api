@@ -8,7 +8,6 @@ public final class io/kotest/extensions/locale/LocaleProjectListener : io/kotest
 	public fun <init> (Ljava/util/Locale;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/locale/LocaleTestListener : io/kotest/extensions/locale/LocaleListener, io/kotest/core/listeners/TestListener {
@@ -26,7 +25,6 @@ public final class io/kotest/extensions/locale/LocaleTestListener : io/kotest/ex
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -40,7 +38,6 @@ public final class io/kotest/extensions/locale/TimeZoneProjectListener : io/kote
 	public fun <init> (Ljava/util/TimeZone;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/locale/TimeZoneTestListener : io/kotest/extensions/locale/TimeZoneListener, io/kotest/core/listeners/TestListener {
@@ -58,7 +55,6 @@ public final class io/kotest/extensions/locale/TimeZoneTestListener : io/kotest/
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -116,7 +112,6 @@ public final class io/kotest/extensions/system/NoSystemErrListener : io/kotest/c
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -135,7 +130,6 @@ public final class io/kotest/extensions/system/NoSystemOutListener : io/kotest/c
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -173,7 +167,6 @@ public final class io/kotest/extensions/system/SecurityManagerProjectListener : 
 	public fun <init> (Ljava/lang/SecurityManager;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/system/SecurityManagerTestListener : io/kotest/extensions/system/SecurityManagerListener, io/kotest/core/listeners/TestListener {
@@ -191,7 +184,6 @@ public final class io/kotest/extensions/system/SecurityManagerTestListener : io/
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -210,7 +202,6 @@ public final class io/kotest/extensions/system/SpecSystemExitListener : io/kotes
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public final fun lastExitCode ()Ljava/lang/Integer;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun shouldHaveExitCode (I)V
@@ -241,7 +232,6 @@ public final class io/kotest/extensions/system/SystemEnvironmentProjectListener 
 	public synthetic fun <init> (Lkotlin/Pair;Lio/kotest/extensions/system/OverrideMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/system/SystemEnvironmentTestListener : io/kotest/extensions/system/SystemEnvironmentListener, io/kotest/core/listeners/TestListener {
@@ -264,7 +254,6 @@ public final class io/kotest/extensions/system/SystemEnvironmentTestListener : i
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -285,7 +274,6 @@ public final class io/kotest/extensions/system/SystemErrWireListener : io/kotest
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public final fun output ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -315,7 +303,6 @@ public final class io/kotest/extensions/system/SystemExitListener : io/kotest/co
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -336,7 +323,6 @@ public final class io/kotest/extensions/system/SystemOutWireListener : io/kotest
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public final fun output ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -376,7 +362,6 @@ public final class io/kotest/extensions/system/SystemPropertyProjectListener : i
 	public synthetic fun <init> (Ljava/util/Properties;Lio/kotest/extensions/system/OverrideMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/system/SystemPropertyTestListener : io/kotest/extensions/system/SystemPropertyListener, io/kotest/core/listeners/TestListener {
@@ -401,7 +386,6 @@ public final class io/kotest/extensions/system/SystemPropertyTestListener : io/k
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
