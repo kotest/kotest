@@ -1,6 +1,5 @@
 package io.kotest.datatest
 
-import io.kotest.engine.datatest.withData
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.RootScope

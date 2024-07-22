@@ -3,7 +3,7 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.datatest.withData
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 @OptIn(ExperimentalKotest::class)

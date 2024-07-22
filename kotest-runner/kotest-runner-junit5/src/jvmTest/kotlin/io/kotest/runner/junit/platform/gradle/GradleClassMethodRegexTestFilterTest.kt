@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.datatest.withData
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 class GradleClassMethodRegexTestFilterTest : FunSpec({
