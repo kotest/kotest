@@ -2,8 +2,13 @@ rootProject.name = "kotest"
 
 pluginManagement {
    repositories {
-      mavenCentral()
-      gradlePluginPortal()
+      // use a caching mirror for maven central. https://www.sonatype.com/blog/maven-central-and-the-tragedy-of-the-commons
+      maven("https://cache-redirector.jetbrains.com/repo1.maven.org/maven2") {
+         name = "JetBrains Maven Central mirror"
+      }
+      maven("https://cache-redirector.jetbrains.com/plugins.gradle.org") {
+         name = "JetBrains Gradle Plugin Portal mirror"
+      }
    }
 }
 
