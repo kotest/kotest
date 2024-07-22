@@ -32,7 +32,6 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
-            implementation(projects.kotestFramework.kotestFrameworkDatatest)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform.testkit)
             implementation(libs.mockk)

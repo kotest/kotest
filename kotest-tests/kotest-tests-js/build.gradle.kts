@@ -10,7 +10,6 @@ kotlin {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestFramework.kotestFrameworkDatatest)
          }
       }
    }
