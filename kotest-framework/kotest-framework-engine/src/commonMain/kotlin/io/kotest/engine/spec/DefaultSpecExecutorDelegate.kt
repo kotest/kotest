@@ -10,7 +10,7 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scopes.InOrderTestScope
-import io.kotest.mpp.log
+import io.kotest.core.log
 import kotlin.coroutines.coroutineContext
 
 /**

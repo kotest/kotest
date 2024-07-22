@@ -11,7 +11,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

@@ -1,6 +1,5 @@
 package io.kotest.engine.test.scopes
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
@@ -11,7 +10,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import kotlin.coroutines.CoroutineContext
 
 /**

@@ -114,23 +114,10 @@ interface MatcherResult {
    fun negatedFailureMessage(): String
 
    companion object {
-
-      @Deprecated(
-         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0.",
-         ReplaceWith(
-            "MatcherResult(\npassed,\n{ failureMessage },\n{ negatedFailureMessage }\n)"
-         )
-      )
-      operator fun invoke(
-         passed: Boolean,
-         failureMessage: String,
-         negatedFailureMessage: String
-      ) = invoke(passed, { failureMessage }, { negatedFailureMessage })
-
       operator fun invoke(
          passed: Boolean,
          failureMessageFn: () -> String,
-         negatedFailureMessageFn: () -> String
+         negatedFailureMessageFn: () -> String,
       ): MatcherResult = object : MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()

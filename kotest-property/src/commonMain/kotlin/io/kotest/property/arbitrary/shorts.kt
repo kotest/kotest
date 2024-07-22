@@ -46,9 +46,6 @@ fun Arb.Companion.uShort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MA
    return arbitrary(edges, UShortShrinker) { it.random.nextUInt(min..max).toUShort() }
 }
 
-@Deprecated("use uShort", ReplaceWith("uShort(min, max)"))
-fun Arb.Companion.ushort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MAX_VALUE): Arb<UShort> = uShort(min, max)
-
 val UShortShrinker = UIntShrinker(UShort.MIN_VALUE..UShort.MAX_VALUE).bimap({ it.toUInt() }, { it.toUShort() })
 
 /**

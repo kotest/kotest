@@ -8,7 +8,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
-import io.kotest.mpp.log
+import io.kotest.core.log
 import io.kotest.mpp.syspropOrEnv
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass

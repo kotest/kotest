@@ -1,7 +1,7 @@
 package io.kotest.datatest
 
-import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.core.Platform
+import io.kotest.core.platform
 import io.kotest.mpp.hasAnnotation
 
 fun getStableIdentifier(t: Any?): String {

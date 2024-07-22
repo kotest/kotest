@@ -28,9 +28,8 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
       MatcherResult(
          value.all { it == null },
          { "Sequence should contain only nulls" },
-         {
-            "Sequence should not contain only nulls"
-         })
+         { "Sequence should not contain only nulls" }
+      )
 }
 
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
@@ -40,9 +39,8 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
       MatcherResult(
          value.any { it == null },
          { "Sequence should contain at least one null" },
-         {
-            "Sequence should not contain any nulls"
-         })
+         { "Sequence should not contain any nulls" }
+      )
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
@@ -94,7 +92,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    val consumedExpectedValues = mutableListOf<IndexedValue<T>>()
 
    fun IndexedValue<T>.printValue() = this.value.print().value
-   fun List<IndexedValue<T>>.printValues(hasNext: Boolean) = joinToString(postfix = if (hasNext) ", ..." else "") { it.printValue() }
+   fun List<IndexedValue<T>>.printValues(hasNext: Boolean) =
+      joinToString(postfix = if (hasNext) ", ..." else "") { it.printValue() }
 
    var passed = true
    var failDetails = ""
@@ -104,7 +103,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
       if (eq(actualElement.value, expectedElement.value) != null) {
-         failDetails = "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
+         failDetails =
+            "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
       }
    }
@@ -112,48 +112,28 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    if (passed && actualIterator.hasNext()) {
       val actualElement = actualIterator.next()
       consumedActualValues.add(actualElement)
-      failDetails = "\nActual sequence has more elements than expected sequence: found ${actualElement.printValue()} at index ${actualElement.index}."
+      failDetails =
+         "\nActual sequence has more elements than expected sequence: found ${actualElement.printValue()} at index ${actualElement.index}."
       passed = false
    }
 
    if (passed && expectedIterator.hasNext()) {
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      failDetails = "\nActual sequence has less elements than expected sequence: expected ${expectedElement.printValue()} at index ${expectedElement.index}."
+      failDetails =
+         "\nActual sequence has less elements than expected sequence: expected ${expectedElement.printValue()} at index ${expectedElement.index}."
       passed = false
    }
 
    MatcherResult(
       passed,
-      { "Sequence should contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())} but was ${consumedActualValues.printValues(actualIterator.hasNext())}.$failDetails" },
       {
-         "Sequence should not contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())}"
-      })
+         "Sequence should contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())} but was ${
+            consumedActualValues.printValues(actualIterator.hasNext())
+         }.$failDetails"
+      },
+      { "Sequence should not contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())}" })
 }
-
-@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
-infix fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
-   this shouldNot containAllInAnyOrder(expected)
-
-@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
-fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
-   this shouldNot containAllInAnyOrder(*expected)
-
-@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
-infix fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
-   this should containAllInAnyOrder(expected)
-
-@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
-fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
-   this should containAllInAnyOrder(*expected)
-
-@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
-   containAllInAnyOrder(expected.asSequence())
-
-@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-   /** Assert that a sequence contains the given values and nothing else, in any order. */
-fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = containAllInAnyOrder(expected)
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
@@ -182,7 +162,7 @@ fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverN
    )
 }
 
-internal fun<T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
+internal fun <T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
 
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 
@@ -305,7 +285,8 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
       if (!iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but is empty."
       } else if (eq(iterator.next().also { actualElement = it }, expectedElement) != null) {
-         failureMessage = "Sequence should have a single element of $expectedElement but has $actualElement as first element."
+         failureMessage =
+            "Sequence should have a single element of $expectedElement but has $actualElement as first element."
       } else if (iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but has more than one element."
       }
@@ -449,7 +430,7 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
       if (actualIterator.next() == subsequenceAsList.elementAt(subsequenceIndex)) subsequenceIndex += 1
    }
 
-   val mismatchDescription = if(subsequenceIndex == subsequenceAsList.size) "" else
+   val mismatchDescription = if (subsequenceIndex == subsequenceAsList.size) "" else
       ", could not match element ${subsequenceAsList.elementAt(subsequenceIndex)} at index $subsequenceIndex"
 
    MatcherResult(
@@ -498,4 +479,5 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
 
 fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
 infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
-fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) = toList().shouldMatchEach(expected.toList(), asserter)
+fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) =
+   toList().shouldMatchEach(expected.toList(), asserter)
