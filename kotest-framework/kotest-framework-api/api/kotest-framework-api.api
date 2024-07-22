@@ -936,6 +936,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getFailOnEmptyTestSuite ()Ljava/lang/Boolean;
 	public fun getFailOnIgnoredTests ()Ljava/lang/Boolean;
 	public fun getGlobalAssertSoftly ()Ljava/lang/Boolean;
+	public fun getIgnorePrivateClasses ()Ljava/lang/Boolean;
 	public fun getIncludeTestScopePrefixes ()Ljava/lang/Boolean;
 	public fun getInvocationTimeout ()Ljava/lang/Long;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
@@ -959,6 +960,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun setDiscoveryClasspathFallbackEnabled (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
+	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
 	public fun setRandomOrderSeed (Ljava/lang/Long;)V
 	public fun setTestCoroutineDispatcher (Z)V
@@ -1012,6 +1014,7 @@ public final class io/kotest/core/config/Defaults {
 	public static final field failOnIgnoredTests Z
 	public static final field failfast Z
 	public static final field globalAssertSoftly Z
+	public static final field ignorePrivateClasses Z
 	public static final field parallelism I
 	public static final field projectWideFailFast Z
 	public static final field specFailureFilePath Ljava/lang/String;
@@ -1119,6 +1122,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getFailOnIgnoredTests ()Z
 	public final fun getFailfast ()Z
 	public final fun getGlobalAssertSoftly ()Z
+	public final fun getIgnorePrivateClasses ()Z
 	public final fun getIncludeTestScopeAffixes ()Ljava/lang/Boolean;
 	public final fun getInvocationTimeout ()Ljava/lang/Long;
 	public final fun getInvocations ()I
@@ -1160,6 +1164,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setFailOnIgnoredTests (Z)V
 	public final fun setFailfast (Z)V
 	public final fun setGlobalAssertSoftly (Z)V
+	public final fun setIgnorePrivateClasses (Z)V
 	public final fun setIncludeTestScopeAffixes (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
 	public final fun setInvocations (I)V
@@ -1620,6 +1625,7 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field filterSpecs Ljava/lang/String;
 	public static final field filterTests Ljava/lang/String;
 	public static final field globalAssertSoftly Ljava/lang/String;
+	public static final field ignorePrivateClasses Ljava/lang/String;
 	public static final field includeTags Ljava/lang/String;
 	public static final field invocationTimeout Ljava/lang/String;
 	public static final field isolationMode Ljava/lang/String;
