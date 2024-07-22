@@ -740,10 +740,6 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_SUITE_STARTED Ljava/lang/String;
 }
 
-public final class io/kotest/engine/teamcity/TeamCityWriter {
-	public fun <init> (Ljava/lang/String;Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;)V
-}
-
 public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : io/kotest/engine/test/TestCaseExecutionListener {
 	public fun <init> ()V
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
