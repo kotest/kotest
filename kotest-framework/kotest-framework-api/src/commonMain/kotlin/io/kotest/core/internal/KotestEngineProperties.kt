@@ -131,4 +131,9 @@ object KotestEngineProperties {
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
 
    const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"
+
+   /**
+    * If set to true, then private classes will not be included in the test plan.
+    */
+   const val ignorePrivateClasses = "kotest.framework.discovery.ignore.private.classes"
 }

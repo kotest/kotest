@@ -298,6 +298,11 @@ abstract class AbstractProjectConfig {
    open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
+    * If set to false then private spec classes will be ignored by the test engine.
+    */
+   open var ignorePrivateClasses: Boolean? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
