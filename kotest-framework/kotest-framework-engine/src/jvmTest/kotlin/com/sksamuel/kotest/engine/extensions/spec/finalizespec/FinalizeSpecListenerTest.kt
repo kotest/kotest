@@ -29,8 +29,6 @@ private class FinalizeSpecTestListener2 : FinalizeSpecListener {
          counter.incrementAndGet()
       }
    }
-
-   override val name: String = "FinalizeSpecTestListener2"
 }
 
 class FinalizeSpecTest : FunSpec() {

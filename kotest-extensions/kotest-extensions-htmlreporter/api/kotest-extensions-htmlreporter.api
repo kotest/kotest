@@ -7,7 +7,6 @@ public final class io/kotest/extensions/htmlreporter/HtmlReporter : io/kotest/co
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/htmlreporter/HtmlReporter$Companion {
