@@ -1,3 +1,39 @@
+public final class io/kotest/datatest/ContainerKt {
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/datatest/IdentifierKt {
+	public static final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
+}
+
+public abstract interface annotation class io/kotest/datatest/IsStableType : java/lang/annotation/Annotation {
+}
+
+public final class io/kotest/datatest/RootKt {
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+}
+
+public final class io/kotest/datatest/StableIdentifiers {
+	public static final field INSTANCE Lio/kotest/datatest/StableIdentifiers;
+	public final fun stableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/datatest/WithDataTestName {
+	public abstract fun dataTestName ()Ljava/lang/String;
+}
+
 public final class io/kotest/engine/EngineResult {
 	public static final field Companion Lio/kotest/engine/EngineResult$Companion;
 	public fun <init> (Ljava/util/List;)V
@@ -464,6 +500,11 @@ public final class io/kotest/engine/project/ProjectExtensions {
 	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
 	public final fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/spec/ClassVisibilitySpecRefInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
+	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
+	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/spec/InstantiateSpecKt {

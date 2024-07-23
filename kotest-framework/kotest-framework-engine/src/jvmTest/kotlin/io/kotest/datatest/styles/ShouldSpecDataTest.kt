@@ -1,15 +1,13 @@
 package io.kotest.datatest.styles
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.datatest.withData
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
-import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
-@ExperimentalKotest
-class FreeSpecDataTest : FreeSpec() {
+class ShouldSpecDataTest : ShouldSpec() {
    init {
 
       val results = registerRootTests()
@@ -24,14 +22,14 @@ class FreeSpecDataTest : FreeSpec() {
          count shouldBe 110
       }
 
-      "inside a context" - {
+      context("inside a context") {
          registerContextTests().assertDataTestResults()
-         "inside another context" - {
+         context("inside another context") {
             registerContextTests().assertDataTestResults()
          }
       }
 
-      "a context should allow nullable maps" - {
+      context("a context should allow nullable maps") {
          withData(
             mapOf(
                "true" to true,
