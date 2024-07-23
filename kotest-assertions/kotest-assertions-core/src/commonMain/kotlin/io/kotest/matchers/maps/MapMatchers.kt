@@ -217,22 +217,6 @@ class MapContainsMatcher<K, V>(
    }
 }
 
-internal fun <K> possibleMatchesForMissingElements(
-   unexpected: Set<K>,
-   expected: Set<K>,
-   elementTypeDescription: String
-): String {
-   val possibleMatches = unexpected.
-      map {
-         possibleMatchesDescription(expected, it)
-      }.filter {
-         it.isNotEmpty()
-   }.joinToString("\n")
-   return if (possibleMatches.isEmpty()) ""
-   else "\nPossible matches for missing $elementTypeDescription:\n$possibleMatches"
-}
-
-
 fun <K, V> matchAll(
    vararg matchers: Pair<K, (V) -> Unit>
 ): Matcher<Map<K, V>> = MapMatchesMatcher(matchers.toMap(), true)
