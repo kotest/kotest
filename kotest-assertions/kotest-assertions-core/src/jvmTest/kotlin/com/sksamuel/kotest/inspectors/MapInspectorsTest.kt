@@ -340,8 +340,8 @@ The following elements passed:
   [4] 5=5
 
 The following elements failed:
-  [0] 1=1 => Map should contain mapping 1=1 but was {3=3, 4=4, 5=5}
-  [1] 2=2 => Map should contain mapping 2=2 but was {3=3, 4=4, 5=5}
+  [0] 1=1 => Map should contain mapping 1=1 but key was not in the map
+  [1] 2=2 => Map should contain mapping 2=2 but key was not in the map
 """
          }
          "fail if no entries pass test"  {
@@ -581,9 +581,9 @@ The following elements passed:
   [4] 5=5
 
 The following elements failed:
-  [0] 1=1 => Map should contain mapping 1=1 but was {4=4, 5=5}
-  [1] 2=2 => Map should contain mapping 2=2 but was {4=4, 5=5}
-  [2] 3=3 => Map should contain mapping 3=3 but was {4=4, 5=5}
+  [0] 1=1 => Map should contain mapping 1=1 but key was not in the map
+  [1] 2=2 => Map should contain mapping 2=2 but key was not in the map
+  [2] 3=3 => Map should contain mapping 3=3 but key was not in the map
 """
          }
          "work inside assertSoftly block (for map)" {
