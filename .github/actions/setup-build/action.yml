@@ -1,0 +1,45 @@
+name: "Setup build"
+description: "Setup for Kotest builds"
+inputs:
+   cc-encryption-key:
+      description: "The Gradle configuration-cache encryption key"
+      required: true
+runs:
+   using: "composite"
+   steps:
+      # https://github.com/hmarr/debug-action
+      -  uses: "hmarr/debug-action@cd1afbd7852b7ad7b1b7a9a1b03efebd3b0a1820" # v3.0.0
+
+      -  name: "Redirect caches to fast D: drive for Windows runners"
+         if: runner.os == 'Windows'
+         run: |
+            mkdir D:\.konan
+            mklink /D %USERPROFILE%\.konan D:\.konan
+         shell: cmd
+
+      # https://github.com/actions/checkout
+      -  name: "Checkout"
+         uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332" # v4.1.7
+
+      # https://github.com/actions/setup-java
+      -  name: "Set up JDK"
+         uses: "actions/setup-java@v4"
+         with:
+            java-version: "17"
+            distribution: "temurin"  # pre-installed on GH Action Runners
+
+      # https://github.com/gradle/actions/tree/main/setup-gradle
+      -  name: "Setup Gradle"
+         uses: "gradle/actions/setup-gradle@6c9e5473141d9a428221ea9a229a025d7bf331d4" # v4.0.0-beta.1
+         with:
+            validate-wrappers: true
+            cache-encryption-key: ${{inputs.cc-encryption-key}}
+
+      -  name: Cache Kotest user directory
+         uses: actions/cache@v4
+         with:
+            path: ~/.kotest
+            key: kotest-user-dir-${{ runner.os }}
+            enableCrossOsArchive: true
+            restore-keys: |
+               kotest-user-dir-

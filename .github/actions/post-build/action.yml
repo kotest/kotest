@@ -1,0 +1,19 @@
+name: "Post build"
+description: "Post build for Kotest builds"
+runs:
+   using: "composite"
+   steps:
+      # https://github.com/hmarr/debug-action
+      -  uses: "hmarr/debug-action@cd1afbd7852b7ad7b1b7a9a1b03efebd3b0a1820" # v3.0.0
+
+      -  name: Upload build reports
+         if: failure()
+         uses: actions/upload-artifact@v4
+         with:
+            name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
+            path: |
+               **/build/reports/
+               **/*.hprof
+               **/*.log
+            if-no-files-found: ignore
+

@@ -8,61 +8,75 @@ on:
          - '*.md'
          - '*.yml'
          - '.github/workflows/**'
+         - '.github/actions/**'
       branches:
          - master
 
 permissions:
    contents: read
 
+env:
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+   ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
+   ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_pass: ${{ secrets.GRADLE_BUILD_CACHE_PASS }}
+
 jobs:
-
-   validate-api:
-      name: Validate API
-      if: github.repository == 'kotest/kotest'
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: ubuntu-latest
-         ref: ${{ inputs.ref }}
-         task: apiCheck
-
    validate-primary:
-      name: Validate on primary runner
-      if: github.repository == 'kotest/kotest'
-      needs: validate-api
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: ubuntu-latest
-         ref: ${{ inputs.ref }}
-         task: check
+      runs-on: ubuntu-latest
+      steps:
+         -  name: Setup build
+            uses: ./.github/actions/setup-build
+            with:
+               cc-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+
+         -  name: Validate API & tests
+            run: ./gradlew apiCheck check --scan --stacktrace
+
+         -  name: Post build
+            uses: ./.github/actions/post-build
 
    validate-secondary:
       name: Validate on secondary runners
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary ]
+
+      needs: [ validate-primary ]
       strategy:
          matrix:
             include:
                -  os: macos-latest
                -  os: windows-latest
          fail-fast: false
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: ${{ matrix.os }}
-         ref: ${{ inputs.ref }}
-         task: check
+      runs-on: ${{ matrix.os }}
+      steps:
+          -  name: Setup build
+             uses: ./.github/actions/setup-build
+             with:
+              cc-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+
+          -  name: Validate tests
+             run: ./gradlew check --scan --stacktrace
+
+          -  name: Post build
+             uses: ./.github/actions/post-build
 
    publish-sonatype:
       name: Publish all artifacts to Sonatype (Maven Central)
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary, validate-secondary ]
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: macos-latest
-         ref: ${{ inputs.ref }}
+      runs-on: macos-latest
+      needs: [ validate-primary, validate-secondary ]
+      steps:
+         -  name: Setup build
+            uses: ./.github/actions/setup-build
+            with:
+               cc-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+
          # TODO remove `--continue` when Kotest Gradle Plugin publishing works
          #      https://github.com/kotest/kotest/issues/4012#issuecomment-2241294938
-         task: publishAllPublicationsToDeployRepository --continue
+         -  name: Validate tests
+            run: ./gradlew publishAllPublicationsToDeployRepository --scan --stacktrace --continue
+
+         -  name: Post build
+            uses: ./.github/actions/post-build
+
