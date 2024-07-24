@@ -5,7 +5,6 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.status.isEnabled
 
 /**
@@ -20,8 +19,6 @@ internal class TestEnabledCheckInterceptor(private val configuration: ProjectCon
 
    private val logger = Logger(TestEnabledCheckInterceptor::class)
 
-   private val testExtensions = TestExtensions(configuration.registry)
-
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
@@ -35,7 +32,6 @@ internal class TestEnabledCheckInterceptor(private val configuration: ProjectCon
          }
          false -> {
             logger.log { Pair(testCase.name.testName, "Test is disabled: ${enabled.reason}") }
-            testExtensions.disabledTestListenersInvocation(testCase, enabled.reason)
             TestResult.Ignored(enabled)
          }
       }

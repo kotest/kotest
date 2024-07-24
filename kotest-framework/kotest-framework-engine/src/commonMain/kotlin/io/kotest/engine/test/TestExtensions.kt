@@ -11,7 +11,7 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
-import io.kotest.core.listeners.DisabledTestListener
+import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -154,10 +154,10 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Invokes all [DisabledTestListener] for this test.
+    * Invokes all [IgnoredTestListener] for this test.
     */
-   suspend fun disabledTestListenersInvocation(testCase: TestCase, reason: String?) {
-      extensions(testCase).filterIsInstance<DisabledTestListener>()
-         .forEach { it.disabledTest(testCase, reason) }
+   suspend fun ignoredTestListenersInvocation(testCase: TestCase, reason: String?) {
+      extensions(testCase).filterIsInstance<IgnoredTestListener>()
+         .forEach { it.ignoredTest(testCase, reason) }
    }
 }
