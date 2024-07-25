@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.matchers
 
+import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
@@ -19,6 +21,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldContain
@@ -156,28 +159,40 @@ class AssertSoftlyTest : FreeSpec({
 
       "Receiver version" - {
          "works on a receiver object" {
+            var lineNumber = 0
             shouldThrow<AssertionError> {
                assertSoftly("foo") {
+                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
                   length shouldBe 2
                   this[1] shouldBe 'o' // should pass
                   this shouldNotBe "foo"
                }
             }.run {
-               message should contain("The following 2 assertions for \"foo\" failed:")
-               message should contain("1) expected:<2> but was:<3>")
-               message should contain("2) \"foo\" should not equal \"foo\"")
+               message.shouldContainInOrder(
+                  "The following 2 assertions for \"foo\" failed:",
+                  "1) expected:<2> but was:<3>",
+                  "AssertSoftlyTest.kt:${lineNumber + 1}",
+                  "2) \"foo\" should not equal \"foo\"",
+                  "AssertSoftlyTest.kt:${lineNumber + 3}",
+               )
+               stackTrace.first().lineNumber shouldBe lineNumber - 1
             }
          }
 
          "Includes the receiver in failure message when there's a single failure" {
+            var lineNumber = 0
             shouldThrow<AssertionError> {
                assertSoftly("foo") {
+                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
                   length shouldBe 2
                }
-            }.message shouldBe """
-               The following assertion for "foo" failed:
-               expected:<2> but was:<3>
-            """.trimIndent()
+            }.run {
+               message shouldBe """
+                  The following assertion for "foo" failed:
+                  expected:<2> but was:<3>
+               """.trimIndent()
+               stackTrace.first().lineNumber shouldBe lineNumber + 1
+            }
          }
 
          "Returns the receiver" {
@@ -252,6 +267,33 @@ class AssertSoftlyTest : FreeSpec({
                "└ enumValue: more complex with data class and enums\n" +
                "expected:<Second> but was:<First>"
             error.message shouldNotContain "3) "
+         }
+      }
+      "doesn't loose stack traces" - {
+         // Added as a verification of https://github.com/kotest/kotest/issues/1831
+         "single assertion failed with AssertionFailedError" {
+            var lineNumber = 0
+            shouldThrow<AssertionFailedError> {
+               assertSoftly {
+                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
+                  1 shouldBe 2
+               }
+            }.run {
+               stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
+               stackTrace.first().lineNumber shouldBe lineNumber + 1
+            }
+         }
+         "single assertion failed with AssertionError" {
+            var lineNumber = 0
+            shouldThrow<AssertionError> {
+               assertSoftly {
+                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
+                  null should beEmpty()
+               }
+            }.run {
+               stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
+               stackTrace.first().lineNumber shouldBe lineNumber + 1
+            }
          }
       }
    }
