@@ -82,7 +82,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   @Suppress("DEPRECATION") // Remove when removing Listener
-   val exts = config.listeners() + listOf(projectListener) + config.extensions() + config.filters()
+   val exts = listOf(projectListener) + config.extensions()
    exts.forEach { configuration.registry.add(it) }
 }
