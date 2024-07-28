@@ -43,7 +43,7 @@ dependencyResolutionManagement {
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
-      ivy("https://nodejs.org/dist/") {
+      ivy("https://cache-redirector.jetbrains.com/nodejs.org/dist/") {
          name = "Node Distributions at $url"
          patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
          metadataSources { artifact() }
