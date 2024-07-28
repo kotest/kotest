@@ -111,7 +111,6 @@ include(
    ":kotest-runner:kotest-runner-junit4",
    ":kotest-extensions",
    ":kotest-extensions:kotest-extensions-blockhound",
-   ":kotest-extensions:kotest-extensions-http",
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
 
