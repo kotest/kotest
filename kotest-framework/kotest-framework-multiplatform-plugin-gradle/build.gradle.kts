@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import utils.SystemPropertiesArgumentProvider
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
@@ -11,9 +10,6 @@ plugins {
    id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
 }
-
-group = "io.kotest"
-version = Ci.gradleVersion
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
@@ -31,7 +27,6 @@ dependencies {
    devPublication(projects.kotestAssertions.kotestAssertionsShared)
    devPublication(projects.kotestExtensions)
    devPublication(projects.kotestFramework.kotestFrameworkDiscovery)
-   devPublication(projects.kotestFramework.kotestFrameworkConcurrency)
    devPublication(projects.kotestCommon)
    devPublication(projects.kotestFramework.kotestFrameworkApi)
    devPublication(projects.kotestFramework.kotestFrameworkEngine)
@@ -60,7 +55,6 @@ tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
-   systemProperty("kotestGradlePluginVersion", Ci.gradleVersion)
 
    val testProjectDir = layout.projectDirectory.dir("test-project")
    inputs.dir(testProjectDir)

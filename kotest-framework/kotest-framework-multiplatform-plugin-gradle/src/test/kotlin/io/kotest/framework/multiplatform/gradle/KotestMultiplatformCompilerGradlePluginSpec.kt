@@ -58,7 +58,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                "jsBrowserTest",
                "jsNodeTest",
                "wasmJsBrowserTest",
-               "wasmJsNodeTest"
+               "wasmJsNodeTest",
             )
 
             runGradle(
@@ -73,33 +73,23 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             }
          }
 
-         setOf(
-            true,
-            false
-         ).forEach { enableNewMemoryModel ->
-            val description = if (enableNewMemoryModel) "is enabled" else "is not enabled"
+         should("be able to compile and run tests for all native targets supported by the host machine") {
+            val taskNames = listOf(
+               "macosArm64Test",
+               "macosX64Test",
+               "mingwX64Test",
+               "linuxX64Test",
+            )
 
-            context("when the new Kotlin/Native memory model $description") {
-               should("be able to compile and run tests for all native targets supported by the host machine") {
-                  val taskNames = listOf(
-                     "macosArm64Test",
-                     "macosX64Test",
-                     "mingwX64Test",
-                     "linuxX64Test"
-                  )
-
-                  runGradle(
-                     listOf(
-                        "-PkotlinVersion=$kotlinVersion",
-                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
-                     ) + taskNames
-                  ) { result ->
-                     taskNames.forAtLeastOne { taskName ->
-                        // Depending on the host machine these tests are running on,
-                        // only one of the test targets will be built and executed.
-                        result.shouldHaveExpectedTestResultsFor(taskName)
-                     }
-                  }
+            runGradle(
+               listOf(
+                  "-PkotlinVersion=$kotlinVersion",
+               ) + taskNames
+            ) { result ->
+               taskNames.forAtLeastOne { taskName ->
+                  // Depending on the host machine these tests are running on,
+                  // only one of the test targets will be built and executed.
+                  result.shouldHaveExpectedTestResultsFor(taskName)
                }
             }
          }
@@ -139,9 +129,8 @@ private data class GradleInvocation(
       prepareProjectDir(projectDir)
 
       val command = buildList {
-         add(wrapperScriptPath.toString())
+         add(wrapperScriptPath.toAbsolutePath().toString())
          add("--continue")
-         add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
          add("-PkotestVersion=$kotestVersion")
          add("-PdevMavenRepoPath=$devMavenRepoPath")
          addAll(arguments)
@@ -168,7 +157,6 @@ private data class GradleInvocation(
 
    companion object {
       private val kotestVersion = System.getProperty("kotestVersion")
-      private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
 
       private val kotestProjectDir = Path("../../").normalize().absolute()

@@ -67,9 +67,6 @@ include(
    // defines data classes and the spec styles; all classes needed to define specs/testcases live here
    ":kotest-framework:kotest-framework-api",
 
-   // async / parallel / concurrency / non-deterministic test helpers
-   ":kotest-framework:kotest-framework-concurrency",
-
    // used to discovery specs from the classpath at runtime
    // brings in the API dependency for required data types
    ":kotest-framework:kotest-framework-discovery",
@@ -85,9 +82,6 @@ include(
    ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
    ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
-
-   // contains data driven testing that builds on top of the kotest test framework
-   ":kotest-framework:kotest-framework-datatest",
 
    // contains the matcher interface and is intended as a lightweight dependency for library authors
    // to depend on when writing matcher libraries

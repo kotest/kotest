@@ -4,17 +4,7 @@ import io.kotest.property.Arb
 import kotlin.math.PI
 import kotlin.math.acos
 
-
-@Deprecated("Use Arb.geoLocation()", replaceWith = ReplaceWith("geoLocation()"))
-fun Arb.Companion.latlong(): Arb<Pair<Double, Double>> =
-   Arb.geoLocation().map { loc -> Pair(loc.latitudeDeg, loc.longitudeDeg) }
-
 data class GeoLocation(val latitude: Double, val longitude: Double) {
-   @Deprecated("Use latitude", replaceWith = ReplaceWith("latitude"))
-   val first = latitude
-   @Deprecated("Use longitude", replaceWith = ReplaceWith("longitude"))
-   val second = longitude
-
    val latitudeDeg: Double = 180.0 * latitude / PI
    val longitudeDeg: Double = 180.0 * longitude / PI
 }
