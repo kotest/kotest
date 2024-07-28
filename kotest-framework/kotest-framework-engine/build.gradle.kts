@@ -55,7 +55,19 @@ kotlin {
 }
 
 tasks.withType<Test>().configureEach {
-   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED")
+   // --add-opens was added in Java 9, so only add the args if the Java launcher version is >= 9
+   jvmArgumentProviders.add(CommandLineArgumentProvider {
+      javaLauncher.orNull?.let {
+         if (it.metadata.languageVersion >= JavaLanguageVersion.of(9)) {
+            listOf(
+               "--add-opens=java.base/java.util=ALL-UNNAMED",
+               "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            )
+         } else {
+            emptyList()
+         }
+      }
+   })
 
    systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

@@ -43,7 +43,7 @@ dependencyResolutionManagement {
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
-      ivy("https://cache-redirector.jetbrains.com/nodejs.org/dist/") {
+      ivy("https://nodejs.org/dist/") {
          name = "Node Distributions at $url"
          patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
          metadataSources { artifact() }
@@ -59,6 +59,11 @@ dependencyResolutionManagement {
 
       mavenLocal()
    }
+}
+
+plugins {
+   id("com.gradle.develocity") version "3.17.5"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 include(
@@ -146,10 +151,6 @@ include(
    // BOM for whole kotest project
    ":kotest-bom",
 )
-
-plugins {
-   id("com.gradle.develocity") version "3.17.5"
-}
 
 develocity {
    buildScan {

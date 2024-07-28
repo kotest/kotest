@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
@@ -25,31 +23,18 @@ tasks.withType<Test>().configureEach {
    systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + listOf(
-         "-opt-in=kotlin.RequiresOptIn",
-         "-opt-in=io.kotest.common.KotestInternal",
-         "-opt-in=io.kotest.common.ExperimentalKotest",
-      )
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-   }
-}
-
 kotlin {
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   compilerOptions {
+      freeCompilerArgs.add("-Xexpect-actual-classes")
+   }
    sourceSets.configureEach {
-      @OptIn(ExperimentalKotlinGradlePluginApi::class)
-      compilerOptions {
-         freeCompilerArgs.add("-Xexpect-actual-classes")
-      }
       languageSettings {
-         optIn("kotlin.time.ExperimentalTime")
-         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("io.kotest.common.ExperimentalKotest")
+         optIn("io.kotest.common.KotestInternal")
          optIn("kotlin.contracts.ExperimentalContracts")
+         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("kotlin.time.ExperimentalTime")
       }
    }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
 }
