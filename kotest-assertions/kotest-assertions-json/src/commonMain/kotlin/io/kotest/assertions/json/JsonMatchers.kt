@@ -16,11 +16,10 @@ import kotlin.reflect.KClass
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
 
 /**
- * Verifies that the [expected] string is valid json, and that it matches this string.
+ * Verifies that the [expected] string is valid JSON, and that it matches this string.
  *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs,
  * regardless of order.
- *
  */
 @Deprecated("Use shouldEqualJson. Deprecated since 5.6. Will be removed in 6.0")
 infix fun String?.shouldMatchJson(expected: String?) =
@@ -102,18 +101,16 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
 }
 
 /**
- * Verifies that the [expected] string is valid json, and that it matches this string.
+ * Verifies that the [expected] string is valid JSON, and that it matches this string.
  *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs,
  * regardless of order.
- *
  */
 @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldEqualJson(expected, legacyOptions(mode, order))
 
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldEqualJson(expected: String, options: CompareJsonOptions) {
    this should equalJson(expected, options)
@@ -124,7 +121,6 @@ fun String.shouldEqualJson(expected: String, options: CompareJsonOptions) {
 fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) =
    this.shouldNotEqualJson(expected, legacyOptions(mode, order))
 
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
 @Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
 fun String.shouldNotEqualJson(expected: String, options: CompareJsonOptions) {
    this shouldNot equalJson(expected, options)

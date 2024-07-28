@@ -5,8 +5,8 @@ import io.kotest.mpp.bestName
 import kotlin.time.Duration
 
 /**
- * Creates a [TestResult] which is a [TestResult.success] if the supplied exception is null,
- * a [TestResult.failure] if the supplied error is an assertion failure, or a [TestResult.error]
+ * Creates a [TestResult] which is a [TestResult.Success] if the supplied exception is null,
+ * a [TestResult.Failure] if the supplied error is an assertion failure, or a [TestResult.Error]
  * if the exception is any other type.
  */
 fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
