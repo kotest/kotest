@@ -19,11 +19,8 @@ import kotlin.io.path.absolute
 import kotlin.io.path.copyToRecursively
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.deleteRecursively
-import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
 
 // Why don't we use Gradle's TestKit here?
 // It embeds a particular version of Kotlin, which causes all kinds of pain.
@@ -158,9 +155,6 @@ private data class GradleInvocation(
    companion object {
       private val kotestVersion = System.getProperty("kotestVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
-
-      private val kotestProjectDir = Path("../../").normalize().absolute()
-
       private val testProjectDir = Path(System.getProperty("testProjectDir"))
 
       private val wrapperScriptPath: Path = run {
@@ -187,15 +181,6 @@ private data class GradleInvocation(
             } else {
                src.copyToIgnoringExistingDirectory(target, followLinks = false)
             }
-         }
-
-         projectDir.resolve("settings.gradle.kts").apply {
-            writeText(
-               readText().replace(
-                  """includeBuild("../../../")""",
-                  """includeBuild("${kotestProjectDir.invariantSeparatorsPathString}")""",
-               )
-            )
          }
 
          return projectDir

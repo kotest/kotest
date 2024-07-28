@@ -56,11 +56,13 @@ tasks.withType<Test>().configureEach {
 
    systemProperty("kotestVersion", Ci.publishVersion)
 
+   //region pass test-project directory as system property
    val testProjectDir = layout.projectDirectory.dir("test-project")
    inputs.dir(testProjectDir)
       .withPropertyName("testProjectDir")
       .withPathSensitivity(RELATIVE)
    systemProperty("testProjectDir", testProjectDir.asFile.invariantSeparatorsPath)
+   //endregion
 
    testLogging {
       showExceptions = true
