@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
-   `java-library`
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
 }
