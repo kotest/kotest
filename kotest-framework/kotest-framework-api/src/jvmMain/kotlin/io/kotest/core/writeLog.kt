@@ -2,6 +2,7 @@ package io.kotest.core
 
 import io.kotest.mpp.syspropOrEnv
 import java.io.FileWriter
+import java.lang.management.ManagementFactory
 import kotlin.time.TimeMark
 
 /**
@@ -13,8 +14,10 @@ import kotlin.time.TimeMark
  * by the respective process ID.
  */
 private val file: FileWriter by lazy {
+   val filename = syspropOrEnv("KOTEST_DEBUG_PATH") ?: "kotest-PID.log"
+   val pid = getPid()
    FileWriter(
-      (syspropOrEnv("KOTEST_DEBUG_PATH") ?: "kotest-PID.log").replace("PID", "${ProcessHandle.current().pid()}"),
+      filename.replace("PID", pid.toString()),
       false
    )
 }
@@ -25,4 +28,42 @@ actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
    file.write(f())
    file.write("\n")
    file.flush()
+}
+
+
+private fun getPid(): Long {
+   return if (currentMajorJavaVersion >= 9) {
+      getPidFromProcessHandle()
+   } else {
+      getPidFromMXBean()
+   }
+}
+
+private fun getPidFromProcessHandle(): Long {
+   // FIXME remove ProcessHandle reflection when min supported Java version >= 9
+   //return ProcessHandle.current().pid()
+   return try {
+      val processHandleClass = Class.forName("java.lang.ProcessHandle")
+      val currentMethod = processHandleClass.getMethod("current")
+      val pidMethod = processHandleClass.getMethod("pid")
+      val processHandleInstance = currentMethod.invoke(null)
+      pidMethod.invoke(processHandleInstance) as Long
+   } catch (e: Exception) {
+      getPidFromMXBean()
+   }
+}
+
+// FIXME remove getPidFromMXBean when min supported Java version >= 9
+private fun getPidFromMXBean(): Long {
+   val processName = ManagementFactory.getRuntimeMXBean().name
+   return processName.substringBefore("@").toLongOrNull() ?: 0
+}
+
+private val currentMajorJavaVersion: Int by lazy {
+   val version = System.getProperty("java.version")
+   if (version.startsWith("1.")) {
+      version.substringAfter("1.").substringBefore(".").toInt()
+   } else {
+      version.substringBefore(".").toInt()
+   }
 }

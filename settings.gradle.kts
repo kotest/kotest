@@ -61,6 +61,11 @@ dependencyResolutionManagement {
    }
 }
 
+plugins {
+   id("com.gradle.develocity") version "3.17.5"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+}
+
 include(
    ":kotest-common",
 
@@ -145,10 +150,6 @@ include(
    // BOM for whole kotest project
    ":kotest-bom",
 )
-
-plugins {
-   id("com.gradle.develocity") version "3.17.5"
-}
 
 develocity {
    buildScan {
