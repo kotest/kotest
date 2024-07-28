@@ -3012,12 +3012,10 @@ public final class io/kotest/core/test/TestCaseSeverityLevel : java/lang/Enum {
 }
 
 public abstract interface class io/kotest/core/test/TestResult {
-	public static final field Companion Lio/kotest/core/test/TestResult$Companion;
 	public abstract fun getDuration-UwyO8pc ()J
 	public abstract fun getErrorOrNull ()Ljava/lang/Throwable;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getReasonOrNull ()Ljava/lang/String;
-	public abstract fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public abstract fun isError ()Z
 	public abstract fun isErrorOrFailure ()Z
 	public abstract fun isFailure ()Z
@@ -3025,18 +3023,10 @@ public abstract interface class io/kotest/core/test/TestResult {
 	public abstract fun isSuccess ()Z
 }
 
-public final class io/kotest/core/test/TestResult$Companion {
-	public final fun error (Ljava/lang/Throwable;J)Lio/kotest/core/test/TestResult$Error;
-	public final fun failure (Ljava/lang/AssertionError;J)Lio/kotest/core/test/TestResult$Failure;
-	public final fun getIgnored ()Lio/kotest/core/test/TestResult$Ignored;
-	public final fun success (J)Lio/kotest/core/test/TestResult$Success;
-}
-
 public final class io/kotest/core/test/TestResult$DefaultImpls {
 	public static fun getErrorOrNull (Lio/kotest/core/test/TestResult;)Ljava/lang/Throwable;
 	public static fun getName (Lio/kotest/core/test/TestResult;)Ljava/lang/String;
 	public static fun getReasonOrNull (Lio/kotest/core/test/TestResult;)Ljava/lang/String;
-	public static fun getStatus (Lio/kotest/core/test/TestResult;)Lio/kotest/core/test/TestStatus;
 	public static fun isError (Lio/kotest/core/test/TestResult;)Z
 	public static fun isErrorOrFailure (Lio/kotest/core/test/TestResult;)Z
 	public static fun isFailure (Lio/kotest/core/test/TestResult;)Z
@@ -3056,7 +3046,6 @@ public final class io/kotest/core/test/TestResult$Error : io/kotest/core/test/Te
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3078,7 +3067,6 @@ public final class io/kotest/core/test/TestResult$Failure : io/kotest/core/test/
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3089,6 +3077,7 @@ public final class io/kotest/core/test/TestResult$Failure : io/kotest/core/test/
 }
 
 public final class io/kotest/core/test/TestResult$Ignored : io/kotest/core/test/TestResult {
+	public fun <init> ()V
 	public fun <init> (Lio/kotest/core/test/Enabled;)V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -3100,7 +3089,6 @@ public final class io/kotest/core/test/TestResult$Ignored : io/kotest/core/test/
 	public fun getName ()Ljava/lang/String;
 	public final fun getReason ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3120,7 +3108,6 @@ public final class io/kotest/core/test/TestResult$Success : io/kotest/core/test/
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z

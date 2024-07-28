@@ -11,7 +11,7 @@ class TestCaseExtensionChainTest : StringSpec() {
    object MyExt1 : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          return if (testCase.descriptor.id.value == "test1")
-            TestResult.Ignored
+            TestResult.Ignored()
          else
             execute(testCase)
       }
@@ -20,7 +20,7 @@ class TestCaseExtensionChainTest : StringSpec() {
    object MyExt2 : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          return if (testCase.descriptor.id.value == "test2")
-            TestResult.Ignored
+            TestResult.Ignored()
          else
             execute(testCase)
       }
