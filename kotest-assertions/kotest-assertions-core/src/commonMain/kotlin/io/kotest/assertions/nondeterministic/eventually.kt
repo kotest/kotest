@@ -120,17 +120,17 @@ data class EventuallyConfiguration(
    }
 }
 
-object EventuallyConfigurationDefaults {
-   var duration: Duration = Duration.INFINITE
-   var initialDelay: Duration = Duration.ZERO
-   var interval: Duration = 25.milliseconds
-   var intervalFn: DurationFn? = null
-   var retries: Int = Int.MAX_VALUE
-   var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
-   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
-   var listener: EventuallyListener? = null
-   var shortCircuit: (Throwable) -> Boolean = { false }
-   var includeFirst: Boolean = true
+internal object EventuallyConfigurationDefaults {
+   val duration: Duration = Duration.INFINITE
+   val initialDelay: Duration = Duration.ZERO
+   val interval: Duration = 25.milliseconds
+   val intervalFn: DurationFn? = null
+   val retries: Int = Int.MAX_VALUE
+   val expectedExceptions: Set<KClass<out Throwable>> = emptySet()
+   val expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   val listener: EventuallyListener? = null
+   val shortCircuit: (Throwable) -> Boolean = { false }
+   val includeFirst: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
