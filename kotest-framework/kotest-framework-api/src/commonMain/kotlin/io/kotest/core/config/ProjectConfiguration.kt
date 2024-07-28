@@ -4,7 +4,6 @@ package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.Listener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -365,12 +364,6 @@ class ProjectConfiguration {
     * Defaults to false.
     */
    var ignorePrivateClasses: Boolean = Defaults.ignorePrivateClasses
-
-   /**
-    * Returns all globally registered [Listener]s.
-    */
-   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
-   fun listeners(): Nothing = throw UnsupportedOperationException()
 
    @Deprecated("Use registry. Deprecated since 5.0")
    fun extensions(): List<Extension> = registry.all()
