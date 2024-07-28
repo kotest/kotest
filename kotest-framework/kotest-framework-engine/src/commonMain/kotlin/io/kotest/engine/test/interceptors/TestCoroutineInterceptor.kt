@@ -26,7 +26,7 @@ class TestCoroutineInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      var result: TestResult = TestResult.Ignored
+      var result: TestResult = TestResult.Ignored()
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }
       runTest {
          var additionalContext: CoroutineContext = TestScopeElement(this)
