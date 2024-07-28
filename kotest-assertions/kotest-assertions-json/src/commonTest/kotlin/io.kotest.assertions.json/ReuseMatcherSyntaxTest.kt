@@ -9,11 +9,9 @@ class ReuseMatcherSyntaxTest : FreeSpec({
 
    "syntax" - {
       //  these are mainly to see how the syntax looks, no real assertions here
-      fun matcherReUse1(matcher: Matcher<String>) {
-      }
+      fun matcherReUse1(@Suppress("UNUSED_PARAMETER") matcher: Matcher<String>) {}
 
-      fun matcherReUse2(matcher: Matcher<String?>) {
-      }
+      fun matcherReUse2(@Suppress("UNUSED_PARAMETER") matcher: Matcher<String?>) {}
 
       "can re-use basic matchers" {
          matcherReUse1(beValidJson())

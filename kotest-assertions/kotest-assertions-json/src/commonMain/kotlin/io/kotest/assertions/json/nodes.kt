@@ -44,7 +44,7 @@ sealed class JsonNode {
 
          if (other.content == content) return true
 
-         // if one or the other is exponent notation, we must compare by parsed value
+         // if one or the other uses exponent notation, we must compare by parsed value
          if (content.matches(exponentRegex) xor other.content.matches(exponentRegex)) {
             return content.toDouble() == other.content.toDouble()
          }
