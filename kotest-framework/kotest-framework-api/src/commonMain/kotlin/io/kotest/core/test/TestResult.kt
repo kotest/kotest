@@ -1,7 +1,6 @@
 package io.kotest.core.test
 
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface TestResult {
 
@@ -17,6 +16,8 @@ sealed interface TestResult {
        * Returns a [TestResult.Ignored] with a reason string resolved from the given [Enabled].
        */
       constructor(enabled: Enabled) : this(enabled.reason)
+
+      constructor() : this(null)
 
       override val duration: Duration = Duration.ZERO
    }
