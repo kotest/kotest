@@ -1,18 +1,13 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
-
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
-import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
-class TimeoutTest : FunSpec() {
+class CoroutinesTimeoutTest : FunSpec() {
 
    init {
 
@@ -86,20 +81,10 @@ class TimeoutTest : FunSpec() {
    }
 }
 
-suspend fun someCoroutine() {
+private suspend fun someCoroutine() {
    coroutineScope {
       launch {
          delay(10000000)
       }
-   }
-}
-
-/**
- * A Test Case extension that expects each test to fail, and will invert the test result.
- */
-val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
-   when (execute(testCase)) {
-      is TestResult.Failure, is TestResult.Error -> TestResult.Success(0.milliseconds)
-      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
    }
 }
