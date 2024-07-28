@@ -27,19 +27,16 @@ kotlin {
 }
 
 tasks.withType<Test>().configureEach {
-   // --add-opens was added in Java 9, so only add the args if the Java launcher version is >= 9
    jvmArgumentProviders.add(CommandLineArgumentProvider {
-      javaLauncher.orNull?.let {
-         if (it.metadata.languageVersion >= JavaLanguageVersion.of(9)) {
-            listOf(
-               "--add-opens=java.base/java.util=ALL-UNNAMED",
-               "--add-opens=java.base/java.lang=ALL-UNNAMED",
-            )
-         } else {
-            emptyList()
+      val javaLauncher = javaLauncher.orNull
+      buildList {
+         if (javaLauncher != null && javaLauncher.metadata.languageVersion >= JavaLanguageVersion.of(9)) {
+            // --add-opens is only available in Java 9+
+            add("--add-opens=java.base/java.util=ALL-UNNAMED")
+            add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+            // have to manually allow security.manager in Java 9+ https://github.com/kotest/kotest/issues/3841
+            add("-Djava.security.manager=allow")
          }
       }
    })
-
-   jvmArgs("-Djava.security.manager=allow")
 }
