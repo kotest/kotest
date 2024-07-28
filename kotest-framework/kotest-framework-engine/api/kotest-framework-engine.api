@@ -55,28 +55,6 @@ public final class io/kotest/engine/InterceptorsKt {
 	public static final fun testEngineInterceptors ()Ljava/util/List;
 }
 
-public final class io/kotest/engine/KotestEngineLauncher {
-	public static final field Companion Lio/kotest/engine/KotestEngineLauncher$Companion;
-	public fun <init> ()V
-	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;Ljava/util/List;)V
-	public final fun launch ()Lio/kotest/engine/EngineResult;
-	public final fun withDumpConfig (Z)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withFilter (Lio/kotest/core/filter/TestFilter;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withFilters (Ljava/util/List;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withScripts (Ljava/util/List;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withSpec (Lkotlin/reflect/KClass;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withSpecFilters (Ljava/util/List;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withSpecs (Ljava/util/List;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withSpecs ([Lkotlin/reflect/KClass;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withTags (Lio/kotest/core/TagExpression;)Lio/kotest/engine/KotestEngineLauncher;
-	public final fun withTestFilters (Ljava/util/List;)Lio/kotest/engine/KotestEngineLauncher;
-}
-
-public final class io/kotest/engine/KotestEngineLauncher$Companion {
-	public final fun default (Ljava/util/List;Ljava/util/List;Lio/kotest/core/TagExpression;)Lio/kotest/engine/KotestEngineLauncher;
-}
-
 public final class io/kotest/engine/ReflectionKt {
 	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
