@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 
 plugins {
+   id("kotest-base")
    signing
    `maven-publish`
    id("dev.adamko.dev-publish")

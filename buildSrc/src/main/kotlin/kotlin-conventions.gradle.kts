@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
+   id("kotest-base")
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
 }
