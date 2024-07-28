@@ -12,14 +12,6 @@ plugins {
 group = "io.kotest"
 version = Ci.publishVersion
 
-val javadocJar by tasks.registering(Jar::class) {
-   group = JavaBasePlugin.DOCUMENTATION_GROUP
-   description = "Assembles java doc to jar"
-   archiveClassifier.set("javadoc")
-   val javadoc = tasks.named("javadoc")
-   from(javadoc)
-}
-
 val ossrhUsername: String by project
 val ossrhPassword: String by project
 val signingKey: String? by project
@@ -104,6 +96,12 @@ publishing {
 }
 
 pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+   val javadocJar by tasks.registering(Jar::class) {
+      group = JavaBasePlugin.DOCUMENTATION_GROUP
+      description = "Create Javadoc JAR"
+      archiveClassifier.set("javadoc")
+   }
+
    publishing.publications.withType<MavenPublication>().configureEach {
       artifact(javadocJar)
    }

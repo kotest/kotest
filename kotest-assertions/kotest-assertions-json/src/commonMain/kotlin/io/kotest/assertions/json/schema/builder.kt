@@ -76,8 +76,8 @@ data class JsonSchema(
       var requiredProperties: MutableList<String> = mutableListOf()
 
       /**
-       * By default properties are optional.
-       * Using [required], you can specify that it must be included.
+       * By default, properties are optional.
+       * Using [requiredProperties], you can specify that it must be included.
        */
       fun withProperty(
          name: String,
@@ -161,7 +161,7 @@ data class JsonSchema(
        */
       val requiredProperties: List<String> = emptyList(),
    ) : JsonSchemaElement {
-      operator fun get(name: String) = properties.get(name)
+      operator fun get(name: String): JsonSchemaElement? = properties[name]
       override fun typeName() = "object"
    }
 
@@ -242,7 +242,7 @@ fun JsonSchema.Builder.`null`() = JsonSchema.Null
 
 /**
  * Creates a [JsonSchema.JsonObject] node. Expand on the object configuration using the [dsl] which lets you specify
- * properties using [withProperty]
+ * properties using [JsonSchema.JsonObjectBuilder.withProperty]
  *
  * Example:
  * ```kotlin

@@ -5,7 +5,6 @@ import utils.SystemPropertiesArgumentProvider
 
 plugins {
    id("kotest-base")
-   `java-library`
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
 }

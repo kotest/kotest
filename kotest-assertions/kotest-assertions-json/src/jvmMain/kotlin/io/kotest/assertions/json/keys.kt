@@ -1,12 +1,5 @@
 package io.kotest.assertions.json
 
-import com.jayway.jsonpath.InvalidPathException
-import com.jayway.jsonpath.JsonPath
-import com.jayway.jsonpath.PathNotFoundException
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
-import io.kotest.assertions.intellijFormatError
-import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should

@@ -48,8 +48,8 @@ fun parseSchema(jsonSchema: String): JsonSchema =
 
 @ExperimentalKotest
 internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
-   override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out JsonSchemaElement> {
-      return when (val type = element.jsonObject.get("type")?.jsonPrimitive?.content) {
+   override fun selectDeserializer(element: JsonElement): DeserializationStrategy<JsonSchemaElement> {
+      return when (val type = element.jsonObject["type"]?.jsonPrimitive?.content) {
          "array" -> JsonSchemaArraySerializer
          "object" -> JsonSchema.JsonObject.serializer()
          "string" -> JsonSchemaStringSerializer
