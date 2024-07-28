@@ -5,28 +5,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 sealed interface TestResult {
 
-   companion object {
-      @Deprecated(
-         "Replaced with TestResult.Success. Deprecated since 5.0",
-         ReplaceWith("TestResult.Success(durationMillis.milliseconds)", "kotlin.time.Duration.Companion.milliseconds")
-      )
-      fun success(durationMillis: Long): Success = Success(durationMillis.milliseconds)
-
-      @Deprecated(
-         "Replaced with TestResult.Failure. Deprecated since 5.0",
-         ReplaceWith("TestResult.Failure(durationMillis.milliseconds, error)", "kotlin.time.Duration.Companion.milliseconds")
-      )
-      fun failure(error: AssertionError, durationMillis: Long): Failure = Failure(durationMillis.milliseconds, error)
-
-      @Deprecated(
-         "Replaced with TestResult.Error. Deprecated since 5.0",
-         ReplaceWith("TestResult.Error(durationMillis.milliseconds, error)", "kotlin.time.Duration.Companion.milliseconds")
-      )
-      fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
-
-      val Ignored = Ignored(null)
-   }
-
    /**
     * Returns a [TestResult] with a status from the given [reason] string.
     *
@@ -52,15 +30,6 @@ sealed interface TestResult {
    data class Failure(override val duration: Duration, val cause: AssertionError) : TestResult
 
    val duration: Duration
-
-   @Deprecated("No longer has relevance. Pattern match on TestResult directly. Deprecated since 5.0")
-   val status: TestStatus
-      get() = when (this) {
-         is Error -> TestStatus.Error
-         is Failure -> TestStatus.Failure
-         is Ignored -> TestStatus.Ignored
-         is Success -> TestStatus.Success
-      }
 
    val name: String
       get() = when (this) {
