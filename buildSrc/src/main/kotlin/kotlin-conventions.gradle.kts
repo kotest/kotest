@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
-   `java-library`
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
 }
