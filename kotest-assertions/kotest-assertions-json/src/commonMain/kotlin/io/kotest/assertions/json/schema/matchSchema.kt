@@ -14,11 +14,11 @@ import kotlinx.serialization.json.JsonElement
 
 @ExperimentalKotest
 infix fun String?.shouldMatchSchema(schema: JsonSchema) =
-   this should parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
+   this should parseToJson.and(matchSchema(schema).contramap { it?.let(Json::parseToJsonElement) })
 
 @ExperimentalKotest
 infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
-   this shouldNot parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
+   this shouldNot parseToJson.and(matchSchema(schema).contramap { it?.let(Json::parseToJsonElement) })
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
@@ -115,6 +115,7 @@ private fun validate(
             matcherViolation + sizeViolation + containsViolation + elementTypeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
+
       is JsonNode.ObjectNode -> {
          if (expected is JsonSchema.JsonObject) {
             val extraKeyViolations =
@@ -148,9 +149,11 @@ private fun validate(
                if (tree.content.contains(".")) violation("Expected integer, but was number")
                else violation(expected.matcher, tree.content.toLong())
             }
+
             is JsonSchema.JsonDecimal -> {
                violation(expected.matcher, tree.content.toDouble())
             }
+
             else -> violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          }
 
@@ -158,6 +161,7 @@ private fun validate(
          if (expected is JsonSchema.JsonString) {
             violation(expected.matcher, tree.value)
          } else violation("Expected ${expected.typeName()}, but was ${tree.type()}")
+
       is JsonNode.BooleanNode ->
          if (!isCompatible(tree, expected))
             violation("Expected ${expected.typeName()}, but was ${tree.type()}")
@@ -175,4 +179,3 @@ private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
       (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
       (actual is JsonNode.NumberNode && schema is JsonSchema.JsonNumber)
-
