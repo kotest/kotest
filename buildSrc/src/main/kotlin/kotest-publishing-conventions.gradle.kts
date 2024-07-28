@@ -19,7 +19,7 @@ val signingPassword: String? by project
 val mavenCentralRepoName = "Deploy"
 
 signing {
-   if (signingKey != null && signingPassword != null) {
+   if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
