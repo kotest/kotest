@@ -20,9 +20,7 @@ class SchemaWithMatcherTest : FunSpec(
          "2" shouldMatchSchema evenNumbers
 
          shouldFail { "3" shouldMatchSchema evenNumbers }
-            .message shouldBe """
-               $ => 3.0 should be multiple of 2.0
-         """.trimIndent()
+            .message shouldBe "$ => 3.0 should be multiple of 2.0"
       }
 
       context("smoke") {
@@ -57,7 +55,7 @@ class SchemaWithMatcherTest : FunSpec(
                       "age": 12
                     }
                   ]
-               """ shouldMatchSchema schema
+               """.trimIndent() shouldMatchSchema schema
             }.message shouldBe """
                $[0].name => "bo" should have minimum length of 3
                $[2].age => -1.0 should be >= 0.0

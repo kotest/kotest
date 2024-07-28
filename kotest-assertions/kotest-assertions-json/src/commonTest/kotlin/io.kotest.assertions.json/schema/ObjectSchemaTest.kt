@@ -5,7 +5,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-
 @OptIn(ExperimentalKotest::class)
 class ObjectSchemaTest : FunSpec(
    {

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package io.kotest.assertions.json
 
 @Deprecated("Json comparison options is now specified with `CompareJsonOptions`", ReplaceWith("TypeCoercion"))
@@ -20,8 +18,8 @@ enum class CompareMode {
    /**
     * Compare by value, coercing if possible.
     *
-    * For example, "true" and true will match because the string value can be coerced into a valid boolean.
-    * Similarly, "100" and 100 will match as the former can be coerced into an int.
+    * For example, `true` and `true` will match because the string value can be coerced into a valid boolean.
+    * Similarly, `100` and `100` will match as the former can be coerced into an int.
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
@@ -35,7 +33,7 @@ enum class CompareOrder {
    /**
     * All object properties must be in same order as expected.
     *
-    * For example, { "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` will NOT be considered equal.
+    * For example, `{ "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` will NOT be considered equal.
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
@@ -66,8 +64,6 @@ internal fun legacyOptions(mode: CompareMode, order: CompareOrder) =
          CompareOrder.Lenient -> PropertyOrder.Lenient
       }
    }
-
-internal val defaultCompareJsonOptions = CompareJsonOptions()
 
 class CompareJsonOptions(
 
@@ -127,7 +123,7 @@ enum class ArrayOrder {
 enum class FieldComparison {
 
    /**
-    * Default. Objects in [expected] and [actual] must contain the same fields.
+    * Default. Objects in `expected` and `actual` must contain the same fields.
     */
    Strict,
 
@@ -172,7 +168,7 @@ fun compareJsonOptions(builder: CompareJsonOptions.() -> Unit): CompareJsonOptio
    CompareJsonOptions().apply(builder)
 
 /**
- * Compares two json trees, returning a detailed error message if they differ.
+ * Compares two JSON trees, returning a detailed error message if they differ.
  */
 internal fun compare(
    path: List<String>,
@@ -185,10 +181,12 @@ internal fun compare(
          is JsonNode.ObjectNode -> compareObjects(path, expected, actual, options)
          else -> JsonError.ExpectedObject(path, actual)
       }
+
       is JsonNode.ArrayNode -> when (actual) {
          is JsonNode.ArrayNode -> compareArrays(path, expected, actual, options)
          else -> JsonError.ExpectedArray(path, actual)
       }
+
       is JsonNode.BooleanNode -> compareBoolean(path, expected, actual, options)
       is JsonNode.StringNode -> compareString(path, expected, actual, options)
       is JsonNode.NumberNode -> compareNumbers(path, expected, actual, options)
@@ -226,6 +224,7 @@ internal fun compareObjects(
             val error = compare(path + a.key, e.value.value, a.value, options)
             if (error != null) return error
          }
+
       PropertyOrder.Lenient ->
          expected.elements.entries.forEach { (name, e) ->
             val a = actual.elements[name] ?: return JsonError.ObjectMissingKeys(path, setOf(name))
@@ -294,7 +293,8 @@ internal fun compareArrays(
 }
 
 /**
- * When comparing a string, if the [mode] is [CompareMode.Lenient] we can convert the actual node to a string.
+ * When comparing a string, if [CompareJsonOptions.typeCoercion] is [TypeCoercion.Enabled]
+ * we can convert the actual node to a string.
  */
 internal fun compareString(
    path: List<String>,
@@ -311,8 +311,10 @@ internal fun compareString(
             expected.toNumberNode(),
             actual
          )
+
          else -> JsonError.IncompatibleTypes(path, expected, actual)
       }
+
       else -> JsonError.IncompatibleTypes(path, expected, actual)
    }
 }
@@ -325,8 +327,8 @@ internal fun compareStrings(path: List<String>, expected: String, actual: String
 }
 
 /**
- * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
- * node with "true" or "false", then we convert.
+ * When comparing a boolean, if [CompareJsonOptions.typeCoercion] is [TypeCoercion.Enabled]
+ * and the actual node is a text node with "true" or "false", then we convert.
  */
 internal fun compareBoolean(
    path: List<String>,
@@ -341,6 +343,7 @@ internal fun compareBoolean(
          "false" -> compareBooleans(path, expected.value, false)
          else -> JsonError.UnequalValues(path, expected, actual)
       }
+
       else -> JsonError.IncompatibleTypes(path, expected, actual)
    }
 }
@@ -365,9 +368,11 @@ private fun compareNumbers(
                if (expected.content != actual.content) JsonError.UnequalValues(path, expected.content, actual.content)
                else null
             }
+
             NumberFormat.Lenient -> compareNumberNodes(path, expected, actual)
          }
       }
+
       is JsonNode.StringNode -> {
          if (options.typeCoercion.isEnabled() && actual.contentIsNumber()) compareNumberNodes(
             path,
@@ -376,6 +381,7 @@ private fun compareNumbers(
          )
          else JsonError.IncompatibleTypes(path, expected, actual)
       }
+
       else -> JsonError.IncompatibleTypes(path, expected, actual)
    }
 }
