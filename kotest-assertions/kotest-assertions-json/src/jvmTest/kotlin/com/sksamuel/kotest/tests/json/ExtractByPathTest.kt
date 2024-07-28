@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.ExtractValueOutcome
 import io.kotest.assertions.json.ExtractValueOutcome.ExtractedValue
 import io.kotest.assertions.json.ExtractValueOutcome.JsonPathNotFound
 import io.kotest.assertions.json.JsonArrayElementRef
@@ -46,7 +45,11 @@ class ExtractByPathTest : WordSpec() {
    init {
       "extractByPath" should {
          "find not null value by valid path" {
-            extractByPath(json, "$.regime.temperature.unit", String::class.java) shouldBe ExtractValueOutcome.ExtractedValue("F")
+            extractByPath(
+               json,
+               "$.regime.temperature.unit",
+               String::class.java
+            ) shouldBe ExtractedValue("F")
          }
          "find null value by valid path" {
             extractByPath(json, "$.comments", String::class.java) shouldBe ExtractedValue(null)

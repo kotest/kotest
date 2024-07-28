@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor.ref
+package com.sksamuel.kotest.engine.spec
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.RequiresPlatform

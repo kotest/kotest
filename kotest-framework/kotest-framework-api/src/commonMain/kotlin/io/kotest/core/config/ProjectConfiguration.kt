@@ -361,6 +361,12 @@ class ProjectConfiguration {
    var invocations: Int = defaultTestConfig.invocations
 
    /**
+    * If set to false then private spec classes will be ignored by the test engine.
+    * Defaults to false.
+    */
+   var ignorePrivateClasses: Boolean = Defaults.ignorePrivateClasses
+
+   /**
     * Returns all globally registered [Listener]s.
     */
    @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)

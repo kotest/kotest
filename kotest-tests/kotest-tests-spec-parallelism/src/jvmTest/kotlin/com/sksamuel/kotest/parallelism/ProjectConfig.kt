@@ -107,7 +107,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
          withClue("Expect that no test finished before all tests had started") {
             val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
-            val firstFinishedTest = statuses.filter { it.status == Finished }.maxOf { it.elapsed }
+            val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
 
             lastStartedTest shouldBeLessThan firstFinishedTest
          }

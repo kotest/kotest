@@ -14,6 +14,7 @@ object Defaults {
    const val threads = 1
    const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
+   const val ignorePrivateClasses: Boolean = false
 
    val assertionMode: AssertionMode = AssertionMode.None
    @Suppress("DEPRECATION") // Remove when removing legacy option

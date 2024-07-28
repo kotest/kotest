@@ -1,15 +1,13 @@
 package io.kotest.datatest.styles
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.datatest.withData
+import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.datatest.assertDataTestResults
 import io.kotest.datatest.registerContextTests
 import io.kotest.datatest.registerRootTests
-import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
-@ExperimentalKotest
-class DescribeSpecDataTest : DescribeSpec() {
+class ExpectSpecDataTest : ExpectSpec() {
    init {
 
       val results = registerRootTests()
@@ -24,14 +22,14 @@ class DescribeSpecDataTest : DescribeSpec() {
          count shouldBe 110
       }
 
-      describe("inside a describe") {
+      context("inside a context") {
          registerContextTests().assertDataTestResults()
-         describe("inside another describe") {
+         context("inside another context") {
             registerContextTests().assertDataTestResults()
          }
       }
 
-      describe("a describe should allow nullable maps") {
+      context("a context should allow nullable maps") {
          withData(
             mapOf(
                "true" to true,
