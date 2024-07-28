@@ -1,9 +1,8 @@
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import utils.SystemPropertiesArgumentProvider
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
@@ -57,10 +56,18 @@ tasks.withType<Test>().configureEach {
 
    systemProperty("kotestVersion", Ci.publishVersion)
 
+   //region pass test-project directory as system property
+   val testProjectDir = layout.projectDirectory.dir("test-project")
+   inputs.dir(testProjectDir)
+      .withPropertyName("testProjectDir")
+      .withPathSensitivity(RELATIVE)
+   systemProperty("testProjectDir", testProjectDir.asFile.invariantSeparatorsPath)
+   //endregion
+
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
+      events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
 }
