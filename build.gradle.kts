@@ -1,4 +1,7 @@
+import utils.configureGradleDaemonJvm
+
 plugins {
+   base
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
@@ -11,3 +14,9 @@ apiValidation {
       )
    )
 }
+
+configureGradleDaemonJvm(
+   project = project,
+   updateDaemonJvm = tasks.updateDaemonJvm,
+   gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm.map { JavaVersion.toVersion(it) },
+)
