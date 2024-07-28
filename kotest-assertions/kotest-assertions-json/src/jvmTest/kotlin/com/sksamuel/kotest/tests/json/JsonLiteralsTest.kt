@@ -84,6 +84,7 @@ class JsonLiteralsTest : FunSpec(
 
       context("CompareMode.Exact requires same format for numbers") {
          infix fun String.shouldExactlyEqualJson(expected: String) =
+            @Suppress("DEPRECATION")
             this.shouldEqualJson(expected, compareJsonOptions { numberFormat = NumberFormat.Strict })
 
          test("comparing float and exponent") {
@@ -135,6 +136,7 @@ class JsonLiteralsTest : FunSpec(
       context("Lenient type-conversions") {
 
          infix fun String.lenientShouldEqualJson(expected: String) =
+            @Suppress("DEPRECATION")
             this.shouldEqualJson(expected, compareJsonOptions { typeCoercion = TypeCoercion.Enabled })
 
          test("comparing exponent-based float with regular float") {
