@@ -18,8 +18,8 @@ enum class CompareMode {
    /**
     * Compare by value, coercing if possible.
     *
-    * For example, `true` and `true` will match because the string value can be coerced into a valid boolean.
-    * Similarly, `100` and `100` will match as the former can be coerced into an int.
+    * For example, `"true"` and `true` will match because the string value can be coerced into a valid boolean.
+    * Similarly, `"100"` and `100` will match as the former can be coerced into an int.
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
@@ -33,7 +33,16 @@ enum class CompareOrder {
    /**
     * All object properties must be in same order as expected.
     *
-    * For example, `{ "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` will NOT be considered equal.
+    * For example,
+    *
+    * ```json
+    * { "x": 14.2, "y": 13.0 }
+    * ```
+    * and
+    * ```json
+    * { "y": 13.0, "x": 14.2 }
+    * ```
+    * will NOT be considered equal.
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
@@ -83,8 +92,9 @@ class CompareJsonOptions(
    var fieldComparison: FieldComparison = FieldComparison.Strict,
 
    /**
-    * Controls whether number formatting should be taken into consideration. For instance, comparing 1.00 to 1.0, or
-    * 1E2 to 100
+    * Controls whether number formatting should be taken into consideration.
+    *
+    * For instance, comparing `1.00` to `1.0`, or `1E2` to `100`.
     */
    var numberFormat: NumberFormat = NumberFormat.Lenient,
 
@@ -98,12 +108,29 @@ enum class PropertyOrder {
    /**
     * Default. Property order in objects does not matter.
     *
-    * Example: `"""{ "a": 0, "b": 2 }""".shouldEqualJson("""{ "b": 2, "a": 1 }""", compareJsonOptions { propertyOrder = Lenient })` will pass
+    * Example: The following will pass
+    * ```kotlin
+    * """{ "a": 1, "b": 2 }"""
+    *    .shouldEqualJson(
+    *       """{ "b": 2, "a": 1 }""",
+    *       compareJsonOptions { propertyOrder = Lenient }
+    *    )
+    * ```
     */
    Lenient,
 
    /**
-    * Properties must be in same order. E.g. `{ "a": 0, "b": 2 }` is not considered equal to `{ "b": 2, "a": 1 }`
+    * Properties must be in same order.
+    *
+    * E.g.
+    *
+    * ```json
+    * { "a": 1, "b": 2 }
+    * ```
+    * is not considered equal to
+    * ```json
+    * { "b": 2, "a": 1 }
+    * ```
     */
    Strict
 }
@@ -135,7 +162,7 @@ enum class FieldComparison {
 
 enum class NumberFormat {
    /**
-    * Default. Numbers will be interpreted before being compared. Meaning we can compare 0E3 to 1000 without fail
+    * Default. Numbers will be interpreted before being compared. Meaning we can compare `0E3` to `1000` without fail.
     */
    Lenient,
 
@@ -155,8 +182,11 @@ enum class TypeCoercion {
     * Types may be coerced. Strings containing numbers will be considered equal to their numbers, and booleans in
     * strings will also be compared.
     *
-    * For example: `"\"11\"".shouldEqualJson("12", compareJsonOptions { typeCoercion = TypeCoercion.Enabled })` will
-    * succeed.
+    * For example, the following will succeed:
+    *
+    * ```kotlin
+    * "\"12\"".shouldEqualJson("12", compareJsonOptions { typeCoercion = TypeCoercion.Enabled })
+    * ```
     */
    Enabled;
 
@@ -328,7 +358,7 @@ internal fun compareStrings(path: List<String>, expected: String, actual: String
 
 /**
  * When comparing a boolean, if [CompareJsonOptions.typeCoercion] is [TypeCoercion.Enabled]
- * and the actual node is a text node with "true" or "false", then we convert.
+ * and the actual node is a text node with `"true"` or `"false"`, then we convert.
  */
 internal fun compareBoolean(
    path: List<String>,
