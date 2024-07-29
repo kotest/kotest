@@ -18,6 +18,8 @@ import kotlin.io.path.copyToRecursively
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.createTempFile
+import kotlin.io.path.exists
+import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.readText
@@ -137,24 +139,28 @@ private data class GradleInvocation(
          GradleRunner.create()
             .withProjectDir(projectDir.toFile())
             .forwardStdOutput(logWriter)
-            .apply {
-               withEnvironment(
-                  buildMap {
-                     putAll(environment.orEmpty())
-                     System.getenv("KONAN_DATA_DIR")?.let { konanDataDir ->
-                        put("KONAN_DATA_DIR", konanDataDir)
-                     }
-                     put("PATH", System.getenv("PATH"))
-                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
-                     put("GRADLE_RO_DEP_CACHE", hostGradleUserHome.resolve("caches").toString())
-                  }
-               )
-            }
+//            .apply {
+//               withEnvironment(
+//                  buildMap {
+//                     putAll(environment.orEmpty())
+//                     System.getenv("KONAN_DATA_DIR")?.let { konanDataDir ->
+//                        put("KONAN_DATA_DIR", konanDataDir)
+//                     }
+//                     put("PATH", System.getenv("PATH"))
+//                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
+//                     hostGradleUserHome.resolve("caches")
+//                        .takeIf { it.exists() }
+//                        ?.let { guh ->
+//                           put("GRADLE_RO_DEP_CACHE", guh.invariantSeparatorsPathString)
+//                        }
+//                  }
+//               )
+//            }
             .withArguments(
                buildList {
                   add("--continue")
                   add("--stacktrace")
-                  add("--info")
+                  //add("--info")
                   addAll(taskNames)
                }
             )
@@ -231,8 +237,8 @@ private data class GradleInvocation(
          .resolve(System.currentTimeMillis().toString())
          .createDirectories()
 
-      /** Use a stable Gradle user home for each test. */
-      private val gradleUserHome = Files.createTempDirectory("test-gradle-user-home")
+//      /** Use a stable Gradle user home for each test. */
+//      private val gradleUserHome = Files.createTempDirectory("test-gradle-user-home")
 
       private val kotestVersion = System.getProperty("kotestVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
