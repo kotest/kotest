@@ -7,12 +7,18 @@ plugins {
 }
 
 val kotestVersion: String by project
-val devMavenRepoPath: String by project
 
 repositories {
-   maven(file(devMavenRepoPath)) {
-      name = "DevMavenRepo"
-      mavenContent { includeGroupAndSubgroups("io.kotest") }
+   val devMavenRepoPath: String by project
+   exclusiveContent {
+      forRepository {
+         maven(file(devMavenRepoPath)) {
+            name = "DevMavenRepo"
+         }
+      }
+      filter {
+         includeGroupAndSubgroups("io.kotest")
+      }
    }
    mavenCentral()
 }
