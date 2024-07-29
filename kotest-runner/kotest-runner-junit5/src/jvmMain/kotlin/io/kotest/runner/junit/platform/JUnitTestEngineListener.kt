@@ -268,16 +268,7 @@ class JUnitTestEngineListener(
       // if it was not started, then it must be a leaf test (otherwise its children would have started it)
       startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
 
-      val id = root.deriveTestUniqueId(testCase.descriptor)
-      val descriptor = createTestTestDescriptor(
-         id = id,
-         displayName = formatter.format(testCase),
-         type = TestDescriptor.Type.TEST,
-         // gradle-junit-platform hides tests if we don't send a source at all
-         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
-         //   and produce more correct XML report with test case name.
-         source = getMethodSource(testCase.spec::class, id),
-      )
+      val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
@@ -295,15 +286,7 @@ class JUnitTestEngineListener(
       // like all tests, an ignored test should be registered first
       // ignored test should be a TEST type, because an ignored test will never have child tests.
       val id = root.deriveTestUniqueId(testCase.descriptor)
-      val descriptor = createTestTestDescriptor(
-         id = id,
-         displayName = formatter.format(testCase),
-         type = TestDescriptor.Type.TEST,
-         // gradle-junit-platform hides tests if we don't send a source at all
-         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
-         //   and produce more correct XML report with test case name.
-         source = getMethodSource(testCase.spec::class, id),
-      )
+      val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
       listener.dynamicTestRegistered(descriptor)
@@ -331,16 +314,7 @@ class JUnitTestEngineListener(
    private fun startTestIfNotStarted(testCase: TestCase, type: TestDescriptor.Type) {
       if (!startedTests.contains(testCase.descriptor)) {
 
-         val id = root.deriveTestUniqueId(testCase.descriptor)
-         val testDescriptor = createTestTestDescriptor(
-            id = id,
-            displayName = formatter.format(testCase),
-            type = type,
-            // gradle-junit-platform hides tests if we don't send a source at all
-            // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
-            //   and produce more correct XML report with test case name.
-            source = getMethodSource(testCase.spec::class, id),
-         )
+         val testDescriptor = createTestTestDescriptorWithMethodSource(testCase, type)
 
          // must attach to the parent, which we know will have been created prior, either spec or parent test
          val p = descriptors[testCase.descriptor.parent] ?: error("No descriptor found: ${testCase.descriptor.parent.id.value}")
@@ -356,6 +330,20 @@ class JUnitTestEngineListener(
          // now mark it as started so we can safely call this method again
          startedTests.add(testCase.descriptor)
       }
+   }
+
+   private fun createTestTestDescriptorWithMethodSource(testCase: TestCase, type: TestDescriptor.Type) : TestDescriptor {
+      val id = root.deriveTestUniqueId(testCase.descriptor)
+      val testDescriptor = createTestTestDescriptor(
+         id = id,
+         displayName = formatter.format(testCase),
+         type = type,
+         // gradle-junit-platform hides tests if we don't send a source at all
+         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
+         //   and produce more correct XML report with test case name.
+         source = getMethodSource(testCase.spec::class, id),
+      )
+      return testDescriptor
    }
 
    private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource
