@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 
 plugins {
+   id("kotest-base")
    signing
    `maven-publish`
    id("dev.adamko.dev-publish")
@@ -19,7 +20,7 @@ val signingPassword: String? by project
 val mavenCentralRepoName = "Deploy"
 
 signing {
-   if (signingKey != null && signingPassword != null) {
+   if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
    }

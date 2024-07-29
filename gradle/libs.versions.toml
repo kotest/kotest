@@ -24,6 +24,13 @@ devPublishPlugin = "0.4.1"
 
 # JDK used to run Gradle Daemon
 gradleDaemonJvm = "21"
+### Java compilation ###
+# Kotest's minimum supported Java version
+jvmMinTarget = "8"
+# Kotest's maximum supported Java version (must be >= jvmMinTarget)
+jvmMaxTarget = "21"
+# JDK used to compile Kotest (must be >= jvmMaxTarget)
+jvmCompiler = "21"
 
 [libraries]
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
