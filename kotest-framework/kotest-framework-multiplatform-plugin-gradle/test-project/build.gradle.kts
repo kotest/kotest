@@ -51,7 +51,7 @@ kotlin {
    mingwX64()
 
    sourceSets {
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation("io.kotest:kotest-assertions-core:$kotestVersion")
             implementation("io.kotest:kotest-framework-api:$kotestVersion")
@@ -59,7 +59,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
          }
