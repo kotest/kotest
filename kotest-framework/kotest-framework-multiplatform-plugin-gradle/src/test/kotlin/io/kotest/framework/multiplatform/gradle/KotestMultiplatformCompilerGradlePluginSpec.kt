@@ -172,6 +172,7 @@ private data class GradleInvocation(
                buildList {
                   add("--continue")
                   add("--stacktrace")
+                  add("--build-cache")
                   //add("--info")
                   addAll(taskNames)
                }
