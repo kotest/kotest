@@ -2,8 +2,6 @@ package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.Filter
-import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
@@ -40,20 +38,6 @@ abstract class AbstractProjectConfig {
     * List of project wide [Extension] instances.
     */
    open fun extensions(): List<Extension> = emptyList()
-
-   /**
-    * List of project wide [Listener] instances.
-    */
-   @Suppress("DEPRECATION") // Remove when removing function
-   @Deprecated("Use extensions. This will be removed in 6.0")
-   open fun listeners(): List<Listener> = emptyList()
-
-   /**
-    * List of project wide [Filter] instances.
-    */
-   @Suppress("DEPRECATION") // Remove when removing function
-   @Deprecated("Use extensions. This will be removed in 6.0")
-   open fun filters(): List<Filter> = emptyList()
 
    /**
     * Override this function and return an instance of [SpecExecutionOrder] which will
