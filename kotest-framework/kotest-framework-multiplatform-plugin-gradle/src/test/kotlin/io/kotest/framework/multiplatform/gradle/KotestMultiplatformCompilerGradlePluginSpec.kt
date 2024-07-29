@@ -23,6 +23,8 @@ import kotlin.io.path.copyToRecursively
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.createTempFile
+import kotlin.io.path.exists
+import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.readText
@@ -155,23 +157,17 @@ private data class GradleInvocation(
          GradleRunner.create()
             .withProjectDir(projectDir.toFile())
             .forwardStdOutput(logWriter)
-//            .apply {
-//               withEnvironment(
-//                  buildMap {
-//                     putAll(environment.orEmpty())
-//                     System.getenv("KONAN_DATA_DIR")?.let { konanDataDir ->
-//                        put("KONAN_DATA_DIR", konanDataDir)
-//                     }
-//                     put("PATH", System.getenv("PATH"))
-//                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
-//                     hostGradleUserHome.resolve("caches")
-//                        .takeIf { it.exists() }
-//                        ?.let { guh ->
-//                           put("GRADLE_RO_DEP_CACHE", guh.invariantSeparatorsPathString)
-//                        }
-//                  }
-//               )
-//            }
+            .apply {
+               withEnvironment(
+                  buildMap {
+                     putAll(System.getenv())
+                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
+                     if (hostGradleDependenciesCache.exists()) {
+                        put("GRADLE_RO_DEP_CACHE", hostGradleDependenciesCache.invariantSeparatorsPathString)
+                     }
+                  }
+               )
+            }
             .withArguments(
                buildList {
                   add("--continue")
@@ -249,6 +245,8 @@ private data class GradleInvocation(
 
       /** Access the current host's Gradle user dir, to use as a read-only cache. */
       private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
+
+      private val hostGradleDependenciesCache = hostGradleUserHome.resolve("caches/modules-2")
 
       private val testLogDir = Path(System.getProperty("testLogDir"))
          .resolve(LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).replaceNonAlphanumeric())
