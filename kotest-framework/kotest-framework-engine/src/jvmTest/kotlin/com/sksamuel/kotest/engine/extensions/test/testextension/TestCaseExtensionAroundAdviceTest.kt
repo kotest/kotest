@@ -13,7 +13,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          return when (testCase.descriptor.id.value) {
-            "test1" -> TestResult.Ignored
+            "test1" -> TestResult.Ignored()
             "test2" ->
                when (execute(testCase)) {
                   is TestResult.Error, is TestResult.Failure -> TestResult.Success(0.milliseconds)
