@@ -74,10 +74,6 @@ fun Arb.Companion.numericFloat(
    it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
 }
 
-@Deprecated("use numericFloat", ReplaceWith("numericFloat(from, to)"))
-fun Arb.Companion.numericFloats(from: Float = -Float.MAX_VALUE, to: Float = Float.MAX_VALUE): Arb<Float> =
-   numericFloat(from, to)
-
 /**
  * Returns an [Arb] that produces [FloatArray]s where [length] produces the length of the arrays and
  * [content] produces the content of the arrays.

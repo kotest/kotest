@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 internal class TestFinishedInterceptor(
    private val listener: TestCaseExecutionListener,

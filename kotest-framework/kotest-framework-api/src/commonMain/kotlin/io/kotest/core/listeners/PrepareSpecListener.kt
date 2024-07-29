@@ -1,5 +1,6 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
@@ -12,8 +13,7 @@ import kotlin.reflect.KClass
  * is set to create multiple instances, then this listener will not be
  * invoked multiple times.
  */
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface PrepareSpecListener : Listener {
+interface PrepareSpecListener : Extension {
 
    /**
     * Called once per [Spec], when the engine is preparing to

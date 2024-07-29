@@ -12,7 +12,7 @@ import io.kotest.inspectors.shouldForNone
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.kotest.mpp.log
+import io.kotest.core.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -107,7 +107,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
          withClue("Expect that no test finished before all tests had started") {
             val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
-            val firstFinishedTest = statuses.filter { it.status == Finished }.maxOf { it.elapsed }
+            val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
 
             lastStartedTest shouldBeLessThan firstFinishedTest
          }

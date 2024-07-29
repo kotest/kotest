@@ -22,7 +22,7 @@ internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInt
    ): TestResult {
       return test(testCase, scope).let { testResult ->
          if (testResult.errorOrNull is TestAbortedException) {
-            TestResult.Ignored
+            TestResult.Ignored()
          } else {
             testResult
          }

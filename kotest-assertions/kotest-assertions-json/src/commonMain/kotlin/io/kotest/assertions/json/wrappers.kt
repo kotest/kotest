@@ -14,7 +14,7 @@ import kotlinx.serialization.json.longOrNull
 
 fun JsonElement.toJsonNode(): JsonNode = when (this) {
    JsonNull -> JsonNode.NullNode
-   is JsonObject -> JsonNode.ObjectNode(entries.map { it.key to it.value.toJsonNode() }.toMap())
+   is JsonObject -> JsonNode.ObjectNode(entries.associate { it.key to it.value.toJsonNode() })
    is JsonArray -> JsonNode.ArrayNode(map { it.toJsonNode() })
    is JsonPrimitive -> when {
       isString -> JsonNode.StringNode(content)

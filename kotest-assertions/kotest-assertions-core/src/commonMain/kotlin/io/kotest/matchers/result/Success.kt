@@ -73,9 +73,3 @@ class SuccessMatcher<T>(val expected: T?) : Matcher<Result<T?>> {
     )
   }
 }
-
-@Deprecated("Use SuccessMatcher instead", ReplaceWith("SuccessMatcher"))
-typealias BeSuccess<T> = SuccessMatcher<T>
-
-@Deprecated("The use of this function is not clear in naming and should be avoided")
-infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot beSuccess(expected)

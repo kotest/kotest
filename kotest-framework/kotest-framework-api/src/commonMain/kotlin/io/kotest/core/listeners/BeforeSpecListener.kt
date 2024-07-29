@@ -1,9 +1,9 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface BeforeSpecListener : Listener {
+interface BeforeSpecListener : Extension {
 
    /**
     * This callback is invoked just before the first test (or only test) is executed

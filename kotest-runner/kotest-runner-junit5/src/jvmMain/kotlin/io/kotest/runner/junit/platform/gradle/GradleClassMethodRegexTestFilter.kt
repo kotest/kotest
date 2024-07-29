@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.TestPath
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 internal class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : TestFilter {
 

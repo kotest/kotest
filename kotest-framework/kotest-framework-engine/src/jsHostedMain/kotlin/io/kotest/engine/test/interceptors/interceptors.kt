@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.common.platform
+import io.kotest.core.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.ExperimentalTime

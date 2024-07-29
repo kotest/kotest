@@ -1,4 +1,0 @@
-POST http://localhost:1080/{{path}}
-Accept: application/json
-
-{username: '{{username}}', password: 'bar'}

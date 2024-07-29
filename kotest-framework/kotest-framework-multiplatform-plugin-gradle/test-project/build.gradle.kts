@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
@@ -9,7 +8,6 @@ plugins {
 
 val kotestVersion: String by project
 val devMavenRepoPath: String by project
-val useNewNativeMemoryModel: String by project
 
 repositories {
    maven(file(devMavenRepoPath)) {
@@ -73,14 +71,6 @@ tasks.withType<Test>().configureEach {
    }
 
    systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
-}
-
-if (useNewNativeMemoryModel.toBoolean()) {
-   kotlin.targets.withType<KotlinNativeTarget>().configureEach {
-      binaries.all {
-         binaryOptions["memoryModel"] = "experimental"
-      }
-   }
 }
 
 plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
