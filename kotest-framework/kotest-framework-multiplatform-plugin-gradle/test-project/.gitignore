@@ -1,4 +1,19 @@
-.gradle/
+# Ignore everything that should not be used in tests.
+#
+# Sometimes it's convenient to open up this project in a separate IDE instace.
+# However, IJ will automatically download things (like Gradle wrapper) that
+# should be ignored when the project is copied into a tempdir for testing.
+#
+# To avoid clogging up the git repo with unecessary files, just ignore everything
+# not necessary for testing.
+
 .idea/
+
 .kotlin/
 build/
+yarn.lock
+
+.gradle/
+gradle/wrapper/
+gradlew
+gradlew.bat
