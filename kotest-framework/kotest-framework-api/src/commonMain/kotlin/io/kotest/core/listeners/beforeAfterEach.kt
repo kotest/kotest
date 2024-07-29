@@ -1,11 +1,11 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface BeforeEachListener : Listener {
+interface BeforeEachListener : Extension {
 
    /**
     * Registers a new before-each callback to be executed before every [TestCase]
@@ -15,8 +15,7 @@ interface BeforeEachListener : Listener {
    suspend fun beforeEach(testCase: TestCase): Unit = Unit
 }
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface AfterEachListener : Listener {
+interface AfterEachListener : Extension {
 
    /**
     * Registers a new after-each callback to be executed after every [TestCase]
