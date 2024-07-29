@@ -5,11 +5,16 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestScope
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.inspectors.shouldForOne
 import io.kotest.matchers.paths.shouldBeAFile
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import java.nio.file.Files
+import org.gradle.testkit.runner.TaskOutcome
 import java.nio.file.Path
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import kotlin.io.path.CopyActionResult
 import kotlin.io.path.Path
 import kotlin.io.path.absolute
@@ -18,8 +23,6 @@ import kotlin.io.path.copyToRecursively
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.createTempFile
-import kotlin.io.path.exists
-import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.readText
@@ -32,6 +35,18 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
       "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
+
+         should("be able to load project") {
+            runGradle(
+               kotlinVersion = kotlinVersion,
+               taskNames = listOf("help"),
+            ) { result ->
+               result.result.tasks.shouldForOne {
+                  it.path shouldBe ":help"
+                  it.outcome shouldBe TaskOutcome.SUCCESS
+               }
+            }
+         }
 
          fun GradleInvocation.Result.shouldHaveExpectedTestResultsFor(taskName: String) {
             withClue("$taskName test report") {
@@ -121,6 +136,7 @@ private data class GradleInvocation(
       val output: Path,
 //      val exitCode: Int,
       val projectDir: Path,
+      val result: BuildResult,
    ) {
       val testReportsDirectory: Path = projectDir.resolve("build/test-results")
 
@@ -187,6 +203,7 @@ private data class GradleInvocation(
          output = logFile,
 //         exitCode = process.waitFor(),
          projectDir = projectDir,
+         result = result,
       )
    }
 
@@ -234,7 +251,7 @@ private data class GradleInvocation(
       private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
 
       private val testLogDir = Path(System.getProperty("testLogDir"))
-         .resolve(System.currentTimeMillis().toString())
+         .resolve(LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).replaceNonAlphanumeric())
          .createDirectories()
 
 //      /** Use a stable Gradle user home for each test. */
