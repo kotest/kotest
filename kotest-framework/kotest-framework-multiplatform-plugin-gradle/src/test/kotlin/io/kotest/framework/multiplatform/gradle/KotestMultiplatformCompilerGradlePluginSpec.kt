@@ -10,7 +10,19 @@ import io.kotest.matchers.string.shouldStartWith
 import org.gradle.testkit.runner.GradleRunner
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.CopyActionResult
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
+import kotlin.io.path.bufferedWriter
+import kotlin.io.path.copyToRecursively
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createTempDirectory
+import kotlin.io.path.createTempFile
+import kotlin.io.path.isDirectory
+import kotlin.io.path.name
+import kotlin.io.path.readText
+import kotlin.io.path.useLines
+import kotlin.io.path.writeText
 
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
@@ -125,16 +137,24 @@ private data class GradleInvocation(
          GradleRunner.create()
             .withProjectDir(projectDir.toFile())
             .forwardStdOutput(logWriter)
-            .withEnvironment(
-               mapOf(
-                  "PATH" to System.getenv("PATH"),
-                  "GRADLE_USER_HOME" to gradleUserHome.toString(),
-                  "GRADLE_RO_DEP_CACHE" to hostGradleUserHome.resolve("caches").toString(),
+            .apply {
+               withEnvironment(
+                  buildMap {
+                     putAll(environment.orEmpty())
+                     System.getenv("KONAN_DATA_DIR")?.let { konanDataDir ->
+                        put("KONAN_DATA_DIR", konanDataDir)
+                     }
+                     put("PATH", System.getenv("PATH"))
+                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
+                     put("GRADLE_RO_DEP_CACHE", hostGradleUserHome.resolve("caches").toString())
+                  }
                )
-            )
+            }
             .withArguments(
                buildList {
                   add("--continue")
+                  add("--stacktrace")
+                  add("--info")
                   addAll(taskNames)
                }
             )
