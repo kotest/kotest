@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalPathApi::class)
-
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.assertions.withClue
@@ -7,156 +5,141 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestScope
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
-import io.kotest.matchers.file.shouldBeAFile
+import io.kotest.matchers.paths.shouldBeAFile
 import io.kotest.matchers.string.shouldStartWith
 import org.gradle.testkit.runner.GradleRunner
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.CopyActionResult
-import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.Path
-import kotlin.io.path.absolute
-import kotlin.io.path.copyToRecursively
-import kotlin.io.path.createDirectories
-import kotlin.io.path.createTempDirectory
-import kotlin.io.path.createTempFile
-import kotlin.io.path.deleteRecursively
-import kotlin.io.path.invariantSeparatorsPathString
-import kotlin.io.path.isDirectory
-import kotlin.io.path.name
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
-import kotlin.io.path.writer
+import kotlin.io.path.*
 
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
-   setOf(
-      "1.9.24",
-      "2.0.0",
-   ).forEach { kotlinVersion ->
-      context("when the project targets Kotlin version $kotlinVersion") {
+    setOf(
+        "1.9.24",
+        "2.0.0",
+    ).forEach { kotlinVersion ->
+        context("when the project targets Kotlin version $kotlinVersion") {
 
-         fun GradleInvocation.Result.shouldHaveExpectedTestResultsFor(taskName: String) {
-            withClue("$taskName test report") {
-               val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
-               testReportFile.toFile().shouldBeAFile()
+            fun GradleInvocation.Result.shouldHaveExpectedTestResultsFor(taskName: String) {
+                withClue("$taskName test report") {
+                    val testReportFile = testReportsDirectory.resolve("$taskName/TEST-TestSpec.xml")
+                    testReportFile.shouldBeAFile()
 
-               val testReportContentBeginning =
-                  Files.readAllBytes(testReportFile).decodeToString().lineSequence().take(2).joinToString("\n")
+                    val testReportContentBeginning = testReportFile.useLines { it.take(2).joinToString("\n") }
 
-               testReportContentBeginning.shouldStartWith(
-                  """
-                  <?xml version="1.0" encoding="UTF-8"?>
-                  <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
-                  """.trimIndent()
-               )
+                    testReportContentBeginning.shouldStartWith(
+                        """
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <testsuite name="TestSpec" tests="3" skipped="0" failures="1" errors="0"
+                        """.trimIndent()
+                    )
+                }
             }
-         }
 
-         should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
-            val taskNames = listOf(
-               "jvmTest",
-               "jsBrowserTest",
-               "jsNodeTest",
-               "wasmJsBrowserTest",
-               "wasmJsNodeTest",
-            )
+            should("be able to compile and run tests for the JVM, JS and Wasm/JS targets") {
+                val taskNames = listOf(
+                    "jvmTest",
+                    "jsBrowserTest",
+                    "jsNodeTest",
+                    "wasmJsBrowserTest",
+                    "wasmJsNodeTest",
+                )
 
-            runGradle(
-               listOf(
-                  "-PkotlinVersion=$kotlinVersion",
-               ) + taskNames
-            ) { result ->
-               taskNames.forAll {
-                  result.shouldHaveExpectedTestResultsFor(it)
-               }
+                runGradle(
+                    kotlinVersion = kotlinVersion,
+                    taskNames = taskNames,
+                ) { result ->
+                    taskNames.forAll { taskName ->
+                        result.shouldHaveExpectedTestResultsFor(taskName)
+                    }
+                }
             }
-         }
 
-         should("be able to compile and run tests for all native targets supported by the host machine") {
-            val taskNames = listOf(
-               "macosArm64Test",
-               "macosX64Test",
-               "mingwX64Test",
-               "linuxX64Test",
-            )
+            should("be able to compile and run tests for all native targets supported by the host machine") {
+                val taskNames = listOf(
+                    "macosArm64Test",
+                    "macosX64Test",
+                    "mingwX64Test",
+                    "linuxX64Test",
+                )
 
-            runGradle(
-               listOf(
-                  "-PkotlinVersion=$kotlinVersion",
-               ) + taskNames
-            ) { result ->
-               taskNames.forAtLeastOne { taskName ->
-                  // Depending on the host machine these tests are running on,
-                  // only one of the test targets will be built and executed.
-                  result.shouldHaveExpectedTestResultsFor(taskName)
-               }
+                runGradle(
+                    kotlinVersion = kotlinVersion,
+                    taskNames = taskNames,
+                ) { result ->
+                    taskNames.forAtLeastOne { taskName ->
+                        // Depending on the host machine these tests are running on,
+                        // only one of the test targets will be built and executed.
+                        result.shouldHaveExpectedTestResultsFor(taskName)
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 })
 
 private fun TestScope.runGradle(
-   arguments: List<String>,
-   block: (result: GradleInvocation.Result) -> Unit,
+    kotlinVersion: String,
+    taskNames: List<String>,
+    block: (result: GradleInvocation.Result) -> Unit,
 ) {
-   GradleInvocation(
-      arguments = arguments,
-      testId = testCase.descriptor.id.value,
-   ).use { gradle ->
-      val result = gradle.run()
-      println("[${testCase.name.testName}] result log ${result.output.absolute()}")
-      withClue({ result.clue() }) {
-         block(result)
-      }
-   }
+    GradleInvocation(
+        kotlinVersion = kotlinVersion,
+        taskNames = taskNames,
+        testId = testCase.descriptor.id.value,
+    ).use { gradle ->
+        val result = gradle.run()
+        println("[${testCase.name.testName}] result log ${result.output.absolute()}")
+        withClue({ result.clue() }) {
+            block(result)
+        }
+    }
 }
 
 private data class GradleInvocation(
-   val arguments: List<String>,
-   val testId: String,
+    val kotlinVersion: String,
+    val taskNames: List<String>,
+    val testId: String,
 ) : AutoCloseable {
-   val projectDir = createTempDirectory("kotest-gradle-plugin-test")
+    val projectDir = createTempDirectory("kotest-gradle-plugin-test")
 
-   data class Result(
+    data class Result(
 //      val command: List<String>,
-      val output: Path,
+        val output: Path,
 //      val exitCode: Int,
-      val projectDir: Path,
-   ) {
-      val testReportsDirectory: Path = projectDir.resolve("build/test-results")
+        val projectDir: Path,
+    ) {
+        val testReportsDirectory: Path = projectDir.resolve("build/test-results")
 
-      fun clue(): String =
-         output.readText().prependIndent("\t>>> ")
+        fun clue(): String =
+            output.readText().prependIndent("\t>>> ")
 //         "Gradle process $command exited with code $exitCode and output:\n" + output.readText().prependIndent("\t>>> ")
-   }
+    }
 
-   fun run(): Result {
-      prepareProjectDir(projectDir)
+    fun run(): Result {
+        prepareProjectDir(projectDir)
 
-      val logFile = createTempFile(testLogDir, testId.replaceNonAlphanumeric(), ".log")
+        val logFile = createTempFile(testLogDir, testId.replaceNonAlphanumeric(), ".log")
 
-      val result =
-         GradleRunner.create()
-            .withProjectDir(projectDir.toFile())
-            .forwardStdOutput(logFile.writer())
-            .withEnvironment(
-               mapOf(
-//                  "GRADLE_USER_HOME" to gradleUserHome.toString(),
-                  "GRADLE_RO_DEP_CACHE" to hostGradleUserHome.resolve("caches").toString(),
-               )
-            )
-            .withArguments(
-               buildList {
-                  add("--continue")
-                  add("-PkotestGradlePluginVersion=$kotestGradlePluginVersion")
-                  add("-PkotestVersion=$kotestVersion")
-                  add("-PdevMavenRepoPath=$devMavenRepoPath")
-                  addAll(arguments)
-               }
-            )
-            .build()
+        val result = logFile.bufferedWriter().use { logWriter ->
+            @Suppress("UnstableApiUsage")
+            GradleRunner.create()
+                .withProjectDir(projectDir.toFile())
+                .forwardStdOutput(logWriter)
+                .withEnvironment(
+                    mapOf(
+                        "PATH" to System.getenv("PATH"),
+                        "GRADLE_USER_HOME" to gradleUserHome.toString(),
+                        "GRADLE_RO_DEP_CACHE" to hostGradleUserHome.resolve("caches").toString(),
+                    )
+                )
+                .withArguments(
+                    buildList {
+                        add("--continue")
+                        addAll(taskNames)
+                    }
+                )
+                .run()
+        }
 
 //      val command = buildList {
 //         add(wrapperScriptPath.toString())
@@ -174,81 +157,73 @@ private data class GradleInvocation(
 //         .start()
 
 
-      return Result(
+        return Result(
 //         command = command,
-         output = logFile,
+            output = logFile,
 //         exitCode = process.waitFor(),
-         projectDir = projectDir,
-      )
-   }
+            projectDir = projectDir,
+        )
+    }
 
-   override fun close() {
-      projectDir.deleteRecursively()
-   }
-
-   companion object {
-
-      /** Access the current host's Gradle user dir, to use as a read-only cache. */
-      private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
-
-      private val testLogDir = Path(System.getProperty("testLogDir"))
-         .resolve(System.currentTimeMillis().toString())
-         .apply {
-            createDirectories()
-         }
-
-      /** Use a stable Gradle user home for each test. */
-      private val gradleUserHome = Files.createTempDirectory("test-gradle-user-home")
-
-      private val kotestVersion = System.getProperty("kotestVersion")
-      private val kotestGradlePluginVersion = System.getProperty("kotestGradlePluginVersion")
-      private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
-
-      private val kotestProjectDir = Path("../../").normalize().absolute()
-
-      private val testProjectDir = Path(System.getProperty("testProjectDir"))
-
-      private val wrapperScriptPath: Path = run {
-         val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
-         val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
-         Paths.get("..", "..", wrapperScriptName).normalize().absolute()
-      }
-
-      private fun prepareProjectDir(projectDir: Path): Path {
-         val excludedDirs = setOf(
+    private fun prepareProjectDir(projectDir: Path): Path {
+        val excludedDirs = setOf(
             ".kotlin",
             "build",
             ".gradle",
             ".idea",
             "kotlin-js-store",
-         )
+        )
 
-         testProjectDir.copyToRecursively(
+        testProjectDir.copyToRecursively(
             target = projectDir,
             followLinks = false,
-         ) { src, target ->
+        ) { src, target ->
             if (src.isDirectory() && src.name in excludedDirs) {
-               CopyActionResult.SKIP_SUBTREE
+                CopyActionResult.SKIP_SUBTREE
             } else {
-               src.copyToIgnoringExistingDirectory(target, followLinks = false)
+                src.copyToIgnoringExistingDirectory(target, followLinks = false)
             }
-         }
+        }
 
-         projectDir.resolve("settings.gradle.kts").apply {
+        projectDir.resolve("gradle.properties").apply {
             writeText(
-               readText().replace(
-                  """includeBuild("../../../")""",
-                  """includeBuild("${kotestProjectDir.invariantSeparatorsPathString}")""",
-               )
+                buildString {
+                    appendLine(readText())
+                    appendLine("kotlinVersion=$kotlinVersion")
+                    appendLine("kotestVersion=$kotestVersion")
+                    appendLine("devMavenRepoPath=$devMavenRepoPath")
+                }
             )
-         }
+        }
 
-         return projectDir
-      }
+        return projectDir
+    }
 
-      private fun String.replaceNonAlphanumeric(
-         replacement: String = "-"
-      ): String =
-         map { if (it.isLetterOrDigit()) it else replacement }.joinToString("")
-   }
+    override fun close() {
+//      projectDir.deleteRecursively()
+    }
+
+    companion object {
+
+        /** Access the current host's Gradle user dir, to use as a read-only cache. */
+        private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
+
+        private val testLogDir = Path(System.getProperty("testLogDir"))
+            .resolve(System.currentTimeMillis().toString())
+            .createDirectories()
+
+        /** Use a stable Gradle user home for each test. */
+        private val gradleUserHome = Files.createTempDirectory("test-gradle-user-home")
+
+        private val kotestVersion = System.getProperty("kotestVersion")
+        private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
+
+        /** The source project that will be tested. This directory should not be modified. */
+        private val testProjectDir = Path(System.getProperty("testProjectDir"))
+
+        private fun String.replaceNonAlphanumeric(
+            replacement: String = "-"
+        ): String =
+            map { if (it.isLetterOrDigit()) it else replacement }.joinToString("")
+    }
 }

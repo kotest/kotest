@@ -1,8 +1,6 @@
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
@@ -36,6 +34,12 @@ dependencies {
    devPublication(projects.kotestRunner.kotestRunnerJunit5)
 }
 
+kotlin {
+   compilerOptions {
+      optIn.add("kotlin.io.path.ExperimentalPathApi")
+   }
+}
+
 tasks.withType<Test>().configureEach {
    enabled = !project.hasProperty(Ci.JVM_ONLY)
 
@@ -57,7 +61,10 @@ tasks.withType<Test>().configureEach {
 
    systemProperty("kotestVersion", Ci.publishVersion)
 
+   // use the current machine's Gradle User Home as a read-only cache
    systemProperty("gradleUserHomeDir", gradle.gradleUserHomeDir.invariantSeparatorsPath)
+
+   // store the Gradle logs in a project-local directory, so they're easy to view if a test fails
    systemProperty("testLogDir", temporaryDir.resolve("logs").invariantSeparatorsPath)
 
    //region pass test-project directory as system property
@@ -74,6 +81,8 @@ tasks.withType<Test>().configureEach {
       events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 @Suppress("UnstableApiUsage")
@@ -90,16 +99,6 @@ gradlePlugin {
          tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
       }
    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-   }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
 }
 
 val updateKotestPluginConstants by tasks.registering {

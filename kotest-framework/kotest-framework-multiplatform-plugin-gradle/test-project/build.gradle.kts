@@ -18,6 +18,7 @@ repositories {
 }
 
 kotlin {
+   jvmToolchain(8)
 
    jvm()
 
@@ -71,6 +72,13 @@ tasks.withType<Test>().configureEach {
    }
 
    systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
+
+   // Register the test results dir as an output, so Gradle will cache it
+   outputs
+      .dir(layout.buildDirectory.dir("test-results"))
+      .withPropertyName("testResultsDir")
+   // Always cache the test results
+   outputs.cacheIf { true }
 }
 
 plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
