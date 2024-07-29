@@ -9,7 +9,6 @@ import io.kotest.core.test.TestCase
  * This interface is a union of the various test related listeners interfaces.
  * Users can choose to extend this interface, or the constituent interfaces separately.
  */
-@Suppress("DEPRECATION") // Remove when removing Listener
 interface TestListener :
    BeforeTestListener,
    AfterTestListener,
@@ -22,6 +21,4 @@ interface TestListener :
    BeforeInvocationListener,
    AfterInvocationListener,
    PrepareSpecListener,
-   FinalizeSpecListener,
-   Listener {
-}
+   FinalizeSpecListener
