@@ -1,6 +1,5 @@
 package io.kotest.framework.multiplatform.gradle
 
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
@@ -14,6 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+import javax.inject.Inject
 
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
@@ -76,9 +76,9 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
             false
          }
 
-         kotlinCompilation is KotlinJsCompilation               -> true
-         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
-         else                                                   -> false
+         kotlinCompilation is KotlinJsCompilation -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation -> true
+         else -> false
       }
    }
 
