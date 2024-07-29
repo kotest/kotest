@@ -146,21 +146,19 @@ val javaComponent = components["java"] as AdhocComponentWithVariants
 javaComponent.withVariantsFromConfiguration(configurations["testFixturesApiElements"]) { skip() }
 javaComponent.withVariantsFromConfiguration(configurations["testFixturesRuntimeElements"]) { skip() }
 
-// TODO investigate bug where io.kotest.multiplatform Gradle Plugin Marker isn't published to dev-maven
-//      Maybe need to update dev.publish to always re-publish if there are no artifacts?
-//tasks.withType<dev.adamko.gradle.dev_publish.tasks.BaseDevPublishTask>().configureEach {
-//   outputs.upToDateWhen { false }
-//}
-//
-//tasks.withType<AbstractPublishToMaven>().configureEach {
-//   outputs.upToDateWhen { false }
-//}
+//region TODO investigate bug where io.kotest.multiplatform Gradle Plugin Marker isn't published to dev-maven
+//            Maybe need to update dev.publish to always re-publish if there are no artifacts?
+tasks.withType<dev.adamko.gradle.dev_publish.tasks.BaseDevPublishTask>().configureEach {
+   outputs.upToDateWhen { false }
+}
 
-//tasks.generatePublicationHashTask {
-//   publicationData.matching { it.name == "pluginMaven" }.configureEach {
-//      identifier.set("hack")
-//   }
-//   doLast {
-//      println("[$path] publicationData.names ${publicationData.names}")
-//   }
-//}
+tasks.withType<AbstractPublishToMaven>().configureEach {
+   outputs.upToDateWhen { false }
+}
+
+tasks.generatePublicationHashTask {
+   publicationData.matching { it.name == "KotestMultiplatformCompilerGradlePluginPluginMarkerMaven" }.configureEach {
+      identifier.set("hack")
+   }
+}
+//endregion
