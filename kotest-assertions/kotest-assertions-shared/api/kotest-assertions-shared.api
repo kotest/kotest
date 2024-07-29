@@ -54,6 +54,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
+	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
 }
