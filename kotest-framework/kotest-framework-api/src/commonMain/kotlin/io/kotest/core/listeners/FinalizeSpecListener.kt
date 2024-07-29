@@ -1,5 +1,6 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -9,8 +10,7 @@ import kotlin.reflect.KClass
  * Invoked once per spec class if the spec has enabled root tests.
  * This listener is only invoked if the spec had at least one enabled test.
  */
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface FinalizeSpecListener : Listener {
+interface FinalizeSpecListener : Extension {
 
    /**
     * Called once per [Spec], after all tests have completed for that spec.
