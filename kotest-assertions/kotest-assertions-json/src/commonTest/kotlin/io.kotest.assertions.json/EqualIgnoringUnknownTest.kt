@@ -1,6 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.shouldEqualSpecifiedJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.throwable.shouldHaveMessage

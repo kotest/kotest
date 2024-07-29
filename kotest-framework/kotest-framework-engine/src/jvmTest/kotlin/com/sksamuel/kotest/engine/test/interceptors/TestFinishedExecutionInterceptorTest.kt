@@ -12,6 +12,7 @@ import io.kotest.engine.test.AbstractTestCaseExecutionListener
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.matchers.shouldBe
+import kotlin.time.Duration.Companion.seconds
 
 class TestFinishedExecutionInterceptorTest : FunSpec({
 
@@ -32,9 +33,9 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             finished = true
          }
       }
-      
+
       @Suppress("DEPRECATION") // Remove when removing listeners
-      TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.success(0) }
+      TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.Success(0.seconds) }
       finished shouldBe true
    }
 
