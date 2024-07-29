@@ -46,7 +46,6 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(projects.kotestFramework.kotestFrameworkDatatest)
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
@@ -56,5 +55,16 @@ kotlin {
 }
 
 tasks.withType<Test>().configureEach {
-   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED")
+   jvmArgumentProviders.add(CommandLineArgumentProvider {
+      val javaLauncher = javaLauncher.orNull
+      buildList {
+         if (javaLauncher != null && javaLauncher.metadata.languageVersion >= JavaLanguageVersion.of(9)) {
+            // --add-opens is only available in Java 9+
+            add("--add-opens=java.base/java.util=ALL-UNNAMED")
+            add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+         }
+      }
+   })
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

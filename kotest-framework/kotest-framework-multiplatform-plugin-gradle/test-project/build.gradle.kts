@@ -1,18 +1,21 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
    id("io.kotest.multiplatform")
 }
 
+val kotestVersion: String by project
+val devMavenRepoPath: String by project
+
 repositories {
+   maven(file(devMavenRepoPath)) {
+      name = "DevMavenRepo"
+      mavenContent { includeGroupAndSubgroups("io.kotest") }
+   }
    mavenCentral()
 }
-
-val kotestVersion: String by project
-val useNewNativeMemoryModel: String by project
 
 kotlin {
 
@@ -23,6 +26,7 @@ kotlin {
       nodejs()
    }
 
+   @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
    wasmJs {
       browser()
       nodejs()
@@ -56,29 +60,22 @@ kotlin {
    }
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-}
 
-tasks.withType<AbstractTestTask>().configureEach {
    testLogging {
       showExceptions = true
       showStandardStreams = true
       events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
-if (useNewNativeMemoryModel.toBoolean()) {
-   kotlin.targets.withType(KotlinNativeTarget::class.java) {
-      binaries.all {
-         binaryOptions["memoryModel"] = "experimental"
-      }
-   }
-}
-
-rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java) {
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
    // yarn.lock will change when running tests with multiple Kotlin versions
-   rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().yarnLockMismatchReport =
-      org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
+   extensions.configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
+      yarnLockMismatchReport = org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
+   }
 }

@@ -7,9 +7,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 /**
- * Returns a [Matcher] that verifies that two json strings are equal.
+ * Returns a [Matcher] that verifies that two JSON strings are equal.
  *
- * This matcher will consider two json strings matched if they have the same key-values pairs.
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs.
  * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
  */
 fun equalJson(
@@ -30,13 +30,13 @@ fun equalJson(
    }
 
 /**
- * Returns a [Matcher] that verifies json trees are equal.
+ * Returns a [Matcher] that verifies JSON trees are equal.
  *
- * This common matcher requires json in kotest's [JsonNode] abstraction.
+ * This common matcher requires JSON in Kotest's [JsonNode] abstraction.
  *
  * The jvm module provides wrappers to convert from Jackson to this format.
  *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs,
  * regardless of order.
  */
 private fun equalJsonTree(

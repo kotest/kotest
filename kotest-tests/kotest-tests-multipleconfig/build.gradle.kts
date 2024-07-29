@@ -13,3 +13,7 @@ kotlin {
       }
    }
 }
+
+tasks.withType<Test>().configureEach {
+   systemProperty("kotest.framework.classpath.scanning.config.disable", "false")
+}

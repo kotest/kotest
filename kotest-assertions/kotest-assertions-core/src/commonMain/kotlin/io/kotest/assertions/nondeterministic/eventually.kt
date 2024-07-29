@@ -113,25 +113,30 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+){
+   init {
+      require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
+   }
+}
 
-object EventuallyConfigurationDefaults {
-   var duration: Duration = Duration.INFINITE
-   var initialDelay: Duration = Duration.ZERO
-   var interval: Duration = 25.milliseconds
-   var intervalFn: DurationFn? = null
-   var retries: Int = Int.MAX_VALUE
-   var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
-   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
-   var listener: EventuallyListener? = null
-   var shortCircuit: (Throwable) -> Boolean = { false }
-   var includeFirst: Boolean = true
+internal object EventuallyConfigurationDefaults {
+   val duration: Duration = Duration.INFINITE
+   val initialDelay: Duration = Duration.ZERO
+   val interval: Duration = 25.milliseconds
+   val intervalFn: DurationFn? = null
+   val retries: Int = Int.MAX_VALUE
+   val expectedExceptions: Set<KClass<out Throwable>> = emptySet()
+   val expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   val listener: EventuallyListener? = null
+   val shortCircuit: (Throwable) -> Boolean = { false }
+   val includeFirst: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the [eventually] function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully. Must be non-negative.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -154,7 +159,7 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default, this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. MUST be non-negative.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 

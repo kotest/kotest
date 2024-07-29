@@ -2,9 +2,6 @@
 
 package io.kotest.engine
 
-import io.kotest.common.Platform
-import io.kotest.common.runBlocking
-import io.kotest.common.runPromise
 import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
@@ -21,7 +18,8 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import kotlin.reflect.KClass
 
 /**

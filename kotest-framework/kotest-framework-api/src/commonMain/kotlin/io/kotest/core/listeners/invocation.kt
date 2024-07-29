@@ -1,9 +1,9 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface BeforeInvocationListener : Listener {
+interface BeforeInvocationListener : Extension {
 
    /**
     * Invoked before each 'run' of a test, with a flag indicating the iteration number.
@@ -19,8 +19,7 @@ interface BeforeInvocationListener : Listener {
    suspend fun beforeInvocation(testCase: TestCase, iteration: Int): Unit = Unit
 }
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface AfterInvocationListener : Listener {
+interface AfterInvocationListener : Extension {
 
    /**
     * Invoked after each 'run' of a test, with a flag indicating the iteration number.
