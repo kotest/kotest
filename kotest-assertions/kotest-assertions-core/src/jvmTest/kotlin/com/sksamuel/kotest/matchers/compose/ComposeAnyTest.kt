@@ -116,11 +116,17 @@ class ComposeAnyTest : StringSpec() {
       }
 
       "Person Matcher.any test, should fail on mismatching types" {
-         shouldFailWithMessage(
-            "Mismatching type of matcher for property name: " +
-               "class java.lang.String cannot be cast to class java.lang.Number " +
-               "(java.lang.String and java.lang.Number are in module java.base of loader 'bootstrap')"
-         ) {
+         val expectedErrorMessage =
+            if (testJavaLauncherVersion >= 9) {
+               "Mismatching type of matcher for property name: " +
+                  "class java.lang.String cannot be cast to class java.lang.Number " +
+                  "(java.lang.String and java.lang.Number are in module java.base of loader 'bootstrap')"
+            } else {
+               "Mismatching type of matcher for property name: " +
+                  "java.lang.String cannot be cast to java.lang.Number"
+            }
+
+         shouldFailWithMessage(expectedErrorMessage) {
             Matcher.any(
                havingProperty(ageMatcher to Person::name),
                havingProperty(ageMatcher to Person::age),
@@ -173,5 +179,14 @@ class ComposeAnyTest : StringSpec() {
          """.trimIndent()
       }
    }
-}
 
+   companion object {
+      /**
+       * The version of Java used to run the tests.
+       *
+       * It must be passed in as a system property, in the Gradle Test task config.
+       */
+      val testJavaLauncherVersion = System.getProperty("testJavaLauncherVersion")?.toInt()
+         ?: error("Missing 'testJavaLauncherVersion' system property")
+   }
+}

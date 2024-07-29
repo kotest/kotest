@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 
 plugins {
+   id("kotest-base")
    signing
    `maven-publish`
    id("dev.adamko.dev-publish")
@@ -10,14 +11,6 @@ plugins {
 
 group = "io.kotest"
 version = Ci.publishVersion
-
-val javadocJar by tasks.registering(Jar::class) {
-   group = JavaBasePlugin.DOCUMENTATION_GROUP
-   description = "Assembles java doc to jar"
-   archiveClassifier.set("javadoc")
-   val javadoc = tasks.named("javadoc")
-   from(javadoc)
-}
 
 val ossrhUsername: String by project
 val ossrhPassword: String by project
@@ -27,7 +20,7 @@ val signingPassword: String? by project
 val mavenCentralRepoName = "Deploy"
 
 signing {
-   if (signingKey != null && signingPassword != null) {
+   if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
    }
@@ -103,6 +96,12 @@ publishing {
 }
 
 pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+   val javadocJar by tasks.registering(Jar::class) {
+      group = JavaBasePlugin.DOCUMENTATION_GROUP
+      description = "Create Javadoc JAR"
+      archiveClassifier.set("javadoc")
+   }
+
    publishing.publications.withType<MavenPublication>().configureEach {
       artifact(javadocJar)
    }

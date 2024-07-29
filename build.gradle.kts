@@ -1,4 +1,5 @@
 plugins {
+   id("kotest-base")
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
