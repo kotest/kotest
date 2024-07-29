@@ -10,7 +10,7 @@ class MultiConfigTest : WordSpec() {
    init {
       "detecting two configs" should {
          "merge listeners" {
-            listeners.get() shouldBe 2
+            counter.get() shouldBe 2
          }
          "merge project listeners" {
             beforeAll.get() shouldBe 2

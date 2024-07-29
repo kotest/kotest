@@ -1,9 +1,9 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 
-@Suppress("DEPRECATION") // Remove when removing Listener
-interface AfterSpecListener : Listener {
+interface AfterSpecListener : Extension {
 
    /**
     * Is invoked after the [io.kotest.core.test.TestCase]s that are part of a particular
