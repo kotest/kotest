@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldNotBe
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Stream
 import kotlin.io.path.isRegularFile
 
 infix fun Path.shouldStartWithPath(file: File) = this should startWithPath(file)
@@ -50,7 +51,6 @@ fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
       { "Path $value should have size $size" },
       { "Path $value should not have size $size" })
 }
-
 
 
 fun Path.shouldBeADirectory() = this should aDirectory()
@@ -126,9 +126,16 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 
-@Deprecated(message ="checks if a directory is empty. Deprecated since 4.3.", replaceWith = ReplaceWith("shouldBeEmptyDirectory()"))
+@Deprecated(
+   message = "checks if a directory is empty. Deprecated since 4.3.",
+   replaceWith = ReplaceWith("shouldBeEmptyDirectory()")
+)
 fun Path.shouldBeNonEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
-@Deprecated(message ="checks if a directory is not empty. Deprecated since 4.3.", replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()"))
+
+@Deprecated(
+   message = "checks if a directory is not empty. Deprecated since 4.3.",
+   replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()")
+)
 fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() should beEmptyDirectory()
 
 fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
@@ -157,7 +164,7 @@ infix fun Path.shouldContainFile(name: String) = this should containFile(name)
 infix fun Path.shouldNotContainFile(name: String) = this shouldNot containFile(name)
 fun containFile(name: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
-      val contents = Files.list(value).map { it.fileName.toString() }.toList()
+      val contents = value.toFile().list()
       val passed = Files.isDirectory(value) && contents.contains(name)
       return MatcherResult(
          passed,
@@ -177,7 +184,7 @@ fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
       return MatcherResult(
          sizea > sizeb,
          { "Path $value ($sizea bytes) should be larger than $other ($sizeb bytes)" },
-         { "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)"})
+         { "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)" })
    }
 }
 
@@ -201,9 +208,9 @@ infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFi
 fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
 
    private fun fileExists(dir: Path): Boolean {
-      val contents = Files.list(dir).toList()
-      val (dirs, files) = contents.partition { Files.isDirectory(it) }
-      return files.map { it.fileName.toString() }.contains(name) || dirs.any(::fileExists)
+      val contents = dir.toFile().listFiles()
+      val (dirs, files) = contents.partition { it.isDirectory }
+      return files.map { it.name.toString() }.contains(name) || dirs.any { fileExists(it.toPath()) }
    }
 
    override fun test(value: Path): MatcherResult = MatcherResult(
