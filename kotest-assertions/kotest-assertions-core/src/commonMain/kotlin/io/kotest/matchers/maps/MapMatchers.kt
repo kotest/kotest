@@ -46,18 +46,31 @@ fun <K> haveKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K
 }
 
 fun <V> haveValue(v: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
-   override fun test(value: Map<*, V>) = MatcherResult(
-      value.containsValue(v),
-      { "Map should contain value $v" },
-      { "Map should not contain value $v" })
+   override fun test(value: Map<*, V>): MatcherResult {
+      val passed = value.containsValue(v)
+      val possibleMatchesDescription = possibleMatchesForMissingElements(
+         setOf(v),
+         value.values.toSet(),
+         "value"
+      )
+      return MatcherResult(
+         passed,
+         { "Map should contain value $v$possibleMatchesDescription" },
+         { "Map should not contain value $v" })
+   }
 }
 
 fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
    override fun test(value: Map<*, V>): MatcherResult {
       val valuesNotPresentInMap = values.filterNot { value.containsValue(it) }
+      val possibleMatchesDescription = possibleMatchesForMissingElements(
+         valuesNotPresentInMap.toSet(),
+         value.values.toSet(),
+         "values"
+      )
       return MatcherResult(
          valuesNotPresentInMap.isEmpty(),
-         { "Map did not contain the values ${values.joinToString(", ")}" },
+         { "Map did not contain the values ${valuesNotPresentInMap.joinToString(", ")}$possibleMatchesDescription" },
          { "Map should not contain the values ${values.joinToString(", ")}" }
       )
    }
