@@ -88,30 +88,6 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
 }
 
-public final class io/kotest/assertions/nondeterministic/EventuallyConfigurationDefaults {
-	public static final field INSTANCE Lio/kotest/assertions/nondeterministic/EventuallyConfigurationDefaults;
-	public final fun getDuration-UwyO8pc ()J
-	public final fun getExpectedExceptions ()Ljava/util/Set;
-	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
-	public final fun getIncludeFirst ()Z
-	public final fun getInitialDelay-UwyO8pc ()J
-	public final fun getInterval-UwyO8pc ()J
-	public final fun getIntervalFn ()Lio/kotest/assertions/nondeterministic/DurationFn;
-	public final fun getListener ()Lkotlin/jvm/functions/Function3;
-	public final fun getRetries ()I
-	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
-	public final fun setDuration-LRDsOJo (J)V
-	public final fun setExpectedExceptions (Ljava/util/Set;)V
-	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
-	public final fun setIncludeFirst (Z)V
-	public final fun setInitialDelay-LRDsOJo (J)V
-	public final fun setInterval-LRDsOJo (J)V
-	public final fun setIntervalFn (Lio/kotest/assertions/nondeterministic/DurationFn;)V
-	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
-	public final fun setRetries (I)V
-	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class io/kotest/assertions/nondeterministic/EventuallyKt {
 	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -920,9 +896,9 @@ public final class io/kotest/matchers/concurrent/ThreadsKt {
 }
 
 public final class io/kotest/matchers/concurrent/suspension/ConcurrentKt {
-	public static final fun shouldCompleteBetween (JJLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldCompleteBetween (Lkotlin/ranges/ClosedRange;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldCompleteWithin-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldTimeout-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/matchers/date/DurationKt {
@@ -2083,7 +2059,6 @@ public final class io/kotest/matchers/result/SuccessKt {
 	public static final fun shouldBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldBeSuccess (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun shouldNotBeSuccess (Ljava/lang/Object;)V
-	public static final fun shouldNotBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)V
 }
 
 public final class io/kotest/matchers/result/SuccessMatcher : io/kotest/matchers/Matcher {
@@ -2115,8 +2090,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun containDuplicates ()Lio/kotest/matchers/Matcher;
 	public static final fun containExactly (Lkotlin/sequences/Sequence;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactly ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun containExactlyInAnyOrder (Lkotlin/sequences/Sequence;)Lio/kotest/matchers/Matcher;
-	public static final fun containExactlyInAnyOrder ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun containNoNulls ()Lio/kotest/matchers/Matcher;
 	public static final fun containNull ()Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyNulls ()Lio/kotest/matchers/Matcher;
@@ -2145,8 +2118,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldContainDuplicates (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainExactly (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainExactly (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
-	public static final fun shouldContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
-	public static final fun shouldContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
 	public static final fun shouldContainInOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainInOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Comparable;)V
 	public static final fun shouldContainNoNulls (Lkotlin/sequences/Sequence;)V
@@ -2180,8 +2151,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldNotContainDuplicates (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainExactly (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainExactly (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
-	public static final fun shouldNotContainExactlyInAnyOrder (Lkotlin/sequences/Sequence;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainInOrder (Lkotlin/sequences/Sequence;Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainNoNulls (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotContainNull (Lkotlin/sequences/Sequence;)V

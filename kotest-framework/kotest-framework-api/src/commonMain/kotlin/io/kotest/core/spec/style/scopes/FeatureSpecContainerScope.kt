@@ -1,15 +1,8 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
-
-@Deprecated("renamed to FeatureSpecContainerScope. Deprecated since 4.5")
-typealias FeatureScope = FeatureSpecContainerScope
-
-@Deprecated("renamed to FeatureSpecContainerScope. Deprecated since 5.0")
-typealias FeatureSpecContainerContext = FeatureSpecContainerScope
 
 /**
  * A scope that allows tests to be registered using the syntax:

@@ -4,12 +4,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
-@Deprecated("Renamed to WordSpecWhenContainerScope. Deprecated since 4.5")
-typealias WordSpecWhenScope = WordSpecWhenContainerScope
-
-@Deprecated("Renamed to WordSpecWhenContainerScope. Deprecated since 5.0")
-typealias WordSpecWhenContainerContext = WordSpecWhenContainerScope
-
 @Suppress("FunctionName")
 @KotestTestScope
 class WordSpecWhenContainerScope(

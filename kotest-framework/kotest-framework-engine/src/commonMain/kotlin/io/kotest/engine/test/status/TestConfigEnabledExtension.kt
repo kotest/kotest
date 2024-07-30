@@ -2,7 +2,7 @@ package io.kotest.engine.test.status
 
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.log
+import io.kotest.core.log
 
 /**
  * A [TestEnabledExtension] that uses the enabled value in test case config

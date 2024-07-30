@@ -3,14 +3,12 @@ package io.kotest.assertions.nondeterministic
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 /**
  * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
@@ -50,7 +48,7 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   val start = EventuallyTimeSource.current().markNow()
+   val start = nonDeterministicTestTimeSource().markNow()
    val control = EventuallyControl(config, start)
 
    try {
@@ -115,25 +113,30 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-)
+){
+   init {
+      require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
+      require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
+   }
+}
 
-object EventuallyConfigurationDefaults {
-   var duration: Duration = Duration.INFINITE
-   var initialDelay: Duration = Duration.ZERO
-   var interval: Duration = 25.milliseconds
-   var intervalFn: DurationFn? = null
-   var retries: Int = Int.MAX_VALUE
-   var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
-   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
-   var listener: EventuallyListener? = null
-   var shortCircuit: (Throwable) -> Boolean = { false }
-   var includeFirst: Boolean = true
+internal object EventuallyConfigurationDefaults {
+   val duration: Duration = Duration.INFINITE
+   val initialDelay: Duration = Duration.ZERO
+   val interval: Duration = 25.milliseconds
+   val intervalFn: DurationFn? = null
+   val retries: Int = Int.MAX_VALUE
+   val expectedExceptions: Set<KClass<out Throwable>> = emptySet()
+   val expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   val listener: EventuallyListener? = null
+   val shortCircuit: (Throwable) -> Boolean = { false }
+   val includeFirst: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
 
    /**
-    * The total time that the [eventually] function can take to complete successfully.
+    * The total time that the [eventually] function can take to complete successfully. Must be non-negative.
     */
    var duration: Duration = EventuallyConfigurationDefaults.duration
 
@@ -156,12 +159,12 @@ class EventuallyConfigurationBuilder {
    var intervalFn: DurationFn? = EventuallyConfigurationDefaults.intervalFn
 
    /**
-    * The maximum number of invocations regardless of durations. By default, this is set to max retries.
+    * The maximum number of invocations regardless of durations. By default, this is set to max retries. MUST be non-negative.
     */
    var retries: Int = EventuallyConfigurationDefaults.retries
 
    /**
-    * A set of exceptions, which if thrown, will cause the test function to be retried.
+    * A set of exceptions, which, if thrown, will cause the test function to be retried.
     * By default, all exceptions are retried.
     *
     * This set is applied in addition to the values specified by [expectedExceptionsFn].
@@ -265,29 +268,3 @@ private class EventuallyControl(
 }
 
 internal object ShortCircuitControlException : Throwable()
-
-
-/**
- * Store a [TimeSource] to be used by [eventually].
- */
-internal class EventuallyTimeSource(
-   val timeSource: TimeSource
-) : CoroutineContext.Element {
-
-   override val key: CoroutineContext.Key<EventuallyTimeSource>
-      get() = KEY
-
-   internal companion object {
-      /**
-       * Retrieves the [TimeSource] used by [eventually].
-       *
-       * For internal Kotest testing purposes the [TimeSource] can be overridden.
-       * For normal usage [TimeSource.Monotonic] is used.
-       */
-      internal suspend fun current(): TimeSource =
-         coroutineContext[KEY]?.timeSource
-            ?: TimeSource.Monotonic
-
-      internal val KEY = object : CoroutineContext.Key<EventuallyTimeSource> {}
-   }
-}

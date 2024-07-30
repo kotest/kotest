@@ -5,7 +5,7 @@ import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
-import io.kotest.mpp.log
+import io.kotest.core.log
 
 /**
  * An [EngineInterceptor] that sorts the [TestSuite] according to registered [SpecExecutionOrderExtension]s

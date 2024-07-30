@@ -4,7 +4,7 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.names.DuplicateTestNameHandler
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 
 /**
  * Wraps a [TestScope] to add support for detecting duplicate test names in a scope, and handling

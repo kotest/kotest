@@ -111,13 +111,3 @@ class FailureTypeMatcher<T : Throwable>(val clazz: KClass<T>) : Matcher<Result<*
     )
   }
 }
-
-@Deprecated("Use FailureTypeMatcher directly")
-typealias BeFailureOfType<T> = FailureTypeMatcher<T>
-
-@Deprecated("Use shouldBeFailure<T> directly", ReplaceWith("shouldBeFailure"))
-inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType(): A = shouldBeFailure<A>()
-
-@Deprecated("This method isn't easy to understand. Prefer writing a different assertion")
-inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot BeFailureOfType(A::class)
-

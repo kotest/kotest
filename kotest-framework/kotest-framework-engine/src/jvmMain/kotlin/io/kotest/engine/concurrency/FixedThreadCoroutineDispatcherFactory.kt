@@ -2,7 +2,7 @@ package io.kotest.engine.concurrency
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext

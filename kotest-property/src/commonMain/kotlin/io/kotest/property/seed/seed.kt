@@ -11,29 +11,22 @@ import kotlinx.coroutines.currentCoroutineContext
 
 @ExperimentalKotest
 suspend fun createRandom(config: PropTestConfig): RandomSource {
-   return config.seed?.random() ?: getFailedSeedIfEnabled()?.random() ?: RandomSource.default()
-}
-
-suspend fun getFailedSeedIfEnabled(): Long? {
-   return if (PropertyTesting.writeFailedSeed) getFailedSeed() else null
+   return config.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
 }
 
 @ExperimentalKotest
 suspend fun getFailedSeed(): Long? {
+   if (!PropertyTesting.writeFailedSeed) return null
    val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
    return readSeed(path)
 }
 
 @ExperimentalKotest
-suspend fun writeFailedSeedIfEnabled(seed: Long) {
-   if (PropertyTesting.writeFailedSeed)
-      writeFailedSeed(seed)
-}
-
-@ExperimentalKotest
 suspend fun writeFailedSeed(seed: Long) {
-   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
-   writeSeed(path, seed)
+   if (PropertyTesting.writeFailedSeed) {
+      val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+      writeSeed(path, seed)
+   }
 }
 
 @ExperimentalKotest
@@ -42,6 +35,8 @@ suspend fun clearFailedSeed() {
    clearSeed(path)
 }
 
-expect fun readSeed(path: TestPath): Long?
-expect fun writeSeed(path: TestPath, seed: Long)
-expect fun clearSeed(path: TestPath)
+internal expect fun readSeed(path: TestPath): Long?
+
+internal expect fun writeSeed(path: TestPath, seed: Long)
+
+internal expect fun clearSeed(path: TestPath)

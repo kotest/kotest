@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import java.util.regex.Pattern
 
 /**
@@ -17,7 +17,7 @@ import java.util.regex.Pattern
  * thus allowing kotest to properly support the --tests options.
  *
  */
-object GradlePostDiscoveryFilterExtractor {
+internal object GradlePostDiscoveryFilterExtractor {
 
    private val logger = Logger(GradlePostDiscoveryFilterExtractor::class)
 

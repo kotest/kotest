@@ -3,9 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 
-@Deprecated("Renamed to FeatureSpecRootContext. Deprecated since 5.0")
-typealias FeatureSpecRootContext = FeatureSpecRootScope
-
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
  *

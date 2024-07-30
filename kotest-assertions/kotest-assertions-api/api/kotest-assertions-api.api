@@ -53,7 +53,6 @@ public abstract interface class io/kotest/matchers/MatcherResult {
 }
 
 public final class io/kotest/matchers/MatcherResult$Companion {
-	public final fun invoke (ZLjava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/MatcherResult;
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
 }
 

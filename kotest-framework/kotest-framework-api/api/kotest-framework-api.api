@@ -1,3 +1,16 @@
+public final class io/kotest/core/Logger {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public final fun log (Lkotlin/jvm/functions/Function0;)V
+	public final fun logsimple (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class io/kotest/core/LoggerKt {
+	public static final fun getStart ()J
+	public static final fun isLoggingEnabled ()Z
+	public static final fun log (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun log (Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -7,6 +20,20 @@ public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/core/Platform : java/lang/Enum {
+	public static final field JS Lio/kotest/core/Platform;
+	public static final field JVM Lio/kotest/core/Platform;
+	public static final field Native Lio/kotest/core/Platform;
+	public static final field WasmJs Lio/kotest/core/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
+	public static fun values ()[Lio/kotest/core/Platform;
+}
+
+public final class io/kotest/core/PlatformKt {
+	public static final fun getPlatform ()Lio/kotest/core/Platform;
 }
 
 public final class io/kotest/core/StringTag : io/kotest/core/Tag {
@@ -808,6 +835,10 @@ public final class io/kotest/core/TupleKt {
 	public static final fun tuple (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/core/Tuple22;
 }
 
+public final class io/kotest/core/WriteLogKt {
+	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/core/annotation/AlwaysEnabledCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
@@ -843,7 +874,7 @@ public abstract interface annotation class io/kotest/core/annotation/Isolate : j
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresPlatform : java/lang/annotation/Annotation {
-	public abstract fun values ()[Lio/kotest/common/Platform;
+	public abstract fun values ()[Lio/kotest/core/Platform;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresTag : java/lang/annotation/Annotation {
@@ -886,7 +917,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun beforeAll ()V
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun extensions ()Ljava/util/List;
-	public fun filters ()Ljava/util/List;
 	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun getAutoScanEnabled ()Ljava/lang/Boolean;
@@ -905,6 +935,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getFailOnEmptyTestSuite ()Ljava/lang/Boolean;
 	public fun getFailOnIgnoredTests ()Ljava/lang/Boolean;
 	public fun getGlobalAssertSoftly ()Ljava/lang/Boolean;
+	public fun getIgnorePrivateClasses ()Ljava/lang/Boolean;
 	public fun getIncludeTestScopePrefixes ()Ljava/lang/Boolean;
 	public fun getInvocationTimeout ()Ljava/lang/Long;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
@@ -922,12 +953,12 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTestNameRemoveWhitespace ()Ljava/lang/Boolean;
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
-	public fun listeners ()Ljava/util/List;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
 	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
 	public fun setDiscoveryClasspathFallbackEnabled (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
+	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
 	public fun setRandomOrderSeed (Ljava/lang/Long;)V
 	public fun setTestCoroutineDispatcher (Z)V
@@ -981,6 +1012,7 @@ public final class io/kotest/core/config/Defaults {
 	public static final field failOnIgnoredTests Z
 	public static final field failfast Z
 	public static final field globalAssertSoftly Z
+	public static final field ignorePrivateClasses Z
 	public static final field parallelism I
 	public static final field projectWideFailFast Z
 	public static final field specFailureFilePath Ljava/lang/String;
@@ -1088,6 +1120,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getFailOnIgnoredTests ()Z
 	public final fun getFailfast ()Z
 	public final fun getGlobalAssertSoftly ()Z
+	public final fun getIgnorePrivateClasses ()Z
 	public final fun getIncludeTestScopeAffixes ()Ljava/lang/Boolean;
 	public final fun getInvocationTimeout ()Ljava/lang/Long;
 	public final fun getInvocations ()I
@@ -1110,7 +1143,6 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getThreads ()I
 	public final fun getTimeout ()Ljava/lang/Long;
 	public final fun getWriteSpecFailureFile ()Z
-	public final fun listeners ()Ljava/lang/Void;
 	public final fun setAllowOutOfOrderCallbacks (Z)V
 	public final fun setAssertionMode (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setBlockingTest (Z)V
@@ -1129,6 +1161,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setFailOnIgnoredTests (Z)V
 	public final fun setFailfast (Z)V
 	public final fun setGlobalAssertSoftly (Z)V
+	public final fun setIgnorePrivateClasses (Z)V
 	public final fun setIncludeTestScopeAffixes (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
 	public final fun setInvocations (I)V
@@ -1438,7 +1471,6 @@ public final class io/kotest/core/factory/FactoryConstrainedAfterTestListener : 
 	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/AfterTestListener;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/factory/FactoryConstrainedBeforeContainerListener : io/kotest/core/listeners/BeforeContainerListener {
@@ -1450,7 +1482,6 @@ public final class io/kotest/core/factory/FactoryConstrainedBeforeTestListener :
 	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/BeforeTestListener;)V
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/factory/FactoryConstrainedTestListener : io/kotest/core/listeners/TestListener {
@@ -1468,7 +1499,6 @@ public final class io/kotest/core/factory/FactoryConstrainedTestListener : io/ko
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getName ()Ljava/lang/String;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1514,6 +1544,10 @@ public abstract class io/kotest/core/factory/TestFactoryConfiguration : io/kotes
 	public fun add (Lio/kotest/core/spec/RootTest;)V
 	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
+}
+
+public final class io/kotest/core/factory/UuidKt {
+	public static final fun uniqueId ()Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/core/filter/Filter : io/kotest/core/extensions/Extension {
@@ -1588,6 +1622,7 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field filterSpecs Ljava/lang/String;
 	public static final field filterTests Ljava/lang/String;
 	public static final field globalAssertSoftly Ljava/lang/String;
+	public static final field ignorePrivateClasses Ljava/lang/String;
 	public static final field includeTags Ljava/lang/String;
 	public static final field invocationTimeout Ljava/lang/String;
 	public static final field isolationMode Ljava/lang/String;
@@ -1611,43 +1646,39 @@ public final class io/kotest/core/listeners/AfterContainerListener$DefaultImpls 
 	public static fun afterContainer (Lio/kotest/core/listeners/AfterContainerListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/listeners/AfterEachListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/AfterEachListener : io/kotest/core/extensions/Extension {
 	public abstract fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/AfterEachListener$DefaultImpls {
 	public static fun afterEach (Lio/kotest/core/listeners/AfterEachListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/AfterEachListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/AfterInvocationListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/AfterInvocationListener : io/kotest/core/extensions/Extension {
 	public abstract fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/AfterInvocationListener$DefaultImpls {
 	public static fun afterInvocation (Lio/kotest/core/listeners/AfterInvocationListener;Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/AfterInvocationListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/AfterProjectListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/AfterProjectListener : io/kotest/core/extensions/Extension {
 	public abstract fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/AfterProjectListener$DefaultImpls {
 	public static fun afterProject (Lio/kotest/core/listeners/AfterProjectListener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/AfterProjectListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/AfterSpecListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/AfterSpecListener : io/kotest/core/extensions/Extension {
 	public abstract fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/AfterSpecListener$DefaultImpls {
 	public static fun afterSpec (Lio/kotest/core/listeners/AfterSpecListener;Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/AfterSpecListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/AfterTestListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/AfterTestListener : io/kotest/core/extensions/Extension {
 	public abstract fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1655,7 +1686,6 @@ public abstract interface class io/kotest/core/listeners/AfterTestListener : io/
 public final class io/kotest/core/listeners/AfterTestListener$DefaultImpls {
 	public static fun afterAny (Lio/kotest/core/listeners/AfterTestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun afterTest (Lio/kotest/core/listeners/AfterTestListener;Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/AfterTestListener;)Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/core/listeners/BeforeContainerListener : io/kotest/core/extensions/Extension {
@@ -1666,43 +1696,39 @@ public final class io/kotest/core/listeners/BeforeContainerListener$DefaultImpls
 	public static fun beforeContainer (Lio/kotest/core/listeners/BeforeContainerListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/listeners/BeforeEachListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/BeforeEachListener : io/kotest/core/extensions/Extension {
 	public abstract fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/BeforeEachListener$DefaultImpls {
 	public static fun beforeEach (Lio/kotest/core/listeners/BeforeEachListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/BeforeEachListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/BeforeInvocationListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/BeforeInvocationListener : io/kotest/core/extensions/Extension {
 	public abstract fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/BeforeInvocationListener$DefaultImpls {
 	public static fun beforeInvocation (Lio/kotest/core/listeners/BeforeInvocationListener;Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/BeforeInvocationListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/BeforeProjectListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/BeforeProjectListener : io/kotest/core/extensions/Extension {
 	public abstract fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/BeforeProjectListener$DefaultImpls {
 	public static fun beforeProject (Lio/kotest/core/listeners/BeforeProjectListener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/BeforeProjectListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/BeforeSpecListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/BeforeSpecListener : io/kotest/core/extensions/Extension {
 	public abstract fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/BeforeSpecListener$DefaultImpls {
 	public static fun beforeSpec (Lio/kotest/core/listeners/BeforeSpecListener;Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/BeforeSpecListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/BeforeTestListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/BeforeTestListener : io/kotest/core/extensions/Extension {
 	public abstract fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1710,16 +1736,14 @@ public abstract interface class io/kotest/core/listeners/BeforeTestListener : io
 public final class io/kotest/core/listeners/BeforeTestListener$DefaultImpls {
 	public static fun beforeAny (Lio/kotest/core/listeners/BeforeTestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeTest (Lio/kotest/core/listeners/BeforeTestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/BeforeTestListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/FinalizeSpecListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/FinalizeSpecListener : io/kotest/core/extensions/Extension {
 	public abstract fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/FinalizeSpecListener$DefaultImpls {
 	public static fun finalizeSpec (Lio/kotest/core/listeners/FinalizeSpecListener;Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/FinalizeSpecListener;)Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/core/listeners/IgnoredSpecListener : io/kotest/core/extensions/Extension {
@@ -1734,20 +1758,11 @@ public abstract interface class io/kotest/core/listeners/InstantiationListener {
 	public abstract fun specInstantiated (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/listeners/Listener : io/kotest/core/extensions/Extension {
-	public abstract fun getName ()Ljava/lang/String;
-}
-
-public final class io/kotest/core/listeners/Listener$DefaultImpls {
-	public static fun getName (Lio/kotest/core/listeners/Listener;)Ljava/lang/String;
-}
-
-public abstract interface class io/kotest/core/listeners/PrepareSpecListener : io/kotest/core/listeners/Listener {
+public abstract interface class io/kotest/core/listeners/PrepareSpecListener : io/kotest/core/extensions/Extension {
 	public abstract fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/listeners/PrepareSpecListener$DefaultImpls {
-	public static fun getName (Lio/kotest/core/listeners/PrepareSpecListener;)Ljava/lang/String;
 	public static fun prepareSpec (Lio/kotest/core/listeners/PrepareSpecListener;Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1757,22 +1772,9 @@ public abstract interface class io/kotest/core/listeners/ProjectListener : io/ko
 public final class io/kotest/core/listeners/ProjectListener$DefaultImpls {
 	public static fun afterProject (Lio/kotest/core/listeners/ProjectListener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeProject (Lio/kotest/core/listeners/ProjectListener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/ProjectListener;)Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/listeners/SpecInstantiationListener : io/kotest/core/listeners/Listener {
-	public abstract fun specInstantiated (Lio/kotest/core/spec/Spec;)V
-	public abstract fun specInstantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
-}
-
-public final class io/kotest/core/listeners/SpecInstantiationListener$DefaultImpls {
-	public static fun getName (Lio/kotest/core/listeners/SpecInstantiationListener;)Ljava/lang/String;
-	public static fun specInstantiated (Lio/kotest/core/listeners/SpecInstantiationListener;Lio/kotest/core/spec/Spec;)V
-	public static fun specInstantiationError (Lio/kotest/core/listeners/SpecInstantiationListener;Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
-}
-
-public abstract interface class io/kotest/core/listeners/TestListener : io/kotest/core/listeners/AfterContainerListener, io/kotest/core/listeners/AfterEachListener, io/kotest/core/listeners/AfterInvocationListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeContainerListener, io/kotest/core/listeners/BeforeEachListener, io/kotest/core/listeners/BeforeInvocationListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener, io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/Listener, io/kotest/core/listeners/PrepareSpecListener {
-	public abstract fun getName ()Ljava/lang/String;
+public abstract interface class io/kotest/core/listeners/TestListener : io/kotest/core/listeners/AfterContainerListener, io/kotest/core/listeners/AfterEachListener, io/kotest/core/listeners/AfterInvocationListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeContainerListener, io/kotest/core/listeners/BeforeEachListener, io/kotest/core/listeners/BeforeInvocationListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener, io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/PrepareSpecListener {
 }
 
 public final class io/kotest/core/listeners/TestListener$DefaultImpls {
@@ -1789,7 +1791,6 @@ public final class io/kotest/core/listeners/TestListener$DefaultImpls {
 	public static fun beforeSpec (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun beforeTest (Lio/kotest/core/listeners/TestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun finalizeSpec (Lio/kotest/core/listeners/TestListener;Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getName (Lio/kotest/core/listeners/TestListener;)Ljava/lang/String;
 	public static fun prepareSpec (Lio/kotest/core/listeners/TestListener;Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1951,7 +1952,6 @@ public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Sp
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/spec/RootTest;)V
 	public final fun afterProject (Lkotlin/jvm/functions/Function0;)V
-	public final fun aroundSpec (Lkotlin/jvm/functions/Function2;)V
 	public final fun finalizeSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun globalExtensions ()Ljava/util/List;
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
@@ -2039,6 +2039,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getFailfast ()Ljava/lang/Boolean;
 	public final fun getInvocationTimeout ()Ljava/lang/Long;
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public final fun getNonDeterministicTestVirtualTimeEnabled ()Z
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTestCoroutineDispatcher ()Ljava/lang/Boolean;
 	public final fun getTestOrder ()Lio/kotest/core/test/TestCaseOrder;
@@ -2059,6 +2060,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setFailfast (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
 	public final fun setIsolationMode (Lio/kotest/core/spec/IsolationMode;)V
+	public final fun setNonDeterministicTestVirtualTimeEnabled (Z)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
 	public final fun setTestCoroutineDispatcher (Ljava/lang/Boolean;)V
 	public final fun setTestOrder (Lio/kotest/core/test/TestCaseOrder;)V
@@ -2400,6 +2402,10 @@ public final class io/kotest/core/spec/style/StringSpecTestFactoryConfiguration 
 	public fun <init> ()V
 	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class io/kotest/core/spec/style/UnwrapIfReflectionCallKt {
+	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 }
 
 public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/WordSpecRootScope {
@@ -3006,12 +3012,10 @@ public final class io/kotest/core/test/TestCaseSeverityLevel : java/lang/Enum {
 }
 
 public abstract interface class io/kotest/core/test/TestResult {
-	public static final field Companion Lio/kotest/core/test/TestResult$Companion;
 	public abstract fun getDuration-UwyO8pc ()J
 	public abstract fun getErrorOrNull ()Ljava/lang/Throwable;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getReasonOrNull ()Ljava/lang/String;
-	public abstract fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public abstract fun isError ()Z
 	public abstract fun isErrorOrFailure ()Z
 	public abstract fun isFailure ()Z
@@ -3019,18 +3023,10 @@ public abstract interface class io/kotest/core/test/TestResult {
 	public abstract fun isSuccess ()Z
 }
 
-public final class io/kotest/core/test/TestResult$Companion {
-	public final fun error (Ljava/lang/Throwable;J)Lio/kotest/core/test/TestResult$Error;
-	public final fun failure (Ljava/lang/AssertionError;J)Lio/kotest/core/test/TestResult$Failure;
-	public final fun getIgnored ()Lio/kotest/core/test/TestResult$Ignored;
-	public final fun success (J)Lio/kotest/core/test/TestResult$Success;
-}
-
 public final class io/kotest/core/test/TestResult$DefaultImpls {
 	public static fun getErrorOrNull (Lio/kotest/core/test/TestResult;)Ljava/lang/Throwable;
 	public static fun getName (Lio/kotest/core/test/TestResult;)Ljava/lang/String;
 	public static fun getReasonOrNull (Lio/kotest/core/test/TestResult;)Ljava/lang/String;
-	public static fun getStatus (Lio/kotest/core/test/TestResult;)Lio/kotest/core/test/TestStatus;
 	public static fun isError (Lio/kotest/core/test/TestResult;)Z
 	public static fun isErrorOrFailure (Lio/kotest/core/test/TestResult;)Z
 	public static fun isFailure (Lio/kotest/core/test/TestResult;)Z
@@ -3050,7 +3046,6 @@ public final class io/kotest/core/test/TestResult$Error : io/kotest/core/test/Te
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3072,7 +3067,6 @@ public final class io/kotest/core/test/TestResult$Failure : io/kotest/core/test/
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3083,6 +3077,7 @@ public final class io/kotest/core/test/TestResult$Failure : io/kotest/core/test/
 }
 
 public final class io/kotest/core/test/TestResult$Ignored : io/kotest/core/test/TestResult {
+	public fun <init> ()V
 	public fun <init> (Lio/kotest/core/test/Enabled;)V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -3094,7 +3089,6 @@ public final class io/kotest/core/test/TestResult$Ignored : io/kotest/core/test/
 	public fun getName ()Ljava/lang/String;
 	public final fun getReason ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z
@@ -3114,7 +3108,6 @@ public final class io/kotest/core/test/TestResult$Success : io/kotest/core/test/
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
 	public fun getReasonOrNull ()Ljava/lang/String;
-	public fun getStatus ()Lio/kotest/core/test/TestStatus;
 	public fun hashCode ()I
 	public fun isError ()Z
 	public fun isErrorOrFailure ()Z

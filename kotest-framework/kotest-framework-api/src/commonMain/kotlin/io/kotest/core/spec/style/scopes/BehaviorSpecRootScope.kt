@@ -2,9 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 
-@Deprecated("Renamed to BehaviorSpecRootScope. Deprecated since 5.0")
-typealias BehaviorSpecRootContext = BehaviorSpecRootScope
-
 /**
  * A context that allows tests to be registered using the syntax:
  *

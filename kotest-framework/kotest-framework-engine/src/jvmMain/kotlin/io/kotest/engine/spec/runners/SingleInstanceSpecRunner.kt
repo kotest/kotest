@@ -15,7 +15,7 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.mpp.Logger
+import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap

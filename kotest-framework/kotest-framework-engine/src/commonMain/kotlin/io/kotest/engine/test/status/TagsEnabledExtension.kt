@@ -5,7 +5,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
-import io.kotest.mpp.log
+import io.kotest.core.log
 
 /**
  * A [TestEnabledExtension] that uses [io.kotest.core.Tag]s.

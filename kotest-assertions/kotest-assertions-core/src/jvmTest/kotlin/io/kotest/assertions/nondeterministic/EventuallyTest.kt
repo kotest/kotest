@@ -1,5 +1,3 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
-
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
@@ -8,9 +6,8 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
+import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestScope
-import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
@@ -21,7 +18,6 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContain
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.time.Duration
@@ -33,6 +29,7 @@ class EventuallyTest : FunSpec() {
 
    init {
       coroutineTestScope = true
+      nonDeterministicTestVirtualTimeEnabled = true
 
       test("pass working tests") {
          val result = testEventually(5.days) {
@@ -53,7 +50,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("an interval longer than duration should not override duration").config(timeout = 2.seconds) {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val config = eventuallyConfig {
             duration = 1.seconds
             interval = 100.seconds
@@ -68,7 +65,7 @@ class EventuallyTest : FunSpec() {
 
       context("pass tests that completed within the time allowed") {
          test("RuntimeException") {
-            val start = testCoroutineScheduler.timeSource.markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             val end = start.plus(150.milliseconds)
             val result = testEventually(1.seconds) {
                if (end.hasNotPassedNow())
@@ -86,7 +83,7 @@ class EventuallyTest : FunSpec() {
          }
 
          test("AssertionError") {
-            val start = testCoroutineScheduler.timeSource.markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             val end = start.plus(150.milliseconds)
             val result = testEventually(5.days) {
                if (end.hasNotPassedNow())
@@ -109,7 +106,7 @@ class EventuallyTest : FunSpec() {
                expectedExceptions = setOf(FileNotFoundException::class)
             }
 
-            val start = testCoroutineScheduler.timeSource.markNow()
+            val start = nonDeterministicTestTimeSource().markNow()
             val end = start.plus(150.milliseconds)
 
             val result = testEventually(config) {
@@ -149,7 +146,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("fail tests that throw unexpected exception types") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
             expectedExceptions = setOf(IOException::class)
@@ -167,7 +164,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("pass tests that throws FileNotFoundException for some time") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val end = start.plus(500.milliseconds)
          val result = testEventually(5.days) {
             if (end.hasNotPassedNow())
@@ -236,7 +233,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("allow suspendable functions") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          testEventually(100.milliseconds) {
             delay(47.milliseconds)
          }
@@ -256,7 +253,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("handle shouldNotBeNull") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val failure = shouldFail {
             testEventually(50.milliseconds) {
                val str: String? = null
@@ -270,7 +267,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("support fibonacci interval functions") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val invocations = mutableListOf<Duration>()
          val config = eventuallyConfig {
             duration = 2.seconds
@@ -335,7 +332,7 @@ class EventuallyTest : FunSpec() {
       }
 
       test("override assertion to hard assertion before executing assertion and reset it after executing") {
-         val start = testCoroutineScheduler.timeSource.markNow()
+         val start = nonDeterministicTestTimeSource().markNow()
          val target = start.plus(150.milliseconds)
          val failure = shouldFail {
             assertSoftly {
@@ -386,7 +383,7 @@ class EventuallyTest : FunSpec() {
          val exceptions = setOf(
             Pair(FileNotFoundException::class, FileNotFoundException()),
             Pair(AssertionError::class, AssertionError()),
-            Pair(java.lang.RuntimeException::class, java.lang.RuntimeException())
+            Pair(java.lang.RuntimeException::class, java.lang.RuntimeException()),
          )
          var i = 0
          val config = eventuallyConfig {
@@ -431,15 +428,63 @@ class EventuallyTest : FunSpec() {
             }
          }.message shouldNotContain "The first error was caused by: first"
       }
+
+      test("raise error if duration is less than 0") {
+         val message =
+            shouldThrow<IllegalArgumentException> {
+               eventually((-1).milliseconds) {
+                  1 shouldBe 2
+               }
+            }.message
+
+         message shouldContain "Duration must be greater than or equal to 0"
+      }
+
+      test("raise error if retries is less than 0") {
+         val message =
+            shouldThrow<IllegalArgumentException> {
+               eventuallyConfig {
+                  retries = -1
+               }
+            }.message
+
+         message shouldContain "Retries must be greater than or equal to 0"
+      }
+
+      test("when duration is set to default it cannot end test until iteration is done") {
+         val finalCount = 100
+         var count = 0
+         val config = eventuallyConfig {
+               retries = finalCount
+            }
+         shouldThrow<AssertionError> {
+            eventually(config) {
+               count++
+               1 shouldBe 2
+            }
+         }
+
+         count shouldBe finalCount
+      }
+
+      test("test eventually without configuration") {
+         // linked to issue #3988
+         var count = 0
+         eventually {
+            count += 1
+            count shouldBe 100
+         }
+         count shouldBe 100
+      }
    }
 }
 
 
-private suspend fun <T> TestScope.testEventually(
+private suspend fun <T> testEventually(
    duration: Duration,
    test: suspend () -> T,
-): TestEventuallyResult<T> = withContext(EventuallyTimeSource(testCoroutineScheduler.timeSource)) {
-   val start = testCoroutineScheduler.timeSource.markNow()
+): TestEventuallyResult<T> {
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = eventually(duration) {
@@ -447,17 +492,17 @@ private suspend fun <T> TestScope.testEventually(
       test()
    }
 
-   TestEventuallyResult(
+   return TestEventuallyResult(
       invocationTimes = invocationTimes,
       value = value,
    )
 }
 
-private suspend fun <T> TestScope.testEventually(
+private suspend fun <T> testEventually(
    config: EventuallyConfiguration,
    test: suspend () -> T,
-): TestEventuallyResult<T> = withContext(EventuallyTimeSource(testCoroutineScheduler.timeSource)) {
-   val start = testCoroutineScheduler.timeSource.markNow()
+): TestEventuallyResult<T>  {
+   val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = eventually(config = config) {
@@ -465,7 +510,7 @@ private suspend fun <T> TestScope.testEventually(
       test()
    }
 
-   TestEventuallyResult(
+   return TestEventuallyResult(
       invocationTimes = invocationTimes,
       value = value,
    )
