@@ -225,17 +225,15 @@ fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFil
 fun containFiles(names: List<String>) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
 
-      val files = Files.list(value).toList().map { it.fileName.toString() }
-
-      val existingFiles = names.intersect(files)
+      val files = value.toFile().list()
+      val existingFiles = names.intersect(files.toSet())
       val nonExistingFiles = names.subtract(existingFiles)
 
       return MatcherResult(
          nonExistingFiles.isEmpty(),
          { buildMessage(value, nonExistingFiles, false) },
-         {
-            buildMessage(value, existingFiles, true)
-         })
+         { buildMessage(value, existingFiles, true) }
+      )
    }
 
    private fun buildMessage(path: Path, fileList: Set<String>, isNegative: Boolean): String {
