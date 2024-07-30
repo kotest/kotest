@@ -53,8 +53,8 @@ fun ByteArray.shouldNotMatchResource(
 }
 
 fun matchResource(
-   resourcePath: String,
-   matcherProvider: (ByteArray) -> Matcher<ByteArray>,
+  resourcePath: String,
+  matcherProvider: (ByteArray) -> Matcher<ByteArray>,
 ) = object : Matcher<ByteArray> {
 
    override fun test(value: ByteArray): MatcherResult {

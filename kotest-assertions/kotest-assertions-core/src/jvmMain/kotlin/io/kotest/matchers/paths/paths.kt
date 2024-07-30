@@ -12,9 +12,7 @@ import io.kotest.matchers.shouldNotBe
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.io.path.isRegularFile
-import kotlin.streams.toList
 
 infix fun Path.shouldStartWithPath(file: File) = this should startWithPath(file)
 infix fun Path.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)

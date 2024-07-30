@@ -53,7 +53,7 @@ fun <T : Any> containAllIgnoringFields(
    property: KProperty<*>,
    vararg other: KProperty<*>
 ): Matcher<Collection<T>> = object :
-   Matcher<Collection<T>> {
+  Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       val missingItems = mutableListOf<T>()
       ts.forAll { tsItem ->
