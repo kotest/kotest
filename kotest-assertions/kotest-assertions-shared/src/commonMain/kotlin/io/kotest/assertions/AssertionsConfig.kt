@@ -31,6 +31,9 @@ object AssertionsConfig {
 
    val maxCollectionPrintSize: ConfigValue<Int> =
       EnvironmentConfigValue<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
+
+   val maxSimilarityPrintSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.similarity.print.size", 5, String::toInt)
 }
 
 interface ConfigValue<T> {
