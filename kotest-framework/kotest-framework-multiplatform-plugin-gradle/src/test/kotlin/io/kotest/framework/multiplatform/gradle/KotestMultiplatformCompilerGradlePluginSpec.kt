@@ -161,8 +161,10 @@ private data class GradleInvocation(
             .apply {
                withEnvironment(
                   buildMap {
+                     // `withEnvironment()` will wipe all existing environment variables,
+                     // which breaks things like PATH, so re-add them.
                      putAll(System.getenv())
-                     //put("GRADLE_USER_HOME", gradleUserHome.toString())
+
                      if (hostGradleDependenciesCache.exists()) {
                         put("GRADLE_RO_DEP_CACHE", hostGradleDependenciesCache.invariantSeparatorsPathString)
                      }
@@ -252,11 +254,11 @@ private data class GradleInvocation(
    companion object {
 
       /** Access the current host's Gradle user dir, to use as a read-only cache. */
-      private val hostGradleUserHome = Path(System.getProperty("gradleUserHomeDir"))
+      private val hostGradleUserHome: Path = Path(System.getProperty("gradleUserHomeDir"))
 
-      private val hostGradleDependenciesCache = hostGradleUserHome.resolve("caches/modules-2")
+      private val hostGradleDependenciesCache: Path = hostGradleUserHome.resolve("caches/modules-2")
 
-      private val testLogDir = Path(System.getProperty("testLogDir"))
+      private val testLogDir: Path = Path(System.getProperty("testLogDir"))
          .resolve(LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).replaceNonAlphanumeric())
          .createDirectories()
 
