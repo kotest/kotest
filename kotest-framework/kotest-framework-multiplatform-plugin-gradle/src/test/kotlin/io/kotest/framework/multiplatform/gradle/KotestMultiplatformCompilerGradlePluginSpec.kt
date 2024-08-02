@@ -30,6 +30,7 @@ import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.io.path.useLines
 import kotlin.io.path.writeText
+import kotlin.time.Duration.Companion.seconds
 
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
@@ -173,6 +174,12 @@ private data class GradleInvocation(
                   add("--continue")
                   add("--stacktrace")
                   add("--build-cache")
+
+                  // Decrease Gradle daemon idle timeout to prevent old agents lingering on CI.
+                  // A lower timeout means slower tests, which is preferred over OOMs and locked processes.
+                  add("-Dorg.gradle.daemon.idletimeout=" + 60.seconds.inWholeMilliseconds) // default is 3 hours!
+                  add("-Pkotlin.daemon.options.autoshutdownIdleSeconds=60")
+
                   //add("--info")
                   addAll(taskNames)
                }
