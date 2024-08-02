@@ -10,46 +10,46 @@ class SubmatchingTest: WordSpec() {
    init {
       "findPartialMatches" should {
          "find nothing" {
-            findPartialMatches("apple", "orange", minLength = 3).shouldBeEmpty()
+            findPartialMatchesInString("apple", "orange", minLength = 3).shouldBeEmpty()
          }
          "match end of one string to beginning of another" {
-            findPartialMatches("broom", "roommate", minLength = 4) shouldBe listOf(
+            findPartialMatchesInString("broom", "roommate", minLength = 4) shouldBe listOf(
                PartialCollectionMatch(MatchedCollectionElement(1, 0), 4, "broom".toList()))
          }
          "match two middles" {
-            findPartialMatches("room", "boot", minLength = 2) shouldBe listOf(
+            findPartialMatchesInString("room", "boot", minLength = 2) shouldBe listOf(
                PartialCollectionMatch(MatchedCollectionElement(1, 1), 2, "room".toList()))
          }
          "find common end" {
-            findPartialMatches("river", "driver", minLength = 3) shouldBe listOf(
+            findPartialMatchesInString("river", "driver", minLength = 3) shouldBe listOf(
                PartialCollectionMatch(MatchedCollectionElement(0, 1), 5, "river".toList()))
          }
          "find two common substrings in same order" {
-            findPartialMatches("roommate", "room-mate", minLength = 3) shouldBe listOf(
+            findPartialMatchesInString("roommate", "room-mate", minLength = 3) shouldBe listOf(
                PartialCollectionMatch(MatchedCollectionElement(0, 0), 4, "roommate".toList()),
                PartialCollectionMatch(MatchedCollectionElement(4, 5), 4, "roommate".toList()),
             )
          }
          "find two common substrings in opposite order" {
-            findPartialMatches("downsize", "size down", minLength = 3) shouldBe listOf(
+            findPartialMatchesInString("downsize", "size down", minLength = 3) shouldBe listOf(
                PartialCollectionMatch(MatchedCollectionElement(0, 5), 4, "downsize".toList()),
                PartialCollectionMatch(MatchedCollectionElement(4, 0), 4, "downsize".toList()),
             )
          }
          "maintain performance".config(timeout = 1.seconds) {
-            val target = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            val value = target.substring(5, target.length - 10)
-            val partialMatches = findPartialMatches(value, target, target.length / 2)
+            val value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            val expected = value.substring(5, value.length - 10)
+            val partialMatches = findPartialMatchesInString(expected, value, value.length / 2)
             partialMatches.size shouldBe 1
-            partialMatches[0].length shouldBe target.length - 15
+            partialMatches[0].length shouldBe value.length - 15
          }
          "work for Int" {
-            val value = listOf(1, 2, 3, 4)
+            val expected = listOf(1, 2, 3, 4)
             findPartialMatches (
-               value = value,
-               target = listOf(0, 1, 2, 3, 4, 3, 6),
+               expected = expected,
+               value = listOf(0, 1, 2, 3, 4, 3, 6),
                minLength = 4
-            ) shouldBe listOf(PartialCollectionMatch(MatchedCollectionElement(0, 1), 4, value),
+            ) shouldBe listOf(PartialCollectionMatch(MatchedCollectionElement(0, 1), 4, expected),
             )
          }
       }

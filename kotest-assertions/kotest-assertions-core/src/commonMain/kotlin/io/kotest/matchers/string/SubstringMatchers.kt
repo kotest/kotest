@@ -1,27 +1,25 @@
 package io.kotest.matchers.string
 
-import io.kotest.submatching.findPartialMatches
 import io.kotest.submatching.PartialCollectionMatch
-import io.kotest.submatching.topNWithTiesBy
 
 internal fun describeMatchedSubstrings(substr: String, matches: List<PartialCollectionMatch<Char>>): String {
    return matches.joinToString("\n") { match ->
-      "Substring <\"${match.partOfValue.joinToString("")}\"> at indexes [${match.rangeOfValue}] matches at indexes [${match.rangeOfTarget}]"
+      "Substring <\"${match.partOfValue.joinToString("")}\"> at indexes [${match.rangeOfExpected}] matches at indexes [${match.rangeOfValue}]"
    }
 }
 
 internal fun matchedSubstringsInContext(value: String, matches: List<PartialCollectionMatch<Char>>): String {
    return matches.joinToString("\n") { match ->
-      val rangeOfMatch = match.rangeOfTarget
+      val rangeOfMatch = match.rangeOfValue
       val margin = 5
-      val rangeToPrint = maxOf(0, match.rangeOfTarget.first)..minOf(match.rangeOfTarget.last, value.length)
-      "Substring at indexes [${match.rangeOfValue}] matches value at indexes [${match.rangeOfTarget}]\n" +
+      val rangeToPrint = maxOf(0, match.rangeOfValue.first)..minOf(match.rangeOfValue.last, value.length)
+      "Substring at indexes [${match.rangeOfExpected}] matches value at indexes [${match.rangeOfValue}]\n" +
          "Where >>> denotes characters before, +++ denotes the match, and <<< denotes characters after"
    }
 }
 
 internal fun submatchWithMarginMapping(value: String, match: PartialCollectionMatch<Char>): String {
-   val rangeOfMatch = match.rangeOfTarget
+   val rangeOfMatch = match.rangeOfValue
    val margin = 5
    val rangeWithMargin = rangeWithMargin(rangeOfMatch, margin, maxIndex = value.length - 1)
    val rangeWithMarginMapping = rangeWithMarginMapping(rangeOfMatch, rangeWithMargin)

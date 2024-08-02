@@ -1,17 +1,17 @@
 package io.kotest.submatching
 
-fun findPartialMatches(value: String, target: String, minLength: Int) =
-   findPartialMatches(value.toList(), target.toList(), minLength)
+fun findPartialMatchesInString(expected: String, value: String, minLength: Int) =
+   findPartialMatches(expected.toList(), value.toList(), minLength)
 
-fun<T> findPartialMatches(value: List<T>, target: List<T>, minLength: Int): List<PartialCollectionMatch<T>> {
-   val indexes = toCharIndex(target)
-   val matches = value.asSequence().mapIndexed { index, char ->
+fun<T> findPartialMatches(expected: List<T>, value: List<T>, minLength: Int): List<PartialCollectionMatch<T>> {
+   val indexes = toCharIndex(value)
+   val matches = expected.asSequence().mapIndexed { index, char ->
       index to char
-   }.filter { pair -> pair.first + minLength <= value.size }
+   }.filter { pair -> pair.first + minLength <= expected.size }
       .flatMap { pair ->
          matchedElements(indexes, pair)
       }.mapNotNull { matchedCharacter ->
-         extendPartialMatchToRequiredLength(value, target, matchedCharacter, minLength)
+         extendPartialMatchToRequiredLength(expected, value, matchedCharacter, minLength)
       }.toList()
    return removeShorterMatchesWithSameEnd(matches)
 }
@@ -27,8 +27,8 @@ internal fun <T> matchedElements(
    elementAtIndex: Pair<Int, T>
 ) = indexes[elementAtIndex.second]?.map { index ->
    MatchedCollectionElement(
-      indexInValue = elementAtIndex.first,
-      indexInTarget = index
+      startIndexInExpected = elementAtIndex.first,
+      startIndexInValue = index
    )
 } ?: listOf()
 
@@ -62,15 +62,15 @@ internal fun<T> removeShorterMatchesWithSameEnd(
 internal fun<T> lengthOfMatch(
    value: List<T>, target: List<T>, matchedElement: MatchedCollectionElement
 ): Int {
-   val maxLengthOfMatch = minOf(value.size - matchedElement.indexInValue, target.size - matchedElement.indexInTarget)
+   val maxLengthOfMatch = minOf(value.size - matchedElement.startIndexInExpected, target.size - matchedElement.startIndexInValue)
    return (1..maxLengthOfMatch).takeWhile { offset ->
-      value[matchedElement.indexInValue + offset - 1] == target[matchedElement.indexInTarget + offset - 1]
+      value[matchedElement.startIndexInExpected + offset - 1] == target[matchedElement.startIndexInValue + offset - 1]
    }.lastOrNull() ?: 0
 }
 
 data class MatchedCollectionElement(
-   val indexInValue: Int,
-   val indexInTarget: Int
+   val startIndexInExpected: Int,
+   val startIndexInValue: Int
 )
 
 data class PartialCollectionMatch<T>(
@@ -79,11 +79,15 @@ data class PartialCollectionMatch<T>(
    val value: List<T>
 ) {
    val endOfMatchAtTarget: Int
-      get() = matchedElement.indexInTarget + length - 1
+      get() = matchedElement.startIndexInValue + length - 1
    val partOfValue: List<T>
-      get() = value.subList(matchedElement.indexInValue, matchedElement.indexInValue + length)
-   val rangeOfValue: IntRange = rangeOfLength(matchedElement.indexInValue, length)
-   val rangeOfTarget: IntRange = rangeOfLength(matchedElement.indexInTarget, length)
+      get() = value.subList(matchedElement.startIndexInExpected, matchedElement.startIndexInExpected + length)
+   val rangeOfExpected: IntRange = rangeOfLength(matchedElement.startIndexInExpected, length)
+   val rangeOfValue: IntRange = rangeOfLength(matchedElement.startIndexInValue, length)
+
+   fun indexIsInValue(index: Int) = index in rangeOfValue
+   fun indexInExpected(indexInValue: Int) = matchedElement.startIndexInExpected +
+      (indexInValue - matchedElement.startIndexInValue)
 
    companion object {
       fun rangeOfLength(start: Int, length: Int): IntRange = (start..<start+length)

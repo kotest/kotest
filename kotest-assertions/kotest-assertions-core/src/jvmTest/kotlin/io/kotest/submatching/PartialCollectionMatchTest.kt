@@ -11,10 +11,10 @@ class PartialCollectionMatchTest: StringSpec() {
    )
    init {
       "rangeOfValue" {
-         systemToTest.rangeOfValue shouldBe 2..5
+         systemToTest.rangeOfExpected shouldBe 2..5
       }
       "rangeOfTarget" {
-         systemToTest.rangeOfTarget shouldBe 3..6
+         systemToTest.rangeOfValue shouldBe 3..6
       }
       "partOfValue" {
          systemToTest.partOfValue.joinToString("") shouldBe "zzwo"

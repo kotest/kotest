@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.submatching.findPartialMatches
 
 infix fun <T> Iterable<T>.shouldStartWith(element: T) = toList().shouldStartWith(listOf(element))
 infix fun <T> Iterable<T>.shouldStartWith(slice: Iterable<T>) = toList().shouldStartWith(slice.toList())
@@ -32,9 +33,23 @@ fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.START)
 
+      val partialMatches = findPartialMatches(expectedSlice.toList(), value, minLength = expectedSlice.size / 3)
+      val partialMatchesList = partialMatches.withIndex().joinToString("\n") { indexedValue ->
+         "Slice[${indexedValue.index}] of expected with indexes: ${indexedValue.value.rangeOfExpected} matched a slice of actual values with indexes: ${indexedValue.value.rangeOfValue}"
+      }
+      val partialMatchesDescription = value.mapIndexedNotNull{ index, element ->
+         val indexInMatches = partialMatches.withIndex().filter { match -> match.value.indexIsInValue(index) }
+         indexInMatches.takeIf { indexInMatches.isNotEmpty() }?.let {
+            val slicesList = when(indexInMatches.size) {
+               1 -> " ${indexInMatches.first().index}"
+               else -> "s: ${indexInMatches.map { it.index }}"
+            }
+            "[$index] ${element.print().value} => slice$slicesList"
+         }
+      }.joinToString("\n")
       return MatcherResult(
          comparison.match,
-         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}" },
+         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}\n$partialMatchesList\n$partialMatchesDescription" },
          { "List should not start with ${expectedSlice.print().value}" }
       )
    }

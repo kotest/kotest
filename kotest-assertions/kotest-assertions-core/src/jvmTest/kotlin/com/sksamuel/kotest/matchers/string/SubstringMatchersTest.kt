@@ -50,12 +50,12 @@ class SubstringMatchersTest: WordSpec() {
          "work with several matches" {
             describeMatchedSubstrings("workload", listOf(
                PartialCollectionMatch(
-                  MatchedCollectionElement(indexInValue = 0, indexInTarget = 5),
+                  MatchedCollectionElement(startIndexInExpected = 0, startIndexInValue = 5),
                   length = 4,
                   value = "workload".toList()
                ),
                PartialCollectionMatch(
-                  MatchedCollectionElement(indexInValue = 4, indexInTarget = 0),
+                  MatchedCollectionElement(startIndexInExpected = 4, startIndexInValue = 0),
                   length = 4,
                   value = "workload".toList()
                )
