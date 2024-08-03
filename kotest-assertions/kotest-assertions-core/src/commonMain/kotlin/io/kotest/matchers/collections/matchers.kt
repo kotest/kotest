@@ -117,8 +117,6 @@ infix fun <T> Iterable<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) 
 infix fun <T> Array<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = asList().shouldNotExistInOrder(expected)
 infix fun <T> List<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = this shouldNot existInOrder(expected)
 
-
-
 fun <T> Iterable<T>.shouldContainAnyOf(vararg ts: T) = toList().shouldContainAnyOf(*ts)
 fun <T> Array<T>.shouldContainAnyOf(vararg ts: T) = asList().shouldContainAnyOf(*ts)
 fun <T> Collection<T>.shouldContainAnyOf(vararg ts: T) = this should containAnyOf(ts.asList())
@@ -143,14 +141,6 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
    }
 }
 
-
-
 internal fun throwEmptyCollectionError(): Nothing {
    throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
-}
-
-
-fun main() {
-   val p : (Int) -> Boolean = { it < 2 }
-   println(p)
 }
