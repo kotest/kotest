@@ -2911,7 +2911,6 @@ public final class io/kotest/matchers/EqualityMatcherResult$Companion {
 
 public abstract interface class io/kotest/matchers/Matcher {
 	public static final field Companion Lio/kotest/matchers/Matcher$Companion;
-	public abstract fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public abstract fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public abstract fun invert ()Lio/kotest/matchers/Matcher;
 	public abstract fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -2924,7 +2923,6 @@ public final class io/kotest/matchers/Matcher$Companion {
 }
 
 public final class io/kotest/matchers/Matcher$DefaultImpls {
-	public static fun compose (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static fun contramap (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static fun invert (Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
 	public static fun invertIf (Lio/kotest/matchers/Matcher;Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
