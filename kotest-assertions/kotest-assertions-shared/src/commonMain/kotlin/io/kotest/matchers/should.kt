@@ -71,4 +71,5 @@ infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
 
 infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
-fun <T> be(expected: T): Matcher<T> = EqMatcher(expected)
+fun <T> be(expected: T): Matcher<T> = equalityMatcher(expected)
+fun <T> equalityMatcher(expected: T): Matcher<T> = EqMatcher(expected)

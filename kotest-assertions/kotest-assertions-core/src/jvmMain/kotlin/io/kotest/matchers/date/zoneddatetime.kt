@@ -2,7 +2,6 @@ package io.kotest.matchers.date
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.time.ZonedDateTime
