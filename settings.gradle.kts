@@ -139,7 +139,6 @@ include(
    ":kotest-tests:kotest-tests-timeout-project",
    ":kotest-tests:kotest-tests-timeout-sysprop",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-native",
 //   ":kotest-tests:kotest-tests-js",
    ":kotest-tests:kotest-tests-config-classname",
 
