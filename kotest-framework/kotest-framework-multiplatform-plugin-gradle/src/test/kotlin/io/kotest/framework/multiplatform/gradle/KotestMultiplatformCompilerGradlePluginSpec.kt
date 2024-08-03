@@ -144,15 +144,20 @@ private data class GradleInvocation(
       val testReportsDirectory: Path = projectDir.resolve("build/test-results")
 
       fun clue(): String = buildString {
-         appendLine("—".repeat(50))
-         appendLine(projectDir.resolve("build.gradle.kts").readText().prependIndent("\t"))
-         appendLine("—".repeat(50))
-         appendLine(projectDir.resolve("settings.gradle.kts").readText().prependIndent("\t"))
-         appendLine("—".repeat(50))
-         appendLine(projectDir.resolve("gradle.properties").readText().prependIndent("\t"))
-         appendLine("—".repeat(50))
-         appendLine(output.readText().prependIndent("\t"))
-      }
+         fun separator() {
+            appendLine("—".repeat(50))
+         }
+
+         separator()
+         appendFileText(projectDir.resolve("build.gradle.kts"))
+         separator()
+         appendFileText(projectDir.resolve("settings.gradle.kts"))
+         separator()
+         appendFileText(projectDir.resolve("gradle.properties"))
+         separator()
+         appendLine(output)
+         separator()
+      }.prependIndent("\t")
 //         "Gradle process $command exited with code $exitCode and output:\n" + output.readText().prependIndent("\t>>> ")
    }
 
@@ -283,5 +288,10 @@ private data class GradleInvocation(
          replacement: String = "-"
       ): String =
          map { if (it.isLetterOrDigit()) it else replacement }.joinToString("")
+
+      private fun StringBuilder.appendFileText(file: Path) {
+         appendLine(file.invariantSeparatorsPathString)
+         appendLine(file.takeIf { it.exists() }?.readText())
+      }
    }
 }
