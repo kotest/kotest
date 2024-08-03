@@ -143,8 +143,16 @@ private data class GradleInvocation(
    ) {
       val testReportsDirectory: Path = projectDir.resolve("build/test-results")
 
-      fun clue(): String =
-         output.readText().prependIndent("\t>>> ")
+      fun clue(): String = buildString {
+         appendLine("—".repeat(50))
+         appendLine(projectDir.resolve("build.gradle.kts").readText().prependIndent("\t"))
+         appendLine("—".repeat(50))
+         appendLine(projectDir.resolve("settings.gradle.kts").readText().prependIndent("\t"))
+         appendLine("—".repeat(50))
+         appendLine(projectDir.resolve("gradle.properties").readText().prependIndent("\t"))
+         appendLine("—".repeat(50))
+         appendLine(output.readText().prependIndent("\t"))
+      }
 //         "Gradle process $command exited with code $exitCode and output:\n" + output.readText().prependIndent("\t>>> ")
    }
 
