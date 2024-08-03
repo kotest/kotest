@@ -190,6 +190,7 @@ private data class GradleInvocation(
             }
             .withArguments(
                buildList {
+                  add("--info")
                   add("--continue")
                   add("--stacktrace")
                   add("--build-cache")
@@ -199,7 +200,6 @@ private data class GradleInvocation(
                   add("-Dorg.gradle.daemon.idletimeout=" + 60.seconds.inWholeMilliseconds) // default is 3 hours!
                   add("-Pkotlin.daemon.options.autoshutdownIdleSeconds=60")
 
-                  //add("--info")
                   addAll(taskNames)
                }
             )
