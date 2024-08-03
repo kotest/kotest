@@ -207,9 +207,9 @@ infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFi
 fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
 
    private fun fileExists(dir: Path): Boolean {
-      val contents = dir.toFile().listFiles()
-      val (dirs, files) = contents.partition { it.isDirectory }
-      return files.map { it.name.toString() }.contains(name) || dirs.any { fileExists(it.toPath()) }
+      val contents = dir.listDirectoryEntries()
+      val (dirs, files) = contents.partition { it.isDirectory() }
+      return files.map { it.name }.contains(name) || dirs.any { fileExists(it) }
    }
 
    override fun test(value: Path): MatcherResult = MatcherResult(
