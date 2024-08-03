@@ -5,7 +5,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlin.math.abs
 
 /**
  * Asserts that this [Float] is in the interval [[a]-[tolerance] , [b]+[tolerance]]

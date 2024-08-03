@@ -381,7 +381,7 @@ private fun <T : Number> testStandardDeviation(
 }
 
 fun <T : Number> haveMean(expectedValue: BigDecimal, precision: Int = 4) = object :
-   Matcher<Collection<T>> {
+  Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = testMean(value, expectedValue, precision)
 }
 
