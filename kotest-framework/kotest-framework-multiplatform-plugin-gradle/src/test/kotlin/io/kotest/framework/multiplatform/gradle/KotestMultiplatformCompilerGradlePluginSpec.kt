@@ -157,7 +157,7 @@ private data class GradleInvocation(
          separator()
          appendFileText(projectDir.resolve("gradle.properties"))
          separator()
-         appendLine(output)
+         appendFileText(output)
          separator()
          appendLine(extractConfigurationCacheReportsData(projectDir))
          separator()
