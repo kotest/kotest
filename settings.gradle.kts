@@ -88,10 +88,6 @@ include(
    ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
 
-   // contains the matcher interface and is intended as a lightweight dependency for library authors
-   // to depend on when writing matcher libraries
-   ":kotest-assertions:kotest-assertions-api",
-
    // contains basic assertion building block such as shouldBe which are used by both
    // framework and assertion libraries;
    // no user should need to depend on this
