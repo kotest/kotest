@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.property
 
 import io.kotest.assertions.throwables.shouldNotThrowAnyUnit
 import io.kotest.mpp.atomics.AtomicReference

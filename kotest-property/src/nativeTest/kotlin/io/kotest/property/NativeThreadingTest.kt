@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.property
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
