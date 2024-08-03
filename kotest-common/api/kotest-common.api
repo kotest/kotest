@@ -186,21 +186,6 @@ public final class io/kotest/mpp/UserStackTraceConverter {
 	public final fun getUserStacktrace ([Ljava/lang/StackTraceElement;)[Ljava/lang/StackTraceElement;
 }
 
-public final class io/kotest/mpp/atomics/AtomicProperty : kotlin/properties/ReadWriteProperty {
-	public fun <init> ()V
-	public fun <init> (Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
-	public fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
-}
-
-public final class io/kotest/mpp/atomics/AtomicReference {
-	public fun <init> (Ljava/lang/Object;)V
-	public final fun compareAndSet (Ljava/lang/Object;Ljava/lang/Object;)Z
-	public final fun getValue ()Ljava/lang/Object;
-	public final fun setValue (Ljava/lang/Object;)V
-}
-
 public final class io/kotest/mpp/reflectionjvm {
 	public static final fun getReflection ()Lio/kotest/mpp/Reflection;
 }

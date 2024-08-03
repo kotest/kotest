@@ -4,7 +4,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import kotlin.math.abs
 
 /**
  * Beware, has no tolerance handling so will fail for numbers where the orders of magnitude vary greatly.
