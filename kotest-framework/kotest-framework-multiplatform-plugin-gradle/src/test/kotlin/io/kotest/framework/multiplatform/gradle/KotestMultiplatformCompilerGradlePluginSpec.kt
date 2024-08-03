@@ -11,7 +11,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -28,7 +28,9 @@ import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.readText
+import kotlin.io.path.relativeTo
 import kotlin.io.path.useLines
+import kotlin.io.path.walk
 import kotlin.io.path.writeText
 import kotlin.time.Duration.Companion.seconds
 
@@ -46,7 +48,7 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
             ) { result ->
                result.result.tasks.shouldForOne {
                   it.path shouldBe ":help"
-                  it.outcome shouldBe TaskOutcome.SUCCESS
+                  it.outcome shouldBe SUCCESS
                }
             }
          }
@@ -156,6 +158,8 @@ private data class GradleInvocation(
          appendFileText(projectDir.resolve("gradle.properties"))
          separator()
          appendLine(output)
+         separator()
+         appendLine(extractConfigurationCacheReportsData(projectDir))
          separator()
       }.prependIndent("\t")
 //         "Gradle process $command exited with code $exitCode and output:\n" + output.readText().prependIndent("\t>>> ")
@@ -292,6 +296,29 @@ private data class GradleInvocation(
       private fun StringBuilder.appendFileText(file: Path) {
          appendLine(file.invariantSeparatorsPathString)
          appendLine(file.takeIf { it.exists() }?.readText())
+      }
+
+      /**
+       * Gradle produces a Configuration Cache report containing problems and errors regarding Configuration Cache.
+       *
+       * This function extracts the data, to be used in assertions and failure messages.
+       */
+      private fun extractConfigurationCacheReportsData(projectDir: Path): Map<String, String> {
+         val reportDir = projectDir.resolve("build/reports/configuration-cache")
+         return reportDir.walk()
+            .filter { it.name == "configuration-cache-report.html" }
+            .associate { report ->
+               val path = report.relativeTo(reportDir).invariantSeparatorsPathString
+               val data = report.useLines { lines ->
+                  lines
+                     .dropWhile { !it.startsWith("// begin-report-data") }
+                     .drop(1)
+                     .takeWhile { !it.startsWith("// end-report-data") }
+                     .joinToString()
+               }
+
+               path to data
+            }
       }
    }
 }
