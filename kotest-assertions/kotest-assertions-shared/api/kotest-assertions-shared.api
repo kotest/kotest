@@ -95,7 +95,6 @@ public final class io/kotest/assertions/CluesKt {
 	public static final fun asClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun forEachAsClue (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)V
 	public static final fun withClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static final fun withClue (Lkotlin/Lazy;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun withClue (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
