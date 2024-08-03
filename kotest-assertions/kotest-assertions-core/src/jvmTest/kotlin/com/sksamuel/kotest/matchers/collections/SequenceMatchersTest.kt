@@ -52,7 +52,6 @@ class SequenceMatchersTest : WordSpec() {
 
    private suspend fun WordSpecShouldContainerScope.succeed(name: String, test: suspend WordSpecTerminalScope.() -> Unit) = pass(name, test)
 
-   fun WordSpecShouldContainerScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
    suspend fun WordSpecShouldContainerScope.fail(name: String, test: () -> Any?) {
       ("fail $name") { shouldThrow<AssertionError>(test) }
    }
