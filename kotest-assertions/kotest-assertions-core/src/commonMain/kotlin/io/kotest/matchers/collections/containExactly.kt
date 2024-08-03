@@ -12,6 +12,7 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
+import io.kotest.similarity.possibleMatchesDescription
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
@@ -102,6 +103,7 @@ fun <T, C : Collection<T>> containExactly(
 
          appendMissingAndExtra(missing, extra)
          appendLine()
+         appendPossibleMatches(missing, expected)
       }
    }
 
@@ -199,5 +201,17 @@ fun StringBuilder.appendMissingAndExtra(missing: Collection<Any?>, extra: Collec
             extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value
          }"
       )
+   }
+}
+
+internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expected: Collection<T>) {
+   val possibleMatches = missing
+      .map { possibleMatchesDescription(expected.toSet(), it) }
+      .filter { it.isNotEmpty() }
+   if(possibleMatches.isNotEmpty()) {
+      append("\nPossible matches:\n${possibleMatches.take(AssertionsConfig.maxSimilarityPrintSize.value).joinToString("\n\n")}")
+   }
+   if(AssertionsConfig.maxSimilarityPrintSize.value < possibleMatches.size) {
+      append("\nPrinted first ${AssertionsConfig.maxSimilarityPrintSize.value} similarities out of ${possibleMatches.size}, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)\n")
    }
 }
