@@ -1,15 +1,16 @@
-package com.sksamuel.kotest.autoscan
+package com.sksamuel.kotest.engine
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class AutoScanTestListenerTest : WordSpec({
-   "@AutoScan TestListeners" should {
+@ApplyExtension(MyTestListener::class)
+class ExtensionAnnotationTest : WordSpec({
+   "@Extension annotation" should {
       "be detected for all tests" {
          MyTestListener.beforeCounter.get() shouldBe 6
          MyTestListener.afterCounter.get() shouldBe 0
@@ -23,7 +24,6 @@ class AutoScanTestListenerTest : WordSpec({
    }
 })
 
-@AutoScan
 object MyTestListener : TestListener {
 
    val beforeCounter = AtomicInteger(0)
@@ -62,12 +62,12 @@ object MyTestListener : TestListener {
    }
 
    private fun maybeIncrementBeforeCounter(testCase: TestCase) {
-      if (testCase.spec::class.java.name == AutoScanTestListenerTest::class.java.name)
+      if (testCase.spec::class.java.name == ExtensionAnnotationTest::class.java.name)
          beforeCounter.incrementAndGet()
    }
 
    private fun maybeIncrementAfterCounter(testCase: TestCase) {
-      if (testCase.spec::class.java.name == AutoScanTestListenerTest::class.java.name)
+      if (testCase.spec::class.java.name == ExtensionAnnotationTest::class.java.name)
          afterCounter.incrementAndGet()
    }
 }

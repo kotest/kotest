@@ -128,7 +128,6 @@ include(
    // the tests modules each test a piece of functionality
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
-   ":kotest-tests:kotest-tests-autoscan",
    ":kotest-tests:kotest-tests-core",
 
    ":kotest-tests:kotest-tests-concurrency-tests",
