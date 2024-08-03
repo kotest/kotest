@@ -1775,7 +1775,8 @@ fun LocalDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: LocalD
  * @see [LocalDateTime.shouldBeWithin]
  * @see [LocalDateTime.shouldNotBeWithin]
  */
-fun within(temporalAmount: TemporalAmount, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
+fun within(temporalAmount: TemporalAmount, date: LocalDateTime): Matcher<LocalDateTime> = object :
+  Matcher<LocalDateTime> {
    override fun test(value: LocalDateTime): MatcherResult {
       val start = date.minus(temporalAmount)
       val end = date.plus(temporalAmount)
@@ -1860,7 +1861,8 @@ fun ZonedDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: ZonedD
  * @see [ZonedDateTime.shouldBeWithin]
  * @see [ZonedDateTime.shouldNotBeWithin]
  */
-fun within(temporalAmount: TemporalAmount, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
+fun within(temporalAmount: TemporalAmount, date: ZonedDateTime): Matcher<ZonedDateTime> = object :
+  Matcher<ZonedDateTime> {
    override fun test(value: ZonedDateTime): MatcherResult {
       val start = date.minus(temporalAmount)
       val end = date.plus(temporalAmount)
@@ -1945,7 +1947,8 @@ fun OffsetDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: Offse
  * @see [OffsetDateTime.shouldBeWithin]
  * @see [OffsetDateTime.shouldNotBeWithin]
  */
-fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
+fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<OffsetDateTime> = object :
+  Matcher<OffsetDateTime> {
    override fun test(value: OffsetDateTime): MatcherResult {
       val start = date.minus(temporalAmount)
       val end = date.plus(temporalAmount)

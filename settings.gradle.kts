@@ -88,10 +88,6 @@ include(
    ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
 
-   // contains the matcher interface and is intended as a lightweight dependency for library authors
-   // to depend on when writing matcher libraries
-   ":kotest-assertions:kotest-assertions-api",
-
    // contains basic assertion building block such as shouldBe which are used by both
    // framework and assertion libraries;
    // no user should need to depend on this
@@ -142,7 +138,6 @@ include(
    ":kotest-tests:kotest-tests-timeout-project",
    ":kotest-tests:kotest-tests-timeout-sysprop",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-native",
 //   ":kotest-tests:kotest-tests-js",
    ":kotest-tests:kotest-tests-config-classname",
 

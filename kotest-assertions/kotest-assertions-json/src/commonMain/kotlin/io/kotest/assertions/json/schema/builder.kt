@@ -4,7 +4,6 @@ package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
-import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.sequences.beUnique
@@ -55,11 +54,11 @@ data class JsonSchema(
    internal interface JsonNumber
 
    data class JsonArray(
-      val minItems: Int = 0,
-      val maxItems: Int = Int.MAX_VALUE,
-      val matcher: Matcher<Sequence<JsonNode>>? = null,
-      val contains: ContainsSpec? = null,
-      val elementType: JsonSchemaElement? = null,
+     val minItems: Int = 0,
+     val maxItems: Int = Int.MAX_VALUE,
+     val matcher: Matcher<Sequence<JsonNode>>? = null,
+     val contains: ContainsSpec? = null,
+     val elementType: JsonSchemaElement? = null,
    ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
