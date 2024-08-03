@@ -552,6 +552,8 @@ public final class io/kotest/matchers/collections/MatchersKt {
 	public static final fun containAnyOf (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 	public static final fun exist (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveElementAt (ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun main ()V
+	public static synthetic fun main ([Ljava/lang/String;)V
 	public static final fun shouldContainAnyOf (Ljava/lang/Iterable;Ljava/util/Collection;)V
 	public static final fun shouldContainAnyOf (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainAnyOf (Ljava/util/Collection;Ljava/util/Collection;)V
