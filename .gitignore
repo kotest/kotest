@@ -21,6 +21,10 @@ out/
 build
 target
 .gradle
+
+# FIXME remove when Gradle Daemon JVM can be auto-provisioned - see configureGradleDaemonJvm()
+gradle/gradle-daemon-jvm.properties
+
 .kotlin/
 
 build/test-results
