@@ -52,8 +52,8 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
       }
       return MatcherResult(
          matchingElementsIndexes.isNotEmpty(),
-         { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
-         { "Collection ${value.print().value} should not contain an element that matches the predicate $p, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
+         { "Collection ${value.print().value} should contain an element that matches the predicate" },
+         { "Collection ${value.print().value} should not contain an element that matches the predicate, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
       )
    }
 }
@@ -147,4 +147,10 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
 
 internal fun throwEmptyCollectionError(): Nothing {
    throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+}
+
+
+fun main() {
+   val p : (Int) -> Boolean = { it < 2 }
+   println(p)
 }
