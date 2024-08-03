@@ -8,21 +8,6 @@ plugins {
 
 val kotestVersion: String by project
 
-repositories {
-   val devMavenRepoPath: String by project
-   exclusiveContent {
-      forRepository {
-         maven(file(devMavenRepoPath)) {
-            name = "DevMavenRepo"
-         }
-      }
-      filter {
-         includeGroupAndSubgroups("io.kotest")
-      }
-   }
-   mavenCentral()
-}
-
 kotlin {
    jvmToolchain(8)
 
