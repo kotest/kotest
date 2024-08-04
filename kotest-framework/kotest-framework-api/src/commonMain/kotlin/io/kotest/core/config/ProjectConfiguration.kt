@@ -3,16 +3,15 @@
 package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.config.ResolvedTestConfig
-import io.kotest.core.test.config.TestCaseConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
@@ -186,7 +185,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.defaultTimeoutMillis].
     */
-   var timeout: Long? = null
+   var timeout: Long = Defaults.defaultTimeoutMillis
 
    /**
     * Returns the timeout for any single invocation of a test.
@@ -195,7 +194,17 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.defaultInvocationTimeoutMillis].
     */
-   var invocationTimeout: Long? = null
+   var invocationTimeout: Long = Defaults.defaultInvocationTimeoutMillis
+
+   /**
+    * Default number of invocations when not specified in any other place.
+    */
+   var invocations: Int = Defaults.invocations
+
+   /**
+    * Default number of threads when not specified in any other place.
+    */
+   var threads: Int = Defaults.threads
 
    /**
     * A timeout that is applied to the overall project if not null,
@@ -229,16 +238,6 @@ class ProjectConfiguration {
    var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    var coroutineTestScope: Boolean = Defaults.coroutineTestScope
-
-   /**
-    * Contains the default [ResolvedTestConfig] to be used by tests when not specified in either
-    * the test, the spec, or the test factory.
-    *
-    * Defaults to [Defaults.testCaseConfig]
-    */
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
-   var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**
     * If set to true, then will cause the test suite to fail if there were no executed tests.
@@ -339,6 +338,7 @@ class ProjectConfiguration {
    var tagInheritance: Boolean = false
 
    var discoveryClasspathFallbackEnabled: Boolean = Defaults.discoveryClasspathFallbackEnabled
+
    var disableTestNestedJarScanning: Boolean = Defaults.disableTestNestedJarScanning
 
    /**
@@ -353,18 +353,13 @@ class ProjectConfiguration {
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   var threads: Int = defaultTestConfig.threads
-
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   var invocations: Int = defaultTestConfig.invocations
-
    /**
     * If set to false then private spec classes will be ignored by the test engine.
     * Defaults to false.
     */
    var ignorePrivateClasses: Boolean = Defaults.ignorePrivateClasses
 
-   @Deprecated("Use registry. Deprecated since 5.0")
-   fun extensions(): List<Extension> = registry.all()
+   var enabledIf: EnabledIf? = null
+
+   var enabledOrReasonIf: EnabledOrReasonIf? = null
 }

@@ -9,6 +9,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.test.TestConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
@@ -45,12 +46,11 @@ class Materializer(private val configuration: ProjectConfiguration) {
             type = rootTest.type,
             source = rootTest.source,
             test = rootTest.test,
-            config = resolveConfig(
-               config = rootTest.config,
+            config = TestConfigResolver(configuration).resolve(
+               testConfig = rootTest.config,
                xdisabled = rootTest.disabled,
                parent = null,
                spec = spec,
-               projectConfiguration = configuration,
             ),
             factoryId = rootTest.factoryId,
          )
@@ -74,12 +74,11 @@ class Materializer(private val configuration: ProjectConfiguration) {
          test = nested.test,
          source = nested.source,
          type = nested.type,
-         config = resolveConfig(
-            config = nested.config,
+         config = TestConfigResolver(configuration).resolve(
+            testConfig = nested.config,
             xdisabled = nested.disabled,
             parent = parent,
             spec = parent.spec,
-            projectConfiguration = configuration
          ),
          factoryId = parent.factoryId,
          parent = parent,

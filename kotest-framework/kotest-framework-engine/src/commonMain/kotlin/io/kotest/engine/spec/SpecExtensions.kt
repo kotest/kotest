@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.Logger
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -17,7 +18,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -35,7 +35,6 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
     */
    fun extensions(spec: Spec): List<Extension> {
       return spec.extensions() + // overriding the extensions function in the spec
-         spec.listeners() + // overriding the listeners function in the spec
          spec.functionOverrideCallbacks() + // dsl
          spec.registeredExtensions() + // added to the spec via register
          registry.all() // globals

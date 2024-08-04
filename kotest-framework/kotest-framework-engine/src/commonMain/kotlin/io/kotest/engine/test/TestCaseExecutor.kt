@@ -2,8 +2,10 @@
 
 package io.kotest.engine.test
 
-import io.kotest.core.platform
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -30,9 +32,6 @@ import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
-import io.kotest.core.Logger
-import io.kotest.core.Platform
-import io.kotest.engine.test.interceptors.createTestDispatcherInterceptor
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
@@ -86,7 +85,6 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                InvocationTimeoutInterceptor,
-               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) createTestDispatcherInterceptor() else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),

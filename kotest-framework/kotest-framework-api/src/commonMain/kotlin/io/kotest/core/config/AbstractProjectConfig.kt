@@ -10,8 +10,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.TestCaseConfig
-import kotlin.reflect.KClass
+import io.kotest.core.test.config.DefaultTestConfig
 import kotlin.time.Duration
 
 /**
@@ -168,12 +167,10 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [TestCaseConfig] set here is used as the default for tests, unless overridden in a spec,
-    * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
+    * Any [DefaultTestConfig] set here is used as the default for tests, unless overridden in a spec,
+    * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default.
     */
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   @Deprecated("use the individual settings instead of the test case config class. Deprecated since 5.8.1")
-   open val defaultTestCaseConfig: TestCaseConfig? = null
+   open val defaultTestCaseConfig: DefaultTestConfig? = null
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.
@@ -276,24 +273,8 @@ abstract class AbstractProjectConfig {
    open suspend fun beforeProject() {}
 
    /**
-    * Executed before the first test of the project, but after the
-    * [ProjectListener.beforeProject] methods.
-    */
-   @Deprecated(message = "use beforeProject supports suspension", replaceWith = ReplaceWith("beforeProject"))
-   open fun beforeAll() {
-   }
-
-   /**
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
    open suspend fun afterProject() {}
-
-   /**
-    * Executed after the last test of the project, but before the
-    * [ProjectListener.afterProject] methods.
-    */
-   @Deprecated(message = "use afterProject which supports suspension", replaceWith = ReplaceWith("afterProject"))
-   open fun afterAll() {
-   }
 }
