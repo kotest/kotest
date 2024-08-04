@@ -55,7 +55,7 @@ private fun equalJsonTree(
       ComparableMatcherResult(
          error == null,
          { "$error\n" },
-         { "Expected values to not match\n" },
+         { "Expected values to not match" },
          value.raw,
          expected.raw,
       )
