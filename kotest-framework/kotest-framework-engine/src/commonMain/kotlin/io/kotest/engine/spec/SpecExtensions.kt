@@ -129,7 +129,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       val errors = exts.mapNotNull {
          runCatching { it.finalizeSpec(kclass, results) }
             .mapError { ExtensionException.FinalizeSpecException(it) }.exceptionOrNull()
-      } + listOfNotNull(t?.let { ExtensionException.FinalizeSpecException(it) })
+      }
 
       return when {
          errors.isEmpty() -> Result.success(kclass)
