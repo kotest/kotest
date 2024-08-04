@@ -246,48 +246,72 @@ actual:
       }
 
 
-      test("comparing boolean to string with lenient mode") {
+      test("comparing boolean to string with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : true } """
          val b = """ { "a" : "foo", "b" : "true" } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
 
          val c = """ { "a" : "foo", "b" : false } """
          val d = """ { "a" : "foo", "b" : "false" } """
-         c.shouldEqualJson(d, CompareMode.Lenient)
+         c.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            d
+         }
       }
 
-      test("comparing long to string with lenient mode") {
+      test("comparing long to string with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : 123 } """
          val b = """ { "a" : "foo", "b" : "123" } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
       }
 
-      test("comparing double to string with lenient mode") {
+      test("comparing double to string with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : 12.45 } """
          val b = """ { "a" : "foo", "b" : "12.45" } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
       }
 
-      test("comparing string to long with lenient mode") {
+      test("comparing string to long with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : "12" } """
          val b = """ { "a" : "foo", "b" : 12 } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
       }
 
-      test("comparing string to boolean with lenient mode") {
+      test("comparing string to boolean with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : "true" } """
          val b = """ { "a" : "foo", "b" : true } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
 
          val c = """ { "a" : "foo", "b" : "false" } """
          val d = """ { "a" : "foo", "b" : false } """
-         c.shouldEqualJson(d, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
       }
 
-      test("comparing string to double with lenient mode") {
+      test("comparing string to double with TypeCoercion.Enabled") {
          val a = """ { "a" : "foo", "b" : "12.45" } """
          val b = """ { "a" : "foo", "b" : 12.45 } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
+         a.shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            b
+         }
       }
 
       test("comparing string to null") {
@@ -657,7 +681,7 @@ actual:
          )
       }
 
-      test("key order should use CompareOrder enum") {
+      test("key order should use PropertyOrder.Strict") {
          val a = """
             {
                "id": 32672932069455,
@@ -681,8 +705,12 @@ actual:
             """
          a.shouldEqualJson(b)
          shouldFail {
-            a.shouldEqualJson(b, CompareOrder.Strict)
-         }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
+            a.shouldEqualJson {
+               propertyOrder = PropertyOrder.Strict
+               b
+            }
+         }.shouldHaveMessage(
+            """The top level object expected field 0 to be 'sku' but was 'id'
 
 expected:
 {
@@ -702,7 +730,8 @@ actual:
   "requires_shipping": true,
   "taxable": true,
   "featured_image": null
-}""")
+}"""
+         )
       }
    }
 }

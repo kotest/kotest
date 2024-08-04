@@ -2922,12 +2922,6 @@ public final class io/kotest/core/test/ExpectFailureExceptionKt {
 	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class io/kotest/core/test/NamesKt {
-	public static final fun createTestName (Ljava/lang/String;)Lio/kotest/core/names/TestName;
-	public static final fun createTestName (Ljava/lang/String;Ljava/lang/String;Lio/kotest/core/names/TestNameCase;Z)Lio/kotest/core/names/TestName;
-	public static final fun createTestName (Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestName;
-}
-
 public final class io/kotest/core/test/NestedTest {
 	public fun <init> (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lkotlin/jvm/functions/Function2;)V
 	public final fun component1 ()Lio/kotest/core/names/TestName;
