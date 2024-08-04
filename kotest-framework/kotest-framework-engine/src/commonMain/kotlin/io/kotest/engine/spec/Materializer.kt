@@ -56,7 +56,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
          )
       }
 
-      return when (spec.testCaseOrder() ?: spec.testOrder ?: configuration.testCaseOrder) {
+      return when (testCaseOrder(spec)) {
          TestCaseOrder.Sequential -> tests
          TestCaseOrder.Random -> tests.shuffled()
          TestCaseOrder.Lexicographic -> tests.sortedBy { it.name.testName }
@@ -84,5 +84,15 @@ class Materializer(private val configuration: ProjectConfiguration) {
          parent = parent,
       )
 
+   }
+
+   /**
+    * Returns the [TestCaseOrder] applicable for this spec.
+    *
+    * If the spec has a [TestCaseOrder] set, either directly or via a shared default test config,
+    * then that is used, otherwise the project default is used.
+    */
+   private fun testCaseOrder(spec: Spec): TestCaseOrder {
+      return spec.testCaseOrder() ?: spec.testOrder ?: spec.defaultTestConfig?.testOrder ?: configuration.testCaseOrder
    }
 }
