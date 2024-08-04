@@ -67,7 +67,7 @@ class SecurityManagerTestListenerTest : StringSpec() {
     System.getSecurityManager() shouldBe originalSecurityManager
   }
 
-  override fun listeners() = listOf(SecurityManagerTestListener(MySecurityManager))
+  override fun extensions() = listOf(SecurityManagerTestListener(MySecurityManager))
 }
 
 private object MySecurityManager : SecurityManager() {
