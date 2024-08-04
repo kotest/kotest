@@ -28,9 +28,6 @@ interface Matcher<in T> {
 
    fun <T> Matcher<T>.invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
 
-   @Deprecated("Use contramap. Deprecated in 5.3", ReplaceWith("contramap(fn)"))
-   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { test(fn(it)) }
-
    companion object {
 
       /**

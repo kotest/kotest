@@ -57,11 +57,7 @@ data class TestCase(
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
-) {
-
-   @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
-   val displayName: String = descriptor.id.value
-}
+)
 
 /**
  * Returns `true` if this test is focused.

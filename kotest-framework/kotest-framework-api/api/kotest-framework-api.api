@@ -2966,7 +2966,6 @@ public final class io/kotest/core/test/TestCase {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConfig ()Lio/kotest/core/test/config/ResolvedTestConfig;
 	public final fun getDescriptor ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
-	public final fun getDisplayName ()Ljava/lang/String;
 	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
 	public final fun getName ()Lio/kotest/core/names/TestName;
 	public final fun getParent ()Lio/kotest/core/test/TestCase;
