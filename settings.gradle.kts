@@ -97,7 +97,6 @@ include(
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
    ":kotest-assertions:kotest-assertions-json",
-   ":kotest-assertions:kotest-assertions-sql",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
@@ -124,7 +123,6 @@ include(
    // the tests modules each test a piece of functionality
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
-   ":kotest-tests:kotest-tests-autoscan",
    ":kotest-tests:kotest-tests-core",
 
    ":kotest-tests:kotest-tests-concurrency-tests",

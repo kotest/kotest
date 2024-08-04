@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
-import io.kotest.core.annotation.AutoScan
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
+@ApplyExtension(AssertionListener::class)
 class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
 
    companion object {
@@ -106,7 +107,6 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
 
 }
 
-@AutoScan
 object AssertionListener : TestListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       if (kclass == AnnotationSpecBeforeAfterTest::class) {

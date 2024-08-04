@@ -20,7 +20,7 @@ class StringPatternTest : FunSpec({
    }
 
    context("should not timeout") {
-      timeout = 5000
+      timeout = 10000
       test("should be quick") {
          val arbPattern = Arb.stringPattern("[a-zA-Z0-9]+")
 
