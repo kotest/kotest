@@ -6,7 +6,7 @@ import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.SpecExtensionsExecutor
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 
 /**
@@ -14,7 +14,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
  */
 internal class PrepareSpecInterceptor(registry: ExtensionRegistry) : SpecRefInterceptor {
 
-   private val extensions = SpecExtensionsExecutor(registry)
+   private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
       ref: SpecRef,

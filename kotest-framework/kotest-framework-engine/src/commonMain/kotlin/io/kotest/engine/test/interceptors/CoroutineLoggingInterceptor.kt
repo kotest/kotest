@@ -5,7 +5,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.TestExtensionsExecutor
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestLogger
 import io.kotest.engine.test.logging.TestScopeLoggingCoroutineContextElement
@@ -23,7 +23,7 @@ internal class CoroutineLoggingInterceptor(private val configuration: ProjectCon
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      val extensions = TestExtensionsExecutor(configuration.registry).logExtensions(testCase)
+      val extensions = TestExtensions(configuration.registry).logExtensions(testCase)
       return when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> {
             logger.log { Pair(testCase.name.testName, "Test logging is disabled (exts = $extensions)") }

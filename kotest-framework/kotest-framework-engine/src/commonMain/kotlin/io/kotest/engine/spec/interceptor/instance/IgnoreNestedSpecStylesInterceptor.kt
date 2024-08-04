@@ -11,7 +11,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExtensionsExecutor
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.core.log
@@ -27,7 +27,7 @@ internal class IgnoreNestedSpecStylesInterceptor(
    // note: this must be a spec interceptor until js / native have the ability to poke into the class hierarchy
    // using some equivalent of reflection
 
-   private val extensions = SpecExtensionsExecutor(registry)
+   private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
       spec: Spec,

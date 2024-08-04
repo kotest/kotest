@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
-import io.kotest.engine.test.TestExtensionsExecutor
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
 import io.kotest.core.Logger
 import kotlin.time.TimeMark
@@ -32,7 +32,7 @@ internal class LifecycleInterceptor(
    registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
-   private val extensions = TestExtensionsExecutor(registry)
+   private val extensions = TestExtensions(registry)
    private val logger = Logger(LifecycleInterceptor::class)
 
    override suspend fun intercept(

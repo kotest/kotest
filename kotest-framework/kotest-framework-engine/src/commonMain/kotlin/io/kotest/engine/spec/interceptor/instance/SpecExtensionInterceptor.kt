@@ -5,7 +5,7 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.SpecExtensionsExecutor
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 
 /**
@@ -13,7 +13,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
  */
 internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInterceptor {
 
-   val extensions = SpecExtensionsExecutor(registry)
+   val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
       spec: Spec,

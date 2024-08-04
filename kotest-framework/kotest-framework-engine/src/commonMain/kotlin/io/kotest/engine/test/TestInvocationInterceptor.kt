@@ -17,7 +17,7 @@ internal class TestInvocationInterceptor(
    private val invocationInterceptors: List<TestExecutionInterceptor>,
 ) : TestExecutionInterceptor {
 
-   private val extensions = TestExtensionsExecutor(registry)
+   private val extensions = TestExtensions(registry)
    private val logger = Logger(TestInvocationInterceptor::class)
 
    override suspend fun intercept(
