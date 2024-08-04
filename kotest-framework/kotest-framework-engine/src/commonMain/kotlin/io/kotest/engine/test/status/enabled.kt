@@ -4,7 +4,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.SpecExtensionsExecutor
 import io.kotest.engine.tags.runtimeTagExpression
 
 /**
@@ -16,7 +16,7 @@ suspend fun TestCase.isEnabled(conf: ProjectConfiguration): Enabled {
    return if (!internal.isEnabled) {
       internal
    } else {
-      val disabled = SpecExtensions(conf.registry)
+      val disabled = SpecExtensionsExecutor(conf.registry)
          .extensions(spec)
          .filterIsInstance<EnabledExtension>()
          .map { it.isEnabled(descriptor) }

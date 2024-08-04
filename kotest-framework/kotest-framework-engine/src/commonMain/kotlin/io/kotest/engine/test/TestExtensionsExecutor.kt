@@ -25,9 +25,9 @@ import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
- * Used to invoke extension points on tests.
+ * Used to invoke [Extension]s on tests.
  */
-internal class TestExtensions(private val registry: ExtensionRegistry) {
+internal class TestExtensionsExecutor(private val registry: ExtensionRegistry) {
 
    /**
     * Returns all [Extension]s applicable to a [TestCase]. This includes extensions

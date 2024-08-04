@@ -10,7 +10,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.SpecExtensionsExecutor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
@@ -40,7 +40,7 @@ internal class RequiresTagInterceptor(
                fn(ref)
             } else {
                runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresTag") }
-                  .flatMap { SpecExtensions(registry).ignored(ref.kclass, "Disabled by @RequiresTag") }
+                  .flatMap { SpecExtensionsExecutor(registry).ignored(ref.kclass, "Disabled by @RequiresTag") }
                   .map { emptyMap() }
             }
          }

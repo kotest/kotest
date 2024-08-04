@@ -5,7 +5,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.TestExtensions
+import io.kotest.engine.test.TestExtensionsExecutor
 
 /**
  * This [TestExecutionInterceptor] executes any user level [TestCaseExtension]s.
@@ -14,7 +14,7 @@ import io.kotest.engine.test.TestExtensions
  */
 internal class TestCaseExtensionInterceptor(registry: ExtensionRegistry) : TestExecutionInterceptor {
 
-   private val extensions = TestExtensions(registry)
+   private val extensions = TestExtensionsExecutor(registry)
 
    override suspend fun intercept(
       testCase: TestCase,

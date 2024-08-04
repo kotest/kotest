@@ -6,7 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.SpecExtensionsExecutor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
@@ -22,7 +22,7 @@ internal class InlineTagSpecInterceptor(
    private val projectConfiguration: ProjectConfiguration,
 ) : SpecInterceptor {
 
-   private val extensions = SpecExtensions(projectConfiguration.registry)
+   private val extensions = SpecExtensionsExecutor(projectConfiguration.registry)
 
    override suspend fun intercept(
       spec: Spec,

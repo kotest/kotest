@@ -6,7 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.SpecExtensionsExecutor
 import io.kotest.engine.spec.interceptor.ref.BeforeSpecState
 import io.kotest.engine.spec.interceptor.ref.beforeSpecStateKey
 import io.kotest.engine.test.createTestResult
@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 private val mutex = Mutex()
 
 /**
- * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
+ * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensionsExecutor], if this is the first test that has
  * executed for this instance of the spec. If any callback fails, further tests are skipped and marked as ignored.
  *
  * This spec level callback is executed at the test stage, because we only want to invoke it if
@@ -42,7 +42,7 @@ internal class BeforeSpecListenerInterceptor(
             state == null -> suspend { test(testCase, scope) }
             state.success.contains(testCase.spec) -> suspend { test(testCase, scope) }
             state.failed.contains(testCase.spec) -> suspend { TestResult.Ignored("Skipped due to beforeSpec failure") }
-            else -> SpecExtensions(registry)
+            else -> SpecExtensionsExecutor(registry)
                .beforeSpec(testCase.spec)
                .fold(
                   {

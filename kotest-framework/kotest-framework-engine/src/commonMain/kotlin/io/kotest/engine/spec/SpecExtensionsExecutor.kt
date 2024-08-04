@@ -22,11 +22,11 @@ import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
- * Used to invoke extension points / listeners / callbacks on specs.
+ * Used to invoke [Extension]s on specs.
  */
-internal class SpecExtensions(private val registry: ExtensionRegistry) {
+internal class SpecExtensionsExecutor(private val registry: ExtensionRegistry) {
 
-   private val logger = Logger(SpecExtensions::class)
+   private val logger = Logger(SpecExtensionsExecutor::class)
 
    /**
     * Returns all [Extension]s applicable to a [Spec]. This includes extensions via

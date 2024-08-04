@@ -28,7 +28,7 @@ internal class SpecExecutor(
 
    private val logger = Logger(SpecExecutorDelegate::class)
    private val pipeline = SpecRefInterceptorPipeline(context)
-   private val extensions = SpecExtensions(context.configuration.registry)
+   private val extensions = SpecExtensionsExecutor(context.configuration.registry)
 
    suspend fun execute(kclass: KClass<out Spec>) {
       execute(SpecRef.Reference(kclass))

@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.SpecExtensionsExecutor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
 import io.kotest.mpp.bestName
@@ -20,7 +20,7 @@ internal class SpecFilterInterceptor(
    private val registry: ExtensionRegistry
 ) : SpecRefInterceptor {
 
-   private val extensions = SpecExtensions(registry)
+   private val extensions = SpecExtensionsExecutor(registry)
    private val logger = Logger(SpecFilterInterceptor::class)
 
    override suspend fun intercept(
