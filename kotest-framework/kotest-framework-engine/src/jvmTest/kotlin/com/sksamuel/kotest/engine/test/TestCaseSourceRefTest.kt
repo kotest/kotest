@@ -24,7 +24,6 @@ class TestCaseSourceRefTest : FunSpec() {
             repeat(10_000) {
                Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest()).first().source
             }
-         }
          duration shouldBeLessThan 10.seconds
       }
    }

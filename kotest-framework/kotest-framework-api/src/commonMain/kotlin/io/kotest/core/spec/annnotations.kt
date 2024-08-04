@@ -5,4 +5,3 @@ package io.kotest.core.spec
 typealias DisplayName = io.kotest.core.annotation.DisplayName
 typealias DoNotParallelize = io.kotest.core.annotation.DoNotParallelize
 typealias Isolate = io.kotest.core.annotation.Isolate
-typealias AutoScan = io.kotest.core.annotation.AutoScan

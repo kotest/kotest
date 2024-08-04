@@ -844,9 +844,6 @@ public final class io/kotest/core/annotation/AlwaysEnabledCondition : io/kotest/
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
-public abstract interface annotation class io/kotest/core/annotation/AutoScan : java/lang/annotation/Annotation {
-}
-
 public abstract interface annotation class io/kotest/core/annotation/Description : java/lang/annotation/Annotation {
 	public abstract fun value ()Ljava/lang/String;
 }
@@ -919,8 +916,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun extensions ()Ljava/util/List;
 	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
-	public fun getAutoScanEnabled ()Ljava/lang/Boolean;
-	public fun getAutoScanIgnoredClasses ()Ljava/util/List;
 	public fun getConcurrentSpecs ()Ljava/lang/Integer;
 	public fun getConcurrentTests ()Ljava/lang/Integer;
 	public fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
@@ -1609,7 +1604,6 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field concurrentSpecs Ljava/lang/String;
 	public static final field concurrentTests Ljava/lang/String;
 	public static final field configurationClassName Ljava/lang/String;
-	public static final field disableAutoScanClassPathScanning Ljava/lang/String;
 	public static final field disableBangPrefix Ljava/lang/String;
 	public static final field disableConfigurationClassPathScanning Ljava/lang/String;
 	public static final field disableJarDiscovery Ljava/lang/String;
