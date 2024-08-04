@@ -269,7 +269,7 @@ class AssertSoftlyTest : FreeSpec({
             error.message shouldNotContain "3) "
          }
       }
-      "doesn't loose stack traces" - {
+      "doesn't lose stack traces" - {
          // Added as a verification of https://github.com/kotest/kotest/issues/1831
          "single assertion failed with AssertionFailedError" {
             var lineNumber = 0
