@@ -26,7 +26,7 @@ class AfterSpecTest : FunSpec() {
       register(listener)
 
       afterProject {
-         counter.get() shouldBe 5
+         counter.get() shouldBe 4
       }
 
       test("ignored test").config(enabled = false) {}
