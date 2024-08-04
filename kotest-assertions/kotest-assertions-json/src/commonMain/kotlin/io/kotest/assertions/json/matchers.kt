@@ -1,5 +1,6 @@
 package io.kotest.assertions.json
 
+import io.kotest.assertions.json.comparisons.compare
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -62,6 +63,12 @@ private fun equalJsonTree(
 
 data class JsonTree(val root: JsonNode, val raw: String)
 
+/**
+ * Asserts that two JSON strings are equal.
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs, regardless of order.
+ *
+ * To more precisely control the comparison, use [shouldEqualJson] that accepts a [CompareJsonOptions].
+ */
 infix fun String.shouldEqualJson(expected: String): String {
    this should equalJson(expected, CompareJsonOptions())
    return this
@@ -92,26 +99,6 @@ infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOpti
    this shouldNot equalJson(expected, options)
    return this
 }
-
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldEqualJson(expected: String, mode: CompareMode) =
-   shouldEqualJson(expected, legacyOptions(mode, CompareOrder.Strict))
-
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldNotEqualJson(expected: String, mode: CompareMode) =
-   shouldNotEqualJson(expected, legacyOptions(mode, CompareOrder.Strict))
-
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-@Deprecated("Use shouldEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldEqualJson(expected: String, order: CompareOrder) =
-   shouldEqualJson(expected, legacyOptions(CompareMode.Strict, order))
-
-@Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-@Deprecated("Use shouldNotEqualJson which uses a lambda. Deprecated since 5.6. Will be removed in 6.0")
-fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
-   shouldNotEqualJson(expected, legacyOptions(CompareMode.Strict, order))
 
 infix fun String.shouldEqualSpecifiedJson(expected: String) {
    shouldEqualJson {
