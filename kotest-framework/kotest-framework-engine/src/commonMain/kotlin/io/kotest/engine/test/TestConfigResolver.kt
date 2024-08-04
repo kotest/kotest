@@ -59,7 +59,8 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
    }
 
    private fun failfast(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: projectConf.failfast
+      return testConfig?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: spec.defaultTestConfig?.failfast
+      ?: projectConf.failfast
    }
 
    fun assertSoftly(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
@@ -72,17 +73,15 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
    }
 
    private fun assertionMode(testConfig: TestConfig?, parent: TestCase?, spec: Spec): AssertionMode {
-      return testConfig?.assertionMode ?:
-      parent?.config?.assertionMode ?:
-      spec.assertions ?:
-      spec.assertionMode() ?:
-      projectConf.assertionMode
+      return testConfig?.assertionMode ?: parent?.config?.assertionMode ?: spec.assertions ?: spec.assertionMode()
+      ?: projectConf.assertionMode
    }
 
    private fun coroutineDebugProbes(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
       return testConfig?.coroutineDebugProbes
          ?: parent?.config?.coroutineDebugProbes
          ?: spec.coroutineDebugProbes
+         ?: spec.defaultTestConfig?.coroutineDebugProbes
          ?: projectConf.coroutineDebugProbes
    }
 
@@ -90,6 +89,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
       return testConfig?.coroutineTestScope
          ?: parent?.config?.coroutineTestScope
          ?: spec.coroutineTestScope
+         ?: spec.defaultTestConfig?.coroutineTestScope
          ?: projectConf.coroutineTestScope
    }
 
@@ -97,6 +97,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
       return testConfig?.blockingTest
          ?: parent?.config?.blockingTest
          ?: spec.blockingTest
+         ?: spec.defaultTestConfig?.blockingTest
          ?: projectConf.blockingTest
    }
 
@@ -113,6 +114,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
          ?: parent?.config?.timeout
          ?: spec.timeout?.milliseconds
          ?: spec.timeout()?.milliseconds
+         ?: spec.defaultTestConfig?.timeout
          ?: projectConf.timeout.milliseconds
    }
 
@@ -121,6 +123,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
          ?: parent?.config?.invocationTimeout
          ?: spec.invocationTimeout?.milliseconds
          ?: spec.invocationTimeout()?.milliseconds
+         ?: spec.defaultTestConfig?.invocationTimeout
          ?: projectConf.invocationTimeout.milliseconds
    }
 
@@ -139,9 +142,9 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
    fun tags(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Set<Tag> {
       return (testConfig?.tags ?: emptySet()) +
          (parent?.config?.tags ?: emptySet()) +
-         (spec.defaultTestConfig?.tags ?: emptySet()) +
          spec.tags() +
          spec.appliedTags() +
+         (spec.defaultTestConfig?.tags ?: emptySet()) +
          spec::class.tags(projectConf.tagInheritance)
    }
 

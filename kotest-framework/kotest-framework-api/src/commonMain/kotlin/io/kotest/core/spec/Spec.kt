@@ -2,7 +2,6 @@ package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
@@ -14,7 +13,6 @@ import io.kotest.core.factory.FactoryId
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
@@ -133,7 +131,6 @@ abstract class Spec : TestConfiguration() {
     * If this value returns null, and the test case does not define a value, then the project
     * default is used.
     */
-   @Deprecated("Use assertions = AssertionMode instead. Deprecated in Kotest 6.0", ReplaceWith("= AssertionMode"))
    open fun assertionMode(): AssertionMode? = null
 
    /**
