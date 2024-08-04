@@ -217,25 +217,19 @@ class ProjectConfiguration {
     */
    var logLevel: LogLevel = LogLevel.Off
 
+   /**
+    * Sets the default [failfast] for any test which doesn't override.
+    */
    var failfast: Boolean = Defaults.failfast
 
    var projectWideFailFast: Boolean = Defaults.projectWideFailFast
 
    var blockingTest: Boolean = Defaults.blockingTest
 
-   var severity: TestCaseSeverityLevel = Defaults.severity
-
    /**
-    * If set to true then the test engine will install a
-    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
-    *
-    * This can be retrieved via `delayController` in your tests.
-    *
-    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    * Sets the default [TestCaseSeverityLevel] for any test which doesn't override.
     */
-   @ExperimentalKotest
-   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
-   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+   var severity: TestCaseSeverityLevel = Defaults.severity
 
    var coroutineTestScope: Boolean = Defaults.coroutineTestScope
 

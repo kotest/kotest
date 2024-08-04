@@ -1127,7 +1127,6 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getSpecFailureFilePath ()Ljava/lang/String;
 	public final fun getTagInheritance ()Z
 	public final fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
-	public final fun getTestCoroutineDispatcher ()Z
 	public final fun getTestNameAppendTags ()Z
 	public final fun getTestNameCase ()Lio/kotest/core/names/TestNameCase;
 	public final fun getThreads ()I
@@ -1168,7 +1167,6 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setSpecFailureFilePath (Ljava/lang/String;)V
 	public final fun setTagInheritance (Z)V
 	public final fun setTestCaseOrder (Lio/kotest/core/test/TestCaseOrder;)V
-	public final fun setTestCoroutineDispatcher (Z)V
 	public final fun setTestNameAppendTags (Z)V
 	public final fun setTestNameCase (Lio/kotest/core/names/TestNameCase;)V
 	public final fun setThreads (I)V
