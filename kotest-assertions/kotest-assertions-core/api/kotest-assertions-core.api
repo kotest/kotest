@@ -923,7 +923,6 @@ public final class io/kotest/matchers/date/InstantKt {
 
 public final class io/kotest/matchers/date/LocalDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
 	public synthetic fun <init> (Ljava/time/LocalDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1069,7 +1068,6 @@ public final class io/kotest/matchers/date/MatchersKt {
 
 public final class io/kotest/matchers/date/OffsetDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
 	public synthetic fun <init> (Ljava/time/OffsetDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1102,7 +1100,6 @@ public final class io/kotest/matchers/date/TimestampKt {
 
 public final class io/kotest/matchers/date/ZonedDateTimeToleranceMatcher : io/kotest/matchers/Matcher {
 	public synthetic fun <init> (Ljava/time/ZonedDateTime;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1215,7 +1212,6 @@ public final class io/kotest/matchers/doubles/ToleranceKt {
 
 public final class io/kotest/matchers/doubles/ToleranceMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/lang/Double;D)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1445,7 +1441,6 @@ public final class io/kotest/matchers/floats/FloatMatchersKt {
 
 public final class io/kotest/matchers/floats/FloatToleranceMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (FF)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1632,7 +1627,6 @@ public final class io/kotest/matchers/longs/UlongKt {
 public final class io/kotest/matchers/maps/MapContainsMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/util/Map;Z)V
 	public synthetic fun <init> (Ljava/util/Map;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1661,7 +1655,6 @@ public final class io/kotest/matchers/maps/MapMatchersKt {
 public final class io/kotest/matchers/maps/MapMatchesMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/util/Map;Z)V
 	public synthetic fun <init> (Ljava/util/Map;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -1765,7 +1758,6 @@ public final class io/kotest/matchers/paths/PathsKt {
 	public static final fun shouldBeHidden (Ljava/nio/file/Path;)V
 	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
 	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
-	public static final fun shouldBeNonEmptyDirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldBeReadable (Ljava/nio/file/Path;)V
 	public static final fun shouldBeRelative (Ljava/nio/file/Path;)V
 	public static final fun shouldBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
@@ -1788,7 +1780,6 @@ public final class io/kotest/matchers/paths/PathsKt {
 	public static final fun shouldNotBeHidden (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
 	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeNonEmptyDirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeReadable (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeRelative (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
@@ -1906,8 +1897,6 @@ public final class io/kotest/matchers/reflection/ClassMatchersKt {
 	public static final fun beCompanion ()Lio/kotest/matchers/Matcher;
 	public static final fun beData ()Lio/kotest/matchers/Matcher;
 	public static final fun beSealed ()Lio/kotest/matchers/Matcher;
-	public static final fun haveClassAnnontations (I)Lio/kotest/matchers/Matcher;
-	public static synthetic fun haveClassAnnontations$default (IILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveClassAnnotations (I)Lio/kotest/matchers/Matcher;
 	public static synthetic fun haveClassAnnotations$default (IILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveClassVisibility (Lkotlin/reflect/KVisibility;)Lio/kotest/matchers/Matcher;
@@ -1934,10 +1923,6 @@ public final class io/kotest/matchers/reflection/ClassMatchersKt {
 	public static final fun shouldNotHaveMemberProperty (Lkotlin/reflect/KClass;Ljava/lang/String;)V
 	public static final fun shouldNotHavePrimaryConstructor (Lkotlin/reflect/KClass;)V
 	public static final fun shouldNotHaveVisibility (Lkotlin/reflect/KClass;Lkotlin/reflect/KVisibility;)V
-}
-
-public final class io/kotest/matchers/reflection/ComposeKt {
-	public static final fun compose (Lio/kotest/matchers/Matcher$Companion;[Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/reflection/FunctionMatchersKt {
@@ -2025,7 +2010,6 @@ public final class io/kotest/matchers/resource/StringMatchersKt {
 
 public final class io/kotest/matchers/result/FailureKt {
 	public static final fun FailureMatcher ()Lio/kotest/matchers/Matcher;
-	public static final fun beFailure ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeFailure (Ljava/lang/Object;)Ljava/lang/Throwable;
 	public static final fun shouldBeFailure (Ljava/lang/Object;Ljava/lang/Throwable;)Ljava/lang/Throwable;
 	public static final fun shouldBeFailure (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Throwable;
@@ -2034,7 +2018,6 @@ public final class io/kotest/matchers/result/FailureKt {
 
 public final class io/kotest/matchers/result/FailureMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/lang/Throwable;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public final fun getExpected ()Ljava/lang/Throwable;
 	public fun invert ()Lio/kotest/matchers/Matcher;
@@ -2044,7 +2027,6 @@ public final class io/kotest/matchers/result/FailureMatcher : io/kotest/matchers
 
 public final class io/kotest/matchers/result/FailureTypeMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Lkotlin/reflect/KClass;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public final fun getClazz ()Lkotlin/reflect/KClass;
 	public fun invert ()Lio/kotest/matchers/Matcher;
@@ -2063,7 +2045,6 @@ public final class io/kotest/matchers/result/SuccessKt {
 
 public final class io/kotest/matchers/result/SuccessMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/lang/Object;)V
-	public fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public final fun getExpected ()Ljava/lang/Object;
 	public fun invert ()Lio/kotest/matchers/Matcher;
@@ -2094,7 +2075,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun containNull ()Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyNulls ()Lio/kotest/matchers/Matcher;
 	public static final fun containsInOrder (Lkotlin/sequences/Sequence;)Lio/kotest/matchers/Matcher;
-	public static final fun exist (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveCount (I)Lio/kotest/matchers/Matcher;
 	public static final fun haveElementAt (ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveLowerBound (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
@@ -2123,7 +2103,6 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldContainNoNulls (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainNull (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldContainOnlyNulls (Lkotlin/sequences/Sequence;)V
-	public static final fun shouldExist (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldHaveAtLeastCount (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveAtLeastSize (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveAtMostCount (Lkotlin/sequences/Sequence;I)V
@@ -2173,6 +2152,20 @@ public final class io/kotest/matchers/short/ShortKt {
 public final class io/kotest/matchers/short/UshortKt {
 	public static final fun between-HQPci0I (SS)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeBetween-Ut6C-W8 (SSS)S
+}
+
+public final class io/kotest/matchers/sql/ResultsetKt {
+	public static final fun containColumn (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveColumnCount (I)Lio/kotest/matchers/Matcher;
+	public static final fun haveRowCount (I)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainColumn (Ljava/sql/ResultSet;Ljava/lang/String;)V
+	public static final fun shouldHaveColumn (Ljava/sql/ResultSet;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveColumns (Ljava/sql/ResultSet;I)V
+	public static final fun shouldHaveRow (Ljava/sql/ResultSet;ILkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveRows (Ljava/sql/ResultSet;I)V
+	public static final fun shouldNotContainColumn (Ljava/sql/ResultSet;Ljava/lang/String;)V
+	public static final fun shouldNotHaveColumns (Ljava/sql/ResultSet;I)V
+	public static final fun shouldNotHaveRows (Ljava/sql/ResultSet;I)V
 }
 
 public final class io/kotest/matchers/stats/MatchersKt {

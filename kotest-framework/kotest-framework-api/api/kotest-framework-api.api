@@ -2928,12 +2928,6 @@ public final class io/kotest/core/test/ExpectFailureExceptionKt {
 	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class io/kotest/core/test/NamesKt {
-	public static final fun createTestName (Ljava/lang/String;)Lio/kotest/core/names/TestName;
-	public static final fun createTestName (Ljava/lang/String;Ljava/lang/String;Lio/kotest/core/names/TestNameCase;Z)Lio/kotest/core/names/TestName;
-	public static final fun createTestName (Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestName;
-}
-
 public final class io/kotest/core/test/NestedTest {
 	public fun <init> (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lkotlin/jvm/functions/Function2;)V
 	public final fun component1 ()Lio/kotest/core/names/TestName;
@@ -2972,7 +2966,6 @@ public final class io/kotest/core/test/TestCase {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConfig ()Lio/kotest/core/test/config/ResolvedTestConfig;
 	public final fun getDescriptor ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
-	public final fun getDisplayName ()Ljava/lang/String;
 	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
 	public final fun getName ()Lio/kotest/core/names/TestName;
 	public final fun getParent ()Lio/kotest/core/test/TestCase;
