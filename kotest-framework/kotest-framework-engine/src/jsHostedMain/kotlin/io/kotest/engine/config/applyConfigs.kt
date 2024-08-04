@@ -11,15 +11,6 @@ import io.kotest.core.config.ProjectConfiguration
 internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {}
 
 /**
- *
- * Applies listeners, filters and extensions detected during scanning, that are annotated
- * with the [AutoScan] annotation.
- *
- * Note: This function will have no effect on non-JVM targets.
- */
-internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration) {}
-
-/**
  * Modifies configuration with some defaults based on the platform.
  *
  * For example on JVM it will add System property based tag detection.
