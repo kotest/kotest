@@ -34,21 +34,6 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
 }
 
 /**
- * Similar to [withClue] but accepts a lazy in the case that a clue is expensive or is only valid when an assertion fails.
- * Can be nested, the error message will contain all available clues.
- *
- * @param thunk the code with assertions to be executed
- * @return the return value of the supplied [thunk]
- */
-@Deprecated(
-   message = "use withClue(lambda, lambda) instead",
-   replaceWith = ReplaceWith("withClue({ clue.value }, thunk)"),
-   level = DeprecationLevel.WARNING
-)
-inline fun <R> withClue(clue: Lazy<Any?>, thunk: () -> R): R =
-   clue.asClue { thunk() }
-
-/**
  * Similar to `withClue`, but will add `this` as a clue to the assertion error message in case an assertion fails.
  * Can be nested, the error message will contain all available clues.
  * `Lazy` and `Function0` are treated as lazy clues, so they will be evaluated only if an assertion fails.
