@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION") // Remove when removing shouldExist
-
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
@@ -23,7 +21,6 @@ import io.kotest.matchers.sequences.shouldContainInOrder
 import io.kotest.matchers.sequences.shouldContainNoNulls
 import io.kotest.matchers.sequences.shouldContainNull
 import io.kotest.matchers.sequences.shouldContainOnlyNulls
-import io.kotest.matchers.sequences.shouldExist
 import io.kotest.matchers.sequences.shouldHaveAtLeastCount
 import io.kotest.matchers.sequences.shouldHaveAtMostCount
 import io.kotest.matchers.sequences.shouldHaveCount
@@ -55,7 +52,6 @@ class SequenceMatchersTest : WordSpec() {
 
    private suspend fun WordSpecShouldContainerScope.succeed(name: String, test: suspend WordSpecTerminalScope.() -> Unit) = pass(name, test)
 
-   fun WordSpecShouldContainerScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
    suspend fun WordSpecShouldContainerScope.fail(name: String, test: () -> Any?) {
       ("fail $name") { shouldThrow<AssertionError>(test) }
    }
@@ -90,7 +86,8 @@ class SequenceMatchersTest : WordSpec() {
       override val unique = sequenceOf(3, 2, 1)
       override val repeating = sequenceOf(1, 2, 3, 1, 2, 3)
    }
-   val constrainedSampleData = object : SampleData {
+
+   private val constrainedSampleData = object : SampleData {
       override val empty: Sequence<Int>
          get() = nonConstrainedSampleData.empty.constrainOnce()
       override val single: Sequence<Int>
@@ -110,8 +107,8 @@ class SequenceMatchersTest : WordSpec() {
 
    }
 
-   val asc = { a: Int, b: Int -> a - b }
-   val desc = { a: Int, b: Int -> b - a }
+   private val asc = { a: Int, b: Int -> a - b }
+   private val desc = { a: Int, b: Int -> b - a }
 
    /* tests */
    init {
@@ -487,29 +484,6 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("when the sequence doesn't contain the value") {
             sampleData.sparse.shouldNotContain(2)
-         }
-      }
-
-      @Suppress("DEPRECATION") // Remove when removing shouldExist
-      "exist" should {
-         fail("for empty") {
-            sampleData.empty.shouldExist { true }
-         }
-
-         succeed("when always true") {
-            sampleData.single.shouldExist { true }
-         }
-
-         fail("when always false") {
-            sampleData.countup.shouldExist { false }
-         }
-
-         succeed("when matches at least one") {
-            sampleData.countdown.shouldExist { it % 5 == 4 }
-         }
-
-         fail("when matches none") {
-            sampleData.countdown.shouldExist { it > 20 }
          }
       }
 
