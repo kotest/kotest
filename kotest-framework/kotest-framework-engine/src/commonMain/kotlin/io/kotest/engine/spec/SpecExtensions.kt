@@ -40,6 +40,11 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
          registry.all() // globals
    }
 
+   /**
+    * Runs all the [BeforeSpecListener] for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.BeforeSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
+    */
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
@@ -59,8 +64,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Runs all the after spec listeners for this [Spec]. All errors are caught and wrapped
-    * in [AfterSpecListener] and if more than one error, all will be returned as a [MultipleExceptions].
+    * Runs all the [AfterSpecListener] for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.AfterSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
     */
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
       logger.log { Pair(spec::class.bestName(), "afterSpec $spec") }
@@ -123,7 +129,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       val errors = exts.mapNotNull {
          runCatching { it.finalizeSpec(kclass, results) }
             .mapError { ExtensionException.FinalizeSpecException(it) }.exceptionOrNull()
-      }
+      } + listOfNotNull(t?.let { ExtensionException.FinalizeSpecException(it) })
 
       return when {
          errors.isEmpty() -> Result.success(kclass)

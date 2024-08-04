@@ -75,7 +75,7 @@ val counter = AtomicInteger(0)
 private class TestWithListenerAndTag : FunSpec() {
    init {
       tags(FooTag)
-      listener(object : TestListener {
+      extension(object : TestListener {
          override suspend fun beforeSpec(spec: Spec) {
             counter.incrementAndGet()
          }
