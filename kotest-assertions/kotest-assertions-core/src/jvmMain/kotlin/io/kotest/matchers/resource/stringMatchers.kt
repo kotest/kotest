@@ -40,9 +40,9 @@ infix fun String.shouldNotMatchResource(
  * Will match if the given String and the resource value matches using matcher provided by [matcherProvider]
  */
 fun String.shouldMatchResource(
-   path: String,
-   matcherProvider: (String) -> Matcher<String>,
-   ignoreLineSeparators: Boolean = true
+  path: String,
+  matcherProvider: (String) -> Matcher<String>,
+  ignoreLineSeparators: Boolean = true
 ): String {
    this should matchResource(path, matcherProvider, ignoreLineSeparators)
    return this
@@ -52,18 +52,18 @@ fun String.shouldMatchResource(
  * Will match if the given String and the resource value **not** matches using matcher provided by [matcherProvider]
  */
 fun String.shouldNotMatchResource(
-   path: String,
-   matcherProvider: (String) -> Matcher<String>,
-   ignoreLineSeparators: Boolean = true
+  path: String,
+  matcherProvider: (String) -> Matcher<String>,
+  ignoreLineSeparators: Boolean = true
 ): String {
    this shouldNot matchResource(path, matcherProvider, ignoreLineSeparators)
    return this
 }
 
 fun matchResource(
-   resourcePath: String,
-   matcherProvider: (String) -> Matcher<String>,
-   ignoreLineSeparators: Boolean
+  resourcePath: String,
+  matcherProvider: (String) -> Matcher<String>,
+  ignoreLineSeparators: Boolean
 ) = object : Matcher<String> {
 
    override fun test(value: String): MatcherResult {

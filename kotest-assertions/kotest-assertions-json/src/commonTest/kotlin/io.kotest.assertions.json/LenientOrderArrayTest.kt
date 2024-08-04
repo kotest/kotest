@@ -7,6 +7,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 class LenientOrderArrayTest : FunSpec(
    {
       infix fun String.shouldEqualJsonIgnoringOrder(other: String) =
+         @Suppress("DEPRECATION")
          this.shouldEqualJson(other, compareJsonOptions { arrayOrder = ArrayOrder.Lenient })
 
       test("simple") {

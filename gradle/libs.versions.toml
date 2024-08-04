@@ -22,6 +22,16 @@ rgxgen = "1.4"
 shadowjar = "8.1.1"
 devPublishPlugin = "0.4.1"
 
+### Java compilation ###
+# Kotest's minimum supported Java version.
+jvmMinTarget = "8"
+# Kotest's maximum supported Java version. (Must be >= jvmMinTarget.)
+jvmMaxTarget = "21"
+# JDK used to compile Kotest. (Must be >= jvmMaxTarget.)
+jvmCompiler = "21"
+# JDK used to run Gradle Daemon. (Should be the same as jvmCompiler, but could be higher or lower.)
+gradleDaemonJvm = "21"
+
 [libraries]
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }

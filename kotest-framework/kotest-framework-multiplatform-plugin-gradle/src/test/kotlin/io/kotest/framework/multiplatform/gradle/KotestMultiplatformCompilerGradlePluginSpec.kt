@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalPathApi::class)
+
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.assertions.withClue
@@ -10,6 +12,15 @@ import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.CopyActionResult
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
+import kotlin.io.path.copyToRecursively
+import kotlin.io.path.createTempDirectory
+import kotlin.io.path.deleteRecursively
+import kotlin.io.path.isDirectory
+import kotlin.io.path.name
 
 // Why don't we use Gradle's TestKit here?
 // It embeds a particular version of Kotlin, which causes all kinds of pain.
@@ -20,18 +31,8 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
       "2.0.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
-         val testProjectPath = Paths.get("test-project").toAbsolutePath()
-         val testReportsDirectory = testProjectPath.resolve("build").resolve("test-results")
 
-         beforeEach {
-            if (Files.exists(testReportsDirectory)) {
-               if (!testReportsDirectory.toFile().deleteRecursively()) {
-                  throw RuntimeException("Could not delete test report directory $testReportsDirectory")
-               }
-            }
-         }
-
-         fun shouldHaveExpectedTestResultsFor(taskName: String) {
+         fun GradleInvocation.Result.shouldHaveExpectedTestResultsFor(taskName: String) {
             withClue("$taskName test report") {
                val testReportFile = testReportsDirectory.resolve(taskName).resolve("TEST-TestSpec.xml")
                testReportFile.toFile().shouldBeAFile()
@@ -54,58 +55,38 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
                "jsBrowserTest",
                "jsNodeTest",
                "wasmJsBrowserTest",
-               "wasmJsNodeTest"
+               "wasmJsNodeTest",
             )
 
-            val invocation = GradleInvocation(
-               testProjectPath,
+            runGradle(
                listOf(
                   "-PkotlinVersion=$kotlinVersion",
                   "-PuseNewNativeMemoryModel=false",
                ) + taskNames
-            )
-
-            val result = invocation.run()
-
-            withClue(result.clue) {
+            ) { result ->
                taskNames.forAll {
-                  shouldHaveExpectedTestResultsFor(it)
+                  result.shouldHaveExpectedTestResultsFor(it)
                }
             }
          }
 
-         setOf(
-            true,
-            false
-         ).forEach { enableNewMemoryModel ->
-            val description = if (enableNewMemoryModel) "is enabled" else "is not enabled"
+         should("be able to compile and run tests for all native targets supported by the host machine") {
+            val taskNames = listOf(
+               "macosArm64Test",
+               "macosX64Test",
+               "mingwX64Test",
+               "linuxX64Test",
+            )
 
-            context("when the new Kotlin/Native memory model $description") {
-               should("be able to compile and run tests for all native targets supported by the host machine") {
-                  val taskNames = listOf(
-                     "macosArm64Test",
-                     "macosX64Test",
-                     "mingwX64Test",
-                     "linuxX64Test"
-                  )
-
-                  val invocation = GradleInvocation(
-                     testProjectPath,
-                     listOf(
-                        "-PkotlinVersion=$kotlinVersion",
-                        "-PuseNewNativeMemoryModel=$enableNewMemoryModel",
-                     ) + taskNames
-                  )
-
-                  val result = invocation.run()
-
-                  withClue(result.clue) {
-                     taskNames.forAtLeastOne { taskName ->
-                        // Depending on the host machine these tests are running on,
-                        // only one of the test targets will be built and executed.
-                        shouldHaveExpectedTestResultsFor(taskName)
-                     }
-                  }
+            runGradle(
+               listOf(
+                  "-PkotlinVersion=$kotlinVersion",
+               ) + taskNames
+            ) { result ->
+               taskNames.forAtLeastOne { taskName ->
+                  // Depending on the host machine these tests are running on,
+                  // only one of the test targets will be built and executed.
+                  result.shouldHaveExpectedTestResultsFor(taskName)
                }
             }
          }
@@ -113,19 +94,37 @@ class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    }
 })
 
-private data class GradleInvocation(
-   val projectPath: Path,
-   val arguments: List<String>,
+private fun runGradle(
+   arguments: List<String>,
+   block: (result: GradleInvocation.Result) -> Unit,
 ) {
-   val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
-   private val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
-   private val wrapperScriptPath: Path = Paths.get("..", "..", wrapperScriptName)
+   GradleInvocation(arguments).use {
+      val result = it.run()
+      withClue(result.clue) {
+         block(result)
+      }
+   }
+}
 
-   class Result(command: List<String>, val output: String, val exitCode: Int) {
+private data class GradleInvocation(
+   val arguments: List<String>,
+) : AutoCloseable {
+   val projectDir = createTempDirectory("kotest-gradle-plugin-test")
+
+   data class Result(
+      val command: List<String>,
+      val output: String,
+      val exitCode: Int,
+      val projectDir: Path,
+   ) {
+      val testReportsDirectory: Path = projectDir.resolve("build/test-results")
+
       val clue = "Gradle process $command exited with code $exitCode and output:\n" + output.prependIndent("\t>>> ")
    }
 
    fun run(): Result {
+      prepareProjectDir(projectDir)
+
       val command = buildList {
          add(wrapperScriptPath.toAbsolutePath().toString())
          add("--continue")
@@ -135,7 +134,7 @@ private data class GradleInvocation(
       }
 
       val process = ProcessBuilder(command)
-         .directory(projectPath.toFile())
+         .directory(projectDir.toFile())
          .redirectOutput(ProcessBuilder.Redirect.PIPE)
          .redirectError(ProcessBuilder.Redirect.PIPE)
          .redirectErrorStream(true)
@@ -144,12 +143,47 @@ private data class GradleInvocation(
       return Result(
          command = command,
          output = InputStreamReader(process.inputStream).use { reader -> reader.readText() },
-         exitCode = process.waitFor()
+         exitCode = process.waitFor(),
+         projectDir = projectDir,
       )
+   }
+
+   override fun close() {
+      projectDir.deleteRecursively()
    }
 
    companion object {
       private val kotestVersion = System.getProperty("kotestVersion")
       private val devMavenRepoPath = System.getProperty("devMavenRepoPath")
+      private val testProjectDir = Path(System.getProperty("testProjectDir"))
+
+      private val wrapperScriptPath: Path = run {
+         val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
+         val wrapperScriptName = if (isWindows) "gradlew.bat" else "gradlew"
+         Paths.get("..", "..", wrapperScriptName).normalize().absolute()
+      }
+
+      private fun prepareProjectDir(projectDir: Path): Path {
+         val excludedDirs = setOf(
+            ".kotlin",
+            "build",
+            ".gradle",
+            ".idea",
+            "kotlin-js-store",
+         )
+
+         testProjectDir.copyToRecursively(
+            target = projectDir,
+            followLinks = false,
+         ) { src, target ->
+            if (src.isDirectory() && src.name in excludedDirs) {
+               CopyActionResult.SKIP_SUBTREE
+            } else {
+               src.copyToIgnoringExistingDirectory(target, followLinks = false)
+            }
+         }
+
+         return projectDir
+      }
    }
 }

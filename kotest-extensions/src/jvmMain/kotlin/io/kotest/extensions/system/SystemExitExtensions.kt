@@ -41,9 +41,9 @@ object SystemExitListener : TestListener {
  * After the spec has completed, the original security manager
  * will be set.
  *
- * To use this, override `listeners`() in your [Spec] class.
+ * To use this, override `extensions`() in your [Spec] class.
  *
- * Note: This listener is only suitable for use if parallelism is
+ * Note: This extension is only suitable for use if parallelism is
  * set to 1 (the default) otherwise a race condition could occur.
  *
  * If you want to change the security manager for the entire

@@ -84,9 +84,6 @@ fun Arb.Companion.double(
  */
 fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(Double.MIN_VALUE, max, includeNonFiniteEdgeCases)
 
-@Deprecated("use positiveDouble. Deprecated in 5.0.", ReplaceWith("positiveDouble()"))
-fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
-
 /**
  * Returns an [Arb] that produces negative [Double]s from [min] to -[Double.MIN_VALUE] (inclusive).
  * The numeric edge cases are [min], -1.0 and -[Double.MIN_VALUE] which are only included if they are in the provided range.
@@ -94,9 +91,6 @@ fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
  * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
  */
 fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(min, -Double.MIN_VALUE, includeNonFiniteEdgeCases)
-
-@Deprecated("use negativeDouble. Deprecated in 5.0.", ReplaceWith("negativeDouble()"))
-fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
 
 /**
  * Returns an [Arb] that produces numeric [Double]s from [min] to [max] (inclusive).
@@ -111,10 +105,6 @@ fun Arb.Companion.numericDouble(
 ): Arb<Double> = arbitrary(
    (numericEdgeCases.filter { it in (min..max) } + listOf(min, max)).distinct(), DoubleShrinker
 ) { it.random.nextDouble(min, max) }
-
-@Deprecated("use numericDouble. Deprecated in 5.0.", ReplaceWith("numericDouble(from, to)"))
-fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = Double.MAX_VALUE): Arb<Double> =
-   numericDouble(from, to)
 
 /**
  * Returns an [Arb] that produces [DoubleArray]s where [length] produces the length of the arrays and

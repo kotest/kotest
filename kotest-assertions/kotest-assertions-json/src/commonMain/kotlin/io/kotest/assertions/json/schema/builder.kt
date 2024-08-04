@@ -4,7 +4,6 @@ package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.json.ContainsSpec
 import io.kotest.assertions.json.JsonNode
-import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.sequences.beUnique
@@ -55,11 +54,11 @@ data class JsonSchema(
    internal interface JsonNumber
 
    data class JsonArray(
-      val minItems: Int = 0,
-      val maxItems: Int = Int.MAX_VALUE,
-      val matcher: Matcher<Sequence<JsonNode>>? = null,
-      val contains: ContainsSpec? = null,
-      val elementType: JsonSchemaElement? = null,
+     val minItems: Int = 0,
+     val maxItems: Int = Int.MAX_VALUE,
+     val matcher: Matcher<Sequence<JsonNode>>? = null,
+     val contains: ContainsSpec? = null,
+     val elementType: JsonSchemaElement? = null,
    ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
@@ -76,8 +75,8 @@ data class JsonSchema(
       var requiredProperties: MutableList<String> = mutableListOf()
 
       /**
-       * By default properties are optional.
-       * Using [required], you can specify that it must be included.
+       * By default, properties are optional.
+       * Using [requiredProperties], you can specify that it must be included.
        */
       fun withProperty(
          name: String,
@@ -161,7 +160,7 @@ data class JsonSchema(
        */
       val requiredProperties: List<String> = emptyList(),
    ) : JsonSchemaElement {
-      operator fun get(name: String) = properties.get(name)
+      operator fun get(name: String): JsonSchemaElement? = properties[name]
       override fun typeName() = "object"
    }
 
@@ -242,7 +241,7 @@ fun JsonSchema.Builder.`null`() = JsonSchema.Null
 
 /**
  * Creates a [JsonSchema.JsonObject] node. Expand on the object configuration using the [dsl] which lets you specify
- * properties using [withProperty]
+ * properties using [JsonSchema.JsonObjectBuilder.withProperty]
  *
  * Example:
  * ```kotlin

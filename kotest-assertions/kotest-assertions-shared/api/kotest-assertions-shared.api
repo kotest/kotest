@@ -54,6 +54,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
+	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
 }
@@ -681,182 +682,6 @@ public final class io/kotest/assertions/throwables/AnyThrowableHandlingKt {
 	public static final fun shouldThrowAny (Lkotlin/jvm/functions/Function0;)Ljava/lang/Throwable;
 	public static final fun shouldThrowAnyUnit (Lkotlin/jvm/functions/Function0;)Ljava/lang/Throwable;
 	public static final fun shouldThrowMessage (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
-}
-
-public final class io/kotest/assertions/timing/Continually {
-	public synthetic fun <init> (JLio/kotest/assertions/until/Interval;Lio/kotest/assertions/timing/ContinuallyListener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (JLio/kotest/assertions/until/Interval;Lio/kotest/assertions/timing/ContinuallyListener;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-UwyO8pc ()J
-	public final fun component2 ()Lio/kotest/assertions/until/Interval;
-	public final fun component3 ()Lio/kotest/assertions/timing/ContinuallyListener;
-	public final fun copy-KLykuaI (JLio/kotest/assertions/until/Interval;Lio/kotest/assertions/timing/ContinuallyListener;)Lio/kotest/assertions/timing/Continually;
-	public static synthetic fun copy-KLykuaI$default (Lio/kotest/assertions/timing/Continually;JLio/kotest/assertions/until/Interval;Lio/kotest/assertions/timing/ContinuallyListener;ILjava/lang/Object;)Lio/kotest/assertions/timing/Continually;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDuration-UwyO8pc ()J
-	public final fun getInterval ()Lio/kotest/assertions/until/Interval;
-	public final fun getListener ()Lio/kotest/assertions/timing/ContinuallyListener;
-	public fun hashCode ()I
-	public final fun invoke (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/timing/ContinuallyKt {
-	public static final fun continually-rnQQ1Ag (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun continually-rnQQ1Ag$default (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/assertions/timing/ContinuallyListener {
-	public static final field Companion Lio/kotest/assertions/timing/ContinuallyListener$Companion;
-	public abstract fun onEval (Ljava/lang/Object;Lio/kotest/assertions/timing/ContinuallyState;)V
-}
-
-public final class io/kotest/assertions/timing/ContinuallyListener$Companion {
-	public final fun getNoop ()Lio/kotest/assertions/timing/ContinuallyListener;
-}
-
-public final class io/kotest/assertions/timing/ContinuallyState {
-	public fun <init> (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)V
-	public final fun component1 ()Lkotlin/time/TimeMark;
-	public final fun component2 ()Lkotlin/time/TimeMark;
-	public final fun component3 ()I
-	public final fun copy (Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;I)Lio/kotest/assertions/timing/ContinuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/ContinuallyState;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;IILjava/lang/Object;)Lio/kotest/assertions/timing/ContinuallyState;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lkotlin/time/TimeMark;
-	public final fun getStart ()Lkotlin/time/TimeMark;
-	public final fun getTimes ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/timing/EventuallyConfig {
-	public synthetic fun <init> (JLio/kotest/assertions/until/Interval;ILkotlin/reflect/KClass;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (JLio/kotest/assertions/until/Interval;ILkotlin/reflect/KClass;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-UwyO8pc ()J
-	public final fun component2 ()Lio/kotest/assertions/until/Interval;
-	public final fun component3 ()I
-	public final fun component4 ()Lkotlin/reflect/KClass;
-	public final fun copy-rnQQ1Ag (JLio/kotest/assertions/until/Interval;ILkotlin/reflect/KClass;)Lio/kotest/assertions/timing/EventuallyConfig;
-	public static synthetic fun copy-rnQQ1Ag$default (Lio/kotest/assertions/timing/EventuallyConfig;JLio/kotest/assertions/until/Interval;ILkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyConfig;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDuration-UwyO8pc ()J
-	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
-	public final fun getInterval ()Lio/kotest/assertions/until/Interval;
-	public final fun getRetries ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/timing/EventuallyKt {
-	public static final fun eventually (Lio/kotest/assertions/timing/EventuallyConfig;Lkotlin/jvm/functions/Function1;Lio/kotest/assertions/timing/EventuallyListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun eventually$default (Lio/kotest/assertions/timing/EventuallyConfig;Lkotlin/jvm/functions/Function1;Lio/kotest/assertions/timing/EventuallyListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun eventually-2ru2uwY (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lio/kotest/assertions/timing/EventuallyListener;ILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun eventually-2ru2uwY$default (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lio/kotest/assertions/timing/EventuallyListener;ILkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun eventually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun eventually-O4J4VbY (JJLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun eventually-gRj5Bb8 (JLio/kotest/assertions/until/Interval;Lio/kotest/assertions/timing/EventuallyListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun eventually-gRj5Bb8 (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun eventually-rnQQ1Ag (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun eventually-rnQQ1Ag (JLkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/assertions/timing/EventuallyListener {
-	public abstract fun onEval (Lio/kotest/assertions/timing/EventuallyState;)V
-}
-
-public final class io/kotest/assertions/timing/EventuallyState {
-	public fun <init> (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)V
-	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Lkotlin/time/TimeMark;
-	public final fun component3 ()Lkotlin/time/TimeMark;
-	public final fun component4 ()I
-	public final fun component5 ()Ljava/lang/Throwable;
-	public final fun component6 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;)Lio/kotest/assertions/timing/EventuallyState;
-	public static synthetic fun copy$default (Lio/kotest/assertions/timing/EventuallyState;Ljava/lang/Object;Lkotlin/time/TimeMark;Lkotlin/time/TimeMark;ILjava/lang/Throwable;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/assertions/timing/EventuallyState;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()Lkotlin/time/TimeMark;
-	public final fun getFirstError ()Ljava/lang/Throwable;
-	public final fun getIteration ()I
-	public final fun getResult ()Ljava/lang/Object;
-	public final fun getStart ()Lkotlin/time/TimeMark;
-	public final fun getThisError ()Ljava/lang/Throwable;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/until/ExponentialInterval : io/kotest/assertions/until/Interval {
-	public static final field Companion Lio/kotest/assertions/until/ExponentialInterval$Companion;
-	public static final field defaultFactor D
-	public synthetic fun <init> (JDLkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun next-5sfh64U (I)J
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/until/ExponentialInterval$Companion {
-	public final fun getDefaultMax-UwyO8pc ()J
-}
-
-public final class io/kotest/assertions/until/ExponentialIntervalKt {
-	public static final fun exponential-4_FzEXg (JDLkotlin/time/Duration;)Lio/kotest/assertions/until/ExponentialInterval;
-	public static synthetic fun exponential-4_FzEXg$default (JDLkotlin/time/Duration;ILjava/lang/Object;)Lio/kotest/assertions/until/ExponentialInterval;
-}
-
-public final class io/kotest/assertions/until/FibonacciInterval : io/kotest/assertions/until/Interval {
-	public static final field Companion Lio/kotest/assertions/until/FibonacciInterval$Companion;
-	public synthetic fun <init> (JILkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun next-5sfh64U (I)J
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/until/FibonacciInterval$Companion {
-	public final fun getDefaultMax-UwyO8pc ()J
-}
-
-public final class io/kotest/assertions/until/FibonacciIntervalKt {
-	public static final fun fibonacci (I)I
-	public static final fun fibonacci-JKoRlfk (JLkotlin/time/Duration;)Lio/kotest/assertions/until/FibonacciInterval;
-	public static synthetic fun fibonacci-JKoRlfk$default (JLkotlin/time/Duration;ILjava/lang/Object;)Lio/kotest/assertions/until/FibonacciInterval;
-}
-
-public final class io/kotest/assertions/until/FixedInterval : io/kotest/assertions/until/Interval {
-	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun next-5sfh64U (I)J
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/until/FixedIntervalKt {
-	public static final fun fixed-LRDsOJo (J)Lio/kotest/assertions/until/FixedInterval;
-}
-
-public abstract interface class io/kotest/assertions/until/Interval {
-	public abstract fun next-5sfh64U (I)J
-}
-
-public final class io/kotest/assertions/until/PatienceConfig {
-	public synthetic fun <init> (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-UwyO8pc ()J
-	public final fun component2 ()Lio/kotest/assertions/until/Interval;
-	public final fun copy-VtjQ1oo (JLio/kotest/assertions/until/Interval;)Lio/kotest/assertions/until/PatienceConfig;
-	public static synthetic fun copy-VtjQ1oo$default (Lio/kotest/assertions/until/PatienceConfig;JLio/kotest/assertions/until/Interval;ILjava/lang/Object;)Lio/kotest/assertions/until/PatienceConfig;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDuration-UwyO8pc ()J
-	public final fun getInterval ()Lio/kotest/assertions/until/Interval;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/until/UntilKt {
-	public static final fun until (Lio/kotest/assertions/until/PatienceConfig;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until (Lio/kotest/assertions/until/PatienceConfig;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until-gRj5Bb8 (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until-rnQQ1Ag (JLio/kotest/assertions/until/Interval;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun until-rnQQ1Ag (JLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/assertions/until/UntilListener {
-	public abstract fun onEval (Ljava/lang/Object;)V
 }
 
 public final class io/kotest/data/ErrorCollector {
@@ -3063,6 +2888,64 @@ public final class io/kotest/inspectors/RunTestsKt {
 	public static final fun runTest (ILjava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/inspectors/ElementResult;
 	public static final fun runTests (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun runTests (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+}
+
+public abstract interface class io/kotest/matchers/ComparableMatcherResult : io/kotest/matchers/MatcherResult {
+	public static final field Companion Lio/kotest/matchers/ComparableMatcherResult$Companion;
+	public abstract fun actual ()Ljava/lang/String;
+	public abstract fun expected ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ComparableMatcherResult$Companion {
+	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/ComparableMatcherResult;
+}
+
+public abstract interface class io/kotest/matchers/EqualityMatcherResult : io/kotest/matchers/MatcherResult {
+	public static final field Companion Lio/kotest/matchers/EqualityMatcherResult$Companion;
+	public abstract fun actual ()Ljava/lang/Object;
+	public abstract fun expected ()Ljava/lang/Object;
+}
+
+public final class io/kotest/matchers/EqualityMatcherResult$Companion {
+	public final fun invoke (ZLjava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/EqualityMatcherResult;
+}
+
+public abstract interface class io/kotest/matchers/Matcher {
+	public static final field Companion Lio/kotest/matchers/Matcher$Companion;
+	public abstract fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public abstract fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public abstract fun invert ()Lio/kotest/matchers/Matcher;
+	public abstract fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public abstract fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/matchers/Matcher$Companion {
+	public final fun failure (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+}
+
+public final class io/kotest/matchers/Matcher$DefaultImpls {
+	public static fun compose (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public static fun contramap (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public static fun invert (Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
+	public static fun invertIf (Lio/kotest/matchers/Matcher;Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+}
+
+public final class io/kotest/matchers/MatcherKt {
+	public static final fun and (Lio/kotest/matchers/Matcher;Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
+	public static final fun neverNullMatcher (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public static final fun or (Lio/kotest/matchers/Matcher;Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
+}
+
+public abstract interface class io/kotest/matchers/MatcherResult {
+	public static final field Companion Lio/kotest/matchers/MatcherResult$Companion;
+	public abstract fun failureMessage ()Ljava/lang/String;
+	public abstract fun negatedFailureMessage ()Ljava/lang/String;
+	public abstract fun passed ()Z
+}
+
+public final class io/kotest/matchers/MatcherResult$Companion {
+	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
 }
 
 public final class io/kotest/matchers/ShouldKt {

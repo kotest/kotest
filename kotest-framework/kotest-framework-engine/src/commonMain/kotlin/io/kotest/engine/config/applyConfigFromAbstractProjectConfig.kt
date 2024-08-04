@@ -42,6 +42,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // discovery
    config.discoveryClasspathFallbackEnabled?.let { configuration.discoveryClasspathFallbackEnabled = it }
    config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
+   config.ignorePrivateClasses?.let { configuration.ignorePrivateClasses = it }
 
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
@@ -81,7 +82,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   @Suppress("DEPRECATION") // Remove when removing Listener
-   val exts = config.listeners() + listOf(projectListener) + config.extensions() + config.filters()
+   val exts = listOf(projectListener) + config.extensions()
    exts.forEach { configuration.registry.add(it) }
 }

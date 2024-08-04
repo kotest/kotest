@@ -43,7 +43,7 @@ dependencyResolutionManagement {
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
-      ivy("https://cache-redirector.jetbrains.com/nodejs.org/dist/") {
+      ivy("https://nodejs.org/dist/") {
          name = "Node Distributions at $url"
          patternLayout { artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]") }
          metadataSources { artifact() }
@@ -61,14 +61,16 @@ dependencyResolutionManagement {
    }
 }
 
+plugins {
+   id("com.gradle.develocity") version "3.17.5"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+}
+
 include(
    ":kotest-common",
 
    // defines data classes and the spec styles; all classes needed to define specs/testcases live here
    ":kotest-framework:kotest-framework-api",
-
-   // async / parallel / concurrency / non-deterministic test helpers
-   ":kotest-framework:kotest-framework-concurrency",
 
    // used to discovery specs from the classpath at runtime
    // brings in the API dependency for required data types
@@ -85,13 +87,6 @@ include(
    ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
    ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
-
-   // contains data driven testing that builds on top of the kotest test framework
-   ":kotest-framework:kotest-framework-datatest",
-
-   // contains the matcher interface and is intended as a lightweight dependency for library authors
-   // to depend on when writing matcher libraries
-   ":kotest-assertions:kotest-assertions-api",
 
    // contains basic assertion building block such as shouldBe which are used by both
    // framework and assertion libraries;
@@ -117,7 +112,6 @@ include(
    ":kotest-runner:kotest-runner-junit4",
    ":kotest-extensions",
    ":kotest-extensions:kotest-extensions-blockhound",
-   ":kotest-extensions:kotest-extensions-http",
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
 
@@ -145,17 +139,12 @@ include(
    ":kotest-tests:kotest-tests-timeout-project",
    ":kotest-tests:kotest-tests-timeout-sysprop",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-native",
 //   ":kotest-tests:kotest-tests-js",
    ":kotest-tests:kotest-tests-config-classname",
 
    // BOM for whole kotest project
    ":kotest-bom",
 )
-
-plugins {
-   id("com.gradle.develocity") version "3.17.5"
-}
 
 develocity {
    buildScan {
