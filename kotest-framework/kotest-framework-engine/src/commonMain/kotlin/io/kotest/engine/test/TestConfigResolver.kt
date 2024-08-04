@@ -104,9 +104,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
    fun extensions(testConfig: TestConfig?, parent: TestCase?, spec: Spec): List<Extension> {
       return (testConfig?.extensions ?: emptyList()) +
          (testConfig?.extensions ?: emptyList()) +
-         (parent?.config?.extensions ?: emptyList()) +
-         spec.extensions() +
-         projectConf.registry.all()
+         (parent?.config?.extensions ?: emptyList())
    }
 
    fun timeout(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Duration {
