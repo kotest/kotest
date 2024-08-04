@@ -97,7 +97,6 @@ include(
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
    ":kotest-assertions:kotest-assertions-json",
-   ":kotest-assertions:kotest-assertions-sql",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
