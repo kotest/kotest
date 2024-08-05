@@ -154,7 +154,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Invokes all [IgnoredTestListener] for this test.
+    * Invokes all [IgnoredTestListener]s for this test.
     */
    suspend fun ignoredTestListenersInvocation(testCase: TestCase, reason: String?) {
       extensions(testCase).filterIsInstance<IgnoredTestListener>()
