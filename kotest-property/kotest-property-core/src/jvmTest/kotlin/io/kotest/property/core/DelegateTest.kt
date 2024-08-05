@@ -74,5 +74,24 @@ class DelegateTest : FunSpec() {
             a + b + c shouldBe c + b + a
          }
       }
+
+      proptest("callbacks") {
+
+         val a by gen { Arb.int() }
+         val b by gen { Arb.int() }
+         val c by gen { Arb.int() }
+
+         beforeProperty {
+            // setup code
+         }
+
+         afterProperty {
+            // some tear down code
+         }
+
+         property {
+            a + b + c shouldBe c + b + a
+         }
+      }
    }
 }
