@@ -9,7 +9,7 @@ json-path = "2.9.0"
 junit4 = "4.13.2"
 junit-platform = "1.8.2"
 junit-jupiter = "5.8.2"
-kotlin = "1.9.24"
+kotlin = "2.0.20-RC"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
 ktor = "1.6.8"
@@ -23,12 +23,14 @@ shadowjar = "8.1.1"
 devPublishPlugin = "0.4.1"
 
 ### Java compilation ###
-# Kotest's minimum supported Java version
+# Kotest's minimum supported Java version.
 jvmMinTarget = "8"
-# Kotest's maximum supported Java version (must be >= jvmMinTarget)
+# Kotest's maximum supported Java version. (Must be >= jvmMinTarget.)
 jvmMaxTarget = "21"
-# JDK used to compile Kotest (must be >= jvmMaxTarget)
+# JDK used to compile Kotest. (Must be >= jvmMaxTarget.)
 jvmCompiler = "21"
+# JDK used to run Gradle Daemon. (Should be the same as jvmCompiler, but could be higher or lower.)
+gradleDaemonJvm = "21"
 
 [libraries]
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }

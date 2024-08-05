@@ -69,8 +69,6 @@ tasks.withType<Test>().configureEach {
       events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
-
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {

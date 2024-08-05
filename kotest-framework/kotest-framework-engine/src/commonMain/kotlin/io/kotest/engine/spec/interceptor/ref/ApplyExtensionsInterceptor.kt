@@ -13,12 +13,12 @@ import io.kotest.mpp.annotation
 import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 
 /**
- * If the spec is annotated with the [ApplyExtension] annotation, registers any extensions
+ * If a [Spec] is annotated with the [ApplyExtension] annotation, registers any extensions
  * returned by that annotation.
  *
  * Each extension will be wrapped so that it only executes for that spec.
  *
- * Note: annotations are only available on the JVM.
+ * Note: [ApplyExtension] is only applied on the JVM.
  */
 internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 

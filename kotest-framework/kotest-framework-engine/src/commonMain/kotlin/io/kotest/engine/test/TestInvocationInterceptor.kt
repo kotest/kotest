@@ -57,10 +57,10 @@ internal class TestInvocationInterceptor(
       times: Int,
       test: suspend (TestCase, TestScope) -> TestResult,
    ) {
-      val executeWithBeforeAfter: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
+      val executeWithBeforeAfter: suspend (TestCase, TestScope) -> TestResult = { tc, sc ->
          try {
             extensions.beforeInvocation(testCase, times)
-            test(testCase, scope)
+            test(tc, sc)
          } finally {
             extensions.afterInvocation(testCase, times)
          }

@@ -22,7 +22,7 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
    init {
 
       afterProject {
-         counter.get() shouldBe 5
+         counter.get() shouldBe 4
       }
 
       // this shouldn't trigger the after spec as its in an isolated instance

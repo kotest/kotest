@@ -1,7 +1,6 @@
 package io.kotest.property
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.mpp.atomics.AtomicProperty
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardLabelsReporter
@@ -13,59 +12,43 @@ import io.kotest.property.statistics.StatisticsReporter
  * Global object containing settings for property testing.
  */
 object PropertyTesting {
-   var maxFilterAttempts: Int by AtomicProperty {
-      10
-   }
-   var shouldPrintShrinkSteps: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.output.shrink-steps", true)
-   }
-   var shouldPrintGeneratedValues: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.output.generated-values", false)
-   }
-   var edgecasesBindDeterminism: Double by AtomicProperty {
-      sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
-   }
-   var defaultSeed: Long? by AtomicProperty {
-      sysprop("kotest.proptest.default.seed", null) { it.toLong() }
-   }
-   var defaultMinSuccess: Int by AtomicProperty {
-      sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
-   }
-   var defaultMaxFailure: Int by AtomicProperty {
-      sysprop("kotest.proptest.default.max-failure", 0)
-   }
-   var defaultIterationCount: Int by AtomicProperty {
-      sysprop("kotest.proptest.default.iteration.count", 1000)
-   }
-   var defaultShrinkingMode: ShrinkingMode by AtomicProperty {
-      ShrinkingMode.Bounded(1000)
-   }
-   var defaultListeners: List<PropTestListener> by AtomicProperty {
-      listOf()
-   }
-   var defaultEdgecasesGenerationProbability: Double by AtomicProperty {
+
+   var maxFilterAttempts: Int = 10
+
+   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", true)
+
+   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
+
+   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
+
+   var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null) { it.toLong() }
+
+   var defaultMinSuccess: Int = sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
+
+   var defaultMaxFailure: Int = sysprop("kotest.proptest.default.max-failure", 0)
+
+   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
+
+   var defaultShrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
+
+   var defaultListeners: List<PropTestListener> = listOf()
+
+   var defaultEdgecasesGenerationProbability: Double =
       sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
-   }
-   var defaultOutputClassifications: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.arb.output.classifications", false)
-   }
-   var failOnSeed: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.seed.fail-if-set", false)
-   }
-   var writeFailedSeed: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.seed.write-failed", true)
-   }
-   var labelOrder: LabelOrder by AtomicProperty { LabelOrder.Quantity }
+
+   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", false)
+
+   var failOnSeed: Boolean = sysprop("kotest.proptest.seed.fail-if-set", false)
+
+   var writeFailedSeed: Boolean = sysprop("kotest.proptest.seed.write-failed", true)
+
+   var labelOrder: LabelOrder = LabelOrder.Quantity
 
    @ExperimentalKotest
-   var statisticsReporter: StatisticsReporter by AtomicProperty {
-      DefaultStatisticsReporter
-   }
+   var statisticsReporter: StatisticsReporter = DefaultStatisticsReporter
 
    @ExperimentalKotest
-   var statisticsReportMode: StatisticsReportMode by AtomicProperty {
-      StatisticsReportMode.ON
-   }
+   var statisticsReportMode: StatisticsReportMode = StatisticsReportMode.ON
 }
 
 enum class LabelOrder {
