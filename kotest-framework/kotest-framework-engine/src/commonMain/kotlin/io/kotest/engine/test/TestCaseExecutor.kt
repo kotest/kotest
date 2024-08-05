@@ -58,7 +58,9 @@ internal class TestCaseExecutor(
       // Issue: https://github.com/kotest/kotest/issues/4077
       val useCoroutineTestScope = when (platform) {
          Platform.JVM, Platform.Native -> testCase.config.coroutineTestScope
-         Platform.JS, Platform.WasmJs -> false
+         Platform.JS, Platform.WasmJs -> if (testCase.config.coroutineTestScope) {
+            error("Configuration 'coroutineTestScope' is unsupported on $platform")
+         } else false
       }
 
       val interceptors = listOfNotNull(
