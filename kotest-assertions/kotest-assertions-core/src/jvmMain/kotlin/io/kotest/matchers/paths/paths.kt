@@ -2,8 +2,8 @@ package io.kotest.matchers.paths
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.file.beLarger
 import io.kotest.matchers.file.beEmptyDirectory
+import io.kotest.matchers.file.beLarger
 import io.kotest.matchers.file.containNFiles
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -127,18 +127,6 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
 
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
-
-@Deprecated(
-   message = "checks if a directory is empty. Deprecated since 4.3.",
-   replaceWith = ReplaceWith("shouldBeEmptyDirectory()")
-)
-fun Path.shouldBeNonEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
-
-@Deprecated(
-   message = "checks if a directory is not empty. Deprecated since 4.3.",
-   replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()")
-)
-fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() should beEmptyDirectory()
 
 fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
 fun Path.shouldNotBeEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()

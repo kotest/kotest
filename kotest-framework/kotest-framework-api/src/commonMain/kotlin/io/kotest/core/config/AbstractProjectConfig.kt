@@ -142,23 +142,6 @@ abstract class AbstractProjectConfig {
    open val globalAssertSoftly: Boolean? = null
 
    /**
-    * Override this value and set it to false if you want to disable auto-scanning of extensions
-    * and listeners.
-    *
-    * Note: JVM ONLY
-    */
-   open val autoScanEnabled: Boolean? = null
-
-   /**
-    * Override this value with a list of classes for which
-    * [@AutoScan][io.kotest.core.annotation.AutoScan]
-    * is disabled.
-    *
-    * Note: JVM ONLY
-    */
-   open val autoScanIgnoredClasses: List<KClass<*>> = emptyList()
-
-   /**
     * Override this value and set it to true if you want the build to be marked as failed
     * if there was one or more tests that were disabled/ignored.
     */

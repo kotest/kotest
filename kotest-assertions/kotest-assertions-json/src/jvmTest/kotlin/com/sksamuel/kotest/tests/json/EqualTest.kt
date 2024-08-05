@@ -1,9 +1,8 @@
-@file:Suppress("DEPRECATION") // Remove when removing legacy shouldEqualJson options
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.CompareMode
-import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.PropertyOrder
 import io.kotest.assertions.json.TypeCoercion
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.json.shouldNotEqualJson
@@ -261,8 +260,6 @@ expected:<{
       context("comparing boolean to string with lenient mode") {
          val a = """ { "a" : "foo", "b" : true } """
          val b = """ { "a" : "foo", "b" : "true" } """
-         val c = """ { "a" : "foo", "b" : false } """
-         val d = """ { "a" : "foo", "b" : "false" } """
 
          test("Check new block-style configuration options") {
             a shouldEqualJson {
@@ -275,52 +272,6 @@ expected:<{
                b
             }
          }
-
-         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-         test("Using old CompareMode flags") {
-            a.shouldEqualJson(b, CompareMode.Lenient)
-            c.shouldEqualJson(d, CompareMode.Lenient)
-         }
-      }
-
-      test("comparing long to string with lenient mode") {
-         val a = """ { "a" : "foo", "b" : 123 } """
-         val b = """ { "a" : "foo", "b" : "123" } """
-         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-         a.shouldEqualJson(b, CompareMode.Lenient)
-      }
-
-      @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-      test("comparing double to string with lenient mode") {
-         val a = """ { "a" : "foo", "b" : 12.45 } """
-         val b = """ { "a" : "foo", "b" : "12.45" } """
-         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-         a.shouldEqualJson(b, CompareMode.Lenient)
-      }
-
-      test("comparing string to long with lenient mode") {
-         val a = """ { "a" : "foo", "b" : "12" } """
-         val b = """ { "a" : "foo", "b" : 12 } """
-         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-         a.shouldEqualJson(b, CompareMode.Lenient)
-      }
-
-      @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-      test("comparing string to boolean with lenient mode") {
-         val a = """ { "a" : "foo", "b" : "true" } """
-         val b = """ { "a" : "foo", "b" : true } """
-         a.shouldEqualJson(b, CompareMode.Lenient)
-
-         val c = """ { "a" : "foo", "b" : "false" } """
-         val d = """ { "a" : "foo", "b" : false } """
-         c.shouldEqualJson(d, CompareMode.Lenient)
-      }
-
-      test("comparing string to double with lenient mode") {
-         val a = """ { "a" : "foo", "b" : "12.45" } """
-         val b = """ { "a" : "foo", "b" : 12.45 } """
-         @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-         a.shouldEqualJson(b, CompareMode.Lenient)
       }
 
       test("comparing string to null") {
@@ -780,8 +731,10 @@ expected:<{
             """
          a.shouldEqualJson(b)
          shouldFail {
-            @Suppress("DEPRECATION") // Remove when removing shouldEqualJson legacy options
-            a.shouldEqualJson(b, CompareOrder.Strict)
+            a shouldEqualJson {
+               propertyOrder = PropertyOrder.Strict
+               b
+            }
          }.shouldHaveMessage(
             """The top level object expected field 0 to be 'sku' but was 'id'
 

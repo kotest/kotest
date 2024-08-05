@@ -19,8 +19,6 @@ tasks.withType<Test>().configureEach {
    filter {
       isFailOnNoMatchingTests = false
    }
-
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 kotlin {

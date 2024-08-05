@@ -15,8 +15,9 @@ import io.kotest.mpp.bestName
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
-import org.junit.platform.engine.support.descriptor.ClassSource
+import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -200,11 +201,12 @@ class JUnitTestEngineListener(
     */
    private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
+      val id = parent.uniqueId.append(Segment.Test.value, name)
       val descriptor = createTestTestDescriptor(
-         id = parent.uniqueId.append(Segment.Test.value, name),
+         id = id,
          displayName = name,
          type = TestDescriptor.Type.TEST,
-         source = ClassSource.from(kclass.java),
+         source = getMethodSource(kclass, id),
       )
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
@@ -266,7 +268,8 @@ class JUnitTestEngineListener(
       // if it was not started, then it must be a leaf test (otherwise its children would have started it)
       startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
 
-      val descriptor = createTestTestDescriptor(root, testCase, formatter.format(testCase), TestDescriptor.Type.TEST)
+      val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
+
       logger.log { Pair(testCase.name.testName, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
    }
@@ -282,7 +285,8 @@ class JUnitTestEngineListener(
 
       // like all tests, an ignored test should be registered first
       // ignored test should be a TEST type, because an ignored test will never have child tests.
-      val descriptor = createTestTestDescriptor(root, testCase, formatter.format(testCase), TestDescriptor.Type.TEST)
+      val id = root.deriveTestUniqueId(testCase.descriptor)
+      val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
       listener.dynamicTestRegistered(descriptor)
@@ -310,12 +314,7 @@ class JUnitTestEngineListener(
    private fun startTestIfNotStarted(testCase: TestCase, type: TestDescriptor.Type) {
       if (!startedTests.contains(testCase.descriptor)) {
 
-         val testDescriptor = createTestTestDescriptor(
-            engine = root,
-            testCase = testCase,
-            displayName = formatter.format(testCase),
-            type = type,
-         )
+         val testDescriptor = createTestTestDescriptorWithMethodSource(testCase, type)
 
          // must attach to the parent, which we know will have been created prior, either spec or parent test
          val p = descriptors[testCase.descriptor.parent] ?: error("No descriptor found: ${testCase.descriptor.parent.id.value}")
@@ -332,6 +331,23 @@ class JUnitTestEngineListener(
          startedTests.add(testCase.descriptor)
       }
    }
+
+   private fun createTestTestDescriptorWithMethodSource(testCase: TestCase, type: TestDescriptor.Type) : TestDescriptor {
+      val id = root.deriveTestUniqueId(testCase.descriptor)
+      val testDescriptor = createTestTestDescriptor(
+         id = id,
+         displayName = formatter.format(testCase),
+         type = type,
+         // gradle-junit-platform hides tests if we don't send a source at all
+         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
+         //   and produce more correct XML report with test case name.
+         source = getMethodSource(testCase.spec::class, id),
+      )
+      return testDescriptor
+   }
+
+   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource
+      = MethodSource.from(kclass.qualifiedName, id.segments.filter { it.type == Segment.Test.value }.map { it.value }.joinToString("/"))
 
    /**
     * Registers a placeholder test which we can use to attach lifecycle errors.
