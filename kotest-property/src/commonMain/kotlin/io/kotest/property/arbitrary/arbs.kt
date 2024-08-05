@@ -12,6 +12,13 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.default()): Sequ
    samples(rs).map { it.value }.take(count)
 
 /**
+ * Returns an infinite sequence of values generated from this arb after dropping [count] values.
+ * Edge cases will be ignored.
+ */
+fun <A> Arb<A>.drop(count: Int, rs: RandomSource = RandomSource.default()): Sequence<A> =
+   samples(rs).map { it.value }.drop(count)
+
+/**
  * Returns a single value generated from this arb ignoring edge cases.
  * Alias for next.
  */
