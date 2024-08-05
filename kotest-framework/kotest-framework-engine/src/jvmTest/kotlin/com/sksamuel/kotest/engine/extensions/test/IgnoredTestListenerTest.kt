@@ -34,7 +34,7 @@ class IgnoredTestListenerTest : DescribeSpec({
       }
       coVerify(exactly = 1) {
          ignoredTestListener.ignoredTest(
-            testCase = match { it.name.testName == "should be disabled by band" },
+            testCase = match { it.name.testName == "should be disabled by bang" },
             reason = eq("Disabled by bang")
          )
       }
