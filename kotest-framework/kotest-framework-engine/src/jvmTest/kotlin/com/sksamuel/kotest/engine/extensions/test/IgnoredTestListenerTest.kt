@@ -17,7 +17,7 @@ class IgnoredTestListenerTest : DescribeSpec({
       error("still enabled")
    }
 
-   describe("!should be disabled by band") {
+   describe("!should be disabled by bang") {
       error("still enabled")
    }
 
