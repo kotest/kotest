@@ -22,7 +22,7 @@ import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
- * Used to invoke extension points / listeners / callbacks on specs.
+ * Used to invoke [Extension]s on specs.
  */
 internal class SpecExtensions(private val registry: ExtensionRegistry) {
 

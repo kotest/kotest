@@ -6,7 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
-import io.kotest.engine.spec.interceptor.instance.AfterSpecCallbackInterceptor
+import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
@@ -14,7 +14,6 @@ import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesIntercep
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.SpecExtensionInterceptor
-import io.kotest.engine.specInterceptorsForPlatform
 import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.mpp.bestName
@@ -32,7 +31,7 @@ internal class SpecInterceptorPipeline(
 
    /**
     * Executes all [SpecInterceptor]s in turn, returning a result, which will be
-    * succesfull and contain the results of all tests, unless some setup callback
+    * succesful and contain the results of all tests, unless some setup callback
     * fails, in which case the result will be a failure.
     *
     * If any [SpecInterceptor] elects to skip the given spec instance, then the result will contain
@@ -59,7 +58,7 @@ internal class SpecInterceptorPipeline(
          ConfigurationInContextSpecInterceptor(configuration),
          InlineTagSpecInterceptor(listener, configuration),
          BeforeSpecListenerSpecInterceptor(context),
-         AfterSpecCallbackInterceptor(configuration.registry),
-      ) + specInterceptorsForPlatform()
+         AfterSpecListenerSpecInterceptor(configuration.registry),
+      )
    }
 }
