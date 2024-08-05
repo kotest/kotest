@@ -21,7 +21,6 @@ import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
-import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
@@ -33,6 +32,7 @@ import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
 import io.kotest.core.Logger
 import io.kotest.core.Platform
+import io.kotest.engine.test.interceptors.createTestDispatcherInterceptor
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
@@ -86,7 +86,7 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                InvocationTimeoutInterceptor,
-               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
+               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) createTestDispatcherInterceptor() else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),

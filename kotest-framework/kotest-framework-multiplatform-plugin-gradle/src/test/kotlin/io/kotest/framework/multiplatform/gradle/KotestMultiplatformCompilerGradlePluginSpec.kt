@@ -27,8 +27,7 @@ import kotlin.io.path.name
 // See https://youtrack.jetbrains.com/issue/KT-24327 for one example.
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
-      "1.9.24",
-      "2.0.0",
+      "2.0.20-RC",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
 

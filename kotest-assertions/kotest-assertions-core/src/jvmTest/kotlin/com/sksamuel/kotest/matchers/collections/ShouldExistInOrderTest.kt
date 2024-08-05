@@ -20,7 +20,7 @@ class ShouldExistInOrderTest: WordSpec() {
                    { i: Int -> i < 2 },
                    { i: Int -> i < 2 }
                 )
-             }.message shouldBe "[1, 2] did not match the predicates [(kotlin.Int) -> kotlin.Boolean, (kotlin.Int) -> kotlin.Boolean] in order. Predicate at index 1 did not match."
+             }.message shouldBe "[1, 2] did not match the predicates in order. Predicate at index 1 did not match."
           }
        }
    }

@@ -513,13 +513,13 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject : io/k
 	public fun typeName ()Ljava/lang/String;
 }
 
-public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lio/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
