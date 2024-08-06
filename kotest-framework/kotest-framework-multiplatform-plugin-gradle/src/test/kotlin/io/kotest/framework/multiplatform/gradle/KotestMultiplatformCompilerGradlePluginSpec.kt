@@ -36,8 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
-      "1.9.24",
-      "2.0.0",
+      "2.0.20-RC",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
 

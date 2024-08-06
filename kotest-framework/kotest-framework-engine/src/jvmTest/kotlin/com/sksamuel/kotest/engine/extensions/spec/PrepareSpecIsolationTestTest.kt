@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.PrepareSpecListener
-import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -9,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
-@AutoScan
 class PrepareSpecTestListener : PrepareSpecListener {
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       if (kclass == PrepareSpecIsolationTestTest::class) {
@@ -18,6 +17,7 @@ class PrepareSpecTestListener : PrepareSpecListener {
    }
 }
 
+@ApplyExtension(PrepareSpecTestListener::class)
 class PrepareSpecIsolationTestTest : FunSpec() {
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 

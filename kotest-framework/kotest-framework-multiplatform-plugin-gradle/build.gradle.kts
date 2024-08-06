@@ -21,7 +21,6 @@ dependencies {
 
    testImplementation(libs.mockk)
 
-   devPublication(projects.kotestAssertions.kotestAssertionsApi)
    devPublication(projects.kotestAssertions.kotestAssertionsCore)
    devPublication(projects.kotestAssertions.kotestAssertionsShared)
    devPublication(projects.kotestExtensions)

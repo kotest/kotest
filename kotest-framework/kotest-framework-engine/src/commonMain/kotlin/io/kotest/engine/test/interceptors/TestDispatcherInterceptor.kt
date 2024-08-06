@@ -1,3 +1,6 @@
 package io.kotest.engine.test.interceptors
 
-expect class TestDispatcherInterceptor() : TestExecutionInterceptor
+/**
+ * Returns a [TestExecutionInterceptor].
+ */
+expect internal fun createTestDispatcherInterceptor(): TestExecutionInterceptor

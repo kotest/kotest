@@ -21,6 +21,7 @@ import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
@@ -36,7 +37,7 @@ internal class InstancePerLeafSpecRunner(
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.configuration)
 
-   private val results = mutableMapOf<TestCase, TestResult>()
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    // set to true once the initially supplied spec has been used for a test
    private val defaultInstanceUsed = AtomicBoolean(false)
@@ -108,14 +109,13 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
       return pipeline.execute(spec) {
-         locateAndRunRoot(spec, test)
-         Result.success(emptyMap())
+         locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
       }
    }
 
    // when we start a test from the queue, we must find the root test that is the ancestor of our
    // target test and begin executing that.
-   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase): Result<Spec> = runCatching {
+   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase): Result<TestResult> = runCatching {
 
       val root = materializer.materialize(spec)
          .firstOrNull { it.descriptor == test.descriptor.root() }
@@ -123,13 +123,12 @@ internal class InstancePerLeafSpecRunner(
 
       logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
       locateAndRunRoot(root, test)
-      spec
    }
 
-   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase) {
+   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase): TestResult {
       logger.log { Pair(test.name.testName, "Executing test in search of target '${target.name.testName}'") }
 
-      coroutineScope {
+      return coroutineScope {
          val context = object : TestScope {
 
             var open = true
@@ -193,6 +192,7 @@ internal class InstancePerLeafSpecRunner(
 
          val result = testExecutor.execute(test, context2)
          results[test] = result
+         result
       }
    }
 }

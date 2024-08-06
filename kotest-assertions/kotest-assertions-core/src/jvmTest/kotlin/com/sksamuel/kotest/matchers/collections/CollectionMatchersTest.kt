@@ -547,7 +547,7 @@ class CollectionMatchersTest : WordSpec() {
          "give descriptive message when predicate should not match" {
             shouldThrowAny {
                listOf(1, 2, 3, 2) shouldNot exist { it == 2}
-            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate (kotlin.Int) -> kotlin.Boolean, but elements with the following indexes matched: [1, 3]"
+            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate, but elements with the following indexes matched: [1, 3]"
          }
       }
 

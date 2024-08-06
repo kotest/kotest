@@ -62,8 +62,6 @@ tasks.withType<Test>().configureEach {
       exceptionFormat = TestExceptionFormat.FULL
    }
 
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
-
    // Register the test results dir as an output, so Gradle will cache it
    outputs
       .dir(layout.buildDirectory.dir("test-results"))
