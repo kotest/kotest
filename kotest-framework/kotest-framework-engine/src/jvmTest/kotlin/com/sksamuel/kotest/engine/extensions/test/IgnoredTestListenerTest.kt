@@ -1,70 +1,56 @@
 package com.sksamuel.kotest.engine.extensions.test
 
 import io.kotest.core.listeners.IgnoredTestListener
-import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
-import io.mockk.coVerify
-import io.mockk.spyk
+import io.kotest.matchers.shouldBe
 
-class IgnoredTestListenerTest : DescribeSpec({
+class IgnoredTestListenerTest : FunSpec({
 
-   val ignoredTestListener = spyk<IgnoredTestListener>()
+   val ignoredTests = hashSetOf<String>()
+
+   val ignoredTestListener = object : IgnoredTestListener {
+      override suspend fun ignoredTest(testCase: TestCase, reason: String?) {
+         ignoredTests.add(testCase.name.originalName)
+      }
+   }
 
    register(ignoredTestListener)
 
-   describe("should be disabled by enabled flag in config").config(enabled = false) {
-      error("still enabled")
-   }
-
-   describe("!should be disabled by bang") {
-      error("still enabled")
-   }
-
-   xdescribe("should be disabled by xmethod") {
-      error("still enabled")
-   }
-
-   describe("ignoredTestListener should be invoked") {
-      coVerify(exactly = 1) {
-         ignoredTestListener.ignoredTest(
-            testCase = match { it.name.testName == "should be disabled by enabled flag in config" },
-            reason = eq("Disabled by enabled flag in config")
-         )
-      }
-      coVerify(exactly = 1) {
-         ignoredTestListener.ignoredTest(
-            testCase = match { it.name.testName == "should be disabled by bang" },
-            reason = eq("Disabled by bang")
-         )
-      }
-      coVerify(exactly = 1) {
-         ignoredTestListener.ignoredTest(
-            testCase = match { it.name.testName == "should be disabled by xmethod" },
-            reason = eq("Disabled by xmethod")
-         )
-      }
-   }
-
-   describe("ignoredTestListener should be invoked for ignored test by failfast strategy") {
+   test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()
-         .withClasses(FailFastFunSpec::class)
+         .withClasses(IgnoredTests::class)
          .withExtensions(ignoredTestListener)
          .launch()
-      coVerify(exactly = 1) {
-         ignoredTestListener.ignoredTest(
-            testCase = match { it.name.testName == "should be ignored by failfast strategy" },
-            reason = eq("Skipping test due to fail fast")
-         )
-      }
+      ignoredTests shouldBe setOf(
+         "should be disabled by enabled flag in config",
+         "!should be disabled by bang",
+         "should be disabled by xmethod",
+         "should be ignored by failfast strategy"
+      )
    }
 })
 
-private class FailFastFunSpec : FunSpec({
-   context("fail fast enabled").config(failfast = true) {
+private class IgnoredTests : FunSpec({
+
+   test("should be disabled by enabled flag in config").config(enabled = false) {
+      error("still enabled")
+   }
+
+   test("!should be disabled by bang") {
+      error("still enabled")
+   }
+
+   xtest("should be disabled by xmethod") {
+      error("still enabled")
+   }
+
+   context("not ignored").config(failfast = true) {
       test("will be failed") {
          error("fail")
       }
+
       test("should be ignored by failfast strategy") {
          error("still enabled")
       }
