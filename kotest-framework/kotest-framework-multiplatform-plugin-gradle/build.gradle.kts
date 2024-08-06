@@ -80,8 +80,6 @@ tasks.withType<Test>().configureEach {
       events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
-
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 }
 
 @Suppress("UnstableApiUsage")
