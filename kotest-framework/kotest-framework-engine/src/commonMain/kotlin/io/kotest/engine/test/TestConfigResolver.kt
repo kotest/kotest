@@ -47,7 +47,7 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
          timeout = timeout(testConfig, parent, spec),
          invocationTimeout = invocationTimeout(testConfig, parent, spec),
          tags = tags(testConfig, parent, spec),
-         extensions = extensions(testConfig, parent, spec),
+         extensions = extensions(testConfig, parent),
          failfast = failfast(testConfig, parent, spec),
          severity = severity(testConfig, parent, spec),
          assertSoftly = assertSoftly(testConfig, parent, spec),
@@ -101,9 +101,8 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
          ?: projectConf.blockingTest
    }
 
-   fun extensions(testConfig: TestConfig?, parent: TestCase?, spec: Spec): List<Extension> {
+   fun extensions(testConfig: TestConfig?, parent: TestCase?): List<Extension> {
       return (testConfig?.extensions ?: emptyList()) +
-         (testConfig?.extensions ?: emptyList()) +
          (parent?.config?.extensions ?: emptyList())
    }
 

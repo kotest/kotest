@@ -39,7 +39,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
          testCase.spec.registeredExtensions() + // added to the spec via register
-         testCase.config.extensions
+         testCase.config.extensions // extensions coming from the test config block itself
    }
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {

@@ -9,7 +9,7 @@ internal class AfterSpecInheritenceTest : ParentTest() {
    init {
 
       afterProject {
-         counter.get() shouldBe 0
+         counter.get() shouldBe 1
       }
 
       test("after spec on parent should be invoked").config(enabled = true) {}
