@@ -14,7 +14,7 @@ class FinalizeSpecInlineTest : FunSpec() {
    init {
 
       // should only run once
-      finalizeSpec {
+      afterProject {
          counter.incrementAndGet()
       }
 
