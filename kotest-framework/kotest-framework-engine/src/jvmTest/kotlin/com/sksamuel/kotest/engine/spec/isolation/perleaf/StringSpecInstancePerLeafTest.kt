@@ -13,7 +13,7 @@ class StringSpecInstancePerLeafTest : StringSpec({
       buffer += "-init-"
    }
 
-   finalizeSpec {
+   afterSpec {
       buffer.shouldBe("-init-a-init-b-init-c")
    }
 

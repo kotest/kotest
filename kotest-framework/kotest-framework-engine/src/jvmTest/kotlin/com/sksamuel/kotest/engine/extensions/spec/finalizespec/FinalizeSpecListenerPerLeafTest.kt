@@ -43,7 +43,7 @@ class FinalizeSpecListenerPerLeafTest : FunSpec() {
       }
 
       // will be added once per instance created
-      finalizeSpec {
+      afterSpec {
          counter.incrementAndGet()
       }
 

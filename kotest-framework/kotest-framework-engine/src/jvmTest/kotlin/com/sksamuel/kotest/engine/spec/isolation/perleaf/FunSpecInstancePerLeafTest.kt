@@ -9,7 +9,7 @@ private var buffer = ""
 
 class FunSpecInstancePerLeafTest : FunSpec({
 
-   finalizeSpec {
+   afterSpec {
       buffer.shouldBe("abc")
    }
 
