@@ -14,7 +14,7 @@ interface SpecExtension : Extension {
     *
     * Implementations must invoke the process callback if they
     * wish this spec to be executed. If they want to skip
-    * the tests in this spec they can elect not to invokeRemove
+    * the tests in this spec they can elect not to invoke
     * the callback.
     *
     * Once the [execute] function returns, the execution of this
