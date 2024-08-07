@@ -1946,7 +1946,6 @@ public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Sp
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/spec/RootTest;)V
 	public final fun afterProject (Lkotlin/jvm/functions/Function0;)V
-	public final fun finalizeSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun globalExtensions ()Ljava/util/List;
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 	public final fun include (Ljava/lang/String;Lio/kotest/core/factory/TestFactory;)V
