@@ -1294,28 +1294,16 @@ public final class io/kotest/matchers/equality/FieldsEqualityCheckConfig {
 
 public final class io/kotest/matchers/equality/ReflectionKt {
 	public static final fun beEqualComparingFields (Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;)Lio/kotest/matchers/Matcher;
-	public static final fun beEqualComparingFields (Ljava/lang/Object;ZLjava/util/List;ZLjava/util/List;)Lio/kotest/matchers/Matcher;
-	public static synthetic fun beEqualComparingFields$default (Ljava/lang/Object;ZLjava/util/List;ZLjava/util/List;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun beEqualToIgnoringFields (Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)Lio/kotest/matchers/Matcher;
 	public static final fun beEqualToUsingFields (Ljava/lang/Object;[Lkotlin/reflect/KProperty;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;)V
-	public static final fun shouldBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;ZZLjava/util/List;)V
 	public static synthetic fun shouldBeEqualToComparingFields$default (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;ILjava/lang/Object;)V
-	public static synthetic fun shouldBeEqualToComparingFields$default (Ljava/lang/Object;Ljava/lang/Object;ZZLjava/util/List;ILjava/lang/Object;)V
-	public static final fun shouldBeEqualToComparingFieldsExcept (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
-	public static final fun shouldBeEqualToComparingFieldsExcept (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;Z)V
-	public static synthetic fun shouldBeEqualToComparingFieldsExcept$default (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;ZILjava/lang/Object;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldNotBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;)V
-	public static final fun shouldNotBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;ZZ)V
-	public static synthetic fun shouldNotBeEqualToComparingFields$default (Ljava/lang/Object;Ljava/lang/Object;ZZILjava/lang/Object;)V
-	public static final fun shouldNotBeEqualToComparingFieldsExcept (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
-	public static final fun shouldNotBeEqualToComparingFieldsExcept (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;Z)V
-	public static synthetic fun shouldNotBeEqualToComparingFieldsExcept$default (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;ZILjava/lang/Object;)V
 	public static final fun shouldNotBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldNotBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldNotBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty;)V
