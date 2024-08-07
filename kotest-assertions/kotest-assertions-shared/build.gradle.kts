@@ -4,7 +4,6 @@ plugins {
    id("kotest-multiplatform-library-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
-   kotlin("plugin.power-assert") version "2.0.0"
 }
 
 kotlin {
@@ -35,9 +34,4 @@ kotlin {
          }
       }
    }
-}
-
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
-powerAssert {
-   functions = listOf("io.kotest.matchers.shouldBe")
 }
