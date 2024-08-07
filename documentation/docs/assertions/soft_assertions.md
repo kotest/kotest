@@ -32,3 +32,22 @@ assertSoftly(foo) {
 
 
 We can configure assert softly to be implicitly added to every test via [project config](../framework/project_config.md).
+
+**Note:** only Kotest's own assertions can be asserted softly. If any other checks fail and throw an `AssertionError`, it will not respect `assertSoftly` and bubble up, erasing the results of previous assertions. This includes Kotest's own `fail()` function, so when the following code runs, we won't know if the first assertion `foo shouldBe bar` succeeded or failed:
+
+```kotlin
+assertSoftly {
+  foo shouldBe bar
+  fail("Something happened")
+}
+```
+
+Likewise, if mockk`s `verify(...)` fails in the following example, the second assertion will not execute:
+
+```kotlin
+assertSoftly {
+  verify(exactly = 1) { myClass.myMethod(any()) }
+  foo shouldBe bar
+}
+```
+
