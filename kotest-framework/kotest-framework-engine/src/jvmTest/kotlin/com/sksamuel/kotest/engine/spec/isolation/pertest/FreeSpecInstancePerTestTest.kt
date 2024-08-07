@@ -18,7 +18,7 @@ class FreeSpecInstancePerTestTest : FreeSpec() {
          string += "-init-"
       }
 
-      afterSpec {
+      afterProject {
          string shouldBe "-init-a-init-ab-init-abccc-init-d-init-de"
       }
 

@@ -19,7 +19,7 @@ class FreeSpecInstancePerLeafTest : FreeSpec() {
 
    init {
 
-      afterSpec {
+      afterProject {
          string shouldBe "-init-abccc-init-de"
       }
 
