@@ -1,15 +1,10 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
-import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.scopes.RootScope
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import kotlin.reflect.KClass
 
 /**
  * Base class for specs that allow for registration of tests via the DSL.
@@ -72,22 +67,6 @@ abstract class DslDrivenSpec : Spec(), RootScope {
          test.copy(name = name)
       }
       include(factory.copy(tests = renamed))
-   }
-
-   /**
-    * Registers a callback that will execute after all tests in this spec have completed.
-    *
-    * This is a convenience method for creating a [FinalizeSpecListener] and constraining
-    * it to only fire for this spec.
-    */
-   fun finalizeSpec(f: FinalizeSpec) {
-      globalExtensions.add(object : FinalizeSpecListener {
-         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            if (kclass == this@DslDrivenSpec::class) {
-               f(Tuple2(kclass, results))
-            }
-         }
-      })
    }
 
    /**
