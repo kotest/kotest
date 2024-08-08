@@ -57,7 +57,6 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
 
 fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
-      val filteredValue: List<T> = value.filter(p)
       val indexesOfMatchingElements = value.mapIndexedNotNull { index, element ->
          if(p(element)) index else null
       }
