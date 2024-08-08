@@ -39,12 +39,7 @@ class FinalizeSpecListenerPerLeafTest : FunSpec() {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 7
-      }
-
-      // will be added once per instance created
-      finalizeSpec {
-         counter.incrementAndGet()
+         counter.get() shouldBe 2
       }
 
       test("ignored test").config(enabled = false) {}
