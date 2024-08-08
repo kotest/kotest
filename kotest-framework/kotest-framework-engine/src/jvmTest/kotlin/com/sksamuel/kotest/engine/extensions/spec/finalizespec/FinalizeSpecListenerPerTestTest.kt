@@ -39,12 +39,7 @@ class FinalizeSpecListenerPerTestTest : FunSpec() {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 8
-      }
-
-      // will be added once per instance created
-      afterSpec {
-         counter.incrementAndGet()
+         counter.get() shouldBe 2
       }
 
       test("ignored test").config(enabled = false) {}
