@@ -4,6 +4,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -19,8 +20,13 @@ class TestCaseOrderTest : FunSpec() {
             listOf("a", "b", "c", "d", "e")
       }
       test("random test case ordering specified in the spec") {
-         val a = Materializer(ProjectConfiguration()).materialize(RandomSpec()).map { it.name.testName }
-         val b = Materializer(ProjectConfiguration()).materialize(RandomSpec()).map { it.name.testName }
+         val a = Materializer(ProjectConfiguration()).materialize(RandomSpecByMethodOverride()).map { it.name.testName }
+         val b = Materializer(ProjectConfiguration()).materialize(RandomSpecByMethodOverride()).map { it.name.testName }
+         a shouldNotBe b
+      }
+      test("random test case ordering specified in default test case") {
+         val a = Materializer(ProjectConfiguration()).materialize(RandomSpecByDefaultConfig()).map { it.name.testName }
+         val b = Materializer(ProjectConfiguration()).materialize(RandomSpecByDefaultConfig()).map { it.name.testName }
          a shouldNotBe b
       }
       test("sequential test case ordering specified in project config") {
@@ -71,12 +77,42 @@ private class LexicographicSpec : StringSpec() {
    }
 }
 
-
-private  class RandomSpec : StringSpec() {
+private class RandomSpecByMethodOverride : StringSpec() {
 
    override fun testCaseOrder() = TestCaseOrder.Random
 
    init {
+      "a" {}
+      "b" {}
+      "c" {}
+      "d" {}
+      "e" {}
+      "f" {}
+      "g" {}
+      "h" {}
+      "i" {}
+      "j" {}
+      "k" {}
+      "l" {}
+      "m" {}
+      "n" {}
+      "o" {}
+      "p" {}
+      "q" {}
+      "r" {}
+      "s" {}
+      "t" {}
+      "u" {}
+      "v" {}
+   }
+}
+
+private class RandomSpecByDefaultConfig : StringSpec() {
+
+   init {
+
+      defaultTestConfig = DefaultTestConfig(testOrder = TestCaseOrder.Random)
+
       "a" {}
       "b" {}
       "c" {}
