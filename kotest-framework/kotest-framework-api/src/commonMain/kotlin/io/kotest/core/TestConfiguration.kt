@@ -32,7 +32,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.DefaultTestConfig
 import kotlin.js.JsName
 
 /**
@@ -56,9 +56,7 @@ abstract class TestConfiguration {
     *
     * Any test case config set a test itself will override any value here.
     */
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
-   var defaultTestConfig: TestCaseConfig? = null
+   var defaultTestConfig: DefaultTestConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
@@ -67,28 +65,6 @@ abstract class TestConfiguration {
    var assertions: AssertionMode? = null
 
    var assertSoftly: Boolean? = null
-
-   /**
-    * Register a single [TestListener] of type T return that listener.
-    */
-   @SoftDeprecated("Use register")
-   fun <T : TestListener> listener(listener: T): T {
-      return register(listener)
-   }
-
-   /**
-    * Register multiple [TestListener]s.
-    */
-   @SoftDeprecated("Use register")
-   fun listeners(listeners: List<TestListener>) {
-      register(listeners)
-   }
-
-   /**
-    * Register multiple [TestListener]s.
-    */
-   @SoftDeprecated("Use register")
-   fun listeners(vararg listeners: TestListener) = register(listeners.toList())
 
    /**
     * Register a single [TestListener] of type T return that listener.

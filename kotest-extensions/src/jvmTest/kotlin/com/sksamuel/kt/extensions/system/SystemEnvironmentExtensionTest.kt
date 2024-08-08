@@ -65,7 +65,7 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
 
    private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
 
-   override fun listeners() = listOf(setl)
+   override fun extensions() = listOf(setl)
 
    init {
       "sys environment extension" should {
