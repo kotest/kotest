@@ -15,7 +15,7 @@ class ConstantNowExtensionsListenerTest : StringSpec() {
    init {
       extensions(ConstantNowTestListener(myNow), ConstantNowTestListener(myNow2))
 
-      finalizeSpec {
+      afterSpec {
          HijrahDate.now() shouldNotBeSameInstanceAs myNow
          LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
       }
