@@ -43,6 +43,3 @@ data class NamedTag(override val name: String) : Tag() {
    // Don't use toString from `data class`
    override fun toString() = super.toString()
 }
-
-@Deprecated("Use NamedTag. This Will be removed in 6.0")
-class StringTag(override val name: String) : Tag()

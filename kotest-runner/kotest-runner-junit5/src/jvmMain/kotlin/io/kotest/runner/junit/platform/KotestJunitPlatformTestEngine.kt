@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.Logger
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
@@ -11,7 +12,6 @@ import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.core.Logger
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -108,7 +108,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
       val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-         val discovery = Discovery(emptyList(), configuration)
+         val discovery = Discovery(configuration)
          val result = discovery.discover(discoveryRequest)
 
          if (result.specs.isNotEmpty()) {

@@ -36,11 +36,6 @@ public final class io/kotest/core/PlatformKt {
 	public static final fun getPlatform ()Lio/kotest/core/Platform;
 }
 
-public final class io/kotest/core/StringTag : io/kotest/core/Tag {
-	public fun <init> (Ljava/lang/String;)V
-	public fun getName ()Ljava/lang/String;
-}
-
 public abstract class io/kotest/core/Tag {
 	public static final field Companion Lio/kotest/core/Tag$Companion;
 	public fun <init> ()V
@@ -1339,10 +1334,6 @@ public abstract interface annotation class io/kotest/core/extensions/ApplyExtens
 
 public abstract interface class io/kotest/core/extensions/ConstructorExtension : io/kotest/core/extensions/Extension {
 	public abstract fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
-}
-
-public abstract interface class io/kotest/core/extensions/DiscoveryExtension : io/kotest/core/extensions/Extension {
-	public abstract fun afterScan (Ljava/util/List;)Ljava/util/List;
 }
 
 public abstract interface class io/kotest/core/extensions/DisplayNameFormatterExtension {

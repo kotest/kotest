@@ -5,10 +5,9 @@ package io.kotest.framework.discovery
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.spec.Spec
 import io.kotest.core.log
+import io.kotest.core.spec.Spec
 import io.kotest.mpp.syspropOrEnv
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -32,12 +31,8 @@ data class DiscoveryResult(
 
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
- *
- * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
- * optionally filter the returned classes.
  */
 class Discovery(
-   private val discoveryExtensions: List<DiscoveryExtension> = emptyList(),
    private val configuration: ProjectConfiguration,
 ) {
 
@@ -98,13 +93,7 @@ class Discovery(
 
       log { "[Discovery] ${specsAfterInitialFiltering.size} specs remain after initial filtering" }
 
-      val specsAfterExtensionFiltering = discoveryExtensions
-         .fold(specsAfterInitialFiltering) { cl, ext -> ext.afterScan(cl) }
-         .sortedBy { it.simpleName }
-
-      log { "[Discovery] ${specsAfterExtensionFiltering.size} specs remain after extension filtering" }
-
-      DiscoveryResult(specsAfterExtensionFiltering, emptyList(), null)
+      DiscoveryResult(specsAfterInitialFiltering, emptyList(), null)
    }
 
    /**
