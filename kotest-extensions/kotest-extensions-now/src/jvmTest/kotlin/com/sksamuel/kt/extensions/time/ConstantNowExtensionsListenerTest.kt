@@ -13,9 +13,9 @@ class ConstantNowExtensionsListenerTest : StringSpec() {
    private val myNow2 = LocalDateTime.now()
 
    init {
-      listeners(ConstantNowTestListener(myNow), ConstantNowTestListener(myNow2))
+      extensions(ConstantNowTestListener(myNow), ConstantNowTestListener(myNow2))
 
-      finalizeSpec {
+      afterSpec {
          HijrahDate.now() shouldNotBeSameInstanceAs myNow
          LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
       }

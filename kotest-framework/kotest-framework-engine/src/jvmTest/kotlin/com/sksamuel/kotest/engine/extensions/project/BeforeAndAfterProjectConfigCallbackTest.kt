@@ -8,7 +8,6 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 var beforeAfterProject = ""
-var beforeAfterAll = ""
 
 class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
    init {
@@ -19,16 +18,8 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
             beforeAfterProject += "before"
          }
 
-         override fun beforeAll() {
-            beforeAfterAll += "beforeall"
-         }
-
          override suspend fun afterProject() {
             beforeAfterProject += "after"
-         }
-
-         override fun afterAll() {
-            beforeAfterAll += "afterall"
          }
       }
 
@@ -42,16 +33,6 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
                .launch()
             beforeAfterProject shouldBe "beforeabafter"
          }
-
-         "beforeAll / afterAll" {
-            beforeAfterAll  = ""
-            TestEngineLauncher(NoopTestEngineListener)
-               // two classes so we know these callbacks are only invoked once
-               .withClasses(A::class, B::class)
-               .withProjectConfig(config)
-               .launch()
-            beforeAfterAll shouldBe "beforeallabafterall"
-         }
       }
    }
 }
@@ -60,7 +41,6 @@ private class A : FunSpec() {
    init {
       test("a") {
          beforeAfterProject += "a"
-         beforeAfterAll += "a"
       }
    }
 }
@@ -69,7 +49,6 @@ private class B : FunSpec() {
    init {
       test("b") {
          beforeAfterProject += "b"
-         beforeAfterAll += "b"
       }
    }
 }
