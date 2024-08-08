@@ -2,6 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
+import io.kotest.core.Logger
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -12,10 +13,10 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -77,8 +78,10 @@ internal class SingleInstanceSpecRunner(
 
          val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
          if (skipRemaining) {
-            logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
-            listener.testIgnored(nestedTestCase, "Skipping test due to fail fast")
+            val reason = "Skipping test due to fail fast"
+            logger.log { Pair(testCase.name.testName, reason) }
+            listener.testIgnored(nestedTestCase, reason)
+            TestExtensions(context.configuration.registry).ignoredTestListenersInvocation(nestedTestCase, reason)
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)

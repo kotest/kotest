@@ -11,6 +11,7 @@ import io.kotest.engine.spec.Materializer
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.core.Logger
+import io.kotest.engine.test.TestExtensions
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -26,6 +27,7 @@ internal class InOrderTestScope(
 
    private val logger = Logger(InOrderTestScope::class)
    private var failed = false
+   private val testExtensions = TestExtensions(context.configuration.registry)
 
    override suspend fun registerTestCase(nested: NestedTest) {
       logger.log { Pair(testCase.name.testName, "Nested test case discovered $nested") }
@@ -33,7 +35,9 @@ internal class InOrderTestScope(
 
       if (failed && (testCase.config.failfast || context.configuration.projectWideFailFast)) {
          logger.log { Pair(null, "A previous nested test failed and failfast is enabled - will mark this as ignored") }
-         context.listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
+         val reason = "Failfast enabled on parent test"
+         context.listener.testIgnored(nestedTestCase, reason)
+         testExtensions.ignoredTestListenersInvocation(testCase, reason)
       } else {
          val result = runTest(nestedTestCase, coroutineContext)
          if (result.isErrorOrFailure) {

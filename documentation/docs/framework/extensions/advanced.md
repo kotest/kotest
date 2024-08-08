@@ -33,4 +33,5 @@ This table lists more advanced extensions that can be used to hook into the Engi
 | IgnoredSpecListener           | Is notified when a spec is skipped.                                                                                                        |
 | SpecFilter                    | Can provide custom logic to skip a spec.                                                                                                   |
 | TestFilter                    | Can provide custom logic to skip a test.                                                                                                   |
+| IgnoredTestListener           | Is notified when a test is skipped.                                                                                                        |
 
