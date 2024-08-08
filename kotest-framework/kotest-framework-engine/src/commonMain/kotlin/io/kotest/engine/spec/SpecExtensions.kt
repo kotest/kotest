@@ -149,10 +149,8 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
       val chain = exts.foldRight(initial) { op, acc ->
          {
-            op.intercept(spec::class) {
-               op.intercept(spec) {
-                  acc()
-               }
+            op.intercept(spec) {
+               acc()
             }
          }
       }
