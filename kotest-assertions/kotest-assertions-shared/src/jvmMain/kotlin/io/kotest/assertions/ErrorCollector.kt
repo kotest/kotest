@@ -63,6 +63,7 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
 
 actual fun ErrorCollector.collectiveError(): AssertionError? {
    fun prefixWithSubjectInformation(e: AssertionFailedError, subject: Printed) =
+      // todo: here we loose the original stack trace
       AssertionFailedError(
          "The following assertion for ${subject.value} failed:\n" + e.message,
          e.cause,
