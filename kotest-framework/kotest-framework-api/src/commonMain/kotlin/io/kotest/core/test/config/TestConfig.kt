@@ -2,15 +2,11 @@ package io.kotest.core.test.config
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
-
-@Deprecated("Renamed to TestConfig. Type alias will be removed in 6.0")
-typealias UnresolvedTestConfig = TestConfig
 
 /**
  * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
@@ -49,8 +45,6 @@ data class TestConfig(
     */
    val tags: Set<Tag>? = null,
 
-   val listeners: List<TestListener>? = null,
-
    val extensions: List<TestCaseExtension>? = null,
 
    val severity: TestCaseSeverityLevel? = null,
@@ -65,16 +59,6 @@ data class TestConfig(
 
    // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
    val coroutineDebugProbes: Boolean? = null,
-
-   /**
-    * If set to true then the test engine will install a
-    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
-    * This can be retrieved via `delayController` in your tests.
-    *
-    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
-    */
-   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
-   val testCoroutineDispatcher: Boolean? = null,
 
    val coroutineTestScope: Boolean? = null,
 

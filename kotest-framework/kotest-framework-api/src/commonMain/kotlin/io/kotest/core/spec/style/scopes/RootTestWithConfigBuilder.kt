@@ -29,7 +29,6 @@ class RootTestWithConfigBuilder(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
-      testCoroutineDispatcher: Boolean? = null,
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
@@ -46,7 +45,6 @@ class RootTestWithConfigBuilder(
          enabledOrReasonIf = enabledOrReasonIf,
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
-         testCoroutineDispatcher = testCoroutineDispatcher,
          coroutineTestScope = coroutineTestScope,
       )
       context.addTest(name, xdisabled, config, test)

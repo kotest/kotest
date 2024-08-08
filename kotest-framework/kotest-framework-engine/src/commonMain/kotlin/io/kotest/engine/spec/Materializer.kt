@@ -9,6 +9,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.test.TestConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
@@ -45,18 +46,17 @@ class Materializer(private val configuration: ProjectConfiguration) {
             type = rootTest.type,
             source = rootTest.source,
             test = rootTest.test,
-            config = resolveConfig(
-               config = rootTest.config,
+            config = TestConfigResolver(configuration).resolve(
+               testConfig = rootTest.config,
                xdisabled = rootTest.disabled,
                parent = null,
                spec = spec,
-               projectConfiguration = configuration,
             ),
             factoryId = rootTest.factoryId,
          )
       }
 
-      return when (spec.testCaseOrder() ?: spec.testOrder ?: configuration.testCaseOrder) {
+      return when (testCaseOrder(spec)) {
          TestCaseOrder.Sequential -> tests
          TestCaseOrder.Random -> tests.shuffled()
          TestCaseOrder.Lexicographic -> tests.sortedBy { it.name.testName }
@@ -74,16 +74,25 @@ class Materializer(private val configuration: ProjectConfiguration) {
          test = nested.test,
          source = nested.source,
          type = nested.type,
-         config = resolveConfig(
-            config = nested.config,
+         config = TestConfigResolver(configuration).resolve(
+            testConfig = nested.config,
             xdisabled = nested.disabled,
             parent = parent,
             spec = parent.spec,
-            projectConfiguration = configuration
          ),
          factoryId = parent.factoryId,
          parent = parent,
       )
 
+   }
+
+   /**
+    * Returns the [TestCaseOrder] applicable for this spec.
+    *
+    * If the spec has a [TestCaseOrder] set, either directly or via a shared default test config,
+    * then that is used, otherwise the project default is used.
+    */
+   private fun testCaseOrder(spec: Spec): TestCaseOrder {
+      return spec.testCaseOrder() ?: spec.testOrder ?: spec.defaultTestConfig?.testOrder ?: configuration.testCaseOrder
    }
 }

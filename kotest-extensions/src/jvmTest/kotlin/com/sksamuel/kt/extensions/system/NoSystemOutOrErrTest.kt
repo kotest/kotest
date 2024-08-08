@@ -11,7 +11,7 @@ import io.kotest.core.spec.style.StringSpec
 @Isolate
 class NoSystemOutOrErrTest : StringSpec() {
 
-  override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
+  override fun extensions() = listOf(NoSystemOutListener, NoSystemErrListener)
 
   init {
 

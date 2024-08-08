@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
@@ -10,7 +11,6 @@ import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -285,7 +285,6 @@ class JUnitTestEngineListener(
 
       // like all tests, an ignored test should be registered first
       // ignored test should be a TEST type, because an ignored test will never have child tests.
-      val id = root.deriveTestUniqueId(testCase.descriptor)
       val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }

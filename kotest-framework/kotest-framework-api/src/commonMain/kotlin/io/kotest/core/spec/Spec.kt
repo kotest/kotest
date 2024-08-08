@@ -2,7 +2,6 @@ package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
@@ -14,7 +13,6 @@ import io.kotest.core.factory.FactoryId
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
@@ -25,8 +23,6 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.TestConfig
 import kotlin.js.JsName
 
@@ -87,27 +83,6 @@ abstract class Spec : TestConfiguration() {
     * with project config.
     */
    open fun extensions(): List<Extension> = listOf()
-
-   /**
-    * Override this function to register instances of
-    * [TestListener] which will be notified of events during
-    * execution of this spec.
-    *
-    * If you wish to register a listener for all specs
-    * then use [ProjectConfiguration.registerListener].
-    */
-   @SoftDeprecated("Override extensions rather than listeners. Listeners are just a type of extension. Deprecated since 5.0")
-   open fun listeners(): List<TestListener> = emptyList()
-
-   /**
-    * Override this function to set default [ResolvedTestConfig] which will be applied to each
-    * test case. If null, then will use project defaults.
-    *
-    * Any test case config set a test itself will override any value here.
-    */
-   @Suppress("DEPRECATION") // Remove when removing TestCaseConfig
-   @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
-   open fun defaultTestCaseConfig(): TestCaseConfig? = null
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.
@@ -251,16 +226,14 @@ abstract class Spec : TestConfiguration() {
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
-    *
-    * If this value is null, and the [SpecFunctionConfiguration.timeout] is also null, the project default will be used.
+    * If this value is null, the project default will be used.
     */
    @JsName("timeout_var")
    var timeout: Long? = null
 
    /**
     * Sets a millisecond invocation timeout for each test case in this spec unless overridden in the test config itself.
-    * If this value is null, and the [SpecFunctionConfiguration.invocationTimeout] is also null,
-    * the project default will be used.
+    * If this value is null, the project default will be used.
     *
     * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
     * but only leaf tests (outermost tests).
@@ -292,17 +265,6 @@ abstract class Spec : TestConfiguration() {
    @JsName("coroutineDispatcherFactory_js")
    @ExperimentalKotest
    var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
-
-   /**
-    * If set to true then the test engine will install a
-    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
-    * This can be retrieved via `delayController` in your tests.
-    *
-    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
-    */
-   @ExperimentalKotest
-   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
-   var testCoroutineDispatcher: Boolean? = null
 
    var coroutineTestScope: Boolean? = null
 

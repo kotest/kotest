@@ -78,7 +78,7 @@ class SystemPropertiesExtensionsTest : FreeSpec() {
 class SystemPropertyListenerTest : WordSpec() {
    private val sptl = SystemPropertyTestListener("bee", "bop", mode = OverrideMode.SetOrOverride)
 
-   override fun listeners() = listOf(sptl)
+   override fun extensions() = listOf(sptl)
 
    init {
       "sys prop extension" should {

@@ -41,8 +41,8 @@ class DumpConfigInterceptorTest : FunSpec({
             |-> Coroutine debug probe: false
             |-> Spec execution order: Lexicographic
             |-> Default test execution order: Sequential
-            |-> Default test timeout: nullms
-            |-> Default test invocation timeout: nullms
+            |-> Default test timeout: 600000ms
+            |-> Default test invocation timeout: 600000ms
             |-> Default isolation mode: SingleInstance
             |-> Global soft assertions: false
             |-> Write spec failure file: false

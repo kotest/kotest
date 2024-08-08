@@ -10,8 +10,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.TestCaseConfig
-import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
@@ -168,14 +166,6 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [TestCaseConfig] set here is used as the default for tests, unless overridden in a spec,
-    * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
-    */
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   @Deprecated("use the individual settings instead of the test case config class. Deprecated since 5.8.1")
-   open val defaultTestCaseConfig: TestCaseConfig? = null
-
-   /**
     * Some specs have DSLs that include "prefix" words in the test name.
     * For example, when using [io.kotest.core.spec.style.ExpectSpec] like this:
     *
@@ -254,17 +244,6 @@ abstract class AbstractProjectConfig {
    open var disableTestNestedJarScanning: Boolean? = null
 
    /**
-    * If set to true then the test engine will install a
-    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
-    *
-    * This can be retrieved via `delayController` in your tests.
-    *
-    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
-    */
-   @ExperimentalKotest
-   open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
-
-   /**
     * If set to false then private spec classes will be ignored by the test engine.
     */
    open var ignorePrivateClasses: Boolean? = null
@@ -276,24 +255,8 @@ abstract class AbstractProjectConfig {
    open suspend fun beforeProject() {}
 
    /**
-    * Executed before the first test of the project, but after the
-    * [ProjectListener.beforeProject] methods.
-    */
-   @Deprecated(message = "use beforeProject supports suspension", replaceWith = ReplaceWith("beforeProject"))
-   open fun beforeAll() {
-   }
-
-   /**
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
    open suspend fun afterProject() {}
-
-   /**
-    * Executed after the last test of the project, but before the
-    * [ProjectListener.afterProject] methods.
-    */
-   @Deprecated(message = "use afterProject which supports suspension", replaceWith = ReplaceWith("afterProject"))
-   open fun afterAll() {
-   }
 }

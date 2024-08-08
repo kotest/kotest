@@ -53,16 +53,11 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.displayFullTestPath?.let { configuration.displayFullTestPath = it }
 
    // config
-   @Suppress("DEPRECATION") // Remove when removing TestCaseConfig
-   config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
    config.logLevel?.let { configuration.logLevel = it }
    config.tagInheritance?.let { configuration.tagInheritance = it }
 
-
    // coroutines
    config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }
-   @Suppress("DEPRECATION") // Remove when removing testCoroutineDispatcher
-   config.testCoroutineDispatcher.let { configuration.testCoroutineDispatcher = it }
    config.coroutineTestScope?.let { configuration.coroutineTestScope = it }
 
    // the project config object allows us to define project event methods, which we
@@ -71,14 +66,10 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
       override suspend fun beforeProject() {
          config.beforeProject()
-         @Suppress("DEPRECATION") // Remove when removing beforeAll
-         config.beforeAll()
       }
 
       override suspend fun afterProject() {
          config.afterProject()
-         @Suppress("DEPRECATION") // Remove when removing afterAll
-         config.afterAll()
       }
    }
 

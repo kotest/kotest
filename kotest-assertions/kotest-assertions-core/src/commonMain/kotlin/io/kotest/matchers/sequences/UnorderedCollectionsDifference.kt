@@ -41,11 +41,11 @@ internal data class UnorderedCollectionsDifference<T>(
          return UnorderedCollectionsDifference(
              missingElements = expectedCounts.keys - valueCounts.keys,
              extraElements = valueCounts.keys - expectedCounts.keys,
-             countMismatches = expectedCounts.mapNotNull { expected ->
-                 val valueCount = valueCounts[expected.key]
+             countMismatches = expectedCounts.mapNotNull { ex ->
+                 val valueCount = valueCounts[ex.key]
                  valueCount?.let {
-                     if (expected.value == valueCount) null else
-                         CountMismatch(expected.key, expected.value, valueCount)
+                     if (ex.value == valueCount) null else
+                         CountMismatch(ex.key, ex.value, valueCount)
                  }
              }
          )

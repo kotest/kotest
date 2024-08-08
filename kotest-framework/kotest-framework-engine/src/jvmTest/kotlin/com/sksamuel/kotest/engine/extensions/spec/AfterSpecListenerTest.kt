@@ -143,15 +143,14 @@ private class MyPopulatedSpec2 : FunSpec() {
    }
 
    override fun extensions(): List<Extension> {
-      return listOf(MyAfterSpecListener)
-   }
-
-   override fun listeners(): List<TestListener> {
-      return listOf(object : TestListener {
-         override suspend fun afterSpec(spec: Spec) {
-            counter.incrementAndGet()
+      return listOf(
+         MyAfterSpecListener,
+         object : TestListener {
+            override suspend fun afterSpec(spec: Spec) {
+               counter.incrementAndGet()
+            }
          }
-      })
+      )
    }
 
    init {

@@ -7,18 +7,16 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.config.TestCaseConfig
 
 object Defaults {
 
+   const val invocations: Int = 1
    const val threads = 1
    const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
    const val ignorePrivateClasses: Boolean = false
 
    val assertionMode: AssertionMode = AssertionMode.None
-   @Suppress("DEPRECATION") // Remove when removing legacy option
-   val testCaseConfig: TestCaseConfig = TestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
    val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn

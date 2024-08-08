@@ -29,9 +29,6 @@ import kotlin.time.DurationUnit
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-@Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
-typealias JunitXmlListener = JunitXmlReporter
-
 /**
  * A JUnit xml legacy format writer.
  *
