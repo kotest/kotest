@@ -1399,12 +1399,10 @@ public abstract interface class io/kotest/core/extensions/SpecExecutionOrderExte
 
 public abstract interface class io/kotest/core/extensions/SpecExtension : io/kotest/core/extensions/Extension {
 	public abstract fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun intercept (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/extensions/SpecExtension$DefaultImpls {
 	public static fun intercept (Lio/kotest/core/extensions/SpecExtension;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun intercept (Lio/kotest/core/extensions/SpecExtension;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/core/extensions/SpecRefExtension {
