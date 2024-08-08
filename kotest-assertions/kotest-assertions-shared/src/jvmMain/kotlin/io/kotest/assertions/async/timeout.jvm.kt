@@ -9,7 +9,7 @@ import kotlin.time.toKotlinDuration
  * Assert [thunk] does not complete within [duration].
  */
 @Deprecated(
-   "Updated to use Kotlin time types. This function will be removed in 6.0.",
+   "Updated to use Kotlin time types. This function will be removed in 6.1.",
    ReplaceWith(
       "shouldTimeout(duration.toKotlinDuration()) { thunk() }",
       "kotlin.time.toKotlinDuration",
@@ -22,7 +22,7 @@ suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A): Unit 
  * Assert [thunk] does not complete within [timeout]/[unit].
  */
 @Deprecated(
-   "Updated to use Kotlin time types. This function will be removed in 6.0.",
+   "Updated to use Kotlin time types. This function will be removed in 6.1.",
    ReplaceWith(
       "shouldTimeout(Duration.of(timeout, unit.toChronoUnit())) { thunk() }",
       "java.time.Duration"
