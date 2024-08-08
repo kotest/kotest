@@ -6,7 +6,6 @@ import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
-import kotlin.reflect.KClass
 
 interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
 
@@ -14,8 +13,7 @@ interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
    suspend fun afterProperty()
 
    /** See [SpecExtension.intercept]. */
-   @Deprecated("See `SpecExtension.intercept(spec: KClass<out Spec>, process: suspend () -> Unit)`")
-   override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
+   override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       val before = coroutineContext[BeforePropertyContextElement]?.before
       val after = coroutineContext[AfterPropertyContextElement]?.after
       withContext(AfterPropertyContextElement {
@@ -25,7 +23,7 @@ interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
          before?.invoke()
          beforeProperty()
       }) {
-         process()
+         execute(spec)
       }
    }
 }
