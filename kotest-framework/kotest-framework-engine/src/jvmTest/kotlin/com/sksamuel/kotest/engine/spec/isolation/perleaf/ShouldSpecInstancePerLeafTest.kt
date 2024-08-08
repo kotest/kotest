@@ -17,7 +17,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
 
    init {
 
-      finalizeSpec {
+      afterProject {
          buffer shouldBe "-init-ab-init-acd-init-acef-init-aceg-init-hij-init-hik"
       }
 

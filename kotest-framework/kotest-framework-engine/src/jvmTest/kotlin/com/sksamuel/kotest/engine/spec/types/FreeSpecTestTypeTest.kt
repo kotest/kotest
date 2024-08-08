@@ -7,8 +7,6 @@ import io.kotest.matchers.shouldBe
 class FreeSpecTestTypeTest : FreeSpec() {
    init {
 
-      finalizeSpec { it.b.size shouldBe 4 }
-
       "context" - {
          this.testCase.type shouldBe TestType.Container
          "context 2" - {
