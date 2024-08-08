@@ -68,16 +68,6 @@ data class ResolvedTestConfig(
     */
    val coroutineDebugProbes: Boolean,
 
-   /**
-    * If set to true then the test engine will install a
-    * [`TestDispatcher`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/-test-dispatcher/).
-    * This can be retrieved via `delayController` in your tests.
-    *
-    * See https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
-    */
-   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
-   val testCoroutineDispatcher: Boolean,
-
    val coroutineTestScope: Boolean,
 
    // When set to true, execution will switch to a dedicated thread for each test case in this spec,
@@ -97,7 +87,6 @@ data class ResolvedTestConfig(
          invocations = 1,
          threads = 1,
          coroutineDebugProbes = false,
-         testCoroutineDispatcher = false,
          coroutineTestScope = false,
          assertionMode = AssertionMode.None,
          assertSoftly = false,
@@ -110,7 +99,4 @@ data class ResolvedTestConfig(
          failfast = false,
       )
    }
-
 }
-
-val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
