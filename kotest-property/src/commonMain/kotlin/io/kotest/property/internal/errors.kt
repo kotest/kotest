@@ -19,7 +19,7 @@ internal fun throwPropertyTestAssertionError(
  * @param e the underlying failure reason
  * @param attempts the iteration count at the time of failure
  */
-internal fun throwPropertyTestAssertionError(
+fun throwPropertyTestAssertionError(
    results: List<ShrinkResult<Any?>>,
    e: Throwable,
    attempts: Int,
