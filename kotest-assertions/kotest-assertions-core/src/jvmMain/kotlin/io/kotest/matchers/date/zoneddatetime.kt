@@ -14,9 +14,8 @@ fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
       return MatcherResult(
          passed,
          { "$value should be today" },
-         {
-            "$value should not be today"
-         })
+         { "$value should not be today" }
+      )
    }
 }
 
