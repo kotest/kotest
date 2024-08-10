@@ -1,11 +1,13 @@
 package com.sksamuel.kotest.matchers.string
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.containInOrder
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContainInOrder
 
@@ -49,5 +51,14 @@ class ContainInOrderMatcherTest : FreeSpec() {
                null.shouldContainInOrder("")
             }.message shouldBe "Expecting actual not to be null"
          }
-      }   }
+
+         "should output first mismatch" {
+            shouldThrowAny {
+               "The quick brown fox jumps over the lazy dog".shouldContainInOrder(
+                  "The", "quick", "red", "fox", "jumps", "over", "the", "lazy", "dog"
+               )
+            }.message.shouldContain("""Did not match substring[2]: <"red">""")
+         }
+      }
+   }
 }

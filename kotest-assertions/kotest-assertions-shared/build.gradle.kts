@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
    id("kotest-multiplatform-library-conventions")
    id("kotest-android-native-conventions")

@@ -105,17 +105,18 @@ include(
    ":kotest-tests:kotest-tests-concurrency-tests",
    ":kotest-tests:kotest-tests-concurrency-specs",
 
-   ":kotest-tests:kotest-tests-junitxml",
+   ":kotest-tests:kotest-tests-config-classname",
    ":kotest-tests:kotest-tests-htmlreporter",
+   ":kotest-tests:kotest-tests-junitxml",
+   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
    ":kotest-tests:kotest-tests-multipleconfig",
-   ":kotest-tests:kotest-tests-test-parallelism",
+   ":kotest-tests:kotest-tests-power-assert",
    ":kotest-tests:kotest-tests-spec-parallelism",
    ":kotest-tests:kotest-tests-tagextension",
    ":kotest-tests:kotest-tests-timeout-project",
    ":kotest-tests:kotest-tests-timeout-sysprop",
-   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
+   ":kotest-tests:kotest-tests-test-parallelism",
 //   ":kotest-tests:kotest-tests-js",
-   ":kotest-tests:kotest-tests-config-classname",
 
    // BOM for whole kotest project
    ":kotest-bom",
