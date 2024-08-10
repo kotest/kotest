@@ -1534,9 +1534,6 @@ public final class io/kotest/core/factory/UuidKt {
 	public static final fun uniqueId ()Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/filter/Filter : io/kotest/core/extensions/Extension {
-}
-
 public abstract interface class io/kotest/core/filter/SpecFilter : io/kotest/core/extensions/Extension {
 	public abstract fun filter (Lkotlin/reflect/KClass;)Lio/kotest/core/filter/SpecFilterResult;
 }
@@ -1559,7 +1556,7 @@ public final class io/kotest/core/filter/SpecFilterResult$Include : io/kotest/co
 	public static final field INSTANCE Lio/kotest/core/filter/SpecFilterResult$Include;
 }
 
-public abstract interface class io/kotest/core/filter/TestFilter : io/kotest/core/filter/Filter {
+public abstract interface class io/kotest/core/filter/TestFilter : io/kotest/core/extensions/Extension {
 	public abstract fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/filter/TestFilterResult;
 }
 
