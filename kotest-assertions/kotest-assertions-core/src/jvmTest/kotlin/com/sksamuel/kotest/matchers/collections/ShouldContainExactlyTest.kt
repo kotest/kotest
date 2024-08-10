@@ -202,8 +202,8 @@ class ShouldContainExactlyTest : WordSpec() {
                )
 
             message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=foo, b=true, c=23423, p=a/b/c),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=a/b/c),")
+            message.shouldContain("expected: Blonde(a=foo, b=true, c=23423, p=$expectedPath),")
+            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
             message.shouldContain("The following fields did not match:")
             message.shouldContain("\"a\" expected: <\"foo\">, but was: <\"woo\">")
             message.shouldContain("\"c\" expected: <23423>, but was: <97821>")
@@ -249,8 +249,8 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                """.trimMargin()
             message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=goo, b=true, c=51984, p=a/b/c),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=a/b/c),")
+            message.shouldContain("expected: Blonde(a=goo, b=true, c=51984, p=$expectedPath),")
+            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
             message.shouldContain("The following fields did not match:")
             message.shouldContain("\"a\" expected: <\"goo\">, but was: <\"woo\">")
             message.shouldContain("\"c\" expected: <51984>, but was: <97821>")
@@ -314,8 +314,8 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=$expectedPath)]
                """.trimMargin()
                message.shouldContain("Possible matches:")
-               message.shouldContain("expected: Blonde(a=foo, b=true, c=2, p=a/b/c),")
-               message.shouldContain("but was: Blonde(a=foo, b=true, c=77, p=a/b/c),")
+               message.shouldContain("expected: Blonde(a=foo, b=true, c=2, p=$expectedPath),")
+               message.shouldContain("but was: Blonde(a=foo, b=true, c=77, p=$expectedPath),")
                message.shouldContain("The following fields did not match:")
                message.shouldContain("\"c\" expected: <2>, but was: <77>")
             message shouldContain "Printed first 5 similarities out of 20, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)"
