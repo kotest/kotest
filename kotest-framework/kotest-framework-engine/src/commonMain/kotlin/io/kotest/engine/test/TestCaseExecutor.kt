@@ -66,7 +66,7 @@ internal class TestCaseExecutor(
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
-         TestFinishedInterceptor(listener),
+         TestFinishedInterceptor(listener, context.configuration.registry),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,

@@ -1,7 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.engine.collect
-import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -13,13 +11,16 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
+import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.collect
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
+import io.kotest.engine.mapError
 import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -149,5 +150,13 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
 
    fun logExtensions(testCase: TestCase): List<LogExtension> {
       return extensions(testCase).filterIsInstance<LogExtension>()
+   }
+
+   /**
+    * Invokes all [IgnoredTestListener]s for this test.
+    */
+   suspend fun ignoredTestListenersInvocation(testCase: TestCase, reason: String?) {
+      extensions(testCase).filterIsInstance<IgnoredTestListener>()
+         .forEach { it.ignoredTest(testCase, reason) }
    }
 }
