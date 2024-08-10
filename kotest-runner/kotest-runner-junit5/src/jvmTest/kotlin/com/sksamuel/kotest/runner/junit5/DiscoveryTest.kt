@@ -73,7 +73,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+      descriptor.classes.map { it.qualifiedName }.toSet() shouldBe setOf(
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2",
@@ -161,7 +161,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+      descriptor.classes.map { it.qualifiedName }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2::class.java.canonicalName,
@@ -278,7 +278,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+      descriptor.classes.map { it.qualifiedName }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,

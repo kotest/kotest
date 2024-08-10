@@ -79,9 +79,14 @@ fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<
 fun <K> containAnyKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
    override fun test(value: Map<K, Any?>): MatcherResult {
       val passed = keys.any { value.containsKey(it) }
+      val possibleMatchesDescription = if(passed) "" else possibleMatchesForMissingElements(
+         keys.toSet(),
+         value.keys.toSet(),
+         "keys"
+      )
       return MatcherResult(
          passed,
-         { "Map did not contain any of the keys ${keys.joinToString(", ")}" },
+         { "Map did not contain any of the keys ${keys.joinToString(", ")}$possibleMatchesDescription" },
          { "Map should not contain any of the keys ${keys.joinToString(", ")}" }
       )
    }
