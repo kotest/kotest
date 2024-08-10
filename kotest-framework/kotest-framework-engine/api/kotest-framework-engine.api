@@ -105,7 +105,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun toConfig ()Lio/kotest/engine/TestEngineConfig;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withConfig ([Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withConfiguration (Lio/kotest/core/config/ProjectConfiguration;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
