@@ -2,13 +2,12 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.icons.AllIcons
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.testMode
-import org.junit.Ignore
 import java.nio.file.Paths
 
-class FeatureSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
+class FeatureSpecStyleTest : BasePlatformTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

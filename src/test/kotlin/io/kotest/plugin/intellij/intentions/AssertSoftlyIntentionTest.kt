@@ -1,13 +1,13 @@
 package io.kotest.plugin.intellij.intentions
 
 import com.intellij.openapi.command.CommandProcessor
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.idea.core.moveCaret
 import org.jetbrains.kotlin.idea.util.application.runWriteAction
 import java.nio.file.Paths
 
-class AssertSoftlyIntentionTest : LightJavaCodeInsightFixtureTestCase() {
+class AssertSoftlyIntentionTest : BasePlatformTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

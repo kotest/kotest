@@ -1,5 +1,7 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
-   java
+   id("java")
    alias(libs.plugins.kotlin.jvm)
    id("org.jetbrains.intellij.platform") version "2.0.1"
 }
@@ -85,11 +87,6 @@ val jetbrainsToken: String by project
 
 version = "1.3." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
-//intellij {
-//   type.set("IC")
-//   updateSinceUntilBuild.set(false)
-//}
-
 val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
    prepareSandboxTask {
       sandboxDirectory = project.layout.buildDirectory.dir(project.property("sandbox").toString())
@@ -100,7 +97,7 @@ val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
 intellijPlatform {
    buildSearchableOptions = false
    projectName = project.name
-   instrumentCode = false
+   instrumentCode = true
 
    pluginConfiguration {
       name = "kotest-plugin-intellij"
@@ -121,14 +118,16 @@ intellijPlatform {
 }
 
 dependencies {
-   implementation(libs.jaxb.api)
-   implementation(libs.javax.activation)
-
+   testImplementation("junit:junit:4.13.2")
    intellijPlatform {
       intellijIdeaCommunity(descriptor.sdkVersion)
+      instrumentationTools()
+      pluginVerifier()
+      zipSigner()
       bundledPlugin("com.intellij.java")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
+      testFramework(TestFrameworkType.Platform)
    }
 
    // we bundle this for 4.1 support
@@ -144,6 +143,13 @@ dependencies {
    testImplementation(libs.test.kotest.assertions.core)
    testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
+
+//   intellijPlatformTesting {
+//      runIde
+//      testIde
+//      testIdeUi
+//      testIdePerformance
+//   }
 
 sourceSets {
    main {

@@ -1,7 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.testFramework.LightProjectDescriptor
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.plugin.intellij.Constants
@@ -19,7 +19,7 @@ import java.nio.file.Paths
 import javax.swing.tree.DefaultMutableTreeNode
 
 @Suppress("UNCHECKED_CAST")
-class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
+class TreeModelTest : BasePlatformTestCase() {
 
    override fun getProjectDescriptor(): LightProjectDescriptor = JAVA_11
 

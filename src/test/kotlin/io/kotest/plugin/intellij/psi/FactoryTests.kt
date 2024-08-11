@@ -1,15 +1,14 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.core.spec.style.funSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import java.nio.file.Paths
 
 fun foo(a: String) = funSpec { }
 
-class FactoryTests : LightJavaCodeInsightFixtureTestCase() {
+class FactoryTests : BasePlatformTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

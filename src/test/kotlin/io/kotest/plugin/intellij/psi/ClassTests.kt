@@ -4,12 +4,12 @@ import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.pom.java.LanguageLevel
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.testFramework.LightProjectDescriptor
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
-class ClassTests : LightJavaCodeInsightFixtureTestCase() {
+class ClassTests : BasePlatformTestCase() {
 
    private val descriptor = object : ProjectDescriptor(LanguageLevel.HIGHEST) {
       override fun getSdk(): Sdk {

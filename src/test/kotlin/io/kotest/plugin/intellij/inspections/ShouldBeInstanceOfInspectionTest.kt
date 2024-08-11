@@ -2,12 +2,12 @@
 //
 //import com.intellij.lang.annotation.HighlightSeverity
 //import com.intellij.openapi.command.CommandProcessor
-//import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+//import com.intellij.testFramework.fixtures.BasePlatformTestCasev
 //import io.kotest.matchers.shouldBe
 //import org.jetbrains.kotlin.idea.util.application.runWriteAction
 //import java.nio.file.Paths
 //
-//internal class ShouldBeInstanceOfInspectionTest : LightJavaCodeInsightFixtureTestCase() {
+//internal class ShouldBeInstanceOfInspectionTest : BasePlatformTestCase() {
 //
 //   override fun getTestDataPath(): String {
 //      val path = Paths.get("./src/test/resources/").toAbsolutePath()

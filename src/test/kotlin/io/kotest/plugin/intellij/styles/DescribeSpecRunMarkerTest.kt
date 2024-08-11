@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.icons.AllIcons
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.testMode
@@ -15,7 +15,7 @@ data class Gutter(
    val icon: Icon = AllIcons.RunConfigurations.TestState.Run
 )
 
-class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
+class DescribeSpecRunMarkerTest : BasePlatformTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
