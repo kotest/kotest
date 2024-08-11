@@ -1,6 +1,6 @@
 package io.kotest.plugin.intellij
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.psi.CallbackType
@@ -9,10 +9,10 @@ import io.kotest.plugin.intellij.psi.specs
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import java.nio.file.Paths
 
-class CallbacksTest : BasePlatformTestCase() {
+class CallbacksTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
-      val path = Paths.get(".//").toAbsolutePath()
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
       return path.toString()
    }
 

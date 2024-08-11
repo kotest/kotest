@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.jetbrains.kotlin.idea.KotlinFileType
@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.psi.KtProperty
 
-class LeafTest : BasePlatformTestCase() {
+class LeafTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testObjectShouldBeKtClassOrObject() {
       val element = PsiFileFactory

@@ -127,7 +127,7 @@ dependencies {
       bundledPlugin("com.intellij.java")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
-      testFramework(TestFrameworkType.Platform)
+      testFramework(TestFrameworkType.Plugin.Java)
    }
 
    // we bundle this for 4.1 support
