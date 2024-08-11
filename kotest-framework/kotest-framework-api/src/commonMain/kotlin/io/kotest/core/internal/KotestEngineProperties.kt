@@ -88,9 +88,12 @@ object KotestEngineProperties {
    const val concurrentTests = "kotest.framework.test.concurrent"
 
    /**
-    * Disable scanning the classpath for configuration classes by setting this property to true
+    * Enable scanning the classpath for configuration classes by setting this property to true.
+    * This is a legacy setting and should only be used for backwards compatibility with projects
+    * that used configuration in Kotest 5.x and below.
     */
-   const val disableConfigurationClassPathScanning = "kotest.framework.classpath.scanning.config.disable"
+   @Deprecated("Use convention by naming your config classes KotestProjectConfig and placing them in your common package parent")
+   const val enableConfigurationClassPathScanning = "kotest.framework.classpath.scanning.config.enabled"
 
    /**
     * Specify a fully qualified name to use for project config.

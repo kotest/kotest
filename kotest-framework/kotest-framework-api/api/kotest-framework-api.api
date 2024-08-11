@@ -1582,13 +1582,13 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field concurrentTests Ljava/lang/String;
 	public static final field configurationClassName Ljava/lang/String;
 	public static final field disableBangPrefix Ljava/lang/String;
-	public static final field disableConfigurationClassPathScanning Ljava/lang/String;
 	public static final field disableJarDiscovery Ljava/lang/String;
 	public static final field disableSourceRef Ljava/lang/String;
 	public static final field disableTestNestedJarScanning Ljava/lang/String;
 	public static final field discoveryClasspathFallbackEnabled Ljava/lang/String;
 	public static final field dumpConfig Ljava/lang/String;
 	public static final field duplicateTestNameMode Ljava/lang/String;
+	public static final field enableConfigurationClassPathScanning Ljava/lang/String;
 	public static final field excludeTags Ljava/lang/String;
 	public static final field filterSpecs Ljava/lang/String;
 	public static final field filterTests Ljava/lang/String;
