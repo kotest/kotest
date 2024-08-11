@@ -23,7 +23,7 @@ fun loadProjectConfigsJVM(): List<AbstractProjectConfig> {
       else -> {
          log { "Loading project configs from fqn(s): $fqns" }
          fqns.split(";").map {
-            instantiateOrObject(Class.forName(fqns)).getOrThrow() as AbstractProjectConfig
+            instantiateOrObject(Class.forName(it)).getOrThrow() as AbstractProjectConfig
          }
       }
    }
