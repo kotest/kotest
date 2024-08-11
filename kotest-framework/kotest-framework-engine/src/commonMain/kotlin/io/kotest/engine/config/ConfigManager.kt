@@ -55,6 +55,12 @@ internal expect fun applyPlatformDefaults(configuration: ProjectConfiguration)
  * Scan the classpath for [AbstractProjectConfig] instances.
  *
  * Note: This will only have an effect on JVM targets.
+ * Note: Disabled by default in Kotest 6.0
  */
 internal expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
 
+/**
+ * Load an [AbstractProjectConfig] instance by using FQN from a system property.
+ * Only applies on the JVM.
+ */
+internal expect fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig>
