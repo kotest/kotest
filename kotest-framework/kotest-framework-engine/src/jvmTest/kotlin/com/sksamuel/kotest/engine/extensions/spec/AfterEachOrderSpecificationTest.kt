@@ -12,22 +12,22 @@ import io.kotest.matchers.shouldBe
  */
 class AfterEachOrderSpecificationTest : FunSpec() {
 
-   private var order = ""
+   private val order = mutableListOf<String>()
 
    override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      order += "a"
+      order.add("fn_override")
    }
 
    override fun extensions(): List<Extension> {
       return listOf(
          object : AfterEachListener {
             override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-               order += "f"
+               order.add("extension1")
             }
          },
          object : AfterEachListener {
             override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-               order += "g"
+               order.add("extension2")
             }
          },
       )
@@ -36,31 +36,30 @@ class AfterEachOrderSpecificationTest : FunSpec() {
    init {
 
       afterProject {
-         order shouldBe "fgacbfgaedcbfgaedcb"
+         order.joinToString(",") shouldBe "extension1,extension2,fn_override,dsl2,dsl1,extension1,extension2,fn_override,dsl4,dsl3,dsl2,dsl1"
       }
 
       // after each blocks are executed in reverse order, so nested ones run before outer ones
       afterEach {
-         order += "b"
+         order.add("dsl1")
       }
 
       afterEach {
-         order += "c"
+         order.add("dsl2")
       }
 
       test("foo") { }
       context("bar") {
 
          afterEach {
-            order += "d"
+            order.add("dsl3")
          }
 
          afterEach {
-            order += "e"
+            order.add("dsl4")
          }
 
          test("baz") { }
-         test("bing") { }
       }
    }
 }

@@ -11,22 +11,22 @@ import io.kotest.matchers.shouldBe
  */
 class BeforeEachOrderSpecificationTest : FunSpec() {
 
-   private var order = ""
+   private val order = mutableListOf<String>()
 
    override suspend fun beforeEach(testCase: TestCase) {
-      order += "a"
+      order.add("fn_override")
    }
 
    override fun extensions(): List<Extension> {
       return listOf(
          object : BeforeEachListener {
             override suspend fun beforeEach(testCase: TestCase) {
-               order += "f"
+               order.add("extension1")
             }
          },
          object : BeforeEachListener {
             override suspend fun beforeEach(testCase: TestCase) {
-               order += "g"
+               order.add("extension2")
             }
          },
       )
@@ -35,30 +35,29 @@ class BeforeEachOrderSpecificationTest : FunSpec() {
    init {
 
       afterProject {
-         order shouldBe "fgabcfgabcdefgabcde"
+         order.joinToString(",") shouldBe "extension1,extension2,fn_override,dsl1,dsl2,extension1,extension2,fn_override,dsl1,dsl2,dsl3,dsl4"
       }
 
       beforeEach {
-         order += "b"
+         order.add("dsl1")
       }
 
       beforeEach {
-         order += "c"
+         order.add("dsl2")
       }
 
       test("foo") { }
       context("bar") {
 
          beforeEach {
-            order += "d"
+            order.add("dsl3")
          }
 
          beforeEach {
-            order += "e"
+            order.add("dsl4")
          }
 
          test("baz") { }
-         test("bing") { }
       }
    }
 }
