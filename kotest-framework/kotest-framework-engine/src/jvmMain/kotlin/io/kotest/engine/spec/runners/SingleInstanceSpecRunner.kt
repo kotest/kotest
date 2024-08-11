@@ -46,10 +46,8 @@ internal class SingleInstanceSpecRunner(
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
-         println("runner thread name " + Thread.currentThread().name)
          return coroutineScope {
             async { // fresh coroutine for each spec
-               println("runner coroutine scope thread name " + Thread.currentThread().name)
                pipeline.execute(spec) {
                   val rootTests = materializer.materialize(spec)
                   logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }

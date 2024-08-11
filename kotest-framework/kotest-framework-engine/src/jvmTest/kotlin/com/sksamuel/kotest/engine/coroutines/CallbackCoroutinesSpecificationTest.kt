@@ -4,13 +4,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.CoroutineName
 import kotlin.coroutines.coroutineContext
 
 /**
  * This test is meant to be the definite source of truth for the behavior of coroutines and callbacks in kotest.
  */
-class CoroutineCallbacksSpecificationTest : FunSpec() {
+class CallbackCoroutinesSpecificationTest : FunSpec() {
    init {
 
       test("beforeSpec should be executed in the spec level coroutine") {

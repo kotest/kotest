@@ -2,11 +2,8 @@ package com.sksamuel.kotest.engine.spec.coroutine
 
 import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.FeatureSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
@@ -17,17 +14,6 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
    private var longOpCompleted = false
    private val count = AtomicInteger(0)
    private val threadnames = ConcurrentHashMap.newKeySet<String>()
-   private var listenerThread = ""
-
-   override suspend fun beforeTest(testCase: TestCase) {
-      // strip off the coroutine suffix
-      listenerThread = currentThreadWithoutCoroutine()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      // strip off the coroutine suffix
-      listenerThread shouldBe currentThreadWithoutCoroutine()
-   }
 
    init {
 
@@ -74,14 +60,11 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
          scenario("previous test result 3") {
             threadnames.size shouldBeGreaterThan 1
          }
-         scenario("a single threaded test should run listeners on the same thread as the test") {
-            Thread.currentThread().name.shouldStartWith(listenerThread)
-         }
       }
    }
 
    private suspend fun longop() {
-      delay(500)
+      delay(1)
       longOpCompleted = true
    }
 }

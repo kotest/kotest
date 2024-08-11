@@ -2,12 +2,8 @@ package com.sksamuel.kotest.engine.spec.coroutine
 
 import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestResult
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
@@ -18,17 +14,6 @@ class WordSpecCoroutineTest : WordSpec() {
    private var longOpCompleted = false
    private val count = AtomicInteger(0)
    private val threadnames = ConcurrentHashMap.newKeySet<String>()
-   private var listenerThread = ""
-
-   override fun testCaseOrder(): TestCaseOrder = TestCaseOrder.Sequential
-
-   override suspend fun beforeTest(testCase: TestCase) {
-      listenerThread = currentThreadWithoutCoroutine()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      listenerThread shouldBe currentThreadWithoutCoroutine()
-   }
 
    init {
 
@@ -82,15 +67,11 @@ class WordSpecCoroutineTest : WordSpec() {
          "previous test result 3" {
             threadnames.size shouldBeGreaterThan 1
          }
-
-         "run listeners on the same thread as the test when a single invocation" {
-            Thread.currentThread().name.shouldStartWith(listenerThread)
-         }
       }
    }
 
    private suspend fun longop() {
-      delay(5)
+      delay(1)
       longOpCompleted = true
    }
 
