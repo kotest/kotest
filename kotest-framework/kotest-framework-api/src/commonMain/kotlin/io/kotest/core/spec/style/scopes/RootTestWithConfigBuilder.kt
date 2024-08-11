@@ -30,6 +30,8 @@ class RootTestWithConfigBuilder(
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
+      retries: Int? = null,
+      retryDelay: Duration? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       val config = TestConfig(
@@ -46,6 +48,8 @@ class RootTestWithConfigBuilder(
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
+         retries = retries,
+         retryDelay = retryDelay,
       )
       context.addTest(name, xdisabled, config, test)
    }
