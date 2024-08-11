@@ -784,6 +784,16 @@ public final class io/kotest/engine/test/interceptors/BlockedThreadTestTimeoutEx
 	public synthetic fun <init> (JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public final class io/kotest/engine/test/interceptors/CoroutineNameInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
+	public static final field INSTANCE Lio/kotest/engine/test/interceptors/CoroutineNameInterceptor;
+	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/test/interceptors/CoroutineNameInterceptorKt {
+	public static final fun main (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun main ([Ljava/lang/String;)V
+}
+
 public final class io/kotest/engine/test/interceptors/TestCoroutineInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
 	public fun <init> ()V
 	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

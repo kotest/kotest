@@ -47,7 +47,6 @@ class TestEngine(private val config: TestEngineConfig) {
     * It is recommended that this method is not invoked, but instead the engine
     * is launched via the [TestEngineLauncher].
     */
-   @OptIn(KotestInternal::class, ExperimentalKotest::class)
    internal suspend fun execute(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
 

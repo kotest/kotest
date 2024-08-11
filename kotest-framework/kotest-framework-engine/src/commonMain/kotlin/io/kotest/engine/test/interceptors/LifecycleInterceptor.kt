@@ -11,7 +11,7 @@ import io.kotest.core.Logger
 import kotlin.time.TimeMark
 
 /**
- * Executes a test taking care of invoking user level listeners.
+ * Executes before/after test listeners.
  * The test is always marked as started at this stage.
  *
  * If the before-test listeners fail, then the test is not executed, but the after-test listeners

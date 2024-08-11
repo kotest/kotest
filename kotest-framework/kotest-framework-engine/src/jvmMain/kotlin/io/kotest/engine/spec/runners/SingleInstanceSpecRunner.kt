@@ -18,9 +18,11 @@ import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListe
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.bestName
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
@@ -44,13 +46,17 @@ internal class SingleInstanceSpecRunner(
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
+         println("runner thread name " + Thread.currentThread().name)
          return coroutineScope {
-            pipeline.execute(spec) {
-               val rootTests = materializer.materialize(spec)
-               logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
-               scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
-               Result.success(results)
-            }
+            async { // fresh coroutine for each spec
+               println("runner coroutine scope thread name " + Thread.currentThread().name)
+               pipeline.execute(spec) {
+                  val rootTests = materializer.materialize(spec)
+                  logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+                  scheduler.schedule({ runTest(it, null) }, rootTests)
+                  Result.success(results)
+               }
+            }.await()
          }
       } catch (e: Exception) {
          e.printStackTrace()
@@ -84,7 +90,7 @@ internal class SingleInstanceSpecRunner(
             TestExtensions(context.configuration.registry).ignoredTestListenersInvocation(nestedTestCase, reason)
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
-            val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)
+            val result = runTest(nestedTestCase, this@SingleInstanceTestScope)
             if (result.isErrorOrFailure) {
                if (testCase.config.failfast || context.configuration.projectWideFailFast) {
                   logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
@@ -98,7 +104,6 @@ internal class SingleInstanceSpecRunner(
 
    private suspend fun runTest(
       testCase: TestCase,
-      coroutineContext: CoroutineContext,
       parentScope: SingleInstanceTestScope?,
    ): TestResult {
 

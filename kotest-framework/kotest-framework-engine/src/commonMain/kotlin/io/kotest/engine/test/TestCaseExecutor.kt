@@ -13,6 +13,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
+import io.kotest.engine.test.interceptors.CoroutineNameInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
@@ -64,6 +65,7 @@ internal class TestCaseExecutor(
       }
 
       val interceptors = listOfNotNull(
+         CoroutineNameInterceptor,
          TestPathContextInterceptor,
          TestNameContextInterceptor,
          TestFinishedInterceptor(listener, context.configuration.registry),
