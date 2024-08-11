@@ -1580,7 +1580,7 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field assertionMode Ljava/lang/String;
 	public static final field concurrentSpecs Ljava/lang/String;
 	public static final field concurrentTests Ljava/lang/String;
-	public static final field configurationClassName Ljava/lang/String;
+	public static final field configurationClassNames Ljava/lang/String;
 	public static final field disableBangPrefix Ljava/lang/String;
 	public static final field disableJarDiscovery Ljava/lang/String;
 	public static final field disableSourceRef Ljava/lang/String;
