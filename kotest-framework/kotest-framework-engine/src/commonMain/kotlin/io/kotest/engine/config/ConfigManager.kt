@@ -57,6 +57,7 @@ internal expect fun applyPlatformDefaults(configuration: ProjectConfiguration)
  * Note: This will only have an effect on JVM targets.
  * Note: Disabled by default in Kotest 6.0
  */
+@Deprecated("Will be removed entirely in a future release. Deprecated since 6.0")
 internal expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
 
 /**

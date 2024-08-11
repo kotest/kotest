@@ -97,7 +97,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val configuration = ConfigManager.initialize(ProjectConfiguration()) {
          detectAbstractProjectConfigsJVM() +
-            listOfNotNull(loadProjectConfigsJVM())
+            loadProjectConfigsJVM()
       }
 
       // if we are excluded from the engines then we say goodnight according to junit rules
