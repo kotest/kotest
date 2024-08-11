@@ -16,13 +16,13 @@ fun loadProjectConfigFromClassnameJVM(): AbstractProjectConfig? {
 
       null -> {
          log { "No project config class name provided, checking for default at $defaultConfigFqn" }
-         instantiateOrObject(Class.forName(defaultConfigFqn)).getOrNull() as AbstractProjectConfig?
+         val clazz = runCatching { Class.forName(defaultConfigFqn) }.getOrNull()
+         if (clazz == null) null else instantiateOrObject(clazz).getOrThrow() as AbstractProjectConfig
       }
 
       else -> {
          log { "Loading project config from fqn: $fqn" }
-         val clazz = runCatching { Class.forName(fqn) }.getOrNull()
-         if (clazz == null) null else instantiateOrObject(clazz).getOrThrow() as AbstractProjectConfig
+         instantiateOrObject(Class.forName(fqn)).getOrThrow() as AbstractProjectConfig
       }
    }
 }
