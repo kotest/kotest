@@ -1,21 +1,16 @@
-buildscript {
-   repositories {
-      mavenCentral()
-   }
-}
-
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    java
    alias(libs.plugins.kotlin.jvm)
-   alias(libs.plugins.intellij)
+   id("org.jetbrains.intellij.platform") version "2.0.1"
 }
 
 repositories {
    mavenCentral()
    mavenLocal()
    maven("https://oss.sonatype.org/content/repositories/snapshots")
-   maven("https://www.jetbrains.com/intellij-repository/snapshots")
+   intellijPlatform {
+      defaultRepositories()
+   }
 }
 
 
@@ -25,7 +20,6 @@ data class PluginDescriptor(
    // https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
    val sdkVersion: String, // the version string passed to the intellij sdk gradle plugin
    val sourceFolder: String, // used as the source root for specifics of this build
-   val deps: List<String> // dependent plugins of this plugin
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -44,76 +38,101 @@ data class PluginDescriptor(
 // for 'since' we can use an early build number without eap/snapshot eg 213.5281.15
 // and 'until' we can use a wildcard eg 213.*
 
-val plugins = listOf(
+val descriptors = listOf(
    PluginDescriptor(
       since = "223.4884.69", // this version is 2022.3
       until = "223.*",
-      sdkVersion = "IC-2022.3",
+      sdkVersion = "2022.3",
       sourceFolder = "IC-223",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
       since = "231.8109.163", // this version is 2023.1 release
       until = "231.*",
-      sdkVersion = "IC-2023.1",
+      sdkVersion = "2023.1",
       sourceFolder = "IC-231",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
       since = "232.5150.116", // this version is 2023.2
       until = "232.*",
-      sdkVersion = "IC-2023.2",
+      sdkVersion = "2023.2",
       sourceFolder = "IC-232",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
       since = "233.9802.16", // this version is 2023.3
       until = "233.*",
-      sdkVersion = "IC-2023.3",
+      sdkVersion = "2023.3",
       sourceFolder = "IC-233",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
       since = "241.15989.150", // this version is 2024.1
       until = "242.*",
-      sdkVersion = "IC-2024.1.1",
+      sdkVersion = "2024.1",
       sourceFolder = "IC-241",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
-//   PluginDescriptor(
-//      since = "241.17011.108", // this version is 2024.2
-//      until = "242.*",
-//      sdkVersion = "241.17011-EAP-CANDIDATE-SNAPSHOT",
-//      sourceFolder = "IC-242",
-//      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
-//   ),
+   PluginDescriptor(
+      since = "242.*", // this version is 2024.2
+      until = "243.*",
+      sdkVersion = "2024.2",
+      sourceFolder = "IC-242",
+   ),
 )
 
 val productName = System.getenv("PRODUCT_NAME") ?: "IC-241"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
-val descriptor = plugins.first { it.sourceFolder == productName }
+val descriptor = descriptors.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
 
 version = "1.3." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
-intellij {
-   sandboxDir.set(project.property("sandbox").toString())
-//   sandboxDir.set("./sandbox")
-   version.set(descriptor.sdkVersion)
-   pluginName.set("kotest-plugin-intellij")
-   plugins.addAll(*descriptor.deps.toTypedArray())
-   downloadSources.set(true)
-   type.set("IC")
-   updateSinceUntilBuild.set(false)
+//intellij {
+//   type.set("IC")
+//   updateSinceUntilBuild.set(false)
+//}
+
+val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
+   prepareSandboxTask {
+      sandboxDirectory = project.layout.buildDirectory.dir(project.property("sandbox").toString())
+      sandboxSuffix = ""
+   }
+}
+
+intellijPlatform {
+   buildSearchableOptions = false
+   projectName = project.name
+   instrumentCode = false
+
+   pluginConfiguration {
+      name = "kotest-plugin-intellij"
+      id = "kotest-plugin-intellij"
+      description = "Kotest plugin for IntelliJ IDEA"
+      version = project.version.toString()
+      vendor {
+         name = "Kotest"
+         url = "https://kotest.io"
+         email = "sam@sksamuel.com"
+      }
+   }
+
+   publishing {
+      version = project.version.toString() + "-" + descriptor.sdkVersion
+      token = System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken
+   }
 }
 
 dependencies {
    implementation(libs.jaxb.api)
    implementation(libs.javax.activation)
 
+   intellijPlatform {
+      intellijIdeaCommunity(descriptor.sdkVersion)
+      bundledPlugin("com.intellij.java")
+      bundledPlugin("org.jetbrains.kotlin")
+      bundledPlugin("org.jetbrains.plugins.gradle")
+   }
+
    // we bundle this for 4.1 support
-   // in kotest 4.2.0 the launcher has moved to a stand alone module
+   // in kotest 4.2.0 the launcher has moved to a stand-alone module
    implementation(libs.runtime.kotest.legacy.launcher)
 
    // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
@@ -144,20 +163,6 @@ kotlin {
 }
 
 tasks {
-   buildPlugin {
-      archiveClassifier.set(descriptor.sdkVersion)
-   }
-
-   publishPlugin {
-      token.set(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
-   }
-
-   patchPluginXml {
-      version.set("${project.version}-${descriptor.sdkVersion}")
-      sinceBuild.set(descriptor.since)
-      untilBuild.set(descriptor.until)
-   }
-
    test {
       isScanForTestClasses = false
       // Only run tests from classes that end with "Test"
