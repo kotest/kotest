@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import io.kotest.property.asSample
 import io.kotest.property.map
 
 /**
@@ -10,7 +11,7 @@ import io.kotest.property.map
  */
 fun <A, B> Arb<A>.map(fn: (A) -> B): Arb<B> = trampoline { sampleA ->
    object : Arb<B>() {
-      override fun edgecase(rs: RandomSource): B? = fn(sampleA.value)
+      override fun edgecase(rs: RandomSource): Sample<B> = fn(sampleA.value).asSample()
       override fun sample(rs: RandomSource): Sample<B> {
          val value = fn(sampleA.value)
          val shrinks = sampleA.shrinks.map(fn)
@@ -57,13 +58,13 @@ internal class TrampolineArb<A> private constructor(
          commands + (fn as (Sample<Any>) -> Arb<Any>)
       ) as TrampolineArb<B>
 
-   override fun edgecase(rs: RandomSource): A? =
+   override fun edgecase(rs: RandomSource): Sample<A>? =
       commands
-         .fold(first as Arb<Any>) { currentArb, next ->
-            val currentEdge = currentArb.edgecase(rs) ?: currentArb.sample(rs).value
-            next(Sample(currentEdge))
+         .fold(first) { currentArb, next ->
+            val currentEdge = currentArb.edgecase(rs) ?: currentArb.sample(rs)
+            next(currentEdge as Sample<Any>) as Arb<A>
          }
-         .edgecase(rs) as A?
+         .edgecase(rs)
 
    override fun sample(rs: RandomSource): Sample<A> =
       commands

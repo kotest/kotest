@@ -6,6 +6,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.modifyEdgecases
 import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.asSample
 
 class WithEdgecasesTest : FunSpec({
    context("Arb<A>.withEdgecases") {
@@ -23,7 +24,7 @@ class WithEdgecasesTest : FunSpec({
    context("Arb<A>.modifyEdgecases") {
       test("should modify the each edge case") {
          val arbInt = arbitrary(listOf(1, 2, 3)) { it.random.nextInt() }
-         arbInt.modifyEdgecases { it * 2 }.edgecases() shouldContainExactlyInAnyOrder listOf(2, 4, 6)
+         arbInt.modifyEdgecases { (it.value * 2).asSample() }.edgecases() shouldContainExactlyInAnyOrder listOf(2, 4, 6)
       }
    }
 })

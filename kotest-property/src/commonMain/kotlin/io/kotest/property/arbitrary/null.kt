@@ -35,7 +35,7 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
  */
 fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBoolean() }): Arb<A?> =
    object : Arb<A?>() {
-      override fun edgecase(rs: RandomSource): A? = if (isNextNull(rs)) null else this@orNull.edgecase(rs)
+      override fun edgecase(rs: RandomSource): Sample<A>? = if (isNextNull(rs)) null else this@orNull.edgecase(rs)
 
       override fun sample(rs: RandomSource): Sample<A?> {
          val baseSample = if (isNextNull(rs)) Sample(null) else this@orNull.sample(rs)

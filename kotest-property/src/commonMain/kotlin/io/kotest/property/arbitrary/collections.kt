@@ -3,7 +3,9 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
+import io.kotest.property.Sample
 import io.kotest.property.Shrinker
+import io.kotest.property.asSample
 import kotlin.jvm.JvmOverloads
 import kotlin.math.max
 import kotlin.random.nextInt
@@ -96,12 +98,12 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
       edgecaseFn = { rs ->
          val emptyList = emptyList<A>()
          val singleList: List<A>? = when (gen) {
-            is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { listOf(it) }
+            is Arb -> listOf((gen.edgecase(rs) ?: gen.sample(rs)).value)
             is Exhaustive -> gen.values.firstOrNull()?.let { listOf(it) }
          }
          val repeatedList: List<A>? = when {
             range.last < 2 -> null // too small for repeats
-            gen is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { a -> List(max(2, range.first)) { a } }
+            gen is Arb -> List(max(2, range.first)) { (gen.edgecase(rs) ?: gen.sample(rs)).value }
             gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }
@@ -110,6 +112,7 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
             .takeIf { it.isNotEmpty() }
             ?.distinct()
             ?.random(rs.random)
+            ?.asSample()
       },
       shrinker = ListShrinker(range),
       sampleFn = { rs ->

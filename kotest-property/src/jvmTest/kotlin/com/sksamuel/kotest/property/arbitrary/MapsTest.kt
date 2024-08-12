@@ -115,6 +115,7 @@ class MapsTest : FunSpec({
       test("should contain empty map if minSize is 0 (default)") {
          Arb.map(keyArb = Arb.string(), valueArb = Arb.int()).edgecase(RandomSource.seeded(1234L))
             .shouldNotBeNull()
+            .value
             .shouldBeEmpty()
       }
    }
@@ -127,6 +128,7 @@ class MapsTest : FunSpec({
       test("should contain empty map if enabled") {
          Arb.map(arb = Arb.pair(Arb.string(), Arb.int())).edgecase(RandomSource.seeded(1234L))
             .shouldNotBeNull()
+            .value
             .shouldBeEmpty()
       }
    }

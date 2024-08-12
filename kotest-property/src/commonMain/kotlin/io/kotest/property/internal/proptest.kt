@@ -8,6 +8,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.removeEdgecases
 import io.kotest.property.seed.createRandom
 
 suspend fun <A> proptest(
