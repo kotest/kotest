@@ -105,7 +105,11 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
             gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }
-         listOfNotNull(emptyList, singleList, repeatedList).filter { it.size in range }.distinct().random(rs.random)
+         listOfNotNull(emptyList, singleList, repeatedList)
+            .filter { it.size in range }
+            .takeIf { it.isNotEmpty() }
+            ?.distinct()
+            ?.random(rs.random)
       },
       shrinker = ListShrinker(range),
       sampleFn = { rs ->
