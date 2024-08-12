@@ -103,7 +103,7 @@ intellijPlatform {
       name = "kotest-plugin-intellij"
       id = "kotest-plugin-intellij"
       description = "Kotest plugin for IntelliJ IDEA"
-      version = project.version.toString()
+      version = project.version.toString() + "-" + descriptor.sdkVersion
       vendor {
          name = "Kotest"
          url = "https://kotest.io"
@@ -143,13 +143,6 @@ dependencies {
    testImplementation(libs.test.kotest.assertions.core)
 //   testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
-
-//   intellijPlatformTesting {
-//      runIde
-//      testIde
-//      testIdeUi
-//      testIdePerformance
-//   }
 
 sourceSets {
    main {
