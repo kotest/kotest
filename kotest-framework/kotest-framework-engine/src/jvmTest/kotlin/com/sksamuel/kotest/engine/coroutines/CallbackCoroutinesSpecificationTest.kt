@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.CoroutineName
 import kotlin.coroutines.coroutineContext
 
@@ -14,53 +13,39 @@ import kotlin.coroutines.coroutineContext
 class CallbackCoroutinesSpecificationTest : FunSpec() {
    init {
 
-      test("beforeSpec should be executed in the spec level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         beforeSpecName shouldBe "kotest-spec-Callbacks"
-      }
+      context("testing coroutines at each callback") {
 
-      test("afterSpec should be executed in the spec level coroutine") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(Callbacks::class)
             .launch()
-         beforeSpecName shouldBe "kotest-spec-Callbacks"
-      }
 
-      test("beforeTest should be executed in the test level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         beforeTestName shouldBe "kotest-test-baz"
-      }
+         test("beforeSpec should be executed in the spec level coroutine") {
+            beforeSpecName shouldBe "kotest-spec-Callbacks"
+         }
 
-      test("afterTest should be executed in the test level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         afterTestName shouldBe "kotest-test-bar"
-      }
+         test("afterSpec should be executed in the spec level coroutine") {
+            afterSpecName shouldBe "kotest-spec-Callbacks"
+         }
 
-      test("beforeContainer should be executed in the test level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         beforeContainerName shouldBe "kotest-test-bar"
-      }
+         test("beforeTest should be executed in the test level coroutine") {
+            beforeTestName shouldBe "kotest-test-baz"
+         }
 
-      test("afterContainer should be executed in the test level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         afterContainerName shouldBe "kotest-test-bar"
-      }
+         test("afterTest should be executed in the test level coroutine") {
+            afterTestName shouldBe "kotest-test-bar"
+         }
 
-      test("the test coroutine should be executed in the test level coroutine") {
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(Callbacks::class)
-            .launch()
-         testName shouldBe "kotest-test-foo"
+         test("beforeContainer should be executed in the test level coroutine") {
+            beforeContainerName shouldBe "kotest-test-bar"
+         }
+
+         test("afterContainer should be executed in the test level coroutine") {
+            afterContainerName shouldBe "kotest-test-bar"
+         }
+
+         test("the test coroutine should be executed in the test level coroutine") {
+            testName shouldBe "kotest-test-foo"
+         }
       }
    }
 }
