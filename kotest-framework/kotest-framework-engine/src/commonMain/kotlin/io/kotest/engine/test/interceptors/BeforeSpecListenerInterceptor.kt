@@ -53,7 +53,14 @@ internal class BeforeSpecListenerInterceptor(
                val context = scope.coroutineContext[SpecContextElement] ?: error("No SpecContextElement")
                CoroutineScope(context.context).async {
                   SpecExtensions(registry).beforeSpec(testCase.spec)
-               }.await().fold(
+            else -> {
+               // beforeSpec needs to execute on the spec level coroutine, but here we are in
+               // the test executor pipline. We are doing the beforeSpec here and not in the spec pipeline
+               // because we only want to run it when we see an enabled test.
+               val specContext = scope.coroutineContext[SpecContextElement]?.context ?: error("No SpecContextElement")
+               withContext(specContext) {
+                  SpecExtensions(registry).beforeSpec(testCase.spec)
+               }.fold(
                   {
                      state.success.add(testCase.spec);
                      suspend { test(testCase, scope) }
