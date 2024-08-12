@@ -22,7 +22,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
          }
       }
 
