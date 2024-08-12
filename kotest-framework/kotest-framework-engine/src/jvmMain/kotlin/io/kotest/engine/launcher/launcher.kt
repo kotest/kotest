@@ -15,6 +15,7 @@ import kotlin.reflect.KClass
 /**
  * Creates a [TestEngineLauncher] to be used to launch the test engine.
  */
+@Suppress("UNCHECKED_CAST")
 @KotestInternal
 internal fun setupLauncher(
    args: LauncherArgs,
