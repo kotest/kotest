@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -60,19 +61,25 @@ fun Arb.Companion.localDate(
    minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
    minDate == maxDate -> Arb.constant(minDate)
    else -> {
-      val firstPotentialLeapYear = (minDate.year + 3) and (0.inv() shl 2)
-      val potentialLeapYears = when {
-         maxDate.year < firstPotentialLeapYear -> 0
-         else -> (maxDate.year - firstPotentialLeapYear) / 4 + 1
+      fun RandomSource.divisibleEdgecaseBuilderOrNull(divisor: Int): (() -> LocalDate)? {
+         val firstDivisibleYear = (minDate.year + divisor - 1) / divisor * divisor
+         val count = (maxDate.year / divisor) - (minDate.year - 1) / divisor
+
+         return {
+            random.nextInt(count).let {
+               LocalDate.of(firstDivisibleYear + it * divisor, 2, 28)
+                  .plusDays(random.nextLong(2))
+            }
+         }.takeIf { count > 0 }
       }
 
       arbitrary(edgecaseFn = { rs ->
-         val r = rs.random.nextInt(potentialLeapYears + 1)
-         when {
-            r == 0 -> if (rs.random.nextBoolean()) minDate else maxDate
-            else -> LocalDate.of(firstPotentialLeapYear + (r - 1) * 4, 2, 28)
-               .plusDays(rs.random.nextLong(2))
-         }
+         listOfNotNull(
+            { if (rs.random.nextBoolean()) minDate else maxDate },
+            rs.divisibleEdgecaseBuilderOrNull(4), // (potential) leap years
+            rs.divisibleEdgecaseBuilderOrNull(100), // centuries
+            rs.divisibleEdgecaseBuilderOrNull(1000), // millenniums
+         ).random(rs.random).invoke()
       }) {
          minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
       }.filter { it in minDate..maxDate }
