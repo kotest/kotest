@@ -51,7 +51,7 @@
 <!--                       enabledByDefault="true" level="WARNING"-->
 <!--                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>-->
 
-      <toolWindow id="Kotest" anchor="left" icon="/icon13_greyscale.png"
+      <toolWindow id="Kotest" anchor="left" icon="/icon22_greyscale.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
       <lang.structureViewExtension implementation="io.kotest.plugin.intellij.structure.KotestStructureViewExtension"/>
