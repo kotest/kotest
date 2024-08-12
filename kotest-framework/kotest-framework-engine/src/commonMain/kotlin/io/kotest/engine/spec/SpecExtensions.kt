@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.Logger
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -17,12 +18,11 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
- * Used to invoke extension points / listeners / callbacks on specs.
+ * Used to invoke [Extension]s on specs.
  */
 internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
@@ -35,12 +35,16 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
     */
    fun extensions(spec: Spec): List<Extension> {
       return spec.extensions() + // overriding the extensions function in the spec
-         spec.listeners() + // overriding the listeners function in the spec
          spec.functionOverrideCallbacks() + // dsl
          spec.registeredExtensions() + // added to the spec via register
          registry.all() // globals
    }
 
+   /**
+    * Runs all the [BeforeSpecListener] for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.BeforeSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
+    */
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
@@ -60,8 +64,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Runs all the after spec listeners for this [Spec]. All errors are caught and wrapped
-    * in [AfterSpecListener] and if more than one error, all will be returned as a [MultipleExceptions].
+    * Runs all the [AfterSpecListener] for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.AfterSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
     */
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
       logger.log { Pair(spec::class.bestName(), "afterSpec $spec") }
@@ -144,10 +149,8 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
       val chain = exts.foldRight(initial) { op, acc ->
          {
-            op.intercept(spec::class) {
-               op.intercept(spec) {
-                  acc()
-               }
+            op.intercept(spec) {
+               acc()
             }
          }
       }

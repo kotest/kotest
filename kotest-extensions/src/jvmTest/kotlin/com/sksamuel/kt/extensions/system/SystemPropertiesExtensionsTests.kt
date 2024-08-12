@@ -1,13 +1,8 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.AutoScan
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemPropertyTestListener
 import io.kotest.extensions.system.withSystemProperties
@@ -17,8 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
-import java.util.*
-import kotlin.reflect.KClass
+import java.util.Properties
 
 class SystemPropertiesExtensionsTest : FreeSpec() {
 
@@ -81,27 +75,10 @@ class SystemPropertiesExtensionsTest : FreeSpec() {
    }
 }
 
-@AutoScan
-object Assertion : TestListener {
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      if (kclass == SystemPropertyListenerTest::class) {
-         System.getProperty("bee") shouldBe null
-      }
-
-   }
-
-   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == SystemPropertyListenerTest::class) {
-         System.getProperty("bee") shouldBe null
-      }
-   }
-}
-
-
 class SystemPropertyListenerTest : WordSpec() {
    private val sptl = SystemPropertyTestListener("bee", "bop", mode = OverrideMode.SetOrOverride)
 
-   override fun listeners() = listOf(sptl)
+   override fun extensions() = listOf(sptl)
 
    init {
       "sys prop extension" should {

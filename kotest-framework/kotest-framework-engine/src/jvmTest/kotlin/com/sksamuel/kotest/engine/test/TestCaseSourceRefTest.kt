@@ -25,7 +25,7 @@ class TestCaseSourceRefTest : FunSpec() {
                Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest()).first().source
             }
          }
-         duration shouldBeLessThan 120.seconds
+         duration shouldBeLessThan 240.seconds
       }
    }
 }

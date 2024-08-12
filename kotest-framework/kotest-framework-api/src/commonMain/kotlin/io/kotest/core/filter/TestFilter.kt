@@ -1,6 +1,7 @@
 package io.kotest.core.filter
 
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 
 /**
@@ -8,8 +9,7 @@ import io.kotest.core.test.TestCase
  *
  * A descriptor must be included by all filters for it to be considered enabled at runtime.
  */
-@Suppress("DEPRECATION") // Remove when removing Filter
-interface TestFilter : Filter {
+interface TestFilter : Extension {
 
    /**
     * This method is invoked with a [TestCase] and the result

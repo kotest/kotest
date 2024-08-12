@@ -1,10 +1,10 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.core.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +21,7 @@ import kotlin.coroutines.coroutineContext
  */
 @ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
-actual class TestDispatcherInterceptor : TestExecutionInterceptor {
+class TestDispatcherInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(TestDispatcherInterceptor::class)
 

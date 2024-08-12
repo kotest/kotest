@@ -1,20 +1,14 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.AutoScan
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
 import io.kotest.extensions.system.withEnvironment
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlin.reflect.KClass
 
 class SystemEnvironmentExtensionTest : FreeSpec() {
 
@@ -67,26 +61,11 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 }
 
-@AutoScan
-object SysEnvTestListener : TestListener {
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      if (kclass == SystemEnvironmentTestListenerTest::class) {
-         System.getenv("mop") shouldBe null
-      }
-   }
-
-   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == SystemEnvironmentTestListenerTest::class) {
-         System.getenv("mop") shouldBe null
-      }
-   }
-}
-
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
    private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
 
-   override fun listeners() = listOf(setl)
+   override fun extensions() = listOf(setl)
 
    init {
       "sys environment extension" should {

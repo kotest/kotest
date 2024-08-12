@@ -26,22 +26,6 @@ public final class io/kotest/assertions/json/CompareKt {
 	public static final fun compareJsonOptions (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/json/CompareJsonOptions;
 }
 
-public final class io/kotest/assertions/json/CompareMode : java/lang/Enum {
-	public static final field Lenient Lio/kotest/assertions/json/CompareMode;
-	public static final field Strict Lio/kotest/assertions/json/CompareMode;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/CompareMode;
-	public static fun values ()[Lio/kotest/assertions/json/CompareMode;
-}
-
-public final class io/kotest/assertions/json/CompareOrder : java/lang/Enum {
-	public static final field Lenient Lio/kotest/assertions/json/CompareOrder;
-	public static final field Strict Lio/kotest/assertions/json/CompareOrder;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/CompareOrder;
-	public static fun values ()[Lio/kotest/assertions/json/CompareOrder;
-}
-
 public final class io/kotest/assertions/json/ContainsSpec {
 	public fun <init> (Lio/kotest/assertions/json/schema/JsonSchemaElement;II)V
 	public synthetic fun <init> (Lio/kotest/assertions/json/schema/JsonSchemaElement;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -258,15 +242,9 @@ public final class io/kotest/assertions/json/JsonMatchersKt {
 	public static final fun shouldBeJsonArray (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldBeJsonObject (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldBeValidJson (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareJsonOptions;)V
-	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareMode;Lio/kotest/assertions/json/CompareOrder;)V
-	public static final fun shouldMatchJson (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldNotBeJsonArray (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldNotBeJsonObject (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldNotBeValidJson (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareJsonOptions;)V
-	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareMode;Lio/kotest/assertions/json/CompareOrder;)V
-	public static final fun shouldNotMatchJson (Ljava/lang/String;Ljava/lang/String;)V
 }
 
 public abstract class io/kotest/assertions/json/JsonNode {
@@ -377,14 +355,10 @@ public final class io/kotest/assertions/json/KeyvaluesKt {
 public final class io/kotest/assertions/json/MatchersKt {
 	public static final fun equalJson (Ljava/lang/String;Lio/kotest/assertions/json/CompareJsonOptions;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareMode;)V
-	public static final fun shouldEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareOrder;)V
 	public static final fun shouldEqualJson (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
 	public static final fun shouldEqualSpecifiedJson (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldEqualSpecifiedJsonIgnoringOrder (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareMode;)V
-	public static final fun shouldNotEqualJson (Ljava/lang/String;Ljava/lang/String;Lio/kotest/assertions/json/CompareOrder;)V
 	public static final fun shouldNotEqualJson (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
 	public static final fun shouldNotEqualSpecifiedJson (Ljava/lang/String;Ljava/lang/String;)V
 }
@@ -539,13 +513,13 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject : io/k
 	public fun typeName ()Ljava/lang/String;
 }
 
-public final class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class io/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lio/kotest/assertions/json/schema/JsonSchema$JsonObject$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }

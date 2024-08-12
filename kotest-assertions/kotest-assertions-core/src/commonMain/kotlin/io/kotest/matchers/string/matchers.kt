@@ -141,13 +141,42 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
 }
 
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-   fun recTest(str: String, subs: List<String>): Boolean =
-      subs.isEmpty() || str.indexOf(subs.first()).let { it > -1 && recTest(str.substring(it + 1), subs.drop(1)) }
+   val matchOutcome = matchSubstrings(value, substrings.toList())
 
    MatcherResult(
-      recTest(value, substrings.filter { it.isNotEmpty() }),
-      { "${value.print().value} should include substrings ${substrings.print().value} in order" },
+      matchOutcome.match,
+      { "${value.print().value} should include substrings ${substrings.print().value} in order${prefixIfNotEmpty(matchOutcome.mistmatchDescription, "\n")}" },
       { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
+}
+
+internal fun prefixIfNotEmpty(value: String, prefix: String) = if(value.isEmpty()) "" else "$prefix$value"
+
+internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
+   substrings.isEmpty() -> ContainInOrderOutcome.Match
+   else -> {
+      val currentSubstring = substrings[0]
+      val matchAtIndex = value.indexOf(currentSubstring)
+      when {
+         matchAtIndex == -1 -> ContainInOrderOutcome.Mismatch(currentSubstring, depth)
+         currentSubstring == "" -> matchSubstrings(value, substrings.drop(1), depth + 1)
+         else -> matchSubstrings(value.substring(matchAtIndex + 1), substrings.drop(1), depth + 1)
+      }
+   }
+}
+
+internal sealed interface ContainInOrderOutcome {
+   val match: Boolean
+   val mistmatchDescription: String
+
+   data object Match: ContainInOrderOutcome {
+      override val match: Boolean = true
+      override val mistmatchDescription: String = ""
+   }
+
+   data class Mismatch(val substring: String, val index: Int): ContainInOrderOutcome {
+      override val match: Boolean = false
+      override val mistmatchDescription: String = """Did not match substring[$index]: <"$substring">"""
+   }
 }
 
 infix fun String?.shouldContain(substr: String): String? {

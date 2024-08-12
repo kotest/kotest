@@ -95,7 +95,6 @@ public final class io/kotest/assertions/CluesKt {
 	public static final fun asClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun forEachAsClue (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)V
 	public static final fun withClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static final fun withClue (Lkotlin/Lazy;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun withClue (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
@@ -329,6 +328,14 @@ public final class io/kotest/assertions/eq/EqKt {
 	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Throwable;
 	public static final fun eq (Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Throwable;
 	public static final fun expectedIsNull (Ljava/lang/Object;)Ljava/lang/AssertionError;
+}
+
+public final class io/kotest/assertions/eq/EqMatcher : io/kotest/matchers/Matcher {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
 public final class io/kotest/assertions/eq/IsOrderedSetKt {
@@ -2910,9 +2917,12 @@ public final class io/kotest/matchers/EqualityMatcherResult$Companion {
 	public final fun invoke (ZLjava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/EqualityMatcherResult;
 }
 
+public final class io/kotest/matchers/InvokeMatcherKt {
+	public static final fun invokeMatcher (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)Ljava/lang/Object;
+}
+
 public abstract interface class io/kotest/matchers/Matcher {
 	public static final field Companion Lio/kotest/matchers/Matcher$Companion;
-	public abstract fun compose (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public abstract fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public abstract fun invert ()Lio/kotest/matchers/Matcher;
 	public abstract fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -2925,7 +2935,6 @@ public final class io/kotest/matchers/Matcher$Companion {
 }
 
 public final class io/kotest/matchers/Matcher$DefaultImpls {
-	public static fun compose (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static fun contramap (Lio/kotest/matchers/Matcher;Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static fun invert (Lio/kotest/matchers/Matcher;)Lio/kotest/matchers/Matcher;
 	public static fun invertIf (Lio/kotest/matchers/Matcher;Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
@@ -2951,10 +2960,10 @@ public final class io/kotest/matchers/MatcherResult$Companion {
 public final class io/kotest/matchers/ShouldKt {
 	public static final fun be (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun equalityMatcher (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun invokeMatcher (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)Ljava/lang/Object;
 	public static final fun should (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun should (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public static final fun shouldBe (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldBe (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 	public static final fun shouldHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNot (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNotBe (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;

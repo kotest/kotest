@@ -110,14 +110,6 @@ class TestEngineLauncher(
    }
 
    /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
-    */
-   @Deprecated("Use withProjectConfig. Will be removed once compiler plugins are updated")
-   fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
-      return withProjectConfig(*projectConfig)
-   }
-
-   /**
     * Adds a [AbstractProjectConfig] that was detected by the compiler plugin,
     * and sets [configurationIsInitialized] to false.
     */

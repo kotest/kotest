@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -14,7 +14,6 @@ import kotlin.reflect.KClass
 
 private val counter = AtomicInteger(0)
 
-@AutoScan
 class FinalizeSpecListenerPerLeaf1 : TestListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       if (kclass == FinalizeSpecListenerPerLeafTest::class) {
@@ -23,7 +22,6 @@ class FinalizeSpecListenerPerLeaf1 : TestListener {
    }
 }
 
-@AutoScan
 class FinalizeSpecListenerPerLeaf2 : FinalizeSpecListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       if (kclass == FinalizeSpecListenerPerLeafTest::class) {
@@ -32,6 +30,7 @@ class FinalizeSpecListenerPerLeaf2 : FinalizeSpecListener {
    }
 }
 
+@ApplyExtension(FinalizeSpecListenerPerLeaf1::class, FinalizeSpecListenerPerLeaf2::class)
 class FinalizeSpecListenerPerLeafTest : FunSpec() {
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
@@ -40,12 +39,7 @@ class FinalizeSpecListenerPerLeafTest : FunSpec() {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 7
-      }
-
-      // will be added once per instance created
-      finalizeSpec {
-         counter.incrementAndGet()
+         counter.get() shouldBe 2
       }
 
       test("ignored test").config(enabled = false) {}

@@ -1,7 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.engine.collect
-import io.kotest.engine.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -13,19 +11,22 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
+import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.collect
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
+import io.kotest.engine.mapError
 import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
- * Used to invoke extension points on tests.
+ * Used to invoke [Extension]s on tests.
  */
 internal class TestExtensions(private val registry: ExtensionRegistry) {
 
@@ -37,10 +38,9 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    fun extensions(testCase: TestCase): List<Extension> {
       return registry.all() + // globals
          testCase.spec.extensions() + // overriding the extensions function in the spec
-         testCase.spec.listeners() + // overriding the listeners function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
          testCase.spec.registeredExtensions() + // added to the spec via register
-         testCase.config.extensions
+         testCase.config.extensions // extensions coming from the test config block itself
    }
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
@@ -150,5 +150,13 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
 
    fun logExtensions(testCase: TestCase): List<LogExtension> {
       return extensions(testCase).filterIsInstance<LogExtension>()
+   }
+
+   /**
+    * Invokes all [IgnoredTestListener]s for this test.
+    */
+   suspend fun ignoredTestListenersInvocation(testCase: TestCase, reason: String?) {
+      extensions(testCase).filterIsInstance<IgnoredTestListener>()
+         .forEach { it.ignoredTest(testCase, reason) }
    }
 }

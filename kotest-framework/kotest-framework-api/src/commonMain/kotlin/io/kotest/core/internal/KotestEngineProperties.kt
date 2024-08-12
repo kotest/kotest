@@ -98,11 +98,6 @@ object KotestEngineProperties {
     */
    const val configurationClassName = "kotest.framework.config.fqn"
 
-   /**
-    * Disable scanning the classpath for listeners with @AutoScan by setting this property to true
-    */
-   const val disableAutoScanClassPathScanning = "kotest.framework.classpath.scanning.autoscan.disable"
-
    const val allowMultilineTestName = "kotest.framework.testname.multiline"
 
    /**

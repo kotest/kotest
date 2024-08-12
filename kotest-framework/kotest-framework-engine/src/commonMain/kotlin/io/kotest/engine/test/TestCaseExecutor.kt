@@ -2,8 +2,10 @@
 
 package io.kotest.engine.test
 
-import io.kotest.core.platform
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -21,7 +23,6 @@ import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
-import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
@@ -31,8 +32,6 @@ import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
-import io.kotest.core.Logger
-import io.kotest.core.Platform
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
@@ -59,13 +58,15 @@ internal class TestCaseExecutor(
       // Issue: https://github.com/kotest/kotest/issues/4077
       val useCoroutineTestScope = when (platform) {
          Platform.JVM, Platform.Native -> testCase.config.coroutineTestScope
-         Platform.JS, Platform.WasmJs -> false
+         Platform.JS, Platform.WasmJs -> if (testCase.config.coroutineTestScope) {
+            error("Configuration 'coroutineTestScope' is unsupported on $platform")
+         } else false
       }
 
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
-         TestFinishedInterceptor(listener),
+         TestFinishedInterceptor(listener, context.configuration.registry),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
@@ -86,7 +87,6 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                InvocationTimeoutInterceptor,
-               if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),

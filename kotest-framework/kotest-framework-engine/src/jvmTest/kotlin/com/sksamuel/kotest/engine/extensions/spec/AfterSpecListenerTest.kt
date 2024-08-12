@@ -49,7 +49,7 @@ class AfterSpecListenerTest : FunSpec() {
          collector.tests.size shouldBe 1
       }
 
-      test("AfterSpecListener's should NOT be triggered for a spec without tests") {
+      test("AfterSpecListener's should NOT be triggered for a spec without defined tests") {
 
          val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
@@ -63,6 +63,20 @@ class AfterSpecListenerTest : FunSpec() {
          counter.get() shouldBe 0
       }
 
+      test("AfterSpecListener's should NOT be triggered for a spec without active tests") {
+
+         val c = ProjectConfiguration()
+         c.registry.add(MyAfterSpecListener)
+         counter.set(0)
+
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(NoActiveTestsSpec2::class)
+            .withConfiguration(c)
+            .launch()
+
+         counter.get() shouldBe 0
+      }
+
       test("inline afterSpec functions should be invoked") {
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(InlineAfterSpec::class)
@@ -70,7 +84,7 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      test("f:inline afterSpec function errors should be caught") {
+      test("inline afterSpec function errors should be caught") {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
@@ -106,6 +120,22 @@ private class MyErrorSpec2 : FunSpec() {
    }
 }
 
+private class NoActiveTestsSpec2 : FunSpec() {
+   override fun extensions(): List<Extension> {
+      return listOf(object : AfterSpecListener {
+         override suspend fun afterSpec(spec: Spec) {
+            error("zapp!")
+         }
+      })
+   }
+
+   init {
+      xtest("foo1") {}
+      test("!foo2") {}
+      test("foo3").config(enabled = false) {}
+   }
+}
+
 private class MyPopulatedSpec2 : FunSpec() {
 
    override suspend fun afterSpec(spec: Spec) {
@@ -113,15 +143,14 @@ private class MyPopulatedSpec2 : FunSpec() {
    }
 
    override fun extensions(): List<Extension> {
-      return listOf(MyAfterSpecListener)
-   }
-
-   override fun listeners(): List<TestListener> {
-      return listOf(object : TestListener {
-         override suspend fun afterSpec(spec: Spec) {
-            counter.incrementAndGet()
+      return listOf(
+         MyAfterSpecListener,
+         object : TestListener {
+            override suspend fun afterSpec(spec: Spec) {
+               counter.incrementAndGet()
+            }
          }
-      })
+      )
    }
 
    init {
