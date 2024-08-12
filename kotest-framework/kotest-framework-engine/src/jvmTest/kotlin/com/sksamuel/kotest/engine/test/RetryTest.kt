@@ -13,7 +13,8 @@ class RetryTest : FunSpec() {
       retries = 3
       retryDelay = 25.milliseconds
 
-      val timesource = TimeSource.Monotonic
+      coroutineTestScope = true
+      val timesource = testTimeSource()
       var count = 0
       var mark = timesource.markNow()
 
