@@ -17,7 +17,9 @@ import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
@@ -167,7 +169,7 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "print dataclasses" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath),
@@ -176,13 +178,22 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+
+            message shouldStartWith
                """
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
                   |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
                """.trimMargin()
+
+            message shouldContain """
+               |Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1
+               |[0] Blonde(a=foo, b=true, c=23423, p=a/b/c) => slice 0
+               |[1] Blonde(a=woo, b=true, c=97821, p=a/b/c) => slice 0
+            """.trimMargin()
+
+            message shouldEndWith
+               """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>"""
          }
 
          "include extras when too many" {
@@ -323,6 +334,26 @@ class ShouldContainExactlyTest : WordSpec() {
                """
                   |(set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)
                """.trimMargin()
+         }
+
+         "find matching slices" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) shouldContainExactly listOf(5, 6, 7, 8, 9, 0, 1, 2, 3, 4,)
+            }.message
+            message should containInOrder(
+               "Slice[0] of expected with indexes: 0..4 matched a slice of actual values with indexes: 5..9",
+               "Slice[1] of expected with indexes: 5..9 matched a slice of actual values with indexes: 0..4",
+               "[0] 0 => slice 1",
+               "[1] 1 => slice 1",
+               "[2] 2 => slice 1",
+               "[3] 3 => slice 1",
+               "[4] 4 => slice 1",
+               "[5] 5 => slice 0",
+               "[6] 6 => slice 0",
+               "[7] 7 => slice 0",
+               "[8] 8 => slice 0",
+               "[9] 9 => slice 0",
+            )
          }
 
          "pass with custom verifier" {
