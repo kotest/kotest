@@ -18,7 +18,6 @@ import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListe
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.bestName
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
@@ -47,13 +46,6 @@ internal class SingleInstanceSpecRunner(
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
          return coroutineScope {
-            async { // fresh coroutine for each spec
-               pipeline.execute(spec) {
-                  val rootTests = materializer.materialize(spec)
-                  logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
-                  scheduler.schedule({ runTest(it, null) }, rootTests)
-                  Result.success(results)
-               }
             pipeline.execute(spec) {
                val rootTests = materializer.materialize(spec)
                logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
