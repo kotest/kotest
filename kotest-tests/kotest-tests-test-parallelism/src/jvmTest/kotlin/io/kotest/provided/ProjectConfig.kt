@@ -1,5 +1,6 @@
-package com.sksamuel.kotest.parallelism
+package io.kotest.provided
 
+import com.sksamuel.kotest.parallelism.Leases
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.TimeMark
