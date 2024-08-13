@@ -54,7 +54,12 @@ internal class SingleInstanceSpecRunner(
                   scheduler.schedule({ runTest(it, null) }, rootTests)
                   Result.success(results)
                }
-            }.await()
+            pipeline.execute(spec) {
+               val rootTests = materializer.materialize(spec)
+               logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+               scheduler.schedule({ runTest(it, null) }, rootTests)
+               Result.success(results)
+            }
          }
       } catch (e: Exception) {
          e.printStackTrace()
