@@ -1,10 +1,6 @@
 package io.kotest.property.core
 
 import io.kotest.assertions.print.print
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
-import io.kotest.core.spec.style.scopes.RootScope
-import io.kotest.core.spec.style.scopes.addTest
 import io.kotest.property.AssumptionFailedException
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
@@ -12,16 +8,7 @@ import io.kotest.property.internal.Counter
 import io.kotest.property.internal.ShrinkResult
 import io.kotest.property.internal.throwPropertyTestAssertionError
 
-@ExperimentalKotest
-fun RootScope.proptest(name: String, configure: PropTestContext.() -> Unit) {
-   addTest(TestName(name), false, null) {
-      val context = PropTestContext()
-      context.configure()
-      executePropTest(context)
-   }
-}
-
-internal suspend fun executePropTest(context: PropTestContext) {
+internal suspend fun executePropTest(context: PermutationContext, test: suspend PermutationContext.() -> Unit) {
 
    if (context.seed != null && context.failOnSeed)
       error("A seed is specified on this property test and failOnSeed is true")
@@ -35,21 +22,21 @@ internal suspend fun executePropTest(context: PropTestContext) {
    while (constraints.evaluate(Iteration(k))) {
       try {
          context.container.reset()
-         context.beforeProperty()
-         context.property.invoke()
-         context.afterProperty()
+         context.beforePermutation()
+         test(context)
+         context.afterPermutation()
       } catch (e: AssumptionFailedException) {
          // we don't mark failed assumptions as errors
       } catch (e: Throwable) {
          // we track any throwables and try to shrink them
-         val shrinks = shrink(context)
+         val shrinks = shrink(context, test)
          throwPropertyTestAssertionError(shrinks, AssertionError(e), k, context.rs.value.seed)
       }
       k++
    }
 }
 
-internal suspend fun shrink(context: PropTestContext): List<ShrinkResult<Any?>> {
+internal suspend fun shrink(context: PermutationContext, test: suspend PermutationContext.() -> Unit): List<ShrinkResult<Any?>> {
 
    // we need to switch each delegate to shrink mode so they lock in the current failed random values
    context.container.delegates.forEach { it.setShrinking() }
@@ -62,13 +49,14 @@ internal suspend fun shrink(context: PropTestContext): List<ShrinkResult<Any?>> 
 
    // the values after each of the args of the failed iteration have been shrunk (or same value if they could not be)
    return context.container.delegates.map { delegate ->
-      doShrinking(delegate, context)
+      doShrinking(delegate, context, test)
    }
 }
 
 internal suspend fun <A> doShrinking(
    delegate: GenDelegate<A>,
-   context: PropTestContext,
+   context: PermutationContext,
+   test: suspend PermutationContext.() -> Unit,
 ): ShrinkResult<A> {
 
    // if no more shrinking return null (if we've hit the bounds)
@@ -84,7 +72,7 @@ internal suspend fun <A> doShrinking(
    while (delegate.hasNextCandidate()) {
       val candidate = delegate.candidate().value()
       try {
-         context.property()
+         test(context)
          if (context.shouldPrintShrinkSteps)
             sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
       } catch (t: Throwable) {
