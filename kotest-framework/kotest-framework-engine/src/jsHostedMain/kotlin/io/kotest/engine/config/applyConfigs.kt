@@ -26,4 +26,4 @@ internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> 
 /**
  * Only applies on the JVM.
  */
-internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = null
+internal actual fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig> = emptyList()

@@ -9,4 +9,4 @@ internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {
 
 internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
 
-internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = null
+internal actual fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig> = emptyList()
