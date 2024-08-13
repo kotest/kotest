@@ -1,25 +1,72 @@
 package com.sksamuel.kotest.engine.test
 
+import io.kotest.assertions.withClue
+import io.kotest.common.testTimeSource
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.DefaultTestConfig
-import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
+import kotlin.time.TimeMark
 
-class RetryTest : FunSpec() {
+class RetryTests : FunSpec() {
+   init {
+      coroutineTestScope = true
+
+      fun checkResults(collector: CollectingTestEngineListener, testCount: Int) {
+         collector.names.size shouldBe testCount
+
+         collector.names.forEach { name ->
+            val result = collector.result(name)
+            withClue(name) {
+               result.shouldNotBeNull()
+               withClue(result) {
+                  result.isSuccess shouldBe true
+               }
+            }
+         }
+      }
+
+      test("regular") {
+         val collector = CollectingTestEngineListener()
+
+         TestEngineLauncher(collector)
+            .withClasses(InnerRetryTest::class)
+            .withConfiguration(ProjectConfiguration())
+            .async()
+
+         checkResults(collector, 4)
+      }
+
+      test("with spec default") {
+         val collector = CollectingTestEngineListener()
+
+         TestEngineLauncher(collector)
+            .withClasses(InnerRetryWithSpecDefaultTest::class)
+            .withConfiguration(ProjectConfiguration())
+            .async()
+
+         checkResults(collector, 1)
+      }
+   }
+}
+
+private class InnerRetryTest : FunSpec() {
+   private lateinit var mark: TimeMark
+
    init {
 
       retries = 3
       retryDelay = 25.milliseconds
 
-      coroutineTestScope = true
-      val timesource = testTimeSource()
       var count = 0
-      var mark = timesource.markNow()
 
       beforeTest {
-         mark = timesource.markNow()
+         mark = testTimeSource().markNow()
       }
 
       afterTest {
@@ -38,8 +85,8 @@ class RetryTest : FunSpec() {
             count++
             error("boom")
          } else {
-            // 3 invocations in total, with delays of 25 each, so should be at least 50ms
-            mark.elapsedNow().shouldBeGreaterThan(40.milliseconds)
+            // 2 retries in total, with delays of 20 each
+            mark.elapsedNow().shouldBe(40.milliseconds)
          }
       }
 
@@ -55,22 +102,21 @@ class RetryTest : FunSpec() {
             count++
             error("boom")
          } else {
-            // 4 invocations in total, with delays of 25 each, so should be at least 50ms
-            mark.elapsedNow().shouldBeGreaterThan(75.milliseconds)
+            // 3 retries in total, with delays of 25 each
+            mark.elapsedNow().shouldBe(75.milliseconds)
          }
       }
    }
 }
 
-class RetryWithSpecDefaultTest : DescribeSpec() {
-   init {
+private class InnerRetryWithSpecDefaultTest : DescribeSpec() {
+   private lateinit var mark: TimeMark
 
-      val timesource = TimeSource.Monotonic
+   init {
       var count = 0
-      var mark = timesource.markNow()
 
       beforeTest {
-         mark = timesource.markNow()
+         mark = testTimeSource().markNow()
       }
 
       afterTest {
@@ -84,8 +130,8 @@ class RetryWithSpecDefaultTest : DescribeSpec() {
             count++
             error("boom")
          } else {
-            // 3 invocations in total, with delays of 20 each, so should be at least 40
-            mark.elapsedNow().shouldBeGreaterThan(40.milliseconds)
+            // 3 invocations in total, with delays of 20 each
+            mark.elapsedNow().shouldBe(40.milliseconds)
          }
       }
    }
