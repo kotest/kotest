@@ -10,16 +10,19 @@ import io.kotest.matchers.future.shouldNotBeCancelled
 import io.kotest.matchers.future.shouldNotBeCompleted
 import io.kotest.matchers.future.shouldNotBeCompletedExceptionally
 import io.kotest.matchers.future.shouldNotCompleteExceptionallyWith
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FutureMatcherTest : StringSpec({
 
    suspend fun runOnSeparateThread(block: () -> Unit) {
-      Executors.newSingleThreadExecutor().asCoroutineDispatcher().use {
+      @OptIn(DelicateCoroutinesApi::class)
+      newSingleThreadContext("separate").use {
          withContext(it) {
             block()
          }
