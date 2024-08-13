@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.parallelism
 
-import com.sksamuel.kotest.parallelism.ProjectConfig.parallelism
+import io.kotest.provided.ProjectConfig.parallelism
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.sync.Semaphore
