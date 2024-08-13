@@ -6,7 +6,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigsJVM
-import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
+import io.kotest.engine.config.loadProjectConfigsJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
@@ -97,7 +97,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val configuration = ConfigManager.initialize(ProjectConfiguration()) {
          detectAbstractProjectConfigsJVM() +
-            listOfNotNull(loadProjectConfigFromClassnameJVM())
+            loadProjectConfigsJVM()
       }
 
       // if we are excluded from the engines then we say goodnight according to junit rules

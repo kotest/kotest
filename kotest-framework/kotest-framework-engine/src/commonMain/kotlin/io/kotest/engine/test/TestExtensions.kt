@@ -38,8 +38,8 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    fun extensions(testCase: TestCase): List<Extension> {
       return registry.all() + // globals
          testCase.spec.extensions() + // overriding the extensions function in the spec
-         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
-         testCase.spec.registeredExtensions() + // added to the spec via register
+         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
+         testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
          testCase.config.extensions // extensions coming from the test config block itself
    }
 
@@ -94,7 +94,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Invokes all beforeXYZ callbacks for this test.
+    * Invokes all afterXYZ callbacks for this test.
     * Returns a Result of [MultipleExceptions] if there are any exceptions.
     */
    suspend fun afterTestAfterAnyAfterContainer(testCase: TestCase, result: TestResult): Result<TestResult> {
