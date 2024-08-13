@@ -162,7 +162,7 @@ public final class io/kotest/engine/config/DumpKt {
 }
 
 public final class io/kotest/engine/config/LoadProjectConfigFromClassnameKt {
-	public static final fun loadProjectConfigFromClassnameJVM ()Lio/kotest/core/config/AbstractProjectConfig;
+	public static final fun loadProjectConfigsJVM ()Ljava/util/List;
 }
 
 public final class io/kotest/engine/errors/ExtensionExceptionExtractor {

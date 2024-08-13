@@ -386,6 +386,13 @@ abstract class Spec : TestConfiguration() {
 
    open suspend fun beforeEach(testCase: TestCase) {}
 
+
+   /**
+    * Registers a callback to be executed after every [TestCase] with type [TestType.Test].
+    *
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
    open suspend fun afterEach(testCase: TestCase, result: TestResult) {}
 
    open suspend fun beforeAny(testCase: TestCase) {}
