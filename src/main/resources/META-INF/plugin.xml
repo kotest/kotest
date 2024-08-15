@@ -37,6 +37,7 @@
 
    <extensions defaultExtensionNs="com.intellij">
       <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
+      <defaultLiveTemplates file="liveTemplates.xml" />
 
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
