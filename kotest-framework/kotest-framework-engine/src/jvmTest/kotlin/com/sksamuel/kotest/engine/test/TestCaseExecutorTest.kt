@@ -17,11 +17,13 @@ import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(DelicateCoroutinesApi::class)
 class TestCaseExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestScope {
