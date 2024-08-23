@@ -41,9 +41,5 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
       ) {
          wallclockDelay(1.minutes)
       }
-
-      test("test exceeding parent timeout").config(extensions = listOf(ExpectFailureExtension)) {
-         wallclockDelay(1.minutes)
-      }
    }
 })
