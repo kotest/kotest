@@ -16,12 +16,12 @@ class ProjectConfig : AbstractProjectConfig() {
          JunitXmlReporter(
             includeContainers = false,
             useTestPathAsName = true,
-            outputDir = taskTestResultsDir,
+            outputDir = taskTestResultsDir.resolve("without_containers"),
          ),
          JunitXmlReporter(
             includeContainers = true,
             useTestPathAsName = false,
-            outputDir = taskTestResultsDir,
+            outputDir = taskTestResultsDir.resolve("with_containers"),
          )
       )
    }
