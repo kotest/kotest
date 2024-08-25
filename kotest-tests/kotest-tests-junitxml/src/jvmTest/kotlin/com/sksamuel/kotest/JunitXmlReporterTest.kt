@@ -19,7 +19,7 @@ class JunitXmlReporterTest : WordSpec() {
       private fun loadTestFile(filename: String): Element {
          val path = taskTestResultsDir.resolve(filename)
          val builder = SAXBuilder()
-         val doc = builder.build(path)
+         val doc = builder.build(path.toFile())
          return doc.rootElement
       }
    }

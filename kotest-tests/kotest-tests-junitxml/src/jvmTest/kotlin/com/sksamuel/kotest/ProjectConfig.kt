@@ -4,31 +4,39 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.extensions.junitxml.JunitXmlReporter
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
+import kotlin.io.path.invariantSeparatorsPathString
+import kotlin.io.path.relativeTo
 
 class ProjectConfig : AbstractProjectConfig() {
 
    override val specExecutionOrder = SpecExecutionOrder.Annotated
 
    override fun extensions(): List<Extension> {
+      val outputDir = taskTestResultsDir.relativeTo(buildDir).invariantSeparatorsPathString
+
       return listOf(
          JunitXmlReporter(
             includeContainers = false,
             useTestPathAsName = true,
-            outputDir = taskTestResultsDir.resolve("without_containers").invariantSeparatorsPath,
+            outputDir = "$outputDir/without_containers",
          ),
          JunitXmlReporter(
             includeContainers = true,
             useTestPathAsName = false,
-            outputDir = taskTestResultsDir.resolve("with_containers").invariantSeparatorsPath,
+            outputDir = "$outputDir/with_containers",
          )
       )
    }
 
    companion object {
-      internal val taskTestResultsDir: File by lazy {
+      private val buildDir = Path("./build").absolute().normalize()
+
+      internal val taskTestResultsDir: Path by lazy {
          System.getProperty("taskTestResultsDir")
-            ?.let { File(it) }
+            ?.let { Path(it) }
             ?: error("Missing system property 'taskTestResultsDir'")
       }
    }
