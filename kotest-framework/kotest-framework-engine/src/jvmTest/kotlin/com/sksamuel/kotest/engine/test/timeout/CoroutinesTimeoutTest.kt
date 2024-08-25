@@ -96,8 +96,8 @@ private suspend fun someCoroutine() {
    }
 }
 
-/** Delay using real (non-virtual) time. */
-suspend fun wallclockDelay(duration: Duration) {
+suspend fun nonVirtualTimeDelay(duration: Duration) {
+   // Default dispatcher knows nothing about virtual time
    withContext(Dispatchers.Default) { delay(duration) }
 }
 

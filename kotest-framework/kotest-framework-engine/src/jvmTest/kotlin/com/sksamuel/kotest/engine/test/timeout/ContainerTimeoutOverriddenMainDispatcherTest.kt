@@ -39,7 +39,7 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
          invocationTimeout = 100.milliseconds,
          extensions = listOf(ExpectFailureExtension),
       ) {
-         wallclockDelay(1.minutes)
+         nonVirtualTimeDelay(1.minutes)
       }
    }
 })

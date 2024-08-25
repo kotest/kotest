@@ -46,6 +46,6 @@ private class TestTimeouts : StringSpec({
    }
 
    "suspend" {
-      wallclockDelay(28.days)
+      nonVirtualTimeDelay(28.days)
    }
 })
