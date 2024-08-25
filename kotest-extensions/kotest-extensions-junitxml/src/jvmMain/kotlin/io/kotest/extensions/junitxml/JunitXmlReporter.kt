@@ -80,7 +80,8 @@ class JunitXmlReporter(
    }
 
    private val formatter = getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
-   private var marks = ConcurrentHashMap<KClass<out Spec>, TimeMark>()
+
+   private val marks = ConcurrentHashMap<KClass<out Spec>, TimeMark>()
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       marks[kclass] = TimeSource.Monotonic.markNow()
