@@ -31,15 +31,18 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 /**
- * A JUnit xml legacy format writer.
+ * A JUnit XML legacy format writer.
  *
- * This implementation handles nesting, whereas the junit implementation will only output for leaf tests.
+ * This implementation handles nesting, whereas the JUnit implementation will only output for leaf tests.
  *
- * @param includeContainers when true, all intermediate tests are included in the report as
- * tests in their own right. Defaults to false.
+ * @param includeContainers when `true`, all intermediate tests are included in the report as
+ * tests in their own right.
+ * Defaults to `false`.
  *
- * @param useTestPathAsName when true, the full test path will be used as the name. In other
- * words the name will include the name of any parent tests as a single string.
+ * @param useTestPathAsName when `true`, the full test path will be used as the name.
+ * In other words the name will include the name of any parent tests as a single string.
+ *
+ * @param outputDir The directory to write reports.
  */
 class JunitXmlReporter(
    private val includeContainers: Boolean = false,
@@ -47,6 +50,9 @@ class JunitXmlReporter(
    private val outputDir: Path,
 ) : PrepareSpecListener, FinalizeSpecListener {
 
+   /**
+    * @param outputDir Path of the output directory, relative to the build directory.
+    */
    constructor(
       includeContainers: Boolean = false,
       useTestPathAsName: Boolean = true,
