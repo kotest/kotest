@@ -83,9 +83,6 @@ data class ResolvedTestConfig(
       require(threads > 0) { "Number of threads must be greater than 0" }
    }
 
-   // note: the invocation timeout can't be larger than the test case timeout
-   val resolvedInvocationTimeout: Duration = minOf(timeout, invocationTimeout)
-
    companion object {
       val default = ResolvedTestConfig(
          { Enabled.enabled },

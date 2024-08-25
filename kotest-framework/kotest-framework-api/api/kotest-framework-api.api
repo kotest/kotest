@@ -2952,6 +2952,7 @@ public final class io/kotest/core/test/TestCase {
 }
 
 public final class io/kotest/core/test/TestCaseKt {
+	public static final fun getTimeout (Lio/kotest/core/test/TestCase;)J
 	public static final fun isFocused (Lio/kotest/core/test/TestCase;)Z
 	public static final fun isRootTest (Lio/kotest/core/test/TestCase;)Z
 	public static final fun parents (Lio/kotest/core/test/TestCase;)Ljava/util/List;
@@ -3182,7 +3183,6 @@ public final class io/kotest/core/test/config/ResolvedTestConfig {
 	public final fun getFailfast ()Z
 	public final fun getInvocationTimeout-UwyO8pc ()J
 	public final fun getInvocations ()I
-	public final fun getResolvedInvocationTimeout-UwyO8pc ()J
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTags ()Ljava/util/Set;
 	public final fun getThreads ()I
