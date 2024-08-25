@@ -46,7 +46,7 @@ private class NestedTimeout : FunSpec() {
    init {
       context("a").config(timeout = 100.milliseconds) {
          test("b") {
-            wallclockDelay(2000.milliseconds)
+            realTimeDelay(2000.milliseconds)
          }
       }
    }

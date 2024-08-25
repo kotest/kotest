@@ -17,19 +17,19 @@ class CoroutinesTimeoutOverrideTest : FunSpec({
    test("timeout greater than coroutines timeout").config(
       timeout = coroutinesTimeout + 200.milliseconds,
    ) {
-      wallclockDelay(coroutinesTimeout + 10.milliseconds)
+      realTimeDelay(coroutinesTimeout + 10.milliseconds)
    }
 
    test("invocation timeout greater than coroutines timeout").config(
       invocationTimeout = coroutinesTimeout + 200.milliseconds,
    ) {
-      wallclockDelay(coroutinesTimeout + 10.milliseconds)
+      realTimeDelay(coroutinesTimeout + 10.milliseconds)
    }
 
    test("unspecified timeouts fallback to defaults").config(
       timeout = null,
       invocationTimeout = null,
    ) {
-      wallclockDelay(coroutinesTimeout + 10.milliseconds)
+      realTimeDelay(coroutinesTimeout + 10.milliseconds)
    }
 })

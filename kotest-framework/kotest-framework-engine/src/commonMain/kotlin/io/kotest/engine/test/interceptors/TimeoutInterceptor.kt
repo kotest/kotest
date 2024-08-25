@@ -50,7 +50,7 @@ internal class TimeoutInterceptor(
             test(testCase, scope.withCoroutineContext(coroutineContext))
          }
       } catch (t: CancellationException) {
-         if (t is WallclockTimeoutCancellationException || t is TimeoutCancellationException) {
+         if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {
             logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
             TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName, t))
          } else {
@@ -69,13 +69,13 @@ private suspend fun <T> withAppropriateTimeout(
 ): T {
    return if (coroutineContext[TestCoroutineScheduler] != null) {
       // withTimeout uses virtual time, which will hang.
-      withWallclockTimeout(timeout, block)
+      withRealTimeTimeout(timeout, block)
    } else {
       withTimeout(timeout, block)
    }
 }
 
-private suspend fun <T> withWallclockTimeout(
+private suspend fun <T> withRealTimeTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T = coroutineScope {
@@ -96,13 +96,13 @@ private suspend fun <T> withWallclockTimeout(
       }
       timeoutJob.onJoin {
          blockDeferred.cancel()
-         throw WallclockTimeoutCancellationException("Timed out waiting for $timeout")
+         throw RealTimeTimeoutCancellationException("Timed out waiting for $timeout")
       }
    }
 }
 
 // TimeoutCancellationException has an internal constructor, so we need a custom exception to indicate timeout
-private class WallclockTimeoutCancellationException(message: String) : CancellationException(message)
+private class RealTimeTimeoutCancellationException(message: String) : CancellationException(message)
 
 /**
  * Exception used for when a test exceeds its timeout.
