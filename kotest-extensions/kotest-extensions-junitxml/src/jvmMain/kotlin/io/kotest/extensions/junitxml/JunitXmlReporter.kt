@@ -17,13 +17,14 @@ import java.net.InetAddress
 import java.net.UnknownHostException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.Path
 import kotlin.io.path.absolute
+import kotlin.io.path.createParentDirectories
 import kotlin.reflect.KClass
 import kotlin.time.DurationUnit
 import kotlin.time.TimeMark
@@ -43,8 +44,18 @@ import kotlin.time.TimeSource
 class JunitXmlReporter(
    private val includeContainers: Boolean = false,
    private val useTestPathAsName: Boolean = true,
-   private val outputDir: String = "test-results/test"
+   private val outputDir: Path,
 ) : PrepareSpecListener, FinalizeSpecListener {
+
+   constructor(
+      includeContainers: Boolean = false,
+      useTestPathAsName: Boolean = true,
+      outputDir: String = "test-results/test"
+   ) : this(
+      includeContainers = includeContainers,
+      useTestPathAsName = useTestPathAsName,
+      outputDir = defaultOutputDir(outputDir),
+   )
 
    companion object {
       const val DefaultBuildDir = "./build"
@@ -53,18 +64,17 @@ class JunitXmlReporter(
       const val BuildDirKey = "gradle.build.dir"
 
       const val AttributeName = "name"
+
+      private fun defaultOutputDir(
+         testResultsPath: String = "test-results/test",
+      ): Path {
+         val buildDir = Path(System.getProperty(BuildDirKey) ?: DefaultBuildDir)
+         return buildDir.resolve(testResultsPath).normalize().absolute()
+      }
    }
 
    private val formatter = getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
    private var marks = ConcurrentHashMap<KClass<out Spec>, TimeMark>()
-
-   private fun outputDir(): Path {
-      val buildDir = System.getProperty(BuildDirKey)
-      return if (buildDir != null)
-         Paths.get(buildDir, outputDir).normalize().absolute()
-      else
-         Paths.get(DefaultBuildDir, outputDir).normalize().absolute()
-   }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       marks[kclass] = TimeSource.Monotonic.markNow()
@@ -114,6 +124,7 @@ class JunitXmlReporter(
                }
                e.addContent(err)
             }
+
             is TestResult.Failure -> {
                val failure = Element("failure")
                result.errorOrNull?.let {
@@ -122,6 +133,7 @@ class JunitXmlReporter(
                }
                e.addContent(failure)
             }
+
             else -> Unit
          }
 
@@ -132,8 +144,9 @@ class JunitXmlReporter(
    }
 
    private fun write(kclass: KClass<*>, document: Document) {
-      val path = outputDir().resolve("TEST-" + formatter.format(kclass) + ".xml")
-      path.parent.toFile().mkdirs()
+      val path = outputDir
+         .resolve("TEST-" + formatter.format(kclass) + ".xml")
+         .createParentDirectories()
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
       outputter.output(document, writer)
