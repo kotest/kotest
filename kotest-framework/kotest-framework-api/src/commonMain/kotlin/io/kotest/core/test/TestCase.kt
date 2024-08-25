@@ -1,12 +1,13 @@
 package io.kotest.core.test
 
-import io.kotest.core.source.SourceRef
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
+import io.kotest.core.source.SourceRef
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.config.ResolvedTestConfig
+import kotlin.time.Duration
 
 /**
  * A [TestCase] describes a test lambda at runtime.
@@ -76,3 +77,10 @@ fun TestCase.isRootTest() = this.parent == null
 fun TestCase.parents(): List<TestCase> {
    return if (parent == null) emptyList() else parent.parents() + parent
 }
+
+/** Returns timeout to be used depending on the [TestType]. */
+val TestCase.timeout: Duration
+   get() = when (type) {
+      TestType.Container -> config.timeout
+      else -> minOf(config.invocationTimeout, config.timeout)
+   }
