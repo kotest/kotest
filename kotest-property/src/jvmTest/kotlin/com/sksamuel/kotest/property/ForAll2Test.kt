@@ -121,4 +121,18 @@ Repeat this test by using seed 1234
 
 Caused by IllegalArgumentException: something unexpected happened"""
    }
+
+   test("forAll with 2 arbs should skip first 4 tests") {
+      shouldThrowAny {
+         forAll(
+            config = PropTestConfig(skipTo = 5, seed = 5847062201763421121),
+            Exhaustive.ints(0..10),
+            Exhaustive.ints(0..10)
+         ) { a, b -> a <= b }
+      }.message shouldBe """Property failed after 8 attempts
+
+Repeat this test by using seed 5847062201763421121
+
+Caused by AssertionFailedError: expected:<true> but was:<false>"""
+   }
 })
