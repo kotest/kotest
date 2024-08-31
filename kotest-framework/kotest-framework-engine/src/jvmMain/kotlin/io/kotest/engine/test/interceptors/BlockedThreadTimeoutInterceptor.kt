@@ -44,7 +44,7 @@ internal class BlockedThreadTimeoutInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return if (testCase.config.blockingTest) {
          // we must switch execution onto a throwaway thread so an interruption
