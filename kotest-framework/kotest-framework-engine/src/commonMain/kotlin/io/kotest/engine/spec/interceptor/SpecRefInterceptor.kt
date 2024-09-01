@@ -10,7 +10,16 @@ import io.kotest.core.test.TestResult
 internal interface SpecRefInterceptor {
    suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>,
+      fn: NextSpecRefInterceptor,
    ): Result<Map<TestCase, TestResult>>
+}
+
+/**
+ * A functional interface for the interceptor callback, to reduce the size of stack traces.
+ *
+ * With a normal lambda type, each call adds three lines to the stacktrace, but an interface only adds one line.
+ */
+internal fun interface NextSpecRefInterceptor {
+   suspend operator fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>>
 }
 

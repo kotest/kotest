@@ -11,6 +11,7 @@ import io.kotest.engine.extensions.SpecWrapperExtension
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 
 /**
  * If a [Spec] is annotated with the [ApplyExtension] annotation, registers any extensions
@@ -24,7 +25,7 @@ internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistr
 
    override suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecRefInterceptor
    ): Result<Map<TestCase, TestResult>> {
       return runCatching {
          ref.kclass.annotation<ApplyExtension>()?.wrapper?.map { extensionClass ->

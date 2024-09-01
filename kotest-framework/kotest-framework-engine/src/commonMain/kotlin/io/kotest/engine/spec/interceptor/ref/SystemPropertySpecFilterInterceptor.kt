@@ -12,6 +12,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv
 import kotlin.reflect.KClass
@@ -32,7 +33,7 @@ internal class SystemPropertySpecFilterInterceptor(
 
    override suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecRefInterceptor
    ): Result<Map<TestCase, TestResult>> {
       val filter = syspropOrEnv(KotestEngineProperties.filterSpecs) ?: ""
       logger.log { Pair(ref.kclass.bestName(), "Filter specs syspropOrEnv=$filter") }

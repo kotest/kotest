@@ -7,6 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 
 /**
@@ -18,7 +19,7 @@ internal class SpecRefExtensionInterceptor(private val registry: ExtensionRegist
 
    override suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecRefInterceptor
    ): Result<Map<TestCase, TestResult>> {
 
       logger.log { Pair(ref.kclass.bestName(), "Intercepting spec") }

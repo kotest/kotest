@@ -8,6 +8,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
@@ -27,7 +28,7 @@ internal class TagsInterceptor(
 
    override suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecRefInterceptor
    ): Result<Map<TestCase, TestResult>> {
       val potentiallyActive = TagExpressionResult.Exclude != conf
          .runtimeTagExpression()

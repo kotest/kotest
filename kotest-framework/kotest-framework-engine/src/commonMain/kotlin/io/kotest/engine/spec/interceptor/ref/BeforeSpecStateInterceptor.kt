@@ -5,6 +5,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.mpp.bestName
@@ -18,7 +19,7 @@ import kotlin.reflect.KClass
 internal class BeforeSpecStateInterceptor(private val context: EngineContext) : SpecRefInterceptor {
    override suspend fun intercept(
       ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecRefInterceptor
    ): Result<Map<TestCase, TestResult>> {
       val state = BeforeSpecState(mutableListOf(), mutableSetOf(), mutableSetOf())
       context.state[ref.kclass.beforeSpecStateKey()] = state
