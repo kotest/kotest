@@ -3,10 +3,10 @@ package io.kotest.engine.test.interceptors
 import io.kotest.assertions.assertionCounterContextElement
 import io.kotest.assertions.errorCollectorContextElement
 import io.kotest.common.JVMOnly
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.Logger
 import kotlinx.coroutines.withContext
 
 @JVMOnly

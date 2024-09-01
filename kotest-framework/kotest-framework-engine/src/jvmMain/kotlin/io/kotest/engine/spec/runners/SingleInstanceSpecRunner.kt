@@ -21,6 +21,7 @@ import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
@@ -48,7 +49,7 @@ internal class SingleInstanceSpecRunner(
             pipeline.execute(spec) {
                val rootTests = materializer.materialize(spec)
                logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
-               scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
+               scheduler.schedule({ runTest(it, null) }, rootTests)
                Result.success(results)
             }
          }
@@ -84,7 +85,7 @@ internal class SingleInstanceSpecRunner(
             TestExtensions(context.configuration.registry).ignoredTestListenersInvocation(nestedTestCase, reason)
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
-            val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)
+            val result = runTest(nestedTestCase, this@SingleInstanceTestScope)
             if (result.isErrorOrFailure) {
                if (testCase.config.failfast || context.configuration.projectWideFailFast) {
                   logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
@@ -98,7 +99,6 @@ internal class SingleInstanceSpecRunner(
 
    private suspend fun runTest(
       testCase: TestCase,
-      coroutineContext: CoroutineContext,
       parentScope: SingleInstanceTestScope?,
    ): TestResult {
 

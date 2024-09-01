@@ -1,5 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.core.platform
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -9,13 +11,13 @@ import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecListenerSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.CoroutineNameInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
+import io.kotest.engine.spec.interceptor.instance.SpecContextElementInteceptor
 import io.kotest.engine.spec.interceptor.instance.SpecExtensionInterceptor
-import io.kotest.core.Logger
-import io.kotest.core.Platform
 import io.kotest.mpp.bestName
 
 /**
@@ -48,6 +50,8 @@ internal class SpecInterceptorPipeline(
 
    private fun createPipeline(): List<SpecInterceptor> {
       return listOfNotNull(
+         CoroutineNameInterceptor,
+         SpecContextElementInteceptor,
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(
             listener,
             configuration.registry
