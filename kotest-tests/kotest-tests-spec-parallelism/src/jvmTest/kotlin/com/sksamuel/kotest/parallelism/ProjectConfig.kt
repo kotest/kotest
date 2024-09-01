@@ -1,18 +1,20 @@
 package com.sksamuel.kotest.parallelism
 
-import com.sksamuel.kotest.parallelism.ProjectConfig.projectStart
+import com.sksamuel.kotest.parallelism.ProjectConfig.startOfTest
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
 import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.log
 import io.kotest.core.test.TestScope
 import io.kotest.inspectors.shouldForNone
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.core.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,9 +49,11 @@ object ProjectConfig : AbstractProjectConfig() {
    private val TestStatusCollectorScope: CoroutineScope =
       CoroutineScope(Dispatchers.IO) + CoroutineName("TestStatusCollector")
 
-   /** Marks the start of the entire tests, when [beforeProject] is called, before any tests are launched. */
-   internal lateinit var projectStart: TimeMark
-      private set
+   /** Mark the start of the entire test case. */
+   internal val startOfTest: TimeMark = TimeSource.Monotonic.markNow()
+
+   /** Marks when [beforeProject] is called, which should be before any tests are launched. */
+   private var beforeProjectCalled: Duration? = null
 
    init {
       // Start listening for launched tests in an independent CoroutineScope.
@@ -74,7 +78,7 @@ object ProjectConfig : AbstractProjectConfig() {
    }
 
    override suspend fun beforeProject() {
-      projectStart = TimeSource.Monotonic.markNow()
+      beforeProjectCalled = startOfTest.elapsedNow()
    }
 
    override suspend fun afterProject() {
@@ -86,22 +90,27 @@ object ProjectConfig : AbstractProjectConfig() {
             statuses.shouldForNone { it.status shouldBe TimedOut }
          }
 
-         val expectedTestNames = listOf(
-            "test 1",
-            "test 2",
-            "test 3",
-            "test 4",
-            "test 5",
-            "test 6",
-            "test 7",
-            "test 8",
-         )
+         val beforeProjectCalled = withClue("beforeProjectCalled=$beforeProjectCalled") {
+            beforeProjectCalled.shouldNotBeNull()
+         }
+         withClue("Expect all tests started after `beforeProject()`") {
+            statuses.shouldForNone { it.elapsed shouldBeGreaterThan beforeProjectCalled }
+         }
 
          listOf(Started, Finished).forEach { status ->
             val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
 
             withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-               actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
+               actualTestNames.shouldContainExactlyInAnyOrder(
+                  "test 1",
+                  "test 2",
+                  "test 3",
+                  "test 4",
+                  "test 5",
+                  "test 6",
+                  "test 7",
+                  "test 8",
+               )
             }
          }
 
@@ -148,7 +157,7 @@ private val testStatuses = MutableSharedFlow<TestStatus>(replay = 100)
 private data class TestStatus(
    val testName: String,
    val status: Status,
-   val elapsed: Duration = projectStart.elapsedNow(),
+   val elapsed: Duration = startOfTest.elapsedNow(),
 ) {
    enum class Status { Started, Finished, TimedOut }
 }
