@@ -15,6 +15,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.core.log
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
@@ -31,7 +32,7 @@ internal class IgnoreNestedSpecStylesInterceptor(
 
    override suspend fun intercept(
       spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
 
       fun isValid(spec: Spec) = when (spec) {

@@ -6,6 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 
 /**
@@ -17,7 +18,7 @@ internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInter
 
    override suspend fun intercept(
       spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
       return extensions.intercept(spec) { fn(spec) } ?: Result.success(emptyMap())
    }

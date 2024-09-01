@@ -5,6 +5,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import kotlinx.coroutines.withContext
 
@@ -18,7 +19,7 @@ internal class ConfigurationInContextSpecInterceptor(
 
    override suspend fun intercept(
       spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+      fn: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
       return withContext(ConfigurationContextElement(projectConfiguration)) {
          fn(spec)
