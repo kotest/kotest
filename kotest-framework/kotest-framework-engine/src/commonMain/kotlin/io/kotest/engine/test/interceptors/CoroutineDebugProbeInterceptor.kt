@@ -17,7 +17,7 @@ internal object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
       return if (testCase.config.coroutineDebugProbes) {

@@ -13,7 +13,7 @@ internal object ExpectExceptionTestInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       val result = test(testCase, scope)
       return when (result) {
