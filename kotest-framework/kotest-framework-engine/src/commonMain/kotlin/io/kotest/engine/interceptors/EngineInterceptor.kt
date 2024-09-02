@@ -23,9 +23,9 @@ interface EngineInterceptor {
 }
 
 /**
- * A functional interface for the interceptor callback, to reduce the size of stack traces.
+ * Callback for invoking the next EngineInterceptor.
  *
- * With a normal lambda type, each call adds three lines to the stacktrace, but an interface only adds one line.
+ * This is a functional interface to reduce the size of stack traces - type-erased lambda types add excess stack lines.
  */
 @KotestInternal
 fun interface NextEngineInterceptor {
