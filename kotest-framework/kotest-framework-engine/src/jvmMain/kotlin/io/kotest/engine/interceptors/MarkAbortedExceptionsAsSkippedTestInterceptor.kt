@@ -4,6 +4,7 @@ import io.kotest.common.JVMOnly
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 import org.opentest4j.TestAbortedException
 
@@ -18,7 +19,7 @@ internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInt
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return test(testCase, scope).let { testResult ->
          if (testResult.errorOrNull is TestAbortedException) {

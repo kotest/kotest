@@ -22,7 +22,7 @@ internal class TestEnabledCheckInterceptor(private val configuration: ProjectCon
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       val enabled = testCase.isEnabled(configuration)
       return when (enabled.isEnabled) {

@@ -21,6 +21,7 @@ import io.kotest.engine.collect
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
+import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -131,12 +132,12 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    suspend fun intercept(
       testCase: TestCase,
       context: TestScope,
-      inner: suspend (TestCase, TestScope) -> TestResult,
+      inner: NextTestExecutionInterceptor,
    ): TestResult {
 
       val execute = extensions(testCase).filterIsInstance<TestCaseExtension>()
          .foldRight(inner) { extension, execute ->
-            { tc, ctx ->
+            NextTestExecutionInterceptor { tc, ctx ->
                extension.intercept(tc) {
                   // the user's intercept method is free to change the context of the coroutine
                   // to support this, we should switch the context used by the test case context

@@ -24,7 +24,7 @@ class TestCoroutineInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       var result: TestResult = TestResult.Ignored()
       logger.log { Pair(testCase.name.testName, "Switching context to coroutines runTest") }

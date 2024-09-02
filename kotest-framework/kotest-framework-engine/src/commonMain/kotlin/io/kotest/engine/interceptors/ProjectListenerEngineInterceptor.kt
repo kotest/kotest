@@ -10,7 +10,7 @@ internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
       val extensions = ProjectExtensions(context.configuration.registry)

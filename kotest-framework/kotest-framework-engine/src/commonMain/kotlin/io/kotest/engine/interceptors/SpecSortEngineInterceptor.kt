@@ -16,7 +16,7 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
       // spec classes are ordered using SpecExecutionOrderExtension extensions
