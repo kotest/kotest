@@ -13,7 +13,7 @@ internal object DumpConfigInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
       if (syspropEnabled()) {
          context.configuration.dumpProjectConfig()

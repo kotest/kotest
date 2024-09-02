@@ -17,7 +17,7 @@ internal object InvocationCountCheckInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       logger.log { Pair(testCase.name.testName, "Checking that invocation count is 1 for containers") }
       return when {

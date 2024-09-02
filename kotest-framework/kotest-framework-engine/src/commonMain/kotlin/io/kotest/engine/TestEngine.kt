@@ -12,6 +12,7 @@ import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.runtimeTagExpression
 import io.kotest.core.Logger
+import io.kotest.engine.interceptors.NextEngineInterceptor
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -51,7 +52,7 @@ class TestEngine(private val config: TestEngineConfig) {
    internal suspend fun execute(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
 
-      val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
+      val innerExecute = NextEngineInterceptor { context ->
          val scheduler = when (platform) {
             Platform.JVM -> ConcurrentTestSuiteScheduler(
                config.configuration.concurrentSpecs ?: config.configuration.parallelism,
@@ -68,7 +69,7 @@ class TestEngine(private val config: TestEngineConfig) {
       logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
-         { context -> extension.intercept(context, next) }
+         NextEngineInterceptor { context -> extension.intercept(context, next) }
       }
 
       val tags = config.configuration.runtimeTagExpression()

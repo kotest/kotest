@@ -33,7 +33,7 @@ internal class CoroutineDispatcherFactoryInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
       val currentDispatcher = coroutineContext[CoroutineDispatcher]
