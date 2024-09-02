@@ -28,7 +28,7 @@ class TestDispatcherInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return when (coroutineContext[CoroutineDispatcher]) {
          is TestDispatcher -> test(testCase, scope)

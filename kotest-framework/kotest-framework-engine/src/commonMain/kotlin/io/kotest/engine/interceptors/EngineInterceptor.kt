@@ -19,7 +19,17 @@ import io.kotest.engine.listener.TestEngineListener
  */
 @KotestInternal
 interface EngineInterceptor {
-   suspend fun intercept(context: EngineContext, execute: suspend (EngineContext) -> EngineResult): EngineResult
+   suspend fun intercept(context: EngineContext, execute: NextEngineInterceptor): EngineResult
+}
+
+/**
+ * A functional interface for the interceptor callback, to reduce the size of stack traces.
+ *
+ * With a normal lambda type, each call adds three lines to the stacktrace, but an interface only adds one line.
+ */
+@KotestInternal
+fun interface NextEngineInterceptor {
+   suspend operator fun invoke(context: EngineContext): EngineResult
 }
 
 @KotestInternal
