@@ -165,12 +165,7 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
 
    assertionCounter.inc()
    val expectedExceptionClass = T::class
-   val thrownThrowable = try {
-      block()
-      null  // Can't throw failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
-   } catch (thrown: Throwable) {
-      thrown
-   }
+   val thrownThrowable = tryRunning(block)
 
    when (thrownThrowable) {
       null -> errorCollector.collectOrThrow(failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown."))
@@ -249,14 +244,43 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
  */
 inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
    assertionCounter.inc()
-   val thrown = try {
-      block()
-      return
-   } catch (e: Throwable) {
-      e
-   }
+   val thrown = tryRunning(block) ?: return
 
    if (thrown is T)
       throw failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
    throw thrown
+}
+
+/**
+ * Verifies if a block of code will either throw an [AssertionError] or no exception at all. It can only be invoked inside [assertSoftly] blocks.
+ *
+ * Use this function to wrap a block of code that might throw an [AssertionError]. Use it to wrap invocations of non-kotest functions
+ * such as [verify] from mockk library, so that they can be invoked inside [assertSoftly] blocks, and
+ * errors are only thrown at the end of the block, rather than immediately. Therefore, the signature cannot return
+ * the throwable type, as in the case of a failure, there would be neither an immediate throws, nor a type to return.
+ */
+inline fun shouldPass(block: () -> Any?) {
+   require(errorCollector.getCollectionMode() == ErrorCollectionMode.Soft)
+
+   assertionCounter.inc()
+   val thrownThrowable = tryRunning(block)
+
+   if(thrownThrowable is AssertionError) {
+      errorCollector.collectOrThrow(thrownThrowable)
+   } else {
+      thrownThrowable?.let {
+         val failure = failure("Unexpected ${it::class.simpleName} was thrown with the following message: \"${it.message}\".", it)
+         errorCollector.collectOrThrow(failure)
+      }
+   }
+}
+
+inline fun tryRunning(block: () -> Any?): Throwable? {
+   val thrownThrowable = try {
+      block()
+      null
+   } catch (thrown: Throwable) {
+      thrown
+   }
+   return thrownThrowable
 }
