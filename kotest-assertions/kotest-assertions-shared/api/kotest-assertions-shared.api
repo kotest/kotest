@@ -691,6 +691,10 @@ public final class io/kotest/assertions/throwables/AnyThrowableHandlingKt {
 	public static final fun shouldThrowMessage (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 }
 
+public final class io/kotest/assertions/throwables/CovariantThrowableHandlingKt {
+	public static final fun shouldPass (Lkotlin/jvm/functions/Function0;)V
+}
+
 public final class io/kotest/data/ErrorCollector {
 	public fun <init> ()V
 	public final fun append (Ljava/lang/Throwable;)V

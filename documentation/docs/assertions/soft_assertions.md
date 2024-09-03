@@ -63,4 +63,14 @@ assertSoftly {
 }
 ```
 
+Likewise, in the following example the failure of `verify` will not be ignored, it will be added along with the failure of the first assertion:
 
+
+```kotlin
+assertSoftly {
+  (2+2) shouldBe 5
+  shouldPass {
+    verify(exactly = 1) { myClass.myMethod(any()) }
+  }
+}
+```

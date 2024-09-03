@@ -242,6 +242,20 @@ class CovariantThrowableHandlingTest : FreeSpec() {
                """Unexpected Exception was thrown with the following message: "Non-Assertion Failure!""",
             )
          }
+         "asdfa" {
+            val exception = Exception("Non-Assertion Failure!")
+               assertSoftly {
+                  throw AssertionError("Oops")
+                  (2 + 2) shouldBe 5
+               }
+            }
+         "asdfa2" {
+            assertSoftly {
+               (2 + 2) shouldBe 5
+               throw AssertionError("Oops")
+            }
+         }
+
       }
    }
 
