@@ -165,12 +165,7 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
 
    assertionCounter.inc()
    val expectedExceptionClass = T::class
-   val thrownThrowable = try {
-      block()
-      null  // Can't throw failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
-   } catch (thrown: Throwable) {
-      thrown
-   }
+   val thrownThrowable = tryRunning(block)
 
    when (thrownThrowable) {
       null -> errorCollector.collectOrThrow(failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown."))
@@ -249,12 +244,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
  */
 inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
    assertionCounter.inc()
-   val thrown = try {
-      block()
-      return
-   } catch (e: Throwable) {
-      e
-   }
+   val thrown = tryRunning(block) ?: return
 
    if (thrown is T)
       throw failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
@@ -273,12 +263,7 @@ inline fun shouldPass(block: () -> Any?) {
    require(errorCollector.getCollectionMode() == ErrorCollectionMode.Soft)
 
    assertionCounter.inc()
-   val thrownThrowable = try {
-      block()
-      null
-   } catch (thrown: Throwable) {
-      thrown
-   }
+   val thrownThrowable = tryRunning(block)
 
    if(thrownThrowable is AssertionError) {
       errorCollector.collectOrThrow(thrownThrowable)
@@ -288,4 +273,14 @@ inline fun shouldPass(block: () -> Any?) {
          errorCollector.collectOrThrow(failure)
       }
    }
+}
+
+inline fun tryRunning(block: () -> Any?): Throwable? {
+   val thrownThrowable = try {
+      block()
+      null
+   } catch (thrown: Throwable) {
+      thrown
+   }
+   return thrownThrowable
 }
