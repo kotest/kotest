@@ -51,3 +51,16 @@ assertSoftly {
 }
 ```
 
+So if we want to invoke non-kotest assertions inside `assrtSoftly` blocks, they need to be invoked via `shouldPass`.
+In the following example both `verify` and the second assertion can fail, and we shall get both errors accumulated:
+
+```kotlin
+assertSoftly {
+  shouldPass {
+    verify(exactly = 1) { myClass.myMethod(any()) }
+  }
+  foo shouldBe bar
+}
+```
+
+
