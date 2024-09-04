@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -180,20 +181,14 @@ class ShouldContainExactlyTest : WordSpec() {
                )
             }.message?.trim()
 
-            message shouldStartWith
-               """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-               """.trimMargin()
-
-            message shouldContain """
-               |Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1
-               |[0] Blonde(a=foo, b=true, c=23423, p=a/b/c) => slice 0
-               |[1] Blonde(a=woo, b=true, c=97821, p=a/b/c) => slice 0
-            """.trimMargin()
-
-            message shouldEndWith
-               """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>"""
+            message.shouldContainInOrder(
+               "Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1",
+               "[0] Blonde(a=foo, b=true, c=23423, p=a/b/c) => slice 0",
+               "[1] Blonde(a=woo, b=true, c=97821, p=a/b/c) => slice 0",
+               """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""",
+            )
          }
 
          "include extras when too many" {
