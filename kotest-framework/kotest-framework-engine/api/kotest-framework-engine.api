@@ -785,6 +785,8 @@ public abstract interface class io/kotest/engine/test/TestCaseExecutionListener 
 }
 
 public final class io/kotest/engine/test/interceptors/BlockedThreadTestTimeoutException : io/kotest/engine/test/interceptors/TestTimeoutException {
+	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
@@ -803,6 +805,8 @@ public final class io/kotest/engine/test/interceptors/TestDispatcherInterceptor 
 }
 
 public class io/kotest/engine/test/interceptors/TestTimeoutException : java/lang/Exception {
+	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getTestName ()Ljava/lang/String;
 	public final fun getTimeout-UwyO8pc ()J
