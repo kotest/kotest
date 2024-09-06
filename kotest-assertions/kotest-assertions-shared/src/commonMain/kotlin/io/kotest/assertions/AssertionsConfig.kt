@@ -34,6 +34,13 @@ object AssertionsConfig {
 
    val maxSimilarityPrintSize: ConfigValue<Int> =
       EnvironmentConfigValue<Int>("kotest.assertions.similarity.print.size", 5, String::toInt)
+
+   val minStringSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.min.size", 10, String::toInt)
+
+   val maxStringSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.max.size", 1024, String::toInt)
+
 }
 
 interface ConfigValue<T> {

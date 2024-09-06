@@ -202,8 +202,9 @@ infix fun String?.shouldNotInclude(substr: String): String? {
 }
 
 fun include(substr: String) = neverNullMatcher<String> { value ->
+   val passed = value.contains(substr)
    MatcherResult(
-      value.contains(substr),
+      passed,
       { "${value.print().value} should include substring ${substr.print().value}" },
       { "${value.print().value} should not include substring ${substr.print().value}" })
 }
