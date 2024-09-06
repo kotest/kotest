@@ -77,3 +77,11 @@ internal fun indexRangesOfLines(value: String): Sequence<IndexRange> {
       }
     }
 }
+
+internal fun splitByIndexRanges(value: String, indexRanges: List<IndexRange>): List<String> {
+   val lastRange = indexRanges.lastOrNull() ?: return listOf()
+   require(lastRange.toIndex < value.length) {
+      "Last range: $lastRange exceeds value length: ${value.length}"
+   }
+   return indexRanges.map { value.substring(it.fromIndex, it.toIndex + 1) }
+}
