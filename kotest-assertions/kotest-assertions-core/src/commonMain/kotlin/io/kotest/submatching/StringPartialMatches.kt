@@ -56,3 +56,24 @@ internal fun underscoreSubstring(
       if(index in indexRange) "+" else "-"
    }.joinToString("")
 }
+
+internal data class IndexRange(
+   val fromIndex: Int,
+   val toIndex: Int,
+)
+
+internal fun indexRangesOfLines(value: String): Sequence<IndexRange> {
+   var fromIndex: Int? = null
+   return sequence {
+      "$value\n".forEachIndexed { index, c ->
+         if(c in listOf('\r', '\n')) {
+            if(fromIndex != null) {
+               yield(IndexRange(fromIndex!!, index - 1))
+               fromIndex = null
+            }
+         } else {
+            fromIndex = fromIndex ?: index
+         }
+      }
+    }
+}
