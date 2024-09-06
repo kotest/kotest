@@ -51,8 +51,8 @@ class StringPartialMatchesTest: WordSpec() {
             val actual = describePartialMatchesInString("brown fox jumps over", line)
             actual.partialMatchesList shouldBe "Match[0]: expected[0..19] matched actual[10..29]"
             actual.partialMatchesDescription shouldBe
-               """The quick brown fox jumps over the lazy dog
-                 |----------++++++++++++++++++++-------------""".trimMargin()
+               """Line[0] ="The quick brown fox jumps over the lazy dog"
+                 |Match[0]= ----------++++++++++++++++++++-------------""".trimMargin()
          }
          "find one match spanning two lines" {
             val twoLines = "The quick brown fox\n jumps over the lazy dog"

@@ -12,16 +12,12 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
       "Match[${indexedValue.index}]: expected[${indexedValue.value.rangeOfExpected}] matched actual[${indexedValue.value.rangeOfValue}]"
    }
    val allUnderscores = getAllUnderscores(value.length, partialMatches)
-   val lines = value.lines()
-   if(lines.size == 1) {
-      return PartialMatchesInCollectionDescription(partialMatchesList, (lines + allUnderscores).joinToString("\n"))
-   }
-   val allUnderscoresSplitPerLine = allUnderscores.map { splitUnderscoreToFitLines(lines, it) }
-   val valueAndUnderscores = lines.flatMapIndexed { index, line ->
-      listOf("Line[$index] =\"$line\"") + allUnderscoresSplitPerLine.mapIndexed { matchIndex, underscores ->
-         "Match[$matchIndex]= ${underscores[index]}"
+   val lineIndexRanges = indexRangesOfLines(value)
+   val valueAndUnderscores = lineIndexRanges.mapIndexed { index, indexRange ->
+      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexed { matchIndex, underscores ->
+         "Match[$matchIndex]= ${takeIndexRange(underscores, indexRange)}"
       }
-   }.joinToString("\n")
+   }.flatten().joinToString("\n")
    return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores)
 }
 
@@ -83,5 +79,8 @@ internal fun splitByIndexRanges(value: String, indexRanges: List<IndexRange>): L
    require(lastRange.toIndex < value.length) {
       "Last range: $lastRange exceeds value length: ${value.length}"
    }
-   return indexRanges.map { value.substring(it.fromIndex, it.toIndex + 1) }
+   return indexRanges.map { takeIndexRange(value, it) }
 }
+
+private fun takeIndexRange(value: String, it: IndexRange) =
+   value.substring(it.fromIndex, it.toIndex + 1)
