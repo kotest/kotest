@@ -1,7 +1,5 @@
 package io.kotest.submatching
 
-import io.kotest.assertions.print.print
-
 internal fun describePartialMatchesInString(expectedSlice: String, value: String): PartialMatchesInCollectionDescription {
    val minLength = maxOf(expectedSlice.length / 3, 2)
    val partialMatches = findPartialMatches(expectedSlice.toList(), value.toList(), minLength = minLength).take(9)
@@ -29,18 +27,6 @@ internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String
 )
-
-internal fun splitUnderscoreToFitLines(
-   lines: List<String>,
-   underscoredLine: String
-): List<String> {
-   val linesStarts = lines.runningFold(0) {
-         acc, line -> acc + line.length + lineSeparatorLength()
-   }
-   return lines.mapIndexed() { index: Int, line: String ->
-      underscoredLine.substring(linesStarts[index] until  linesStarts[index] + line.length)
-   }
-}
 
 internal fun underscoreSubstring(
    valueLength: Int,

@@ -1,11 +1,9 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.PartialMatchesInCollectionDescription
 import io.kotest.submatching.describePartialMatchesInString
-import io.kotest.submatching.splitUnderscoreToFitLines
 import io.kotest.submatching.underscoreSubstring
 
 class StringPartialMatchesTest: WordSpec() {
@@ -26,23 +24,6 @@ class StringPartialMatchesTest: WordSpec() {
              underscoreSubstring(10, 7, 10) shouldBe "-------+++"
           }
        }
-      "splitUnderscoreToFitLines" should {
-         "work with one line" {
-            val underscoredLine = "---++++---"
-            splitUnderscoreToFitLines(
-               lines = listOf(value),
-               underscoredLine = underscoredLine
-            ) shouldBe listOf(underscoredLine)
-         }
-         "split into two lines" {
-            val underscoredLine = "---++++---"
-            val anotherUnderscoredLine = "-++++-----"
-            splitUnderscoreToFitLines(
-               lines = listOf(value, value),
-               underscoredLine = "$underscoredLine-$anotherUnderscoredLine"
-            ) shouldBe listOf(underscoredLine, anotherUnderscoredLine)
-         }
-      }
       "describePartialMatchesInString" should {
          "return empty if no matches" {
             describePartialMatchesInString("hawk", text) shouldBe PartialMatchesInCollectionDescription("", "")
