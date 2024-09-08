@@ -105,7 +105,7 @@ fun <T, C : Collection<T>> containExactly(
          appendLine()
          appendPossibleMatches(missing, expected)
 
-         if(!passed && !failureReason.isDisallowedIterableComparisonFailure() && verifier == null) {
+         if (!passed && !failureReason.isDisallowedIterableComparisonFailure() && verifier == null) {
             appendSubmatches(actual, expected)
          }
       }
