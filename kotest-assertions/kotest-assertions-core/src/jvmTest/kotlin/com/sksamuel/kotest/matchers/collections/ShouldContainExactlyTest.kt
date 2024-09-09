@@ -166,7 +166,7 @@ class ShouldContainExactlyTest : WordSpec() {
                """.trimMargin()
          }
 
-         "print dataclasses" {
+         "print diff for dataclasses" {
             shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
