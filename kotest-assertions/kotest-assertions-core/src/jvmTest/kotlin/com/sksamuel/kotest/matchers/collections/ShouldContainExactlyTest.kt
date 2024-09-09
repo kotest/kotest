@@ -170,6 +170,7 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "print dataclasses" {
+            
             val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
