@@ -185,8 +185,8 @@ class ShouldContainExactlyTest : WordSpec() {
                "Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
                "Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
                "Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1",
-               "[0] Blonde(a=foo, b=true, c=23423, p=a/b/c) => slice 0",
-               "[1] Blonde(a=woo, b=true, c=97821, p=a/b/c) => slice 0",
+               "[0] Blonde(a=foo, b=true, c=23423, p=$expectedPath) => slice 0",
+               "[1] Blonde(a=woo, b=true, c=97821, p=$expectedPath) => slice 0",
                """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""",
             )
          }
