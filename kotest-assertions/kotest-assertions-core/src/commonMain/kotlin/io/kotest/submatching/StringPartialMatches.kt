@@ -1,6 +1,14 @@
 package io.kotest.submatching
 
+import io.kotest.assertions.AssertionsConfig
+
 internal fun describePartialMatchesInString(expectedSlice: String, value: String): PartialMatchesInCollectionDescription {
+   if(!AssertionsConfig.enabledSubmatchesInStrings.value ||
+         substringNotEligibleForSubmatching(expectedSlice) ||
+         valueNotEligibleForSubmatching(value)
+      ) {
+      return PartialMatchesInCollectionDescription("", "")
+   }
    val minLength = maxOf(expectedSlice.length / 3, 2)
    val partialMatches = findPartialMatches(expectedSlice.toList(), value.toList(), minLength = minLength).take(9)
    if(partialMatches.isEmpty()) {
@@ -18,6 +26,15 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
    }.flatten().joinToString("\n")
    return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores)
 }
+
+private fun substringNotEligibleForSubmatching(value: String) =
+   AssertionsConfig.minSubtringSubmatchingSize.value > value.length ||
+      value.length > AssertionsConfig.maxSubtringSubmatchingSize.value
+
+
+private fun valueNotEligibleForSubmatching(value: String) =
+   AssertionsConfig.minValueSubmatchingSize.value > value.length ||
+      value.length > AssertionsConfig.maxValueSubmatchingSize.value
 
 internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCollectionMatch<Char>>): List<String> {
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
