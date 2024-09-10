@@ -40,7 +40,7 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
       return MatcherResult(
          indexOfFirstNull != null,
          { "Sequence should contain at least one null" },
-         { "Sequence should not contain any nulls, but contained one at index ${indexOfFirstNull!!.first}" }
+         { "Sequence should not contain any nulls, but contained at least one at index ${indexOfFirstNull!!.first}" }
       )
    }
 }
