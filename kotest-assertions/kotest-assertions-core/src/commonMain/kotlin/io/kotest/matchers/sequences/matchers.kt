@@ -24,12 +24,14 @@ For now, the documentation should mention that infinite sequences will cause the
 fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.all { it == null },
-         { "Sequence should contain only nulls" },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val firstNotNull = value.mapIndexed { index, t ->  index to t}.firstOrNull { it.second != null }
+      return MatcherResult(
+         firstNotNull == null,
+         { "Sequence should contain only nulls, but had a non-null element ${firstNotNull!!.second.print().value} at index ${firstNotNull.first}" },
          { "Sequence should not contain only nulls" }
       )
+   }
 }
 
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
