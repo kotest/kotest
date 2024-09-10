@@ -35,12 +35,14 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
 fun <T> Sequence<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.any { it == null },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val indexOfFirstNull = value.mapIndexed { index, t -> index to t }.firstOrNull { it.second == null }
+      return MatcherResult(
+         indexOfFirstNull != null,
          { "Sequence should contain at least one null" },
-         { "Sequence should not contain any nulls" }
+         { "Sequence should not contain any nulls, but contained one at index ${indexOfFirstNull!!.first}" }
       )
+   }
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)

@@ -40,6 +40,7 @@ import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -369,6 +370,12 @@ class SequenceMatchersTest : WordSpec() {
 
          fail("for sparse") {
             sampleData.sparse.shouldNotContainNull()
+         }
+
+         "print index of null element" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "banana", null, "pear").shouldNotContainNull()
+            }.message shouldBe "Sequence should not contain any nulls, but contained one at index 3"
          }
       }
 
