@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.shouldBe
@@ -15,6 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 // Issue: https://github.com/kotest/kotest/issues/3703
+@DoNotParallelize
 @OptIn(ExperimentalCoroutinesApi::class)
 class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
 

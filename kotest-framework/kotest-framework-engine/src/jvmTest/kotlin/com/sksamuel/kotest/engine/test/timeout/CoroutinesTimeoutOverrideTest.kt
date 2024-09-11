@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
 import kotlin.time.Duration.Companion.milliseconds
 
+@DoNotParallelize
 class CoroutinesTimeoutOverrideTest : FunSpec({
 
    coroutineTestScope = true
