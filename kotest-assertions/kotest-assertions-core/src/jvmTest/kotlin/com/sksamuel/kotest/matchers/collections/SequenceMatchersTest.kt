@@ -381,7 +381,7 @@ class SequenceMatchersTest : WordSpec() {
          "print index of null element" {
             shouldThrow<AssertionError> {
                sequenceOf("apple", "orange", "banana", null, "pear").shouldNotContainNull()
-            }.message shouldBe "Sequence should not contain any nulls, but contained one at index 3"
+            }.message shouldBe "Sequence should not contain any nulls, but contained at least one at index 3"
          }
       }
 
