@@ -317,6 +317,12 @@ class SequenceMatchersTest : WordSpec() {
          fail("for sparse") {
             sampleData.sparse.shouldContainOnlyNulls()
          }
+
+         "output first element that violates the assertion" {
+            shouldThrow<AssertionError> {
+               sequenceOf(null, null, null, "apple", null).shouldContainOnlyNulls()
+            }.message shouldBe """Sequence should contain only nulls, but had a non-null element "apple" at index 3"""
+         }
       }
 
       "not contain only nulls" should {
