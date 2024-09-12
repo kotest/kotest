@@ -40,7 +40,7 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
       val indexOfFirstNull = value.mapIndexed { index, t -> index to t }.firstOrNull { it.second == null }
       return MatcherResult(
-         indexOfFirstNull != null,
+         indexOfFirstNull != -1,
          { "Sequence should contain at least one null" },
          { "Sequence should not contain any nulls, but contained at least one at index ${indexOfFirstNull!!.first}" }
       )
