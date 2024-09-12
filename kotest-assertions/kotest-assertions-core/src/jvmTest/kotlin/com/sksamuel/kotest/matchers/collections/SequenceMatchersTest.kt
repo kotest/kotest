@@ -436,7 +436,7 @@ class SequenceMatchersTest : WordSpec() {
          "handle empty sequence" {
             shouldThrow<AssertionError> {
                sampleData.empty.shouldHaveElementAt(sampleData.empty.count(), 0)
-            }.message shouldContain "but the sequence was empty"
+            }.message shouldContain "but the sequence only had 0 elements"
          }
 
          "when an element after the end is requested" {
@@ -456,7 +456,7 @@ class SequenceMatchersTest : WordSpec() {
          "print that the sequence is empty" {
             shouldThrow<AssertionError> {
                sequenceOf<String>().shouldHaveElementAt(3, "banana")
-            }.message shouldBe """Sequence should contain "banana" at index 3, but the sequence was empty."""
+            }.message shouldBe """Sequence should contain "banana" at index 3, but the sequence only had 0 elements"""
          }
 
          "print that the sequence is shorter" {
