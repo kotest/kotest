@@ -492,6 +492,12 @@ class SequenceMatchersTest : WordSpec() {
          succeed("when the sequence doesn't contain the value") {
             sampleData.sparse.shouldNotContain(2)
          }
+
+         "print the index of element" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "lemon").shouldNotContain("orange")
+            }.message shouldBe """Sequence should not contain element "orange", but contained it at index 1"""
+         }
       }
 
       /** multiple-value */
