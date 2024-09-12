@@ -73,11 +73,14 @@ fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
 infix fun <T, C : Sequence<T>> C.shouldContain(t: T) = this should contain(t)
 infix fun <T, C : Sequence<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      value.contains(t),
-      { "Sequence should contain element $t" },
-      { "Sequence should not contain element $t" }
-   )
+   override fun test(value: C): MatcherResult {
+      val indexOfElement = value.indexOfFirst { it == t }
+      return MatcherResult(
+         indexOfElement >= 0,
+         { "Sequence should contain element $t" },
+         { "Sequence should not contain element ${t.print().value}, but contained it at index $indexOfElement" }
+      )
+   }
 }
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
