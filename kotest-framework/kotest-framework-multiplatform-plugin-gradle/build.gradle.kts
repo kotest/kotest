@@ -1,14 +1,13 @@
 import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
    `kotlin-dsl`
    id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
+   `java-test-fixtures`
 }
 
 dependencies {
@@ -34,6 +33,12 @@ dependencies {
    devPublication(projects.kotestRunner.kotestRunnerJunit5)
 }
 
+kotlin {
+   compilerOptions {
+      optIn.add("kotlin.io.path.ExperimentalPathApi")
+   }
+}
+
 tasks.withType<Test>().configureEach {
    enabled = !project.hasProperty(Ci.JVM_ONLY)
 
@@ -54,6 +59,12 @@ tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
+
+   // use the current machine's Gradle User Home as a read-only cache
+   systemProperty("gradleUserHomeDir", gradle.gradleUserHomeDir.invariantSeparatorsPath)
+
+   // store the Gradle logs in a project-local directory, so they're easy to view if a test fails
+   systemProperty("testLogDir", temporaryDir.resolve("logs").invariantSeparatorsPath)
 
    //region pass test-project directory as system property
    val testProjectDir = layout.projectDirectory.dir("test-project")
@@ -85,16 +96,6 @@ gradlePlugin {
          tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
       }
    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-   }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
 }
 
 val updateKotestPluginConstants by tasks.registering {
@@ -130,6 +131,31 @@ kotlin.sourceSets.main {
 }
 
 tasks.clean.configure {
-   delete("${project.layout.projectDirectory}/test-project/build/")
-   delete("${project.layout.projectDirectory}/test-project/.gradle/")
+   delete(
+      layout.projectDirectory.dir("test-project/build"),
+      layout.projectDirectory.dir("test-project/.gradle"),
+   )
 }
+
+// Don't publish test fixtures (we don't need to share them, and they cause warnings when publishing)
+// https://docs.gradle.org/current/userguide/java_testing.html#publishing_test_fixtures
+val javaComponent = components["java"] as AdhocComponentWithVariants
+javaComponent.withVariantsFromConfiguration(configurations["testFixturesApiElements"]) { skip() }
+javaComponent.withVariantsFromConfiguration(configurations["testFixturesRuntimeElements"]) { skip() }
+
+//region TODO investigate bug where io.kotest.multiplatform Gradle Plugin Marker isn't published to dev-maven
+//            Maybe need to update dev.publish to always re-publish if there are no artifacts?
+tasks.withType<dev.adamko.gradle.dev_publish.tasks.BaseDevPublishTask>().configureEach {
+   outputs.upToDateWhen { false }
+}
+
+tasks.withType<AbstractPublishToMaven>().configureEach {
+   outputs.upToDateWhen { false }
+}
+
+tasks.generatePublicationHashTask {
+   publicationData.matching { it.name == "KotestMultiplatformCompilerGradlePluginPluginMarkerMaven" }.configureEach {
+      identifier.set("hack")
+   }
+}
+//endregion

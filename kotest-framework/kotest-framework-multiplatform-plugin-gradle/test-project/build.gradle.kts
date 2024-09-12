@@ -7,17 +7,9 @@ plugins {
 }
 
 val kotestVersion: String by project
-val devMavenRepoPath: String by project
-
-repositories {
-   maven(file(devMavenRepoPath)) {
-      name = "DevMavenRepo"
-      mavenContent { includeGroupAndSubgroups("io.kotest") }
-   }
-   mavenCentral()
-}
 
 kotlin {
+   jvmToolchain(8)
 
    jvm()
 
@@ -44,7 +36,7 @@ kotlin {
    mingwX64()
 
    sourceSets {
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation("io.kotest:kotest-assertions-core:$kotestVersion")
             implementation("io.kotest:kotest-framework-api:$kotestVersion")
@@ -52,7 +44,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
          }
@@ -69,6 +61,13 @@ tasks.withType<Test>().configureEach {
       events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
+
+   // Register the test results dir as an output, so Gradle will cache it
+   outputs
+      .dir(layout.buildDirectory.dir("test-results"))
+      .withPropertyName("testResultsDir")
+   // Always cache the test results
+   outputs.cacheIf { true }
 }
 
 plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
