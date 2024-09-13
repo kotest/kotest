@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.similarity.possibleMatchesForSet
 import kotlin.jvm.JvmName
 
 /**
@@ -127,11 +128,18 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
 
       val match = value in collection
 
+      val possibleMatchesDescription = prefixIfNotEmpty(
+         possibleMatchesForSet(match, collection.toSet(), setOf(value), verifier = null),
+         "\n"
+      )
+
       return MatcherResult(
          match,
-         { "Collection should contain ${value.print().value}, but doesn't. Possible values: ${collection.print().value}" },
+         { "Collection should contain ${value.print().value}, but doesn't. Possible values: ${collection.print().value}$possibleMatchesDescription" },
          {
             "Collection should not contain ${value.print().value}, but does. Forbidden values: ${collection.print().value}"
          })
    }
 }
+
+internal fun prefixIfNotEmpty(value: String, prefix: String) = if(value.isEmpty()) "" else "$prefix$value"
