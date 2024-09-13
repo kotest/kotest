@@ -54,7 +54,7 @@ fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matche
       val elementAtIndex = sequenceHead.elementAtOrNull(index)
       val passed = elementAtIndex == element
       val description = when{
-         passed == element -> ""
+         passed -> ""
          elementAtIndex != null && elementAtIndex != element -> ", but the value was different: ${elementAtIndex.print().value}."
          else -> ", but the sequence only had ${sequenceHead.size} elements"
       }
