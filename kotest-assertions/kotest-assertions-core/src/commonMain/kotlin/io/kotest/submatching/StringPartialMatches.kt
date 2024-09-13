@@ -43,7 +43,10 @@ internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCol
 internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String
-)
+) {
+   override fun toString(): String = listOf(partialMatchesList, partialMatchesDescription)
+      .filter { it.isNotEmpty() }.joinToString("\n")
+}
 
 internal fun underscoreSubstring(
    valueLength: Int,
