@@ -39,7 +39,7 @@ fun <T> containAll(
          }
          val passed = missing.isEmpty()
 
-         val possibleMatchesDescription = possibleMatchesForSet(passed, value.toSet(), missing.toSet(), verifier)
+         val possibleMatchesDescription = possibleMatchesForSet(passed, missing.toSet(), value.toSet(), verifier)
 
          val failure =
             { "Collection should contain all of ${ts.print().value} but was missing ${missing.print().value}$possibleMatchesDescription" }

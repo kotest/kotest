@@ -127,10 +127,16 @@ class ShouldContainAllTest : WordSpec() {
                )
             }.shouldHaveMessage("""
                |Collection should contain all of [Fruit(name=apple, color=green, taste=sweet), Fruit(name=apple, color=red, taste=sweet)] but was missing [Fruit(name=apple, color=red, taste=sweet)]Possible matches:
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=red, taste=sweet),
+               | expected: Fruit(name=apple, color=red, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"green">, but was: <"red">
+               |    "color" expected: <"red">, but was: <"green">
+               |
+               | expected: Fruit(name=apple, color=red, taste=sweet),
+               |  but was: Fruit(name=pear, color=green, taste=sweet),
+               |  The following fields did not match:
+               |    "name" expected: <"apple">, but was: <"pear">
+               |        "color" expected: <"red">, but was: <"green">
     """.trimMargin())
          }
 
@@ -140,15 +146,15 @@ class ShouldContainAllTest : WordSpec() {
                   listOf(sweetGreenApple, sourYellowLemon)
                )
             }.message.shouldEndWith("""
-               | expected: Fruit(name=apple, color=red, taste=sweet),
-               |  but was: Fruit(name=apple, color=green, taste=sweet),
+               | expected: Fruit(name=apple, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=red, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"red">, but was: <"green">
+               |    "color" expected: <"green">, but was: <"red">
                |
-               | expected: Fruit(name=pear, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=green, taste=sweet),
+               | expected: Fruit(name=apple, color=green, taste=sweet),
+               |  but was: Fruit(name=pear, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "name" expected: <"pear">, but was: <"apple">
+               |    "name" expected: <"apple">, but was: <"pear">
     """.trimMargin())
          }
       }
