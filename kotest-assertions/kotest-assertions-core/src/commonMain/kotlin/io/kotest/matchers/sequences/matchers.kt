@@ -12,6 +12,7 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
+import kotlin.collections.indexOfFirst
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -37,12 +38,14 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
 fun <T> Sequence<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.any { it == null },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val indexOfFirstNull = value.indexOfFirst { it == null }
+      return MatcherResult(
+         indexOfFirstNull != -1,
          { "Sequence should contain at least one null" },
-         { "Sequence should not contain any nulls" }
+         { "Sequence should not contain any nulls, but contained at least one at index $indexOfFirstNull" }
       )
+   }
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
