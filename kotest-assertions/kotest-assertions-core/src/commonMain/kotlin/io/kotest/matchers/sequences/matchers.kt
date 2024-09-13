@@ -50,12 +50,14 @@ fun <T> Sequence<T>.shouldNotHaveElementAt(index: Int, element: T) = this should
 
 fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matcher<S> {
    override fun test(value: S): MatcherResult {
-      val elementAtIndex = value.take(index + 1).mapIndexed { index, t -> index to t }.lastOrNull()
-      val passed = elementAtIndex?.let { it.first == index && it.second == element } ?: false
-      val description = elementAtIndex?.let {
-         if(it.first == index) ", but the value was different: ${it.second.print().value}."
-         else ", but the sequence only had ${it.first + 1} elements"
-      } ?: ", but the sequence was empty."
+      val sequenceHead = value.take(index + 1).toList()
+      val elementAtIndex = sequenceHead.elementAtOrNull(index)
+      val passed = elementAtIndex == element
+      val description = when{
+         passed -> ""
+         elementAtIndex != null && elementAtIndex != element -> ", but the value was different: ${elementAtIndex.print().value}."
+         else -> ", but the sequence only had ${sequenceHead.size} elements"
+      }
       return MatcherResult(
          passed,
          { "Sequence should contain ${element.print().value} at index $index$description" },
