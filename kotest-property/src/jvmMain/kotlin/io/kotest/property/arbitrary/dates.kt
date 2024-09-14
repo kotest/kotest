@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -47,7 +48,8 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  * This generator creates randomly generated LocalDates, in the range [[minDate, maxDate]].
  *
  * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
- * generator.
+ * generator. For exceptional years that are not leap years but can be divided by four, also the date [01/03/YEAR] will
+ * be a constant value.
  *
  * @see [localDateTime]
  * @see [localTime]
@@ -59,12 +61,26 @@ fun Arb.Companion.localDate(
    minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
    minDate == maxDate -> Arb.constant(minDate)
    else -> {
-      val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
+      fun RandomSource.divisibleEdgecaseBuilderOrNull(divisor: Int): (() -> LocalDate)? {
+         val firstDivisibleYear = (minDate.year + divisor - 1) / divisor * divisor
+         val count = (maxDate.year / divisor) - (minDate.year - 1) / divisor
 
-      val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
-      val february29s = february28s.map { it.plusDays(1) }
+         return {
+            random.nextInt(count).let {
+               LocalDate.of(firstDivisibleYear + it * divisor, 2, 28)
+                  .plusDays(random.nextLong(2))
+            }
+         }.takeIf { count > 0 }
+      }
 
-      arbitrary(february28s + february29s + minDate + maxDate) {
+      arbitrary(edgecaseFn = { rs ->
+         listOfNotNull(
+            { if (rs.random.nextBoolean()) minDate else maxDate },
+            rs.divisibleEdgecaseBuilderOrNull(4), // (potential) leap years
+            rs.divisibleEdgecaseBuilderOrNull(100), // centuries
+            rs.divisibleEdgecaseBuilderOrNull(1000), // millenniums
+         ).random(rs.random).invoke()
+      }) {
          minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
       }.filter { it in minDate..maxDate }
    }

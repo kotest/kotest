@@ -29,6 +29,8 @@ import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDate.MAX
+import java.time.LocalDate.MIN
 import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -85,6 +87,12 @@ class DateTest : WordSpec({
    }
 
    "Arb.localDate(minDate, maxDate)" should {
+      "be able to handle a very large delta between boundaries" {
+         shouldNotThrowAny {
+            Arb.localDate(MIN, MAX).take(10_000).toList()
+         }
+      }
+
       "Work when min date == max date" {
          val date = of(2021, 1, 1)
          Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }
