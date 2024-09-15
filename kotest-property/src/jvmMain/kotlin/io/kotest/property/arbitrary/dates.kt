@@ -50,7 +50,6 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  * It includes special edge cases for testing purposes:
  * - If the range includes any leap years, the date **February 29th** of the first such leap year is included.
  * - If the range includes any century years (years divisible by 100), the date **January 1st** of the first such century year is included.
- * - If the range includes any millennium years (years divisible by 1000), the date **January 1st** of the first such millennium year is included.
  *
  * These edge cases are added to increase the likelihood of covering date-related boundary conditions in tests.
  *
@@ -75,9 +74,6 @@ fun Arb.Companion.localDate(
 
    val centuryYear = (minDate.year..maxDate.year).firstOrNull { it % 100 == 0 }
    if (centuryYear != null) { edgeCases += LocalDate.of(centuryYear, 1, 1) }
-
-   val millenniumYear = (minDate.year..maxDate.year).firstOrNull { it % 1000 == 0 }
-   if (millenniumYear != null) { edgeCases += LocalDate.of(millenniumYear, 1, 1) }
 
    edgeCases.removeAll { it !in minDate..maxDate }
 

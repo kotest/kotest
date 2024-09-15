@@ -77,7 +77,12 @@ class DateTest : WordSpec({
 
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(2016, 2, 29)
+         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(leapYear, 2, 29)
+      }
+
+      "Contain Jan 1st if century year" {
+         val centuryYear = 2100
+         Arb.localDate(of(centuryYear, 1, 1), of(centuryYear, 12, 31)).edgecases() shouldContain of(centuryYear, 1, 1)
       }
 
 
