@@ -43,46 +43,47 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arbitrary(listOf(Peri
 fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1), LocalDate.of(2030, 12, 31))
 
 /**
- * Arberates a stream of random LocalDates
+ * Generates a stream of random [LocalDate] instances within the specified range.
  *
- * This generator creates randomly generated LocalDates, in the range [[minDate, maxDate]].
+ * This generator creates random [LocalDate] values in the inclusive range from [minDate] to [maxDate].
  *
- * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
- * generator. For exceptional years that are not leap years but can be divided by four, also the date [01/03/YEAR] will
- * be a constant value.
+ * It includes special edge cases for testing purposes:
+ * - If the range includes any leap years, the date **February 29th** of the first such leap year is included.
+ * - If the range includes any century years (years divisible by 100), the date **January 1st** of the first such century year is included.
+ * - If the range includes any millennium years (years divisible by 1000), the date **January 1st** of the first such millennium year is included.
  *
- * @see [localDateTime]
- * @see [localTime]
+ * These edge cases are added to increase the likelihood of covering date-related boundary conditions in tests.
+ *
+ * @param minDate The minimum (earliest) date to generate (inclusive). Default is January 1st, 1970.
+ * @param maxDate The maximum (latest) date to generate (inclusive). Default is December 31st, 2030.
+ * @return An [Arb]<[LocalDate]> that generates dates within the specified range, including edge cases.
+ *
+ * @see localDateTime
+ * @see localTime
  */
 fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
-): Arb<LocalDate> = when {
-   minDate > maxDate -> throw IllegalArgumentException("minDate must be before or equal to maxDate")
-   minDate == maxDate -> Arb.constant(minDate)
-   else -> {
-      fun RandomSource.divisibleEdgecaseBuilderOrNull(divisor: Int): (() -> LocalDate)? {
-         val firstDivisibleYear = (minDate.year + divisor - 1) / divisor * divisor
-         val count = (maxDate.year / divisor) - (minDate.year - 1) / divisor
+): Arb<LocalDate> {
+   require(minDate <= maxDate) { "minDate must be before or equal to maxDate" }
+   if (minDate == maxDate) return Arb.constant(minDate)
 
-         return {
-            random.nextInt(count).let {
-               LocalDate.of(firstDivisibleYear + it * divisor, 2, 28)
-                  .plusDays(random.nextLong(2))
-            }
-         }.takeIf { count > 0 }
-      }
+   val edgeCases = mutableListOf(minDate, maxDate)
 
-      arbitrary(edgecaseFn = { rs ->
-         listOfNotNull(
-            { if (rs.random.nextBoolean()) minDate else maxDate },
-            rs.divisibleEdgecaseBuilderOrNull(4), // (potential) leap years
-            rs.divisibleEdgecaseBuilderOrNull(100), // centuries
-            rs.divisibleEdgecaseBuilderOrNull(1000), // millenniums
-         ).random(rs.random).invoke()
-      }) {
-         minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate) + 1))
-      }.filter { it in minDate..maxDate }
+   val leapYear = (minDate.year..maxDate.year).firstOrNull { isLeap(it.toLong()) }
+   if (leapYear != null) { edgeCases += LocalDate.of(leapYear, 2, 29) }
+
+   val centuryYear = (minDate.year..maxDate.year).firstOrNull { it % 100 == 0 }
+   if (centuryYear != null) { edgeCases += LocalDate.of(centuryYear, 1, 1) }
+
+   val millenniumYear = (minDate.year..maxDate.year).firstOrNull { it % 1000 == 0 }
+   if (millenniumYear != null) { edgeCases += LocalDate.of(millenniumYear, 1, 1) }
+
+   edgeCases.removeAll { it !in minDate..maxDate }
+
+   return arbitrary(edgeCases) { rs ->
+      val daysBetween = ChronoUnit.DAYS.between(minDate, maxDate)
+      minDate.plusDays(rs.random.nextLong(daysBetween + 1))
    }
 }
 
