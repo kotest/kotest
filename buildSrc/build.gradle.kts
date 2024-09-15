@@ -65,20 +65,30 @@ val fixGradlePluginWarning by tasks.registering {
          archives.zipTree(s).matching {
             include("**/EmbeddedKotlinPlugin.kt")
          }
-      }.firstOrNull() ?: return@doLast
+      }.firstOrNull()
 
-      temporaryDir.deleteRecursively()
-      temporaryDir.mkdirs()
-      temporaryDir.resolve(embeddedKotlinPlugin.name).apply {
-         writeText(
-            embeddedKotlinPlugin.readText()
-               // This is the key change: converting 'warn' into 'info'.
-               .replace("\n        warn(\n", "\n        info(\n")
-               // Mark internal things as internal to prevent compiler warnings about unused code,
-               // and to stop them leaking into build scripts.
-               .replace("\n\nfun Logger.", "\n\nprivate fun Logger.")
-               .replace("*/\nabstract class EmbeddedKotlinPlugin", "*/\ninternal abstract class EmbeddedKotlinPlugin")
-         )
+      if (embeddedKotlinPlugin == null) {
+         // If EmbeddedKotlinPlugin.kt can't be found then maybe this workaround
+         // is no longer necessary, or it needs to be updated.
+         logger.warn("[$path] could not find EmbeddedKotlinPlugin.kt in $src")
+      } else {
+         logger.info("[$path] Patching EmbeddedKotlinPlugin.kt to remove 'Unsupported Kotlin plugin version' warning")
+         temporaryDir.deleteRecursively()
+         temporaryDir.mkdirs()
+         temporaryDir.resolve(embeddedKotlinPlugin.name).apply {
+            writeText(
+               embeddedKotlinPlugin.readText()
+                  // This is the key change: converting 'warn' into 'info'.
+                  .replace("\n        warn(\n", "\n        info(\n")
+                  // Mark internal things as internal to prevent compiler warnings about unused code,
+                  // and to stop them leaking into build scripts.
+                  .replace("\n\nfun Logger.", "\n\nprivate fun Logger.")
+                  .replace(
+                     "*/\nabstract class EmbeddedKotlinPlugin",
+                     "*/\ninternal abstract class EmbeddedKotlinPlugin"
+                  )
+            )
+         }
       }
    }
 }
