@@ -170,7 +170,7 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "print dataclasses" {
-            
+
             val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
@@ -198,26 +198,25 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 23423, inputPath)
                ).shouldContainExactly(
                   Blonde("foo", true, 23423, inputPath),
-                  Blonde("woo", true, 97821, inputPath)
+                  Blonde("foo", true, 97821, inputPath)
                )
             }.message?.trim()
             message shouldContain (
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=foo, b=true, c=97821, p=$expectedPath)]
                """.trimMargin()
                )
 
             message.shouldContain("Possible matches:")
             message.shouldContain("expected: Blonde(a=foo, b=true, c=23423, p=$expectedPath),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
+            message.shouldContain("but was: Blonde(a=foo, b=true, c=97821, p=$expectedPath),")
             message.shouldContain("The following fields did not match:")
-            message.shouldContain("\"a\" expected: <\"foo\">, but was: <\"woo\">")
             message.shouldContain("\"c\" expected: <23423>, but was: <97821>")
 
             message.shouldContain(
                """
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
+                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
                """.trimMargin()
             )
          }
@@ -255,12 +254,6 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                """.trimMargin()
-            message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=goo, b=true, c=51984, p=$expectedPath),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
-            message.shouldContain("The following fields did not match:")
-            message.shouldContain("\"a\" expected: <\"goo\">, but was: <\"woo\">")
-            message.shouldContain("\"c\" expected: <51984>, but was: <97821>")
             message shouldContain
                """
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>

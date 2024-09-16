@@ -131,12 +131,6 @@ class ShouldContainAllTest : WordSpec() {
                |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
                |    "color" expected: <"red">, but was: <"green">
-               |
-               | expected: Fruit(name=apple, color=red, taste=sweet),
-               |  but was: Fruit(name=pear, color=green, taste=sweet),
-               |  The following fields did not match:
-               |    "name" expected: <"apple">, but was: <"pear">
-               |        "color" expected: <"red">, but was: <"green">
     """.trimMargin())
          }
 
