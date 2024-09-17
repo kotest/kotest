@@ -4,11 +4,13 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -73,6 +75,22 @@ class DateTest : WordSpec({
             val max = min.plusYears(20)
             Arb.localDate(min, max).forAll { it >= min && it <= max }
          }
+      }
+
+      "Edge cases are within specified date range when minDate is after typical edge case dates" {
+         val minDate = of(2024, 3, 1)
+         val maxDate = of(2024, 12, 31)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
+      }
+
+      "Century year edge case is included when within the date range" {
+         val minDate = of(1999, 12, 31)
+         val maxDate = of(2001, 1, 1)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
       }
 
       "Contain Feb 29th if leap year" {

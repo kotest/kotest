@@ -69,13 +69,11 @@ fun Arb.Companion.localDate(
 
    val edgeCases = mutableListOf(minDate, maxDate)
 
-   val leapYear = (minDate.year..maxDate.year).firstOrNull { isLeap(it.toLong()) }
+   val leapYear = (minDate.year..maxDate.year).firstOrNull { isLeap(it.toLong()) && LocalDate.of(it, 2, 29) in minDate..maxDate }
    if (leapYear != null) { edgeCases += LocalDate.of(leapYear, 2, 29) }
 
-   val centuryYear = (minDate.year..maxDate.year).firstOrNull { it % 100 == 0 }
+   val centuryYear = (minDate.year..maxDate.year).firstOrNull { it % 100 == 0 && LocalDate.of(it, 1, 1) in minDate..maxDate }
    if (centuryYear != null) { edgeCases += LocalDate.of(centuryYear, 1, 1) }
-
-   edgeCases.removeAll { it !in minDate..maxDate }
 
    return arbitrary(edgeCases) { rs ->
       val daysBetween = ChronoUnit.DAYS.between(minDate, maxDate)
