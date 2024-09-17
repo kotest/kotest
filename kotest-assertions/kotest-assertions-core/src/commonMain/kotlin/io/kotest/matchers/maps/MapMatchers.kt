@@ -167,8 +167,10 @@ class MapContainsMatcher<K, V>(
 ) : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>): MatcherResult {
       val diff = Diff.create(value, expected, ignoreExtraMapKeys = ignoreExtraKeys)
-      val unexpectedKeys = (value.keys - expected.keys)
-      val possibleMatchesDescription = possibleMatchesForMissingElements(unexpectedKeys, expected.keys, "keys")
+      val possibleMatchesDescription = possibleMatchesForMissingElements(
+         (expected.keys - value.keys),
+         value.keys,
+         "keys")
       val (expectMsg, negatedExpectMsg) = if (ignoreExtraKeys) {
          "should contain all of" to "should not contain all of"
       } else {
