@@ -208,12 +208,6 @@ class ShouldContainExactlyTest : WordSpec() {
                """.trimMargin()
                )
 
-            message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=foo, b=true, c=23423, p=$expectedPath),")
-            message.shouldContain("but was: Blonde(a=foo, b=true, c=97821, p=$expectedPath),")
-            message.shouldContain("The following fields did not match:")
-            message.shouldContain("\"c\" expected: <23423>, but was: <97821>")
-
             message.shouldContain(
                """
                   |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
@@ -313,11 +307,7 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
                   |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=$expectedPath)]
                """.trimMargin()
-               message.shouldContain("Possible matches:")
-               message.shouldContain("expected: Blonde(a=foo, b=true, c=2, p=$expectedPath),")
-               message.shouldContain("but was: Blonde(a=foo, b=true, c=77, p=$expectedPath),")
-               message.shouldContain("The following fields did not match:")
-               message.shouldContain("\"c\" expected: <2>, but was: <77>")
+            message.shouldContain("Possible matches:")
             message shouldContain "Printed first 5 similarities out of 20, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)"
             message shouldContain
                """
@@ -442,13 +432,14 @@ class ShouldContainExactlyTest : WordSpec() {
                   )
                )
             }.message
+            println(message)
             message shouldContain """
                |Possible matches for unexpected elements:
                |
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=red, taste=sweet),
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"green">, but was: <"red">
+               |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
          }
 

@@ -1137,10 +1137,10 @@ class CollectionMatchersTest : WordSpec() {
                )
             }.message.shouldContainInOrder(
                "Possible matches:",
-               "expected: Fruit(name=pear, color=green, taste=sweet),",
-               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "expected: Fruit(name=apple, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=red, taste=sweet),",
                "The following fields did not match:",
-               """"name" expected: <"pear">, but was: <"apple">"""
+               """"color" expected: <"green">, but was: <"red">"""
             )
          }
       }

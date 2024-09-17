@@ -2,8 +2,8 @@ package io.kotest.similarity
 
 import io.kotest.assertions.AssertionsConfig
 
-actual fun<T> possibleMatchesDescription(expected: Set<T>, actual: T): String {
-   val possibleMatches = closestMatches(expected, actual)
+actual fun<T> possibleMatchesDescription(actual: Set<T>, expected: T): String {
+   val possibleMatches = closestMatches(actual, expected)
    return if(possibleMatches.isEmpty()) ""
    else {
       val someEntriesSkippedDescription = if(AssertionsConfig.maxSimilarityPrintSize.value < possibleMatches.size) {
