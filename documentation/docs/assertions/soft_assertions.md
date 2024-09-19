@@ -74,3 +74,18 @@ assertSoftly {
   }
 }
 ```
+
+**Note:** by design, some of Kotest's own assertions are not compatible with `assertSoftly`, including:
+
+* `shouldNotThrowExactly`
+* `shouldNotThrowExactlyUnit`
+* `shouldNotThrowMessage`
+* `shouldThrow`
+* `shouldThrowExactly`
+* `shouldThrowExactlyUnit`
+* `shouldThrowMessage`
+* `shouldThrowUnit`
+* `shouldThrowUnitWithMessage`
+* `shouldThrowWithMessage`
+
+But `shouldThrowSoftly` is compatible with `assertSoftly`.
