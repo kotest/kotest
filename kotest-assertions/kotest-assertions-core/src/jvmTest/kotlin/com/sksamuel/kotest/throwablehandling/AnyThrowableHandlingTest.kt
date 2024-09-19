@@ -98,25 +98,3 @@ class AnyThrowableHandlingTest : FreeSpec() {
 
 private typealias ShouldThrowAnyMatcher = (() -> Unit) -> Throwable
 private typealias ShouldNotThrowAnyMatcher = (() -> Unit) -> Unit
-
-class MyTest: StringSpec() {
-   init {
-      "exception is thrown" {
-         bespokeDivision(1, 0) shouldBe 1
-      }
-       "assertSoftly swallows exception" {
-          assertSoftly {
-             (2 + 2) shouldBe 5
-             bespokeDivision(1, 0) shouldBe 1
-             (3 * 3) shouldBe 8
-          }
-       }
-      "assertSoftly swallows exception 2" {
-         assertSoftly {
-            bespokeDivision(1, 0) shouldBe 1
-            (2 + 2) shouldBe 5
-         }
-      }
-   }
-   private fun bespokeDivision(a: Int, b: Int) = a/b
-}
