@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.throwablehandling
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldNotThrowAnyUnit
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowAnyUnit
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -96,3 +98,25 @@ class AnyThrowableHandlingTest : FreeSpec() {
 
 private typealias ShouldThrowAnyMatcher = (() -> Unit) -> Throwable
 private typealias ShouldNotThrowAnyMatcher = (() -> Unit) -> Unit
+
+class MyTest: StringSpec() {
+   init {
+      "exception is thrown" {
+         bespokeDivision(1, 0) shouldBe 1
+      }
+       "assertSoftly swallows exception" {
+          assertSoftly {
+             (2 + 2) shouldBe 5
+             bespokeDivision(1, 0) shouldBe 1
+             (3 * 3) shouldBe 8
+          }
+       }
+      "assertSoftly swallows exception 2" {
+         assertSoftly {
+            bespokeDivision(1, 0) shouldBe 1
+            (2 + 2) shouldBe 5
+         }
+      }
+   }
+   private fun bespokeDivision(a: Int, b: Int) = a/b
+}
