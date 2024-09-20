@@ -2,7 +2,8 @@ package io.kotest.engine.teamcity
 
 /**
  * Escapes strings for use when writing team city service messages
- * @see https://www.jetbrains.com/help/teamcity/service-messages.html#Escaped+values
+ *
+ * See [Teamcity docs](https://www.jetbrains.com/help/teamcity/service-messages.html#Escaped+values)
  */
 object Escaper {
    fun escapeForTeamCity(str: String): String = StringBuilder(str.length).apply {
