@@ -2,8 +2,11 @@ package io.kotest.matchers.string
 
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
-import io.kotest.matchers.*
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
@@ -149,7 +152,7 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
       { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
 }
 
-internal fun prefixIfNotEmpty(value: String, prefix: String) = if(value.isEmpty()) "" else "$prefix$value"
+internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty()) "" else "$prefix$value"
 
 internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
    substrings.isEmpty() -> ContainInOrderOutcome.Match
@@ -168,12 +171,12 @@ internal sealed interface ContainInOrderOutcome {
    val match: Boolean
    val mistmatchDescription: String
 
-   data object Match: ContainInOrderOutcome {
+   data object Match : ContainInOrderOutcome {
       override val match: Boolean = true
       override val mistmatchDescription: String = ""
    }
 
-   data class Mismatch(val substring: String, val index: Int): ContainInOrderOutcome {
+   data class Mismatch(val substring: String, val index: Int) : ContainInOrderOutcome {
       override val match: Boolean = false
       override val mistmatchDescription: String = """Did not match substring[$index]: <"$substring">"""
    }
@@ -301,7 +304,7 @@ enum class UUIDVersion(
  *
  * ```
  *
- * @see RFC4122 https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
 fun String.shouldBeUUID(
    version: UUIDVersion = ANY,
@@ -327,7 +330,7 @@ fun String.shouldBeUUID(
  *
  * ```
  *
- * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
 fun String.shouldNotBeUUID(
    version: UUIDVersion = ANY,
@@ -336,7 +339,6 @@ fun String.shouldNotBeUUID(
    this shouldNot beUUID(version, considerNilValid)
    return this
 }
-
 
 /**
  * Matcher that verifies if a String is an UUID
@@ -347,7 +349,8 @@ fun String.shouldNotBeUUID(
  * which is considered a valid UUID. By default it's matched as valid.
  *
  *
- * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
+ *
  * @see shouldBeUUID
  * @see shouldNotBeUUID
  */
