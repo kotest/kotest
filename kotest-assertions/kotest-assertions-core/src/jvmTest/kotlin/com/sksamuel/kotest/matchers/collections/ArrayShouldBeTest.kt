@@ -3,7 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class ArrayEqualsTest : StringSpec() {
+class ArrayShouldBeTest : StringSpec() {
   init {
     "shouldBe should support boolean arrays" {
       val array: Any = booleanArrayOf(true, false)
