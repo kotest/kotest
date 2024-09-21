@@ -38,5 +38,20 @@ class ShouldBeNumericTests : WordSpec({
            1 shouldBe BigInteger.ONE
         }.message shouldBe "expected:java.math.BigInteger<1> but was:kotlin.Int<1>"
      }
+
+     "handle equal numbers with different hashcodes" {
+        0.0 shouldBe -0.0
+        -0.0 shouldBe 0.0
+        0 shouldBe -0
+        -0 shouldBe 0
+        0.0f shouldBe -0.0f
+        -0.0f shouldBe 0.0f
+        0L shouldBe -0L
+        -0L shouldBe 0L
+        0.toShort() shouldBe (-0).toShort()
+        (-0).toShort() shouldBe 0.toShort()
+        0.toByte() shouldBe (-0).toByte()
+        (-0).toByte() shouldBe 0.toByte()
+     }
   }
 })
