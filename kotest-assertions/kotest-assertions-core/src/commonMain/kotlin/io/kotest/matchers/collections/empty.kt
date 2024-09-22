@@ -43,6 +43,7 @@ fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
    return this
 }
 
+@Deprecated("Use Collection.shouldBeEmpty() or Collection.shouldNotBeEmpty()", level = DeprecationLevel.ERROR)
 fun <T> beEmpty(): Matcher<Collection<T>> = beEmpty("Collection")
 
 private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
@@ -53,6 +54,7 @@ private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher
    )
 }
 
+@Deprecated("Use Array.shouldBeEmpty() or Array.shouldNotBeEmpty()", level = DeprecationLevel.ERROR)
 fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    override fun test(value: Array<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
