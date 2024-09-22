@@ -15,7 +15,7 @@ fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
 
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail()
-   this should beEmptyArray()
+   asList() should beEmpty("Array")
    return this
 }
 
@@ -43,11 +43,13 @@ fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
    return this
 }
 
-fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+fun <T> beEmpty(): Matcher<Collection<T>> = beEmpty("Collection")
+
+private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
-      { "Collection should be empty but contained ${value.first().print().value}" },
-      { "Collection should not be empty" }
+      { "$name should be empty but contained ${value.first().print().value}" },
+      { "$name should not be empty" }
    )
 }
 
@@ -59,7 +61,7 @@ fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    )
 }
 
-private fun fail(): Nothing {
-   invokeMatcher(null, Matcher.failure("Expected an array collection but was null"))
+private fun fail(name: String = "an array collection"): Nothing {
+   invokeMatcher(null, Matcher.failure("Expected $name but was null"))
    throw NotImplementedError()
 }
