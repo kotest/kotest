@@ -19,6 +19,18 @@ fun BooleanArray?.shouldNotBeEmpty(): BooleanArray {
    return this
 }
 
+fun ByteArray?.shouldBeEmpty(): ByteArray {
+   if (this == null) fail("ByteArray")
+   asList() should beEmpty("ByteArray")
+   return this
+}
+
+fun ByteArray?.shouldNotBeEmpty(): ByteArray {
+   if (this == null) fail("ByteArray")
+   asList() shouldNot beEmpty("ByteArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")

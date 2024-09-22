@@ -16,6 +16,10 @@ class BeEmptyTest : WordSpec() {
             booleanArrayOf().shouldBeEmpty()
          }
 
+         "succeed for empty byte array" {
+            byteArrayOf().shouldBeEmpty()
+         }
+
          "succeed for empty list" {
             listOf<Int>().shouldBeEmpty()
          }
@@ -44,6 +48,12 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                booleanArrayOf(true).shouldBeEmpty()
             }.message shouldBe "BooleanArray should be empty but contained true"
+         }
+
+         "fail for not empty byte array" {
+            shouldThrowAny {
+               byteArrayOf(1).shouldBeEmpty()
+            }.message shouldBe "ByteArray should be empty but contained 1"
          }
 
          "fail for single element list" {
@@ -113,6 +123,12 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                booleanArrayOf().shouldNotBeEmpty()
             }.message shouldBe "BooleanArray should not be empty"
+         }
+
+         "fail for empty byte array" {
+            shouldThrowAny {
+               byteArrayOf().shouldNotBeEmpty()
+            }.message shouldBe "ByteArray should not be empty"
          }
 
          "fail for empty sequence" {
@@ -196,6 +212,10 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for not empty boolean array" {
             booleanArrayOf(true).shouldNotBeEmpty()
+         }
+
+         "succeed for not empty byte array" {
+            byteArrayOf(1).shouldNotBeEmpty()
          }
       }
    }
