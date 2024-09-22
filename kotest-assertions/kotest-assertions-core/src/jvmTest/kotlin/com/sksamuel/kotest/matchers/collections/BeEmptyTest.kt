@@ -100,18 +100,41 @@ class BeEmptyTest : WordSpec() {
       }
 
       "shouldNotBeEmpty" should {
-
-         "fail for empty" {
+         "fail for empty sequence" {
             shouldThrowAny {
                emptySequence<Int>().shouldNotBeEmpty()
             }
+         }
+
+         "fail for empty collection" {
+            shouldThrowAny {
+               emptyList<Int>().shouldNotBeEmpty()
+            }.message shouldBe "Collection should not be empty"
+         }
+
+         "fail for empty typed array" {
+            shouldThrowAny {
+               emptyArray<Int>().shouldNotBeEmpty()
+            }.message shouldBe "Array should not be empty"
+         }
+
+         "fail for empty closed range" {
+            shouldThrowAny {
+               (1..0).shouldNotBeEmpty()
+            }.message shouldBe "Range should not be empty"
+         }
+
+         "fail for empty open range" {
+            shouldThrowAny {
+               (1 until 0).shouldNotBeEmpty()
+            }.message shouldBe "Range should not be empty"
          }
 
          "fail for null reference" {
             val maybeList: List<String>? = null
             shouldThrowAny {
                maybeList.shouldNotBeEmpty()
-            }
+            }.message shouldBe "Expected Collection but was null"
          }
 
          "succeed for non-null nullable reference" {
