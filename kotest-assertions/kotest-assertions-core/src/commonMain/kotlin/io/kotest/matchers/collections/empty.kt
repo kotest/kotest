@@ -67,6 +67,18 @@ fun IntArray?.shouldNotBeEmpty(): IntArray {
    return this
 }
 
+fun LongArray?.shouldBeEmpty(): LongArray {
+   if (this == null) fail("LongArray")
+   asList() should beEmpty("LongArray")
+   return this
+}
+
+fun LongArray?.shouldNotBeEmpty(): LongArray {
+   if (this == null) fail("LongArray")
+   asList() shouldNot beEmpty("LongArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")

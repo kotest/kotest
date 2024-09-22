@@ -477,6 +477,7 @@ public final class io/kotest/matchers/collections/EmptyKt {
 	public static final fun shouldBeEmpty ([B)[B
 	public static final fun shouldBeEmpty ([C)[C
 	public static final fun shouldBeEmpty ([I)[I
+	public static final fun shouldBeEmpty ([J)[J
 	public static final fun shouldBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldBeEmpty ([S)[S
 	public static final fun shouldBeEmpty ([Z)[Z
@@ -485,6 +486,7 @@ public final class io/kotest/matchers/collections/EmptyKt {
 	public static final fun shouldNotBeEmpty ([B)[B
 	public static final fun shouldNotBeEmpty ([C)[C
 	public static final fun shouldNotBeEmpty ([I)[I
+	public static final fun shouldNotBeEmpty ([J)[J
 	public static final fun shouldNotBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotBeEmpty ([S)[S
 	public static final fun shouldNotBeEmpty ([Z)[Z
