@@ -142,7 +142,7 @@ fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
 private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
-      { "$name should be empty but contained ${value.first().print().value}" },
+      { "$name should be empty but has ${value.size} elements, first being: ${value.first().print().value}" },
       { "$name should not be empty" }
    )
 }

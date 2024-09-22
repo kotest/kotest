@@ -71,67 +71,67 @@ class BeEmptyTest : WordSpec() {
          "fail for not empty boolean array" {
             shouldThrowAny {
                booleanArrayOf(true).shouldBeEmpty()
-            }.message shouldBe "BooleanArray should be empty but contained true"
+            }.message shouldBe "BooleanArray should be empty but has 1 elements, first being: true"
          }
 
          "fail for not empty byte array" {
             shouldThrowAny {
                byteArrayOf(1).shouldBeEmpty()
-            }.message shouldBe "ByteArray should be empty but contained 1"
+            }.message shouldBe "ByteArray should be empty but has 1 elements, first being: 1"
          }
 
          "fail for not empty short array" {
             shouldThrowAny {
-               shortArrayOf(1).shouldBeEmpty()
-            }.message shouldBe "ShortArray should be empty but contained 1"
+               shortArrayOf(1, 2).shouldBeEmpty()
+            }.message shouldBe "ShortArray should be empty but has 2 elements, first being: 1"
          }
 
          "fail for not empty char array" {
             shouldThrowAny {
                charArrayOf('a').shouldBeEmpty()
-            }.message shouldBe "CharArray should be empty but contained 'a'"
+            }.message shouldBe "CharArray should be empty but has 1 elements, first being: 'a'"
          }
 
          "fail for not empty int array" {
             shouldThrowAny {
                intArrayOf(1).shouldBeEmpty()
-            }.message shouldBe "IntArray should be empty but contained 1"
+            }.message shouldBe "IntArray should be empty but has 1 elements, first being: 1"
          }
 
          "fail for not empty long array" {
             shouldThrowAny {
                longArrayOf(1).shouldBeEmpty()
-            }.message shouldBe "LongArray should be empty but contained 1L"
+            }.message shouldBe "LongArray should be empty but has 1 elements, first being: 1L"
          }
 
          "fail for not empty float array" {
             shouldThrowAny {
                floatArrayOf(1f).shouldBeEmpty()
-            }.message shouldBe "FloatArray should be empty but contained 1.0f"
+            }.message shouldBe "FloatArray should be empty but has 1 elements, first being: 1.0f"
          }
 
          "fail for not empty double array" {
             shouldThrowAny {
                doubleArrayOf(1.0).shouldBeEmpty()
-            }.message shouldBe "DoubleArray should be empty but contained 1.0"
+            }.message shouldBe "DoubleArray should be empty but has 1 elements, first being: 1.0"
          }
 
          "fail for single element list" {
             shouldThrowAny {
                listOf(0).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but contained 0"
+            }.message shouldBe "Collection should be empty but has 1 elements, first being: 0"
          }
 
          "fail for single element set" {
             shouldThrowAny {
                setOf(0).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but contained 0"
+            }.message shouldBe "Collection should be empty but has 1 elements, first being: 0"
          }
 
          "fail for single element array" {
             shouldThrowAny {
                arrayOf(0).shouldBeEmpty()
-            }.message shouldBe "Array should be empty but contained 0"
+            }.message shouldBe "Array should be empty but has 1 elements, first being: 0"
          }
 
          "fail for single element sequence" {
@@ -143,13 +143,13 @@ class BeEmptyTest : WordSpec() {
          "fail for single element range" {
             shouldThrowAny {
                (1..1).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but contained 1"
+            }.message shouldBe "Range should be empty but has 1 elements, first being: 1"
          }
 
          "fail for single element open range" {
             shouldThrowAny {
-               (1 until 2).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but contained 1"
+               (1 until 3).shouldBeEmpty()
+            }.message shouldBe "Range should be empty but has 2 elements, first being: 1"
          }
 
          "fail for sequence of nulls" {
