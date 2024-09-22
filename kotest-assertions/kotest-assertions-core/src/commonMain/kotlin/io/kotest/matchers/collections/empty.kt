@@ -7,6 +7,18 @@ import io.kotest.matchers.invokeMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+fun BooleanArray?.shouldBeEmpty(): BooleanArray {
+   if (this == null) fail("BooleanArray")
+   asList() should beEmpty("BooleanArray")
+   return this
+}
+
+fun BooleanArray?.shouldNotBeEmpty(): BooleanArray {
+   if (this == null) fail("BooleanArray")
+   asList() shouldNot beEmpty("BooleanArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")

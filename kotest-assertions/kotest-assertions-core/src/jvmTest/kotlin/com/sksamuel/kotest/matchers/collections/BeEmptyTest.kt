@@ -12,6 +12,9 @@ import io.kotest.matchers.shouldBe
 class BeEmptyTest : WordSpec() {
    init {
       "shouldBeEmpty" should {
+         "succeed for empty boolean array" {
+            booleanArrayOf().shouldBeEmpty()
+         }
 
          "succeed for empty list" {
             listOf<Int>().shouldBeEmpty()
@@ -35,6 +38,12 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for empty open range" {
             (1 until 1).shouldBeEmpty()
+         }
+
+         "fail for not empty boolean array" {
+            shouldThrowAny {
+               booleanArrayOf(true).shouldBeEmpty()
+            }.message shouldBe "BooleanArray should be empty but contained true"
          }
 
          "fail for single element list" {
@@ -100,6 +109,12 @@ class BeEmptyTest : WordSpec() {
       }
 
       "shouldNotBeEmpty" should {
+         "fail for empty boolean array" {
+            shouldThrowAny {
+               booleanArrayOf().shouldNotBeEmpty()
+            }.message shouldBe "BooleanArray should not be empty"
+         }
+
          "fail for empty sequence" {
             shouldThrowAny {
                emptySequence<Int>().shouldNotBeEmpty()
@@ -177,6 +192,10 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for multiple element array" {
             arrayOf(1, 2, 3).shouldNotBeEmpty()
+         }
+
+         "succeed for not empty boolean array" {
+            booleanArrayOf(true).shouldNotBeEmpty()
          }
       }
    }
