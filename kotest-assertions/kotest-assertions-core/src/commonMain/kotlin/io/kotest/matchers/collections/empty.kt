@@ -31,6 +31,18 @@ fun ByteArray?.shouldNotBeEmpty(): ByteArray {
    return this
 }
 
+fun ShortArray?.shouldBeEmpty(): ShortArray {
+   if (this == null) fail("ShortArray")
+   asList() should beEmpty("ShortArray")
+   return this
+}
+
+fun ShortArray?.shouldNotBeEmpty(): ShortArray {
+   if (this == null) fail("ShortArray")
+   asList() shouldNot beEmpty("ShortArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")
