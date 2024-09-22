@@ -8,38 +8,38 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
-   if (this == null) fail()
-   toList().shouldBeEmpty()
+   if (this == null) fail("Iterable")
+   toList() should beEmpty(this.matcherName())
    return this
 }
 
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
-   if (this == null) fail()
+   if (this == null) fail("Array")
    asList() should beEmpty("Array")
    return this
 }
 
 fun <T, C : Collection<T>> C?.shouldBeEmpty(): C {
-   if (this == null) fail()
-   this should beEmpty()
+   if (this == null) fail("Collection")
+   this should beEmpty("Collection")
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
-   if (this == null) fail()
-   toList().shouldNotBeEmpty()
+   if (this == null) fail("Iterable")
+   toList() shouldNot beEmpty(this.matcherName())
    return this
 }
 
 fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
-   if (this == null) fail()
-   asList().shouldNotBeEmpty()
+   if (this == null) fail("Array")
+   asList() shouldNot beEmpty("Array")
    return this
 }
 
 fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
-   if (this == null) fail()
-   this shouldNot beEmpty()
+   if (this == null) fail("Collection")
+   this shouldNot beEmpty("Collection")
    return this
 }
 
@@ -61,7 +61,12 @@ fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    )
 }
 
-private fun fail(name: String = "an array collection"): Nothing {
+private inline fun fail(name: String): Nothing {
    invokeMatcher(null, Matcher.failure("Expected $name but was null"))
    throw NotImplementedError()
+}
+
+private inline fun Iterable<*>.matcherName() = when (this) {
+   is ClosedRange<*>, is OpenEndRange<*> -> "Range"
+   else -> "Iterable"
 }

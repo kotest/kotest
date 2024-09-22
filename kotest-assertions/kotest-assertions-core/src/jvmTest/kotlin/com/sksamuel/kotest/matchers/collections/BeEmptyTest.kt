@@ -64,13 +64,13 @@ class BeEmptyTest : WordSpec() {
          "fail for single element range" {
             shouldThrowAny {
                (1..1).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but contained 1"
+            }.message shouldBe "Range should be empty but contained 1"
          }
 
          "fail for single element open range" {
             shouldThrowAny {
                (1 until 2).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but contained 1"
+            }.message shouldBe "Range should be empty but contained 1"
          }
 
          "fail for sequence of nulls" {
@@ -83,14 +83,14 @@ class BeEmptyTest : WordSpec() {
             val maybeList: List<String>? = null
             shouldThrowAny {
                maybeList.shouldBeEmpty()
-            }.message shouldBe "Expected an array collection but was null"
+            }.message shouldBe "Expected Collection but was null"
          }
 
          "fail for null set reference" {
             val maybeSet: Set<String>? = null
             shouldThrowAny {
                maybeSet.shouldBeEmpty()
-            }.message shouldBe "Expected an array collection but was null"
+            }.message shouldBe "Expected Collection but was null"
          }
 
          "return non nullable reference" {
