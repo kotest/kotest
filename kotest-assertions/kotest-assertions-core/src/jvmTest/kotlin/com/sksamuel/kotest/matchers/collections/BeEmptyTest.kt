@@ -40,6 +40,10 @@ class BeEmptyTest : WordSpec() {
             floatArrayOf().shouldBeEmpty()
          }
 
+         "succeed for empty double array" {
+            doubleArrayOf().shouldBeEmpty()
+         }
+
          "succeed for empty list" {
             listOf<Int>().shouldBeEmpty()
          }
@@ -104,6 +108,12 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                floatArrayOf(1f).shouldBeEmpty()
             }.message shouldBe "FloatArray should be empty but contained 1.0f"
+         }
+
+         "fail for not empty double array" {
+            shouldThrowAny {
+               doubleArrayOf(1.0).shouldBeEmpty()
+            }.message shouldBe "DoubleArray should be empty but contained 1.0"
          }
 
          "fail for single element list" {
@@ -211,6 +221,12 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "FloatArray should not be empty"
          }
 
+         "fail for empty double array" {
+            shouldThrowAny {
+               doubleArrayOf().shouldNotBeEmpty()
+            }.message shouldBe "DoubleArray should not be empty"
+         }
+
          "fail for empty sequence" {
             shouldThrowAny {
                emptySequence<Int>().shouldNotBeEmpty()
@@ -316,6 +332,10 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for not empty float array" {
             floatArrayOf(1f).shouldNotBeEmpty()
+         }
+
+         "succeed for not empty double array" {
+            doubleArrayOf(1.0).shouldNotBeEmpty()
          }
       }
    }

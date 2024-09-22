@@ -91,6 +91,18 @@ fun FloatArray?.shouldNotBeEmpty(): FloatArray {
    return this
 }
 
+fun DoubleArray?.shouldBeEmpty(): DoubleArray {
+   if (this == null) fail("DoubleArray")
+   asList() should beEmpty("DoubleArray")
+   return this
+}
+
+fun DoubleArray?.shouldNotBeEmpty(): DoubleArray {
+   if (this == null) fail("DoubleArray")
+   asList() shouldNot beEmpty("DoubleArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")
