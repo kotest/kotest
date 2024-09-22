@@ -43,6 +43,18 @@ fun ShortArray?.shouldNotBeEmpty(): ShortArray {
    return this
 }
 
+fun CharArray?.shouldBeEmpty(): CharArray {
+   if (this == null) fail("CharArray")
+   asList() should beEmpty("CharArray")
+   return this
+}
+
+fun CharArray?.shouldNotBeEmpty(): CharArray {
+   if (this == null) fail("CharArray")
+   asList() shouldNot beEmpty("CharArray")
+   return this
+}
+
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")

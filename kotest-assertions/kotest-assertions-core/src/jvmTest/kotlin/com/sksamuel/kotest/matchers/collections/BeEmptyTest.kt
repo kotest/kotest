@@ -24,6 +24,10 @@ class BeEmptyTest : WordSpec() {
             shortArrayOf().shouldBeEmpty()
          }
 
+         "succeed for empty char array" {
+            charArrayOf().shouldBeEmpty()
+         }
+
          "succeed for empty list" {
             listOf<Int>().shouldBeEmpty()
          }
@@ -64,6 +68,12 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                shortArrayOf(1).shouldBeEmpty()
             }.message shouldBe "ShortArray should be empty but contained 1"
+         }
+
+         "fail for not empty char array" {
+            shouldThrowAny {
+               charArrayOf('a').shouldBeEmpty()
+            }.message shouldBe "CharArray should be empty but contained 'a'"
          }
 
          "fail for single element list" {
@@ -145,6 +155,12 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                shortArrayOf().shouldNotBeEmpty()
             }.message shouldBe "ShortArray should not be empty"
+         }
+
+         "fail for empty char array" {
+            shouldThrowAny {
+               charArrayOf().shouldNotBeEmpty()
+            }.message shouldBe "CharArray should not be empty"
          }
 
          "fail for empty sequence" {
@@ -236,6 +252,10 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for not empty short array" {
             shortArrayOf(1).shouldNotBeEmpty()
+         }
+
+         "succeed for not empty char array" {
+            charArrayOf('a').shouldNotBeEmpty()
          }
       }
    }
