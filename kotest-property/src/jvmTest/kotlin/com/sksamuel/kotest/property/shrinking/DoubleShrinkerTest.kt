@@ -3,10 +3,11 @@ package com.sksamuel.kotest.property.shrinking
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveLowerBound
 import io.kotest.matchers.collections.shouldHaveUpperBound
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -43,7 +44,7 @@ class DoubleShrinkerTest : FunSpec() {
          ).map(::row).toTypedArray()
 
          forAll(*values) { value ->
-            DoubleShrinker.shrink(value).shouldBeEmpty()
+            DoubleShrinker.shrink(value) should beEmpty()
          }
       }
 

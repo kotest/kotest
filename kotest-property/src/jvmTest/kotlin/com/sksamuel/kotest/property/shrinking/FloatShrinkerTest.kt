@@ -3,8 +3,9 @@ package com.sksamuel.kotest.property.shrinking
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldHaveAtMostSize
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.FloatShrinker
 
@@ -20,7 +21,7 @@ class FloatShrinkerTest : FunSpec() {
          ).map(::row).toTypedArray()
 
          forAll(*values) { value ->
-            FloatShrinker.shrink(value).shouldBeEmpty()
+            FloatShrinker.shrink(value) should beEmpty()
          }
       }
 
