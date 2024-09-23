@@ -5,8 +5,6 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
-import io.kotest.matchers.sequences.shouldBeEmpty
-import io.kotest.matchers.sequences.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 
 class BeEmptyTest : WordSpec() {
@@ -50,10 +48,6 @@ class BeEmptyTest : WordSpec() {
 
          "succeed for empty set" {
             setOf<Int>().shouldBeEmpty()
-         }
-
-         "succeed for empty sequence" {
-            emptySequence<Int>().shouldBeEmpty()
          }
 
          "succeed for empty array" {
@@ -134,12 +128,6 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "Array should be empty but has 1 elements, first being: 0"
          }
 
-         "fail for single element sequence" {
-            shouldThrowAny {
-               sequenceOf(0).shouldBeEmpty()
-            }.message shouldBe "Sequence should be empty"
-         }
-
          "fail for single element range" {
             shouldThrowAny {
                (1..1).shouldBeEmpty()
@@ -150,12 +138,6 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                (1 until 3).shouldBeEmpty()
             }.message shouldBe "Range should be empty but has 2 elements, first being: 1"
-         }
-
-         "fail for sequence of nulls" {
-            shouldThrowAny {
-               sequenceOf<Int?>(null, null, null, null).shouldBeEmpty()
-            }.message shouldBe "Sequence should be empty"
          }
 
          "fail for null list reference" {
@@ -227,12 +209,6 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "DoubleArray should not be empty"
          }
 
-         "fail for empty sequence" {
-            shouldThrowAny {
-               emptySequence<Int>().shouldNotBeEmpty()
-            }
-         }
-
          "fail for empty collection" {
             shouldThrowAny {
                emptyList<Int>().shouldNotBeEmpty()
@@ -272,14 +248,6 @@ class BeEmptyTest : WordSpec() {
          "chain for non-null nullable reference" {
             val maybeList: List<Int>? = listOf(1)
             maybeList.shouldNotBeEmpty().shouldHaveSize(1)
-         }
-
-         "succeed for single element sequence" {
-            sequenceOf(0).shouldNotBeEmpty()
-         }
-
-         "succeed for multiple element sequence" {
-            sequenceOf(1, 2, 3).shouldNotBeEmpty()
          }
 
          "succeed for single element list" {
