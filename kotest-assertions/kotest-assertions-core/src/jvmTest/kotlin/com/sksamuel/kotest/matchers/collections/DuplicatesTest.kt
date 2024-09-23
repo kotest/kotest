@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.duplicates
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainDuplicates
@@ -30,29 +31,64 @@ class DuplicatesTest : WordSpec({
       }
    }
 
-   "shouldContainDuplicates" should {
+   "shouldNotContainDuplicates" should {
       "succeed for unique List" {
          listOf(1, 2, 3, 4, null).shouldNotContainDuplicates()
          listOf(1, 2, 3, 4, null) shouldNot containDuplicates()
       }
 
-      "succeed for arbitrary iterable" {
+      "succeed for arbitrary unique Iterable" {
          Game("Risk", listOf("p1", "p2", "p3", "p4")).shouldNotContainDuplicates()
       }
 
-      "fail for non unique list" {
+      "fail for non unique List" {
          shouldThrowAny {
             listOf(1, 2, 3, null, null, 3, 2).shouldNotContainDuplicates()
          }.message shouldBe "List should not contain duplicates, but has some: [2, 3, <null>]"
       }
 
-      "fail for arbitrary iterable" {
+      "fail for arbitrary non unique Iterable" {
          shouldThrowAny {
             Game("Risk", listOf("p1", "p2", "p3", "p1")).shouldNotContainDuplicates()
          }.message shouldBe "List should not contain duplicates, but has some: [\"p1\"]"
       }
    }
 
+   "shouldContainDuplicates" should {
+      "fail for unique List" {
+         shouldThrowAny {
+            listOf(1, 2, 3, 4, null).shouldContainDuplicates()
+         }.message shouldBe "List should contain duplicates"
+      }
+
+      "fail for any Set" {
+         shouldThrowAny {
+            setOf(1, 2, 3, 4, null).shouldContainDuplicates()
+         }.message shouldBe "Set should contain duplicates"
+
+         shouldThrowAny {
+            setOf(1, 1, 3, 4, null).shouldContainDuplicates()
+         }.message shouldBe "Set should contain duplicates"
+
+         shouldThrowAny {
+            setOf<Int?>(null, null).shouldContainDuplicates()
+         }.message shouldBe "Set should contain duplicates"
+      }
+
+      "fail for arbitrary unique iterable" {
+         shouldThrowAny {
+            Game("Risk", listOf("p1", "p2", "p3")).shouldContainDuplicates()
+         }.message shouldBe "List should contain duplicates"
+      }
+
+      "succeed for non unique List" {
+         listOf(1, 2, 3, null, null, 3, 2).shouldContainDuplicates()
+      }
+
+      "succeed for non unique arbitrary Iterable" {
+         Game("Risk", listOf("p1", "p2", "p3", "p4", "p4")).shouldContainDuplicates()
+      }
+   }
 })
 
 private class Game(val name: String, players: Iterable<String>) : Iterable<String> by players
