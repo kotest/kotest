@@ -13,6 +13,11 @@ import io.kotest.matchers.shouldBe
 
 class SequenceMatchersTest : StringSpec({
 
+   "beEmpty consumes at most 1 element" {
+      val atMostOne = sequence { yield(1); throw Exception("Should not consume a second element") }
+      atMostOne.shouldNotBeEmpty()
+   }
+
    "contain exactly" {
       sequenceOf(1, 2, 3).shouldContainExactly(1, 2, 3)
       sequenceOf(1).shouldContainExactly(1)
