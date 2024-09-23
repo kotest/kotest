@@ -4,11 +4,17 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.sequences.shouldContainExactly
 import io.kotest.matchers.sequences.shouldHaveSingleElement
+import io.kotest.matchers.sequences.shouldNotBeEmpty
 import io.kotest.matchers.sequences.shouldNotContainExactly
 import io.kotest.matchers.sequences.shouldNotHaveSingleElement
 import io.kotest.matchers.shouldBe
 
 class SequenceMatchersTest : StringSpec({
+
+   "beEmpty consumes at most 1 element" {
+      val atMostOne = sequence { yield(1); throw Exception("Should not consume a second element") }
+      atMostOne.shouldNotBeEmpty()
+   }
 
    "contain exactly" {
       sequenceOf(1, 2, 3).shouldContainExactly(1, 2, 3)
