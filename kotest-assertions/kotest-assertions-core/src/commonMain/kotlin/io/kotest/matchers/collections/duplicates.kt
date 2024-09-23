@@ -35,19 +35,17 @@ fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
    return this
 }
 
-fun <T> containDuplicates() = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>): MatcherResult {
+fun <T> containDuplicates() = object : Matcher<Iterable<T>> {
+   override fun test(value: Iterable<T>): MatcherResult {
       val duplicates = value.duplicates()
       return MatcherResult(
          duplicates.isNotEmpty(),
          { "Collection should contain duplicates" },
-         {
-            "Collection should not contain duplicates, but has some: ${duplicates.print().value}"
-         })
+         { "Collection should not contain duplicates, but has some: ${duplicates.print().value}" })
    }
 }
 
-internal fun<T> Collection<T>.duplicates(): List<T> = this.groupingBy { it }
+internal fun <T> Iterable<T>.duplicates(): List<T> = this.groupingBy { it }
    .eachCount().entries
    .filter { it.value > 1 }
    .map { it.key }
