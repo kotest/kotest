@@ -117,29 +117,29 @@ fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
 
 fun <T, C : Collection<T>> C?.shouldBeEmpty(): C {
    if (this == null) fail("Collection")
-   this should beEmpty(this.containerName())
+   this should beEmpty(null)
    return this
 }
 
 fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
    if (this == null) fail("Collection")
-   this shouldNot beEmpty(this.containerName())
+   this shouldNot beEmpty(null)
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail("Iterable")
-   this should beEmpty(this.containerName())
+   this should beEmpty(null)
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    if (this == null) fail("Iterable")
-   this shouldNot beEmpty(this.containerName())
+   this shouldNot beEmpty(null)
    return this
 }
 
-fun <T> beEmpty(): Matcher<Iterable<T>> = beEmpty("Iterable")
+fun <T> beEmpty(): Matcher<Iterable<T>> = beEmpty(null)
 
 fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    override fun test(value: Array<T>): MatcherResult = MatcherResult(
@@ -149,8 +149,9 @@ fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    )
 }
 
-private fun <T> beEmpty(name: String): Matcher<Iterable<T>> = object : Matcher<Iterable<T>> {
+private fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher<Iterable<T>> {
    override fun test(value: Iterable<T>): MatcherResult {
+      val name = name ?: value.containerName()
       val passed: Boolean
       val sizeReport: String
 
@@ -171,16 +172,16 @@ private fun <T> beEmpty(name: String): Matcher<Iterable<T>> = object : Matcher<I
          { "$name should not be empty" }
       )
    }
-}
 
-private fun Iterable<*>.containerName(): String {
-   return when (this) {
-      is List -> "List"
-      is Set -> "Set"
-      is Map<*, *> -> "Map"
-      is ClosedRange<*>, is OpenEndRange<*> -> "Range"
-      is Collection -> "Collection"
-      else -> "Iterable"
+   private fun Iterable<*>.containerName(): String {
+      return when (this) {
+         is List -> "List"
+         is Set -> "Set"
+         is Map<*, *> -> "Map"
+         is ClosedRange<*>, is OpenEndRange<*> -> "Range"
+         is Collection -> "Collection"
+         else -> "Iterable"
+      }
    }
 }
 
