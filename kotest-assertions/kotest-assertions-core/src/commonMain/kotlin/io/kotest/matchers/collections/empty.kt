@@ -129,13 +129,13 @@ fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
 
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail("Iterable")
-   toList() should beEmpty(this.containerName())
+   this should beEmpty(this.containerName())
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    if (this == null) fail("Iterable")
-   toList() shouldNot beEmpty(this.containerName())
+   this shouldNot beEmpty(this.containerName())
    return this
 }
 

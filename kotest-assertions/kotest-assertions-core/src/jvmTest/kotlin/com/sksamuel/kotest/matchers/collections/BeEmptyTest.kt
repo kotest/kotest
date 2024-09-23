@@ -311,6 +311,18 @@ class BeEmptyTest : WordSpec() {
          "succeed for not empty double array" {
             doubleArrayOf(1.0).shouldNotBeEmpty()
          }
+
+         "not deadlock on infinite iterable" {
+            InfiniteIterable().shouldNotBeEmpty()
+         }
       }
+   }
+}
+
+private class InfiniteIterable : Iterable<Int> {
+   override fun iterator(): Iterator<Int> = object : Iterator<Int> {
+      override fun hasNext(): Boolean = true
+
+      override fun next(): Int = 1
    }
 }
