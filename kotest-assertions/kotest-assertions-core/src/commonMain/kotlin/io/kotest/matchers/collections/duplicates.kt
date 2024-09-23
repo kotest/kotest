@@ -35,13 +35,16 @@ fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
    return this
 }
 
-fun <T> containDuplicates() = object : Matcher<Iterable<T>> {
+fun <T> containDuplicates(): Matcher<Iterable<T>> = containDuplicates(null)
+
+internal fun <T> containDuplicates(name: String?) = object : Matcher<Iterable<T>> {
    override fun test(value: Iterable<T>): MatcherResult {
+      val name = name ?: value.containerName()
       val duplicates = value.duplicates()
       return MatcherResult(
          duplicates.isNotEmpty(),
-         { "Collection should contain duplicates" },
-         { "Collection should not contain duplicates, but has some: ${duplicates.print().value}" })
+         { "$name should contain duplicates" },
+         { "$name should not contain duplicates, but has some: ${duplicates.print().value}" })
    }
 }
 

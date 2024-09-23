@@ -268,10 +268,11 @@ class CollectionMatchersTest : WordSpec() {
             listOf(1, 2, 3, 4).shouldNotContainDuplicates()
          }
 
-         "print duplicates in message" {
+         "print duplicates and container type in message - List" {
             shouldThrowAny {
-               listOf(1, 2, 3, 4, 2, 1) shouldNot containDuplicates()
-            }.shouldHaveMessage("Collection should not contain duplicates, but has some: [1, 2]")
+               val iterable: Iterable<Int> = listOf(1, 2, 3, 4, 2, 1)
+               iterable shouldNot containDuplicates()
+            }.shouldHaveMessage("List should not contain duplicates, but has some: [1, 2]")
          }
       }
 
