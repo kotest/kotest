@@ -2,7 +2,6 @@ package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.duplicates
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainDuplicates
@@ -10,7 +9,6 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 
 class DuplicatesTest : WordSpec({
    "duplicates" should {
@@ -32,13 +30,22 @@ class DuplicatesTest : WordSpec({
    }
 
    "shouldNotContainDuplicates" should {
+      "succeed for unique Array" {
+         arrayOf(1, 2, 3, 4, null).shouldNotContainDuplicates()
+      }
+
       "succeed for unique List" {
          listOf(1, 2, 3, 4, null).shouldNotContainDuplicates()
-         listOf(1, 2, 3, 4, null) shouldNot containDuplicates()
       }
 
       "succeed for arbitrary unique Iterable" {
          Game("Risk", listOf("p1", "p2", "p3", "p4")).shouldNotContainDuplicates()
+      }
+
+      "fail for non unique Array" {
+         shouldThrowAny {
+            arrayOf(1, 2, 3, null, null, 3, 2).shouldNotContainDuplicates()
+         }.message shouldBe "Array should not contain duplicates, but has some: [2, 3, <null>]"
       }
 
       "fail for non unique List" {
@@ -50,11 +57,17 @@ class DuplicatesTest : WordSpec({
       "fail for arbitrary non unique Iterable" {
          shouldThrowAny {
             Game("Risk", listOf("p1", "p2", "p3", "p1")).shouldNotContainDuplicates()
-         }.message shouldBe "List should not contain duplicates, but has some: [\"p1\"]"
+         }.message shouldBe "Iterable should not contain duplicates, but has some: [\"p1\"]"
       }
    }
 
    "shouldContainDuplicates" should {
+      "fail for unique Array" {
+         shouldThrowAny {
+            arrayOf(1, 2, 3, 4, null).shouldContainDuplicates()
+         }.message shouldBe "Array should contain duplicates"
+      }
+
       "fail for unique List" {
          shouldThrowAny {
             listOf(1, 2, 3, 4, null).shouldContainDuplicates()
@@ -78,7 +91,7 @@ class DuplicatesTest : WordSpec({
       "fail for arbitrary unique iterable" {
          shouldThrowAny {
             Game("Risk", listOf("p1", "p2", "p3")).shouldContainDuplicates()
-         }.message shouldBe "List should contain duplicates"
+         }.message shouldBe "Iterable should contain duplicates"
       }
 
       "succeed for non unique List" {
@@ -87,6 +100,10 @@ class DuplicatesTest : WordSpec({
 
       "succeed for non unique arbitrary Iterable" {
          Game("Risk", listOf("p1", "p2", "p3", "p4", "p4")).shouldContainDuplicates()
+      }
+
+      "succeed for non unique Array" {
+         listOf(1, 2, 3, null, null, 3, 2).shouldContainDuplicates()
       }
    }
 })

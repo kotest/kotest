@@ -7,32 +7,32 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 fun <T> Array<T>.shouldContainDuplicates(): Array<T> {
-   asList().shouldContainDuplicates()
+   asList() should containDuplicates("Array")
    return this
 }
 
 fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
-   asList().shouldNotContainDuplicates()
+   asList() shouldNot containDuplicates("Array")
    return this
 }
 
 fun <T, C : Collection<T>> C.shouldContainDuplicates(): C {
-   this should containDuplicates()
+   this should containDuplicates(null)
    return this
 }
 
 fun <T, C : Collection<T>> C.shouldNotContainDuplicates(): C {
-   this shouldNot containDuplicates()
+   this shouldNot containDuplicates(null)
    return this
 }
 
 fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
-   toList().shouldContainDuplicates()
+   this should containDuplicates(null)
    return this
 }
 
 fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
-   toList().shouldNotContainDuplicates()
+   this shouldNot containDuplicates(null)
    return this
 }
 
