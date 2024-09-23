@@ -6,8 +6,9 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T> Array<T>.shouldContainDuplicates() {
+fun <T> Array<T>.shouldContainDuplicates(): Array<T> {
    asList().shouldContainDuplicates()
+   return this
 }
 
 fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
