@@ -139,6 +139,16 @@ fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    return this
 }
 
+fun <T> beEmpty(): Matcher<Collection<T>> = beEmpty("Collection")
+
+fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
+   override fun test(value: Array<T>): MatcherResult = MatcherResult(
+      value.isEmpty(),
+      { "Array should be empty but contained ${value.first().print().value}" },
+      { "Array should not be empty" }
+   )
+}
+
 private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
@@ -155,16 +165,4 @@ private inline fun fail(name: String): Nothing {
 private inline fun Iterable<*>.matcherName() = when (this) {
    is ClosedRange<*>, is OpenEndRange<*> -> "Range"
    else -> "Iterable"
-}
-
-@Deprecated("Use Collection.shouldBeEmpty() or Collection.shouldNotBeEmpty()", level = DeprecationLevel.ERROR)
-fun <T> beEmpty(): Matcher<Collection<T>> = beEmpty("Collection")
-
-@Deprecated("Use Array.shouldBeEmpty() or Array.shouldNotBeEmpty()", level = DeprecationLevel.ERROR)
-fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
-   override fun test(value: Array<T>): MatcherResult = MatcherResult(
-      value.isEmpty(),
-      { "Array should be empty but contained ${value.first().print().value}" },
-      { "Array should not be empty" }
-   )
 }
