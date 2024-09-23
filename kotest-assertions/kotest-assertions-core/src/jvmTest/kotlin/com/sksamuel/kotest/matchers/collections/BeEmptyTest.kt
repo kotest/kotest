@@ -113,13 +113,13 @@ class BeEmptyTest : WordSpec() {
          "fail for single element list" {
             shouldThrowAny {
                listOf(0).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but has 1 elements, first being: 0"
+            }.message shouldBe "List should be empty but has 1 elements, first being: 0"
          }
 
          "fail for single element set" {
             shouldThrowAny {
                setOf(0).shouldBeEmpty()
-            }.message shouldBe "Collection should be empty but has 1 elements, first being: 0"
+            }.message shouldBe "Set should be empty but has 1 elements, first being: 0"
          }
 
          "fail for single element array" {
@@ -131,13 +131,13 @@ class BeEmptyTest : WordSpec() {
          "fail for single element range" {
             shouldThrowAny {
                (1..1).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but has 1 elements, first being: 1"
+            }.message shouldBe "Range should be empty but has at least one element, first being: 1"
          }
 
          "fail for single element open range" {
             shouldThrowAny {
                (1 until 3).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but has 2 elements, first being: 1"
+            }.message shouldBe "Range should be empty but has at least one element, first being: 1"
          }
 
          "fail for null list reference" {
@@ -209,10 +209,16 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "DoubleArray should not be empty"
          }
 
-         "fail for empty collection" {
+         "fail for empty list" {
             shouldThrowAny {
                emptyList<Int>().shouldNotBeEmpty()
-            }.message shouldBe "Collection should not be empty"
+            }.message shouldBe "List should not be empty"
+         }
+
+         "fail for empty set" {
+            shouldThrowAny {
+               emptySet<Int>().shouldNotBeEmpty()
+            }.message shouldBe "Set should not be empty"
          }
 
          "fail for empty typed array" {

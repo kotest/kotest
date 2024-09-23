@@ -117,29 +117,29 @@ fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
 
 fun <T, C : Collection<T>> C?.shouldBeEmpty(): C {
    if (this == null) fail("Collection")
-   this should beEmpty("Collection")
+   this should beEmpty(this.containerName())
    return this
 }
 
 fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
    if (this == null) fail("Collection")
-   this shouldNot beEmpty("Collection")
+   this shouldNot beEmpty(this.containerName())
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail("Iterable")
-   toList() should beEmpty(this.matcherName())
+   toList() should beEmpty(this.containerName())
    return this
 }
 
 fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    if (this == null) fail("Iterable")
-   toList() shouldNot beEmpty(this.matcherName())
+   toList() shouldNot beEmpty(this.containerName())
    return this
 }
 
-fun <T> beEmpty(): Matcher<Collection<T>> = beEmpty("Collection")
+fun <T> beEmpty(): Matcher<Iterable<T>> = beEmpty("Iterable")
 
 fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    override fun test(value: Array<T>): MatcherResult = MatcherResult(
@@ -149,20 +149,42 @@ fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    )
 }
 
-private fun <T> beEmpty(name: String): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>): MatcherResult = MatcherResult(
-      value.isEmpty(),
-      { "$name should be empty but has ${value.size} elements, first being: ${value.first().print().value}" },
-      { "$name should not be empty" }
-   )
+private fun <T> beEmpty(name: String): Matcher<Iterable<T>> = object : Matcher<Iterable<T>> {
+   override fun test(value: Iterable<T>): MatcherResult {
+      val passed: Boolean
+      val sizeReport: String
+
+      when (value) {
+         is Collection -> {
+            passed = value.isEmpty()
+            sizeReport = "${value.size} elements"
+         }
+
+         else -> {
+            passed = !value.iterator().hasNext()
+            sizeReport = "at least one element"
+         }
+      }
+      return MatcherResult(
+         passed,
+         { "$name should be empty but has $sizeReport, first being: ${value.first().print().value}" },
+         { "$name should not be empty" }
+      )
+   }
+}
+
+private fun Iterable<*>.containerName(): String {
+   return when (this) {
+      is List -> "List"
+      is Set -> "Set"
+      is Map<*, *> -> "Map"
+      is ClosedRange<*>, is OpenEndRange<*> -> "Range"
+      is Collection -> "Collection"
+      else -> "Iterable"
+   }
 }
 
 private inline fun fail(name: String): Nothing {
    invokeMatcher(null, Matcher.failure("Expected $name but was null"))
    throw NotImplementedError()
-}
-
-private inline fun Iterable<*>.matcherName() = when (this) {
-   is ClosedRange<*>, is OpenEndRange<*> -> "Range"
-   else -> "Iterable"
 }
