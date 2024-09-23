@@ -6,23 +6,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
-   toList().shouldContainDuplicates()
-   return this
-}
-
 fun <T> Array<T>.shouldContainDuplicates() {
    asList().shouldContainDuplicates()
-}
-
-fun <T, C : Collection<T>> C.shouldContainDuplicates(): C {
-   this should containDuplicates()
-   return this
-}
-
-fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
-   toList().shouldNotContainDuplicates()
-   return this
 }
 
 fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
@@ -30,8 +15,23 @@ fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
    return this
 }
 
+fun <T, C : Collection<T>> C.shouldContainDuplicates(): C {
+   this should containDuplicates()
+   return this
+}
+
 fun <T, C : Collection<T>> C.shouldNotContainDuplicates(): C {
    this shouldNot containDuplicates()
+   return this
+}
+
+fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
+   toList().shouldContainDuplicates()
+   return this
+}
+
+fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
+   toList().shouldNotContainDuplicates()
    return this
 }
 
