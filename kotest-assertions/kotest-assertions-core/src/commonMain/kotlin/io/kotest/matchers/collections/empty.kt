@@ -115,18 +115,6 @@ fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
    return this
 }
 
-fun <T, C : Collection<T>> C?.shouldBeEmpty(): C {
-   if (this == null) fail("Collection")
-   this should beEmpty(null)
-   return this
-}
-
-fun <T, C : Collection<T>> C?.shouldNotBeEmpty(): C {
-   if (this == null) fail("Collection")
-   this shouldNot beEmpty(null)
-   return this
-}
-
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail("Iterable")
    this should beEmpty(null)
