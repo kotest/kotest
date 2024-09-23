@@ -318,11 +318,3 @@ class BeEmptyTest : WordSpec() {
       }
    }
 }
-
-private class InfiniteIterable : Iterable<Int> {
-   override fun iterator(): Iterator<Int> = object : Iterator<Int> {
-      override fun hasNext(): Boolean = true
-
-      override fun next(): Int = 1
-   }
-}
