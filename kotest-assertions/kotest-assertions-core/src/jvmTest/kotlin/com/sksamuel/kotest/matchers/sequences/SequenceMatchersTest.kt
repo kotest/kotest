@@ -79,11 +79,11 @@ class SequenceMatchersTest : StringSpec({
    "should be empty" {
       shouldThrowAny {
          sequenceOf(0).shouldBeEmpty()
-      }.message shouldBe "Sequence should be empty"
+      }.message shouldBe "Sequence should be empty but has at least one element, first being: 0"
 
       shouldThrowAny {
          sequenceOf<Int?>(null, null, null, null).shouldBeEmpty()
-      }.message shouldBe "Sequence should be empty"
+      }.message shouldBe "Sequence should be empty but has at least one element, first being: <null>"
 
       emptySequence<Int>().shouldBeEmpty()
    }
