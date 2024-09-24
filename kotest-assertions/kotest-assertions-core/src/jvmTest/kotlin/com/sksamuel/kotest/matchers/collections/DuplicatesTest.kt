@@ -76,6 +76,10 @@ class DuplicatesTest : WordSpec({
          }.message shouldBe "Set should contain duplicates"
       }
 
+      "succeed for non unique Array" {
+         listOf(1, 2, 3, null, null, 3, 2).shouldContainDuplicates()
+      }
+
       "succeed for non unique List" {
          listOf(1, 2, 3, null, null, 3, 2).shouldContainDuplicates()
       }
@@ -84,8 +88,8 @@ class DuplicatesTest : WordSpec({
          Game("Risk", listOf("p1", "p2", "p3", "p4", "p4")).shouldContainDuplicates()
       }
 
-      "succeed for non unique Array" {
-         listOf(1, 2, 3, null, null, 3, 2).shouldContainDuplicates()
+      "succeed for misbehaving Set" {
+         (NonUniqueSet() as Set<Int>).shouldContainDuplicates()
       }
    }
 
@@ -125,7 +129,27 @@ class DuplicatesTest : WordSpec({
             Game("Risk", listOf("p1", "p2", "p3", "p1")).shouldNotContainDuplicates()
          }.message shouldBe "Iterable should not contain duplicates, but has some: [\"p1\"]"
       }
+
+      "fail for misbehaving set" {
+         shouldThrowAny {
+            (NonUniqueSet() as Set<Int>).shouldNotContainDuplicates()
+         }.message shouldBe "Set should not contain duplicates, but has some: [1]"
+      }
    }
 })
 
 private class Game(val name: String, players: Iterable<String>) : Iterable<String> by players
+
+private class NonUniqueSet : Set<Int> {
+   private val elements = listOf(1, 1)
+
+   override val size: Int = elements.size
+
+   override fun contains(element: Int): Boolean = elements.contains(element)
+
+   override fun containsAll(elements: Collection<Int>): Boolean = elements.containsAll(elements)
+
+   override fun isEmpty(): Boolean = false
+
+   override fun iterator(): Iterator<Int> = elements.iterator()
+}

@@ -38,17 +38,8 @@ fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
 
 fun <T> containDuplicates(): Matcher<Iterable<T>> = containDuplicates(null)
 
-private val setResult: MatcherResult by lazy {
-   // "Set should contain duplicates" is obviously nonsense, but kept for message consistency
-   MatcherResult(false, { "Set should contain duplicates" }, { "Set should not contain duplicates" })
-}
-
 internal fun <T> containDuplicates(name: String?) = object : Matcher<Iterable<T>> {
    override fun test(value: Iterable<T>): MatcherResult {
-      if (value is Set<*>) {
-         return setResult
-      }
-
       val name = name ?: value.containerName()
       val duplicates = value.duplicates()
       return MatcherResult(
