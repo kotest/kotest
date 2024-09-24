@@ -875,11 +875,27 @@ public final class io/kotest/matchers/collections/UniqueKt {
 	public static final fun beUnique (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeUnique (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeUnique (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldBeUnique ([B)[B
+	public static final fun shouldBeUnique ([C)[C
+	public static final fun shouldBeUnique ([D)[D
+	public static final fun shouldBeUnique ([F)[F
+	public static final fun shouldBeUnique ([I)[I
+	public static final fun shouldBeUnique ([J)[J
 	public static final fun shouldBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldBeUnique ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
+	public static final fun shouldBeUnique ([S)[S
+	public static final fun shouldBeUnique ([Z)[Z
 	public static final fun shouldNotBeUnique (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeUnique (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotBeUnique ([B)[B
+	public static final fun shouldNotBeUnique ([C)[C
+	public static final fun shouldNotBeUnique ([D)[D
+	public static final fun shouldNotBeUnique ([F)[F
+	public static final fun shouldNotBeUnique ([I)[I
+	public static final fun shouldNotBeUnique ([J)[J
 	public static final fun shouldNotBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeUnique ([S)[S
+	public static final fun shouldNotBeUnique ([Z)[Z
 }
 
 public final class io/kotest/matchers/comparables/ComparableMatchersKt {
