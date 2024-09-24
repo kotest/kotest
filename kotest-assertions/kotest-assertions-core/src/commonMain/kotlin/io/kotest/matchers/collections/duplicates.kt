@@ -6,6 +6,86 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+fun BooleanArray.shouldContainDuplicates(): BooleanArray {
+   asList() should containDuplicates("BooleanArray")
+   return this
+}
+
+fun BooleanArray.shouldNotContainDuplicates(): BooleanArray {
+   asList() shouldNot containDuplicates("BooleanArray")
+   return this
+}
+
+fun ByteArray.shouldContainDuplicates(): ByteArray {
+   asList() should containDuplicates("ByteArray")
+   return this
+}
+
+fun ByteArray.shouldNotContainDuplicates(): ByteArray {
+   asList() shouldNot containDuplicates("ByteArray")
+   return this
+}
+
+fun ShortArray.shouldContainDuplicates(): ShortArray {
+   asList() should containDuplicates("ShortArray")
+   return this
+}
+
+fun ShortArray.shouldNotContainDuplicates(): ShortArray {
+   asList() shouldNot containDuplicates("ShortArray")
+   return this
+}
+
+fun CharArray.shouldContainDuplicates(): CharArray {
+   asList() should containDuplicates("CharArray")
+   return this
+}
+
+fun CharArray.shouldNotContainDuplicates(): CharArray {
+   asList() shouldNot containDuplicates("CharArray")
+   return this
+}
+
+fun IntArray.shouldContainDuplicates(): IntArray {
+   asList() should containDuplicates("IntArray")
+   return this
+}
+
+fun IntArray.shouldNotContainDuplicates(): IntArray {
+   asList() shouldNot containDuplicates("IntArray")
+   return this
+}
+
+fun LongArray.shouldContainDuplicates(): LongArray {
+   asList() should containDuplicates("LongArray")
+   return this
+}
+
+fun LongArray.shouldNotContainDuplicates(): LongArray {
+   asList() shouldNot containDuplicates("LongArray")
+   return this
+}
+
+fun FloatArray.shouldContainDuplicates(): FloatArray {
+   asList() should containDuplicates("FloatArray")
+   return this
+}
+
+fun FloatArray.shouldNotContainDuplicates(): FloatArray {
+   asList() shouldNot containDuplicates("FloatArray")
+   return this
+}
+
+fun DoubleArray.shouldContainDuplicates(): DoubleArray {
+   asList() should containDuplicates("DoubleArray")
+   return this
+}
+
+fun DoubleArray.shouldNotContainDuplicates(): DoubleArray {
+   asList() shouldNot containDuplicates("DoubleArray")
+   return this
+}
+
 fun <T> Array<T>.shouldContainDuplicates(): Array<T> {
    asList() should containDuplicates("Array")
    return this
