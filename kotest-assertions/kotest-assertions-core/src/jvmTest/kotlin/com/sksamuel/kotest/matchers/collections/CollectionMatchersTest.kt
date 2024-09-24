@@ -14,7 +14,6 @@ import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
-import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
@@ -36,7 +35,6 @@ import io.kotest.matchers.collections.shouldBeSortedDescending
 import io.kotest.matchers.collections.shouldBeSortedDescendingBy
 import io.kotest.matchers.collections.shouldBeSortedWith
 import io.kotest.matchers.collections.shouldContainAnyOf
-import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
@@ -54,7 +52,6 @@ import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldNotBeSortedBy
 import io.kotest.matchers.collections.shouldNotBeSortedWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
-import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
@@ -257,22 +254,6 @@ class CollectionMatchersTest : WordSpec() {
 
          "compare by the tranformed value in descending order" {
             items.shouldBeSortedDescendingBy { it.first * -1 }
-         }
-      }
-
-      "haveDuplicates" should {
-         "test that a collection is unique" {
-            listOf(1, 2, 3, 3) should containDuplicates()
-            listOf(1, 2, 3, 4) shouldNot containDuplicates()
-            listOf(1, 2, 3, 3).shouldContainDuplicates()
-            listOf(1, 2, 3, 4).shouldNotContainDuplicates()
-         }
-
-         "print duplicates and container type in message - List" {
-            shouldThrowAny {
-               val iterable: Iterable<Int> = listOf(1, 2, 3, 4, 2, 1)
-               iterable shouldNot containDuplicates()
-            }.shouldHaveMessage("List should not contain duplicates, but has some: [1, 2]")
          }
       }
 
