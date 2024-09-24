@@ -42,6 +42,12 @@ class DuplicatesTest : WordSpec({
          Game("Risk", listOf("p1", "p2", "p3", "p4")).shouldNotContainDuplicates()
       }
 
+      "succeed for empty" {
+         arrayOf<Int>().shouldNotContainDuplicates()
+         listOf<Int>().shouldNotContainDuplicates()
+         setOf<Int>().shouldNotContainDuplicates()
+      }
+
       "fail for non unique Array" {
          shouldThrowAny {
             arrayOf(1, 2, 3, null, null, 3, 2).shouldNotContainDuplicates()
@@ -88,10 +94,24 @@ class DuplicatesTest : WordSpec({
          }.message shouldBe "Set should contain duplicates"
       }
 
-      "fail for arbitrary unique iterable" {
+      "fail for arbitrary unique Iterable" {
          shouldThrowAny {
             Game("Risk", listOf("p1", "p2", "p3")).shouldContainDuplicates()
          }.message shouldBe "Iterable should contain duplicates"
+      }
+
+      "fail for empty" {
+         shouldThrowAny {
+            arrayOf<Int>().shouldContainDuplicates()
+         }.message shouldBe "Array should contain duplicates"
+
+         shouldThrowAny {
+            listOf<Int>().shouldContainDuplicates()
+         }.message shouldBe "List should contain duplicates"
+
+         shouldThrowAny {
+            setOf<Int>().shouldContainDuplicates()
+         }.message shouldBe "Set should contain duplicates"
       }
 
       "succeed for non unique List" {
