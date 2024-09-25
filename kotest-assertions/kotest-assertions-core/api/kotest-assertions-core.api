@@ -859,22 +859,26 @@ public final class io/kotest/matchers/collections/UniqueKt {
 }
 
 public final class io/kotest/matchers/comparables/ComparableMatchersKt {
+	public static final fun beBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beEqualComparingTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThan (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThanOrEqualTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beLessThan (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beLessThanOrEqualTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun between (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun compareTo (Ljava/lang/Object;Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun gt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun gte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
 	public static final fun shouldBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
+	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
 	public static final fun shouldNotBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
