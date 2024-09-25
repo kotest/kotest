@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -123,7 +124,7 @@ Caused by IllegalArgumentException: something unexpected happened"""
    }
 
    test("forAll with 2 arbs should skip first 4 tests") {
-      shouldThrowAny {
+      shouldThrow<AssertionError> {
          forAll(
             config = PropTestConfig(skipTo = 5, seed = 5847062201763421121),
             Exhaustive.ints(0..10),
