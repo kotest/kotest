@@ -1,14 +1,22 @@
 package com.sksamuel.kotest.matchers.sequences
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.sequences.shouldBeEmpty
 import io.kotest.matchers.sequences.shouldContainExactly
 import io.kotest.matchers.sequences.shouldHaveSingleElement
+import io.kotest.matchers.sequences.shouldNotBeEmpty
 import io.kotest.matchers.sequences.shouldNotContainExactly
 import io.kotest.matchers.sequences.shouldNotHaveSingleElement
 import io.kotest.matchers.shouldBe
 
 class SequenceMatchersTest : StringSpec({
+
+   "beEmpty consumes at most 1 element" {
+      val atMostOne = sequence { yield(1); throw Exception("Should not consume a second element") }
+      atMostOne.shouldNotBeEmpty()
+   }
 
    "contain exactly" {
       sequenceOf(1, 2, 3).shouldContainExactly(1, 2, 3)
@@ -67,4 +75,27 @@ class SequenceMatchersTest : StringSpec({
          sequenceOf(1).shouldNotHaveSingleElement(1)
       }.message shouldBe "Sequence should not have a single element of 1."
    }
+
+   "should be empty" {
+      shouldThrowAny {
+         sequenceOf(0).shouldBeEmpty()
+      }.message shouldBe "Sequence should be empty"
+
+      shouldThrowAny {
+         sequenceOf<Int?>(null, null, null, null).shouldBeEmpty()
+      }.message shouldBe "Sequence should be empty"
+
+      emptySequence<Int>().shouldBeEmpty()
+   }
+
+   "should not be empty" {
+      shouldThrowAny {
+         emptySequence<Int>().shouldNotBeEmpty()
+      }.message shouldBe "Sequence should not be empty"
+
+      sequenceOf(0).shouldNotBeEmpty()
+
+      sequenceOf(1, 2, 3).shouldNotBeEmpty()
+   }
+
 })

@@ -2,9 +2,11 @@ package io.kotest.core.test.config
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
