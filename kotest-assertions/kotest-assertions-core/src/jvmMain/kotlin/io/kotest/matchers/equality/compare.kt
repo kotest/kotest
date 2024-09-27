@@ -1,5 +1,6 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print

@@ -1,6 +1,8 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.matchers.shouldBe
 
 /**
@@ -12,9 +14,9 @@ import io.kotest.matchers.shouldBe
  * This should be used mainly to check that an assertion fails, for example:
  *
  * ```
- *     shouldFail {
- *        1 shouldBe 2  // This should fail
- *     }
+ * shouldFail {
+ *    1 shouldBe 2  // This should fail
+ * }
  * ```
  *
  * @returns the [AssertionError] that was thrown
@@ -33,9 +35,9 @@ inline fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
  * This should be used mainly to check that an assertion fails, for example:
  *
  * ```
- *     shouldFail {
- *        1 shouldBe 2  // This should fail
- *     }
+ * shouldFail {
+ *    1 shouldBe 2  // This should fail
+ * }
  * ```
  *
  * @returns the [AssertionError] that was thrown

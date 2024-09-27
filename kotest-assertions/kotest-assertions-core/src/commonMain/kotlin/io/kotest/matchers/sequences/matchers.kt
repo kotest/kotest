@@ -12,7 +12,6 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
-import kotlin.collections.indexOfFirst
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -26,7 +25,7 @@ fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val firstNotNull = value.mapIndexed { index, t ->  index to t}.firstOrNull { it.second != null }
+      val firstNotNull = value.mapIndexed { index, t -> index to t }.firstOrNull { it.second != null }
       return MatcherResult(
          firstNotNull == null,
          { "Sequence should contain only nulls, but had a non-null element ${firstNotNull!!.second.print().value} at index ${firstNotNull.first}" },
@@ -56,7 +55,7 @@ fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matche
       val sequenceHead = value.take(index + 1).toList()
       val elementAtIndex = sequenceHead.elementAtOrNull(index)
       val passed = elementAtIndex == element
-      val description = when{
+      val description = when {
          passed -> ""
          elementAtIndex != null && elementAtIndex != element -> ", but the value was different: ${elementAtIndex.print().value}."
          else -> ", but the sequence only had ${sequenceHead.size} elements"
@@ -443,7 +442,7 @@ fun <T> Sequence<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Sequence<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult = MatcherResult(
-      value.count() == 0,
+      !value.iterator().hasNext(),
       { "Sequence should be empty" },
       { "Sequence should not be empty" }
    )

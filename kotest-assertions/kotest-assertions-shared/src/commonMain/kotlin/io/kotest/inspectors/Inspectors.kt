@@ -188,7 +188,7 @@ fun <T> Sequence<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
 fun <T> Array<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
 
 /**
- * Checks that [Collection] consists of a single element, which passes the given assertion block [fn]
+ * Checks that [Collection] consists of a single element, which passes the given assertion block [f]
  * and returns the element
  * */
 fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
@@ -198,6 +198,7 @@ fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
          is ElementPass<T> -> results[0].value()
          else -> buildAssertionError("Expected a single element to pass, but it failed.", results)
       }
+
       0 -> throw failure("Expected a single element in the collection, but it was empty.")
       else -> buildAssertionError("Expected a single element in the collection, but found ${results.size}.", results)
    }
