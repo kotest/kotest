@@ -5,22 +5,116 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
-infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T): Array<T> {
-   asList() should haveUpperBound(t, "Array")
+// BooleanArray left out in the interest of reducing API bloat.
+// As Boolean only has 2 values, it is more natural to use
+// "shouldContain true / shouldContain false"-type assertions
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun ByteArray.shouldHaveUpperBound(value: Byte): ByteArray {
+   asList() should haveUpperBound(value, "ByteArray")
    return this
 }
 
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T): C {
-   this should haveUpperBound(t, null)
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun ShortArray.shouldHaveUpperBound(value: Short): ShortArray {
+   asList() should haveUpperBound(value, "ShortArray")
    return this
 }
 
-infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(t: T): I {
-   this should haveUpperBound(t, null)
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun CharArray.shouldHaveUpperBound(value: Char): CharArray {
+   asList() should haveUpperBound(value, "CharArray")
    return this
 }
 
-fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T): Matcher<C> = haveUpperBound(t, null)
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun IntArray.shouldHaveUpperBound(value: Int): IntArray {
+   asList() should haveUpperBound(value, "IntArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun LongArray.shouldHaveUpperBound(value: Long): LongArray {
+   asList() should haveUpperBound(value, "LongArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun FloatArray.shouldHaveUpperBound(value: Float): FloatArray {
+   asList() should haveUpperBound(value, "FloatArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun DoubleArray.shouldHaveUpperBound(value: Double): DoubleArray {
+   asList() should haveUpperBound(value, "DoubleArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> {
+   asList() should haveUpperBound(value, "Array")
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(value: T): C {
+   this should haveUpperBound(value, null)
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(value: T): I {
+   this should haveUpperBound(value, null)
+   return this
+}
+
+/**
+ * Verifies that all elements are less than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(value: T): Matcher<C> = haveUpperBound(value, null)
 
 private fun <T : Comparable<T>, I : Iterable<T>> haveUpperBound(t: T, name: String?): Matcher<I> = object : Matcher<I> {
    override fun test(value: I): MatcherResult {

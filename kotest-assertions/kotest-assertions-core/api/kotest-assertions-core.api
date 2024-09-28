@@ -305,7 +305,14 @@ public final class io/kotest/matchers/collections/BoundsKt {
 	public static final fun shouldHaveLowerBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
 	public static final fun shouldHaveUpperBound (Ljava/lang/Iterable;Ljava/lang/Comparable;)Ljava/lang/Iterable;
 	public static final fun shouldHaveUpperBound (Ljava/util/Collection;Ljava/lang/Comparable;)Ljava/util/Collection;
+	public static final fun shouldHaveUpperBound ([BB)[B
+	public static final fun shouldHaveUpperBound ([CC)[C
+	public static final fun shouldHaveUpperBound ([DD)[D
+	public static final fun shouldHaveUpperBound ([FF)[F
+	public static final fun shouldHaveUpperBound ([II)[I
+	public static final fun shouldHaveUpperBound ([JJ)[J
 	public static final fun shouldHaveUpperBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldHaveUpperBound ([SS)[S
 }
 
 public final class io/kotest/matchers/collections/CollectionMatchersKt {
