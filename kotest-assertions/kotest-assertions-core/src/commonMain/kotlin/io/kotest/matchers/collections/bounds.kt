@@ -138,18 +138,108 @@ private fun Iterable<*>.containerName(): String {
    }
 }
 
-infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(t: T): Array<T> {
-   asList() should haveLowerBound(t, "Array")
+
+// BooleanArray left out in the interest of reducing API bloat.
+// As Boolean only has 2 values, it is more natural to use
+// "shouldContain true / shouldContain false"-type assertions
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun ByteArray.shouldHaveLowerBound(value: Byte): ByteArray {
+   asList() should haveLowerBound(value, "ByteArray")
    return this
 }
 
-infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(t: T): I {
-   toList() should haveLowerBound(t, null)
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun ShortArray.shouldHaveLowerBound(value: Short): ShortArray {
+   asList() should haveLowerBound(value, "ShortArray")
    return this
 }
 
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T): C {
-   this should haveLowerBound(t, null)
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun CharArray.shouldHaveLowerBound(value: Char): CharArray {
+   asList() should haveLowerBound(value, "CharArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun IntArray.shouldHaveLowerBound(value: Int): IntArray {
+   asList() should haveLowerBound(value, "IntArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun LongArray.shouldHaveLowerBound(value: Long): LongArray {
+   asList() should haveLowerBound(value, "LongArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun FloatArray.shouldHaveLowerBound(value: Float): FloatArray {
+   asList() should haveLowerBound(value, "FloatArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
+   asList() should haveLowerBound(value, "DoubleArray")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> {
+   asList() should haveLowerBound(value, "Array")
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(value: T): C {
+   this should haveLowerBound(value, null)
+   return this
+}
+
+/**
+ * Verifies that all elements are greater than or equal to [value].
+ *
+ * Passes if `this` is empty.
+ */
+infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(value: T): I {
+   this should haveLowerBound(value, null)
    return this
 }
 

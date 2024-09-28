@@ -122,13 +122,113 @@ class BoundsTest : WordSpec() {
 
       "haveLowerBound" should {
          "pass" {
+            byteArrayOf() shouldHaveLowerBound 3
+            byteArrayOf(3) shouldHaveLowerBound 3
+            byteArrayOf(1, 2, 3) shouldHaveLowerBound 1
+            byteArrayOf(1, 2, 3) shouldHaveLowerBound 0
+
+            shortArrayOf() shouldHaveLowerBound 3
+            shortArrayOf(3) shouldHaveLowerBound 3
+            shortArrayOf(1, 2, 3) shouldHaveLowerBound 1
+            shortArrayOf(1, 2, 3) shouldHaveLowerBound 0
+
+            charArrayOf() shouldHaveLowerBound 'c'
+            charArrayOf('c') shouldHaveLowerBound 'c'
+            charArrayOf('b', 'c', 'd') shouldHaveLowerBound 'b'
+            charArrayOf('b', 'c', 'd') shouldHaveLowerBound 'a'
+
+            intArrayOf() shouldHaveLowerBound 3
+            intArrayOf(3) shouldHaveLowerBound 3
+            intArrayOf(1, 2, 3) shouldHaveLowerBound 1
+            intArrayOf(1, 2, 3) shouldHaveLowerBound 0
+
+            longArrayOf() shouldHaveLowerBound 3
+            longArrayOf(3) shouldHaveLowerBound 3
+            longArrayOf(1, 2, 3) shouldHaveLowerBound 1
+            longArrayOf(1, 2, 3) shouldHaveLowerBound 0
+
+            floatArrayOf() shouldHaveLowerBound 0.3f
+            floatArrayOf(0.3f) shouldHaveLowerBound 0.3f
+            floatArrayOf(0.1f, 0.2f, 0.3f) shouldHaveLowerBound 0.1f
+            floatArrayOf(0.1f, 0.2f, 0.3f) shouldHaveLowerBound 0f
+
+            doubleArrayOf() shouldHaveLowerBound 0.3
+            doubleArrayOf(0.3) shouldHaveLowerBound 0.3
+            doubleArrayOf(0.1, 0.2, 0.3) shouldHaveLowerBound 0.1
+            doubleArrayOf(0.1, 0.2, 0.3) shouldHaveLowerBound 0.0
+
+            arrayOf<Int>() shouldHaveLowerBound 3
+            arrayOf(3) shouldHaveLowerBound 3
+            arrayOf(1, 2, 3) shouldHaveLowerBound 1
+            arrayOf(1, 2, 3) shouldHaveLowerBound 0
+
+            listOf<Int>() shouldHaveLowerBound 3
+            listOf(3) shouldHaveLowerBound 3
             listOf(1, 2, 3) shouldHaveLowerBound 1
             listOf(1, 2, 3) shouldHaveLowerBound 0
+
+            1..0 shouldHaveLowerBound 3
+            3..3 shouldHaveLowerBound 3
+            1..3 shouldHaveLowerBound 1
+            1..3 shouldHaveLowerBound 0
          }
-         "fail" {
-            shouldThrowAny {
-               listOf(1, 2, 3) shouldHaveLowerBound 2
-            }.shouldHaveMessage("List should have lower bound 2, but the following elements are below it: [1]")
+
+         fun msg(name: String, bound: String = "2", violation: String = "1") =
+            "$name should have lower bound $bound, but the following elements are below it: [$violation]"
+
+         "fail for ByteArray" {
+            shouldThrowAny { byteArrayOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("ByteArray"))
+         }
+
+         "fail for ShortArray" {
+            shouldThrowAny { shortArrayOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("ShortArray"))
+         }
+
+         "fail for CharArray" {
+            shouldThrowAny { charArrayOf('a', 'b', 'c') shouldHaveLowerBound 'b' }
+               .shouldHaveMessage(msg("CharArray", "b", "'a'"))
+         }
+
+         "fail for IntArray" {
+            shouldThrowAny { intArrayOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("IntArray"))
+         }
+
+         "fail for LongArray" {
+            shouldThrowAny { longArrayOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("LongArray", "2", "1L"))
+         }
+
+         "fail for FloatArray" {
+            shouldThrowAny { floatArrayOf(0.1f, 0.2f, 0.3f) shouldHaveLowerBound 0.2f }
+               .shouldHaveMessage(msg("FloatArray", "0.2", "0.1f"))
+         }
+
+         "fail for DoubleArray" {
+            shouldThrowAny { doubleArrayOf(0.1, 0.2, 0.3) shouldHaveLowerBound 0.2 }
+               .shouldHaveMessage(msg("DoubleArray", "0.2", "0.1"))
+         }
+
+         "fail for Array" {
+            shouldThrowAny { arrayOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("Array"))
+         }
+
+         "fail for List" {
+            shouldThrowAny { listOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("List"))
+         }
+
+         "fail for Set" {
+            shouldThrowAny { setOf(1, 2, 3) shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("Set"))
+         }
+
+         "fail for Range" {
+            shouldThrowAny { 1..3 shouldHaveLowerBound 2 }
+               .shouldHaveMessage(msg("Range"))
          }
       }
    }
