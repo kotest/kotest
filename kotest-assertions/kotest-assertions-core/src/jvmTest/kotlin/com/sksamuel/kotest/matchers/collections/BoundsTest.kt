@@ -11,18 +11,28 @@ class BoundsTest : WordSpec() {
       "haveUpperBound" should {
          "pass" {
             listOf(1, 2, 3) shouldHaveUpperBound 3
+            listOf(1, 2, 3) shouldHaveUpperBound 4
          }
 
-         "fail" {
-            shouldThrowAny {
-               listOf(1, 2, 3) shouldHaveUpperBound 2
-            }.shouldHaveMessage("Collection should have upper bound 2, but the following elements are above it: [3]")
+         fun msg(name: String) = "$name should have upper bound 2, but the following elements are above it: [3]"
+
+         "fail for Array" {
+            shouldThrowAny { arrayOf(1, 2, 3) shouldHaveUpperBound 2 }.shouldHaveMessage(msg("Array"))
+         }
+
+         "fail for List" {
+            shouldThrowAny { listOf(1, 2, 3) shouldHaveUpperBound 2 }.shouldHaveMessage(msg("List"))
+         }
+
+         "fail for Set" {
+            shouldThrowAny { setOf(1, 2, 3) shouldHaveUpperBound 2 }.shouldHaveMessage(msg("Set"))
          }
       }
 
       "haveLowerBound" should {
          "pass" {
             listOf(1, 2, 3) shouldHaveLowerBound 1
+            listOf(1, 2, 3) shouldHaveLowerBound 0
          }
          "fail" {
             shouldThrowAny {
