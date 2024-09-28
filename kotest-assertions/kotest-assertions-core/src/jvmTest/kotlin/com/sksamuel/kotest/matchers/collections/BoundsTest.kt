@@ -128,7 +128,7 @@ class BoundsTest : WordSpec() {
          "fail" {
             shouldThrowAny {
                listOf(1, 2, 3) shouldHaveLowerBound 2
-            }.shouldHaveMessage("Collection should have lower bound 2, but the following elements are below it: [1]")
+            }.shouldHaveMessage("List should have lower bound 2, but the following elements are below it: [1]")
          }
       }
    }
