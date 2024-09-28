@@ -5,11 +5,6 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
-infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(t: T): I {
-   toList().shouldHaveUpperBound(t)
-   return this
-}
-
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T): Array<T> {
    asList().shouldHaveUpperBound(t)
    return this
@@ -17,6 +12,11 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T): Array<T> {
 
 infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T): C {
    this should haveUpperBound(t)
+   return this
+}
+
+infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(t: T): I {
+   toList().shouldHaveUpperBound(t)
    return this
 }
 
@@ -30,13 +30,13 @@ fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T) = object : Match
    }
 }
 
-infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(t: T): I {
-   toList().shouldHaveLowerBound(t)
+infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(t: T): Array<T> {
+   asList().shouldHaveLowerBound(t)
    return this
 }
 
-infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(t: T): Array<T> {
-   asList().shouldHaveLowerBound(t)
+infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(t: T): I {
+   toList().shouldHaveLowerBound(t)
    return this
 }
 
