@@ -39,6 +39,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other` |
 | `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other` |
 | `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
+| `comp.shouldBeBetween(lower, upper)`               | Uses `compareTo` to verify that `comp` is in range `lower..upper` (inclusive, inclusive) |
 
 | Iterator                    ||
 |-----------------------------| ---- |
