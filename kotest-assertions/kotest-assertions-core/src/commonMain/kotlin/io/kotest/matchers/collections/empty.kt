@@ -174,7 +174,7 @@ private fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher<
    }
 }
 
-private inline fun fail(name: String): Nothing {
+private fun fail(name: String): Nothing {
    invokeMatcher(null, Matcher.failure("Expected $name but was null"))
    throw NotImplementedError()
 }
