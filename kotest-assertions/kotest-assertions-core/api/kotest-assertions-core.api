@@ -323,8 +323,6 @@ public final class io/kotest/matchers/collections/BoundsKt {
 public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun beSorted ()Lio/kotest/matchers/Matcher;
 	public static final fun beSortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun beSortedDescending ()Lio/kotest/matchers/Matcher;
-	public static final fun beSortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun existInOrder (Ljava/util/List;)Lio/kotest/matchers/Matcher;
 	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
@@ -336,8 +334,6 @@ public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun matchInOrderSubset ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun sorted ()Lio/kotest/matchers/Matcher;
 	public static final fun sortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun sortedDescending ()Lio/kotest/matchers/Matcher;
-	public static final fun sortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/collections/ContainAllIgnoringFieldsKt {
@@ -797,6 +793,19 @@ public final class io/kotest/matchers/collections/SmallerKt {
 	public static final fun shouldBeSmallerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/collections/SortedDescKt {
+	public static final fun beSortedDescending ()Lio/kotest/matchers/Matcher;
+	public static final fun beSortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeSortedDescending (Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldBeSortedDescending (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeSortedDescending ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldBeSortedDescendingBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
+	public static final fun shouldBeSortedDescendingBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun shouldBeSortedDescendingBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
+	public static final fun sortedDescending ()Lio/kotest/matchers/Matcher;
+	public static final fun sortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+}
+
 public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun beSortedWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun beSortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
@@ -806,12 +815,6 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun shouldBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
-	public static final fun shouldBeSortedDescending (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeSortedDescending (Ljava/util/List;)Ljava/util/List;
-	public static final fun shouldBeSortedDescending ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
-	public static final fun shouldBeSortedDescendingBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
-	public static final fun shouldBeSortedDescendingBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
-	public static final fun shouldBeSortedDescendingBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
 	public static final fun shouldBeSortedWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedWith (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
