@@ -11,9 +11,9 @@ import io.kotest.mpp.bestName
  * can't be used for whatever reason, such as assignment operations (assignments are statements therefore has no return
  * value).
  *
- * This function will exclude subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], the test will fail, as [java.io.FileNotFoundException] is a subclass of
- * [java.io.IOException], but not exactly [java.io.IOException].
+ * This function will exclude subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], the test will fail, as [NumberFormatException] is a subclass of
+ * [IllegalArgumentException], but not exactly [IllegalArgumentException].
  *
  * If you wish to include any subclasses, you should use [shouldThrowUnit] instead.
  *
@@ -41,8 +41,8 @@ inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T 
  * This should be used when [shouldNotThrowExactly] can't be used, such as when doing assignments (assignments are statements,
  * therefore has no return value).
  *
- * This function won't include subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], propagate the [java.io.FileNotFoundException] instead of wrapping it in an AssertionError.
+ * This function won't include subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], propagate the [NumberFormatException] instead of wrapping it in an AssertionError.
  *
  * If you wish to test [T] and subclasses, use [shouldNotThrowUnit].
  *
@@ -64,9 +64,9 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  *
  * Use this function to wrap a block of code to verify if it throws a specific throwable [T]
  *
- * This function will exclude subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], the test will fail, as [java.io.FileNotFoundException] is a subclass of
- * [java.io.IOException], but not exactly [java.io.IOException].
+ * This function will exclude subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], the test will fail, as [NumberFormatException] is a subclass of
+ * [IllegalArgumentException], but not exactly [IllegalArgumentException].
  *
  * If you wish to include any subclasses, you should use [shouldThrow] instead.
  *
@@ -116,8 +116,8 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  * This is done so that no unexpected error is silently ignored.
  *
  *
- * This function won't include subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], propagate the [java.io.FileNotFoundException] instead of wrapping it in an AssertionError.
+ * This function won't include subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], propagate the [NumberFormatException] instead of wrapping it in an AssertionError.
  *
  * If you wish to test [T] and subclasses, use [shouldNotThrow].
  *

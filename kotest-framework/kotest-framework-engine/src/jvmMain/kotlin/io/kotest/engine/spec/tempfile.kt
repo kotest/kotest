@@ -2,13 +2,16 @@ package io.kotest.engine.spec
 
 import io.kotest.core.TestConfiguration
 import java.io.File
+import kotlin.io.path.deleteExisting
 
 fun TestConfiguration.tempfile(prefix: String? = null, suffix: String? = null): File {
-  
    val file = kotlin.io.path.createTempFile(prefix ?: javaClass.name, suffix).toFile()
    afterSpec {
-      if (!file.delete())
+      runCatching {
+         file.toPath().deleteExisting()
+      }.onFailure {
          throw TempFileDeletionException(file)
+      }
    }
    return file
 }

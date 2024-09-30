@@ -31,6 +31,7 @@ object NumberEq : Eq<Number> {
          is Float -> when (b) {
             is Double -> a.toDouble() == b
             is Int -> a == b.toFloat()
+            is Float -> a == b.toFloat()
             else -> a == b
          }
          is Double -> when (b) {
@@ -38,6 +39,7 @@ object NumberEq : Eq<Number> {
             is Int -> a == b.toDouble()
             is Short -> a == b.toDouble()
             is Byte -> a == b.toDouble()
+            is Double -> a == b.toDouble()
             else -> a == b
          }
          is Long -> when (b) {
