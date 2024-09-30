@@ -34,6 +34,25 @@ object AssertionsConfig {
 
    val maxSimilarityPrintSize: ConfigValue<Int> =
       EnvironmentConfigValue<Int>("kotest.assertions.similarity.print.size", 5, String::toInt)
+
+   val similarityThresholdInPercent: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.similarity.thresholdInPercent", 50, String::toInt)
+
+   val minSubtringSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.min.substring.size", 8, String::toInt)
+
+   val maxSubtringSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.max.substring.size", 1024, String::toInt)
+
+   val minValueSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.min.value.size", 8, String::toInt)
+
+   val maxValueSubmatchingSize: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.max.value.size", 1024, String::toInt)
+
+   val enabledSubmatchesInStrings: ConfigValue<Boolean> =
+      EnvironmentConfigValue<Boolean>("kotest.assertions.string.submatching.enabled", true, String::toBoolean)
+
 }
 
 interface ConfigValue<T> {

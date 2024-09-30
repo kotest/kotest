@@ -8,6 +8,7 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
+import io.kotest.submatching.describePartialMatchesInString
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -205,9 +206,16 @@ infix fun String?.shouldNotInclude(substr: String): String? {
 }
 
 fun include(substr: String) = neverNullMatcher<String> { value ->
+   val passed = value.contains(substr)
+   val differencesDescription = listOf(
+      "${value.print().value} should include substring ${substr.print().value}",
+      describePartialMatchesInString(substr, value).toString(),
+   )
    MatcherResult(
-      value.contains(substr),
-      { "${value.print().value} should include substring ${substr.print().value}" },
+      passed,
+      {
+         differencesDescription.filter { it.isNotEmpty() }.joinToString("\n")
+      },
       { "${value.print().value} should not include substring ${substr.print().value}" })
 }
 

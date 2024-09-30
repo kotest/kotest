@@ -144,14 +144,14 @@ class BeEmptyTest : WordSpec() {
             val maybeList: List<String>? = null
             shouldThrowAny {
                maybeList.shouldBeEmpty()
-            }.message shouldBe "Expected Collection but was null"
+            }.message shouldBe "Expected Iterable but was null"
          }
 
          "fail for null set reference" {
             val maybeSet: Set<String>? = null
             shouldThrowAny {
                maybeSet.shouldBeEmpty()
-            }.message shouldBe "Expected Collection but was null"
+            }.message shouldBe "Expected Iterable but was null"
          }
 
          "return non nullable reference" {
@@ -243,7 +243,7 @@ class BeEmptyTest : WordSpec() {
             val maybeList: List<String>? = null
             shouldThrowAny {
                maybeList.shouldNotBeEmpty()
-            }.message shouldBe "Expected Collection but was null"
+            }.message shouldBe "Expected Iterable but was null"
          }
 
          "succeed for non-null nullable reference" {
@@ -316,13 +316,5 @@ class BeEmptyTest : WordSpec() {
             InfiniteIterable().shouldNotBeEmpty()
          }
       }
-   }
-}
-
-private class InfiniteIterable : Iterable<Int> {
-   override fun iterator(): Iterator<Int> = object : Iterator<Int> {
-      override fun hasNext(): Boolean = true
-
-      override fun next(): Int = 1
    }
 }

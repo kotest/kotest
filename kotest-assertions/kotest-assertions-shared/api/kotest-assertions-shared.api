@@ -49,14 +49,20 @@ public final class io/kotest/assertions/AssertionFailedError : org/opentest4j/As
 public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
 	public final fun getDisableNaNEquality ()Z
+	public final fun getEnabledSubmatchesInStrings ()Lio/kotest/assertions/ConfigValue;
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMapDiffLimit ()I
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMaxErrorsOutput ()I
 	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMaxSubtringSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMaxValueSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMinSubtringSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMinValueSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
+	public final fun getSimilarityThresholdInPercent ()Lio/kotest/assertions/ConfigValue;
 }
 
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
@@ -684,7 +690,7 @@ public final class io/kotest/assertions/print/platformjvm {
 
 public final class io/kotest/assertions/throwables/AnyThrowableHandlingKt {
 	public static final fun shouldNotThrowAny (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static final fun shouldNotThrowAnyUnit (Lkotlin/jvm/functions/Function0;)V
+	public static final fun shouldNotThrowAnyUnit (Lkotlin/jvm/functions/Function0;)Lkotlin/Unit;
 	public static final fun shouldNotThrowMessage (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 	public static final fun shouldThrowAny (Lkotlin/jvm/functions/Function0;)Ljava/lang/Throwable;
 	public static final fun shouldThrowAnyUnit (Lkotlin/jvm/functions/Function0;)Ljava/lang/Throwable;
