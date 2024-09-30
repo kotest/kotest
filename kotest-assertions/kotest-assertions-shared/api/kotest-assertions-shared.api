@@ -62,6 +62,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getMinValueSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
+	public final fun getSimilarityThresholdInPercent ()Lio/kotest/assertions/ConfigValue;
 }
 
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
