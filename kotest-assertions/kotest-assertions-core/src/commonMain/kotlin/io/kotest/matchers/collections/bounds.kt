@@ -94,16 +94,6 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> 
  *
  * Passes if `this` is empty.
  */
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(value: T): C {
-   this should haveUpperBound(value, null)
-   return this
-}
-
-/**
- * Verifies that all elements are less than or equal to [value].
- *
- * Passes if `this` is empty.
- */
 infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(value: T): I {
    this should haveUpperBound(value, null)
    return this
@@ -208,16 +198,6 @@ infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
  */
 infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> {
    asList() should haveLowerBound(value, "Array")
-   return this
-}
-
-/**
- * Verifies that all elements are greater than or equal to [value].
- *
- * Passes if `this` is empty.
- */
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(value: T): C {
-   this should haveLowerBound(value, null)
    return this
 }
 
