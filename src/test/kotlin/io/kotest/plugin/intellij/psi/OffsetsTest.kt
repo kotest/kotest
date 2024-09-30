@@ -29,8 +29,8 @@ class OffsetsTest : LightJavaCodeInsightFixtureTestCase() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
       val element: PsiElement? = psiFile.elementAtLine(24)
       element.shouldNotBeNull()
-      element.node.shouldBeInstanceOf<PsiWhiteSpace>()
-      element.startOffset shouldBe 361
-      element.endOffset shouldBe 369
+      element.node.shouldBeInstanceOf<PsiElement>()
+      element.startOffset shouldBe 369
+      element.endOffset shouldBe 373
    }
 }

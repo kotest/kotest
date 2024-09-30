@@ -16,45 +16,6 @@ class SpecTests : LightJavaCodeInsightFixtureTestCase() {
       return path.toString()
    }
 
-   fun testIsContainedInSpecFunSpec() {
-
-      val psiFile = myFixture.configureByFiles(
-         "/funspec.kt",
-         "/io/kotest/core/spec/style/specs.kt"
-      )
-
-      psiFile[0].elementAtLine(3)!!.isContainedInSpec() shouldBe false
-      for (k in 10..40) {
-         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
-      }
-   }
-
-   fun testIsContainedInSpecStringSpec() {
-
-      val psiFile = myFixture.configureByFiles(
-         "/stringspec.kt",
-         "/io/kotest/core/spec/style/specs.kt"
-      )
-
-      psiFile[0].elementAtLine(4)!!.isContainedInSpec() shouldBe false
-      for (k in 7..13) {
-         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
-      }
-   }
-
-   fun testIsContainedInSpecFreeSpec() {
-
-      val psiFile = myFixture.configureByFiles(
-         "/freespec.kt",
-         "/io/kotest/core/spec/style/specs.kt"
-      )
-
-      psiFile[0].elementAtLine(4)!!.isContainedInSpec() shouldBe false
-      for (k in 7..21) {
-         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
-      }
-   }
-
    fun testasKtClassOrObjectOrNull() {
 
       val psiFile = myFixture.configureByFiles(

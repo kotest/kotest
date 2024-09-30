@@ -38,8 +38,8 @@ class KotestTestFinder : TestFinder {
    }
 
    /**
-    * This is used by the navivation menu to determine if it should show "navigate to tests" or
-    * "nagivate to test subjects". Depending on the response, [findClassesForTest] or
+    * This is used by the navigation menu to determine if it should show "navigate to tests" or
+    * "navigate to test subjects". Depending on the response, [findClassesForTest] or
     * [findTestsForClass] will be called.
     */
    override fun isTest(element: PsiElement): Boolean = element.isContainedInSpec()
