@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -120,5 +121,19 @@ Caused by: Property passed 8 times (minSuccess rate was 9)"""
 Repeat this test by using seed 1234
 
 Caused by IllegalArgumentException: something unexpected happened"""
+   }
+
+   test("forAll with 2 arbs should skip first 4 tests") {
+      shouldThrow<AssertionError> {
+         forAll(
+            config = PropTestConfig(skipTo = 5, seed = 5847062201763421121),
+            Exhaustive.ints(0..10),
+            Exhaustive.ints(0..10)
+         ) { a, b -> a <= b }
+      }.message shouldBe """Property failed after 8 attempts
+
+Repeat this test by using seed 5847062201763421121
+
+Caused by AssertionFailedError: expected:<true> but was:<false>"""
    }
 })
