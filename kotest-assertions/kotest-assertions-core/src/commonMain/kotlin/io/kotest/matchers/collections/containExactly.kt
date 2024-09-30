@@ -104,6 +104,10 @@ fun <T, C : Collection<T>> containExactly(
          appendMissingAndExtra(missing, extra)
          appendLine()
          appendPossibleMatches(missing, expected)
+
+         if (!passed && !failureReason.isDisallowedIterableComparisonFailure() && verifier == null) {
+            appendSubmatches(actual, expected)
+         }
       }
    }
 
@@ -213,5 +217,14 @@ internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expe
    }
    if(AssertionsConfig.maxSimilarityPrintSize.value < possibleMatches.size) {
       append("\nPrinted first ${AssertionsConfig.maxSimilarityPrintSize.value} similarities out of ${possibleMatches.size}, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)\n")
+   }
+}
+
+private fun <T> StringBuilder.appendSubmatches(actual: Collection<T>, expected: Collection<T>) {
+   val (partialMatchesList, partialMatchesDescription) = describePartialMatchesInCollection(expected, actual.toList())
+   if (partialMatchesList.isNotEmpty()) {
+      appendLine()
+      appendLine(partialMatchesList)
+      appendLine(partialMatchesDescription)
    }
 }
