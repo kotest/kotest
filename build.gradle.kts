@@ -66,13 +66,13 @@ val descriptors = listOf(
       sourceFolder = "IC-233",
    ),
    PluginDescriptor(
-      since = "241.15989.150", // this version is 2024.1
+      since = "241.15989.150", // this version is 2024.1.x
       until = "242.*",
       sdkVersion = "2024.1",
       sourceFolder = "IC-241",
    ),
    PluginDescriptor(
-      since = "242.*", // this version is 2024.2
+      since = "242.*", // this version is 2024.2.x
       until = "243.*",
       sdkVersion = "2024.2",
       sourceFolder = "IC-242",
@@ -136,12 +136,22 @@ dependencies {
 
    // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
    // into the engine dep which should already be on the classpath
-   implementation(libs.runtime.kotest.framework.launcher)
+   implementation(libs.runtime.kotest.framework.launcher) {
+
+   }
 
    // needed for the resource files which are loaded into java light tests
    testImplementation(libs.test.kotest.framework.api)
    testImplementation(libs.test.kotest.assertions.core)
 //   testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+}
+
+configurations.all {
+   exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
+   exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+   exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-jdk8")
+   exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test")
+   exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
 }
 
 sourceSets {
