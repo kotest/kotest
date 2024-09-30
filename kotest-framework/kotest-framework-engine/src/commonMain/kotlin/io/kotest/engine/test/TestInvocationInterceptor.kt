@@ -41,7 +41,7 @@ internal class TestInvocationInterceptor(
    private suspend fun invokeWithRetry(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult,
+      test: NextTestExecutionInterceptor,
       attemptedRetries: Int,
    ) {
       try {
