@@ -73,6 +73,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotHave
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class CollectionMatchersTest : WordSpec() {
@@ -1127,6 +1128,20 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                foo shouldBeIn list
             }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+         }
+
+         "fail and find similar items" {
+            shouldThrow<AssertionError> {
+               sweetGreenApple shouldBeIn listOf(
+                  sweetGreenPear, sweetRedApple
+               )
+            }.message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=apple, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=red, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"red">"""
+            )
          }
       }
 

@@ -36,11 +36,6 @@ public final class io/kotest/core/PlatformKt {
 	public static final fun getPlatform ()Lio/kotest/core/Platform;
 }
 
-public final class io/kotest/core/StringTag : io/kotest/core/Tag {
-	public fun <init> (Ljava/lang/String;)V
-	public fun getName ()Ljava/lang/String;
-}
-
 public abstract class io/kotest/core/Tag {
 	public static final field Companion Lio/kotest/core/Tag$Companion;
 	public fun <init> ()V
@@ -1341,10 +1336,6 @@ public abstract interface class io/kotest/core/extensions/ConstructorExtension :
 	public abstract fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
 }
 
-public abstract interface class io/kotest/core/extensions/DiscoveryExtension : io/kotest/core/extensions/Extension {
-	public abstract fun afterScan (Ljava/util/List;)Ljava/util/List;
-}
-
 public abstract interface class io/kotest/core/extensions/DisplayNameFormatterExtension {
 	public abstract fun formatter ()Lio/kotest/core/names/DisplayNameFormatter;
 }
@@ -1534,9 +1525,6 @@ public final class io/kotest/core/factory/UuidKt {
 	public static final fun uniqueId ()Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/filter/Filter : io/kotest/core/extensions/Extension {
-}
-
 public abstract interface class io/kotest/core/filter/SpecFilter : io/kotest/core/extensions/Extension {
 	public abstract fun filter (Lkotlin/reflect/KClass;)Lio/kotest/core/filter/SpecFilterResult;
 }
@@ -1559,7 +1547,7 @@ public final class io/kotest/core/filter/SpecFilterResult$Include : io/kotest/co
 	public static final field INSTANCE Lio/kotest/core/filter/SpecFilterResult$Include;
 }
 
-public abstract interface class io/kotest/core/filter/TestFilter : io/kotest/core/filter/Filter {
+public abstract interface class io/kotest/core/filter/TestFilter : io/kotest/core/extensions/Extension {
 	public abstract fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/filter/TestFilterResult;
 }
 
@@ -1592,15 +1580,15 @@ public final class io/kotest/core/internal/KotestEngineProperties {
 	public static final field assertionMode Ljava/lang/String;
 	public static final field concurrentSpecs Ljava/lang/String;
 	public static final field concurrentTests Ljava/lang/String;
-	public static final field configurationClassName Ljava/lang/String;
+	public static final field configurationClassNames Ljava/lang/String;
 	public static final field disableBangPrefix Ljava/lang/String;
-	public static final field disableConfigurationClassPathScanning Ljava/lang/String;
 	public static final field disableJarDiscovery Ljava/lang/String;
 	public static final field disableSourceRef Ljava/lang/String;
 	public static final field disableTestNestedJarScanning Ljava/lang/String;
 	public static final field discoveryClasspathFallbackEnabled Ljava/lang/String;
 	public static final field dumpConfig Ljava/lang/String;
 	public static final field duplicateTestNameMode Ljava/lang/String;
+	public static final field enableConfigurationClassPathScanning Ljava/lang/String;
 	public static final field excludeTags Ljava/lang/String;
 	public static final field filterSpecs Ljava/lang/String;
 	public static final field filterTests Ljava/lang/String;
@@ -1731,6 +1719,14 @@ public final class io/kotest/core/listeners/FinalizeSpecListener$DefaultImpls {
 
 public abstract interface class io/kotest/core/listeners/IgnoredSpecListener : io/kotest/core/extensions/Extension {
 	public abstract fun ignoredSpec (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class io/kotest/core/listeners/IgnoredTestListener : io/kotest/core/extensions/Extension {
+	public abstract fun ignoredTest (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/listeners/IgnoredTestListener$DefaultImpls {
+	public static fun ignoredTest (Lio/kotest/core/listeners/IgnoredTestListener;Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/core/listeners/InstantiationErrorListener : io/kotest/core/extensions/Extension {

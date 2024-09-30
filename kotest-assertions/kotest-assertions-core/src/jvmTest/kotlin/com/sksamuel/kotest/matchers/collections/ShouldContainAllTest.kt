@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.containAll
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.should
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -126,29 +127,31 @@ class ShouldContainAllTest : WordSpec() {
                   listOf(sweetGreenApple, sweetRedApple)
                )
             }.shouldHaveMessage("""
-               |Collection should contain all of [Fruit(name=apple, color=green, taste=sweet), Fruit(name=apple, color=red, taste=sweet)] but was missing [Fruit(name=apple, color=red, taste=sweet)]Possible matches:
+               |Collection should contain all of [Fruit(name=apple, color=green, taste=sweet), Fruit(name=apple, color=red, taste=sweet)] but was missing [Fruit(name=apple, color=red, taste=sweet)]
+               |Possible matches: expected: Fruit(name=apple, color=red, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
+               |  The following fields did not match:
+               |    "color" expected: <"red">, but was: <"green">
+    """.trimMargin())
+         }
+
+         "print two possible matches for one mismatched element" {
+            val message = shouldThrowAny {
+               listOf(sweetRedApple, sweetGreenPear, sourYellowLemon).shouldContainAll(
+                  listOf(sweetGreenApple, sourYellowLemon)
+               )
+            }.message
+            message.shouldContain("""
                | expected: Fruit(name=apple, color=green, taste=sweet),
                |  but was: Fruit(name=apple, color=red, taste=sweet),
                |  The following fields did not match:
                |    "color" expected: <"green">, but was: <"red">
     """.trimMargin())
-         }
-
-         "print two possible matches for one mismatched element" {
-            shouldThrowAny {
-               listOf(sweetRedApple, sweetGreenPear, sourYellowLemon).shouldContainAll(
-                  listOf(sweetGreenApple, sourYellowLemon)
-               )
-            }.message.shouldEndWith("""
-               | expected: Fruit(name=apple, color=red, taste=sweet),
-               |  but was: Fruit(name=apple, color=green, taste=sweet),
+            message.shouldContain("""
+               | expected: Fruit(name=apple, color=green, taste=sweet),
+               |  but was: Fruit(name=pear, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"red">, but was: <"green">
-               |
-               | expected: Fruit(name=pear, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=green, taste=sweet),
-               |  The following fields did not match:
-               |    "name" expected: <"pear">, but was: <"apple">
+               |    "name" expected: <"apple">, but was: <"pear">
     """.trimMargin())
          }
       }

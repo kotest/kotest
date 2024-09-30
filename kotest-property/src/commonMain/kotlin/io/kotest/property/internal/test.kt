@@ -36,30 +36,34 @@ internal suspend fun test(
    require(inputs.size == classifiers.size)
    context.markEvaluation()
    context.setupContextual(RandomSource.seeded(contextualSeed))
-   try {
+   if (context.evals() >= config.skipTo) {
+      try {
 
-      inputs.indices.forEach { k ->
-         val classifier = classifiers[k]
-         if (classifier != null) {
-            @Suppress("UNCHECKED_CAST")
-            classifier as Classifier<Any?>
-            val value = inputs[k]
-            val label = classifier.classify(value)
-            if (label != null) context.classify(k, label)
+         inputs.indices.forEach { k ->
+            val classifier = classifiers[k]
+            if (classifier != null) {
+               @Suppress("UNCHECKED_CAST")
+               classifier as Classifier<Any?>
+               val value = inputs[k]
+               val label = classifier.classify(value)
+               if (label != null) context.classify(k, label)
+            }
          }
-      }
 
-      coroutineContext[BeforePropertyContextElement]?.before?.invoke()
-      testFn()
-      context.markSuccess()
-      coroutineContext[AfterPropertyContextElement]?.after?.invoke()
-   } catch (e: AssumptionFailedException) {
-      // we don't mark failed assumptions as errors
-   } catch (e: Throwable) {
-      // we track any throwables and try to shrink them
-      context.markFailure()
-      outputStatistics(context, inputs.size, false)
-      handleException(context, shrinkfn, inputs, seed, e, config)
+         coroutineContext[BeforePropertyContextElement]?.before?.invoke()
+         testFn()
+         context.markSuccess()
+         coroutineContext[AfterPropertyContextElement]?.after?.invoke()
+      } catch (e: AssumptionFailedException) {
+         // we don't mark failed assumptions as errors
+      } catch (e: Throwable) {
+         // we track any throwables and try to shrink them
+         context.markFailure()
+         outputStatistics(context, inputs.size, false)
+         handleException(context, shrinkfn, inputs, seed, e, config)
+      }
+   } else {
+      printSkippedMessage(context, inputs)
    }
 }
 
@@ -89,19 +93,8 @@ private fun printFailureMessage(
    println(
       buildString {
          appendLine("Property test failed for inputs\n")
-
-         iterator {
-            inputs.forEach { input ->
-               yield(input.print().value)
-            }
-            context.generatedSamples().forEach { sample ->
-               yield("${sample.value.print().value} (generated within property context)")
-            }
-         }.withIndex().forEach { (index, input) ->
-            appendLine("$index) $input")
-         }
+         appendInputs(context, inputs)
          appendLine()
-
          val cause = stacktraces.root(e)
          when (val stack = stacktraces.throwableLocation(cause, 4)) {
             null -> appendLine("Caused by $e")
@@ -113,6 +106,31 @@ private fun printFailureMessage(
          appendLine()
       }
    )
+}
+
+private fun printSkippedMessage(
+   context: PropertyContext,
+   inputs: List<Any?>
+) {
+   println(
+      buildString {
+         appendLine("Property test skipped for inputs\n")
+         appendInputs(context, inputs)
+      }
+   )
+}
+
+private fun StringBuilder.appendInputs(context: PropertyContext, inputs: List<Any?>) {
+   iterator {
+      inputs.forEach { input ->
+         yield(input.print().value)
+      }
+      context.generatedSamples().forEach { sample ->
+         yield("${sample.value.print().value} (generated within property context)")
+      }
+   }.withIndex().forEach { (index, input) ->
+      appendLine("$index) $input")
+   }
 }
 
 private fun buildMaxFailureErrorMessage(

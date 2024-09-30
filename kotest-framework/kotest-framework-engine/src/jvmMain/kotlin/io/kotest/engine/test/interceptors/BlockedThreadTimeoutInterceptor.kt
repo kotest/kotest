@@ -9,6 +9,7 @@ import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.core.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ import kotlin.time.TimeMark
 
 // Dispatcher used for jobs to issue the interrupts after timeouts.
 // All such jobs share a single daemon thread on the JVM.
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 private val timeoutDispatcher = newSingleThreadContext("blocking-thread-timeout")
 
 /**
@@ -43,7 +44,7 @@ internal class BlockedThreadTimeoutInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return if (testCase.config.blockingTest) {
          // we must switch execution onto a throwaway thread so an interruption

@@ -3,6 +3,7 @@ package io.kotest.assertions.throwables
 import io.kotest.assertions.Actual
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.Expected
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.errorCollector
@@ -18,8 +19,8 @@ import io.kotest.mpp.bestName
  * This should be used when [shouldThrow] can't be used, such as when doing assignments (assignments are statements,
  * therefore has no return value).
  *
- * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and
- * the code block throws [java.io.FileNotFoundException], the test will pass.
+ * This function will include all subclasses of [T]. For example, if you test for [IllegalArgumentException] and
+ * the code block throws [NumberFormatException], the test will pass.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactlyUnit] instead.
  *
@@ -45,8 +46,8 @@ inline fun <reified T : Throwable> shouldThrowUnit(block: () -> Unit): T = shoul
  * This should be used when [shouldThrowWithMessage] can't be used, such as when doing assignments (assignments are statements,
  * therefore has no return value).
  *
- * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and
- * the code block throws [java.io.FileNotFoundException], the test will pass.
+ * This function will include all subclasses of [T]. For example, if you test for [IllegalArgumentException] and
+ * the code block throws [NumberFormatException], the test will pass.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactlyUnit] instead.
  *
@@ -66,7 +67,7 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
    shouldThrowUnit<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure( Expected(message.print()), Actual(it.message.print()),"Unexpected exception message: ")
+         else -> throw failure(Expected(message.print()), Actual(it.message.print()), "Unexpected exception message: ")
       }
    }
 
@@ -80,8 +81,8 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
  * This should be used when [shouldNotThrow] can't be used, such as when doing assignments (assignments are statements,
  * therefore has no return value).
  *
- * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], this will also throw an AssertionError instead of propagating the [java.io.FileNotFoundException]
+ * This function will include all subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], this will also throw an AssertionError instead of propagating the [NumberFormatException]
  * directly.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldNotThrowExactlyUnit] instead.
@@ -104,8 +105,8 @@ inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shoul
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
  *
- * This function will include subclasses of [T]. For example, if you test for [java.io.IOException] and
- * the code block throws [java.io.FileNotFoundException], the test will pass.
+ * This function will include subclasses of [T]. For example, if you test for [IllegalArgumentException] and
+ * the code block throws [NumberFormatException], the test will pass.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
  *
@@ -151,8 +152,8 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
  *
- * This function will include subclasses of [T]. For example, if you test for [java.io.IOException] and
- * the code block throws [java.io.FileNotFoundException], the test will pass.
+ * This function will include subclasses of [T]. For example, if you test for [IllegalArgumentException] and
+ * the code block throws [NumberFormatException], the test will pass.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
  *
@@ -165,12 +166,7 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
 
    assertionCounter.inc()
    val expectedExceptionClass = T::class
-   val thrownThrowable = try {
-      block()
-      null  // Can't throw failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
-   } catch (thrown: Throwable) {
-      thrown
-   }
+   val thrownThrowable = tryRunning(block)
 
    when (thrownThrowable) {
       null -> errorCollector.collectOrThrow(failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown."))
@@ -190,8 +186,8 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
  *
- * This function will include subclasses of [T]. For example, if you test for [java.io.IOException] and
- * the code block throws [java.io.FileNotFoundException], the test will pass.
+ * This function will include subclasses of [T]. For example, if you test for [IllegalArgumentException] and
+ * the code block throws [NumberFormatException], the test will pass.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
  *
@@ -226,8 +222,8 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
  * If [T] is thrown, this will thrown an [AssertionError]. If anything else is thrown, the throwable will be propagated.
  * This is done so that no unexpected error is silently ignored.
  *
- * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], this will also throw an AssertionError instead of propagating the [java.io.FileNotFoundException]
+ * This function will include all subclasses of [T]. For example, if you test for [IllegalArgumentException] and the code block
+ * throws [NumberFormatException], this will also throw an AssertionError instead of propagating the [NumberFormatException]
  * directly.
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldNotThrowExactly] instead.
@@ -249,14 +245,43 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
  */
 inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
    assertionCounter.inc()
-   val thrown = try {
-      block()
-      return
-   } catch (e: Throwable) {
-      e
-   }
+   val thrown = tryRunning(block) ?: return
 
    if (thrown is T)
       throw failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
    throw thrown
+}
+
+/**
+ * Verifies if a block of code will either throw an [AssertionError] or no exception at all. It can only be invoked inside [assertSoftly] blocks.
+ *
+ * Use this function to wrap a block of code that might throw an [AssertionError]. Use it to wrap invocations of non-kotest functions
+ * such as `verify` from mockk library, so that they can be invoked inside [assertSoftly] blocks, and
+ * errors are only thrown at the end of the block, rather than immediately. Therefore, the signature cannot return
+ * the throwable type, as in the case of a failure, there would be neither an immediate throws, nor a type to return.
+ */
+inline fun shouldPass(block: () -> Any?) {
+   require(errorCollector.getCollectionMode() == ErrorCollectionMode.Soft)
+
+   assertionCounter.inc()
+   val thrownThrowable = tryRunning(block)
+
+   if (thrownThrowable is AssertionError) {
+      errorCollector.collectOrThrow(thrownThrowable)
+   } else {
+      thrownThrowable?.let {
+         val failure = failure("Unexpected ${it::class.simpleName} was thrown with the following message: \"${it.message}\".", it)
+         errorCollector.collectOrThrow(failure)
+      }
+   }
+}
+
+inline fun tryRunning(block: () -> Any?): Throwable? {
+   val thrownThrowable = try {
+      block()
+      null
+   } catch (thrown: Throwable) {
+      thrown
+   }
+   return thrownThrowable
 }

@@ -19,7 +19,7 @@ internal object WriteFailuresInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
       return if (context.configuration.writeSpecFailureFile) {
          val collector = CollectingTestEngineListener()

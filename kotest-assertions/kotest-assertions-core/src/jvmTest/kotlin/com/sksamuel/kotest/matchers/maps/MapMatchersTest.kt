@@ -12,6 +12,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldStartWith
 import java.util.LinkedList
@@ -54,10 +55,10 @@ class MapMatchersTest : WordSpec() {
             |Map should contain key Fruit(name=pear, color=green, taste=sweet)
             |Possible matches for missing key:
             |
-            | expected: Fruit(name=apple, color=green, taste=sweet),
-            |  but was: Fruit(name=pear, color=green, taste=sweet),
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
             |  The following fields did not match:
-            |    "name" expected: <"apple">, but was: <"pear">
+            |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin())
          }
       }
@@ -86,10 +87,10 @@ class MapMatchersTest : WordSpec() {
             |Map should contain value Fruit(name=pear, color=green, taste=sweet)
             |Possible matches for missing value:
             |
-            | expected: Fruit(name=apple, color=green, taste=sweet),
-            |  but was: Fruit(name=pear, color=green, taste=sweet),
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
             |  The following fields did not match:
-            |    "name" expected: <"apple">, but was: <"pear">
+            |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin())
          }
       }
@@ -117,10 +118,10 @@ class MapMatchersTest : WordSpec() {
                mapOf(sweetGreenApple to 1, sweetRedApple to 2) should contain(sweetGreenPear, 1)
             }.message
             message shouldContain """
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=pear, color=green, taste=sweet),
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "name" expected: <"apple">, but was: <"pear">
+               |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
          }
          "print entries with same value" {
@@ -136,10 +137,10 @@ class MapMatchersTest : WordSpec() {
                mapOf(1 to sweetGreenApple, 2 to sweetRedApple) should contain(3, sweetGreenPear)
             }.message
             message shouldContain """
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=pear, color=green, taste=sweet),
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "name" expected: <"apple">, but was: <"pear">
+               |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
          }
          "fail for key not in map and null value" {
@@ -183,10 +184,10 @@ class MapMatchersTest : WordSpec() {
             |Map did not contain the keys Fruit(name=pear, color=green, taste=sweet)
             |Possible matches for missing keys:
             |
-            | expected: Fruit(name=apple, color=green, taste=sweet),
-            |  but was: Fruit(name=pear, color=green, taste=sweet),
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
             |  The following fields did not match:
-            |    "name" expected: <"apple">, but was: <"pear">
+            |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin())
          }
       }
@@ -213,6 +214,26 @@ class MapMatchersTest : WordSpec() {
          }
       }
 
+      "containValues" should {
+         "find similarities for values not found" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  1 to sweetGreenApple,
+                  2 to sweetRedApple,
+                  3 to sourYellowLemon
+               ).shouldContainValues(sweetGreenApple, sweetGreenPear)
+            }.message.shouldBe("""
+            |Map did not contain the values Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing values:
+            |
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin())
+         }
+      }
+
       "containAnyKeys" should {
          "test that a map contains any of the given keys" {
             val map = mapOf("a" to 1, "b" to 2, "c" to 3)
@@ -230,23 +251,20 @@ class MapMatchersTest : WordSpec() {
                map.shouldNotContainAnyKeysOf("a", "y")
             }
          }
-
-         "find similarities for values not found" {
+         "find similar keys if no exact matches" {
             shouldThrow<AssertionError> {
                mapOf(
-                  1 to sweetGreenApple,
-                  2 to sweetRedApple,
-                  3 to sourYellowLemon
-               ).shouldContainValues(sweetGreenApple, sweetGreenPear)
-            }.message.shouldBe("""
-            |Map did not contain the values Fruit(name=pear, color=green, taste=sweet)
-            |Possible matches for missing values:
-            |
-            | expected: Fruit(name=apple, color=green, taste=sweet),
-            |  but was: Fruit(name=pear, color=green, taste=sweet),
-            |  The following fields did not match:
-            |    "name" expected: <"apple">, but was: <"pear">
-            """.trimMargin())
+                  sweetGreenApple to 0,
+                  sweetRedApple to 1,
+                  sourYellowLemon to 2
+               ) should containAnyKeys(sweetGreenPear, bitterPurplePlum)
+            }.message.shouldContainInOrder(
+               "Possible matches for missing keys:",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"pear">, but was: <"apple">""",
+            )
          }
       }
 

@@ -11,7 +11,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
-import io.kotest.engine.config.loadProjectConfigFromClassname
+import io.kotest.engine.config.loadProjectConfigsFromClassname
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -107,14 +107,6 @@ class TestEngineLauncher(
          tagExpression = tagExpression,
          configurationIsInitialized = configurationIsInitialized,
       )
-   }
-
-   /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
-    */
-   @Deprecated("Use withProjectConfig. Will be removed once compiler plugins are updated")
-   fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
-      return withProjectConfig(*projectConfig)
    }
 
    /**
@@ -214,7 +206,7 @@ class TestEngineLauncher(
          ConfigManager.initialize(projectConfiguration) {
             configs +
                detectAbstractProjectConfigs() +
-               listOfNotNull(loadProjectConfigFromClassname())
+               loadProjectConfigsFromClassname()
          }
       }
 

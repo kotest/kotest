@@ -2,9 +2,9 @@
 
 package io.kotest.core
 
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterInvocationListener
 import io.kotest.core.listeners.AfterTestListener

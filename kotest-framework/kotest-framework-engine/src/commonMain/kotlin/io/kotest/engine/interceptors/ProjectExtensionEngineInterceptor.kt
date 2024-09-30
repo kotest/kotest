@@ -15,7 +15,7 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
       var result: EngineResult = EngineResult.empty

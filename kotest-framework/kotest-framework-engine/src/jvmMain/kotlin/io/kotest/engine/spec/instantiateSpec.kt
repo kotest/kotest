@@ -11,6 +11,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.isAccessible
 
+@Suppress("UNCHECKED_CAST")
 internal actual suspend fun instantiate(kclass: KClass<*>, registry: ExtensionRegistry): Result<Spec> {
    return createAndInitializeSpec(kclass as KClass<out Spec>, registry)
 }

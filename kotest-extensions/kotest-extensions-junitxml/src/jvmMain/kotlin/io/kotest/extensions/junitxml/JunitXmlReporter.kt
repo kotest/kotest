@@ -1,5 +1,6 @@
 package io.kotest.extensions.junitxml
 
+import io.kotest.common.testTimeSource
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.PrepareSpecListener
@@ -7,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import org.jdom2.Document
@@ -15,82 +17,120 @@ import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
 import java.net.InetAddress
 import java.net.UnknownHostException
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.Path
 import kotlin.io.path.absolute
+import kotlin.io.path.bufferedWriter
+import kotlin.io.path.createParentDirectories
 import kotlin.reflect.KClass
 import kotlin.time.DurationUnit
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 /**
- * A JUnit xml legacy format writer.
+ * A JUnit XML legacy format writer.
  *
- * This implementation handles nesting, whereas the junit implementation will only output for leaf tests.
+ * This implementation handles nesting, whereas the JUnit implementation will only output for leaf tests.
  *
- * @param includeContainers when true, all intermediate tests are included in the report as
- * tests in their own right. Defaults to false.
+ * @param includeContainers when `true`, all intermediate tests are included in the report as
+ * tests in their own right.
+ * Defaults to `false`.
  *
- * @param useTestPathAsName when true, the full test path will be used as the name. In other
- * words the name will include the name of any parent tests as a single string.
+ * @param useTestPathAsName when `true`, the full test path will be used as the name.
+ * In other words the name will include the name of any parent tests as a single string.
+ *
+ * @param outputDir The directory to write reports.
  */
 class JunitXmlReporter(
    private val includeContainers: Boolean = false,
    private val useTestPathAsName: Boolean = true,
-   private val outputDir: String = "test-results/test"
+   private val outputDir: Path,
+   private val clock: Clock = Clock.systemDefaultZone(),
 ) : PrepareSpecListener, FinalizeSpecListener {
+
+   /**
+    * @param outputDir Path of the output directory, relative to the build directory.
+    */
+   constructor(
+      includeContainers: Boolean = false,
+      useTestPathAsName: Boolean = true,
+      outputDir: String = DefaultTestResultRelativeDir,
+      clock: Clock = Clock.systemDefaultZone(),
+   ) : this(
+      includeContainers = includeContainers,
+      useTestPathAsName = useTestPathAsName,
+      clock = clock,
+      outputDir = defaultOutputDir(outputDir),
+   )
 
    companion object {
       const val DefaultBuildDir = "./build"
 
-      // sets the build directory, to which test-results will be appended
+      /**
+       * System property that provides the project's build directory.
+       *
+       * @see defaultOutputDir
+       */
       const val BuildDirKey = "gradle.build.dir"
 
       const val AttributeName = "name"
+
+      private const val DefaultTestResultRelativeDir = "test-results/test"
+
+      private fun defaultOutputDir(
+         testResultsPath: String = DefaultTestResultRelativeDir,
+      ): Path {
+         val buildDir = Path(System.getProperty(BuildDirKey) ?: DefaultBuildDir)
+         return buildDir.resolve(testResultsPath).normalize().absolute()
+      }
+
+      private val hostname: String? by lazy {
+         try {
+            InetAddress.getLocalHost().hostName
+         } catch (e: UnknownHostException) {
+            null
+         }
+      }
    }
 
-   private val formatter = getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
-   private var marks = ConcurrentHashMap<KClass<out Spec>, TimeMark>()
+   private val formatter: FallbackDisplayNameFormatter =
+      getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
 
-   private fun outputDir(): Path {
-      val buildDir = System.getProperty(BuildDirKey)
-      return if (buildDir != null)
-         Paths.get(buildDir, outputDir).normalize().absolute()
-      else
-         Paths.get(DefaultBuildDir, outputDir).normalize().absolute()
-   }
+   /** Record the start of each spec, so the duration of each can be measured. */
+   private val marks: ConcurrentHashMap<KClass<out Spec>, TimeMark> =
+      ConcurrentHashMap()
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      marks[kclass] = TimeSource.Monotonic.markNow()
+      marks[kclass] = testTimeSource().markNow()
    }
 
-   private fun filterResults(results: Map<TestCase, TestResult>) = when (includeContainers) {
-      true -> results
-      false -> results.filter { it.key.type == TestType.Test }
-   }
+   private fun filterResults(results: Map<TestCase, TestResult>) =
+      when (includeContainers) {
+         true -> results
+         false -> results.filter { it.key.type == TestType.Test }
+      }
 
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      val start = marks[kclass] ?: TimeSource.Monotonic.markNow()
+      val start = marks[kclass] ?: testTimeSource().markNow()
       val duration = start.elapsedNow()
 
       val filtered = filterResults(results)
 
       val document = Document()
-      val testSuite = Element("testsuite")
-      testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
-      testSuite.setAttribute("time", (duration.toDouble(DurationUnit.SECONDS)).toString())
-      testSuite.setAttribute("hostname", hostname())
-      testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
-      testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())
-      testSuite.setAttribute("skipped", filtered.filter { it.value.isIgnored }.size.toString())
-      testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute(AttributeName, formatter.format(kclass))
+      val testSuite = Element("testsuite").apply {
+         setAttribute("timestamp", getCurrentDateTimeIsoString())
+         setAttribute("time", duration.toDouble(DurationUnit.SECONDS).toString())
+         setAttribute("hostname", hostname)
+         setAttribute("errors", filtered.count { it.value.isError }.toString())
+         setAttribute("failures", filtered.count { it.value.isFailure }.toString())
+         setAttribute("skipped", filtered.count { it.value.isIgnored }.toString())
+         setAttribute("tests", filtered.size.toString())
+         setAttribute(AttributeName, formatter.format(kclass))
+      }
       document.addContent(testSuite)
 
       filtered.map { (testcase, result) ->
@@ -107,22 +147,29 @@ class JunitXmlReporter(
 
          when (result) {
             is TestResult.Error -> {
-               val err = Element("error")
-               result.errorOrNull?.let {
-                  err.setAttribute("type", it.javaClass.name)
-                  err.setText(it.message)
-               }
-               e.addContent(err)
+               e.addContent(
+                  Element("error").apply {
+                     result.errorOrNull?.let { throwable ->
+                        setAttribute("type", throwable.javaClass.name)
+                        setText(throwable.message)
+                     }
+                  }
+               )
             }
+
             is TestResult.Failure -> {
                val failure = Element("failure")
-               result.errorOrNull?.let {
-                  failure.setAttribute("type", it.javaClass.name)
-                  failure.setText(it.message)
+               result.errorOrNull?.let { throwable ->
+                  failure.setAttribute("type", throwable.javaClass.name)
+                  failure.setText(throwable.message)
                }
                e.addContent(failure)
             }
-            else -> Unit
+
+            is TestResult.Ignored,
+            is TestResult.Success -> {
+               // Only report failures, not Ignored or Success
+            }
          }
 
          testSuite.addContent(e)
@@ -132,24 +179,18 @@ class JunitXmlReporter(
    }
 
    private fun write(kclass: KClass<*>, document: Document) {
-      val path = outputDir().resolve("TEST-" + formatter.format(kclass) + ".xml")
-      path.parent.toFile().mkdirs()
-      val outputter = XMLOutputter(Format.getPrettyFormat())
-      val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
-      outputter.output(document, writer)
-      writer.flush()
-      writer.close()
+      outputDir
+         .resolve("TEST-" + formatter.format(kclass) + ".xml")
+         .createParentDirectories()
+         .bufferedWriter(options = arrayOf(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE))
+         .use { writer ->
+            val outputter = XMLOutputter(Format.getPrettyFormat())
+            outputter.output(document, writer)
+         }
    }
 
-   private fun hostname(): String? {
-      return try {
-         InetAddress.getLocalHost().hostName
-      } catch (e: UnknownHostException) {
-         null
-      }
-   }
-
-   private fun getCurrentDateTime(): LocalDateTime {
-      return LocalDateTime.now(Clock.systemDefaultZone()).withNano(0)
-   }
+   private fun getCurrentDateTimeIsoString(): String =
+      ISO_LOCAL_DATE_TIME.format(
+         LocalDateTime.now(clock).withNano(0)
+      )
 }

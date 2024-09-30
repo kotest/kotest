@@ -18,7 +18,6 @@ import kotlin.time.TimeSource
 
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.
- * For a more basic output, see [BasicConsoleTestEngineListener]
  */
 class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
 

@@ -16,7 +16,7 @@ internal object SupervisorScopeInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       // a timeout in a parent test will still cause this to fail
       return supervisorScope {

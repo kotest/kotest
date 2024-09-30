@@ -109,7 +109,6 @@ include(
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-multipleconfig",
    ":kotest-tests:kotest-tests-power-assert",
    ":kotest-tests:kotest-tests-spec-parallelism",
    ":kotest-tests:kotest-tests-tagextension",
