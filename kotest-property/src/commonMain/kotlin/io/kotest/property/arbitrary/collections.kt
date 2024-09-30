@@ -10,7 +10,8 @@ import kotlin.random.nextInt
 
 /**
  * Returns an [Arb] whose values are chosen randomly from those in the supplied collection.
- * May not cover all items. If you want an exhaustive selection from the list, see [Exhaustive.collection]
+ * May not cover all items. If you want an exhaustive selection from the list, see
+ * [Exhaustive.collection][io.kotest.property.exhaustive.collection]
  */
 fun <T> Arb.Companion.element(collection: Collection<T>): Arb<T> {
    require(collection.isNotEmpty()) { "The supplied collection must not be empty." }
@@ -24,7 +25,8 @@ fun <T> Arb.Companion.of(collection: Collection<T>): Arb<T> = element(collection
 
 /**
  * Returns an [Arb] whose values are chosen randomly from those in the supplied collection.
- * May not cover all items. If you want an exhaustive selection from the list, see [Exhaustive.collection]
+ * May not cover all items. If you want an exhaustive selection from the list, see
+ * [Exhaustive.collection][io.kotest.property.exhaustive.collection]
  */
 fun <T> Arb.Companion.element(vararg collection: T): Arb<T> {
    require(collection.isNotEmpty()) { "The supplied collection must not be empty." }
@@ -105,7 +107,11 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
             gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }
-         listOfNotNull(emptyList, singleList, repeatedList).filter { it.size in range }.distinct().random(rs.random)
+         listOfNotNull(emptyList, singleList, repeatedList)
+            .filter { it.size in range }
+            .takeIf { it.isNotEmpty() }
+            ?.distinct()
+            ?.random(rs.random)
       },
       shrinker = ListShrinker(range),
       sampleFn = { rs ->

@@ -13,6 +13,7 @@ import java.time.Month
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZonedDateTime
+import java.time.chrono.ChronoZonedDateTime
 import java.time.temporal.TemporalAmount
 
 /**
@@ -34,7 +35,7 @@ import java.time.temporal.TemporalAmount
  *     val secondDate = LocalDate.of(1998, 2, 9)
  *
  *     firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
- ```
+ * ```
  */
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
 
@@ -2426,7 +2427,7 @@ infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano
  *    date.shouldHaveSameInstantAs(other)  // Assertion fails, date is NOT equal to the other date
  * ```
  *
- * @see ZonedDateTime.shouldNotHaveSameInstant
+ * @see ZonedDateTime.shouldNotHaveSameInstantAs
  */
 infix fun ZonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime) = this should haveSameInstantAs(other)
 
