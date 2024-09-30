@@ -79,7 +79,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-241"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 
