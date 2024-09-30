@@ -54,6 +54,9 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
 
       return try {
          assertions()
+      } catch (ex: Exception) {
+         errorCollector.pushError(ex)
+         throw ex
       } finally {
          val aggregated = errorCollector.collectiveError()
          errorCollector.clear()
@@ -66,6 +69,9 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
    return try {
       assertions()
+   } catch (ex: Exception) {
+      errorCollector.pushError(ex)
+      throw ex
    } finally {
       // In case if any exception is thrown from assertions block setting errorCollectionMode back to hard
       // so that it won't remain soft for others tests. See https://github.com/kotest/kotest/issues/1932
