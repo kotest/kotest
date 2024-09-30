@@ -127,18 +127,6 @@ private fun <T : Comparable<T>, I : Iterable<T>> haveUpperBound(t: T, name: Stri
    }
 }
 
-private fun Iterable<*>.containerName(): String {
-   return when (this) {
-      is List -> "List"
-      is Set -> "Set"
-      is Map<*, *> -> "Map"
-      is ClosedRange<*>, is OpenEndRange<*> -> "Range"
-      is Collection -> "Collection"
-      else -> "Iterable"
-   }
-}
-
-
 // BooleanArray left out in the interest of reducing API bloat.
 // As Boolean only has 2 values, it is more natural to use
 // "shouldContain true / shouldContain false"-type assertions

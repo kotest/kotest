@@ -160,20 +160,9 @@ private fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher<
          { "$name should not be empty" }
       )
    }
-
-   private fun Iterable<*>.containerName(): String {
-      return when (this) {
-         is List -> "List"
-         is Set -> "Set"
-         is Map<*, *> -> "Map"
-         is ClosedRange<*>, is OpenEndRange<*> -> "Range"
-         is Collection -> "Collection"
-         else -> "Iterable"
-      }
-   }
 }
 
-private inline fun fail(name: String): Nothing {
+private fun fail(name: String): Nothing {
    invokeMatcher(null, Matcher.failure("Expected $name but was null"))
    throw NotImplementedError()
 }
