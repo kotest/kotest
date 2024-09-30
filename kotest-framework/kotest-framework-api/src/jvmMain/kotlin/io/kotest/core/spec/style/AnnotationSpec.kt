@@ -193,7 +193,7 @@ abstract class AnnotationSpec : Spec() {
    /**
     * Marks a function to be executed after each test
     *
-    * This can be used in AnnotationSpec to mark a function to be executed before a test by Kotest Engine.
+    * This can be used in AnnotationSpec to mark a function to be executed after each test by Kotest Engine.
     * @see AfterAll
     * @see BeforeEach
     */
@@ -202,7 +202,7 @@ abstract class AnnotationSpec : Spec() {
    /**
     * Marks a function to be executed after each test
     *
-    * This can be used in AnnotationSpec to mark a function to be executed before a test by Kotest Engine.
+    * This can be used in AnnotationSpec to mark a function to be executed after each test by Kotest Engine.
     * @see AfterClass
     * @see Before
     */
@@ -212,7 +212,7 @@ abstract class AnnotationSpec : Spec() {
    /**
     * Marks a function to be executed after each spec
     *
-    * This can be used in AnnotationSpec to mark a function to be executed before a spec by Kotest Engine.
+    * This can be used in AnnotationSpec to mark a function to be executed after a spec by Kotest Engine.
     * @see AfterEach
     * @see BeforeAll
     */
@@ -221,7 +221,7 @@ abstract class AnnotationSpec : Spec() {
    /**
     * Marks a function to be executed after each spec
     *
-    * This can be used in AnnotationSpec to mark a function to be executed before a spec by Kotest Engine.
+    * This can be used in AnnotationSpec to mark a function to be executed after a spec by Kotest Engine.
     * @see After
     * @see BeforeClass
     */

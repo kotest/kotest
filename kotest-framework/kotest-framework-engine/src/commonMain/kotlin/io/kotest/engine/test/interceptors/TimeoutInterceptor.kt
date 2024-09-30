@@ -21,7 +21,7 @@ internal class TimeoutInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
       // this timeout applies to the test itself. If the test has multiple invocations then

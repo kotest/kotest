@@ -2,6 +2,8 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
+import io.kotest.property.checkAll
+import io.kotest.property.forAll
 
 /**
  * Draws a random value from this generator

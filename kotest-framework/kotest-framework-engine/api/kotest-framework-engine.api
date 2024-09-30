@@ -287,7 +287,11 @@ public final class io/kotest/engine/interceptors/EngineContext$Companion {
 }
 
 public abstract interface class io/kotest/engine/interceptors/EngineInterceptor {
-	public abstract fun intercept (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun intercept (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/engine/interceptors/NextEngineInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class io/kotest/engine/interceptors/NextEngineInterceptor {
+	public abstract fun invoke (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/lang/Exception {
@@ -784,14 +788,18 @@ public final class io/kotest/engine/test/interceptors/BlockedThreadTestTimeoutEx
 	public synthetic fun <init> (JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public abstract interface class io/kotest/engine/test/interceptors/NextTestExecutionInterceptor {
+	public abstract fun invoke (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/engine/test/interceptors/TestCoroutineInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
 	public fun <init> ()V
-	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lio/kotest/engine/test/interceptors/NextTestExecutionInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/test/interceptors/TestDispatcherInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
 	public fun <init> ()V
-	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lio/kotest/engine/test/interceptors/NextTestExecutionInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class io/kotest/engine/test/interceptors/TestTimeoutException : java/lang/Exception {

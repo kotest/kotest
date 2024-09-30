@@ -6,14 +6,15 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * This class defines project wide settings that are used when executing tests.

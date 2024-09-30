@@ -18,7 +18,7 @@ internal object AssertionModeInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
       if (testCase.type != TestType.Test) return test(testCase, scope)

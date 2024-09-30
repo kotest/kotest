@@ -24,7 +24,7 @@ internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       logger.log {
          Pair(

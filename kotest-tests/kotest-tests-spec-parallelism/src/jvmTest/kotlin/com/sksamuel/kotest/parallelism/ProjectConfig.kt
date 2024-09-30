@@ -1,28 +1,33 @@
 package com.sksamuel.kotest.parallelism
 
-import com.sksamuel.kotest.parallelism.ProjectConfig.projectStart
+import com.sksamuel.kotest.parallelism.ProjectConfig.startOfTest
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
 import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.log
 import io.kotest.core.test.TestScope
+import io.kotest.inspectors.shouldForAll
 import io.kotest.inspectors.shouldForNone
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.kotest.core.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -47,9 +52,11 @@ object ProjectConfig : AbstractProjectConfig() {
    private val TestStatusCollectorScope: CoroutineScope =
       CoroutineScope(Dispatchers.IO) + CoroutineName("TestStatusCollector")
 
-   /** Marks the start of the entire tests, when [beforeProject] is called, before any tests are launched. */
-   internal lateinit var projectStart: TimeMark
-      private set
+   /** Mark the start of the entire test case. */
+   internal val startOfTest: TimeMark = TimeSource.Monotonic.markNow()
+
+   /** Marks when [beforeProject] is called, which should only be once, and before any tests are launched. */
+   private val beforeProjectCalled = MutableStateFlow(listOf<Duration>())
 
    init {
       // Start listening for launched tests in an independent CoroutineScope.
@@ -74,7 +81,7 @@ object ProjectConfig : AbstractProjectConfig() {
    }
 
    override suspend fun beforeProject() {
-      projectStart = TimeSource.Monotonic.markNow()
+      beforeProjectCalled.update { it + startOfTest.elapsedNow() }
    }
 
    override suspend fun afterProject() {
@@ -86,22 +93,27 @@ object ProjectConfig : AbstractProjectConfig() {
             statuses.shouldForNone { it.status shouldBe TimedOut }
          }
 
-         val expectedTestNames = listOf(
-            "test 1",
-            "test 2",
-            "test 3",
-            "test 4",
-            "test 5",
-            "test 6",
-            "test 7",
-            "test 8",
-         )
+         val beforeProjectCalled = withClue("beforeProjectCalled should only have one value") {
+            beforeProjectCalled.value.shouldBeSingleton().first()
+         }
+         withClue("Expect all tests started after `beforeProject()`") {
+            statuses.shouldForAll { it.elapsed shouldBeGreaterThan beforeProjectCalled }
+         }
 
          listOf(Started, Finished).forEach { status ->
             val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
 
             withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-               actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
+               actualTestNames.shouldContainExactlyInAnyOrder(
+                  "test 1",
+                  "test 2",
+                  "test 3",
+                  "test 4",
+                  "test 5",
+                  "test 6",
+                  "test 7",
+                  "test 8",
+               )
             }
          }
 
@@ -148,7 +160,7 @@ private val testStatuses = MutableSharedFlow<TestStatus>(replay = 100)
 private data class TestStatus(
    val testName: String,
    val status: Status,
-   val elapsed: Duration = projectStart.elapsedNow(),
+   val elapsed: Duration = startOfTest.elapsedNow(),
 ) {
    enum class Status { Started, Finished, TimedOut }
 }

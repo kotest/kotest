@@ -1,5 +1,6 @@
 package utils
 
+import org.gradle.api.Task
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.process.CommandLineArgumentProvider

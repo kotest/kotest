@@ -299,9 +299,9 @@ actual:
 
          val c = """ { "a" : "foo", "b" : "false" } """
          val d = """ { "a" : "foo", "b" : false } """
-         a.shouldEqualJson {
+         c.shouldEqualJson {
             typeCoercion = TypeCoercion.Enabled
-            b
+            d
          }
       }
 

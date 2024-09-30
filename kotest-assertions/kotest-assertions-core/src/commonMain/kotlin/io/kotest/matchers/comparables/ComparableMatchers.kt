@@ -171,7 +171,7 @@ fun <T : Comparable<T>> beEqualComparingTo(other: T) = object : Matcher<T> {
  * Verifies that this is equal to [other] using compare from [comparator]
  *
  *
- * This function will check for the result of [comparator.compare] and result accordingly.
+ * This function will check for the result of [comparator.compare][Comparator.compare] and result accordingly.
  * This will pass if the value is equal to [other] (compare returns 0).
  *
  */
@@ -180,7 +180,7 @@ fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T, comparator: Compara
  * Verifies that this is NOT equal to [other] using compare from [comparator]
  *
  *
- * This function will check for the result of [comparator.compare] and result accordingly.
+ * This function will check for the result of [comparator.compare][Comparator.compare] and result accordingly.
  * This will pass if the value is NOT equal to [other] (compare doesn't return 0).
  *
  */
