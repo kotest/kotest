@@ -129,8 +129,8 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    }
    val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts, verifier)
    val passed = missing.isEmpty() && extra.isEmpty() && countMismatch.isEmpty()
-   val possibleMatches = extra
-      .map { possibleMatchesDescription(expected.toSet(), it) }
+   val possibleMatches = missing
+      .map { possibleMatchesDescription(actual.toSet(), it) }
       .filter { it.isNotEmpty() }
       .joinToString("\n")
 
