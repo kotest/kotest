@@ -3,7 +3,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 plugins {
    id("java")
    alias(libs.plugins.kotlin.jvm)
-   id("org.jetbrains.intellij.platform") version "2.0.1"
+   id("org.jetbrains.intellij.platform") version "2.1.0"
 }
 
 repositories {
