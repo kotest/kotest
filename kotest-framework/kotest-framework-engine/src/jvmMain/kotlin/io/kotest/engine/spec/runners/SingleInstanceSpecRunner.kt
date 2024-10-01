@@ -46,12 +46,14 @@ internal class SingleInstanceSpecRunner(
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
          return coroutineScope {
-            pipeline.execute(spec) {
-               val rootTests = materializer.materialize(it)
-               logger.log { Pair(it::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
-               scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
-               Result.success(results)
-            }
+            pipeline.execute(spec, object : NextSpecInterceptor {
+               override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+                  val rootTests = materializer.materialize(spec)
+                  logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+                  scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
+                  return Result.success(results)
+               }
+            })
          }
       } catch (e: Exception) {
          e.printStackTrace()

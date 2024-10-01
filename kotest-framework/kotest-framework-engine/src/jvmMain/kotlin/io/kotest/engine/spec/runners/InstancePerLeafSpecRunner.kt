@@ -109,7 +109,11 @@ internal class InstancePerLeafSpecRunner(
    }
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec) { locateAndRunRoot(it, test).map { testResults -> mapOf(test to testResults) } }
+      return pipeline.execute(spec, object : NextSpecInterceptor {
+         override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+            return locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
+         }
+      })
    }
 
    // when we start a test from the queue, we must find the root test that is the ancestor of our
