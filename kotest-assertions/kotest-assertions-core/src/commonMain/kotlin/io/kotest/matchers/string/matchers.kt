@@ -40,10 +40,11 @@ fun String?.shouldNotContainADigit(): String? {
 }
 
 fun containADigit() = neverNullMatcher<String> { value ->
+   val firstDigit = value.asSequence().withIndex().firstOrNull { it.value in '0'..'9' }
    MatcherResult(
-      value.toCharArray().any { it in '0'..'9' },
+      firstDigit != null,
       { "${value.print().value} should contain at least one digit" },
-      { "${value.print().value} should not contain any digits" })
+      { "${value.print().value} should not contain any digits, but contained ${firstDigit?.let { it.value.print().value }} at index ${firstDigit?.index}" })
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
