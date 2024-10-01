@@ -1,7 +1,8 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.config.FixedExtensionRegistry
 import io.kotest.core.listeners.IgnoredSpecListener
@@ -12,7 +13,7 @@ import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
-@ExperimentalKotest
+@EnabledIf(LinuxCondition::class)
 class IgnoredSpecInterceptorTest : FunSpec({
 
    test("IgnoredSpecInterceptor should pass any class not annotated with @Ignored") {

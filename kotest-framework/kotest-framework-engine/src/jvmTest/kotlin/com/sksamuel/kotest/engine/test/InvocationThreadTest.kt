@@ -1,12 +1,15 @@
 package com.sksamuel.kotest.engine.test
 
 import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxCondition::class)
 class InvocationThreadTest : FunSpec({
 
    val singleThreadSingleInvocationCallCount = AtomicInteger(0)

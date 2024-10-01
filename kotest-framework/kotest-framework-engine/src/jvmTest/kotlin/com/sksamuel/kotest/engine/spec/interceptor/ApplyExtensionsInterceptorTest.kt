@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.DefaultExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.Extension
@@ -9,6 +11,7 @@ import io.kotest.engine.extensions.SpecWrapperExtension
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@EnabledIf(LinuxCondition::class)
 class ApplyExtensionsInterceptorTest : FunSpec() {
    init {
 

@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
@@ -11,6 +13,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class IgnoredTestReasonTest : FunSpec() {
    init {
 

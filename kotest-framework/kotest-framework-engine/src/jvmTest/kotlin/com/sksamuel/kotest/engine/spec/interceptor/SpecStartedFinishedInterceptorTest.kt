@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
@@ -9,6 +11,7 @@ import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
+@EnabledIf(LinuxCondition::class)
 class SpecStartedFinishedInterceptorTest : FunSpec() {
    init {
 

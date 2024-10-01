@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -12,6 +14,7 @@ import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
 
+@EnabledIf(LinuxCondition::class)
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
    test("ExceptionCapturingTestExecutionInterceptor should capture assertion errors") {
