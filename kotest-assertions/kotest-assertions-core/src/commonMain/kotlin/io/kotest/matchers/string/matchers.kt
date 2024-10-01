@@ -57,9 +57,17 @@ infix fun String?.shouldNotContainOnlyOnce(substr: String): String? {
 }
 
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
+   val firstIndexOf = value.indexOf(substring)
+   val lastIndexOf = value.lastIndexOf(substring)
+   val passed = firstIndexOf >= 0 && firstIndexOf == lastIndexOf
+   val failureDescription = when {
+      passed -> ""
+      firstIndexOf == -1 -> ", but did not contain it"
+      else -> ", but contained it at least at indexes $firstIndexOf and $lastIndexOf"
+   }
    MatcherResult(
-      value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
-      { "${value.print().value} should contain the substring ${substring.print().value} exactly once" },
+      passed,
+      { "${value.print().value} should contain the substring ${substring.print().value} exactly once$failureDescription" },
       { "${value.print().value} should not contain the substring ${substring.print().value} exactly once" })
 }
 
