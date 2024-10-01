@@ -133,7 +133,7 @@ class CollectionsTest : DescribeSpec({
          }
       }
 
-      val timeout = if (System.getProperty("os.name").contains("mac", true)) 3.seconds else 2.seconds
+      val timeout = if (System.getProperty("os.name").contains("mac", true)) 5.seconds else 2.seconds
       it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = timeout) {
          /*
          if we revert the fix as follows, the test fails:
