@@ -6,6 +6,7 @@ import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.collections.beEmpty as iterableBeEmpty
 import io.kotest.matchers.collections.ContainDuplicatesMatcher
 import io.kotest.matchers.collections.duplicationReport
 import io.kotest.matchers.collections.shouldMatchEach
@@ -437,11 +438,9 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
 fun <T> Sequence<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Sequence<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>): MatcherResult = MatcherResult(
-      !value.iterator().hasNext(),
-      { "Sequence should be empty" },
-      { "Sequence should not be empty" }
-   )
+   private val delegate = iterableBeEmpty<T>("Sequence")
+
+   override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
 
