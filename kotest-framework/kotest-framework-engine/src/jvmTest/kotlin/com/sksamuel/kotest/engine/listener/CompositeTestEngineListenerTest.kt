@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.listener
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -8,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class CompositeTestEngineListenerTest : FunSpec({
 
    test("specStarted should fire for all listeners") {
