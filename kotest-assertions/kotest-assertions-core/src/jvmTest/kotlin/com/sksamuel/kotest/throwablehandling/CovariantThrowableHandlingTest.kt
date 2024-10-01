@@ -5,9 +5,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldNotThrowUnit
-import io.kotest.assertions.throwables.shouldPass
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.assertions.throwables.shouldThrowUnitWithMessage
 import io.kotest.assertions.throwables.shouldThrowWithMessage
@@ -189,60 +187,6 @@ class CovariantThrowableHandlingTest : FreeSpec() {
             }
                .exceptionOrNull() shouldBe AssertionError("Expected exception java.lang.RuntimeException but a Exception was thrown instead.")
          }
-      }
-
-      "shouldPass" - {
-         "pass when no exception thrown and other assertion passed" {
-            shouldNotThrowAny {
-               assertSoftly {
-                  shouldPass {
-                     mimicPossibleAssertionError(fail = false)
-                  }
-                  (2 + 2) shouldBe 4
-               }
-            }
-         }
-         "fail when no exception thrown and other assertion failed" {
-            shouldThrow<AssertionError> {
-               assertSoftly {
-                  shouldPass {
-                     mimicPossibleAssertionError(fail = false)
-                  }
-                  (2 + 2) shouldBe 5
-               }
-            }.message shouldBe """expected:<5> but was:<4>"""
-         }
-         "fail both assertions" {
-            shouldThrow<AssertionError> {
-               assertSoftly {
-                  shouldPass {
-                     mimicPossibleAssertionError(fail = true)
-                  }
-                  (2 + 2) shouldBe 5
-               }
-            }.message.shouldContainInOrder(
-               """The following 2 assertions failed:""",
-               """Assertion Failed!""",
-               """expected:<5> but was:<4>"""
-            )
-         }
-         "does not trap any other Throwable that is not AssertionError" {
-            val exception = Exception("Non-Assertion Failure!")
-            val thrown = shouldThrow<MultiAssertionError> {
-                  assertSoftly {
-                     (2 + 2) shouldBe 5
-                     shouldPass {
-                        throw exception
-                     }
-                  }
-               }
-            thrown.message.shouldContainInOrder(
-               """The following 2 assertions failed:""",
-               """1) expected:<5> but was:<4>""",
-               """Unexpected Exception was thrown with the following message: "Non-Assertion Failure!""",
-            )
-         }
-
       }
    }
 

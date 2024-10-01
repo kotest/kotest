@@ -2,30 +2,31 @@ package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.collections.duplicates
-import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.duplicationReport
 import io.kotest.matchers.collections.shouldContainDuplicates
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainDuplicates
+import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
 class DuplicatesTest : WordSpec({
    "duplicates" should {
       "be empty for unique values" {
-         listOf(1, 2, 3, 4, null).duplicates().shouldBeEmpty()
+         listOf(1, 2, 3, 4, null).duplicationReport().hasDuplicates().shouldBeFalse()
       }
 
       "return not null duplicates" {
-         listOf(1, 2, 3, 4, 3, 2).duplicates() shouldContainExactlyInAnyOrder listOf(2, 3)
+         listOf(1, 2, 3, 4, 3, 2).duplicationReport().duplicates
+            .shouldContainExactly(mapOf(2 to listOf(1, 5), 3 to listOf(2, 4)))
       }
 
       "return null duplicates" {
-         listOf(1, 2, 3, null, 4, 3, null, 2).duplicates() shouldContainExactlyInAnyOrder listOf(2, 3, null)
+         listOf(null, 2, 3, null, 2).duplicationReport().duplicates
+            .shouldContainExactly(mapOf(null to listOf(0, 3), 2 to listOf(1, 4)))
       }
 
       "return null duplicates" {
-         listOf<Unit?>(null, null).duplicates().shouldContainExactly(null)
+         listOf(null, null).duplicationReport().duplicates.shouldContainExactly(mapOf(null to listOf(0, 1)))
       }
    }
 
@@ -328,77 +329,80 @@ class DuplicatesTest : WordSpec({
       "fail for non unique BooleanArray" {
          shouldThrowAny {
             booleanArrayOf(true, false, true, false).shouldNotContainDuplicates()
-         }.message shouldBe "BooleanArray should not contain duplicates, but has some: [true, false]"
+         }.message shouldBe "BooleanArray should not contain duplicates, but has:\ntrue at indexes: [0, 2]\nfalse at indexes: [1, 3]"
       }
 
       "fail for non unique ByteArray" {
          shouldThrowAny {
             byteArrayOf(1, 1).shouldNotContainDuplicates()
-         }.message shouldBe "ByteArray should not contain duplicates, but has some: [1]"
+         }.message shouldBe "ByteArray should not contain duplicates, but has:\n1 at indexes: [0, 1]"
       }
 
       "fail for non unique ShortArray" {
          shouldThrowAny {
             shortArrayOf(1, 1).shouldNotContainDuplicates()
-         }.message shouldBe "ShortArray should not contain duplicates, but has some: [1]"
+         }.message shouldBe "ShortArray should not contain duplicates, but has:\n1 at indexes: [0, 1]"
       }
 
       "fail for non unique CharArray" {
          shouldThrowAny {
             charArrayOf('1', '1').shouldNotContainDuplicates()
-         }.message shouldBe "CharArray should not contain duplicates, but has some: ['1']"
+         }.message shouldBe "CharArray should not contain duplicates, but has:\n'1' at indexes: [0, 1]"
       }
 
       "fail for non unique IntArray" {
          shouldThrowAny {
             intArrayOf(1, 1).shouldNotContainDuplicates()
-         }.message shouldBe "IntArray should not contain duplicates, but has some: [1]"
+         }.message shouldBe "IntArray should not contain duplicates, but has:\n1 at indexes: [0, 1]"
       }
 
       "fail for non unique LongArray" {
          shouldThrowAny {
             longArrayOf(1, 1).shouldNotContainDuplicates()
-         }.message shouldBe "LongArray should not contain duplicates, but has some: [1L]"
+         }.message shouldBe "LongArray should not contain duplicates, but has:\n1L at indexes: [0, 1]"
       }
 
       "fail for non unique FloatArray" {
          shouldThrowAny {
             floatArrayOf(0.1f, 0.1f).shouldNotContainDuplicates()
-         }.message shouldBe "FloatArray should not contain duplicates, but has some: [0.1f]"
+         }.message shouldBe "FloatArray should not contain duplicates, but has:\n0.1f at indexes: [0, 1]"
       }
 
       "fail for non unique DoubleArray" {
          shouldThrowAny {
-            doubleArrayOf(0.000000000000000000000000000000000000001, 0.000000000000000000000000000000000000001).shouldNotContainDuplicates()
-         }.message shouldBe "DoubleArray should not contain duplicates, but has some: [1.0E-39]"
+            doubleArrayOf(
+               0.000000000000000000000000000000000000001,
+               0.000000000000000000000000000000000000001
+            ).shouldNotContainDuplicates()
+         }.message shouldBe "DoubleArray should not contain duplicates, but has:\n1.0E-39 at indexes: [0, 1]"
 
          shouldThrowAny {
             doubleArrayOf(1234.056789, 1234.056789).shouldNotContainDuplicates()
-         }.message shouldBe "DoubleArray should not contain duplicates, but has some: [1234.056789]"
+         }.message shouldBe "DoubleArray should not contain duplicates, but has:\n1234.056789 at indexes: [0, 1]"
       }
 
       "fail for non unique Array" {
          shouldThrowAny {
             arrayOf(1, 2, 3, null, null, 3, 2).shouldNotContainDuplicates()
-         }.message shouldBe "Array should not contain duplicates, but has some: [2, 3, <null>]"
+         }.message shouldBe "Array should not contain duplicates, but has:\n2 at indexes: [1, 6]\n3 at indexes: [2, 5]\n<null> at indexes: [3, 4]"
       }
 
       "fail for non unique List" {
          shouldThrowAny {
             listOf(1, 2, 3, null, null, 3, 2).shouldNotContainDuplicates()
-         }.message shouldBe "List should not contain duplicates, but has some: [2, 3, <null>]"
+         }.message shouldBe "List should not contain duplicates, but has:\n2 at indexes: [1, 6]\n3 at indexes: [2, 5]\n<null> at indexes: [3, 4]"
       }
 
       "fail for arbitrary non unique Iterable" {
          shouldThrowAny {
             Game("Risk", listOf("p1", "p2", "p3", "p1")).shouldNotContainDuplicates()
-         }.message shouldBe "Iterable should not contain duplicates, but has some: [\"p1\"]"
+         }.message shouldBe "Iterable should not contain duplicates, but has:\n\"p1\" at indexes: [0, 3]"
       }
 
       "fail for misbehaving set" {
          shouldThrowAny {
             (NonUniqueSet() as Set<Int>).shouldNotContainDuplicates()
-         }.message shouldBe "Set should not contain duplicates, but has some: [1]"
+         }.message shouldBe "Set should not contain duplicates, but has:\n1 at indexes: [0, 1]"
       }
    }
 })
