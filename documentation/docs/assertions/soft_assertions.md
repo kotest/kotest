@@ -33,7 +33,7 @@ assertSoftly(foo) {
 
 We can configure assert softly to be implicitly added to every test via [project config](../framework/project_config.md).
 
-**Note:** only Kotest's own assertions can be asserted softly. To be compatible with `assertSoftly`, assertions from other libraries must be wrapped in `shouldPass`, which is described leter in this section. If any other checks fail and throw an `AssertionError`, it will not respect `assertSoftly` and bubble up, erasing the results of previous assertions. This includes Kotest's own `fail()` function, so when the following code runs, we won't know if the first assertion `foo shouldBe bar` succeeded or failed:
+**Note:** only Kotest's own assertions can be asserted softly. To be compatible with `assertSoftly`, assertions from other libraries must be wrapped in `shouldNotThrowAny`, which is described later in this section. If any other checks fail and throw an `AssertionError`, it will not respect `assertSoftly` and bubble up, erasing the results of previous assertions. This includes Kotest's own `fail()` function, so when the following code runs, we won't know if the first assertion `foo shouldBe bar` succeeded or failed:
 
 ```kotlin
 assertSoftly {
@@ -51,12 +51,12 @@ assertSoftly {
 }
 ```
 
-So if we want to invoke non-kotest assertions inside `assrtSoftly` blocks, they need to be invoked via `shouldPass`.
+So if we want to invoke non-kotest assertions inside `assertSoftly` blocks, they need to be invoked via `shouldPass`.
 In the following example both `verify` and the second assertion can fail, and we shall get both errors accumulated:
 
 ```kotlin
 assertSoftly {
-  shouldPass {
+  shouldNotThrowAny {
     verify(exactly = 1) { myClass.myMethod(any()) }
   }
   foo shouldBe bar
@@ -69,8 +69,23 @@ Likewise, in the following example the failure of `verify` will not be ignored, 
 ```kotlin
 assertSoftly {
   (2+2) shouldBe 5
-  shouldPass {
+  shouldNotThrowAny {
     verify(exactly = 1) { myClass.myMethod(any()) }
   }
 }
 ```
+
+**Note:** by design, some of Kotest's own assertions are not compatible with `assertSoftly`, including:
+
+* `shouldNotThrowExactly`
+* `shouldNotThrowExactlyUnit`
+* `shouldNotThrowMessage`
+* `shouldThrow`
+* `shouldThrowExactly`
+* `shouldThrowExactlyUnit`
+* `shouldThrowMessage`
+* `shouldThrowUnit`
+* `shouldThrowUnitWithMessage`
+* `shouldThrowWithMessage`
+
+But `shouldThrowSoftly` is compatible with `assertSoftly`.

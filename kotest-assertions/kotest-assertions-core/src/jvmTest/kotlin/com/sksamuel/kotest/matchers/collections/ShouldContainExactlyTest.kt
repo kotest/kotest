@@ -17,7 +17,10 @@ import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
+import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
@@ -167,7 +170,8 @@ class ShouldContainExactlyTest : WordSpec() {
          }
 
          "print dataclasses" {
-            shouldThrow<AssertionError> {
+
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath),
@@ -176,13 +180,16 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
-               """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
-               """.trimMargin()
+            }.message?.trim()
+
+            message.shouldContainInOrder(
+               "Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1",
+               "[0] Blonde(a=foo, b=true, c=23423, p=$expectedPath) => slice 0",
+               "[1] Blonde(a=woo, b=true, c=97821, p=$expectedPath) => slice 0",
+               """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""",
+            )
          }
 
          "include extras when too many" {
@@ -191,26 +198,19 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 23423, inputPath)
                ).shouldContainExactly(
                   Blonde("foo", true, 23423, inputPath),
-                  Blonde("woo", true, 97821, inputPath)
+                  Blonde("foo", true, 97821, inputPath)
                )
             }.message?.trim()
             message shouldContain (
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=foo, b=true, c=97821, p=$expectedPath)]
                """.trimMargin()
                )
 
-            message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=foo, b=true, c=23423, p=$expectedPath),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
-            message.shouldContain("The following fields did not match:")
-            message.shouldContain("\"a\" expected: <\"foo\">, but was: <\"woo\">")
-            message.shouldContain("\"c\" expected: <23423>, but was: <97821>")
-
             message.shouldContain(
                """
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
+                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
                """.trimMargin()
             )
          }
@@ -248,12 +248,6 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                """.trimMargin()
-            message.shouldContain("Possible matches:")
-            message.shouldContain("expected: Blonde(a=goo, b=true, c=51984, p=$expectedPath),")
-            message.shouldContain("but was: Blonde(a=woo, b=true, c=97821, p=$expectedPath),")
-            message.shouldContain("The following fields did not match:")
-            message.shouldContain("\"a\" expected: <\"goo\">, but was: <\"woo\">")
-            message.shouldContain("\"c\" expected: <51984>, but was: <97821>")
             message shouldContain
                """
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
@@ -313,16 +307,32 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
                   |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=$expectedPath)]
                """.trimMargin()
-               message.shouldContain("Possible matches:")
-               message.shouldContain("expected: Blonde(a=foo, b=true, c=2, p=$expectedPath),")
-               message.shouldContain("but was: Blonde(a=foo, b=true, c=77, p=$expectedPath),")
-               message.shouldContain("The following fields did not match:")
-               message.shouldContain("\"c\" expected: <2>, but was: <77>")
+            message.shouldContain("Possible matches:")
             message shouldContain "Printed first 5 similarities out of 20, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)"
             message shouldContain
                """
                   |(set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)
                """.trimMargin()
+         }
+
+         "find matching slices" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) shouldContainExactly listOf(5, 6, 7, 8, 9, 0, 1, 2, 3, 4,)
+            }.message
+            message should containInOrder(
+               "Slice[0] of expected with indexes: 0..4 matched a slice of actual values with indexes: 5..9",
+               "Slice[1] of expected with indexes: 5..9 matched a slice of actual values with indexes: 0..4",
+               "[0] 0 => slice 1",
+               "[1] 1 => slice 1",
+               "[2] 2 => slice 1",
+               "[3] 3 => slice 1",
+               "[4] 4 => slice 1",
+               "[5] 5 => slice 0",
+               "[6] 6 => slice 0",
+               "[7] 7 => slice 0",
+               "[8] 8 => slice 0",
+               "[9] 9 => slice 0",
+            )
          }
 
          "pass with custom verifier" {
@@ -422,13 +432,14 @@ class ShouldContainExactlyTest : WordSpec() {
                   )
                )
             }.message
+            println(message)
             message shouldContain """
                |Possible matches for unexpected elements:
                |
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=red, taste=sweet),
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"green">, but was: <"red">
+               |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
          }
 

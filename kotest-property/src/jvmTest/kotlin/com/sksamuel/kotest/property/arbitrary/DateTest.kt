@@ -4,11 +4,13 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -29,6 +31,8 @@ import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDate.MAX
+import java.time.LocalDate.MIN
 import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -73,9 +77,30 @@ class DateTest : WordSpec({
          }
       }
 
+      "Edge cases are within specified date range when minDate is after typical edge case dates" {
+         val minDate = of(2024, 3, 1)
+         val maxDate = of(2024, 12, 31)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
+      }
+
+      "Century year edge case is included when within the date range" {
+         val minDate = of(1999, 12, 31)
+         val maxDate = of(2001, 1, 1)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
+      }
+
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(2016, 2, 29)
+         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(leapYear, 2, 29)
+      }
+
+      "Contain Jan 1st if century year" {
+         val centuryYear = 2100
+         Arb.localDate(of(centuryYear, 1, 1), of(centuryYear, 12, 31)).edgecases() shouldContain of(centuryYear, 1, 1)
       }
 
 
@@ -85,6 +110,12 @@ class DateTest : WordSpec({
    }
 
    "Arb.localDate(minDate, maxDate)" should {
+      "be able to handle a very large delta between boundaries" {
+         shouldNotThrowAny {
+            Arb.localDate(MIN, MAX).take(10_000).toList()
+         }
+      }
+
       "Work when min date == max date" {
          val date = of(2021, 1, 1)
          Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }

@@ -50,10 +50,10 @@ class ShouldContainTest : WordSpec({
             """
             |Collection should contain element Fruit(name=apple, color=red, taste=sweet) based on object equality; but the collection is [Fruit(name=apple, color=green, taste=sweet), Fruit(name=pear, color=green, taste=sweet)]
             |PossibleMatches:
-            | expected: Fruit(name=apple, color=green, taste=sweet),
-            |  but was: Fruit(name=apple, color=red, taste=sweet),
+            | expected: Fruit(name=apple, color=red, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
             |  The following fields did not match:
-            |    "color" expected: <"green">, but was: <"red">
+            |    "color" expected: <"red">, but was: <"green">
     """.trimMargin()
          )
       }

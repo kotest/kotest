@@ -1,5 +1,6 @@
 package io.kotest.matchers.comparables
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.MatcherResult.Companion.invoke
@@ -42,7 +43,7 @@ fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
 }
 
 /**
- * Verifies that this is less than or equal[other]
+ * Verifies that this is less than or equal to [other]
  *
  * Opposite of [shouldNotBeLessThanOrEqualTo]
  *
@@ -171,7 +172,7 @@ fun <T : Comparable<T>> beEqualComparingTo(other: T) = object : Matcher<T> {
  * Verifies that this is equal to [other] using compare from [comparator]
  *
  *
- * This function will check for the result of [comparator.compare] and result accordingly.
+ * This function will check for the result of [comparator.compare][Comparator.compare] and result accordingly.
  * This will pass if the value is equal to [other] (compare returns 0).
  *
  */
@@ -180,7 +181,7 @@ fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T, comparator: Compara
  * Verifies that this is NOT equal to [other] using compare from [comparator]
  *
  *
- * This function will check for the result of [comparator.compare] and result accordingly.
+ * This function will check for the result of [comparator.compare][Comparator.compare] and result accordingly.
  * This will pass if the value is NOT equal to [other] (compare doesn't return 0).
  *
  */
@@ -193,4 +194,28 @@ fun <T> compareTo(other: T, comparator: Comparator<T>) = object : Matcher<T> {
        { "Value $value should compare equal to $other" },
        { "Value $value should not compare equal to $other" })
   }
+}
+
+/**
+ * Verifies that `this` is in the closed interval `[lower, upper]`.
+ *
+ * This assertion always fails if the supplied `lower > upper`.
+ */
+fun <T : Comparable<T>> T.shouldBeBetween(lower: T, upper: T) = this should beBetween(lower, upper)
+
+/**
+ * Verifies that `this` is outside the closed interval `[lower, upper]`
+ *
+ * This assertion always succeeds if the supplied `lower > upper`.
+ */
+fun <T : Comparable<T>> T.shouldNotBeBetween(lower: T, upper: T) = this shouldNot beBetween(lower, upper)
+
+fun <T : Comparable<T>> between(lower: T, upper: T): Matcher<T> = beBetween(lower, upper)
+
+fun <T : Comparable<T>> beBetween(lower: T, upper: T): Matcher<T> = object : Matcher<T> {
+   override fun test(value: T): MatcherResult = MatcherResult(
+      value in lower..upper,
+      { "${value.print().value} should be between (${lower.print().value}, ${upper.print().value}) inclusive" },
+      { "${value.print().value} should not be between (${lower.print().value}, ${upper.print().value}) inclusive" },
+   )
 }

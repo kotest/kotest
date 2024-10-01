@@ -1,12 +1,19 @@
 package com.sksamuel.kotest.throwablehandling
 
+
+import io.kotest.assertions.MultiAssertionError
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldNotThrowAnyUnit
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowAnyUnit
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 
@@ -56,7 +63,45 @@ class AnyThrowableHandlingTest : FreeSpec() {
         }
       }
     }
-  }
+
+     "shouldNotThrowAny" - {
+         "should collaborate with assertSoftly if an exception is thrown" {
+            val thrown = shouldThrowExactly<MultiAssertionError> {
+               assertSoftly {
+                  (2 + 2) shouldBe 5
+                  shouldNotThrowAny {
+                     throw Exception("Oops!")
+                  }
+                  (3 - 2) shouldBe 2
+               }
+            }
+            thrown.message.shouldContainInOrder(
+               "The following 3 assertions failed:",
+               "1) expected:<5> but was:<4>",
+               """2) No exception expected, but a Exception was thrown with message: "Oops!".""",
+               "3) expected:<2> but was:<1>",
+            )
+         }
+        "should collaborate with assertSoftly if a non-kotest assertion fails" {
+            val thrown = shouldThrowExactly<MultiAssertionError> {
+               assertSoftly {
+                  (2 + 2) shouldBe 5
+                  shouldNotThrowAny {
+                     failedNonKotestAssertion()
+                  }
+                  (3 - 2) shouldBe 2
+               }
+            }
+            thrown.message.shouldContainInOrder(
+               "The following 3 assertions failed:",
+               "1) expected:<5> but was:<4>",
+               """2) No exception expected, but a AssertionError was thrown with message: "Non-kotest assertion failure".""",
+               "3) expected:<2> but was:<1>",
+            )
+         }
+        }
+     }
+
 
   private inline fun onShouldThrowAnyMatcher(func: (ShouldThrowAnyMatcher) -> Unit) {
     func(::shouldThrowAny)
@@ -85,7 +130,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
     val thrownException = catchThrowable(block)
 
     thrownException.shouldBeInstanceOf<AssertionError>()
-    thrownException.message shouldBe "No exception expected, but a ${throwable::class.simpleName} was thrown."
+    thrownException.message shouldBe "No exception expected, but a ${throwable::class.simpleName} was thrown with message: \"null\"."
     thrownException.cause shouldBeSameInstanceAs throwable
   }
 
@@ -96,3 +141,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
 
 private typealias ShouldThrowAnyMatcher = (() -> Unit) -> Throwable
 private typealias ShouldNotThrowAnyMatcher = (() -> Unit) -> Unit
+
+private fun failedNonKotestAssertion() {
+   throw AssertionError("Non-kotest assertion failure")
+}

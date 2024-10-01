@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
@@ -377,6 +378,12 @@ class SequenceMatchersTest : WordSpec() {
          fail("for sparse") {
             sampleData.sparse.shouldNotContainNull()
          }
+
+         "print index of null element" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "banana", null, "pear").shouldNotContainNull()
+            }.message shouldBe "Sequence should not contain any nulls, but contained at least one at index 3"
+         }
       }
 
       "contain no nulls" should {
@@ -431,12 +438,16 @@ class SequenceMatchersTest : WordSpec() {
       }
 
       "have element at" should {
-         abort<IndexOutOfBoundsException>("for empty") {
-            sampleData.empty.shouldHaveElementAt(sampleData.empty.count(), 0)
+         "handle empty sequence" {
+            shouldThrow<AssertionError> {
+               sampleData.empty.shouldHaveElementAt(sampleData.empty.count(), 0)
+            }.message shouldContain "but the sequence only had 0 elements"
          }
 
-         abort<IndexOutOfBoundsException>("when an element after the end is requested") {
-            sampleData.nulls.shouldHaveElementAt(sampleData.nulls.count(), 0)
+         "when an element after the end is requested" {
+            shouldThrow<AssertionError> {
+               sampleData.nulls.shouldHaveElementAt(sampleData.nulls.count(), 0)
+            }.message shouldContain "but the sequence only had 4 elements"
          }
 
          succeed("when the sequence has the element") {
@@ -446,16 +457,38 @@ class SequenceMatchersTest : WordSpec() {
          fail("when the sequence doesn't have the element") {
             sampleData.countdown.shouldHaveElementAt(10, 10)
          }
+
+         "print that the sequence is empty" {
+            shouldThrow<AssertionError> {
+               sequenceOf<String>().shouldHaveElementAt(3, "banana")
+            }.message shouldBe """Sequence should contain "banana" at index 3, but the sequence only had 0 elements"""
+         }
+
+         "print that the sequence is shorter" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "lemon").shouldHaveElementAt(3, "banana")
+            }.message shouldBe """Sequence should contain "banana" at index 3, but the sequence only had 3 elements"""
+         }
+
+         "print that the actual element did not match" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "lemon").shouldHaveElementAt(2, "banana")
+            }.message shouldBe """Sequence should contain "banana" at index 2, but the value was different: "lemon"."""
+         }
       }
 
       "not have element at" should {
-         abort<IndexOutOfBoundsException>("for empty") {
-            sampleData.empty.shouldNotHaveElementAt(sampleData.empty.count(), 0)
+         "handle empty sequence" {
+            shouldNotThrowAny {
+               sampleData.empty.shouldNotHaveElementAt(sampleData.empty.count(), 0)
+            }
          }
 
-         abort<IndexOutOfBoundsException>("when an element after the end is requested") {
+      "when an element after the end is requested" {
+         shouldNotThrowAny {
             sampleData.nulls.shouldNotHaveElementAt(sampleData.nulls.count(), 0)
          }
+      }
 
          fail("when the sequence has the element") {
             sampleData.countup.shouldNotHaveElementAt(10, 10)
@@ -491,6 +524,12 @@ class SequenceMatchersTest : WordSpec() {
 
          succeed("when the sequence doesn't contain the value") {
             sampleData.sparse.shouldNotContain(2)
+         }
+
+         "print the index of element" {
+            shouldThrow<AssertionError> {
+               sequenceOf("apple", "orange", "lemon").shouldNotContain("orange")
+            }.message shouldBe """Sequence should not contain element "orange", but contained it at index 1"""
          }
       }
 
@@ -846,13 +885,13 @@ class SequenceMatchersTest : WordSpec() {
          "fail with repeated nulls" {
             shouldThrowAny {
                sampleData.sparse.shouldBeUnique()
-            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [<null>]")
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates:\n<null> at indexes: [0, 1, 2]")
          }
 
          "fail with repeats" {
             shouldThrowAny {
                sampleData.repeating.shouldBeUnique()
-            }.shouldHaveMessage("Sequence should be Unique, but has duplicates: [1, 2, 3]")
+            }.shouldHaveMessage("Sequence should be Unique, but has duplicates:\n1 at indexes: [0, 3]\n2 at indexes: [1, 4]\n3 at indexes: [2, 5]")
          }
 
          succeed("for multiple unique") {
@@ -906,7 +945,7 @@ class SequenceMatchersTest : WordSpec() {
          "fail with repeats" {
             shouldThrowAny {
                sampleData.repeating.shouldNotContainDuplicates()
-            }.shouldHaveMessage("Sequence should not contain duplicates, but has some: [1, 2, 3]")
+            }.shouldHaveMessage("Sequence should not contain duplicates, but has:\n1 at indexes: [0, 3]\n2 at indexes: [1, 4]\n3 at indexes: [2, 5]")
          }
       }
 

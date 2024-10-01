@@ -1,16 +1,17 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.engine.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.wrapper
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.SpecWrapperExtension
+import io.kotest.engine.flatMap
+import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
-import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 
 /**
  * If a [Spec] is annotated with the [ApplyExtension] annotation, registers any extensions
