@@ -1,4 +1,6 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 
 plugins {
    id("java")
@@ -12,6 +14,7 @@ repositories {
    maven("https://oss.sonatype.org/content/repositories/snapshots")
    intellijPlatform {
       defaultRepositories()
+      jetbrainsRuntime()
    }
 }
 
@@ -22,6 +25,7 @@ data class PluginDescriptor(
    // https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
    val sdkVersion: String, // the version string passed to the intellij sdk gradle plugin
    val sourceFolder: String, // used as the source root for specifics of this build
+   val useInstaller: Boolean, // required to be false for EAP builds
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -46,40 +50,53 @@ val descriptors = listOf(
       until = "223.*",
       sdkVersion = "2022.3",
       sourceFolder = "IC-223",
+      useInstaller = true,
    ),
    PluginDescriptor(
       since = "231.8109.163", // this version is 2023.1 release
       until = "231.*",
       sdkVersion = "2023.1",
       sourceFolder = "IC-231",
+      useInstaller = true,
    ),
    PluginDescriptor(
       since = "232.5150.116", // this version is 2023.2
       until = "232.*",
       sdkVersion = "2023.2",
       sourceFolder = "IC-232",
+      useInstaller = true,
    ),
    PluginDescriptor(
       since = "233.9802.16", // this version is 2023.3
       until = "233.*",
       sdkVersion = "2023.3",
       sourceFolder = "IC-233",
+      useInstaller = true,
    ),
    PluginDescriptor(
       since = "241.15989.150", // this version is 2024.1.x
       until = "242.*",
       sdkVersion = "2024.1",
       sourceFolder = "IC-241",
+      useInstaller = true,
    ),
    PluginDescriptor(
       since = "242.*", // this version is 2024.2.x
       until = "243.*",
       sdkVersion = "2024.2",
       sourceFolder = "IC-242",
+      useInstaller = true,
+   ),
+   PluginDescriptor(
+      since = "243.*", // this version is 2024.3.x
+      until = "244.*",
+      sdkVersion = "243-EAP-SNAPSHOT",
+      sourceFolder = "IC-243",
+      useInstaller = false,
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-243"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 
@@ -98,11 +115,10 @@ intellijPlatform {
    buildSearchableOptions = false
    projectName = project.name
    instrumentCode = true
-
    pluginConfiguration {
       name = "kotest-plugin-intellij"
       id = "kotest-plugin-intellij"
-      description = "Official Kotest plugin for IntelliJ IDEA fo running tests in the IDE"
+      description = "Official Kotest plugin for IntelliJ IDEA for running tests in the IDE"
       version = project.version.toString() + "-" + descriptor.sdkVersion
       vendor {
          name = "Kotest"
@@ -120,7 +136,10 @@ intellijPlatform {
 dependencies {
    testImplementation("junit:junit:4.13.2")
    intellijPlatform {
-      intellijIdeaCommunity(descriptor.sdkVersion)
+      // snapshots here https://www.jetbrains.com/intellij-repository/snapshots/
+      intellijIdeaCommunity(descriptor.sdkVersion, useInstaller = descriptor.useInstaller)
+      if (!descriptor.useInstaller)
+         jetbrainsRuntime()
       instrumentationTools()
       pluginVerifier()
       zipSigner()
@@ -177,5 +196,18 @@ tasks {
       // Only run tests from classes that end with "Test"
       include("**/*Test.class")
       include("**/*Tests.class")
+   }
+}
+
+tasks {
+   printProductsReleases {
+      channels = listOf(ProductRelease.Channel.EAP)
+      types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+      untilBuild = provider { null }
+
+      doLast {
+         val latestEap = productsReleases.get().max()
+         println("Latest EAP build: $latestEap")
+      }
    }
 }
