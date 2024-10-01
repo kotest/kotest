@@ -2,8 +2,9 @@ package io.kotest.engine.spec.interceptor
 
 import io.kotest.assertions.all
 import io.kotest.assertions.fail
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.SpecRef
@@ -14,8 +15,8 @@ import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
-@OptIn(ExperimentalKotest::class)
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class IgnoredSpecInterceptorTests : FunSpec({
    context("IgnoredSpecInterceptor should report appropriate reasons when a class is ignored by @Ignored") {
       withData(nameFn = { "Interceptor reports: $it" },
