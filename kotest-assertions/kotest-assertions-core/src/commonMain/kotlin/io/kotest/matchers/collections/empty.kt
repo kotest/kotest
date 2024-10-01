@@ -137,7 +137,7 @@ fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    )
 }
 
-private fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher<Iterable<T>> {
+internal fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher<Iterable<T>> {
    override fun test(value: Iterable<T>): MatcherResult {
       val name = name ?: value.containerName()
       val passed: Boolean
