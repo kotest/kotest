@@ -1,6 +1,6 @@
 [versions]
 blockhound = "1.0.9.RELEASE"
-classgraph = "4.8.175"
+classgraph = "4.8.176"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
