@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.engine.test.blocking
 
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class DescribeSpecBlockingTest : DescribeSpec() {
    init {
 
