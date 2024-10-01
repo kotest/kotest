@@ -4,6 +4,8 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -20,6 +22,7 @@ import java.io.FileNotFoundException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class TeamCityTestEngineListenerTest : FunSpec() {
 
    init {
@@ -218,7 +221,10 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Error(0.seconds, Exception("wobble")))
+            listener.specFinished(
+               TeamCityTestEngineListenerTest::class,
+               TestResult.Error(0.seconds, Exception("wobble"))
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']

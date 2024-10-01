@@ -1,28 +1,17 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.assertions.fail
-import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.DescriptorId
-import io.kotest.core.names.TestName
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.interceptors.MarkAbortedExceptionsAsSkippedTestInterceptor
 import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.inspectors.forOne
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldMatchEach
-import io.kotest.matchers.maps.shouldContainAll
-import io.kotest.matchers.maps.shouldMatchAll
-import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.opentest4j.TestAbortedException
-import kotlin.time.Duration.Companion.milliseconds
 
+@EnabledIf(LinuxCondition::class)
 class AbortedExceptionTest : FreeSpec({
    "TestAbortedException is handled" {
       val collector = CollectingTestEngineListener()

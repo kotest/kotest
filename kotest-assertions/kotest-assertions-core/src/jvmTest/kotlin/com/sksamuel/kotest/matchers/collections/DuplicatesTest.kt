@@ -3,30 +3,86 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.collections.duplicationReport
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.duplicationByCompareReportWith
+import io.kotest.matchers.collections.duplicationByEqualsReport
 import io.kotest.matchers.collections.shouldContainDuplicates
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
 class DuplicatesTest : WordSpec({
-   "duplicates" should {
+   "duplicationByEqualsReport" should {
       "be empty for unique values" {
-         listOf(1, 2, 3, 4, null).duplicationReport().hasDuplicates().shouldBeFalse()
+         listOf(1, 2, 3, 4, null).duplicationByEqualsReport().hasDuplicates().shouldBeFalse()
       }
 
       "return not null duplicates" {
-         listOf(1, 2, 3, 4, 3, 2).duplicationReport().duplicates
+         listOf(1, 2, 3, 4, 3, 2).duplicationByEqualsReport().duplicates
             .shouldContainExactly(mapOf(2 to listOf(1, 5), 3 to listOf(2, 4)))
       }
 
       "return null duplicates" {
-         listOf(null, 2, 3, null, 2).duplicationReport().duplicates
+         listOf(null, 2, 3, null, 2).duplicationByEqualsReport().duplicates
             .shouldContainExactly(mapOf(null to listOf(0, 3), 2 to listOf(1, 4)))
       }
 
       "return null duplicates" {
-         listOf(null, null).duplicationReport().duplicates.shouldContainExactly(mapOf(null to listOf(0, 1)))
+         listOf(null, null).duplicationByEqualsReport().duplicates.shouldContainExactly(mapOf(null to listOf(0, 1)))
+      }
+   }
+
+   "duplicationByCompareReport" should {
+      "be empty for unique values" {
+         listOf(1, 2, 3, 4).duplicationByCompareReportWith { a, b -> a.compareTo(b) }.hasDuplicates().shouldBeFalse()
+      }
+
+      "return not null duplicates" {
+         listOf(1, 2, 3, 4, 3, 2).duplicationByCompareReportWith { a, b -> a.compareTo(b) }.duplicates
+            .shouldContainExactly(listOf(2 to listOf(1, 5), 3 to listOf(2, 4)))
+
+      }
+
+      "return not null duplicates" {
+         listOf(1, 2, 3, 4, 3, 2).duplicationByCompareReportWith { a, b -> a.compareTo(b) }.duplicates
+            .shouldContainExactly(listOf(2 to listOf(1, 5), 3 to listOf(2, 4)))
+
+         val configuredEqualities = listOf(
+            ConfigurableEquality("a", "a"),
+            ConfigurableEquality("a", "b"),
+            ConfigurableEquality("a", "a"),
+            ConfigurableEquality("b", "a"),
+            ConfigurableEquality("b", "b"),
+            ConfigurableEquality("c", "c"),
+            ConfigurableEquality("c", "c"),
+            ConfigurableEquality("d", "b"),
+            ConfigurableEquality("e", "e"),
+         )
+
+         // Sanity check
+         configuredEqualities.distinct()
+            .shouldContainExactly(
+               ConfigurableEquality("a", "a"),
+               ConfigurableEquality("b", "a"),
+               ConfigurableEquality("c", "c"),
+               ConfigurableEquality("d", "b"),
+               ConfigurableEquality("e", "e"),
+            )
+
+         val report = configuredEqualities.duplicationByCompareReportWith { a, b -> a.compareTo(b) }
+         report.hasDuplicates().shouldBeTrue()
+         report.duplicates.shouldHaveSize(3)
+         report.duplicates[0].second.shouldContainExactly(0, 2, 3)
+         report.duplicates[0].first.equalsDelegate.shouldBe("a")
+         report.duplicates[0].first.comparableDelegate.shouldBe("a")
+         report.duplicates[1].second.shouldContainExactly(1, 4, 7)
+         report.duplicates[1].first.equalsDelegate.shouldBe("a")
+         report.duplicates[1].first.comparableDelegate.shouldBe("b")
+         report.duplicates[2].second.shouldContainExactly(5, 6)
+         report.duplicates[2].first.equalsDelegate.shouldBe("c")
+         report.duplicates[2].first.comparableDelegate.shouldBe("c")
       }
    }
 
@@ -408,17 +464,3 @@ class DuplicatesTest : WordSpec({
 })
 
 private class Game(val name: String, players: Iterable<String>) : Iterable<String> by players
-
-private class NonUniqueSet : Set<Int> {
-   private val elements = listOf(1, 1)
-
-   override val size: Int = elements.size
-
-   override fun contains(element: Int): Boolean = elements.contains(element)
-
-   override fun containsAll(elements: Collection<Int>): Boolean = elements.containsAll(elements)
-
-   override fun isEmpty(): Boolean = false
-
-   override fun iterator(): Iterator<Int> = elements.iterator()
-}

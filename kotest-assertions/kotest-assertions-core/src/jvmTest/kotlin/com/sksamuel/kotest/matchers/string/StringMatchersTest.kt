@@ -91,7 +91,11 @@ class StringMatchersTest : FreeSpec() {
 
          shouldThrow<AssertionError> {
             "la" should containOnlyOnce("tour")
-         }.message shouldBe """"la" should contain the substring "tour" exactly once"""
+         }.message shouldBe """"la" should contain the substring "tour" exactly once, but did not contain it"""
+
+         shouldThrow<AssertionError> {
+            "Run, Forrest, Run" should containOnlyOnce("Run")
+         }.message shouldBe """"Run, Forrest, Run" should contain the substring "Run" exactly once, but contained it at least at indexes 0 and 14"""
 
          shouldThrow<AssertionError> {
             null shouldNot containOnlyOnce("tour")
@@ -318,6 +322,11 @@ class StringMatchersTest : FreeSpec() {
             "qweqwe123".shouldNotContainOnlyDigits()
             "qweqwe".shouldNotContainOnlyDigits()
             "123a".shouldNotContainOnlyDigits()
+         }
+         "should print first non-digit" {
+            shouldThrow<AssertionError> {
+               "123a234e".shouldContainOnlyDigits()
+            }.message shouldBe """"123a234e" should contain only digits, but contained 'a' at index 3"""
          }
       }
 

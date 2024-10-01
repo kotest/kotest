@@ -1,6 +1,8 @@
 package io.kotest.engine.concurrency
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 
@@ -18,6 +20,7 @@ private abstract class Baz
 
 private class Qux : Baz()
 
+@EnabledIf(LinuxCondition::class)
 class ConcurrencyKtTest : FreeSpec({
 
    "isIsolate should return true for class that directly marked by Isolate" {

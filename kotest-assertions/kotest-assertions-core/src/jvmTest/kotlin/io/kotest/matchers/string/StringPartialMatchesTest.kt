@@ -28,6 +28,16 @@ class StringPartialMatchesTest: WordSpec() {
          "return empty if no matches" {
             describePartialMatchesInString("hawk", text) shouldBe PartialMatchesInCollectionDescription("", "")
          }
+         "handle empty slice" {
+            val actual = describePartialMatchesInString("", text)
+            actual.partialMatchesList shouldBe ""
+            actual.partialMatchesDescription shouldBe ""
+         }
+         "handle empty text" {
+            val actual = describePartialMatchesInString("something", "")
+            actual.partialMatchesList shouldBe ""
+            actual.partialMatchesDescription shouldBe ""
+         }
          "find one match in one line" {
             val actual = describePartialMatchesInString("brown fox jumps over", line)
             actual.partialMatchesList shouldBe "Match[0]: expected[0..19] matched actual[10..29]"

@@ -7,8 +7,8 @@ import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.beEmpty as iterableBeEmpty
+import io.kotest.matchers.collections.beUniqueByEquals
 import io.kotest.matchers.collections.ContainDuplicatesMatcher
-import io.kotest.matchers.collections.duplicationReport
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
@@ -217,14 +217,9 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>): MatcherResult {
-      val report = value.asIterable().duplicationReport()
-      return MatcherResult(
-         !report.hasDuplicates(),
-         { "Sequence should be Unique, but has duplicates:\n${report.standardMessage()}" },
-         { "Sequence should contain at least one duplicate element" }
-      )
-   }
+   val delegate = beUniqueByEquals<T>("Sequence")
+
+   override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
