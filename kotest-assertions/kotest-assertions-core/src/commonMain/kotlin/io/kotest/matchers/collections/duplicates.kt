@@ -111,7 +111,7 @@ fun <T> containDuplicates(): Matcher<Iterable<T>> = ContainDuplicatesMatcher(nul
 internal class ContainDuplicatesMatcher<T>(private val name: String?) : Matcher<Iterable<T>> {
    override fun test(value: Iterable<T>): MatcherResult {
       val name = name ?: value.containerName()
-      val report = value.duplicationReport()
+      val report = value.duplicationByEqualsReport()
       return MatcherResult(
          report.hasDuplicates(),
          { "$name should contain duplicates" },
@@ -120,7 +120,12 @@ internal class ContainDuplicatesMatcher<T>(private val name: String?) : Matcher<
    }
 }
 
-internal class DuplicationReport<T>(iterable: Iterable<T>) {
+internal fun <T> Iterable<T>.duplicationByEqualsReport(): DuplicationByEqualsReport<T> = DuplicationByEqualsReport(this)
+
+internal fun <T> Iterable<T>.duplicationByCompareReportWith(comparator: Comparator<T>): DuplicationByCompareReport<T> =
+   DuplicationByCompareReport(this, comparator)
+
+internal class DuplicationByEqualsReport<T>(iterable: Iterable<T>) {
    val duplicates: Map<T, List<Int>> = iterable.withIndex()
       .groupingBy { it.value }
       .fold<IndexedValue<T>, T, MutableList<Int>>({ _, _ -> mutableListOf() }) { _, acc, indexedValue ->
@@ -137,4 +142,33 @@ internal class DuplicationReport<T>(iterable: Iterable<T>) {
    }
 }
 
-internal fun <T> Iterable<T>.duplicationReport(): DuplicationReport<T> = DuplicationReport(this)
+internal class DuplicationByCompareReport<T>(iterable: Iterable<T>, comparator: Comparator<T>) {
+   val duplicates: List<Pair<T, List<Int>>>
+
+   init {
+      val dupes = mutableListOf<Pair<T, List<Int>>>()
+      val sorted = iterable.withIndex()
+         .sortedWith { aIndexed, bIndexed -> comparator.compare(aIndexed.value, bIndexed.value) }
+      if (sorted.isNotEmpty()) {
+         var currentPair = sorted.first().value to mutableListOf<Int>()
+         for ((index, element) in sorted) {
+            if (comparator.compare(element, currentPair.first) != 0) {
+               dupes.add(currentPair)
+               currentPair = element to mutableListOf()
+            }
+            currentPair.second.add(index)
+         }
+         dupes.add(currentPair)
+      }
+
+      duplicates = dupes.filter { (_, indexes) -> indexes.size > 1 }
+   }
+
+   fun hasDuplicates(): Boolean = duplicates.isNotEmpty()
+
+   fun standardMessage(): String {
+      return duplicates.joinToString(separator = "\n") { dupe ->
+         "${dupe.first.print().value} at indexes: ${dupe.second}"
+      }
+   }
+}
