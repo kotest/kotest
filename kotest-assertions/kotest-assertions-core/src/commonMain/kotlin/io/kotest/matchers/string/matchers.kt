@@ -147,13 +147,25 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
    val matchOutcome = matchSubstrings(value, substrings.toList())
 
+   val substringFoundEarlier = if(matchOutcome is ContainInOrderOutcome.Mismatch) {
+      describePartialMatchesInString(matchOutcome.substring, value).toString()
+   } else ""
+
+   val completeMismatchDescription = joinNonEmpty(
+      "\n",
+      matchOutcome.mistmatchDescription,
+      substringFoundEarlier
+   )
+
    MatcherResult(
       matchOutcome.match,
-      { "${value.print().value} should include substrings ${substrings.print().value} in order${prefixIfNotEmpty(matchOutcome.mistmatchDescription, "\n")}" },
+      { "${value.print().value} should include substrings ${substrings.print().value} in order${prefixIfNotEmpty(completeMismatchDescription, "\n")}" },
       { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
 }
 
 internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty()) "" else "$prefix$value"
+
+internal fun joinNonEmpty(separator: String, vararg values: String) = values.filter { it.isNotEmpty() }.joinToString(separator)
 
 internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
    substrings.isEmpty() -> ContainInOrderOutcome.Match
