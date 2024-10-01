@@ -208,6 +208,11 @@ class StringMatchersTest : FreeSpec() {
                null.shouldContainADigit()
             }.message shouldBe "Expecting actual not to be null"
          }
+         "shouldNotContainADigit should print first digit" {
+            shouldThrow<AssertionError> {
+               "aww1b2c3" shouldNot containADigit()
+            }.message shouldBe "\"aww1b2c3\" should not contain any digits, but contained '1' at index 3"
+         }
       }
 
       "string should beBlank()" - {
