@@ -70,6 +70,20 @@ Arb.positiveInt().checkAll(PropTestConfig(shrinkingMode = ShrinkingMode.Unbounde
 }
 ```
 
+If you want to configure the behaviour globally, then either modify the value of `PropertyTesting.defaultShrinkingMode` or use the following system properties as in this example:
+
+```
+# If you want to disable shrinking:
+kotest.proptest.default.shrinking.mode=off
+
+# If you want to continue shrinking without bounds:
+kotest.proptest.default.shrinking.mode=unbounded
+
+# If you want to shrink a bounded number of times (e.g. 500):
+kotest.proptest.default.shrinking.mode=bounded
+kotest.proptest.default.shrinking.bound=500
+```
+
 ## Shrinking for custom generators
 [Custom generators](customgens.md) do not have a Shrinker defined by Kotest.
 Instead, custom Shrinkers can be implemented.

@@ -1,6 +1,5 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.EngineResult
 
@@ -10,7 +9,7 @@ import io.kotest.engine.EngineResult
 internal object TestDslStateInterceptor : EngineInterceptor {
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
       val result = execute(context)
       return runCatching { TestDslState.checkState() }.fold(

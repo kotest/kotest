@@ -38,7 +38,7 @@ internal class LifecycleInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
       logger.log { Pair(testCase.name.testName, "Notifying listener test started") }

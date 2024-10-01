@@ -9,7 +9,7 @@ internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
       return when (val timeout = context.configuration.projectTimeout) {
          null -> execute(context)

@@ -3,9 +3,10 @@ public final class io/kotest/extensions/junitxml/JunitXmlReporter : io/kotest/co
 	public static final field BuildDirKey Ljava/lang/String;
 	public static final field Companion Lio/kotest/extensions/junitxml/JunitXmlReporter$Companion;
 	public static final field DefaultBuildDir Ljava/lang/String;
-	public fun <init> ()V
-	public fun <init> (ZZLjava/lang/String;)V
-	public synthetic fun <init> (ZZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZZLjava/lang/String;Ljava/time/Clock;)V
+	public synthetic fun <init> (ZZLjava/lang/String;Ljava/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZZLjava/nio/file/Path;Ljava/time/Clock;)V
+	public synthetic fun <init> (ZZLjava/nio/file/Path;Ljava/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

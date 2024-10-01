@@ -14,7 +14,7 @@ internal object TestPathContextInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return withContext(TestPathContextElement(testCase.descriptor.path(true))) {
          test(testCase, scope)
@@ -29,7 +29,7 @@ internal object TestNameContextInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return withContext(TestNameContextElement(testCase.name.testName)) {
          test(testCase, scope)

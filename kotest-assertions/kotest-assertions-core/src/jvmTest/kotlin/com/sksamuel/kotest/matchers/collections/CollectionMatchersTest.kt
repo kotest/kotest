@@ -14,7 +14,6 @@ import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
-import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
@@ -36,7 +35,6 @@ import io.kotest.matchers.collections.shouldBeSortedDescending
 import io.kotest.matchers.collections.shouldBeSortedDescendingBy
 import io.kotest.matchers.collections.shouldBeSortedWith
 import io.kotest.matchers.collections.shouldContainAnyOf
-import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
@@ -54,7 +52,6 @@ import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldNotBeSortedBy
 import io.kotest.matchers.collections.shouldNotBeSortedWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
-import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
@@ -73,6 +70,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotHave
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class CollectionMatchersTest : WordSpec() {
@@ -256,21 +254,6 @@ class CollectionMatchersTest : WordSpec() {
 
          "compare by the tranformed value in descending order" {
             items.shouldBeSortedDescendingBy { it.first * -1 }
-         }
-      }
-
-      "haveDuplicates" should {
-         "test that a collection is unique" {
-            listOf(1, 2, 3, 3) should containDuplicates()
-            listOf(1, 2, 3, 4) shouldNot containDuplicates()
-            listOf(1, 2, 3, 3).shouldContainDuplicates()
-            listOf(1, 2, 3, 4).shouldNotContainDuplicates()
-         }
-
-         "print duplicates in message" {
-            shouldThrowAny {
-               listOf(1, 2, 3, 4, 2, 1) shouldNot containDuplicates()
-            }.shouldHaveMessage("Collection should not contain duplicates, but has some: [1, 2]")
          }
       }
 
@@ -1127,6 +1110,20 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                foo shouldBeIn list
             }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+         }
+
+         "fail and find similar items" {
+            shouldThrow<AssertionError> {
+               sweetGreenApple shouldBeIn listOf(
+                  sweetGreenPear, sweetRedApple
+               )
+            }.message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=apple, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=red, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"red">"""
+            )
          }
       }
 

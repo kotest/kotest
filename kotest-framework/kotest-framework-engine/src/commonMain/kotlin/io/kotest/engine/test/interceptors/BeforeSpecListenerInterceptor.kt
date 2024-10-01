@@ -32,7 +32,7 @@ internal class BeforeSpecListenerInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult,
+      test: NextTestExecutionInterceptor,
    ): TestResult {
       // check if we need to run beforeSpec and if so do inside the mutex to avoid race conditions
       // the actual test invocation should be outside of the lock

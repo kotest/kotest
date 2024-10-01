@@ -19,7 +19,7 @@ internal class TestCaseExtensionInterceptor(registry: ExtensionRegistry) : TestE
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
       return extensions.intercept(testCase, scope) { tc, s -> test(tc, s) }
    }

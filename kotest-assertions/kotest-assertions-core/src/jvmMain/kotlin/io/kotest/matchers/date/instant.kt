@@ -14,7 +14,7 @@ fun before(anotherInstant: Instant) = object : Matcher<Instant> {
       return MatcherResult(
          value.isBefore(anotherInstant),
          { "Expected $value to be before $anotherInstant, but it's not." },
-         { "$anotherInstant is not expected to be before $value." }
+         { "$value is not expected to be before $anotherInstant." }
       )
    }
 }

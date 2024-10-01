@@ -301,11 +301,23 @@ public final class io/kotest/matchers/collections/BoundsKt {
 	public static final fun haveLowerBound (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun haveUpperBound (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldHaveLowerBound (Ljava/lang/Iterable;Ljava/lang/Comparable;)Ljava/lang/Iterable;
-	public static final fun shouldHaveLowerBound (Ljava/util/Collection;Ljava/lang/Comparable;)Ljava/util/Collection;
+	public static final fun shouldHaveLowerBound ([BB)[B
+	public static final fun shouldHaveLowerBound ([CC)[C
+	public static final fun shouldHaveLowerBound ([DD)[D
+	public static final fun shouldHaveLowerBound ([FF)[F
+	public static final fun shouldHaveLowerBound ([II)[I
+	public static final fun shouldHaveLowerBound ([JJ)[J
 	public static final fun shouldHaveLowerBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldHaveLowerBound ([SS)[S
 	public static final fun shouldHaveUpperBound (Ljava/lang/Iterable;Ljava/lang/Comparable;)Ljava/lang/Iterable;
-	public static final fun shouldHaveUpperBound (Ljava/util/Collection;Ljava/lang/Comparable;)Ljava/util/Collection;
+	public static final fun shouldHaveUpperBound ([BB)[B
+	public static final fun shouldHaveUpperBound ([CC)[C
+	public static final fun shouldHaveUpperBound ([DD)[D
+	public static final fun shouldHaveUpperBound ([FF)[F
+	public static final fun shouldHaveUpperBound ([II)[I
+	public static final fun shouldHaveUpperBound ([JJ)[J
 	public static final fun shouldHaveUpperBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldHaveUpperBound ([SS)[S
 }
 
 public final class io/kotest/matchers/collections/CollectionMatchersKt {
@@ -463,21 +475,51 @@ public final class io/kotest/matchers/collections/DuplicatesKt {
 	public static final fun containDuplicates ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
-	public static final fun shouldContainDuplicates ([Ljava/lang/Object;)V
+	public static final fun shouldContainDuplicates ([B)[B
+	public static final fun shouldContainDuplicates ([C)[C
+	public static final fun shouldContainDuplicates ([D)[D
+	public static final fun shouldContainDuplicates ([F)[F
+	public static final fun shouldContainDuplicates ([I)[I
+	public static final fun shouldContainDuplicates ([J)[J
+	public static final fun shouldContainDuplicates ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldContainDuplicates ([S)[S
+	public static final fun shouldContainDuplicates ([Z)[Z
 	public static final fun shouldNotContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotContainDuplicates ([B)[B
+	public static final fun shouldNotContainDuplicates ([C)[C
+	public static final fun shouldNotContainDuplicates ([D)[D
+	public static final fun shouldNotContainDuplicates ([F)[F
+	public static final fun shouldNotContainDuplicates ([I)[I
+	public static final fun shouldNotContainDuplicates ([J)[J
 	public static final fun shouldNotContainDuplicates ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotContainDuplicates ([S)[S
+	public static final fun shouldNotContainDuplicates ([Z)[Z
 }
 
 public final class io/kotest/matchers/collections/EmptyKt {
 	public static final fun beEmpty ()Lio/kotest/matchers/Matcher;
 	public static final fun beEmptyArray ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEmpty (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeEmpty (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldBeEmpty ([B)[B
+	public static final fun shouldBeEmpty ([C)[C
+	public static final fun shouldBeEmpty ([D)[D
+	public static final fun shouldBeEmpty ([F)[F
+	public static final fun shouldBeEmpty ([I)[I
+	public static final fun shouldBeEmpty ([J)[J
 	public static final fun shouldBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeEmpty ([S)[S
+	public static final fun shouldBeEmpty ([Z)[Z
 	public static final fun shouldNotBeEmpty (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotBeEmpty (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotBeEmpty ([B)[B
+	public static final fun shouldNotBeEmpty ([C)[C
+	public static final fun shouldNotBeEmpty ([D)[D
+	public static final fun shouldNotBeEmpty ([F)[F
+	public static final fun shouldNotBeEmpty ([I)[I
+	public static final fun shouldNotBeEmpty ([J)[J
 	public static final fun shouldNotBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeEmpty ([S)[S
+	public static final fun shouldNotBeEmpty ([Z)[Z
 }
 
 public final class io/kotest/matchers/collections/IncreasingKt {
