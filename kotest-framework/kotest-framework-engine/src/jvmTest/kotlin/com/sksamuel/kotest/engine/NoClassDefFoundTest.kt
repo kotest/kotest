@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -8,6 +10,7 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 // tests that a java.lang.NoClassDefFoundError is caught
+@EnabledIf(LinuxCondition::class)
 class NoClassDefFoundTest : FunSpec() {
    init {
       test("java.lang.NoClassDefFoundError should be caught") {
