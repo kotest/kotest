@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.ints.between
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.and
+import io.kotest.matchers.comparables.between
 import io.kotest.matchers.or
 import io.kotest.matchers.shouldBe
 
