@@ -2,6 +2,8 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
@@ -12,6 +14,7 @@ import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class TagExtensionTest : StringSpec() {
 
    init {
