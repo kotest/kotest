@@ -879,32 +879,32 @@ public final class io/kotest/core/annotation/displayname/WrapperKt {
 }
 
 public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/LinuxCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/MacCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/NotLinuxCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/NotMacCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/NotWindowsCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/EnabledCondition {
-	public static final field INSTANCE Lio/kotest/core/annotation/enabledif/WindowsCondition;
+	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
