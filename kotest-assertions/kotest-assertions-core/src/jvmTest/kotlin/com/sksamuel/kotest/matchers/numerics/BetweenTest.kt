@@ -19,7 +19,7 @@ class BetweenTest : ShouldSpec() {
             }
          }
          should("use the correct error message") {
-            shouldThrowMessage("1 should not be between (0, 2)") {
+            shouldThrowMessage("1 should not be between (0, 2) inclusive") {
                1.shouldNotBeBetween(0, 2)
             }
          }
