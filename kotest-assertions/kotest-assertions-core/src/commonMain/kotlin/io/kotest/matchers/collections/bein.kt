@@ -129,7 +129,7 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
       val match = value in collection
 
       val possibleMatchesDescription = prefixIfNotEmpty(
-         possibleMatchesForSet(match, collection.toSet(), setOf(value), verifier = null),
+         possibleMatchesForSet(match, setOf(value), collection.toSet(), verifier = null),
          "\n"
       )
 

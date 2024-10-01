@@ -109,6 +109,7 @@ data class PropTestConfig(
    val labelsReporter: LabelsReporter = StandardLabelsReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
+   val skipTo: Int = 0
 )
 
 interface PropTestListener {

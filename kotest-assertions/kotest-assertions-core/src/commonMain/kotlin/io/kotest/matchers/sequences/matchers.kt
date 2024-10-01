@@ -6,7 +6,8 @@ import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.collections.duplicates
+import io.kotest.matchers.collections.ContainDuplicatesMatcher
+import io.kotest.matchers.collections.duplicationReport
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
@@ -216,10 +217,10 @@ fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val duplicates = value.toList().duplicates()
+      val report = value.asIterable().duplicationReport()
       return MatcherResult(
-         duplicates.isEmpty(),
-         { "Sequence should be Unique, but has duplicates: ${duplicates.print().value}" },
+         !report.hasDuplicates(),
+         { "Sequence should be Unique, but has duplicates:\n${report.standardMessage()}" },
          { "Sequence should contain at least one duplicate element" }
       )
    }
@@ -229,12 +230,7 @@ fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val duplicates = value.toList().duplicates()
-      return MatcherResult(
-         duplicates.isNotEmpty(),
-         { "Sequence should contain duplicates" },
-         { "Sequence should not contain duplicates, but has some: ${duplicates.print().value}" }
-      )
+      return ContainDuplicatesMatcher<T>("Sequence").test(value.asIterable())
    }
 }
 
