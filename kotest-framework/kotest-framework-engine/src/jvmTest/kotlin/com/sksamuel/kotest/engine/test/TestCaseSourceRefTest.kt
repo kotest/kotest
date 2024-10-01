@@ -17,8 +17,8 @@ class TestCaseSourceRefTest : FunSpec() {
       test("source ref should include file name and line number") {
          val tests = Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest())
          tests.map { it.source }.shouldContainExactly(
-            ClassSource("com.sksamuel.kotest.engine.test.MySpecForTestCaseSourceRefTest", 11),
             ClassSource("com.sksamuel.kotest.engine.test.MySpecForTestCaseSourceRefTest", 14),
+            ClassSource("com.sksamuel.kotest.engine.test.MySpecForTestCaseSourceRefTest", 17),
          )
       }
 
