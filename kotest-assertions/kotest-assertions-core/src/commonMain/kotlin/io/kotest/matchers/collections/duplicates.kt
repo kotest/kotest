@@ -96,16 +96,6 @@ fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
    return this
 }
 
-fun <T, C : Collection<T>> C.shouldContainDuplicates(): C {
-   this should ContainDuplicatesMatcher(null)
-   return this
-}
-
-fun <T, C : Collection<T>> C.shouldNotContainDuplicates(): C {
-   this shouldNot ContainDuplicatesMatcher(null)
-   return this
-}
-
 fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
    this should ContainDuplicatesMatcher(null)
    return this

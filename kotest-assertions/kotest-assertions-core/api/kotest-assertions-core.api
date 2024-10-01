@@ -474,7 +474,6 @@ public final class io/kotest/matchers/collections/DecreasingKt {
 public final class io/kotest/matchers/collections/DuplicatesKt {
 	public static final fun containDuplicates ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainDuplicates ([B)[B
 	public static final fun shouldContainDuplicates ([C)[C
 	public static final fun shouldContainDuplicates ([D)[D
@@ -485,7 +484,6 @@ public final class io/kotest/matchers/collections/DuplicatesKt {
 	public static final fun shouldContainDuplicates ([S)[S
 	public static final fun shouldContainDuplicates ([Z)[Z
 	public static final fun shouldNotContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainDuplicates ([B)[B
 	public static final fun shouldNotContainDuplicates ([C)[C
 	public static final fun shouldNotContainDuplicates ([D)[D
