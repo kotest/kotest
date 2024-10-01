@@ -43,7 +43,7 @@ internal class SpecInterceptorPipeline(
    ): Result<Map<TestCase, TestResult>> {
       val interceptors = createPipeline()
       logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
-      return interceptors.foldRight(initial) { ext, fn -> { spec -> ext.intercept(spec, fn) } }.invoke(spec)
+      return interceptors.foldRight(initial) { ext, next -> { spec -> ext.intercept(spec, next) } }.invoke(spec)
    }
 
    private fun createPipeline(): List<SpecInterceptor> {

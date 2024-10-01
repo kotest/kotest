@@ -5,6 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -17,10 +18,10 @@ internal class EngineContextInterceptor(
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+      next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       return withContext(EngineContextElement(context)) {
-         fn(spec)
+         next(spec)
       }
    }
 }
