@@ -1,10 +1,13 @@
 package io.kotest.datatest
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.mpp.isStable
 import java.util.UUID
 
+@EnabledIf(LinuxCondition::class)
 class StableTestNameTest : FunSpec() {
    init {
       test("UUIDs should be stable on JVM") {

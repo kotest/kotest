@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
@@ -14,6 +16,7 @@ private val factory = funSpec {
 /**
  * Tests `invocationTimeout` at the spec level using inline assignment.
  */
+@EnabledIf(LinuxCondition::class)
 class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
       extension(ExpectFailureExtension)

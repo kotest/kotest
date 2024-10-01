@@ -2,6 +2,9 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.assertions.asClue
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.TestEngineLauncher
@@ -12,6 +15,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import kotlin.time.Duration.Companion.milliseconds
 
+@EnabledIf(LinuxCondition::class)
 class ContainerTimeoutTest : FunSpec() {
    init {
       context("container test should timeout if nested exceeds parent timeout") {
