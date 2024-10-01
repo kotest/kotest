@@ -317,6 +317,11 @@ class StringMatchersTest : FreeSpec() {
             "qweqwe".shouldNotContainOnlyDigits()
             "123a".shouldNotContainOnlyDigits()
          }
+         "should print first non-digit" {
+            shouldThrow<AssertionError> {
+               "123a234e".shouldContainOnlyDigits()
+            }.message shouldBe """"123a234e" should contain only digits, but contained 'a' at index 3"""
+         }
       }
 
 
