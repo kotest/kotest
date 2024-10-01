@@ -31,7 +31,7 @@ internal class SpecInterceptorPipeline(
 
    /**
     * Executes all [SpecInterceptor]s in turn, returning a result, which will be
-    * succesful and contain the results of all tests, unless some setup callback
+    * successful and contain the results of all tests, unless some setup callback
     * fails, in which case the result will be a failure.
     *
     * If any [SpecInterceptor] elects to skip the given spec instance, then the result will contain
@@ -39,11 +39,17 @@ internal class SpecInterceptorPipeline(
     */
    suspend fun execute(
       spec: Spec,
-      initial: suspend (Spec) -> Result<Map<TestCase, TestResult>>,
+      initial: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val interceptors = createPipeline()
       logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
-      return interceptors.foldRight(initial) { ext, next -> { spec -> ext.intercept(spec, next) } }.invoke(spec)
+      return interceptors.foldRight(initial) { ext, next ->
+         object : NextSpecInterceptor {
+            override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+               return ext.intercept(spec, next)
+            }
+         }
+      }.invoke(spec)
    }
 
    private fun createPipeline(): List<SpecInterceptor> {

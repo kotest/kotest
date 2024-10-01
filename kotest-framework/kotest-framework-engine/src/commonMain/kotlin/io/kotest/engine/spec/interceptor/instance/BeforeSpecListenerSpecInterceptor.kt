@@ -21,7 +21,7 @@ internal class BeforeSpecListenerSpecInterceptor(private val context: EngineCont
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val state = context.state[spec::class.beforeSpecStateKey()] as? BeforeSpecState
-      return next(spec).flatMap { results ->
+      return next.invoke(spec).flatMap { results ->
          when {
             state == null -> Result.success(results)
             state.errors.isEmpty() -> Result.success(results)

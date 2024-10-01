@@ -35,7 +35,7 @@ internal class InlineTagSpecInterceptor(
          .parse()
          .isPotentiallyActive(allTags)
 
-      return if (potentiallyActive) next(spec) else {
+      return if (potentiallyActive) next.invoke(spec) else {
          val reason = "Ignored due to tags in spec: ${allTags.joinToString(", ")}"
          runCatching { listener.specIgnored(spec::class, reason) }
             .flatMap { extensions.ignored(spec::class, reason) }

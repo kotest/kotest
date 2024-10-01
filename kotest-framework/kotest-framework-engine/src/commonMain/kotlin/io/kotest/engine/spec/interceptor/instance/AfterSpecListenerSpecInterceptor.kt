@@ -19,7 +19,7 @@ internal class AfterSpecListenerSpecInterceptor(private val registry: ExtensionR
       spec: Spec,
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
-      return next(spec).flatMap { results ->
+      return next.invoke(spec).flatMap { results ->
          if (hasActiveTest(results)) {
             SpecExtensions(registry)
                .afterSpec(spec)

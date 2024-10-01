@@ -21,7 +21,7 @@ internal class EngineContextInterceptor(
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       return withContext(EngineContextElement(context)) {
-         next(spec)
+         next.invoke(spec)
       }
    }
 }

@@ -23,7 +23,7 @@ internal class ProjectContextInterceptor(
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       return withContext(ProjectContextElement(context)) {
-         next(spec)
+         next.invoke(spec)
       }
    }
 }

@@ -20,7 +20,7 @@ internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInter
       spec: Spec,
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
-      return extensions.intercept(spec) { next(spec) } ?: Result.success(emptyMap())
+      return extensions.intercept(spec) { next.invoke(spec) } ?: Result.success(emptyMap())
    }
 }
 
