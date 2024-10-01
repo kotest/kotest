@@ -99,7 +99,7 @@ class ArraySchemaTest : FunSpec(
          }
          array shouldNotMatchSchema uniqueArray
          shouldFail { array shouldMatchSchema uniqueArray }
-            .message shouldBe "$ => Sequence should be Unique, but has duplicates:\nNumberNode(content=1) at indexes: [0, 1]"
+            .message shouldBe "$ => Sequence should be unique, but has:\nNumberNode(content=1) at indexes: [0, 1]"
       }
 
       test("Array not contains string") {
