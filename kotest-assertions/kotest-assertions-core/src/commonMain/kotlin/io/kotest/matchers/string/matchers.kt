@@ -40,7 +40,7 @@ fun String?.shouldNotContainADigit(): String? {
 }
 
 fun containADigit() = neverNullMatcher<String> { value ->
-   val firstDigit = value.asSequence().withIndex().firstOrNull { it.value in '0'..'9' }
+   val (firstDigitIndex, firstDigit) = value.asSequence().withIndex().firstOrNull { it.value in '0'..'9' }
    MatcherResult(
       firstDigit != null,
       { "${value.print().value} should contain at least one digit" },
