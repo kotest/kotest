@@ -2,8 +2,10 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
@@ -20,10 +22,12 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
             }
          }
          SpecStartedInterceptor(listener)
-            .intercept(SpecRef.Reference(FooSpec::class)) {
-               result += "b"
-               Result.success(emptyMap())
-            }
+            .intercept(SpecRef.Reference(FooSpec::class), object : NextSpecRefInterceptor {
+               override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+                  result += "b"
+                  return Result.success(emptyMap())
+               }
+            })
          result shouldBe "ab"
       }
 
@@ -35,10 +39,12 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
             }
          }
          SpecFinishedInterceptor(listener)
-            .intercept(SpecRef.Reference(FooSpec::class)) {
-               r += "b"
-               Result.success(emptyMap())
-            }
+            .intercept(SpecRef.Reference(FooSpec::class), object : NextSpecRefInterceptor {
+               override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+                  r += "b"
+                  return Result.success(emptyMap())
+               }
+            })
          r shouldBe "ba"
       }
    }

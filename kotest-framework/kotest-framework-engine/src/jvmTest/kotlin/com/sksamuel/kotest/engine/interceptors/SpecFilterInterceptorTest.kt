@@ -5,7 +5,10 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -21,16 +24,26 @@ class SpecFilterInterceptorTest : FunSpec() {
             }
          })
          var fired = false
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(SpecRef.Reference(FooSpec::class)) {
-            fired = true
-            Result.success(emptyMap())
-         }
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry)
+            .intercept(
+               SpecRef.Reference(FooSpec::class),
+               object : NextSpecRefInterceptor {
+                  override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+                     fired = true
+                     return Result.success(emptyMap())
+                  }
+               })
          fired.shouldBeFalse()
 
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(SpecRef.Reference(BarSpec::class)) {
-            fired = true
-            Result.success(emptyMap())
-         }
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry)
+            .intercept(
+               SpecRef.Reference(BarSpec::class),
+               object : NextSpecRefInterceptor {
+                  override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+                     fired = true
+                     return Result.success(emptyMap())
+                  }
+               })
          fired.shouldBeTrue()
       }
    }

@@ -19,6 +19,6 @@ internal interface SpecRefInterceptor {
  *
  * This is a functional interface to reduce the size of stack traces - type-erased lambda types add excess stack lines.
  */
-internal fun interface NextSpecRefInterceptor {
+internal interface NextSpecRefInterceptor {
    suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>>
 }
