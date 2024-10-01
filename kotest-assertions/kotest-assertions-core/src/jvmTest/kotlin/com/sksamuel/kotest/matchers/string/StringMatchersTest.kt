@@ -281,6 +281,9 @@ class StringMatchersTest : FreeSpec() {
 
             "hello" shouldContainIgnoringCase "HEllO"
             "hello" shouldNotContainIgnoringCase "hella"
+            shouldThrow<AssertionError> {
+               "apples and oranges" shouldNotContainIgnoringCase "ORANGE"
+            }.message shouldBe "\"apples and oranges\" should not contain the substring \"ORANGE\" (case insensitive), but contained it at index 11"
          }
 
          "should fail if value is null" {
