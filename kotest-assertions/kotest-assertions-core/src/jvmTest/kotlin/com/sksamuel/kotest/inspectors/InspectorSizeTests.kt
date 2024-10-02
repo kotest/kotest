@@ -3,12 +3,15 @@ package com.sksamuel.kotest.inspectors
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.common.nonConstantTrue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class InspectorSizeTests : FunSpec({
 
    test("should error with large failure count #938") {
@@ -73,7 +76,7 @@ The following elements failed:
       withSystemProperty("kotest.assertions.output.max", "3") {
          shouldThrowAny {
             arrayOf(1, 2, 3, 4, 5).forAll {
-              if (nonConstantTrue()) throw NullPointerException()
+               if (nonConstantTrue()) throw NullPointerException()
             }
          }.message shouldBe """0 elements passed but expected 5
 

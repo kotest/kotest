@@ -3,7 +3,9 @@ package com.sksamuel.kotest.engine.interceptors
 import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
 import com.sksamuel.kotest.engine.active.IgnoredTestsTest
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecExecutionOrder
@@ -15,6 +17,7 @@ import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.matchers.shouldBe
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class SpecSortEngineInterceptorTest : FunSpec({
 
    test("should sort classes") {

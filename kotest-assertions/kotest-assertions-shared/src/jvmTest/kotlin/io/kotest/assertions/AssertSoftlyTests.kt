@@ -1,6 +1,8 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -10,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
+@EnabledIf(LinuxCondition::class)
 class AssertSoftlyTests : FunSpec({
    test("assertSoftly should collect errors across multiple coroutine threads") {
       withContext(Dispatchers.Unconfined) {
@@ -55,4 +58,4 @@ class AssertSoftlyTests : FunSpec({
    }
 })
 
-private fun bespokeDivision(a: Int, b: Int) = a/b
+private fun bespokeDivision(a: Int, b: Int) = a / b

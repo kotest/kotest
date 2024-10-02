@@ -483,11 +483,6 @@ public final class io/kotest/engine/project/ProjectExtensions {
 	public final fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/spec/ClassVisibilitySpecRefInterceptor : io/kotest/engine/spec/interceptor/SpecRefInterceptor {
-	public fun <init> (Lio/kotest/engine/interceptors/EngineContext;)V
-	public fun intercept-0E7RQCE (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/InstantiateSpecKt {
 	public static final fun createAndInitializeSpec (Lkotlin/reflect/KClass;Lio/kotest/core/config/ExtensionRegistry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

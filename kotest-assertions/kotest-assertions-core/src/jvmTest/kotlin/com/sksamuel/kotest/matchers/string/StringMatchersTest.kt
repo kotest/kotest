@@ -91,7 +91,11 @@ class StringMatchersTest : FreeSpec() {
 
          shouldThrow<AssertionError> {
             "la" should containOnlyOnce("tour")
-         }.message shouldBe """"la" should contain the substring "tour" exactly once"""
+         }.message shouldBe """"la" should contain the substring "tour" exactly once, but did not contain it"""
+
+         shouldThrow<AssertionError> {
+            "Run, Forrest, Run" should containOnlyOnce("Run")
+         }.message shouldBe """"Run, Forrest, Run" should contain the substring "Run" exactly once, but contained it at least at indexes 0 and 14"""
 
          shouldThrow<AssertionError> {
             null shouldNot containOnlyOnce("tour")
@@ -281,6 +285,9 @@ class StringMatchersTest : FreeSpec() {
 
             "hello" shouldContainIgnoringCase "HEllO"
             "hello" shouldNotContainIgnoringCase "hella"
+            shouldThrow<AssertionError> {
+               "apples and oranges" shouldNotContainIgnoringCase "ORANGE"
+            }.message shouldBe "\"apples and oranges\" should not contain the substring \"ORANGE\" (case insensitive), but contained it at index 11"
          }
 
          "should fail if value is null" {
@@ -313,6 +320,11 @@ class StringMatchersTest : FreeSpec() {
             "qweqwe123".shouldNotContainOnlyDigits()
             "qweqwe".shouldNotContainOnlyDigits()
             "123a".shouldNotContainOnlyDigits()
+         }
+         "should print first non-digit" {
+            shouldThrow<AssertionError> {
+               "123a234e".shouldContainOnlyDigits()
+            }.message shouldBe """"123a234e" should contain only digits, but contained 'a' at index 3"""
          }
       }
 

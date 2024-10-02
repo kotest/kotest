@@ -10,6 +10,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 
 /**
@@ -23,10 +24,7 @@ internal class SpecFilterInterceptor(
    private val extensions = SpecExtensions(registry)
    private val logger = Logger(SpecFilterInterceptor::class)
 
-   override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+   override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
       val excluded = registry.all().filterIsInstance<SpecFilter>().mapNotNull {
          val result = it.filter(ref.kclass)
@@ -35,7 +33,7 @@ internal class SpecFilterInterceptor(
       logger.log { Pair(ref.kclass.bestName(), "excludedByFilters == $excluded") }
 
       return if (excluded == null) {
-         fn(ref)
+         next.invoke(ref)
       } else {
          val reason = excluded.reason ?: "Disabled by spec filter"
          listener.specIgnored(ref.kclass, reason)

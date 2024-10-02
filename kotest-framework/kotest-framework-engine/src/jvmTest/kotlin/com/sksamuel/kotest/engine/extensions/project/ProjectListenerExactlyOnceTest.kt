@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.extensions.project
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.TestEngineLauncher
@@ -11,6 +13,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class ProjectListenerExactlyOnceTest : WordSpec() {
 
    object TestProjectListener : ProjectListener {

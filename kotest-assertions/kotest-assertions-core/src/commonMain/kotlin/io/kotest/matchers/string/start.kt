@@ -6,6 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.submatching.describePartialMatchesInString
 import kotlin.math.min
 
 infix fun <A : CharSequence?> A.shouldStartWith(prefix: CharSequence): A {
@@ -28,6 +29,10 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
             msg = "$msg (diverged at index $k)"
             break
          }
+      }
+      val partialMismatches = describePartialMatchesInString(prefix.toString(), value.toString()).toString()
+      if (partialMismatches.isNotEmpty()) {
+         msg = "$msg\n$partialMismatches"
       }
    }
    MatcherResult(

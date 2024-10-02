@@ -1,5 +1,7 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
@@ -17,6 +19,7 @@ class ThreadLocalHolder {
       }
 }
 
+@EnabledIf(LinuxCondition::class)
 class BeforeTestThreadsTest : FunSpec() {
 
    override suspend fun beforeTest(testCase: TestCase) {

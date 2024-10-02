@@ -17,6 +17,10 @@ dependencyResolutionManagement {
          name = "SonatypeSnapshots"
          mavenContent { snapshotsOnly() }
       }
+      maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+         name = "SonatypeSnapshots2"
+         mavenContent { snapshotsOnly() }
+      }
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/

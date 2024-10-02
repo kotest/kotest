@@ -1,9 +1,12 @@
 package io.kotest.submatching
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class IndexRangesOfLinesTest: StringSpec() {
+@EnabledIf(LinuxCondition::class)
+class IndexRangesOfLinesTest : StringSpec() {
    init {
       "handle single line" {
          val line = "The quick brown fox jumps over the lazy dog"

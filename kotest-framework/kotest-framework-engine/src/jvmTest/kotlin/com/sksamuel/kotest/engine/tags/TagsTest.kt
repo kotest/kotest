@@ -3,11 +3,14 @@ package com.sksamuel.kotest.engine.tags
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class TagsTest : StringSpec() {
 
    object Moo : Tag()
