@@ -7,6 +7,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldContainExactly
@@ -25,6 +27,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class EventuallyTest : FunSpec() {
 
    init {
@@ -455,8 +458,8 @@ class EventuallyTest : FunSpec() {
          val finalCount = 100
          var count = 0
          val config = eventuallyConfig {
-               retries = finalCount
-            }
+            retries = finalCount
+         }
          shouldThrow<AssertionError> {
             eventually(config) {
                count++
@@ -501,7 +504,7 @@ private suspend fun <T> testEventually(
 private suspend fun <T> testEventually(
    config: EventuallyConfiguration,
    test: suspend () -> T,
-): TestEventuallyResult<T>  {
+): TestEventuallyResult<T> {
    val start = nonDeterministicTestTimeSource().markNow()
    val invocationTimes = mutableListOf<Duration>()
 

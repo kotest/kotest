@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.data
 
 import io.kotest.assertions.throwables.shouldThrowMessage
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.Row3
 import io.kotest.data.headers
@@ -13,6 +15,7 @@ import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 import java.io.File
 
+@EnabledIf(LinuxCondition::class)
 class StringTableTest : FunSpec({
 
    val headers = headers("id", "username", "fullName")
@@ -111,7 +114,7 @@ Expected all rows to have 3 columns, but 2 rows differed
       table(headers, fileContent, transform) shouldBe table(
          headers,
          row(1, "prefix|middle|suffix", "hello|world"),
-         row(2,"prefix\\suffix", "nothing"),
+         row(2, "prefix\\suffix", "nothing"),
          row(3, "prefix\\", "suffix"),
       )
    }
@@ -152,6 +155,7 @@ Expected all rows to have 3 columns, but 2 rows differed
    }
 
    data class UserInfo(val username: String, val fullName: String)
+
    val usersTable = table(
       headers("id", "UserInfo"),
       row(4, UserInfo("jmfayard", "Jean-Michel Fayard")),

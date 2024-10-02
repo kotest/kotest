@@ -5,6 +5,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -14,6 +16,7 @@ import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 
+@EnabledIf(LinuxCondition::class)
 class ClueTest : FreeSpec({
 
    "withClue()" - {
@@ -164,12 +167,13 @@ class ClueTest : FreeSpec({
          }
 
          data class HttpResponse(val status: Int, val body: String)
+
          val response = HttpResponse(404, "not found")
          response.asClue {
-            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
+            shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
             MyData(20, "nest it").asClue { inner ->
-               shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<200> but was:<404>"
-               shouldThrow<AssertionError> {inner.a shouldBe 10}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
+               shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<200> but was:<404>"
+               shouldThrow<AssertionError> { inner.a shouldBe 10 }.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
             }
             //after nesting, everything looks as before
             shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"

@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.Platform
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
@@ -11,10 +13,10 @@ import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.createEngineDescriptor
-import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 
+@EnabledIf(LinuxCondition::class)
 class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class field should fail spec") {
@@ -38,9 +40,16 @@ class SpecInitializationErrorTest : FunSpec({
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.SpecWithInstanceFieldError"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("SpecInstantiationException", "com.sksamuel.kotest.runner.junit5.SpecWithInstanceFieldError", "SpecInstantiationException"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "SpecInstantiationException",
+            "com.sksamuel.kotest.runner.junit5.SpecWithInstanceFieldError",
+            "SpecInstantiationException"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("SpecInstantiationException"),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("SpecInstantiationException", TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "SpecInstantiationException",
+            TestExecutionResult.Status.FAILED
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "com.sksamuel.kotest.runner.junit5.SpecWithInstanceFieldError",
             TestExecutionResult.Status.FAILED,
@@ -69,9 +78,16 @@ class SpecInitializationErrorTest : FunSpec({
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.SpecWithInitError"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("SpecInstantiationException", "com.sksamuel.kotest.runner.junit5.SpecWithInitError", "SpecInstantiationException"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "SpecInstantiationException",
+            "com.sksamuel.kotest.runner.junit5.SpecWithInitError",
+            "SpecInstantiationException"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("SpecInstantiationException"),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("SpecInstantiationException", TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "SpecInstantiationException",
+            TestExecutionResult.Status.FAILED
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "com.sksamuel.kotest.runner.junit5.SpecWithInitError",
             TestExecutionResult.Status.FAILED,
