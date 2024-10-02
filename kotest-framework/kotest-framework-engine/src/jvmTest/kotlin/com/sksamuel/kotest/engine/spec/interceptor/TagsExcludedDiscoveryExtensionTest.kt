@@ -3,6 +3,8 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
@@ -13,7 +15,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 
-@ExperimentalKotest
+@EnabledIf(LinuxCondition::class)
 class TagsExcludedDiscoveryExtensionTest : FunSpec() {
    init {
 

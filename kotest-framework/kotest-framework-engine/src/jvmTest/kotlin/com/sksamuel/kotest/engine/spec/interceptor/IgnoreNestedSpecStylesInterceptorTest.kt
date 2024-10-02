@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -9,6 +11,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 
+@EnabledIf(LinuxCondition::class)
 class IgnoreNestedSpecStylesInterceptorTest : FunSpec({
    test("IgnoreNestedSpecStylesInterceptor should skip any nested spec style") {
 

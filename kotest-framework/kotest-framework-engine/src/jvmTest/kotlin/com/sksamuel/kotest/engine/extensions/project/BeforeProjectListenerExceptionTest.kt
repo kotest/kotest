@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.project
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
@@ -13,6 +15,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class BeforeProjectListenerExceptionTest : FunSpec({
 
    test("exception in beforeProject should use BeforeProjectListenerException") {

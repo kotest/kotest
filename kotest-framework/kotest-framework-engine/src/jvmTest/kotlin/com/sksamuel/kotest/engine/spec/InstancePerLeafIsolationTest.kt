@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.engine.spec
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class InstancePerLeafIsolationTest : DescribeSpec() {
 
    override fun isolationMode() = IsolationMode.InstancePerLeaf

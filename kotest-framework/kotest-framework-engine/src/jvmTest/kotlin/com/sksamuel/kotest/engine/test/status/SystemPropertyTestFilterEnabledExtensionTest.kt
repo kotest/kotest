@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.status
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.internal.KotestEngineProperties
@@ -14,6 +16,7 @@ import io.kotest.extensions.system.withEnvironment
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
    init {
       test("should include tests when no filter system property or environment variable is specified") {
