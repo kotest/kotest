@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec.specextensions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.IsolationMode
@@ -19,6 +21,7 @@ class IsolationTestExtension : SpecExtension {
 }
 
 @ApplyExtension(IsolationTestExtension::class)
+@EnabledIf(LinuxCondition::class)
 class SpecExtensionIsolationModePerTestTest : WordSpec() {
    init {
 

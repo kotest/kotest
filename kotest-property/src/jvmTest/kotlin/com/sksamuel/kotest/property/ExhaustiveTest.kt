@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.property.Exhaustive
@@ -8,6 +10,7 @@ import io.kotest.property.RandomSource
 import io.kotest.property.exhaustive.andNull
 import io.kotest.property.exhaustive.ints
 
+@EnabledIf(LinuxCondition::class)
 class ExhaustiveTest : FunSpec() {
    init {
       test("andNull should include null in the generated values") {

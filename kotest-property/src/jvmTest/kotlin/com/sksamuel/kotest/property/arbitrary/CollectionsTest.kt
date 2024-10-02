@@ -5,6 +5,8 @@ import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.exist
@@ -39,6 +41,7 @@ import io.kotest.property.exhaustive.of
 import io.kotest.property.forAll
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class CollectionsTest : DescribeSpec({
 
    describe("Arb.element should") {

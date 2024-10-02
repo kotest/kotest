@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.extensions.test.testextension
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -27,6 +29,7 @@ class TestCaseExtensionAdder(private val n: Int) : TestCaseExtension {
 }
 
 // this tests that we can use around advice with intercept
+@EnabledIf(LinuxCondition::class)
 class TestCaseExtensionTest : WordSpec() {
 
    override fun extensions() = listOf(TestCaseExtensionAdder(1), TestCaseExtensionAdder(2))

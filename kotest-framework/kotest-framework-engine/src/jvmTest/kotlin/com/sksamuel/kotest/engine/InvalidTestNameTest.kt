@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class InvalidTestNameTest : FunSpec({
 
    test("empty test name should error") {

@@ -1,15 +1,18 @@
 package com.sksamuel.kotest.engine.extensions.project
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class ProjectExtensionEngineResultTest : FunSpec({
 
    val events = mutableListOf<String>()

@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
@@ -11,6 +13,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
+@EnabledIf(LinuxCondition::class)
 class ProjectTimeoutEngineInterceptorTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {

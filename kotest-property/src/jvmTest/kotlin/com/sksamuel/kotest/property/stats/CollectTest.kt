@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.stats
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -19,6 +21,7 @@ import io.kotest.property.statistics.withCoveragePercentage
 import io.kotest.property.statistics.withCoveragePercentages
 import java.math.RoundingMode
 
+@EnabledIf(LinuxCondition::class)
 class CollectTest : FunSpec() {
    init {
       test("collecting stats") {

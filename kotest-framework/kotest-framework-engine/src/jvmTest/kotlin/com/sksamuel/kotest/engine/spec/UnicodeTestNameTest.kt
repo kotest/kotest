@@ -1,10 +1,13 @@
 package com.sksamuel.kotest.engine.spec
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import java.lang.Integer.sum
 
+@EnabledIf(LinuxCondition::class)
 class UnicodeTestNameTest : BehaviorSpec({
    isolationMode = IsolationMode.InstancePerLeaf
 

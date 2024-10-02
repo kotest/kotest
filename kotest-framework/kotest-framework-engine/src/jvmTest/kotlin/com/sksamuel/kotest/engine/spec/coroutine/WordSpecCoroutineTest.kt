@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.spec.coroutine
 
 import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -13,6 +15,7 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxCondition::class)
 class WordSpecCoroutineTest : WordSpec() {
 
    private var longOpCompleted = false
