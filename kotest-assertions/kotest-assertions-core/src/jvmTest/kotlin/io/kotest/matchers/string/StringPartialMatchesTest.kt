@@ -1,29 +1,33 @@
 package io.kotest.matchers.string
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.PartialMatchesInCollectionDescription
 import io.kotest.submatching.describePartialMatchesInString
 import io.kotest.submatching.underscoreSubstring
 
-class StringPartialMatchesTest: WordSpec() {
+@EnabledIf(LinuxCondition::class)
+class StringPartialMatchesTest : WordSpec() {
    val value = "0123456789"
    val text = """The quick brown fox
             |jumps over
             |the lazy dog""".trimMargin()
    val line = "The quick brown fox jumps over the lazy dog"
+
    init {
-       "underscoreSubstring" should {
-          "underscore start" {
-             underscoreSubstring(10, 0, 3) shouldBe "++++------"
-          }
-          "underscore middle" {
-             underscoreSubstring(10, 3, 7) shouldBe "---+++++--"
-          }
-          "underscore end" {
-             underscoreSubstring(10, 7, 10) shouldBe "-------+++"
-          }
-       }
+      "underscoreSubstring" should {
+         "underscore start" {
+            underscoreSubstring(10, 0, 3) shouldBe "++++------"
+         }
+         "underscore middle" {
+            underscoreSubstring(10, 3, 7) shouldBe "---+++++--"
+         }
+         "underscore end" {
+            underscoreSubstring(10, 7, 10) shouldBe "-------+++"
+         }
+      }
       "describePartialMatchesInString" should {
          "return empty if no matches" {
             describePartialMatchesInString("hawk", text) shouldBe PartialMatchesInCollectionDescription("", "")
@@ -74,7 +78,7 @@ class StringPartialMatchesTest: WordSpec() {
                   "Line[1] =\" jumps over the lazy dog\"",
                   "Match[0]= ++++++++++++------------",
                   "Match[1]= ------------------------"
-            )
+               )
          }
          "find match that takes one whole line" {
             val threeLines = "What?\nThe quick brown fox jumps over the lazy dog.\nAnd that's it."
