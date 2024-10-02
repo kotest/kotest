@@ -9,6 +9,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
 import io.kotest.submatching.describePartialMatchesInString
+import io.kotest.submatching.describePartialMatchesInStringForSlice
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -158,7 +159,7 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
    val matchOutcome = matchSubstrings(value, substrings.toList())
 
    val substringFoundEarlier = if(matchOutcome is ContainInOrderOutcome.Mismatch) {
-      describePartialMatchesInString(matchOutcome.substring, value).toString()
+      describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
    } else ""
 
    val completeMismatchDescription = joinNonEmpty(
@@ -231,7 +232,7 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
    val passed = value.contains(substr)
    val differencesDescription = listOf(
       "${value.print().value} should include substring ${substr.print().value}",
-      describePartialMatchesInString(substr, value).toString(),
+      describePartialMatchesInStringForSlice(substr, value).toString(),
    )
    MatcherResult(
       passed,

@@ -43,7 +43,7 @@ class EndWithTest : FreeSpec() {
                "The quick brown fox jumps over the lazy dog" should endWith("fox jumps over the lazy cat")
             }.message
             message.shouldContainInOrder(
-               "Match[0]: expected[0..23] matched actual[16..39]",
+               "Match[0]: part of suffix with indexes [0..23] matched actual[16..39]",
                """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                """Match[0]= ----------------++++++++++++++++++++++++---"""
             )
