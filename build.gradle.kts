@@ -116,7 +116,7 @@ intellijPlatform {
    projectName = project.name
    instrumentCode = true
    pluginConfiguration {
-      name = "kotest-plugin-intellij"
+      name = "kotest"
       id = "kotest-plugin-intellij"
       description = "Kotest individual test support inside the IDE"
       version = project.version.toString() + "-" + descriptor.sdkVersion
