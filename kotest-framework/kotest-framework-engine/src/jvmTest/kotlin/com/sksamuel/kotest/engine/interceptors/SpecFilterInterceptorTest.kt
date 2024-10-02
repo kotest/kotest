@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
@@ -14,6 +16,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
+@EnabledIf(LinuxCondition::class)
 class SpecFilterInterceptorTest : FunSpec() {
    init {
       test("spec filter's should filter tests") {

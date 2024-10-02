@@ -885,13 +885,13 @@ class SequenceMatchersTest : WordSpec() {
          "fail with repeated nulls" {
             shouldThrowAny {
                sampleData.sparse.shouldBeUnique()
-            }.shouldHaveMessage("Sequence should be Unique, but has duplicates:\n<null> at indexes: [0, 1, 2]")
+            }.shouldHaveMessage("Sequence should be unique, but has:\n<null> at indexes: [0, 1, 2]")
          }
 
          "fail with repeats" {
             shouldThrowAny {
                sampleData.repeating.shouldBeUnique()
-            }.shouldHaveMessage("Sequence should be Unique, but has duplicates:\n1 at indexes: [0, 3]\n2 at indexes: [1, 4]\n3 at indexes: [2, 5]")
+            }.shouldHaveMessage("Sequence should be unique, but has:\n1 at indexes: [0, 3]\n2 at indexes: [1, 4]\n3 at indexes: [2, 5]")
          }
 
          succeed("for multiple unique") {

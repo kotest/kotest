@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.extensions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
@@ -10,6 +12,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
+@EnabledIf(LinuxCondition::class)
 class ConstructorExtensionTest : FunSpec() {
    init {
 
