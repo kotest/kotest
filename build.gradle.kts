@@ -118,7 +118,7 @@ intellijPlatform {
    pluginConfiguration {
       name = "kotest-plugin-intellij"
       id = "kotest-plugin-intellij"
-      description = "Official Kotest plugin for IntelliJ IDEA for running tests in the IDE"
+      description = "Kotest individual test support inside the IDE"
       version = project.version.toString() + "-" + descriptor.sdkVersion
       vendor {
          name = "Kotest"
