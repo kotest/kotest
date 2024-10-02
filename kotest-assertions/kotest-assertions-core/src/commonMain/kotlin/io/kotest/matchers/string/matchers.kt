@@ -41,11 +41,12 @@ fun String?.shouldNotContainADigit(): String? {
 }
 
 fun containADigit() = neverNullMatcher<String> { value ->
-   val (firstDigitIndex, firstDigit) = value.asSequence().withIndex().firstOrNull { it.value in '0'..'9' }
+   val indexOfFirstDigit = value.asSequence().indexOfFirst { it in '0'..'9' }
+   val possibleFirstDigit = value.getOrNull(indexOfFirstDigit) ?: ' '
    MatcherResult(
-      firstDigit != null,
+      indexOfFirstDigit > -1,
       { "${value.print().value} should contain at least one digit" },
-      { "${value.print().value} should not contain any digits, but contained ${firstDigit?.let { it.value.print().value }} at index ${firstDigit?.index}" })
+      { "${value.print().value} should not contain any digits, but contained ${possibleFirstDigit.print().value} at index $indexOfFirstDigit" })
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
