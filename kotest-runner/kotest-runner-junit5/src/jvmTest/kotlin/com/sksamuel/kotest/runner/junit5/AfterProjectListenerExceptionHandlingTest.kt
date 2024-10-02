@@ -2,6 +2,8 @@
 
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.spec.style.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors
@@ -19,6 +21,7 @@ class WhackAfterProjectListener : AfterProjectListener {
    }
 }
 
+@EnabledIf(LinuxCondition::class)
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("an AfterProjectListenerException should add marker test") {

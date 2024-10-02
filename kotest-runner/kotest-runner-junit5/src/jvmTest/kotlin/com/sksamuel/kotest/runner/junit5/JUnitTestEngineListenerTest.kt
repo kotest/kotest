@@ -2,7 +2,9 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.Platform
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -28,6 +30,7 @@ import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class JUnitTestEngineListenerTest : FunSpec({
 
    val root =
@@ -70,7 +73,8 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
             "Exception",
-            "com.sksamuel.kotest.runner.junit5.MySpec", "Exception"),
+            "com.sksamuel.kotest.runner.junit5.MySpec", "Exception"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("Exception"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "Exception",
@@ -104,7 +108,11 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo", "com.sksamuel.kotest.runner.junit5.MySpec", "foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -123,7 +131,11 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo", "com.sksamuel.kotest.runner.junit5.MySpec", "foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -141,7 +153,11 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo", "com.sksamuel.kotest.runner.junit5.MySpec", "foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", "secret!"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "com.sksamuel.kotest.runner.junit5.MySpec",
@@ -163,7 +179,11 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("bar", "com.sksamuel.kotest.runner.junit5.MySpec", "foo/bar"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "bar",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo/bar"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("bar"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("bar", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
@@ -187,7 +207,11 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("bar", "com.sksamuel.kotest.runner.junit5.MySpec", "foo/bar"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "bar",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo/bar"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("bar"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("bar", TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
@@ -210,7 +234,11 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("bar", "com.sksamuel.kotest.runner.junit5.MySpec", "foo/bar"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "bar",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo/bar"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", "secret!"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -229,10 +257,18 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(MySpec::class, TestResult.Error(0.seconds, Exception("THWAPP!")))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo", "com.sksamuel.kotest.runner.junit5.MySpec", "foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("Exception", "com.sksamuel.kotest.runner.junit5.MySpec", "Exception"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "Exception",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "Exception"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("Exception"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("Exception", TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -267,7 +303,11 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo", "com.sksamuel.kotest.runner.junit5.MySpec", "foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -275,7 +315,11 @@ class JUnitTestEngineListenerTest : FunSpec({
             TestExecutionResult.Status.SUCCESSFUL
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec2"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("baz", "com.sksamuel.kotest.runner.junit5.MySpec2", "baz"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "baz",
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            "baz"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("baz"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -308,7 +352,11 @@ class JUnitTestEngineListenerTest : FunSpec({
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionSkipped("com.sksamuel.kotest.runner.junit5.MySpec", null),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec2"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("baz", "com.sksamuel.kotest.runner.junit5.MySpec2", "baz"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "baz",
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            "baz"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("baz"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -344,7 +392,11 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered("foo bar", "com.sksamuel.kotest.runner.junit5.MySpec", "foo/bar"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo bar",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo/bar"
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo bar"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo bar", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),

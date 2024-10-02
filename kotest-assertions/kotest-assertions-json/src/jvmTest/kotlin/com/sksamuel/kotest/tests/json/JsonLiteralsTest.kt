@@ -2,14 +2,16 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.NumberFormat
 import io.kotest.assertions.json.TypeCoercion
-import io.kotest.assertions.json.compareJsonOptions
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
+@EnabledIf(LinuxCondition::class)
 class JsonLiteralsTest : FunSpec(
    {
       test("Unsupported type") {

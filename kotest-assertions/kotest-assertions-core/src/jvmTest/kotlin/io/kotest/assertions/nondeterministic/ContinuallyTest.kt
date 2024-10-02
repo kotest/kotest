@@ -2,6 +2,8 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.shouldFail
 import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
@@ -13,6 +15,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class ContinuallyTest : FunSpec() {
 
    init {

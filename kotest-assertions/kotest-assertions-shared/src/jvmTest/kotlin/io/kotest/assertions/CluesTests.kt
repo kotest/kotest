@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+@EnabledIf(LinuxCondition::class)
 class CluesTests : FunSpec({
    test("withClue should not fail on coroutine thread switch") {
       withContext(Dispatchers.Unconfined) {

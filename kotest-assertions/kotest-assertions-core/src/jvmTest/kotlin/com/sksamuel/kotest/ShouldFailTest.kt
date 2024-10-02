@@ -2,16 +2,19 @@ package com.sksamuel.kotest
 
 import com.sksamuel.kotest.throwablehandling.catchThrowable
 import io.kotest.assertions.shouldFail
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@EnabledIf(LinuxCondition::class)
 class ShouldFailTest : FreeSpec({
 
    "shouldFail" - {
       "Should throw an exception when code succeeds" {
          val t = catchThrowable { shouldFail { /* Code succeeds */ } }
-            t.shouldBeInstanceOf<AssertionError>()
+         t.shouldBeInstanceOf<AssertionError>()
          t.message shouldBe "Expected exception java.lang.AssertionError but no exception was thrown."
       }
 

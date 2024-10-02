@@ -5,6 +5,8 @@ import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
@@ -16,6 +18,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 
+@EnabledIf(LinuxCondition::class)
 class RetryTest : StringSpec() {
    init {
       coroutineTestScope = true

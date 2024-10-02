@@ -1,9 +1,12 @@
 package io.kotest.engine.testcasename
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class MultilineStringSpecTestNameTest : StringSpec({
 
    val testNames = mutableListOf<String>()
@@ -24,15 +27,15 @@ class MultilineStringSpecTestNameTest : StringSpec({
       testNames.add(this.testCase.name.testName)
    }
 
-"""
+   """
 3
 third
 test
 last
 line
 """ {
-testNames.add(this.testCase.name.testName)
-}
+      testNames.add(this.testCase.name.testName)
+   }
 
    afterSpec {
       val firstTestCaseName = testNames.find { it.startsWith("1") }

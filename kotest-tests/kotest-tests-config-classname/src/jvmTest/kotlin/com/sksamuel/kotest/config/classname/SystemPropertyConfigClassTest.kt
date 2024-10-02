@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.config.classname
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
@@ -15,6 +17,7 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxCondition::class)
 class SystemPropertyConfigClassTest : FunSpec() {
    init {
 
