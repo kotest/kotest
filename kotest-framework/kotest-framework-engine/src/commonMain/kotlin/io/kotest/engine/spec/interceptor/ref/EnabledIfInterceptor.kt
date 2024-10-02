@@ -12,6 +12,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 import io.kotest.engine.newInstanceNoArgConstructor
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 
 /**
  * Evaluates any spec annotated with [EnabledIf] if the condition fails, skips the spec
@@ -26,10 +27,7 @@ internal class EnabledIfInterceptor(
 
    private val extensions = SpecExtensions(registry)
 
-   override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+   override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
       val enabled = ref.kclass
          .annotation<EnabledIf>()
@@ -38,7 +36,7 @@ internal class EnabledIfInterceptor(
          ?.enabled(ref.kclass) ?: true
 
       return if (enabled) {
-         fn(ref)
+         next.invoke(ref)
       } else {
          runCatching { listener.specIgnored(ref.kclass, "Disabled by @EnabledIf") }
             .flatMap { extensions.ignored(ref.kclass, "Disabled by @EnabledIf") }

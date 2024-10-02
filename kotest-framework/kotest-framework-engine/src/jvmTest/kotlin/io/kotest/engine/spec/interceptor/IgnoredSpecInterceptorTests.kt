@@ -9,6 +9,8 @@ import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.datatest.withData
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
@@ -19,14 +21,19 @@ import kotlin.reflect.KClass
 @EnabledIf(LinuxCondition::class)
 class IgnoredSpecInterceptorTests : FunSpec({
    context("IgnoredSpecInterceptor should report appropriate reasons when a class is ignored by @Ignored") {
-      withData(nameFn = { "Interceptor reports: $it" },
+      withData(
+         nameFn = { "Interceptor reports: $it" },
          "Disabled by @Ignored" to DefaultIgnoredSpec::class,
          """Disabled by @Ignored(reason="it's a good reason!")""" to ReasonIgnoredSpec::class,
       ) { (expected, kclass) ->
 
          val listener = TestIgnoredSpecListener()
          IgnoredSpecInterceptor(listener, EmptyExtensionRegistry)
-            .intercept(SpecRef.Reference(kclass)) { error("boom") }
+            .intercept(SpecRef.Reference(kclass), object : NextSpecRefInterceptor {
+               override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+                  error("boom")
+               }
+            })
 
          all(listener) {
             name shouldBe kclass.simpleName
