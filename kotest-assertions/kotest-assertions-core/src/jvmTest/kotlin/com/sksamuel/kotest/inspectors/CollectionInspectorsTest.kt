@@ -4,6 +4,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAny
@@ -22,6 +24,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
 @Suppress("ConstantConditionIf")
+@EnabledIf(LinuxCondition::class)
 class CollectionInspectorsTest : WordSpec() {
 
    private val list = listOf(1, 2, 3, 4, 5)

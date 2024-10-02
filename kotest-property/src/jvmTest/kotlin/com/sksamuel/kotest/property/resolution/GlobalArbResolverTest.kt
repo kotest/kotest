@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.resolution
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.shouldBe
@@ -14,6 +16,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.resolution.GlobalArbResolver
 import java.net.URI
 
+@EnabledIf(LinuxCondition::class)
 class GlobalArbResolverTest : FunSpec() {
    init {
 

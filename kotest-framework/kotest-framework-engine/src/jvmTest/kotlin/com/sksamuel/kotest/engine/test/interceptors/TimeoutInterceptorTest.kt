@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -15,6 +17,7 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
+@EnabledIf(LinuxCondition::class)
 class TimeoutInterceptorTest : FunSpec() {
    init {
       test("TimeoutInterceptor should return an error timeout") {

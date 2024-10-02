@@ -120,10 +120,11 @@ infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
 }
 
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
+   val indexOf = value.lowercase().indexOf(substr.lowercase())
    MatcherResult(
-      value.lowercase().indexOf(substr.lowercase()) >= 0,
+      indexOf >= 0,
       { "${value.print().value} should contain the substring ${substr.print().value} (case insensitive)" },
-      { "${value.print().value} should not contain the substring ${substr.print().value} (case insensitive)" }
+      { "${value.print().value} should not contain the substring ${substr.print().value} (case insensitive), but contained it at index $indexOf" }
    )
 }
 

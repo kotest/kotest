@@ -4,10 +4,13 @@ package com.sksamuel.kotest
 
 import io.kotest.assertions.inspecting
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxCondition::class)
 class InspectingTest : WordSpec() {
    init {
       data class Person(val name: String, val age: Int, val friends: List<Person>)

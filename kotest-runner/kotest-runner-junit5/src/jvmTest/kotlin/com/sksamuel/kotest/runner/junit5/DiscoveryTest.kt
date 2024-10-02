@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
@@ -24,6 +26,7 @@ import org.junit.platform.launcher.EngineFilter.includeEngines
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class DiscoveryTestWithoutSelectors : FunSpec({
    aroundTest { (testCase, execute) ->
       check(System.setProperty(KotestEngineProperties.discoveryClasspathFallbackEnabled, "true") == null)
@@ -182,13 +185,19 @@ class DiscoveryTestWithoutSelectors : FunSpec({
 })
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class DiscoveryTestWithSelectors : FunSpec({
    test("kotest should return Nil for uniqueId selectors if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
-         .selectors(DiscoverySelectors.selectUniqueId(
-            UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
-               .append(Segment.Spec.value, com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName)
-         ))
+         .selectors(
+            DiscoverySelectors.selectUniqueId(
+               UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+                  .append(
+                     Segment.Spec.value,
+                     com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName
+                  )
+            )
+         )
          .filters(
             excludeEngines(KotestJunitPlatformTestEngine.EngineId)
          )
@@ -200,10 +209,15 @@ class DiscoveryTestWithSelectors : FunSpec({
 
    test("kotest should return Nil for uniqueId selectors on non kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
-         .selectors(DiscoverySelectors.selectUniqueId(
-            UniqueId.forEngine("failgood")
-               .append(Segment.Spec.value, com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName)
-         ))
+         .selectors(
+            DiscoverySelectors.selectUniqueId(
+               UniqueId.forEngine("failgood")
+                  .append(
+                     Segment.Spec.value,
+                     com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName
+                  )
+            )
+         )
          .filters(
             includeEngines(KotestJunitPlatformTestEngine.EngineId)
          )
