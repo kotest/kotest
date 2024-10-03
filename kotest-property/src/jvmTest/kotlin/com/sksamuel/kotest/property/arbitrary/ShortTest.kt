@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
@@ -12,6 +14,7 @@ import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 
+@EnabledIf(LinuxCondition::class)
 class ShortTest : FunSpec({
    test("<Short, Short> should give values between min and max inclusive") {
       // Test parameters include the test for negative bounds
