@@ -9,7 +9,16 @@ import io.kotest.core.test.TestResult
  */
 internal interface SpecInterceptor {
    suspend fun intercept(
-     spec: Spec,
-     fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+      spec: Spec,
+      next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>>
+}
+
+/**
+ * Callback for invoking the next SpecInterceptor.
+ *
+ * This is a functional interface to reduce the size of stack traces - type-erased lambda types add excess stack lines.
+ */
+internal interface NextSpecInterceptor {
+   suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>>
 }
