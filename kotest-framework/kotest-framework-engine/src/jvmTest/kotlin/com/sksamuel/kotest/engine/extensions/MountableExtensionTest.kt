@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.extensions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
@@ -8,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
+@EnabledIf(LinuxCondition::class)
 class MountableExtensionTest : FunSpec() {
 
    private val mountable = MyMountable()

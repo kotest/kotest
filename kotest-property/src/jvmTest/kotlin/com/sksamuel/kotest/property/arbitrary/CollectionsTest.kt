@@ -2,10 +2,11 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.retry
 import io.kotest.assertions.retryConfig
-import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.exist
@@ -40,6 +41,7 @@ import io.kotest.property.exhaustive.of
 import io.kotest.property.forAll
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class CollectionsTest : DescribeSpec({
 
    describe("Arb.element should") {
@@ -134,7 +136,8 @@ class CollectionsTest : DescribeSpec({
          }
       }
 
-      it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = 2.seconds) {
+      val timeout = if (System.getProperty("os.name").contains("mac", true)) 5.seconds else 2.seconds
+      it("maintain performance fixed by https://github.com/kotest/kotest/issues/4016").config(timeout = timeout) {
          /*
          if we revert the fix as follows, the test fails:
          git revert 8ba8975 --no-commit

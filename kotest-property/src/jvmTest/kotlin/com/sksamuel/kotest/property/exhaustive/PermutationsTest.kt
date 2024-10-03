@@ -1,12 +1,15 @@
 package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.permutations
 
+@EnabledIf(LinuxCondition::class)
 class PermutationsTest : FunSpec() {
    init {
       test("Exhaustive.permutations should generate full permutations when length is omitted") {
@@ -22,7 +25,7 @@ class PermutationsTest : FunSpec() {
       }
 
       test("Exhaustive.permutations should generate a single empty list when length is zero") {
-         Exhaustive.permutations(listOf(1, 2, 3), 0).values shouldBe listOf( listOf() )
+         Exhaustive.permutations(listOf(1, 2, 3), 0).values shouldBe listOf(listOf())
       }
 
       test("Exhaustive.permutations should throw if length is negative") {
@@ -32,7 +35,7 @@ class PermutationsTest : FunSpec() {
 
       test("Exhaustive.permutations should throw if length is greater than list length") {
          shouldThrowWithMessage<IllegalArgumentException>("length must be between 0 and the list size (3), but was 7.")
-         { Exhaustive.permutations(listOf(1,2,3), 7) }
+         { Exhaustive.permutations(listOf(1, 2, 3), 7) }
       }
    }
 }

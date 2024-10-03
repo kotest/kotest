@@ -18,6 +18,7 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.core.Logger
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -108,9 +109,11 @@ internal class InstancePerLeafSpecRunner(
    }
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec) {
-         locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
-      }
+      return pipeline.execute(spec, object : NextSpecInterceptor {
+         override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+            return locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
+         }
+      })
    }
 
    // when we start a test from the queue, we must find the root test that is the ancestor of our

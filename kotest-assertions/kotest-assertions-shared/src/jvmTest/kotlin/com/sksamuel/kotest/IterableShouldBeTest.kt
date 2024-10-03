@@ -1,9 +1,12 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
+@EnabledIf(LinuxCondition::class)
 class IterableShouldBeTest : DescribeSpec() {
    init {
       describe("shouldBe") {

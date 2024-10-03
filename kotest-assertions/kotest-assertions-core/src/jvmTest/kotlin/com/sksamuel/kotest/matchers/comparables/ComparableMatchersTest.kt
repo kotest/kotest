@@ -1,22 +1,31 @@
 package com.sksamuel.kotest.matchers.comparables
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.data.forAll
+import io.kotest.data.forNone
+import io.kotest.data.headers
+import io.kotest.data.row
+import io.kotest.data.table
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.beLessThanOrEqualTo
+import io.kotest.matchers.comparables.between
 import io.kotest.matchers.comparables.compareTo
 import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.comparables.lte
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
+import io.kotest.matchers.comparables.shouldNotBeBetween
 import io.kotest.matchers.comparables.shouldNotBeEqualComparingTo
 import io.kotest.matchers.equality.FieldsEqualityCheckConfig
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
@@ -171,6 +180,74 @@ class ComparableMatchersTest : FreeSpec() {
                )
             }
          }
+
+         // test cases migrated here during deduplication of shouldBeBetween
+         "shouldBeBetween adopted examples" - {
+            "char" - {
+               "should be between from and to char" {
+                  'd'.shouldBeBetween('a', 'z')
+                  'E'.shouldBeBetween('A', 'z')
+                  ']'.shouldBeBetween('A', 'z')
+               }
+
+               "should be not between from and to char" {
+                  'd'.shouldNotBeBetween('e', 'z')
+                  'd'.shouldNotBeBetween('a', 'c')
+               }
+            }
+            "numbers" - {
+               "pass only for ints in the range" {
+                  checkAll<Int, Int, Int> { a, b, c ->
+                     if (b in a..c) {
+                        b.shouldBeBetween(a, c)
+                        shouldThrowWithMessage<AssertionError>("$b should not be between ($a, $c) inclusive") {
+                           b.shouldNotBeBetween(a, c)
+                        }
+                     } else {
+                        b.shouldNotBeBetween(a, c)
+                        shouldThrowWithMessage<AssertionError>("$b should be between ($a, $c) inclusive") {
+                           b.shouldBeBetween(a, c)
+                        }
+                     }
+                  }
+               }
+
+               "between should test for invalid interval" {
+                  val table = table(
+                     headers("a", "b"),
+                     row(0, 2),
+                     row(2, 2),
+                     row(4, 5),
+                     row(4, 6)
+                  )
+
+                  forNone(table) { a, b ->
+                     3 shouldBe between(a, b)
+                  }
+                  forNone(table) { a, b ->
+                     3.shouldBeBetween(a, b)
+                  }
+               }
+
+               "between should test for valid interval" {
+                  val table = table(
+                     headers("a", "b"),
+                     row(0L, 2L),
+                     row(1L, 2L),
+                     row(0L, 1L),
+                     row(1L, 1L)
+                  )
+
+                  forAll(table) { a, b ->
+                     1L shouldBe between(a, b)
+                  }
+                  forAll(table) { a, b ->
+                     1L.shouldBeBetween(a, b)
+                  }
+               }
+            }
+         }
+
       }
    }
 }

@@ -5,7 +5,6 @@ import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.beLessThanOrEqualTo
-import io.kotest.matchers.longs.between
 import io.kotest.matchers.longs.shouldBeNegative
 import io.kotest.matchers.longs.shouldBePositive
 import io.kotest.matchers.longs.shouldBeZero
@@ -18,6 +17,8 @@ import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.longs.between
 
 class LongMatchersTest : StringSpec() {
   init {
@@ -94,7 +95,7 @@ class LongMatchersTest : StringSpec() {
       )
 
       forAll(table) { a, b ->
-        1 shouldBe between(a, b)
+         1L.shouldBeBetween(a, b)
       }
     }
 
@@ -109,7 +110,7 @@ class LongMatchersTest : StringSpec() {
       )
 
       forNone(table) { a, b ->
-        3 shouldBe between(a, b)
+        3L shouldBe between(a, b)
       }
     }
 

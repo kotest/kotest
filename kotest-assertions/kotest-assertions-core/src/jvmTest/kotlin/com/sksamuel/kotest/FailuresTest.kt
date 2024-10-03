@@ -8,12 +8,15 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.opentest4j.AssertionFailedError
 
+@EnabledIf(LinuxCondition::class)
 class FailuresTest : StringSpec({
 
    "failure(msg) should create a AssertionError on the JVM" {

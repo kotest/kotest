@@ -1,5 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.core.platform
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -19,8 +21,6 @@ import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
-import io.kotest.core.Logger
-import io.kotest.core.Platform
 import io.kotest.mpp.bestName
 
 internal class SpecRefInterceptorPipeline(
@@ -41,12 +41,16 @@ internal class SpecRefInterceptorPipeline(
     */
    suspend fun execute(
       ref: SpecRef,
-      inner: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      inner: NextSpecRefInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val interceptors = platformInterceptors(context) + createCommonInterceptors()
       logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
-      return interceptors.foldRight(inner) { interceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
-         { ref -> interceptor.intercept(ref, fn) }
+      return interceptors.foldRight(inner) { interceptor, fn ->
+         object : NextSpecRefInterceptor {
+            override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+               return interceptor.intercept(ref, fn)
+            }
+         }
       }.invoke(ref)
    }
 
@@ -73,4 +77,5 @@ internal class SpecRefInterceptorPipeline(
       )
    }
 }
+
 internal expect fun platformInterceptors(context: EngineContext): List<SpecRefInterceptor>

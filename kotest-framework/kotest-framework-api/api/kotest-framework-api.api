@@ -878,6 +878,36 @@ public final class io/kotest/core/annotation/displayname/WrapperKt {
 	public static final fun getWrapper (Lio/kotest/core/annotation/DisplayName;)Ljava/lang/String;
 }
 
+public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
 public final class io/kotest/core/annotation/enabledif/WrapperKt {
 	public static final fun getWrapper (Lio/kotest/core/annotation/EnabledIf;)Lkotlin/reflect/KClass;
 }

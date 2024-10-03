@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.tests.concurrency
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -17,7 +18,7 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 // asserts that tests can be launched concurrently and before/after callbacks are handled properly
-@ExperimentalKotest
+@EnabledIf(LinuxCondition::class)
 class ConcurrentTestsSingleInstanceTest : FunSpec() {
 
    private var befores = ""

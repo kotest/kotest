@@ -20,6 +20,7 @@ import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import io.kotest.core.log
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -116,9 +117,11 @@ internal class InstancePerTestSpecRunner(
    }
 
    private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec) {
-         run(spec, test, results).map { results }
-      }
+      return pipeline.execute(spec, object : NextSpecInterceptor {
+         override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+            return run(spec, test, results).map { results }
+         }
+      })
    }
 
    /**

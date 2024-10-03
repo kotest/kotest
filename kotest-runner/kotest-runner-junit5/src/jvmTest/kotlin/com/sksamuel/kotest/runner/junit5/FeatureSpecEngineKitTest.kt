@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.common.nonConstantFalse
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -15,12 +17,15 @@ import org.junit.platform.engine.discovery.DiscoverySelectors.selectUniqueId
 import org.junit.platform.testkit.engine.EngineTestKit
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxCondition::class)
 class FeatureSpecEngineKitTest : FunSpec({
 
    test("verify engine events happy path") {
       listOf(
          selectClass(FeatureSpecHappyPathSample::class.java),
-         selectUniqueId(UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName))
+         selectUniqueId(
+            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
+         )
       ).forAll { selector ->
          EngineTestKit
             .engine("kotest")
@@ -138,7 +143,9 @@ class FeatureSpecEngineKitTest : FunSpec({
    test("verify failure on zero assertion and strict assertion mode enable") {
       listOf(
          selectClass(FeatureSpecWithZeroAssertions::class.java),
-         selectUniqueId(UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName))
+         selectUniqueId(
+            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
+         )
       ).forAll { selector ->
          EngineTestKit
             .engine("kotest")
@@ -234,12 +241,12 @@ private class FeatureSpecSample : FeatureSpec() {
 private class FeatureSpecWithZeroAssertions : FeatureSpec() {
    init {
 
-       feature("assertion mode") {
-          scenario("no assertion") {}
-          scenario("one dummy assertion") {
-             1 shouldBe 1
-          }
-       }
+      feature("assertion mode") {
+         scenario("no assertion") {}
+         scenario("one dummy assertion") {
+            1 shouldBe 1
+         }
+      }
    }
 
    override fun assertionMode() = AssertionMode.Error

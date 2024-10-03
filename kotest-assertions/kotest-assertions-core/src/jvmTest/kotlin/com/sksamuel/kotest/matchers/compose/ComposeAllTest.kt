@@ -133,7 +133,7 @@ class ComposeAllTest : StringSpec() {
          matcherResult.passed() shouldBe true
          matcherResult.failureMessage() shouldBe ""
          matcherResult.negatedFailureMessage() shouldBe """
-            "StrongPassword123" should not contain any digits
+            "StrongPassword123" should not contain any digits, but contained '1' at index 14
             "StrongPassword123" should not contain regex [a-z]
             "StrongPassword123" should not contain regex [A-Z]
          """.trimIndent()

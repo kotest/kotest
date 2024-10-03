@@ -1,11 +1,14 @@
 package io.kotest.equals
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 
-class CommutativeEqualityTest: StringSpec() {
+@EnabledIf(LinuxCondition::class)
+class CommutativeEqualityTest : StringSpec() {
    init {
       "verify true if commutative and both matches true" {
          val actual = CommutativeEquality<Int>(Equality.default()).verify(1, 1)
@@ -16,7 +19,7 @@ class CommutativeEqualityTest: StringSpec() {
          actual.areEqual() shouldBe false
       }
       "verify false if non-commutative" {
-         val nonCommutativeEquality = object: Equality<Int> {
+         val nonCommutativeEquality = object : Equality<Int> {
             override fun name() = "actual should be 0"
 
             override fun verify(actual: Int, expected: Int): EqualityResult =
@@ -24,7 +27,7 @@ class CommutativeEqualityTest: StringSpec() {
                   equal = (actual == 0),
                   detailsValue = SimpleEqualityResultDetail(
                      explainFn = {
-                        if(actual == 0) "actual == 0" else "actual != 0"
+                        if (actual == 0) "actual == 0" else "actual != 0"
                      }
                   )
                )
