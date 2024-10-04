@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
@@ -21,6 +23,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
 
+@EnabledIf(LinuxCondition::class)
 class MapsTest : FunSpec({
    context("Arb.pair") {
       test("should generate a pair of values from given arb key / value") {
@@ -109,7 +112,8 @@ class MapsTest : FunSpec({
 
    context("Arb.map(arb,arb) edgecases") {
       test("should be empty if minSize is larger than 0") {
-         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+         Arb.map(keyArb = Arb.string(), valueArb = Arb.int(), minSize = 1).edgecase(RandomSource.seeded(1234L))
+            .shouldBeNull()
       }
 
       test("should contain empty map if minSize is 0 (default)") {
@@ -121,7 +125,8 @@ class MapsTest : FunSpec({
 
    context("Arb.map(arb) edgecases") {
       test("should be empty if disabled") {
-         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), minSize = 1).edgecase(RandomSource.seeded(1234L)).shouldBeNull()
+         Arb.map(arb = Arb.pair(Arb.string(), Arb.int()), minSize = 1).edgecase(RandomSource.seeded(1234L))
+            .shouldBeNull()
       }
 
       test("should contain empty map if enabled") {

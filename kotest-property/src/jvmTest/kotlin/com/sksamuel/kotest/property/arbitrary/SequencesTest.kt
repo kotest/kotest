@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
@@ -18,6 +20,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
+@EnabledIf(LinuxCondition::class)
 class SequencesTest : DescribeSpec({
    describe("Arb.sequence should") {
 
@@ -39,7 +42,12 @@ class SequencesTest : DescribeSpec({
          val edgeCase = Arb.positiveInt().edgecases().firstOrNull()
          val a = Arb.sequence(Arb.positiveInt()).edgecases()
          Arb.sequence(Arb.positiveInt()).edgecases().map { it.toList() } shouldContain listOf(edgeCase, edgeCase)
-         Arb.sequence(Arb.positiveInt(), 4..6).edgecases().map { it.toList() } shouldContain listOf(edgeCase, edgeCase, edgeCase, edgeCase)
+         Arb.sequence(Arb.positiveInt(), 4..6).edgecases().map { it.toList() } shouldContain listOf(
+            edgeCase,
+            edgeCase,
+            edgeCase,
+            edgeCase
+         )
       }
 
       it("include empty list in edge cases") {
@@ -48,7 +56,7 @@ class SequencesTest : DescribeSpec({
 
       it("respect bounds in edge cases") {
          val edges = Arb.sequence(Arb.positiveInt(), 2..10).edgecases().toSet()
-         edges.forAll { it.count() shouldNotBe 0  }
+         edges.forAll { it.count() shouldNotBe 0 }
       }
 
       it("generate sequences of length up to 100 by default") {

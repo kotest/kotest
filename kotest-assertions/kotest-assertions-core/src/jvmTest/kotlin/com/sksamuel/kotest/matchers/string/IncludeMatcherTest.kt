@@ -45,7 +45,7 @@ class IncludeMatcherTest : FreeSpec() {
                line shouldInclude "The coyote jumps over the lazy dog"
             }.message.shouldContainInOrder(
                """"The quick brown fox jumps over the lazy dog" should include substring "The coyote jumps over the lazy dog"""",
-               """Match[0]: expected[10..33] matched actual[19..42]""",
+               """Match[0]: part of slice with indexes [10..33] matched actual[19..42]""",
                """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                """Match[0]= -------------------++++++++++++++++++++++++"""
             )
