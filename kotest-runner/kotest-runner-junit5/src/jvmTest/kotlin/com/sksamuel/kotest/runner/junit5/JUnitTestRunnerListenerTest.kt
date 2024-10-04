@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -22,6 +24,7 @@ import org.junit.platform.engine.reporting.ReportEntry
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class JUnitTestRunnerListenerTest : DescribeSpec({
 
    describe("as per the JUnit spec") {

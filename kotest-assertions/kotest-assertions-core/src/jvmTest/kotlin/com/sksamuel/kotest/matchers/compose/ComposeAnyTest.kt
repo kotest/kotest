@@ -151,7 +151,7 @@ class ComposeAnyTest : StringSpec() {
             "1" should contain regex [A-Z]
          """.trimIndent()
          matcherResult.negatedFailureMessage() shouldBe """
-            "1" should not contain any digits
+            "1" should not contain any digits, but contained '1' at index 0
             "1" should not contain regex [a-z]
             "1" should not contain regex [A-Z]
          """.trimIndent()

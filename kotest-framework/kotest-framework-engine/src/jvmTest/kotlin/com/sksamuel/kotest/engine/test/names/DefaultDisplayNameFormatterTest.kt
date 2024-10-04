@@ -4,8 +4,10 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -24,6 +26,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 

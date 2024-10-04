@@ -16,7 +16,7 @@ public final class io/kotest/property/AfterPropertyContextElement$Key : kotlin/c
 public abstract class io/kotest/property/Arb : io/kotest/property/Gen {
 	public static final field Companion Lio/kotest/property/Arb$Companion;
 	public fun <init> ()V
-	public abstract fun edgecase (Lio/kotest/property/RandomSource;)Ljava/lang/Object;
+	public abstract fun edgecase (Lio/kotest/property/RandomSource;)Lio/kotest/property/Sample;
 	public abstract fun sample (Lio/kotest/property/RandomSource;)Lio/kotest/property/Sample;
 	public final fun samples (Lio/kotest/property/RandomSource;)Lkotlin/sequences/Sequence;
 	public static synthetic fun samples$default (Lio/kotest/property/Arb;Lio/kotest/property/RandomSource;ILjava/lang/Object;)Lkotlin/sequences/Sequence;
@@ -936,7 +936,7 @@ public final class io/kotest/property/arbitrary/DurationsKt {
 }
 
 public final class io/kotest/property/arbitrary/EdgecasesKt {
-	public static final fun edgecase (Ljava/util/List;Lio/kotest/property/RandomSource;)Ljava/lang/Object;
+	public static final fun edgecase (Ljava/util/List;Lio/kotest/property/RandomSource;)Lio/kotest/property/Sample;
 	public static final fun edgecases (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;)Ljava/util/Set;
 	public static synthetic fun edgecases$default (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;ILjava/lang/Object;)Ljava/util/Set;
 	public static final fun modifyEdgecases (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;

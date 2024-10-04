@@ -1,12 +1,15 @@
 package io.kotest.submatching
 
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
 
-class SubmatchingTest: WordSpec() {
+@EnabledIf(LinuxCondition::class)
+class SubmatchingTest : WordSpec() {
    init {
       "findPartialMatches" should {
          "find nothing" {
@@ -14,15 +17,18 @@ class SubmatchingTest: WordSpec() {
          }
          "match end of one string to beginning of another" {
             findPartialMatchesInString("broom", "roommate", minLength = 4) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(1, 0), 4, "broom".toList()))
+               PartialCollectionMatch(MatchedCollectionElement(1, 0), 4, "broom".toList())
+            )
          }
          "match two middles" {
             findPartialMatchesInString("room", "boot", minLength = 2) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(1, 1), 2, "room".toList()))
+               PartialCollectionMatch(MatchedCollectionElement(1, 1), 2, "room".toList())
+            )
          }
          "find common end" {
             findPartialMatchesInString("river", "driver", minLength = 3) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 1), 5, "river".toList()))
+               PartialCollectionMatch(MatchedCollectionElement(0, 1), 5, "river".toList())
+            )
          }
          "find two common substrings in same order" {
             findPartialMatchesInString("roommate", "room-mate", minLength = 3) shouldBe listOf(
@@ -37,7 +43,8 @@ class SubmatchingTest: WordSpec() {
             )
          }
          "maintain performance".config(timeout = 1.seconds) {
-            val value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            val value =
+               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             val expected = value.substring(5, value.length - 10)
             val partialMatches = findPartialMatchesInString(expected, value, value.length / 2)
             partialMatches.size shouldBe 1
@@ -45,39 +52,43 @@ class SubmatchingTest: WordSpec() {
          }
          "work for Int" {
             val expected = listOf(1, 2, 3, 4)
-            findPartialMatches (
+            findPartialMatches(
                expected = expected,
                value = listOf(0, 1, 2, 3, 4, 3, 6),
                minLength = 4
-            ) shouldBe listOf(PartialCollectionMatch(MatchedCollectionElement(0, 1), 4, expected),
+            ) shouldBe listOf(
+               PartialCollectionMatch(MatchedCollectionElement(0, 1), 4, expected),
             )
          }
       }
       "matchedElements" should {
          "return empty list if element not in index" {
-            matchedElements(indexes = mapOf(
-               'p' to listOf(0, 2, 3),
-               'u' to listOf(1),
-               'y' to listOf(4)
-            ),
+            matchedElements(
+               indexes = mapOf(
+                  'p' to listOf(0, 2, 3),
+                  'u' to listOf(1),
+                  'y' to listOf(4)
+               ),
                elementAtIndex = 4 to 'e'
             ).shouldBeEmpty()
          }
          "return list of one element" {
-            matchedElements(indexes = mapOf(
-               'p' to listOf(0, 2, 3),
-               'u' to listOf(1),
-               'y' to listOf(4)
-            ),
+            matchedElements(
+               indexes = mapOf(
+                  'p' to listOf(0, 2, 3),
+                  'u' to listOf(1),
+                  'y' to listOf(4)
+               ),
                elementAtIndex = 3 to 'u'
             ) shouldBe listOf(MatchedCollectionElement(3, 1))
          }
          "return list of several elements" {
-            matchedElements(indexes = mapOf(
-               'p' to listOf(0, 2, 3),
-               'u' to listOf(1),
-               'y' to listOf(4)
-            ),
+            matchedElements(
+               indexes = mapOf(
+                  'p' to listOf(0, 2, 3),
+                  'u' to listOf(1),
+                  'y' to listOf(4)
+               ),
                elementAtIndex = 1 to 'p'
             ) shouldBe listOf(
                MatchedCollectionElement(1, 0),
@@ -123,7 +134,7 @@ class SubmatchingTest: WordSpec() {
                PartialCollectionMatch(MatchedCollectionElement(1, 6), 3, "own".toList()),
                PartialCollectionMatch(MatchedCollectionElement(5, 1), 3, "ize".toList()),
             )
-            removeShorterMatchesWithSameEnd(matches) shouldBe matches.filter { it.length == 4}
+            removeShorterMatchesWithSameEnd(matches) shouldBe matches.filter { it.length == 4 }
          }
       }
       "toCharIndex" should {

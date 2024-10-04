@@ -4,6 +4,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import kotlin.time.measureTimedValue
 
@@ -13,12 +14,9 @@ import kotlin.time.measureTimedValue
  */
 internal class SpecFinishedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
-   override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+   override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       val (value, duration) = measureTimedValue {
-         fn(ref)
+         next.invoke(ref)
       }
       return value
          .onSuccess { listener.specFinished(ref.kclass, TestResult.Success(duration)) }

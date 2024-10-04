@@ -22,9 +22,9 @@ import io.kotest.property.Sample
  */
 fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = trampoline { sampleA ->
    object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = when (other) {
-         is Arb -> if (rs.random.nextBoolean()) sampleA.value else other.edgecase(rs)
-         is Exhaustive -> sampleA.value
+      override fun edgecase(rs: RandomSource): Sample<A>? = when (other) {
+         is Arb -> if (rs.random.nextBoolean()) sampleA else other.edgecase(rs)
+         is Exhaustive -> sampleA
       }
 
       override fun sample(rs: RandomSource): Sample<A> =

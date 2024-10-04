@@ -2,7 +2,9 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.RequiresTag
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -14,7 +16,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
-
+@EnabledIf(LinuxCondition::class)
 class RequiresTagTest : FunSpec({
    test("RequiresTagInterceptor should include spec if the tag expression contains the required tag") {
       withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {

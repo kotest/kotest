@@ -9,6 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 
@@ -24,14 +25,11 @@ internal class RequiresPlatformInterceptor(
 
    private val extensions = SpecExtensions(registry)
 
-   override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+   override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return when (val requiresPlatform = ref.kclass.annotation<RequiresPlatform>()) {
-         null -> fn(ref)
+         null -> next.invoke(ref)
          else -> {
-            if (requiresPlatform.values.contains(context.platform)) fn(ref)
+            if (requiresPlatform.values.contains(context.platform)) next.invoke(ref)
             else runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresPlatform") }
                .flatMap { extensions.ignored(ref.kclass, "Disabled by @RequiresPlatform") }
                .map { emptyMap() }

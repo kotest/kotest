@@ -1,6 +1,8 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.*
 import io.kotest.matchers.comparables.beGreaterThan
@@ -9,6 +11,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
+@EnabledIf(LinuxCondition::class)
 class InspectorsTest : WordSpec() {
 
    private val list = listOf(1, 2, 3, 4, 5)

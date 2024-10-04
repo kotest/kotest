@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.shrinking
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -9,6 +11,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.FloatShrinker
 
+@EnabledIf(LinuxCondition::class)
 class FloatShrinkerTest : FunSpec() {
    init {
       test("special values that cannot be shrunk") {

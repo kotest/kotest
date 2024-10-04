@@ -7,7 +7,8 @@ import kotlin.reflect.KClass
  * Attach to a [io.kotest.core.spec.Spec], and the referenced [EnabledCondition] will be
  * instantiated and the [enabledIf] function invoked.
  *
- * Implementations must contain a no-arg constructor as it will be created via reflection.
+ * Implementations of [EnabledCondition] must contain a no-arg constructor as they will
+ * be created via reflection.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.common.KotestInternal
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -18,8 +18,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlin.time.Duration
 
-@ExperimentalKotest
-@KotestInternal
+@EnabledIf(LinuxCondition::class)
 class EmptyTestSuiteInterceptorTest : FunSpec() {
    init {
 

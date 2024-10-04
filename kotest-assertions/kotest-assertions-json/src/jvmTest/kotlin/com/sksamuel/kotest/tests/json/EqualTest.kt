@@ -7,6 +7,8 @@ import io.kotest.assertions.json.TypeCoercion
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.json.shouldNotEqualJson
 import io.kotest.assertions.shouldFail
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -20,12 +22,13 @@ import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
+@EnabledIf(LinuxCondition::class)
 class EqualTest : FunSpec() {
    init {
       test("compare non equal objects") {
-         val arb = Arb.string(1 .. 10, Codepoint.az())
-         checkAll(arb, arb) {a,b ->
-            assume( a != b)
+         val arb = Arb.string(1..10, Codepoint.az())
+         checkAll(arb, arb) { a, b ->
+            assume(a != b)
 
             val left = """{ "a": "$a" }"""
             val right = """{ "a": "$b" }"""

@@ -1,8 +1,11 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
 
 @Suppress("BlockingMethodInNonBlockingContext")
+@EnabledIf(LinuxCondition::class)
 class MultipleTestTimeoutTest : FreeSpec() {
 
    /*

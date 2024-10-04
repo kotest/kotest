@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import io.kotest.property.arbitrary.strings.StringClassifier
+import io.kotest.property.asSample
 import io.kotest.property.exhaustive.upperLowerCases
 import kotlin.random.nextInt
 
@@ -27,11 +28,11 @@ fun Arb.Companion.string(
    }.withEdgecaseFn { rs ->
       if (minSize == maxSize) null else {
          val lowCodePoint = codepoints.edgecase(rs)
-         val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
-         val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
+         val min = lowCodePoint?.let { cp -> List(minSize) { cp.value.asString() }.joinToString("") }
+         val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.value.asString() }.joinToString("") }
          val edgeCases = listOfNotNull(min, minPlus1)
             .filter { it.length in minSize..maxSize }
-         if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
+         if (edgeCases.isEmpty()) null else edgeCases.random(rs.random).asSample()
       }
    }.withShrinker(StringShrinkerWithMin(minSize))
       .withClassifier(StringClassifier(minSize, maxSize))
@@ -122,6 +123,6 @@ fun Arb.Companion.upperLowerCase(s: String): Arb<String> {
       val upperLower = s.upperLowerCases(rs).iterator()
       upperLower.next()
    }.withEdgecaseFn { rs ->
-      listOf(s.uppercase(), s.lowercase()).random(rs.random)
+      listOf(s.uppercase(), s.lowercase()).random(rs.random).asSample()
    }.build()
 }

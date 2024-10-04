@@ -1,5 +1,7 @@
 package io.kotest.matchers.sql
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -11,7 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import java.sql.ResultSet
 
-
+@EnabledIf(LinuxCondition::class)
 class ResultSetMatchersTest : StringSpec() {
 
    private val resultSet = mockk<ResultSet>().also {

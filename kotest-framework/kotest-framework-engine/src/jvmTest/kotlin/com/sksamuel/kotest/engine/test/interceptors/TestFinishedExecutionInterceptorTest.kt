@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.FixedExtensionRegistry
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -17,6 +19,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class TestFinishedExecutionInterceptorTest : FunSpec({
 
    test("should notify of test finishes") {

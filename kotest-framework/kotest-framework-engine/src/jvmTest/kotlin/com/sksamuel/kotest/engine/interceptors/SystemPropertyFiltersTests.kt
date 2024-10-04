@@ -2,10 +2,11 @@ package com.sksamuel.kotest.engine.interceptors
 
 import com.sksamuel.kotest.engine.interceptors.filters1.BarTests
 import com.sksamuel.kotest.engine.interceptors.filters2.FooTests
-import io.kotest.common.KotestInternal
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
@@ -42,7 +43,7 @@ private val testSuite = listOf<KClass<out Spec>>(
  * [KotestEngineProperties.filterSpecs] work similarly to how gradle filters in --tests described in
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
  */
-@KotestInternal
+@EnabledIf(LinuxCondition::class)
 @Isolate
 class SystemPropertyTestFiltersTests : FunSpec({
 
