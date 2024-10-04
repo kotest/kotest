@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.string.shouldMatch
@@ -8,6 +10,7 @@ import io.kotest.property.arbitrary.ipAddressV4
 import io.kotest.property.arbitrary.ipAddressV6
 import io.kotest.property.checkAll
 
+@EnabledIf(LinuxCondition::class)
 class IpAddressTest : FunSpec() {
    init {
 
@@ -35,7 +38,9 @@ class IpAddressTest : FunSpec() {
 
       test("Arb.ipAddressV6 should generate each component in the range 0-65535") {
          checkAll(100, Arb.ipAddressV6()) { ip ->
-            val result = "([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}".toRegex().matchEntire(ip)!!
+            val result =
+               "([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}:([0-9,A-F]){1,4}".toRegex()
+                  .matchEntire(ip)!!
             result.groupValues[1].toInt(16).shouldBeBetween(0, 65535)
             result.groupValues[2].toInt(16).shouldBeBetween(0, 65535)
             result.groupValues[3].toInt(16).shouldBeBetween(0, 65535)

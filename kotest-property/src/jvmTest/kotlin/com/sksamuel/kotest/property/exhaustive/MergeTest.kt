@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -16,6 +18,7 @@ private sealed class Common {
    internal data class Bar(val value: Int) : Common()
 }
 
+@EnabledIf(LinuxCondition::class)
 class MergeTest : FunSpec({
    test("merge two exhaustive gens where one is a subtype of the other") {
       listOf(1, 2, 3).exhaustive().merge(listOf(4, 5, 6).exhaustive()).values shouldBe listOf(1, 4, 2, 5, 3, 6)
