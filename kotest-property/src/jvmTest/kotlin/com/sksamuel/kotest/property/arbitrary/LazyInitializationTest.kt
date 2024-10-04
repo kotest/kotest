@@ -11,6 +11,7 @@ import io.kotest.property.arbitrary.int
 
 import io.kotest.property.arbitrary.lazy
 import io.kotest.property.arbitrary.take
+import io.kotest.property.asSample
 
 @EnabledIf(LinuxCondition::class)
 class LazyInitializationTest : FunSpec({
@@ -39,7 +40,7 @@ class LazyInitializationTest : FunSpec({
 })
 
 private class MyDummyArb(private val seed: Int) : Arb<Int>() {
-   override fun edgecase(rs: RandomSource): Int = listOf(1, 2, 3).random()
+   override fun edgecase(rs: RandomSource): Sample<Int> = listOf(1, 2, 3).random().asSample()
    override fun sample(rs: RandomSource): Sample<Int> = Sample(seed)
 }
 
