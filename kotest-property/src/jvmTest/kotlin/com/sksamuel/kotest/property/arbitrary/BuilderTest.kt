@@ -31,6 +31,7 @@ import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.asSample
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.random.nextInt
@@ -175,13 +176,13 @@ class BuilderTest : FunSpec() {
          }
 
          test("should use edgecase function when provided") {
-            val arb = arbitrary({ 5 }) { 10 }
+            val arb = arbitrary({ 5.asSample() }) { 10 }
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
          }
 
          test("should use edgecase function and shrinker when provided") {
             val shrinker = IntShrinker(1..5)
-            val arb = arbitrary({ 5 }, shrinker) { 10 }
+            val arb = arbitrary({ 5.asSample() }, shrinker) { 10 }
 
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
 
@@ -198,8 +199,8 @@ class BuilderTest : FunSpec() {
             arbitrary(classifier) { arb.bind() }.single() shouldBe 5
             arbitrary(shrinker, classifier) { arb.bind() }.single() shouldBe 5
             arbitrary(listOf(5)) { arb.bind() }.single() shouldBe 5
-            arbitrary({ 5 }) { arb.bind() }.single() shouldBe 5
-            arbitrary({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
+            arbitrary({ 5.asSample() }) { arb.bind() }.single() shouldBe 5
+            arbitrary({ 5.asSample() }, shrinker) { arb.bind() }.single() shouldBe 5
          }
       }
 
@@ -318,13 +319,13 @@ class BuilderTest : FunSpec() {
          }
 
          test("should use edgecase function when provided") {
-            val arb = generateArbitrary({ 5 }) { 10 }
+            val arb = generateArbitrary({ 5.asSample() }) { 10 }
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
          }
 
          test("should use edgecase function and shrinker when provided") {
             val shrinker = IntShrinker(1..5)
-            val arb = generateArbitrary({ 5 }, shrinker) { 10 }
+            val arb = generateArbitrary({ 5.asSample() }, shrinker) { 10 }
 
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
 
@@ -341,8 +342,8 @@ class BuilderTest : FunSpec() {
             generateArbitrary(classifier) { arb.bind() }.single() shouldBe 5
             generateArbitrary(shrinker, classifier) { arb.bind() }.single() shouldBe 5
             generateArbitrary(listOf(5)) { arb.bind() }.single() shouldBe 5
-            generateArbitrary({ 5 }) { arb.bind() }.single() shouldBe 5
-            generateArbitrary({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
+            generateArbitrary({ 5.asSample() }) { arb.bind() }.single() shouldBe 5
+            generateArbitrary({ 5.asSample() }, shrinker) { arb.bind() }.single() shouldBe 5
          }
       }
    }
