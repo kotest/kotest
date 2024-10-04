@@ -61,7 +61,7 @@ class StartWithTest : FreeSpec() {
             assertSoftly {
                message shouldStartWith "\"la tour eiffel\" should start with \"la tour tower london\" (diverged at index 8)"
                message.shouldContainInOrder(
-                  "Match[0]: expected[0..7] matched actual[0..7]",
+                  "Match[0]: part of prefix with indexes [0..7] matched actual[0..7]",
                   """Line[0] ="la tour eiffel"""",
                   """Match[0]= ++++++++------"""
                )
@@ -74,7 +74,7 @@ class StartWithTest : FreeSpec() {
             assertSoftly {
                message shouldStartWith """"The quick brown fox jumps over the lazy dog" should start with "quick brown fox jumps" (diverged at index 0)"""
                message.shouldContainInOrder(
-                  "Match[0]: expected[0..20] matched actual[4..24]",
+                  "Match[0]: whole prefix matched actual[4..24]",
                   """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                   """Match[0]= ----+++++++++++++++++++++------------------"""
                )

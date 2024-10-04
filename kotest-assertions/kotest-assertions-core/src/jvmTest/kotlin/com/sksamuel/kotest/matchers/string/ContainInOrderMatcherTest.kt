@@ -69,7 +69,7 @@ class ContainInOrderMatcherTest : FreeSpec() {
             }.message
             assertSoftly {
                message.shouldContain("""Did not match substring[6]: <"quick brown">""")
-               message.shouldContain("Match[0]: expected[0..10] matched actual[4..14]")
+               message.shouldContain("Match[0]: whole slice matched actual[4..14]")
                message.shouldContain("""Line[0] ="The quick brown fox jumps over the lazy dog"""")
                message.shouldContain(  "Match[0]= ----+++++++++++----------------------------")
             }
