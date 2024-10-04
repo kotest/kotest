@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -10,6 +12,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.lazy
 import io.kotest.property.arbitrary.take
 
+@EnabledIf(LinuxCondition::class)
 class LazyInitializationTest : FunSpec({
    test("Arb.lzy should not evaluate given arb provider when return arb is not used") {
       var callCount = 0

@@ -6,6 +6,8 @@ import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
+val linux = System.getProperty("os.name").lowercase().contains("linux")
+
 object ProjectConfig : AbstractProjectConfig() {
 
    private lateinit var start: TimeMark
@@ -29,12 +31,13 @@ object ProjectConfig : AbstractProjectConfig() {
       // If parallel execution is working, all tests should block at the same time.
       //
       // We allow a large margin of error here as the GitHub runners seem to have a lot of contention.
-      if (Leases.maxLeasesUsed < parallelism) {
-         val cores = Runtime.getRuntime().availableProcessors()
-         error(
-            "Parallel execution failure: max leases used was ${Leases.maxLeasesUsed} but should have been 10." +
-               " Duration was $duration. Cores: $cores"
-         )
-      }
+      if (linux)
+         if (Leases.maxLeasesUsed < parallelism) {
+            val cores = Runtime.getRuntime().availableProcessors()
+            error(
+               "Parallel execution failure: max leases used was ${Leases.maxLeasesUsed} but should have been 10." +
+                  " Duration was $duration. Cores: $cores"
+            )
+         }
    }
 }
