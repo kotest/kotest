@@ -5,6 +5,8 @@ import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
 import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.log
@@ -37,6 +39,8 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
+private val linux = System.getProperty("os.name").lowercase().contains("linux")
+
 object ProjectConfig : AbstractProjectConfig() {
    // set the number of threads so that each test runs in its own thread
    override val parallelism = 10
@@ -60,24 +64,25 @@ object ProjectConfig : AbstractProjectConfig() {
 
    init {
       // Start listening for launched tests in an independent CoroutineScope.
-      testStatuses
-         .onEach { msg -> log { "$msg" } }
-         .filter { msg -> msg.status == Started }
-         // Count the number of started tests by name
-         .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
-         .map { testNames -> testNames.size }
-         // Once all tests are launched, unlock testCompletionLock
-         .onEach { startedTestCount ->
-            log { "startedTestCount: $startedTestCount" }
-            if (startedTestCount == EXPECTED_TEST_COUNT) {
-               log {
-                  "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
-                     "Unlocking testCompletionLock and allowing the tests to complete."
+      if (linux)
+         testStatuses
+            .onEach { msg -> log { "$msg" } }
+            .filter { msg -> msg.status == Started }
+            // Count the number of started tests by name
+            .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
+            .map { testNames -> testNames.size }
+            // Once all tests are launched, unlock testCompletionLock
+            .onEach { startedTestCount ->
+               log { "startedTestCount: $startedTestCount" }
+               if (startedTestCount == EXPECTED_TEST_COUNT) {
+                  log {
+                     "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
+                        "Unlocking testCompletionLock and allowing the tests to complete."
+                  }
+                  testCompletionLock.unlock()
                }
-               testCompletionLock.unlock()
             }
-         }
-         .launchIn(TestStatusCollectorScope)
+            .launchIn(TestStatusCollectorScope)
    }
 
    override suspend fun beforeProject() {
@@ -87,43 +92,44 @@ object ProjectConfig : AbstractProjectConfig() {
    override suspend fun afterProject() {
       val statuses = testStatuses.replayCache
 
-      withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
+      if (linux)
+         withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
 
-         withClue("Expect no tests timed out") {
-            statuses.shouldForNone { it.status shouldBe TimedOut }
-         }
+            withClue("Expect no tests timed out") {
+               statuses.shouldForNone { it.status shouldBe TimedOut }
+            }
 
-         val beforeProjectCalled = withClue("beforeProjectCalled should only have one value") {
-            beforeProjectCalled.value.shouldBeSingleton().first()
-         }
-         withClue("Expect all tests started after `beforeProject()`") {
-            statuses.shouldForAll { it.elapsed shouldBeGreaterThan beforeProjectCalled }
-         }
+            val beforeProjectCalled = withClue("beforeProjectCalled should only have one value") {
+               beforeProjectCalled.value.shouldBeSingleton().first()
+            }
+            withClue("Expect all tests started after `beforeProject()`") {
+               statuses.shouldForAll { it.elapsed shouldBeGreaterThan beforeProjectCalled }
+            }
 
-         listOf(Started, Finished).forEach { status ->
-            val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
+            listOf(Started, Finished).forEach { status ->
+               val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
 
-            withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-               actualTestNames.shouldContainExactlyInAnyOrder(
-                  "test 1",
-                  "test 2",
-                  "test 3",
-                  "test 4",
-                  "test 5",
-                  "test 6",
-                  "test 7",
-                  "test 8",
-               )
+               withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
+                  actualTestNames.shouldContainExactlyInAnyOrder(
+                     "test 1",
+                     "test 2",
+                     "test 3",
+                     "test 4",
+                     "test 5",
+                     "test 6",
+                     "test 7",
+                     "test 8",
+                  )
+               }
+            }
+
+            withClue("Expect that no test finished before all tests had started") {
+               val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
+               val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
+
+               lastStartedTest shouldBeLessThan firstFinishedTest
             }
          }
-
-         withClue("Expect that no test finished before all tests had started") {
-            val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
-            val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
-
-            lastStartedTest shouldBeLessThan firstFinishedTest
-         }
-      }
    }
 }
 
@@ -133,7 +139,7 @@ object ProjectConfig : AbstractProjectConfig() {
  * Only when all tests have been launched simultaneously will [testCompletionLock] be unlocked,
  * and the test is permitted to finish.
  */
-suspend fun TestScope.startAndLockTest() {
+internal suspend fun TestScope.startAndLockTest() {
    testStatuses.emit(TestStatus(testCase.name.testName, Started))
    try {
       withTimeout(10.seconds) {

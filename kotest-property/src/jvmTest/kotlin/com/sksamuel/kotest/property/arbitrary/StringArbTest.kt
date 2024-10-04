@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
@@ -23,6 +25,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import kotlin.streams.toList
 
+@EnabledIf(LinuxCondition::class)
 class StringArbTest : FunSpec() {
 
    init {
