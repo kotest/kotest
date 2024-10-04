@@ -112,11 +112,6 @@ fun <T> Array<T>.shouldNotBeUnique(): Array<T> {
    return this
 }
 
-fun <T, C : Collection<T>> C.shouldNotBeUnique(): C {
-   this shouldNot beUniqueByEquals(null)
-   return this
-}
-
 /**
  * Asserts that the given [Iterable] contains no duplicate elements using the equality
  * method of the elements themselves.
