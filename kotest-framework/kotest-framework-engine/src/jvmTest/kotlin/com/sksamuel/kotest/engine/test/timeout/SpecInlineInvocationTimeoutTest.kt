@@ -19,7 +19,7 @@ private val factory = funSpec {
 @EnabledIf(LinuxCondition::class)
 class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       invocationTimeout = 1
 
