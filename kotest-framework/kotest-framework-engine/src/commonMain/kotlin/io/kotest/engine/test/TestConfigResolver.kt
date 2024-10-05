@@ -55,7 +55,29 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
          coroutineDebugProbes = coroutineDebugProbes(testConfig, parent, spec),
          coroutineTestScope = coroutineTestScope(testConfig, parent, spec),
          blockingTest = blockingTest(testConfig, parent, spec),
+         retries = retries(testConfig, parent, spec),
+         retryFn = retryFn(spec),
+         retryDelay = retryDelay(testConfig, parent, spec),
+         retryDelayFn = retryDelayFn(spec),
       )
+   }
+
+   private fun retries(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Int? {
+      return testConfig?.retries ?: parent?.config?.retries ?: spec.retries ?: spec.defaultTestConfig?.retries
+      ?: projectConf.retries
+   }
+
+   private fun retryDelay(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Duration? {
+      return testConfig?.retryDelay ?: parent?.config?.retryDelay ?: spec.retryDelay ?: spec.defaultTestConfig?.retryDelay
+      ?: projectConf.retryDelay
+   }
+
+   private fun retryFn(spec: Spec): ((TestCase) -> Int)? {
+      return spec.defaultTestConfig?.retryFn ?: projectConf.retryFn
+   }
+
+   private fun retryDelayFn(spec: Spec): ((TestCase, Int) -> Duration)? {
+      return spec.defaultTestConfig?.retryDelayFn ?: projectConf.retryDelayFn
    }
 
    private fun failfast(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {

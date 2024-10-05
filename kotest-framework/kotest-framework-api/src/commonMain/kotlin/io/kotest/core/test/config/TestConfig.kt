@@ -12,7 +12,6 @@ import kotlin.time.Duration
 
 /**
  * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
- *
  * This config is not resolved, and will be converted to a [ResolvedTestConfig] once
  * resolved at runtime.
  */
@@ -68,7 +67,15 @@ data class TestConfig(
    // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
    // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
    // are cooperative by nature.
-   val blockingTest: Boolean? = null
+   val blockingTest: Boolean? = null,
+
+   // if set to > 0, then the test will be retried this many times in the event of a failure
+   // if left to null, then the default provided by a spec or the project config will be used
+   val retries: Int? = null,
+
+   // if set to to a non null value then this is the delay between retries
+   // if left to null, then the default provided by a spec or the project config will be used
+   val retryDelay: Duration? = null,
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }

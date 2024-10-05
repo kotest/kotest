@@ -5,6 +5,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
@@ -75,6 +76,26 @@ data class ResolvedTestConfig(
    // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
    // are cooperative by nature.
    val blockingTest: Boolean,
+
+   /**
+    * If set, then this is the maximum number of times we will retry a test if it fails.
+    */
+   val retries: Int? = null,
+
+   /**
+    * Similar to [retries] but allows a function to determine if we should retry.
+    */
+   val retryFn: ((TestCase) -> Int)?,
+
+   /**
+    * If set, then this is the delay between retries.
+    */
+   val retryDelay: Duration?,
+
+   /**
+    * Similar to [retryDelay] but allows a function to determine the delay based on the number of retries.
+    */
+   val retryDelayFn: ((TestCase, Int) -> Duration)?,
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
@@ -97,6 +118,10 @@ data class ResolvedTestConfig(
          tags = emptySet(),
          severity = TestCaseSeverityLevel.TRIVIAL,
          failfast = false,
+         retries = null,
+         retryFn = null,
+         retryDelay = null,
+         retryDelayFn = null,
       )
    }
 }

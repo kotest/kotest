@@ -5,10 +5,20 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
+import kotlin.time.Duration
 
 object Defaults {
+
+   // by default, we do not retry tests
+   val defaultRetries: Int? = null
+   val defaultRetriesFn: ((TestCase) -> Int)? = null
+
+   // by default, tests are retried immediately
+   val defaultRetryDelay: Duration? = null
+   val defaultRetryDelayFn: ((TestCase, Int) -> Duration)? = null
 
    const val invocations: Int = 1
    const val threads = 1
