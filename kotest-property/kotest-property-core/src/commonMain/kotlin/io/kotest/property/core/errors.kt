@@ -1,7 +1,8 @@
-package io.kotest.property.internal
+package io.kotest.property.core
 
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
+import io.kotest.property.internal.ShrinkResult
 
 /**
  * Generates an [AssertionError] for a property test without arg details and then throws it.

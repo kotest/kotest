@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.property
+package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf

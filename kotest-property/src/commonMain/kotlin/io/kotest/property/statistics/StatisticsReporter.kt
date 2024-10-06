@@ -1,6 +1,5 @@
 package io.kotest.property.statistics
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
 import io.kotest.property.LabelOrder
 import io.kotest.property.PropertyTesting
@@ -11,12 +10,10 @@ import kotlin.math.roundToInt
 /**
  * Pluggable interface for outputting input value labels used in property testing.
  */
-@ExperimentalKotest
 interface StatisticsReporter {
    suspend fun output(statistics: Statistics)
 }
 
-@ExperimentalKotest
 object DefaultStatisticsReporter : StatisticsReporter {
 
    private fun row(classification: Any?, count: Int, iterations: Int, countPad: Int) {
