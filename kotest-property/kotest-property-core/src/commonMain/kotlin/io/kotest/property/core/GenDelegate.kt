@@ -1,5 +1,6 @@
 package io.kotest.property.core
 
+import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
@@ -10,7 +11,7 @@ import kotlin.reflect.KProperty
 private object UNINITIALZED_VALUE
 
 /**
- * A [GenDelegate] is the delegated property used in a `proptest` block to return random values.
+ * A [GenDelegate] is the delegated property used in a `permutations` block to return random values.
  *
  * The `gen` function is the entry point to creating the delegate, which accepts a lambda that returns
  * either an [Arb] or an [Exhaustive] when invoked.
@@ -63,6 +64,7 @@ class GenDelegate<A>(
     * If we are in shrinking mode, then the value will be from the shrinking process.
     */
    override operator fun getValue(thisRef: Any?, property: KProperty<*>): A {
+      println("Get value $thisRef")
       if (_property == UNINITIALZED_VALUE) {
          _property = property
       }
@@ -140,4 +142,13 @@ class GenDelegate<A>(
    fun nextCandidates() {
       _candidates = (_candidate as RTree<A>).children.value
    }
+}
+
+operator fun <T> Gen<T>.provideDelegate(
+   thisRef: Any?,
+   property: KProperty<*>
+): ReadOnlyProperty<Any?, T> {
+   val delegate = GenDelegate(RandomSource.default(), this)
+   GenDelegateRegistry.add(delegate)
+   return delegate
 }

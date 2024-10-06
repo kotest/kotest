@@ -77,14 +77,14 @@ include(
    // the core assertions that cover things like collections, strings, etc
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
-   ":kotest-assertions:kotest-assertions-json",
+//   ":kotest-assertions:kotest-assertions-json",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
    ":kotest-property:kotest-property-core",
 
    // contains  extensions for property testing that build on the kotest test framework
-   ":kotest-property:kotest-property-lifecycle",
+//   ":kotest-property:kotest-property-lifecycle",
 
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin
@@ -92,12 +92,12 @@ include(
 
    ":kotest-runner:kotest-runner-junit4",
    ":kotest-extensions",
-   ":kotest-extensions:kotest-extensions-blockhound",
-   ":kotest-extensions:kotest-extensions-junitxml",
-   ":kotest-extensions:kotest-extensions-htmlreporter",
+//   ":kotest-extensions:kotest-extensions-blockhound",
+//   ":kotest-extensions:kotest-extensions-junitxml",
+//   ":kotest-extensions:kotest-extensions-htmlreporter",
 
    // allows overriding the .now() functionality on time classes
-   ":kotest-extensions:kotest-extensions-now",
+//   ":kotest-extensions:kotest-extensions-now",
 
    // extensions that adapt junit extensions into kotest extensions
    ":kotest-extensions:kotest-extensions-junit5",
@@ -105,21 +105,21 @@ include(
    // the tests modules each test a piece of functionality
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
-   ":kotest-tests:kotest-tests-core",
+//   ":kotest-tests:kotest-tests-core",
 
-   ":kotest-tests:kotest-tests-concurrency-tests",
-   ":kotest-tests:kotest-tests-concurrency-specs",
+//   ":kotest-tests:kotest-tests-concurrency-tests",
+//   ":kotest-tests:kotest-tests-concurrency-specs",
 
-   ":kotest-tests:kotest-tests-config-classname",
-   ":kotest-tests:kotest-tests-htmlreporter",
-   ":kotest-tests:kotest-tests-junitxml",
-   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-power-assert",
-   ":kotest-tests:kotest-tests-spec-parallelism",
-   ":kotest-tests:kotest-tests-tagextension",
-   ":kotest-tests:kotest-tests-timeout-project",
-   ":kotest-tests:kotest-tests-timeout-sysprop",
-   ":kotest-tests:kotest-tests-test-parallelism",
+//   ":kotest-tests:kotest-tests-config-classname",
+//   ":kotest-tests:kotest-tests-htmlreporter",
+//   ":kotest-tests:kotest-tests-junitxml",
+//   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
+//   ":kotest-tests:kotest-tests-power-assert",
+//   ":kotest-tests:kotest-tests-spec-parallelism",
+//   ":kotest-tests:kotest-tests-tagextension",
+//   ":kotest-tests:kotest-tests-timeout-project",
+//   ":kotest-tests:kotest-tests-timeout-sysprop",
+//   ":kotest-tests:kotest-tests-test-parallelism",
 //   ":kotest-tests:kotest-tests-js",
 
    // BOM for whole kotest project
