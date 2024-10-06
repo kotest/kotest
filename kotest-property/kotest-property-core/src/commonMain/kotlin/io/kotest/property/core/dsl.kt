@@ -22,10 +22,12 @@ suspend fun permutations(
 ): PermutationResult {
    val context = PermutationContext()
    context.configure()
-   return PermutationResult(100, 0.0)
+   return PermutationResult(100, 0, 0, 0)
 }
 
 data class PermutationResult(
-   val evaluations: Int,
-   val discardPercentage: Double,
+   val evaluations: Int, // total number of iterations/evaluations regardless of success or failure
+   val successes: Int,
+   val discards: Int,
+   val seed: Long, // the seed used for this test, whether generated or preset
 )

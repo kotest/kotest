@@ -18,7 +18,7 @@ internal suspend fun getFailedSeed(): Long? {
    return readSeed(path)
 }
 
-internal suspend fun writeFailedSeed(seed: Long) {
+suspend fun writeFailedSeed(seed: Long) {
    if (PropertyTesting.writeFailedSeed) {
       val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
       writeSeed(path, seed)

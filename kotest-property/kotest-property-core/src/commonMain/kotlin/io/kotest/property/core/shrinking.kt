@@ -8,16 +8,16 @@ import io.kotest.property.internal.ShrinkResult
 internal suspend fun shrink(context: PermutationContext, test: suspend EvaluationContextToBeRenamed.() -> Unit): List<ShrinkResult<Any?>> {
 
    // we need to switch each delegate to shrink mode so they lock in the current failed random values
-   GenDelegateRegistry.delegates.forEach { it.setShrinking() }
+   context.registry.delegates.forEach { it.setShrinking() }
 
    println("Will begin shrinking for the following failed values\n")
-   GenDelegateRegistry.delegates.forEach { delegate ->
+   context.registry.delegates.forEach { delegate ->
       println("Arg (${delegate.property()}) => ${delegate.sample().value.print().value}")
    }
    println()
 
    // the values after each of the args of the failed iteration have been shrunk (or same value if they could not be)
-   return GenDelegateRegistry.delegates.map { delegate ->
+   return context.registry.delegates.map { delegate ->
       doShrinking(delegate, context, test)
    }
 }

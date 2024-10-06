@@ -26,7 +26,7 @@ class PermutationContext {
    // considers the property test successful.
    var minSuccess: Int = PropertyTesting.defaultMinSuccess
 
-   // he maxFailure variable is used to specify the maximum number of allowable permutations failures during
+   // The maxFailure variable is used to specify the maximum number of allowable permutations failures during
    // property testing. This ensures that the property test will fail if the number of failed tests exceeds
    // this threshold. It is useful for controlling the tolerance for flaky tests or tests that are expected to
    // have some level of failure.
@@ -49,7 +49,7 @@ class PermutationContext {
    var outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications
 
    // The shouldPrintConfig variable is used to specify whether the configuration of the property test is printed
-   var shouldPrintConfig : Boolean = PropertyTesting.shouldPrintConfig
+   var shouldPrintConfig: Boolean = PropertyTesting.shouldPrintConfig
 
    // The failOnSeed variable is used to specify whether a property test should fail if a seed is set.
    var failOnSeed: Boolean = PropertyTesting.failOnSeed
@@ -61,6 +61,8 @@ class PermutationContext {
    var seed: Long? = null
 
    val rs = RandomSource.seeded(seed ?: Random.nextLong())
+
+   internal val registry = GenDelegateRegistry()
 
    internal val statistics = Statistics()
 
@@ -90,7 +92,8 @@ class PermutationContext {
    }
 
    suspend fun forEach(test: suspend EvaluationContextToBeRenamed.() -> Unit) {
-      executePropTest(this, test)
+      val result = executePropTest(this, test)
+      checkMinSuccess(this, result)
    }
 
    fun beforePermutation(fn: suspend () -> Unit) {
@@ -104,7 +107,7 @@ class PermutationContext {
    fun <T> gen(initializer: () -> Gen<T>): GenDelegate<T> {
       val gen = initializer()
       val delegate = GenDelegate(rs, gen)
-//      container.add(delegate)
+      registry.add(delegate)
       return delegate
    }
 }

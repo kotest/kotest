@@ -13,8 +13,8 @@ class DelegateTest : FunSpec() {
       test("gen values should be consistent during the same iteration") {
          permutations {
 
-            val a by Arb.int()
-            val b by Exhaustive.ints(0..10)
+            val a by gen { Arb.int() }
+            val b by gen { Exhaustive.ints(0..10) }
 
             forEach {
                a + b shouldBe a + b
@@ -24,11 +24,11 @@ class DelegateTest : FunSpec() {
          }
       }
 
-      test("arb values should rotate during different iterations") {
+      test("gen values should rotate during different iterations") {
          val values = mutableSetOf<Int>()
          permutations {
             iterations = 5
-            val a by Exhaustive.ints(1..5)
+            val a by gen { Exhaustive.ints(1..5) }
             forEach {
                values.add(a)
             }

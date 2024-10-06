@@ -15,14 +15,16 @@ class MinSuccessTest : FunSpec({
    test("forAll with minSuccess") {
       val message = shouldThrowAny {
          permutations {
-            minSuccess = 10
+            iterations = 1000
+            minSuccess = 999
+            maxFailure = 1000
             val a by gen { Exhaustive.ints(0..10) }
             forEach {
                a shouldBeLessThan 8
             }
          }
       }.message
-      message shouldContain """Property failed after 11 attempts"""
+      message shouldContain """Property failed after 8 attempts"""
       message shouldContain """Caused by: Property passed 8 times (minSuccess rate was 9)"""
    }
 })

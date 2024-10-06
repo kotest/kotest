@@ -64,7 +64,6 @@ class GenDelegate<A>(
     * If we are in shrinking mode, then the value will be from the shrinking process.
     */
    override operator fun getValue(thisRef: Any?, property: KProperty<*>): A {
-      println("Get value $thisRef")
       if (_property == UNINITIALZED_VALUE) {
          _property = property
       }
@@ -142,13 +141,4 @@ class GenDelegate<A>(
    fun nextCandidates() {
       _candidates = (_candidate as RTree<A>).children.value
    }
-}
-
-operator fun <T> Gen<T>.provideDelegate(
-   thisRef: Any?,
-   property: KProperty<*>
-): ReadOnlyProperty<Any?, T> {
-   val delegate = GenDelegate(RandomSource.default(), this)
-   GenDelegateRegistry.add(delegate)
-   return delegate
 }

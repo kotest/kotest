@@ -11,7 +11,7 @@ import io.kotest.property.Sample
  * It also allows us to obtain the current sample from each generator in order to pass
  * the current values to the shrinking function (if one is defined).
  */
-internal object GenDelegateRegistry {
+internal class GenDelegateRegistry {
 
    val delegates = mutableListOf<GenDelegate<*>>()
 

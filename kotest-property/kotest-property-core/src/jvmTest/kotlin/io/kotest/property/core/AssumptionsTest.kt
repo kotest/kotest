@@ -123,21 +123,21 @@ class AssumptionsTest : FunSpec() {
       }
     }
 
-    test("discard percentage calculation") {
+    test("discards counter") {
 
       val result1 = permutations {
         val a by gen { Arb.constant("a") }
         val b by gen { Arb.constant("b") }
         assume(a != b)
       }
-      result1.discardPercentage.shouldBe(0)
+      result1.discards.shouldBe(0)
 
       val result2 = permutations {
         val a by gen { Arb.string(1, Codepoint.az()) }
         val b by gen { Arb.constant("b") }
         assume(a != b)
       }
-      result2.discardPercentage.shouldBe(3)
+      result2.discards.shouldBe(3)
     }
   }
 }
