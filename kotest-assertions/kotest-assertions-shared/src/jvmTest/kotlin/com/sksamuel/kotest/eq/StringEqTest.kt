@@ -3,6 +3,7 @@ package com.sksamuel.kotest.eq
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.assertions.eq.StringEq
 import io.kotest.assertions.shouldFailWithMessage
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
 
@@ -29,7 +30,7 @@ class StringEqTest : FunSpec({
    test("Find partial match for string") {
       val expected = "One quick brown fox jumps over the lazy cat"
       val value ="The quick brown fox jumps over the lazy dog"
-      val actual = StringEq.equals(value, expected)?.message
+      val actual = shouldThrow<AssertionError> { value shouldBe expected }.message
       actual.shouldContainInOrder(
          "Match[0]: part of slice with indexes [2..39] matched actual[2..39]",
          """Line[0] ="The quick brown fox jumps over the lazy dog"""",
