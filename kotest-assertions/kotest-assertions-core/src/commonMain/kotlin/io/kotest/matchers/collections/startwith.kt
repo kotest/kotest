@@ -58,12 +58,15 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
          "[$index] ${element.print().value} => slice$slicesList"
       }
    }.joinToString("\n")
-   return PartialMatchesInCollectionDescription(partialMatchesList, partialMatchesDescription)
+   val indexesOfUnmatchedElements = expectedSlice.indices.filter { index ->
+      partialMatches.none { partialMatch -> index in partialMatch.rangeOfExpected } }
+   return PartialMatchesInCollectionDescription(partialMatchesList, partialMatchesDescription, indexesOfUnmatchedElements)
 }
 
 internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
-   val partialMatchesDescription: String
+   val partialMatchesDescription: String,
+   val indexesOfUnmatchedElements: List<Int>,
 )
 
 private data class SliceComparison<T>(
