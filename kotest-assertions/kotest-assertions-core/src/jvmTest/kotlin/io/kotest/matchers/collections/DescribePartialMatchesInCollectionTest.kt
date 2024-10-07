@@ -11,7 +11,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                  expectedSlice = listOf("orange", "apple", "banana", "cherry"),
                  value = listOf("apple", "banana", "blueberry")
              )
-             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0, 3)
+             actual.indexesOfUnmatchedElements shouldBe listOf(0, 3)
           }
           "return empty list for complete match" {
              val expectedSlice = listOf("orange", "apple", "banana", "cherry")
