@@ -5,6 +5,7 @@ import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.assertions.print.printWithType
 import io.kotest.mpp.sysprop
+import io.kotest.submatching.StringPartialMatch
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -21,6 +22,7 @@ import io.kotest.mpp.sysprop
 object StringEq : Eq<String> {
 
    override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? {
+      val t = StringPartialMatch(expected, actual)
       return when {
          actual == expected -> null
          equalIgnoringWhitespace(actual, expected) -> {
@@ -32,6 +34,13 @@ object StringEq : Eq<String> {
          }
 
          useDiff(expected, actual) -> diff(expected, actual)
+
+         t.matched -> failure(
+            Expected(Printed(expected)),
+            Actual(Printed(actual)),
+            prependMessage = "${t.descriptionString}\n",
+            )
+
          else -> failureWithTypeInformation(
             ExpectedWithType(expected.printWithType()),
             ActualWithType(actual.printWithType())
