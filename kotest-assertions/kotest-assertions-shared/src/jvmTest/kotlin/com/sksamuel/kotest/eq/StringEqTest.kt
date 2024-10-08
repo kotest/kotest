@@ -35,7 +35,7 @@ class StringEqTest : FunSpec({
          "Match[0]: part of slice with indexes [2..39] matched actual[2..39]",
          """Line[0] ="The quick brown fox jumps over the lazy dog"""",
          """Match[0]= --++++++++++++++++++++++++++++++++++++++---""",
-         "expected:<One quick brown fox jumps over the lazy cat> but was:<The quick brown fox jumps over the lazy dog>"
+         """expected:<"One quick brown fox jumps over the lazy cat"> but was:<"The quick brown fox jumps over the lazy dog">"""
       )
    }
 })
