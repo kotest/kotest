@@ -38,7 +38,7 @@ object StringEq : Eq<String> {
          t.matched -> failure(
             Expected(Printed(expected)),
             Actual(Printed(actual)),
-            prependMessage = "${t.descriptionString}\n",
+            prependMessage = "Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n",
             )
 
          else -> failureWithTypeInformation(
