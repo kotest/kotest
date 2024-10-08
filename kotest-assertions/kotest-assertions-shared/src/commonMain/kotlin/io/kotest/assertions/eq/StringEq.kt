@@ -36,8 +36,8 @@ object StringEq : Eq<String> {
          useDiff(expected, actual) -> diff(expected, actual)
 
          t.matched -> failure(
-            Expected(Printed(expected)),
-            Actual(Printed(actual)),
+            Expected(expected.print()),
+            Actual(actual.print()),
             prependMessage = "Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n",
             )
 
