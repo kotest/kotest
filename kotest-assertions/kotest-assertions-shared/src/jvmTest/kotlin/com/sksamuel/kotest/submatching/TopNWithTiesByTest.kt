@@ -1,9 +1,10 @@
-package io.kotest.submatching
+package com.sksamuel.kotest.submatching
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.submatching.topNWithTiesBy
 
 @EnabledIf(LinuxCondition::class)
 class TopNWithTiesByTest : StringSpec() {

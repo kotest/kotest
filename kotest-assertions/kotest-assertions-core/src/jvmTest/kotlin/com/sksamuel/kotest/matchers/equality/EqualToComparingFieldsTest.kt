@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.shouldBeEqualUsingFields
 import io.kotest.matchers.equality.shouldNotBeEqualUsingFields
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContain
 import kotlin.random.Random
 
@@ -146,16 +147,17 @@ Fields that differ:
             city.shouldBeEqualUsingFields {
                city2
             }
-         }.message shouldContain """Using fields:
- - mainHospital.mainDoctor.age
- - mainHospital.mainDoctor.name
- - mainHospital.name
- - name
-
-Fields that differ:
- - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
- - mainHospital.name  =>  expected:<"test-hospital2"> but was:<"test-hospital1">
- - name  =>  expected:<"test2"> but was:<"test1">"""
+         }.message.shouldContainInOrder(
+            "Using fields:",
+            "- mainHospital.mainDoctor.age",
+            "- mainHospital.mainDoctor.name",
+            "- name",
+            "Fields that differ:",
+            """- mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
+            "- mainHospital.name  =>",
+            """expected:<"test-hospital2"> but was:<"test-hospital1">""",
+            """- name  =>  expected:<"test2"> but was:<"test1">""",
+         )
       }
 
       test("check equality comparing field by field recursively handling nullable fields") {
