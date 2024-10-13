@@ -19,6 +19,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldContain
@@ -151,6 +152,24 @@ class AssertSoftlyTest : FreeSpec({
             assertSoftly {
                it shouldBe person // it being person verifies assertSoftly does not have any receiver
             }
+         }
+      }
+
+
+      "Should not lose stacktrace with only one assertion" {
+         val expectedLineNumber = Exception().stackTrace
+            .first { it.className.contains("AssertSoftlyTest") }.lineNumber + 5
+
+         shouldThrow<AssertionError> {
+            assertSoftly {
+               null should beEmpty()
+            }
+         }.run {
+            message.shouldContainInOrder(
+               "The following assertion failed:",
+               "1) Expecting actual not to be null",
+               "   at com.sksamuel.kotest.matchers.AssertSoftlyTest${'$'}1${'$'}1${'$'}9.invokeSuspend(AssertSoftlyTest.kt:$expectedLineNumber)"
+            )
          }
       }
 
