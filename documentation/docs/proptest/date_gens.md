@@ -17,5 +17,5 @@ To use, add `io.kotest.extensions:kotest-property-datetime:version` to your buil
 | Generator                                                     | Description                                                                             | JVM | JS  | Native |
 |---------------------------------------------------------------|-----------------------------------------------------------------------------------------|-----|-----|--------|
 | `Arb.date(yearRange)`                                         | Generates `LocalDate`s with the year between the given range and other fields randomly. | ✓   | ✓   | ✓      |
-| `Arb.datetime(yearRange, hourRange, minuteRange, secondRage)` | Generates `LocalDateTime`s with all fields in the given ranges                          | ✓   | ✓   | ✓      |
+| `Arb.datetime(yearRange, hourRange, minuteRange, secondRange)` | Generates `LocalDateTime`s with all fields in the given ranges                          | ✓   | ✓   | ✓      |
 | `Arb.instant(range)`                                          | Generates `Instant`s with the epoch randomly generated in the given range               | ✓   | ✓   | ✓      |
