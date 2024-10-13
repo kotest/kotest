@@ -796,7 +796,14 @@ public final class io/kotest/matchers/collections/SortedDescKt {
 	public static final fun beSortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeSortedDescending (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedDescending (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeSortedDescending ([B)[B
+	public static final fun shouldBeSortedDescending ([C)[C
+	public static final fun shouldBeSortedDescending ([D)[D
+	public static final fun shouldBeSortedDescending ([F)[F
+	public static final fun shouldBeSortedDescending ([I)[I
+	public static final fun shouldBeSortedDescending ([J)[J
 	public static final fun shouldBeSortedDescending ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldBeSortedDescending ([S)[S
 	public static final fun shouldBeSortedDescendingBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedDescendingBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldBeSortedDescendingBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;

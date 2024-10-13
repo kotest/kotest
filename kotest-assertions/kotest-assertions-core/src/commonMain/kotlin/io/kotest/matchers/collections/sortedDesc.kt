@@ -5,13 +5,48 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
+fun ByteArray.shouldBeSortedDescending(): ByteArray {
+   asList() should beSortedDescending("ByteArray")
+   return this
+}
+
+fun ShortArray.shouldBeSortedDescending(): ShortArray {
+   asList() should beSortedDescending("ShortArray")
+   return this
+}
+
+fun CharArray.shouldBeSortedDescending(): CharArray {
+   asList() should beSortedDescending("CharArray")
+   return this
+}
+
+fun IntArray.shouldBeSortedDescending(): IntArray {
+   asList() should beSortedDescending("IntArray")
+   return this
+}
+
+fun LongArray.shouldBeSortedDescending(): LongArray {
+   asList() should beSortedDescending("LongArray")
+   return this
+}
+
+fun FloatArray.shouldBeSortedDescending(): FloatArray {
+   asList() should beSortedDescending("FloatArray")
+   return this
+}
+
+fun DoubleArray.shouldBeSortedDescending(): DoubleArray {
+   asList() should beSortedDescending("DoubleArray")
+   return this
+}
+
 fun <T : Comparable<T>> Array<T>.shouldBeSortedDescending(): Array<T> {
-   asList().shouldBeSortedDescending()
+   asList() should beSortedDescending("Array")
    return this
 }
 
 infix fun <T, E : Comparable<E>> Array<T>.shouldBeSortedDescendingBy(transform: (T) -> E): Array<T> {
-   asList().shouldBeSortedDescendingBy(transform)
+   asList() should beSortedDescendingWith("Array") { a, b -> transform(a).compareTo(transform(b)) }
    return this
 }
 
@@ -26,12 +61,12 @@ infix fun <T, E : Comparable<E>> List<T>.shouldBeSortedDescendingBy(transform: (
 }
 
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeSortedDescending(): I {
-   toList().shouldBeSortedDescending()
+   this should beSortedDescending(null)
    return this
 }
 
 infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedDescendingBy(transform: (T) -> E): I {
-   toList().shouldBeSortedDescendingBy(transform)
+   this should beSortedDescendingBy(transform)
    return this
 }
 
@@ -45,7 +80,7 @@ fun <T, E : Comparable<E>> beSortedDescendingBy(transform: (T) -> E): Matcher<It
 fun <T, E : Comparable<E>> sortedDescendingBy(transform: (T) -> E): Matcher<Iterable<T>> =
    beSortedDescendingBy(transform)
 
-internal fun <T : Comparable<T>> beSortedDescending(name: String?): Matcher<Iterable<T>> =
+private fun <T : Comparable<T>> beSortedDescending(name: String?): Matcher<Iterable<T>> =
    beSortedDescendingWith(name) { a, b -> a.compareTo(b) }
 
 private fun <T, I : Iterable<T>> beSortedDescendingWith(name: String?, comparator: Comparator<T>): Matcher<I> =
