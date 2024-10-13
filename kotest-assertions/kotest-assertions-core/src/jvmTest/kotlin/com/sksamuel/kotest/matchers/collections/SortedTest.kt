@@ -114,13 +114,13 @@ class SortedTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe sortedDescending<Int>()
-            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+            }.shouldHaveMessage("List should be sorted in descending order. Element 1 at index 0 was smaller than element 2 at index 1")
 
             listOf(9, 6, 2, 1).shouldBeSortedDescending()
 
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSortedDescending()
-            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
+            }.shouldHaveMessage("List should be sorted in descending order. Element 1 at index 0 was smaller than element 2 at index 1")
          }
 
          "restrict items at the error message" {

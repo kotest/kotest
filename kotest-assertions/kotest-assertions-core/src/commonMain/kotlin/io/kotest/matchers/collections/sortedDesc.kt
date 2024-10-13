@@ -35,24 +35,67 @@ infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedDescendingBy(t
    return this
 }
 
-fun <T : Comparable<T>> beSortedDescending(): Matcher<List<T>> = sortedDescending()
+fun <T : Comparable<T>> beSortedDescending(): Matcher<Iterable<T>> = beSortedDescending(null)
 
-fun <T : Comparable<T>> sortedDescending(): Matcher<List<T>> = sortedDescendingBy { it }
+fun <T : Comparable<T>> sortedDescending(): Matcher<Iterable<T>> = beSortedDescending()
 
-fun <T, E : Comparable<E>> beSortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = sortedDescendingBy(transform)
+fun <T, E : Comparable<E>> beSortedDescendingBy(transform: (T) -> E): Matcher<Iterable<T>> =
+   beSortedDescendingWith(null) { a, b -> transform(a).compareTo(transform(b)) }
 
-fun <T, E : Comparable<E>> sortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = object : Matcher<List<T>> {
-   override fun test(value: List<T>): MatcherResult {
-      val failure =
-         value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && transform(it) < transform(value[i + 1]) }
-      val elementMessage = when (failure) {
-         null -> ""
-         else -> ". Element ${failure.value} at index ${failure.index} was less than element ${value[failure.index + 1]}"
+fun <T, E : Comparable<E>> sortedDescendingBy(transform: (T) -> E): Matcher<Iterable<T>> =
+   beSortedDescendingBy(transform)
+
+internal fun <T : Comparable<T>> beSortedDescending(name: String?): Matcher<Iterable<T>> =
+   beSortedDescendingWith(name) { a, b -> a.compareTo(b) }
+
+private fun <T, I : Iterable<T>> beSortedDescendingWith(name: String?, comparator: Comparator<T>): Matcher<I> =
+   object : Matcher<I> {
+      override fun test(value: I): MatcherResult {
+         val name = name ?: value.containerName()
+         val positiveResult = MatcherResult(
+            true,
+            { "$name should be sorted descending" },
+            { "$name should not be sorted descending" }
+         )
+
+         value.zippedWithNext(
+            onEmpty = { return positiveResult },
+            onSingle = { return positiveResult }
+         ) { a, b ->
+            if (comparator.compare(a.value, b.value) < 0) {
+               return MatcherResult(
+                  false,
+                  { "$name should be sorted in descending order. Element ${a.value.print().value} at index ${a.index} was smaller than element ${b.value.print().value} at index ${b.index}" },
+                  { "$name should not be sorted descending" }
+               )
+            }
+         }
+
+         return positiveResult
       }
-      return MatcherResult(
-         failure == null,
-         { "List ${value.print().value} should be sorted$elementMessage" },
-         { "List ${value.print().value} should not be sorted" }
-      )
+   }
+
+internal inline fun <T> Iterable<T>.zippedWithNext(
+   onEmpty: () -> Unit,
+   onSingle: (T) -> Unit,
+   onEach: (IndexedValue<T>, IndexedValue<T>) -> Unit
+) {
+   val iterator = iterator().withIndex()
+   if (!iterator.hasNext()) {
+      onEmpty()
+      return
+   }
+
+   var first = iterator.next()
+
+   if (!iterator.hasNext()) {
+      onSingle(first.value)
+      return
+   }
+
+   while (iterator.hasNext()) {
+      val second = iterator.next()
+      onEach(first, second)
+      first = second
    }
 }
