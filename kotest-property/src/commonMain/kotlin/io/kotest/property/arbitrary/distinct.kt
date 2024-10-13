@@ -10,11 +10,11 @@ fun <A> Arb<A>.distinct(attempts: Int = 100) = object : Arb<A>() {
 
    private val seen = mutableSetOf<A?>()
 
-   override fun edgecase(rs: RandomSource): A? {
+   override fun edgecase(rs: RandomSource): Sample<A>? {
       var iterations = 0
       while (iterations < attempts) {
          val edgecase = this@distinct.edgecase(rs)
-         if (seen.add(edgecase)) return edgecase
+         if (edgecase == null || seen.add(edgecase.value)) return edgecase
          iterations++
       }
       return null

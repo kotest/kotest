@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.exhaustive
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
@@ -9,6 +11,7 @@ import io.kotest.property.exhaustive.longs
 import io.kotest.property.exhaustive.of
 import io.kotest.property.forAll
 
+@EnabledIf(LinuxCondition::class)
 class ForAllExhaustivesIterationTest : FunSpec() {
    init {
 

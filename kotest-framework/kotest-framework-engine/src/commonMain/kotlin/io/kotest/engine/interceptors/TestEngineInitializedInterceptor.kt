@@ -10,7 +10,7 @@ internal object TestEngineInitializedInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
       context.listener.engineInitialized(context)
       return execute(context)

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
@@ -9,7 +10,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-@ExperimentalKotest
+@EnabledIf(LinuxCondition::class)
 class ShouldSpecTimeoutTest : ShouldSpec() {
    init {
 

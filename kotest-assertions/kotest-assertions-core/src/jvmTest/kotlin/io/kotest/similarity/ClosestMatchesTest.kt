@@ -1,13 +1,16 @@
 package io.kotest.similarity
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.similarity.closestMatches
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal
 
-class ClosestMatchesTest: WordSpec() {
+@EnabledIf(LinuxCondition::class)
+class ClosestMatchesTest : WordSpec() {
    init {
       "closestMatches" should {
          "find no matches" {
@@ -15,13 +18,17 @@ class ClosestMatchesTest: WordSpec() {
          }
 
          "find one match" {
-            val actual = closestMatches(setOf(sweetGreenApple, sweetRedApple), tartRedCherry)
+            val actual = closestMatches(setOf(sweetGreenApple, sweetRedApple), sweetGreenPear)
             assertSoftly {
                actual.size shouldBe 1
-               actual[0].value shouldBe tartRedCherry
-               actual[0].possibleMatch shouldBe sweetRedApple
-               actual[0].comparisonResult.distance.distance shouldBe BigDecimal("0.33")
+               actual[0].value shouldBe sweetGreenPear
+               actual[0].possibleMatch shouldBe sweetGreenApple
+               actual[0].comparisonResult.distance.distance shouldBe BigDecimal("0.67")
             }
+         }
+
+         "find no matches if similarity below threshold" {
+            closestMatches(setOf(sweetGreenApple, sweetRedApple), tartRedCherry).shouldBeEmpty()
          }
 
          "find two matches with same distance" {

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 package io.kotest.engine.test
 
 import io.kotest.core.Logger
@@ -19,6 +17,7 @@ import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
@@ -86,14 +85,15 @@ internal class TestCaseExecutor(
             context.configuration.registry,
             timeMark,
             listOfNotNull(
-               InvocationTimeoutInterceptor,
+               // Timeout is handled inside TestCoroutineInterceptor if it is enabled
+               if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             )
          ),
          CoroutineDebugProbeInterceptor,
       )
 
-      val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
+      val innerExecute = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.testName, "Executing test") }
          tc.test(scope)
          try {
@@ -104,7 +104,7 @@ internal class TestCaseExecutor(
       }
 
       return interceptors.foldRight(innerExecute) { ext, fn ->
-         { tc, sc -> ext.intercept(tc, sc, fn) }
+         NextTestExecutionInterceptor { tc, sc -> ext.intercept(tc, sc, fn) }
       }.invoke(testCase, testScope)
    }
 }

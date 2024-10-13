@@ -29,7 +29,12 @@ object PropertyTesting {
 
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
 
-   var defaultShrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
+   var defaultShrinkingMode: ShrinkingMode = when(val mode = sysprop("kotest.proptest.default.shrinking.mode", "bounded")) {
+      "off" -> ShrinkingMode.Off
+      "bounded" -> ShrinkingMode.Bounded(sysprop("kotest.proptest.default.shrinking.bound", 1000))
+      "unbounded" -> ShrinkingMode.Unbounded
+      else -> error("Invalid shrinking mode: $mode")
+   }
 
    var defaultListeners: List<PropTestListener> = listOf()
 
@@ -104,6 +109,7 @@ data class PropTestConfig(
    val labelsReporter: LabelsReporter = StandardLabelsReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
+   val skipTo: Int = 0
 )
 
 interface PropTestListener {

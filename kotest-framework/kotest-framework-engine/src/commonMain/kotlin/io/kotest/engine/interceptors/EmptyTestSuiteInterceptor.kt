@@ -1,18 +1,19 @@
 package io.kotest.engine.interceptors
 
+import io.kotest.core.config.Defaults
 import io.kotest.engine.EngineResult
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
  * Wraps the [TestEngineListener] to listen for test events and returns an error
- * if there were no tests executed and [failOnEmptyTestSuite] is configured to be true.
+ * if there were no tests executed and [Defaults.failOnEmptyTestSuite] is configured to be true.
  */
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
       return when (context.configuration.failOnEmptyTestSuite) {
@@ -24,6 +25,7 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
                else -> result
             }
          }
+
          false -> execute(context)
       }
    }

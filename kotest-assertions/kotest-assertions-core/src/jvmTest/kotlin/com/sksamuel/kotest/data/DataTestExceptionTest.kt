@@ -1,11 +1,14 @@
 package com.sksamuel.kotest.data
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.string.shouldContain
 
+@EnabledIf(LinuxCondition::class)
 class DataTestExceptionTest : FunSpec({
    test("failure in forAll should keep original stack trace") {
       val t = shouldThrowAny {

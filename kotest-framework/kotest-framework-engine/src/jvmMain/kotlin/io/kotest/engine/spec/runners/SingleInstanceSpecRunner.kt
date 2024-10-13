@@ -11,6 +11,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestExtensions
@@ -45,12 +46,14 @@ internal class SingleInstanceSpecRunner(
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
          return coroutineScope {
-            pipeline.execute(spec) {
-               val rootTests = materializer.materialize(spec)
-               logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
-               scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
-               Result.success(results)
-            }
+            pipeline.execute(spec, object : NextSpecInterceptor {
+               override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
+                  val rootTests = materializer.materialize(spec)
+                  logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests on $scheduler") }
+                  scheduler.schedule({ runTest(it, coroutineContext, null) }, rootTests)
+                  return Result.success(results)
+               }
+            })
          }
       } catch (e: Exception) {
          e.printStackTrace()

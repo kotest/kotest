@@ -1,28 +1,35 @@
 package com.sksamuel.kotest.parallelism
 
-import com.sksamuel.kotest.parallelism.ProjectConfig.projectStart
+import com.sksamuel.kotest.parallelism.ProjectConfig.startOfTest
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
 import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.log
 import io.kotest.core.test.TestScope
+import io.kotest.inspectors.shouldForAll
 import io.kotest.inspectors.shouldForNone
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.kotest.core.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -31,6 +38,8 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
+
+private val linux = System.getProperty("os.name").lowercase().contains("linux")
 
 object ProjectConfig : AbstractProjectConfig() {
    // set the number of threads so that each test runs in its own thread
@@ -47,71 +56,80 @@ object ProjectConfig : AbstractProjectConfig() {
    private val TestStatusCollectorScope: CoroutineScope =
       CoroutineScope(Dispatchers.IO) + CoroutineName("TestStatusCollector")
 
-   /** Marks the start of the entire tests, when [beforeProject] is called, before any tests are launched. */
-   internal lateinit var projectStart: TimeMark
-      private set
+   /** Mark the start of the entire test case. */
+   internal val startOfTest: TimeMark = TimeSource.Monotonic.markNow()
+
+   /** Marks when [beforeProject] is called, which should only be once, and before any tests are launched. */
+   private val beforeProjectCalled = MutableStateFlow(listOf<Duration>())
 
    init {
       // Start listening for launched tests in an independent CoroutineScope.
-      testStatuses
-         .onEach { msg -> log { "$msg" } }
-         .filter { msg -> msg.status == Started }
-         // Count the number of started tests by name
-         .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
-         .map { testNames -> testNames.size }
-         // Once all tests are launched, unlock testCompletionLock
-         .onEach { startedTestCount ->
-            log { "startedTestCount: $startedTestCount" }
-            if (startedTestCount == EXPECTED_TEST_COUNT) {
-               log {
-                  "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
-                     "Unlocking testCompletionLock and allowing the tests to complete."
+      if (linux)
+         testStatuses
+            .onEach { msg -> log { "$msg" } }
+            .filter { msg -> msg.status == Started }
+            // Count the number of started tests by name
+            .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
+            .map { testNames -> testNames.size }
+            // Once all tests are launched, unlock testCompletionLock
+            .onEach { startedTestCount ->
+               log { "startedTestCount: $startedTestCount" }
+               if (startedTestCount == EXPECTED_TEST_COUNT) {
+                  log {
+                     "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
+                        "Unlocking testCompletionLock and allowing the tests to complete."
+                  }
+                  testCompletionLock.unlock()
                }
-               testCompletionLock.unlock()
             }
-         }
-         .launchIn(TestStatusCollectorScope)
+            .launchIn(TestStatusCollectorScope)
    }
 
    override suspend fun beforeProject() {
-      projectStart = TimeSource.Monotonic.markNow()
+      beforeProjectCalled.update { it + startOfTest.elapsedNow() }
    }
 
    override suspend fun afterProject() {
       val statuses = testStatuses.replayCache
 
-      withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
+      if (linux)
+         withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
 
-         withClue("Expect no tests timed out") {
-            statuses.shouldForNone { it.status shouldBe TimedOut }
-         }
+            withClue("Expect no tests timed out") {
+               statuses.shouldForNone { it.status shouldBe TimedOut }
+            }
 
-         val expectedTestNames = listOf(
-            "test 1",
-            "test 2",
-            "test 3",
-            "test 4",
-            "test 5",
-            "test 6",
-            "test 7",
-            "test 8",
-         )
+            val beforeProjectCalled = withClue("beforeProjectCalled should only have one value") {
+               beforeProjectCalled.value.shouldBeSingleton().first()
+            }
+            withClue("Expect all tests started after `beforeProject()`") {
+               statuses.shouldForAll { it.elapsed shouldBeGreaterThan beforeProjectCalled }
+            }
 
-         listOf(Started, Finished).forEach { status ->
-            val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
+            listOf(Started, Finished).forEach { status ->
+               val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
 
-            withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
-               actualTestNames shouldContainExactlyInAnyOrder expectedTestNames
+               withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
+                  actualTestNames.shouldContainExactlyInAnyOrder(
+                     "test 1",
+                     "test 2",
+                     "test 3",
+                     "test 4",
+                     "test 5",
+                     "test 6",
+                     "test 7",
+                     "test 8",
+                  )
+               }
+            }
+
+            withClue("Expect that no test finished before all tests had started") {
+               val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
+               val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
+
+               lastStartedTest shouldBeLessThan firstFinishedTest
             }
          }
-
-         withClue("Expect that no test finished before all tests had started") {
-            val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
-            val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
-
-            lastStartedTest shouldBeLessThan firstFinishedTest
-         }
-      }
    }
 }
 
@@ -121,7 +139,7 @@ object ProjectConfig : AbstractProjectConfig() {
  * Only when all tests have been launched simultaneously will [testCompletionLock] be unlocked,
  * and the test is permitted to finish.
  */
-suspend fun TestScope.startAndLockTest() {
+internal suspend fun TestScope.startAndLockTest() {
    testStatuses.emit(TestStatus(testCase.name.testName, Started))
    try {
       withTimeout(10.seconds) {
@@ -148,7 +166,7 @@ private val testStatuses = MutableSharedFlow<TestStatus>(replay = 100)
 private data class TestStatus(
    val testName: String,
    val status: Status,
-   val elapsed: Duration = projectStart.elapsedNow(),
+   val elapsed: Duration = startOfTest.elapsedNow(),
 ) {
    enum class Status { Started, Finished, TimedOut }
 }

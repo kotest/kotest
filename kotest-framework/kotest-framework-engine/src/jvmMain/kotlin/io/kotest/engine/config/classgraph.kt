@@ -14,9 +14,7 @@ internal fun classgraph(): ClassGraph {
       .enableAnnotationInfo()
       .ignoreClassVisibility()
       .disableNestedJarScanning()
-      // do not change this to use rejectPackages as then it will fail in builds
-      // using an older version of classgraph
-      .blacklistPackages(
+      .rejectPackages(
          "java.*",
          "javax.*",
          "sun.*",

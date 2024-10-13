@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.Platform
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
@@ -17,11 +19,14 @@ import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(DelicateCoroutinesApi::class)
+@EnabledIf(LinuxCondition::class)
 class TestCaseExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestScope {

@@ -2,6 +2,8 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
@@ -16,12 +18,12 @@ import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.filterIsInstance
 import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
 
+@EnabledIf(LinuxCondition::class)
 class FilterTest : FunSpec({
 
    test("should filter elements") {
@@ -42,7 +44,7 @@ class FilterTest : FunSpec({
 
    test("should be stack safe") {
       val arb = object : Arb<Int>() {
-         override fun edgecase(rs: RandomSource): Int? = null
+         override fun edgecase(rs: RandomSource): Sample<Int>? = null
          override fun sample(rs: RandomSource): Sample<Int> = Sample(rs.random.nextInt())
       }
 

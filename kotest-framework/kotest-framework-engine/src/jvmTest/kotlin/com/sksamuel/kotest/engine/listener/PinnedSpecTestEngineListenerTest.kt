@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.listener
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxCondition::class)
 class PinnedSpecTestEngineListenerTest : WordSpec({
 
    "PinnedSpecTestEngineListener" should {

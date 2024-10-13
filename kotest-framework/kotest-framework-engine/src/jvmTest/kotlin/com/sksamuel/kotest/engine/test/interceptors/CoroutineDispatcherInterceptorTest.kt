@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -13,11 +15,13 @@ import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
-@ExperimentalStdlibApi
+@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
+@EnabledIf(LinuxCondition::class)
 class CoroutineDispatcherInterceptorTest : DescribeSpec() {
    init {
       describe("CoroutineDispatcherInterceptor") {

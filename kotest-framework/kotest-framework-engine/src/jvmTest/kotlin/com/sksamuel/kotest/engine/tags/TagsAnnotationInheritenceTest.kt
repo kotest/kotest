@@ -3,10 +3,12 @@ package com.sksamuel.kotest.engine.tags
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.datatest.withData
@@ -15,6 +17,7 @@ import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe
 
 @Isolate
+@EnabledIf(LinuxCondition::class)
 class TagsAnnotationInheritenceTest : FunSpec() {
    init {
 

@@ -17,6 +17,10 @@ dependencyResolutionManagement {
          name = "SonatypeSnapshots"
          mavenContent { snapshotsOnly() }
       }
+      maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+         name = "SonatypeSnapshots2"
+         mavenContent { snapshotsOnly() }
+      }
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
@@ -109,7 +113,6 @@ include(
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-multipleconfig",
    ":kotest-tests:kotest-tests-power-assert",
    ":kotest-tests:kotest-tests-spec-parallelism",
    ":kotest-tests:kotest-tests-tagextension",

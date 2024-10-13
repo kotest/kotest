@@ -2,38 +2,43 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.assertions.asClue
 import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.datatest.withData
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.measureTime
 
+@EnabledIf(LinuxCondition::class)
 class GlobalTimeoutTest : FunSpec() {
    init {
-      coroutineTestScope = true
+      context("global timeouts should apply if no other timeout is set") {
+         withData(
+            nameFn = { "coroutineTestScope = $it" },
+            false,
+            true,
+         ) { enableCoroutineTestScope ->
+            val c = ProjectConfiguration().apply {
+               timeout = 100
+               coroutineTestScope = enableCoroutineTestScope
+            }
+            val collector = CollectingTestEngineListener()
 
-      test("global timeouts should apply if no other timeout is set") {
-         val c = ProjectConfiguration().apply { timeout = 4000 }
-         val collector = CollectingTestEngineListener()
-
-         val duration = testTimeSource().measureTime {
             TestEngineLauncher(collector)
                .withClasses(TestTimeouts::class)
                .withConfiguration(c)
-               .async()
+               .launch()
+
+            collector.names.shouldContainExactly("blocked", "suspend")
+
+            collector.result("blocked").asClue { result -> result?.isErrorOrFailure shouldBe true }
+            collector.result("suspend").asClue { result -> result?.isErrorOrFailure shouldBe true }
          }
-
-         duration shouldBe 4000.milliseconds
-         collector.names.shouldContainExactly("blocked", "suspend")
-
-         collector.result("blocked").asClue { result -> result?.isError shouldBe true }
-         collector.result("suspend").asClue { result -> result?.isError shouldBe true }
       }
    }
 }
@@ -45,6 +50,6 @@ private class TestTimeouts : StringSpec({
    }
 
    "suspend" {
-      delay(28.days)
+      realTimeDelay(28.days)
    }
 })

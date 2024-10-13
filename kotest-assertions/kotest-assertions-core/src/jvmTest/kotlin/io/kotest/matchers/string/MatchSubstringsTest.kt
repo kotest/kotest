@@ -1,32 +1,35 @@
 package io.kotest.matchers.string
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 
-class MatchSubstringsTest: StringSpec() {
+@EnabledIf(LinuxCondition::class)
+class MatchSubstringsTest : StringSpec() {
    private val value = "The quick brown fox jumps over the lazy dog"
    private val words = listOf("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog")
 
    init {
-       "matchSubstrings returns Match if not substrings" {
-          matchSubstrings(value, listOf()) shouldBe ContainInOrderOutcome.Match
-       }
+      "matchSubstrings returns Match if not substrings" {
+         matchSubstrings(value, listOf()) shouldBe ContainInOrderOutcome.Match
+      }
       "matchSubstrings returns Match if one substring matches" {
          words.forEach { substring ->
             matchSubstrings(value, listOf(substring)) shouldBe ContainInOrderOutcome.Match
          }
       }
       "matchSubstrings returns Match if all even substrings match" {
-         val evenWords = words.filterIndexed{ index, _ -> index % 2 == 0 }
+         val evenWords = words.filterIndexed { index, _ -> index % 2 == 0 }
          matchSubstrings(value, evenWords) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all even substrings match, including lots of empty strings" {
-         val sparseWords = words.flatMap{ word -> listOf("", word, "") }
+         val sparseWords = words.flatMap { word -> listOf("", word, "") }
          matchSubstrings(value, sparseWords) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all odd substrings match" {
-         val oddWords = words.filterIndexed{ index, _ -> index % 2 == 1 }
+         val oddWords = words.filterIndexed { index, _ -> index % 2 == 1 }
          matchSubstrings(value, oddWords) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all substrings match" {
@@ -39,7 +42,8 @@ class MatchSubstringsTest: StringSpec() {
          words.indices.toList().forAll { index ->
             val tokenNotInValue = "green"
             matchSubstrings(value, replaceWord(words, tokenNotInValue, index)) shouldBe ContainInOrderOutcome.Mismatch(
-               tokenNotInValue, index)
+               tokenNotInValue, index
+            )
          }
       }
       "matchSubstrings returns mismatch if every substring matches but not in order" {

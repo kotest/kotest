@@ -12,6 +12,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
 import io.kotest.core.Logger
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -36,8 +37,10 @@ internal class SpecExecutor(
 
    suspend fun execute(ref: SpecRef) {
       logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
-      val innerExecute: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> = {
-         createInstance(ref).flatMap { executeInDelegate(it) }
+      val innerExecute = object : NextSpecRefInterceptor {
+         override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+            return createInstance(ref).flatMap { executeInDelegate(it) }
+         }
       }
       pipeline.execute(ref, innerExecute)
    }

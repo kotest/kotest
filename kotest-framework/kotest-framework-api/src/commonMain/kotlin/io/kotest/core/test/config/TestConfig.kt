@@ -2,9 +2,11 @@ package io.kotest.core.test.config
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
@@ -74,5 +76,9 @@ data class TestConfig(
       require((threads ?: 0) <= (invocations ?: 1)) { "Number of threads must be <= number of invocations" }
       require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
       require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
+      require(timeout == null || invocationTimeout == null || invocationTimeout <= timeout) {
+         "Invocation timeout must not exceed the test case timeout: " +
+            "$invocationTimeout (invocationTimeout) > $timeout (timeout)"
+      }
    }
 }

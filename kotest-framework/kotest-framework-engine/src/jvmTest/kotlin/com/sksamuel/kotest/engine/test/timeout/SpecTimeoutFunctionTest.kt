@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
@@ -15,12 +17,13 @@ private val factory = funSpec {
 /**
  * Tests timeouts at the spec level (by function override) should be applied.
  */
+@EnabledIf(LinuxCondition::class)
 class SpecTimeoutFunctionTest : FunSpec() {
 
    override fun timeout(): Long = 10.milliseconds.inWholeMilliseconds
 
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       test("should timeout from spec setting") {
          delay(10.hours)

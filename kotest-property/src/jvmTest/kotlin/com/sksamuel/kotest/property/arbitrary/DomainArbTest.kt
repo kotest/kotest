@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainAll
@@ -15,6 +17,7 @@ import io.kotest.property.arbitrary.filter
 import io.kotest.property.checkAll
 import java.nio.charset.StandardCharsets
 
+@EnabledIf(LinuxCondition::class)
 class DomainArbTest : ShouldSpec({
    should("Generate domains with the most common TLDs by default") {
 

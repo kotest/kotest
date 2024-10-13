@@ -1,17 +1,27 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.engine.test.toTestResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
+@EnabledIf(LinuxCondition::class)
 class CoroutinesTimeoutTest : FunSpec() {
 
    init {
 
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       test("a testcase timeout should interrupt a blocked thread").config(
          timeout = 10.milliseconds,
@@ -85,6 +95,23 @@ private suspend fun someCoroutine() {
    coroutineScope {
       launch {
          delay(10000000)
+      }
+   }
+}
+
+suspend fun realTimeDelay(duration: Duration) {
+   // Default dispatcher knows nothing about virtual time
+   withContext(Dispatchers.Default) { delay(duration) }
+}
+
+/**
+ * A Test Case extension that expects each test to fail, and will invert the test result.
+ */
+object ExpectFailureExtension : TestCaseExtension {
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when (val result = execute(testCase)) {
+         is TestResult.Failure, is TestResult.Error -> TestResult.Success(result.duration)
+         else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(result.duration)
       }
    }
 }

@@ -301,18 +301,28 @@ public final class io/kotest/matchers/collections/BoundsKt {
 	public static final fun haveLowerBound (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun haveUpperBound (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldHaveLowerBound (Ljava/lang/Iterable;Ljava/lang/Comparable;)Ljava/lang/Iterable;
-	public static final fun shouldHaveLowerBound (Ljava/util/Collection;Ljava/lang/Comparable;)Ljava/util/Collection;
+	public static final fun shouldHaveLowerBound ([BB)[B
+	public static final fun shouldHaveLowerBound ([CC)[C
+	public static final fun shouldHaveLowerBound ([DD)[D
+	public static final fun shouldHaveLowerBound ([FF)[F
+	public static final fun shouldHaveLowerBound ([II)[I
+	public static final fun shouldHaveLowerBound ([JJ)[J
 	public static final fun shouldHaveLowerBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldHaveLowerBound ([SS)[S
 	public static final fun shouldHaveUpperBound (Ljava/lang/Iterable;Ljava/lang/Comparable;)Ljava/lang/Iterable;
-	public static final fun shouldHaveUpperBound (Ljava/util/Collection;Ljava/lang/Comparable;)Ljava/util/Collection;
+	public static final fun shouldHaveUpperBound ([BB)[B
+	public static final fun shouldHaveUpperBound ([CC)[C
+	public static final fun shouldHaveUpperBound ([DD)[D
+	public static final fun shouldHaveUpperBound ([FF)[F
+	public static final fun shouldHaveUpperBound ([II)[I
+	public static final fun shouldHaveUpperBound ([JJ)[J
 	public static final fun shouldHaveUpperBound ([Ljava/lang/Comparable;Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldHaveUpperBound ([SS)[S
 }
 
 public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun beSorted ()Lio/kotest/matchers/Matcher;
 	public static final fun beSortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun beSortedDescending ()Lio/kotest/matchers/Matcher;
-	public static final fun beSortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun existInOrder (Ljava/util/List;)Lio/kotest/matchers/Matcher;
 	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
@@ -324,8 +334,6 @@ public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun matchInOrderSubset ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun sorted ()Lio/kotest/matchers/Matcher;
 	public static final fun sortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun sortedDescending ()Lio/kotest/matchers/Matcher;
-	public static final fun sortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/collections/ContainAllIgnoringFieldsKt {
@@ -462,22 +470,50 @@ public final class io/kotest/matchers/collections/DecreasingKt {
 public final class io/kotest/matchers/collections/DuplicatesKt {
 	public static final fun containDuplicates ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
-	public static final fun shouldContainDuplicates ([Ljava/lang/Object;)V
+	public static final fun shouldContainDuplicates ([B)[B
+	public static final fun shouldContainDuplicates ([C)[C
+	public static final fun shouldContainDuplicates ([D)[D
+	public static final fun shouldContainDuplicates ([F)[F
+	public static final fun shouldContainDuplicates ([I)[I
+	public static final fun shouldContainDuplicates ([J)[J
+	public static final fun shouldContainDuplicates ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldContainDuplicates ([S)[S
+	public static final fun shouldContainDuplicates ([Z)[Z
 	public static final fun shouldNotContainDuplicates (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotContainDuplicates (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotContainDuplicates ([B)[B
+	public static final fun shouldNotContainDuplicates ([C)[C
+	public static final fun shouldNotContainDuplicates ([D)[D
+	public static final fun shouldNotContainDuplicates ([F)[F
+	public static final fun shouldNotContainDuplicates ([I)[I
+	public static final fun shouldNotContainDuplicates ([J)[J
 	public static final fun shouldNotContainDuplicates ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotContainDuplicates ([S)[S
+	public static final fun shouldNotContainDuplicates ([Z)[Z
 }
 
 public final class io/kotest/matchers/collections/EmptyKt {
 	public static final fun beEmpty ()Lio/kotest/matchers/Matcher;
 	public static final fun beEmptyArray ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEmpty (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeEmpty (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldBeEmpty ([B)[B
+	public static final fun shouldBeEmpty ([C)[C
+	public static final fun shouldBeEmpty ([D)[D
+	public static final fun shouldBeEmpty ([F)[F
+	public static final fun shouldBeEmpty ([I)[I
+	public static final fun shouldBeEmpty ([J)[J
 	public static final fun shouldBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeEmpty ([S)[S
+	public static final fun shouldBeEmpty ([Z)[Z
 	public static final fun shouldNotBeEmpty (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotBeEmpty (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotBeEmpty ([B)[B
+	public static final fun shouldNotBeEmpty ([C)[C
+	public static final fun shouldNotBeEmpty ([D)[D
+	public static final fun shouldNotBeEmpty ([F)[F
+	public static final fun shouldNotBeEmpty ([I)[I
+	public static final fun shouldNotBeEmpty ([J)[J
 	public static final fun shouldNotBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeEmpty ([S)[S
+	public static final fun shouldNotBeEmpty ([Z)[Z
 }
 
 public final class io/kotest/matchers/collections/IncreasingKt {
@@ -755,6 +791,19 @@ public final class io/kotest/matchers/collections/SmallerKt {
 	public static final fun shouldBeSmallerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/collections/SortedDescKt {
+	public static final fun beSortedDescending ()Lio/kotest/matchers/Matcher;
+	public static final fun beSortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeSortedDescending (Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldBeSortedDescending (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeSortedDescending ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldBeSortedDescendingBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
+	public static final fun shouldBeSortedDescendingBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun shouldBeSortedDescendingBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
+	public static final fun sortedDescending ()Lio/kotest/matchers/Matcher;
+	public static final fun sortedDescendingBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+}
+
 public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun beSortedWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun beSortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
@@ -764,12 +813,6 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun shouldBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
-	public static final fun shouldBeSortedDescending (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeSortedDescending (Ljava/util/List;)Ljava/util/List;
-	public static final fun shouldBeSortedDescending ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
-	public static final fun shouldBeSortedDescendingBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
-	public static final fun shouldBeSortedDescendingBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
-	public static final fun shouldBeSortedDescendingBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
 	public static final fun shouldBeSortedWith (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedWith (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedWith (Ljava/util/List;Ljava/util/Comparator;)Ljava/util/List;
@@ -835,30 +878,49 @@ public final class io/kotest/matchers/collections/UniqueKt {
 	public static final fun beUnique (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeUnique (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeUnique (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
+	public static final fun shouldBeUnique ([B)[B
+	public static final fun shouldBeUnique ([C)[C
+	public static final fun shouldBeUnique ([D)[D
+	public static final fun shouldBeUnique ([F)[F
+	public static final fun shouldBeUnique ([I)[I
+	public static final fun shouldBeUnique ([J)[J
 	public static final fun shouldBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldBeUnique ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
+	public static final fun shouldBeUnique ([S)[S
+	public static final fun shouldBeUnique ([Z)[Z
 	public static final fun shouldNotBeUnique (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotBeUnique (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotBeUnique ([B)[B
+	public static final fun shouldNotBeUnique ([C)[C
+	public static final fun shouldNotBeUnique ([D)[D
+	public static final fun shouldNotBeUnique ([F)[F
+	public static final fun shouldNotBeUnique ([I)[I
+	public static final fun shouldNotBeUnique ([J)[J
 	public static final fun shouldNotBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeUnique ([S)[S
+	public static final fun shouldNotBeUnique ([Z)[Z
 }
 
 public final class io/kotest/matchers/comparables/ComparableMatchersKt {
+	public static final fun beBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beEqualComparingTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThan (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThanOrEqualTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beLessThan (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun beLessThanOrEqualTo (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun between (Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun compareTo (Ljava/lang/Object;Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
 	public static final fun gt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun gte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
 	public static final fun shouldBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
 	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
+	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
 	public static final fun shouldNotBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;

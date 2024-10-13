@@ -21,6 +21,7 @@ import io.kotest.engine.collect
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
+import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -38,8 +39,8 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    fun extensions(testCase: TestCase): List<Extension> {
       return registry.all() + // globals
          testCase.spec.extensions() + // overriding the extensions function in the spec
-         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }
-         testCase.spec.registeredExtensions() + // added to the spec via register
+         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
+         testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
          testCase.config.extensions // extensions coming from the test config block itself
    }
 
@@ -94,7 +95,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    }
 
    /**
-    * Invokes all beforeXYZ callbacks for this test.
+    * Invokes all afterXYZ callbacks for this test.
     * Returns a Result of [MultipleExceptions] if there are any exceptions.
     */
    suspend fun afterTestAfterAnyAfterContainer(testCase: TestCase, result: TestResult): Result<TestResult> {
@@ -131,12 +132,12 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    suspend fun intercept(
       testCase: TestCase,
       context: TestScope,
-      inner: suspend (TestCase, TestScope) -> TestResult,
+      inner: NextTestExecutionInterceptor,
    ): TestResult {
 
       val execute = extensions(testCase).filterIsInstance<TestCaseExtension>()
          .foldRight(inner) { extension, execute ->
-            { tc, ctx ->
+            NextTestExecutionInterceptor { tc, ctx ->
                extension.intercept(tc) {
                   // the user's intercept method is free to change the context of the coroutine
                   // to support this, we should switch the context used by the test case context

@@ -17,6 +17,7 @@ internal data class Distance(
     companion object {
         val COMPLETE_MISMATCH_VALUE: BigDecimal = BigDecimal.ZERO
         val COMPLETE_MATCH_VALUE: BigDecimal = BigDecimal.ONE
+        val PERCENT_TO_DISTANCE: BigDecimal = BigDecimal("0.01")
 
         val CompleteMatch = Distance(COMPLETE_MATCH_VALUE)
         val CompleteMismatch = Distance(COMPLETE_MISMATCH_VALUE)

@@ -1,11 +1,26 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.core.Logger
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
+import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
@@ -21,30 +36,81 @@ internal class TimeoutInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
+      val timeout = testCase.config.timeout
 
-      // this timeout applies to the test itself. If the test has multiple invocations then
+      // This timeout applies to the test itself. If the test has multiple invocations, then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
-      // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
-      logger.log { Pair(testCase.name.testName, "Switching context to add timeout ${testCase.config.timeout}") }
+      // each test takes 300ms, and a timeout of 800ms, this would fail, because 3 x 300 > 800.
+      logger.log { Pair(testCase.name.testName, "Switching context to add timeout $timeout") }
 
-      return when (val timeout = testCase.config.timeout) {
-         null -> test(testCase, scope)
-         else -> try {
-            withTimeout(timeout) {
-               test(testCase, scope.withCoroutineContext(coroutineContext))
-            }
-         } catch (t: Throwable) {
-            logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
-            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName))
+      return try {
+         withAppropriateTimeout(timeout) {
+            test(testCase, scope.withCoroutineContext(coroutineContext))
          }
+      } catch (t: CancellationException) {
+         if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {
+            logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
+            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName, t))
+         } else {
+            throw t
+         }
+      }
+
+   }
+}
+
+// The implementation copied from Turbine:
+// https://github.com/cashapp/turbine/blob/1.1.0/src/commonMain/kotlin/app/cash/turbine/channel.kt#L93
+private suspend fun <T> withAppropriateTimeout(
+   timeout: Duration,
+   block: suspend CoroutineScope.() -> T,
+): T {
+   return if (coroutineContext[TestCoroutineScheduler] != null) {
+      // withTimeout uses virtual time, which will hang.
+      withRealTimeTimeout(timeout, block)
+   } else {
+      withTimeout(timeout, block)
+   }
+}
+
+private suspend fun <T> withRealTimeTimeout(
+   timeout: Duration,
+   block: suspend CoroutineScope.() -> T,
+): T = coroutineScope {
+   val blockDeferred = async(start = CoroutineStart.UNDISPATCHED) {
+      yield()
+      block()
+   }
+
+   // Run the timeout on a scope separate from the caller. This ensures that the use of the
+   // Default dispatcher doesn't affect the use of a TestScheduler and its fake time.
+   @OptIn(DelicateCoroutinesApi::class)
+   val timeoutJob = GlobalScope.launch(Dispatchers.Default) { delay(timeout) }
+
+   select {
+      blockDeferred.onAwait { result ->
+         timeoutJob.cancel()
+         result
+      }
+      timeoutJob.onJoin {
+         blockDeferred.cancel()
+         throw RealTimeTimeoutCancellationException("Timed out waiting for $timeout")
       }
    }
 }
 
+// TimeoutCancellationException has an internal constructor, so we need a custom exception to indicate timeout
+private class RealTimeTimeoutCancellationException(message: String) : CancellationException(message)
+
 /**
  * Exception used for when a test exceeds its timeout.
  */
-open class TestTimeoutException(val timeout: Duration, val testName: String) :
-   Exception("Test '${testName}' did not complete within $timeout")
+open class TestTimeoutException(val timeout: Duration, val testName: String, cause: Throwable? = null) :
+   Exception("Test '${testName}' did not complete within $timeout", cause) {
+
+   @Suppress("unused")
+   @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
+   constructor(timeout: Duration, testName: String) : this(timeout, testName, cause = null)
+}

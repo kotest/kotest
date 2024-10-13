@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.Platform
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -18,15 +20,14 @@ import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
-@DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
+@EnabledIf(LinuxCondition::class)
 class TestTimeoutAfterTestListenerTest : FunSpec() {
    init {
 

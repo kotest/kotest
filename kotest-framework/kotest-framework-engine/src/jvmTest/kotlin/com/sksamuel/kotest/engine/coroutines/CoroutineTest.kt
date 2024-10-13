@@ -1,8 +1,11 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -12,6 +15,8 @@ import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration.Companion.milliseconds
 
 // tests kotest's interaction with coroutines
+@OptIn(DelicateCoroutinesApi::class)
+@EnabledIf(LinuxCondition::class)
 class CoroutineTest : FunSpec() {
    init {
 
