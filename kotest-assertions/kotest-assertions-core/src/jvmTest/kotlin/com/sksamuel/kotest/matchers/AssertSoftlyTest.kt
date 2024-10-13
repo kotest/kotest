@@ -156,7 +156,10 @@ class AssertSoftlyTest : FreeSpec({
       }
 
 
-      "Should not loose stacktrace with only one assertion" {
+      "Should not lose stacktrace with only one assertion" {
+         val expectedLineNumber = Exception().stackTrace
+            .first { it.className.contains("AssertSoftlyTest") }.lineNumber + 5
+
          shouldThrow<AssertionError> {
             assertSoftly {
                null should beEmpty()
@@ -165,7 +168,7 @@ class AssertSoftlyTest : FreeSpec({
             message.shouldContainInOrder(
                "The following assertion failed:",
                "1) Expecting actual not to be null",
-               "   at com.sksamuel.kotest.matchers.AssertSoftlyTest${'$'}1${'$'}1${'$'}9.invokeSuspend(AssertSoftlyTest.kt:162)"
+               "   at com.sksamuel.kotest.matchers.AssertSoftlyTest${'$'}1${'$'}1${'$'}9.invokeSuspend(AssertSoftlyTest.kt:$expectedLineNumber)"
             )
          }
       }
