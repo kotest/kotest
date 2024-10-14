@@ -28,6 +28,8 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
       // this is a special control exception used by coroutines
    } catch (t: TimeoutCancellationException) {
       throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
+   } catch (e: Exception) {
+      throw Exception(clueContextAsString() + (e.message ?: ""), e)
    } finally {
       collector.popClue()
    }

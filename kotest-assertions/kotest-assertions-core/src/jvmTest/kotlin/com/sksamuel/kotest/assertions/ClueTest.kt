@@ -12,6 +12,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
@@ -135,6 +136,23 @@ class ClueTest : FreeSpec({
          }
          ex.message shouldBe "null\nexpected:<2> but was:<1>"
       }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<Exception> {
+            withClue("some clue") {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
    }
    "asClue()" - {
       "should prepend clue to message with a newline" {
@@ -208,6 +226,23 @@ class ClueTest : FreeSpec({
                null shouldBe "hello"
             }
          }.message shouldBe "A actual is null value\nExpected \"hello\" but actual was null"
+      }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<Exception> {
+            "some clue".asClue {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
       }
    }
 
