@@ -6,7 +6,6 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.lang.reflect.Field
-import java.util.Locale
 
 /**
  * Modifies System Environment with chosen key and value
@@ -116,7 +115,7 @@ private fun Field.asAccessible(): Field {
 }
 
 
-abstract class SystemEnvironmentListener(private val environment: Map<String, String>,
+abstract class SystemEnvironmentListener(private val environment: Map<String, String?>,
                                          private val mode: OverrideMode) {
 
    private val originalEnvironment = System.getenv().toMap()
@@ -145,7 +144,7 @@ abstract class SystemEnvironmentListener(private val environment: Map<String, St
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
-class SystemEnvironmentTestListener(environment: Map<String, String>, mode: OverrideMode = SetOrError) :
+class SystemEnvironmentTestListener(environment: Map<String, String?>, mode: OverrideMode = SetOrError) :
    SystemEnvironmentListener(environment, mode), TestListener {
 
    /**
@@ -163,7 +162,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String>, mode: Over
     * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
     * already changed, the result is inconsistent, as the System Environment Map is a single map.
     */
-   constructor(key: String, value: String, mode: OverrideMode = SetOrError) : this(key to value, mode)
+   constructor(key: String, value: String?, mode: OverrideMode = SetOrError) : this(key to value, mode)
 
    /**
     * Modifies System Environment with chosen keys and values
@@ -180,7 +179,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String>, mode: Over
     * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
     * already changed, the result is inconsistent, as the System Environment Map is a single map.
     */
-   constructor(environment: Pair<String, String>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
+   constructor(environment: Pair<String, String?>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
 
    override suspend fun beforeAny(testCase: TestCase) {
       changeSystemEnvironment()
@@ -206,7 +205,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String>, mode: Over
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
-class SystemEnvironmentProjectListener(environment: Map<String, String>, mode: OverrideMode = SetOrError) :
+class SystemEnvironmentProjectListener(environment: Map<String, String?>, mode: OverrideMode = SetOrError) :
    SystemEnvironmentListener(environment, mode), ProjectListener {
 
 
@@ -225,7 +224,7 @@ class SystemEnvironmentProjectListener(environment: Map<String, String>, mode: O
     * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
     * already changed, the result is inconsistent, as the System Environment Map is a single map.
     */
-   constructor(key: String, value: String, mode: OverrideMode = SetOrError) : this(key to value, mode)
+   constructor(key: String, value: String?, mode: OverrideMode = SetOrError) : this(key to value, mode)
 
    /**
     * Modifies System Environment with chosen keys and values
@@ -242,7 +241,7 @@ class SystemEnvironmentProjectListener(environment: Map<String, String>, mode: O
     * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
     * already changed, the result is inconsistent, as the System Environment Map is a single map.
     */
-   constructor(environment: Pair<String, String>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
+   constructor(environment: Pair<String, String?>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
 
    override suspend fun beforeProject() {
       changeSystemEnvironment()

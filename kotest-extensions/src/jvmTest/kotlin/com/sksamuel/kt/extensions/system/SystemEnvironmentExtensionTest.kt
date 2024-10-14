@@ -16,15 +16,15 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    private val value = "SystemEnvironmentExtensionTestBar"
 
    init {
-         "Should return original environment to its place after execution" - {
-            val before = System.getenv().toMap()
+      "Should return original environment to its place after execution" - {
+         val before = System.getenv().toMap()
 
-            executeOnAllEnvironmentOverloads {
-               System.getenv() shouldNotBe before
-            }
-            System.getenv() shouldBe before
-
+         executeOnAllEnvironmentOverloads {
+            System.getenv() shouldNotBe before
          }
+         System.getenv() shouldBe before
+
+      }
 
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
