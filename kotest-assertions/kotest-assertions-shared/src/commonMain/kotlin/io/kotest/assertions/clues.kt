@@ -25,6 +25,7 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
    try {
       collector.pushClue { clue.invoke().toString() }
       return thunk()
+      // this is a special control exception used by coroutines
    } catch (t: TimeoutCancellationException) {
       throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
    } catch (e: ExceptionWithClue) {
