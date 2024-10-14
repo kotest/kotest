@@ -68,11 +68,20 @@ Instead of extension functions, you can also use the provided Listeners to apply
 
 ```kotlin
 class MyTest : FreeSpec() {
-  override fun listeners() = listOf(SystemEnvironmentTestListener("foo", "bar"))
+  override fun listeners() = listOf(
+    SystemEnvironmentTestListener(
+      environment = mapOf(
+        "foo" to "bar",
+        "bar" to null, // Useful for resetting environment variables
+      ),
+      mode = OverrideMode.SetOrOverride,
+    )
+  )
 
   init {
     "MyTest" {
       System.getenv("foo") shouldBe "bar"
+      System.getenv("bar") shouldBe null
     }
   }
 }
