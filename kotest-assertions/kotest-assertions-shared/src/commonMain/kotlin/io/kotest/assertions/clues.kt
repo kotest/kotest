@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import kotlinx.coroutines.TimeoutCancellationException
+
 /**
  * Add [clue] as additional info to the assertion error message in case an assertion fails.
  * Can be nested, the error message will contain all available clues.
@@ -23,8 +25,12 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
    try {
       collector.pushClue { clue.invoke().toString() }
       return thunk()
+   } catch (t: TimeoutCancellationException) {
+      throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
+   } catch (e: ExceptionWithClue) {
+      throw e
    } catch (e: Exception) {
-      throw Exceptions.createAssertionError(clueContextAsString() + (e.message ?: ""), e)
+      throw ExceptionWithClue.from(clueContextAsString(), e)
    } finally {
       collector.popClue()
    }
