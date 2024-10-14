@@ -83,8 +83,8 @@ And then to use this, we must include it one or more times into a spec (or sever
 
 ```kotlin
 class IndexedSeqTestSuite : WordSpec({
-   include(indexedSeqTests("vector"), Vector())
-   include(indexedSeqTests("list"), List())
+   include(indexedSeqTests("vector", Vector()))
+   include(indexedSeqTests("list", List()))
 })
 ```
 
