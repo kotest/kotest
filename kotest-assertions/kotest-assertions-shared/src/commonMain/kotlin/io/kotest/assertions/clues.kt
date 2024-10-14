@@ -29,7 +29,7 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
    } catch (t: TimeoutCancellationException) {
       throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
    } catch (e: Exception) {
-      throw Exception(clueContextAsString() + (e.message ?: ""), e)
+      throw Exceptions.createAssertionError(clueContextAsString() + (e.message ?: ""), e)
    } finally {
       collector.popClue()
    }

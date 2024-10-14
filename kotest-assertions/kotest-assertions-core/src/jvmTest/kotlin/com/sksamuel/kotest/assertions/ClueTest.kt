@@ -138,7 +138,7 @@ class ClueTest : FreeSpec({
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<Exception> {
+         shouldThrow<AssertionError> {
             withClue("some clue") {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
@@ -229,7 +229,7 @@ class ClueTest : FreeSpec({
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<Exception> {
+         shouldThrow<AssertionError> {
             "some clue".asClue {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
@@ -240,6 +240,26 @@ class ClueTest : FreeSpec({
             .run {
                message.shouldContainInOrder(
                   "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
+
+      "should not duplicate clue messages when Exception is thrown" {
+         shouldThrow<AssertionError> {
+            "outer clue".asClue {
+               "inner clue".asClue {
+                  val list = listOf("a", "b")
+                     .single { it.length == 2 }
+
+                  list.shouldContain("something")
+               }
+            }
+         }
+            .run {
+               message.shouldContainInOrder(
+                  "outer clue",
+                  "inner clue",
                   "Collection contains no element matching the predicate.",
                )
             }
