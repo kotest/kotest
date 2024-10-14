@@ -63,7 +63,13 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
-   private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
+   private val setl = SystemEnvironmentTestListener(
+      environment = mapOf(
+         "mop" to "dop",
+         "dop" to null,
+      ),
+      mode = OverrideMode.SetOrOverride
+   )
 
    override fun extensions() = listOf(setl)
 
@@ -71,6 +77,7 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
       "sys environment extension" should {
          "set environment variable" {
             System.getenv("mop") shouldBe "dop"
+            System.getenv("dop") shouldBe null
          }
       }
    }
