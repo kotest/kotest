@@ -12,9 +12,9 @@ package io.kotest.assertions
  */
 class ExceptionWithClue(
    val clue: String,
-   override val message: String?,
-   override val cause: Throwable?,
-) : RuntimeException() {
+   message: String?,
+   cause: Throwable?,
+) : RuntimeException(message, cause) {
    companion object {
       @Suppress("ThrowableNotThrown")
       fun from(clue: String, e: Exception): ExceptionWithClue =
