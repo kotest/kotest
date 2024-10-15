@@ -133,6 +133,29 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
             expected
          }
       }
+
+      "Nested example: custom matching of element of a List" {
+         val expected = DataClassWithListOfDataClasses("name",
+            listOf(SimpleDataClass("apple", 1.0, LocalDateTime.now()),
+               SimpleDataClass("orange", 2.0, LocalDateTime.now()),
+            ))
+         val actual = expected.copy(elements = listOf(
+            expected.elements[0].copy(weight = 1.001),
+            expected.elements[1]
+         ))
+         shouldThrow<AssertionError> {
+            actual shouldBeEqualUsingFields expected
+         }.message.shouldContainInOrder(
+            "Fields that differ:",
+            "- elements[0].weight  =>  expected:<1.0> but was:<1.001>",
+         )
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               SimpleDataClass::weight to matchDoublesWithTolerance(0.0011)
+            )
+            expected
+         }
+      }
    }
 
    data class SimpleDataClass(
@@ -151,5 +174,9 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
    data class DataClassWithMap(
       val name: String,
       val map: Map<String, SimpleDataClass>
+   )
+   data class DataClassWithListOfDataClasses(
+      val name: String,
+      val elements: List<SimpleDataClass>
    )
 }
