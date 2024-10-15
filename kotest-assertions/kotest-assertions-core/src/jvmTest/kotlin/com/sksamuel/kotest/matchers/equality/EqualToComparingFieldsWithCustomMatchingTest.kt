@@ -89,6 +89,50 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
             expected
          }
       }
+      "Nested example: custom matching for data class with nesting" {
+         val expected = NestedDataClass("name", SimpleDataClass("apple", 1.0, LocalDateTime.now()))
+         val actual = expected.copy(nested = expected.nested.copy(weight = 1.001))
+         shouldThrow<AssertionError> {
+            actual shouldBeEqualUsingFields expected
+         }.message.shouldContainInOrder(
+            "Fields that differ:",
+            "- nested.weight  =>  expected:<1.0> but was:<1.001>",
+         )
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               SimpleDataClass::weight to matchDoublesWithTolerance(0.01)
+            )
+            expected
+         }
+         shouldThrow<AssertionError> {
+            actual shouldBeEqualUsingFields {
+               overrideMatchers = mapOf(
+                  SimpleDataClass::weight to matchDoublesWithTolerance(0.0001)
+               )
+               expected
+            }
+         }.message.shouldContainInOrder(
+            "Fields that differ:",
+            "- nested.weight  =>  1.001 should be equal to 1.0 within tolerance of 1.0E-4 (lowest acceptable value is 0.9999; highest acceptable value is 1.0001)",
+         )
+      }
+      "Nested example: custom matching of value of a Map" {
+         val expected = DataClassWithMap("name",
+            mapOf("key" to SimpleDataClass("apple", 1.0, LocalDateTime.now())))
+         val actual = expected.copy(map = mapOf("key" to expected.map["key"]!!.copy(weight = 1.001)))
+         shouldThrow<AssertionError> {
+            actual shouldBeEqualUsingFields expected
+         }.message.shouldContainInOrder(
+            "Fields that differ:",
+            "- map[key].weight  =>  expected:<1.0> but was:<1.001>",
+         )
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               SimpleDataClass::weight to matchDoublesWithTolerance(0.0011)
+            )
+            expected
+         }
+      }
    }
 
    data class SimpleDataClass(
@@ -99,5 +143,13 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
    data class DataClassWithList(
       val name: String,
       val elements: List<Int>
+   )
+   data class NestedDataClass(
+      val name: String,
+      val nested: SimpleDataClass
+   )
+   data class DataClassWithMap(
+      val name: String,
+      val map: Map<String, SimpleDataClass>
    )
 }
