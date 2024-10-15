@@ -2,32 +2,14 @@ package com.sksamuel.kotest.matchers.equality
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.doubles.plusOrMinus
-import io.kotest.matchers.equality.Assertable
-import io.kotest.matchers.equality.customComparison
+import io.kotest.matchers.equality.matchDoublesWithTolerance
+import io.kotest.matchers.equality.matchListsIgnoringOrder
+import io.kotest.matchers.equality.matchStringsIgnoringCase
 import io.kotest.matchers.equality.shouldBeEqualUsingFields
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldBeEqualIgnoringCase
 import io.kotest.matchers.string.shouldContainInOrder
 import java.time.LocalDateTime
 
 class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
-   fun matchDoublesWithTolerance(tolerance: Double) = Assertable { expected: Any?, actual: Any? ->
-      customComparison<Double>(expected, actual) { expected: Double, actual: Double ->
-         actual shouldBe (expected plusOrMinus tolerance)
-      }
-   }
-   val matchStringsIgnoringCase = Assertable { expected: Any?, actual: Any? ->
-      customComparison<String>(expected, actual) { expected: String, actual: String ->
-         actual shouldBeEqualIgnoringCase expected
-      }
-   }
-   fun<T> matchListsIgnoringOrder() = Assertable { expected: Any?, actual: Any? ->
-      customComparison<List<T>>(expected, actual) { expected: List<T>, actual: List<T> ->
-         actual shouldContainExactlyInAnyOrder expected
-      }
-   }
    init {
        "basic example: custom matching for data class without nesting" {
           val expected = SimpleDataClass("apple", 1.0, LocalDateTime.now())
