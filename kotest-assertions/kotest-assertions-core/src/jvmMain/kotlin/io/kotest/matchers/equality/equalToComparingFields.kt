@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import java.lang.AssertionError
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -74,6 +75,41 @@ infix fun <T : Any> T.shouldNotBeEqualUsingFields(block: FieldEqualityConfig.() 
    return this
 }
 
+sealed interface CustomComparisonResult {
+   val comparable: Boolean
+   data object NotComparable: CustomComparisonResult {
+      override val comparable = false
+   }
+   data object Equal: CustomComparisonResult {
+      override val comparable = true
+   }
+   data class Different(val assertionError: AssertionError): CustomComparisonResult {
+      override val comparable = true
+   }
+}
+
+fun interface Assertable {
+   fun assert(expected: Any?, actual: Any?): CustomComparisonResult
+}
+
+inline fun<reified T: Any> customComparison(
+   expected: Any?,
+   actual: Any?,
+   assertion: (expected: T, actual: T) -> Unit
+): CustomComparisonResult = when {
+   expected == null -> CustomComparisonResult.NotComparable
+   actual == null -> CustomComparisonResult.NotComparable
+   expected is T && actual is T -> {
+      try {
+         assertion(expected, actual)
+         CustomComparisonResult.Equal
+      } catch (e: AssertionError) {
+         CustomComparisonResult.Different(e)
+      }
+   }
+   else -> CustomComparisonResult.NotComparable
+}
+
 /**
  * Config for controlling the way shouldBeEqualUsingFields compares fields.
  *
@@ -93,6 +129,7 @@ class FieldEqualityConfig {
    var includedProperties: Collection<KProperty<*>> = emptySet()
    var excludedProperties: Collection<KProperty<*>> = emptySet()
    var useDefaultShouldBeForFields: Collection<KClass<*>> = emptySet()
+   var overrideMatchers: Map<KProperty<*>, Assertable> = emptyMap()
 }
 
 fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matcher<T> {
