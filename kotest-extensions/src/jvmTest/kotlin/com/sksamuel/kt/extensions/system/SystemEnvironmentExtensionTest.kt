@@ -16,15 +16,15 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    private val value = "SystemEnvironmentExtensionTestBar"
 
    init {
-         "Should return original environment to its place after execution" - {
-            val before = System.getenv().toMap()
+      "Should return original environment to its place after execution" - {
+         val before = System.getenv().toMap()
 
-            executeOnAllEnvironmentOverloads {
-               System.getenv() shouldNotBe before
-            }
-            System.getenv() shouldBe before
-
+         executeOnAllEnvironmentOverloads {
+            System.getenv() shouldNotBe before
          }
+         System.getenv() shouldBe before
+
+      }
 
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
@@ -63,7 +63,13 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
-   private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
+   private val setl = SystemEnvironmentTestListener(
+      environment = mapOf(
+         "mop" to "dop",
+         "dop" to null,
+      ),
+      mode = OverrideMode.SetOrOverride
+   )
 
    override fun extensions() = listOf(setl)
 
@@ -71,6 +77,7 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
       "sys environment extension" should {
          "set environment variable" {
             System.getenv("mop") shouldBe "dop"
+            System.getenv("dop") shouldBe null
          }
       }
    }
