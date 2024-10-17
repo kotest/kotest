@@ -33,10 +33,10 @@ internal fun <T> matchedElements(
 } ?: listOf()
 
 internal fun <T> extendPartialMatchToRequiredLength(
-   value: List<T>,
-   target: List<T>,
-   matchedElement: MatchedCollectionElement,
-   minLength: Int
+    value: List<T>,
+    target: List<T>,
+    matchedElement: MatchedCollectionElement,
+    minLength: Int
 ): PartialCollectionMatch<T>? {
    val lengthOfMatch = lengthOfMatch(value, target, matchedElement)
    return if (lengthOfMatch >= minLength) {
@@ -74,9 +74,9 @@ data class MatchedCollectionElement(
 )
 
 data class PartialCollectionMatch<T>(
-   val matchedElement: MatchedCollectionElement,
-   val length: Int,
-   val value: List<T>
+    val matchedElement: MatchedCollectionElement,
+    val length: Int,
+    val value: List<T>
 ) {
    val endOfMatchAtTarget: Int
       get() = matchedElement.startIndexInValue + length - 1
