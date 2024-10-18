@@ -1,15 +1,15 @@
 package io.kotest.data.blocking
 
-import io.kotest.data.Row9
+import io.kotest.data.Row10
 import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.table
 import io.kotest.mpp.reflection
 
-fun <A, B, C, D, E, F, G, H, I> forAll(
-   vararg rows: Row9<A, B, C, D, E, F, G, H, I>,
-   testfn: (A, B, C, D, E, F, G, H, I) -> Unit
+fun <A, B, C, D, E, F, G, H, I, J> forAll(
+   vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
+   testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit
 ) {
    val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
@@ -21,12 +21,13 @@ fun <A, B, C, D, E, F, G, H, I> forAll(
    val paramG = params.getOrElse(6) { "g" }
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI), *rows).forAll(testfn)
+   val paramJ = params.getOrElse(9) { "j" }
+   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forAll(testfn)
 }
 
-fun <A, B, C, D, E, F, G, H, I> forNone(
-   vararg rows: Row9<A, B, C, D, E, F, G, H, I>,
-   testfn: (A, B, C, D, E, F, G, H, I) -> Unit
+fun <A, B, C, D, E, F, G, H, I, J> forNone(
+   vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
+   testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit
 ) {
    val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
@@ -38,5 +39,6 @@ fun <A, B, C, D, E, F, G, H, I> forNone(
    val paramG = params.getOrElse(6) { "g" }
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI), *rows).forNone(testfn)
+   val paramJ = params.getOrElse(9) { "j" }
+   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forNone(testfn)
 }
