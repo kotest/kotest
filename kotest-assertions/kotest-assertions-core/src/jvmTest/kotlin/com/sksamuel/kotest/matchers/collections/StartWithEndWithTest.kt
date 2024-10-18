@@ -80,6 +80,20 @@ class StartWithEndWithTest : WordSpec() {
                |Actual collection is shorter than expected slice
                """.trimMargin())
          }
+         "find an element not matched as part of slice elsewhere" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0L, 1L, 2L, 3L, 4L, 5L, 6L) should startWith(listOf(6L, 1L, 2L, 3L, 4L))
+            }.message
+            message.shouldContainInOrder(
+               "Slice[0] of expected with indexes: 1..4 matched a slice of actual values with indexes: 1..4",
+               "[1] 1L => slice 0",
+               "[2] 2L => slice 0",
+               "[3] 3L => slice 0",
+               "[4] 4L => slice 0",
+               "Element(s) not in matched slice(s):",
+               "[0] 6L => Found At Index(es): [6]",
+            )
+         }
       }
 
       "endWith" should {
@@ -121,6 +135,20 @@ class StartWithEndWithTest : WordSpec() {
                "[0] 1L => Not Found",
                "[1] 3L => Not Found",
                )
+         }
+         "find an element not matched as part of slice elsewhere" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0L, 1L, 2L, 3L, 4L, 5L, 6L) should endWith(listOf(6L, 2L, 3L, 4L, 5L))
+            }.message
+            message.shouldContainInOrder(
+               "Slice[0] of expected with indexes: 1..4 matched a slice of actual values with indexes: 2..5",
+               "[2] 2L => slice 0",
+               "[3] 3L => slice 0",
+               "[4] 4L => slice 0",
+               "[5] 5L => slice 0",
+               "Element(s) not in matched slice(s):",
+               "[0] 6L => Found At Index(es): [6]",
+            )
          }
       }
    }
