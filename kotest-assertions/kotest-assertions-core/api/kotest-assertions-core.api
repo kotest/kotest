@@ -1286,6 +1286,10 @@ public final class io/kotest/matchers/doubles/ZeroKt {
 	public static final fun shouldNotBeZero (D)D
 }
 
+public abstract interface class io/kotest/matchers/equality/Assertable {
+	public abstract fun assert (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/equality/CustomComparisonResult;
+}
+
 public final class io/kotest/matchers/equality/CompareKt {
 	public static final fun compareUsingFields (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldEqualityConfig;)Lio/kotest/matchers/equality/CompareResult;
 }
@@ -1313,6 +1317,48 @@ public final class io/kotest/matchers/equality/CompareResult$Companion {
 	public final fun single (Ljava/lang/String;Ljava/lang/Throwable;)Lio/kotest/matchers/equality/CompareResult;
 }
 
+public final class io/kotest/matchers/equality/CustomComparisonKt {
+	public static final fun getMatchStringsIgnoringCase ()Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchDoublesWithTolerance (D)Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchInstantsWithTolerance-LRDsOJo (J)Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchListsIgnoringOrder ()Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchLocalDateTimesWithTolerance-LRDsOJo (J)Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchOffsetDateTimesWithTolerance-LRDsOJo (J)Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchZonedDateTimesWithTolerance-LRDsOJo (J)Lio/kotest/matchers/equality/Assertable;
+}
+
+public abstract interface class io/kotest/matchers/equality/CustomComparisonResult {
+	public abstract fun getComparable ()Z
+}
+
+public final class io/kotest/matchers/equality/CustomComparisonResult$Different : io/kotest/matchers/equality/CustomComparisonResult {
+	public fun <init> (Ljava/lang/AssertionError;)V
+	public final fun component1 ()Ljava/lang/AssertionError;
+	public final fun copy (Ljava/lang/AssertionError;)Lio/kotest/matchers/equality/CustomComparisonResult$Different;
+	public static synthetic fun copy$default (Lio/kotest/matchers/equality/CustomComparisonResult$Different;Ljava/lang/AssertionError;ILjava/lang/Object;)Lio/kotest/matchers/equality/CustomComparisonResult$Different;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAssertionError ()Ljava/lang/AssertionError;
+	public fun getComparable ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/equality/CustomComparisonResult$Equal : io/kotest/matchers/equality/CustomComparisonResult {
+	public static final field INSTANCE Lio/kotest/matchers/equality/CustomComparisonResult$Equal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getComparable ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/equality/CustomComparisonResult$NotComparable : io/kotest/matchers/equality/CustomComparisonResult {
+	public static final field INSTANCE Lio/kotest/matchers/equality/CustomComparisonResult$NotComparable;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getComparable ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/matchers/equality/EqualToComparingFieldsKt {
 	public static final fun beEqualUsingFields (Ljava/lang/Object;Lio/kotest/matchers/equality/FieldEqualityConfig;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEqualUsingFields (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -1327,11 +1373,13 @@ public final class io/kotest/matchers/equality/FieldEqualityConfig {
 	public final fun getIgnoreComputedFields ()Z
 	public final fun getIgnorePrivateFields ()Z
 	public final fun getIncludedProperties ()Ljava/util/Collection;
+	public final fun getOverrideMatchers ()Ljava/util/Map;
 	public final fun getUseDefaultShouldBeForFields ()Ljava/util/Collection;
 	public final fun setExcludedProperties (Ljava/util/Collection;)V
 	public final fun setIgnoreComputedFields (Z)V
 	public final fun setIgnorePrivateFields (Z)V
 	public final fun setIncludedProperties (Ljava/util/Collection;)V
+	public final fun setOverrideMatchers (Ljava/util/Map;)V
 	public final fun setUseDefaultShouldBeForFields (Ljava/util/Collection;)V
 }
 
