@@ -11,22 +11,26 @@ fun Iterable<Int>.condense(minRangeSize: Int): Sequence<IndexesToPrint> {
       while (iterator.hasNext()) {
          val currentIndex = iterator.next()
          if(currentIndex > endOfRange + 1) {
-            if ((endOfRange - startOfRange + 1) >= minRangeSize) {
-               yield(IndexesToPrint.RangeOfIndexes(startOfRange, endOfRange))
-            } else {
-               (startOfRange..endOfRange).forEach { yield(IndexesToPrint.SingleIndex(it)) }
-            }
+            yieldIndexes(endOfRange, startOfRange, minRangeSize)
             startOfRange = currentIndex
             endOfRange = startOfRange
          } else {
             endOfRange = currentIndex
          }
       }
-      if ((endOfRange - startOfRange + 1) >= minRangeSize) {
-         yield(IndexesToPrint.RangeOfIndexes(startOfRange, endOfRange))
-      } else {
-         (startOfRange..endOfRange).forEach { yield(IndexesToPrint.SingleIndex(it)) }
-      }
+      yieldIndexes(endOfRange, startOfRange, minRangeSize)
+   }
+}
+
+private suspend fun SequenceScope<IndexesToPrint>.yieldIndexes(
+   endOfRange: Int,
+   startOfRange: Int,
+   minRangeSize: Int
+) {
+   if ((endOfRange - startOfRange + 1) >= minRangeSize) {
+      yield(IndexesToPrint.RangeOfIndexes(startOfRange, endOfRange))
+   } else {
+      (startOfRange..endOfRange).forEach { yield(IndexesToPrint.SingleIndex(it)) }
    }
 }
 
