@@ -3,7 +3,7 @@ package io.kotest.utils
 class CondensedIndexes {
 }
 
-fun Iterable<Int>.condense(minRangeSize: Int): Sequence<IndexesToPrint> {
+fun Iterable<Int>.condenseToRanges(minRangeSize: Int): Sequence<IndexesToPrint> {
    val iterator = this.iterator()
    var startOfRange: Int = if(iterator.hasNext()) iterator.next() else return emptySequence()
    var endOfRange: Int = startOfRange
