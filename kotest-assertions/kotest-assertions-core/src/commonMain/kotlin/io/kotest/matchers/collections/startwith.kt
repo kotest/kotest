@@ -33,10 +33,10 @@ fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.START)
 
-      val (partialMatchesList, partialMatchesDescription) = describePartialMatchesInCollection(expectedSlice, value)
+      val partialMatchesDescription = describePartialMatchesInCollection(expectedSlice, value)
       return MatcherResult(
          comparison.match,
-         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}\n$partialMatchesList\n$partialMatchesDescription" },
+         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}$partialMatchesDescription" },
          { "List should not start with ${expectedSlice.print().value}" }
       )
    }
@@ -60,14 +60,31 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
    }.joinToString("\n")
    val indexesOfUnmatchedElements = expectedSlice.indices.filter { index ->
       partialMatches.none { partialMatch -> index in partialMatch.rangeOfExpected } }
-   return PartialMatchesInCollectionDescription(partialMatchesList, partialMatchesDescription, indexesOfUnmatchedElements)
+   val expectedSliceAsList = expectedSlice.toList()
+   val unmatchedElementsDescription = indexesOfUnmatchedElements.joinToString("\n") { index ->
+      val element = expectedSliceAsList[index]
+      val foundAtIndexes = value.withIndex().filter { it.value == element }.map { it.index }
+      "[$index] ${element.print().value} => ${if(foundAtIndexes.isEmpty()) "Not Found" else "Found At Index(es): ${foundAtIndexes.print().value}"}"
+   }
+   return PartialMatchesInCollectionDescription(
+      partialMatchesList,
+      partialMatchesDescription,
+      unmatchedElementsDescription,
+      )
 }
 
 internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String,
-   val indexesOfUnmatchedElements: List<Int>,
-)
+   val unmatchedElementsDescription: String,
+) {
+   override fun toString(): String = prefixIfNotEmpty(
+      listOf(partialMatchesList, partialMatchesDescription, unmatchedElementsDescription)
+         .filter { it.isNotEmpty() }
+         .joinToString("\n"),
+      "\nElement(s) not in matched slice(s):\n"
+   )
+}
 
 private data class SliceComparison<T>(
    val match: Boolean,
@@ -134,11 +151,11 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.END)
 
-      val (partialMatchesList, partialMatchesDescription) = describePartialMatchesInCollection(expectedSlice, value)
+      val partialMatchesDescription = describePartialMatchesInCollection(expectedSlice, value)
 
       return MatcherResult(
          comparison.match,
-         { "List should end with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}\n$partialMatchesList\n$partialMatchesDescription" },
+         { "List should end with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}$partialMatchesDescription" },
          { "List should not end with ${expectedSlice.print().value}" }
       )
    }

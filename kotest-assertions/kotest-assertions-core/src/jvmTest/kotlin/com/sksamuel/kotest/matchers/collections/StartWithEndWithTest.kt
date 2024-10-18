@@ -115,10 +115,12 @@ class StartWithEndWithTest : WordSpec() {
          "print errors unambiguously when the actual value is empty"  {
             shouldThrow<AssertionError> {
                emptyList<Long>() should endWith(listOf(1L, 3L))
-            }.shouldHaveMessage("""
-               |List should end with [1L, 3L] but was []
-               |Actual collection is shorter than expected slice
-               """.trimMargin())
+            }.message.shouldContainInOrder(
+               "List should end with [1L, 3L] but was []",
+               "Actual collection is shorter than expected slice",
+               "[0] 1L => Not Found",
+               "[1] 3L => Not Found",
+               )
          }
       }
    }
