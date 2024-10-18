@@ -7,7 +7,6 @@ import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.seed.clearFailedSeed
 import io.kotest.property.statistics.outputStatistics
 
-
 internal suspend fun PropertyContext.onSuccess(
    args: Int,
    random: RandomSource,

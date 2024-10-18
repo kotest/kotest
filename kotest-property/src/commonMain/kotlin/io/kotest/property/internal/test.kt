@@ -85,7 +85,7 @@ internal suspend fun handleException(
    }
 }
 
-private fun printFailureMessage(
+fun printFailureMessage(
    context: PropertyContext,
    inputs: List<Any?>,
    e: Throwable,
