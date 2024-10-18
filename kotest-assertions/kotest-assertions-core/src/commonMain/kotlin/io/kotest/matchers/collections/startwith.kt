@@ -79,10 +79,13 @@ internal data class PartialMatchesInCollectionDescription(
    val unmatchedElementsDescription: String,
 ) {
    override fun toString(): String = prefixIfNotEmpty(
-      listOf(partialMatchesList, partialMatchesDescription, unmatchedElementsDescription)
+      listOf(partialMatchesList,
+         partialMatchesDescription,
+         prefixIfNotEmpty(unmatchedElementsDescription, "\nElement(s) not in matched slice(s):\n")
+      )
          .filter { it.isNotEmpty() }
          .joinToString("\n"),
-      "\nElement(s) not in matched slice(s):\n"
+      "\n"
    )
 }
 
