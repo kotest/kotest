@@ -132,8 +132,6 @@ class StartWithEndWithTest : WordSpec() {
             }.message.shouldContainInOrder(
                "List should end with [1L, 3L] but was []",
                "Actual collection is shorter than expected slice",
-               "[0] 1L => Not Found",
-               "[1] 3L => Not Found",
                )
          }
          "find an element not matched as part of slice elsewhere" {

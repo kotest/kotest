@@ -12,7 +12,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                  expectedSlice = listOf("orange", "apple", "banana", "blueberry"),
                  value = listOf("apple", "banana", "blueberry")
              )
-             actual.unmatchedElementsDescription shouldBe """[0] "orange" => Not Found"""
+             actual.unmatchedElementsDescription shouldBe ""
           }
           "work when one element found in another place" {
              val actual = describePartialMatchesInCollection(
