@@ -162,9 +162,6 @@ class ShouldContainExactlyTest : WordSpec() {
             }.message.shouldContainInOrder(
                "Collection should contain exactly: [1, 2] but was: [1L, 2L]",
                "Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]",
-               "Element(s) not in matched slice(s):",
-               "[0] 1 => Not Found",
-               "[1] 2 => Not Found",
                "expected:<[1, 2]> but was:<[1L, 2L]>",
             )
          }
@@ -227,8 +224,6 @@ class ShouldContainExactlyTest : WordSpec() {
             }.message.shouldContainInOrder(
                "Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
                "Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
-               "Element(s) not in matched slice(s):",
-               "[0] Blonde(a=woo, b=true, c=97821, p=$expectedPath) => Not Found",
                "expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>",
             )
          }
