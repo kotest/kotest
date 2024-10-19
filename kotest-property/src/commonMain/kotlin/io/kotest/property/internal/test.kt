@@ -78,10 +78,10 @@ internal suspend fun handleException(
    writeFailedSeed(seed)
    if (config.maxFailure == 0) {
       printFailureMessage(context, inputs, e)
-      throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
+      throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed, config.outputHexForUnprintableChars)
    } else if (context.failures() > config.maxFailure) {
       val error = buildMaxFailureErrorMessage(context, config, inputs)
-      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
+      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed, config.outputHexForUnprintableChars)
    }
 }
 
