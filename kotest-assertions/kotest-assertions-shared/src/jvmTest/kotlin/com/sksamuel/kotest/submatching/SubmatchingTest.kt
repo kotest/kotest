@@ -1,4 +1,4 @@
-package io.kotest.submatching
+package com.sksamuel.kotest.submatching
 
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
@@ -6,6 +6,15 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.submatching.MatchedCollectionElement
+import io.kotest.submatching.PartialCollectionMatch
+import io.kotest.submatching.extendPartialMatchToRequiredLength
+import io.kotest.submatching.findPartialMatches
+import io.kotest.submatching.findPartialMatchesInString
+import io.kotest.submatching.lengthOfMatch
+import io.kotest.submatching.matchedElements
+import io.kotest.submatching.removeShorterMatchesWithSameEnd
+import io.kotest.submatching.toCharIndex
 import kotlin.time.Duration.Companion.seconds
 
 @EnabledIf(LinuxCondition::class)
