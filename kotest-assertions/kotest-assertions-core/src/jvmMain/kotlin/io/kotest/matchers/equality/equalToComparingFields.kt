@@ -113,7 +113,7 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                   |${result.fields.joinToString("\n") { " - $it" }}
                   |
                   |Fields that differ:
-                  |${result.errors.entries.joinToString("\n") { " - ${it.key}  =>  ${it.value.message}" }}
+                  |${result.errors.entries.flatMap { printDifference(it.key, it.value.message ?: "") }.joinToString("\n")}"
                   |
                """.trimMargin()
                   },
@@ -142,6 +142,13 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                   })
             }
          )
+      }
+
+      private fun printDifference(key: String, message: String): List<String> {
+         val prefix = " - $key  =>  "
+         return message.split("\n").mapIndexed { index, line ->
+            if (index == 0) "$prefix$line" else "${" ".repeat(prefix.length)}$line"
+         }
       }
    }
 }
