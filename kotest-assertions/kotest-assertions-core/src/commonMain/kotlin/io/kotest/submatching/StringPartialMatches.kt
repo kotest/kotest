@@ -68,7 +68,7 @@ private fun valueNotEligibleForSubmatching(value: String) =
    AssertionsConfig.minValueSubmatchingSize.value > value.length ||
       value.length > AssertionsConfig.maxValueSubmatchingSize.value
 
-internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCollectionMatch<Char>>): List<String> {
+internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCollectionMatch>): List<String> {
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
 }
 
