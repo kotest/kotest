@@ -116,4 +116,11 @@ class ContainJsonKeyValueTest : StringSpec({
          use(nullableJson)
       }
    }
+
+   "Should pass json key-value assertion for values with implicit type" {
+      """{ "value": 42 }""".shouldContainJsonKeyValue<Any>("$.value", 42L)
+      """{ "value": 0.46479126999899145 }""".shouldContainJsonKeyValue<Any>("$.value", 0.46479126999899145)
+      """{ "value": 3.14 }""".shouldContainJsonKeyValue<Any>("$.value", 3.14f)
+      """{ "value": null }""".shouldContainJsonKeyValue<Any?>("$.value", null)
+   }
 })
