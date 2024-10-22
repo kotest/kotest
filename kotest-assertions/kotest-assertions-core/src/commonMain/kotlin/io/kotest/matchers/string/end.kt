@@ -6,7 +6,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.submatching.describePartialMatchesInString
 import io.kotest.submatching.describePartialMatchesInStringForSuffix
 
 infix fun <A : CharSequence> A?.shouldEndWith(suffix: CharSequence): A {
