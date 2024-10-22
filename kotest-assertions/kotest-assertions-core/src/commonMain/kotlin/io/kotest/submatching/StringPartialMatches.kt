@@ -16,12 +16,12 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
          substringNotEligibleForSubmatching(expectedSlice) ||
          valueNotEligibleForSubmatching(value)
       ) {
-      return PartialMatchesInCollectionDescription("", "")
+      return PartialMatchesInCollectionDescription.Empty
    }
    val minLength = maxOf(expectedSlice.length / 3, 2)
    val partialMatches = findPartialMatches(expectedSlice.toList(), value.toList(), minLength = minLength).take(9)
    if(partialMatches.isEmpty()) {
-      return PartialMatchesInCollectionDescription("", "")
+      return PartialMatchesInCollectionDescription.Empty
    }
    val partialMatchesList = partialMatches.withIndex().joinToString("\n") { indexedValue ->
       "Match[${indexedValue.index}]: ${describeMatchedSlice(expectedSlice, indexedValue.value.rangeOfExpected, type)} matched actual[${indexedValue.value.rangeOfValue}]"
@@ -33,7 +33,7 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
          "Match[$matchIndex]= ${takeIndexRange(underscores, indexRange)}"
       }
    }.flatten().joinToString("\n")
-   return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores)
+   return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores, partialMatches)
 }
 
 internal fun describeMatchedSlice(expectedSlice: String, range: IntRange, type: PartialMatchType): String {
@@ -74,10 +74,15 @@ internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCol
 
 internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
-   val partialMatchesDescription: String
+   val partialMatchesDescription: String,
+   val partialMatches: List<PartialCollectionMatch>,
 ) {
    override fun toString(): String = listOf(partialMatchesList, partialMatchesDescription)
       .filter { it.isNotEmpty() }.joinToString("\n")
+
+   companion object {
+      val Empty = PartialMatchesInCollectionDescription("", "", listOf())
+   }
 }
 
 internal fun underscoreSubstring(
