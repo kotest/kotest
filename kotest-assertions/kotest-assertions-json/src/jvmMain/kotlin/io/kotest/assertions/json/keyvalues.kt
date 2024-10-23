@@ -27,10 +27,11 @@ inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T)
 inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: T) =
    this shouldNot containJsonKeyValue(path, value)
 
-inline fun <reified T> containJsonKeyValue(path: String, t: T) = containJsonKeyValue(path, t, T::class.java)
+inline fun <reified T> containJsonKeyValue(path: String, t: T) =
+   containJsonKeyValue(path, t, t?.let { it::class.java } ?: Nothing::class.java)
 
 @KotestInternal
-fun <T, C: Class<T>> containJsonKeyValue(path: String, t: T, tClass: C) = object : Matcher<String?> {
+fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = object : Matcher<String?> {
    private fun keyIsAbsentFailure(validSubPathDescription: String) = MatcherResult(
       false,
       { "Expected given to contain json key <'$path'> but key was not found. $validSubPathDescription" },
