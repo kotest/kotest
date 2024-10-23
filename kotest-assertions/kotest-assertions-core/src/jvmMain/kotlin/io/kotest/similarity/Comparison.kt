@@ -8,16 +8,21 @@ import java.math.BigDecimal
 internal sealed interface ComparisonResult {
     val match: Boolean
     fun description(): String
+    val canBeSimilar: Boolean
+    val distance: Distance
 }
 
 internal data class Match(
     val field: String,
     val value: Any?
 ): ComparisonResult {
-    val distance
-       get() = CompleteMatch
-    override fun description() = "  $field = ${value.print().value}"
-    override val match: Boolean
+   override val distance
+      get() = CompleteMatch
+
+   override fun description() = "  $field = ${value.print().value}"
+   override val canBeSimilar: Boolean
+      get() = false
+   override val match: Boolean
       get() = true
 }
 
@@ -25,10 +30,12 @@ internal data class AtomicMismatch(
     val field: String,
     val expected: Any?,
     val actual: Any?,
-    val distance: Distance = CompleteMismatch
+    override val distance: Distance = CompleteMismatch
 ): ComparisonResult {
     override fun description() = "    \"$field\" expected: <${expected.print().value}>, but was: <${actual.print().value}>"
     override val match: Boolean
+      get() = false
+    override val canBeSimilar: Boolean
       get() = false
 }
 
@@ -37,11 +44,13 @@ internal data class StringMismatch(
    val expected: String,
    val actual: String,
    val mismatchDescription: String,
-   val distance: Distance,
+   override val distance: Distance,
 ): ComparisonResult {
    override fun description() = mismatchDescription
    override val match: Boolean
       get() = false
+   override val canBeSimilar: Boolean
+      get() = true
 }
 
 internal data class MismatchByField(
@@ -49,7 +58,7 @@ internal data class MismatchByField(
     val expected: Any,
     val actual: Any,
     val comparisonResults: List<ComparisonResult>,
-    val distance: Distance
+    override val distance: Distance
 ): ComparisonResult {
     override fun description() = """$field expected: $expected,
         |  but was: $actual,
@@ -57,19 +66,6 @@ internal data class MismatchByField(
         |${comparisonResults.filter{ !it.match }.joinToString("\n    ") { it.description() }}""".trimMargin()
     override val match: Boolean
       get() = comparisonResults.all { it.match }
-}
-
-internal fun possibleMismatchByFieldDescription(possibleMatch: PossibleMatch): String {
-    val mismatchByField = (possibleMatch.comparisonResult as MismatchByField)
-    val header = "actual[${possibleMatch.actual.index}] = ${possibleMatch.actual.element} is similar to\nexpected[${possibleMatch.matchInExpected.index}] = ${possibleMatch.matchInExpected.element}\n"
-    val fields = mismatchByField.comparisonResults.joinToString("\n") {
-        comparisonResultDescription(it)
-    }
-    return "$header\n$fields"
-}
-
-internal fun comparisonResultDescription(comparisonResult: ComparisonResult): String = when(comparisonResult) {
-    is Match -> "\"${comparisonResult.field}\" = ${comparisonResult.value}"
-    is AtomicMismatch -> "\"${comparisonResult.field}\" expected: <${comparisonResult.expected}>,\n but was: <${comparisonResult.actual}>"
-    else -> "Unknown $comparisonResult"
+    override val canBeSimilar: Boolean
+      get() = true
 }
