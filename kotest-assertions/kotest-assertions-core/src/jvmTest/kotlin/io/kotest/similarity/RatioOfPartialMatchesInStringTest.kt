@@ -10,7 +10,7 @@ class RatioOfPartialMatchesInStringTest: StringSpec() {
    init {
        "almost complete match" {
           val expected = "0123456789abcdefghijklmnopqrstuvwxyz"
-          val actual = "0123456789abcdefghijklmnopqrstuvwxyz?"
+          val actual = "$expected?"
           ratioOfPartialMatchesInString(
             listOf( PartialCollectionMatch(
                 MatchedCollectionElement(0, 0),

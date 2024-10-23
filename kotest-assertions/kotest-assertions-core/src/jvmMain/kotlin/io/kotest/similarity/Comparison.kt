@@ -32,6 +32,18 @@ internal data class AtomicMismatch(
       get() = false
 }
 
+internal data class StringMismatch(
+   val field: String,
+   val expected: String,
+   val actual: String,
+   val mismatchDescription: String,
+   val distance: Distance,
+): ComparisonResult {
+   override fun description() = mismatchDescription
+   override val match: Boolean
+      get() = false
+}
+
 internal data class MismatchByField(
     val field: String,
     val expected: Any,
@@ -45,12 +57,6 @@ internal data class MismatchByField(
         |${comparisonResults.filter{ !it.match }.joinToString("\n    ") { it.description() }}""".trimMargin()
     override val match: Boolean
       get() = comparisonResults.all { it.match }
-}
-
-internal fun possibleMatchDescription(possibleMatch: PossibleMatch): String = when(possibleMatch.comparisonResult) {
-    is Match -> "actual[${possibleMatch.actual.index}] == expected[${possibleMatch.matchInExpected.index}], is: ${possibleMatch.actual.element}"
-    is AtomicMismatch -> "actual[${possibleMatch.actual.index}] = ${possibleMatch.actual.element} is similar to\nexpected[${possibleMatch.matchInExpected.index}] = ${possibleMatch.matchInExpected.element}\n"
-    is MismatchByField -> possibleMismatchByFieldDescription(possibleMatch)
 }
 
 internal fun possibleMismatchByFieldDescription(possibleMatch: PossibleMatch): String {

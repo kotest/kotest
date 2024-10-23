@@ -8,19 +8,16 @@ import java.math.RoundingMode
 internal fun matchNotNullStrings(field: String, expected: String, actual: String): ComparisonResult = when {
    expected == actual -> Match(field, expected)
    else -> {
-      val orderedFields: List<String> = listOf(expected, actual).sortedBy { it.length }
-      val shorter = orderedFields[0]
-      val longer = orderedFields[1]
-      val maxLength = listOf(expected, actual).maxOf { it.length }
-      val comparison = describePartialMatchesInStringForSlice(shorter, longer)
-      val numberOfMatchedCharacters = comparison.partialMatches.sumOf { it.length }
-      val ratioOfPartialMatches = BigDecimal.valueOf(numberOfMatchedCharacters.toLong())
-         .divide(BigDecimal.valueOf(maxLength.toLong()))
-//      val partialMatchesAreUnordered = comparison.partialMatches.zipWithNext().any { (first, second) ->
-//         first.first > second.first
-//      }
-      val distance = Distance(BigDecimal.ZERO)
-      MismatchByField(field, expected, actual, emptyList(), distance)
+      val comparison = describePartialMatchesInStringForSlice(expected, actual, forceComparison = true)
+      val ratioOfPartialMatches = ratioOfPartialMatchesInString(
+         comparison.partialMatches,
+         expected,
+         actual
+      )
+      val partialMatchesAreUnordered = partialMatchesAreUnordered(comparison.partialMatches)
+      val discountForUnorderedPartialMatches = if(partialMatchesAreUnordered) BigDecimal("0.8") else BigDecimal.ONE
+      val distance = Distance(ratioOfPartialMatches.multiply(discountForUnorderedPartialMatches))
+      StringMismatch(field, expected, actual, comparison.toString(), distance)
    }
 }
 
