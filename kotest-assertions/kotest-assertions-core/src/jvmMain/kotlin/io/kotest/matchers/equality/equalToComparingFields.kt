@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import java.lang.AssertionError
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -93,6 +94,7 @@ class FieldEqualityConfig {
    var includedProperties: Collection<KProperty<*>> = emptySet()
    var excludedProperties: Collection<KProperty<*>> = emptySet()
    var useDefaultShouldBeForFields: Collection<KClass<*>> = emptySet()
+   var overrideMatchers: Map<KProperty<*>, Assertable> = emptyMap()
 }
 
 fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matcher<T> {
