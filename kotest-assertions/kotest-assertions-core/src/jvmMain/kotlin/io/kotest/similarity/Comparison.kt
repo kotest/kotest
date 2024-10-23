@@ -1,5 +1,6 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.print.print
 import io.kotest.similarity.Distance.Companion.CompleteMatch
 import io.kotest.similarity.Distance.Companion.CompleteMismatch
@@ -46,7 +47,11 @@ internal data class StringMismatch(
    val mismatchDescription: String,
    override val distance: Distance,
 ): ComparisonResult {
-   override fun description() = mismatchDescription
+   override fun description() = if(distance.distance >
+      BigDecimal(AssertionsConfig.similarityThresholdInPercentForStrings.value) * Distance.PERCENT_TO_DISTANCE)
+   mismatchDescription
+   else "    \"$field\" expected: <${expected.print().value}>, but was: <${actual.print().value}>"
+
    override val match: Boolean
       get() = false
    override val canBeSimilar: Boolean
