@@ -432,7 +432,6 @@ class ShouldContainExactlyTest : WordSpec() {
                   )
                )
             }.message
-            println(message)
             message shouldContain """
                |Possible matches for unexpected elements:
                |
@@ -441,6 +440,24 @@ class ShouldContainExactlyTest : WordSpec() {
                |  The following fields did not match:
                |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
+         }
+
+         "find similar element for String" {
+            val message = shouldThrow<AssertionError> {
+               listOf("sweet green apple", "sweet red apple").shouldContainExactlyInAnyOrder(
+                  listOf(
+                     "sweet green apple",
+                     "sweet red plum",
+                  )
+               )
+            }.message
+            println(message)
+            message.shouldContainInOrder(
+               "Possible matches for unexpected elements:",
+               """expected: <"sweet red plum">, found a similar value: <"sweet red apple">""",
+               """Line[0] ="sweet red apple"""",
+               """Match[0]= ++++++++++-----""",
+            )
          }
 
          "disambiguate when using optional expected value" {

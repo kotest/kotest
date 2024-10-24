@@ -4,6 +4,8 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.submatching.MatchedCollectionElement
+import io.kotest.submatching.PartialCollectionMatch
 import io.kotest.submatching.PartialMatchesInCollectionDescription
 import io.kotest.submatching.describePartialMatchesInString
 import io.kotest.submatching.describePartialMatchesInStringForPrefix
@@ -33,7 +35,7 @@ class StringPartialMatchesTest : WordSpec() {
       }
       "describePartialMatchesInString" should {
          "return empty if no matches" {
-            describePartialMatchesInStringForSlice("hawk", text) shouldBe PartialMatchesInCollectionDescription("", "")
+            describePartialMatchesInStringForSlice("hawk", text) shouldBe PartialMatchesInCollectionDescription.Empty
          }
          "handle empty slice" {
             val actual = describePartialMatchesInStringForSlice("", text)
@@ -51,6 +53,12 @@ class StringPartialMatchesTest : WordSpec() {
             actual.partialMatchesDescription shouldBe
                """Line[0] ="The quick brown fox jumps over the lazy dog"
                  |Match[0]= ----------++++++++++++++++++++-------------""".trimMargin()
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=10),
+                  length=20
+               )
+            )
          }
          "find one match spanning two lines" {
             val twoLines = "The quick brown fox\n jumps over the lazy dog"
@@ -65,6 +73,12 @@ class StringPartialMatchesTest : WordSpec() {
                   "Line[1] =\" jumps over the lazy dog\"",
                   "Match[0]= +++++++++++-------------"
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=10),
+                  length=21
+               )
+            )
          }
          "find two matches on separate lines" {
             val twoLines = "The quick brown fox\n jumps over the lazy dog"
@@ -82,6 +96,16 @@ class StringPartialMatchesTest : WordSpec() {
                   "Match[0]= ++++++++++++------------",
                   "Match[1]= ------------------------"
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=6, startIndexInValue=20),
+                  length=12
+               ),
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=17, startIndexInValue=9),
+                  length=10
+               ),
+            )
          }
          "find match that takes one whole line" {
             val threeLines = "What?\nThe quick brown fox jumps over the lazy dog.\nAnd that's it."
@@ -94,6 +118,12 @@ class StringPartialMatchesTest : WordSpec() {
                "Line[2] =\"And that's it.\"",
                "Match[0]= --------------"
             )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=6),
+                  length=43
+               )
+            )
          }
          "find whole prefix elsewhere" {
             val actual = describePartialMatchesInStringForPrefix("quick brown fox jumps", line)
@@ -103,6 +133,12 @@ class StringPartialMatchesTest : WordSpec() {
                  """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                   """Match[0]= ----+++++++++++++++++++++------------------"""
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=4),
+                  length=21
+               )
+            )
          }
          "find partial prefix elsewhere" {
             val actual = describePartialMatchesInStringForPrefix("quick brown fox runs", line)
@@ -112,6 +148,12 @@ class StringPartialMatchesTest : WordSpec() {
                   """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                   """Match[0]= ----++++++++++++++++-----------------------"""
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=4),
+                  length=16
+               )
+            )
          }
          "find whole suffix elsewhere" {
             val actual = describePartialMatchesInStringForSuffix("jumps over the lazy", line)
@@ -121,6 +163,12 @@ class StringPartialMatchesTest : WordSpec() {
                   """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                   """Match[0]= --------------------+++++++++++++++++++----"""
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=20),
+                  length=19
+               )
+            )
          }
          "find partial suffix elsewhere" {
             val actual = describePartialMatchesInStringForSuffix("jumps over the lazy cat", line)
@@ -130,6 +178,12 @@ class StringPartialMatchesTest : WordSpec() {
                   """Line[0] ="The quick brown fox jumps over the lazy dog"""",
                   """Match[0]= --------------------++++++++++++++++++++---"""
                )
+            actual.partialMatches shouldBe listOf(
+               PartialCollectionMatch(
+                  matchedElement= MatchedCollectionElement(startIndexInExpected=0, startIndexInValue=20),
+                  length=20
+               )
+            )
          }
       }
    }

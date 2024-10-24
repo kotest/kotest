@@ -989,7 +989,7 @@ class CollectionMatchersTest : WordSpec() {
             }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
          }
 
-         "fail and find similar items" {
+         "fail and find similar items for data classes" {
             shouldThrow<AssertionError> {
                sweetGreenApple shouldBeIn listOf(
                   sweetGreenPear, sweetRedApple
@@ -1000,6 +1000,18 @@ class CollectionMatchersTest : WordSpec() {
                "but was: Fruit(name=apple, color=red, taste=sweet),",
                "The following fields did not match:",
                """"color" expected: <"green">, but was: <"red">"""
+            )
+         }
+
+         "fail and find similar items for Strings" {
+            shouldThrow<AssertionError> {
+               "sweet green fruit" shouldBeIn listOf(
+                  "sweet green pear", "sweet red apple"
+               )
+            }.message.shouldContainInOrder(
+               "Possible matches:",
+               """Line[0] ="sweet green pear"""",
+               """Match[0]= ++++++++++++----""",
             )
          }
       }

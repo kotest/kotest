@@ -38,6 +38,9 @@ object AssertionsConfig {
    val similarityThresholdInPercent: ConfigValue<Int> =
       EnvironmentConfigValue<Int>("kotest.assertions.similarity.thresholdInPercent", 50, String::toInt)
 
+   val similarityThresholdInPercentForStrings: ConfigValue<Int> =
+      EnvironmentConfigValue<Int>("kotest.assertions.similarity.thresholdInPercentForStrings", 66, String::toInt)
+
    val minSubtringSubmatchingSize: ConfigValue<Int> =
       EnvironmentConfigValue<Int>("kotest.assertions.string.submatching.min.substring.size", 8, String::toInt)
 

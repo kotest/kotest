@@ -10,7 +10,8 @@ import java.math.BigDecimal
 class MatchByFieldsTest : StringSpec() {
    init {
       "some fields match" {
-         matchByFields("thing", redCircle, blueCircle) shouldBe
+         val actual = matchByFields("thing", redCircle, blueCircle)
+         actual shouldBe
             MismatchByField(
                field = "thing",
                expected = redCircle,
@@ -20,7 +21,7 @@ class MatchByFieldsTest : StringSpec() {
                      field = "color",
                      expected = "red",
                      actual = "blue",
-                     distance = Distance(BigDecimal.ZERO)
+                     distance = Distance(BigDecimal("0.00"))
                   ),
                   Match(field = "shape", value = "circle")
                ),
@@ -29,7 +30,8 @@ class MatchByFieldsTest : StringSpec() {
       }
 
       "all fields different" {
-         matchByFields("thing", redCircle, blueTriangle) shouldBe
+         val actual = matchByFields("thing", redCircle, blueTriangle)
+         actual shouldBe
             MismatchByField(
                field = "thing",
                expected = redCircle,
@@ -39,13 +41,13 @@ class MatchByFieldsTest : StringSpec() {
                      field = "color",
                      expected = "red",
                      actual = "blue",
-                     distance = Distance(BigDecimal.ZERO)
+                     distance = Distance(BigDecimal("0.00"))
                   ),
                   AtomicMismatch(
                      field = "shape",
                      expected = "circle",
                      actual = "triangle",
-                     distance = Distance(BigDecimal.ZERO)
+                     distance = Distance(BigDecimal("0.25"))
                   ),
                ),
                distance = Distance(BigDecimal.ZERO)

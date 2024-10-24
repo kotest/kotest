@@ -12,6 +12,8 @@ import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class ShouldContainTest : WordSpec({
@@ -43,7 +45,7 @@ class ShouldContainTest : WordSpec({
          col shouldContain (2)
       }
 
-      "find similar element" {
+      "find similar element in data class" {
          shouldThrowAny {
             listOf(sweetGreenApple, sweetGreenPear) shouldContain (sweetRedApple)
          }.shouldHaveMessage(
@@ -55,6 +57,18 @@ class ShouldContainTest : WordSpec({
             |  The following fields did not match:
             |    "color" expected: <"red">, but was: <"green">
     """.trimMargin()
+         )
+      }
+
+      "find similar element in List<String>" {
+         val thrown = shouldThrowAny {
+            listOf("sweet green apple", "sweet red plu") shouldContain ("sweet green pear")
+         }
+         thrown.message.shouldContainInOrder(
+            "PossibleMatches:",
+            "Match[0]: part of slice with indexes [0..11] matched actual[0..11]",
+            """Line[0] ="sweet green apple"""",
+            """Match[0]= ++++++++++++-----""",
          )
       }
 

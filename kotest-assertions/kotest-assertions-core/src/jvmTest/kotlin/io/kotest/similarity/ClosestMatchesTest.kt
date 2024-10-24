@@ -17,7 +17,7 @@ class ClosestMatchesTest : WordSpec() {
             closestMatches(setOf(sweetGreenApple, sweetRedApple), sourYellowLemon).isEmpty() shouldBe true
          }
 
-         "find one match" {
+         "find one match for data classes" {
             val actual = closestMatches(setOf(sweetGreenApple, sweetRedApple), sweetGreenPear)
             assertSoftly {
                actual.size shouldBe 1
@@ -27,11 +27,25 @@ class ClosestMatchesTest : WordSpec() {
             }
          }
 
-         "find no matches if similarity below threshold" {
+         "find one match for strings" {
+            val actual = closestMatches(setOf("sweet green apple", "sweet red apple"), "sweet green pear")
+            assertSoftly {
+               actual.size shouldBe 1
+               actual[0].value shouldBe "sweet green pear"
+               actual[0].possibleMatch shouldBe "sweet green apple"
+               actual[0].comparisonResult.distance.distance shouldBe BigDecimal("0.71")
+            }
+         }
+
+         "find no matches if similarity below threshold for data class" {
             closestMatches(setOf(sweetGreenApple, sweetRedApple), tartRedCherry).shouldBeEmpty()
          }
 
-         "find two matches with same distance" {
+         "find no matches if similarity below threshold for String" {
+            closestMatches(setOf("sweet green apple", "sweet red apple"), "sweet yellow peach").shouldBeEmpty()
+         }
+
+         "find two matches with same distance for data classes" {
             val sweetBlueApple = Fruit("apple", "blue", "sweet")
             val actual = closestMatches(setOf(sweetGreenApple, sweetRedApple), sweetBlueApple)
             assertSoftly {
@@ -39,6 +53,16 @@ class ClosestMatchesTest : WordSpec() {
                actual.map { it.value }.distinct() shouldBe listOf(sweetBlueApple)
                actual.map { it.possibleMatch } shouldContainExactlyInAnyOrder listOf(sweetGreenApple, sweetRedApple)
                actual.map { it.comparisonResult.distance.distance }.distinct() shouldBe listOf(BigDecimal("0.67"))
+            }
+         }
+
+         "find two matches with same distance for String" {
+            val actual = closestMatches(setOf("sweet red pear", "sweet red plum"), "sweet red lime")
+            assertSoftly {
+               actual.size shouldBe 2
+               actual.map { it.value }.distinct() shouldBe listOf("sweet red lime")
+               actual.map { it.possibleMatch } shouldContainExactlyInAnyOrder listOf("sweet red pear", "sweet red plum")
+               actual.map { it.comparisonResult.distance.distance }.distinct() shouldBe listOf(BigDecimal("0.71"))
             }
          }
       }

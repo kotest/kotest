@@ -3,7 +3,7 @@ package io.kotest.submatching
 fun findPartialMatchesInString(expected: String, value: String, minLength: Int) =
    findPartialMatches(expected.toList(), value.toList(), minLength)
 
-fun<T> findPartialMatches(expected: List<T>, value: List<T>, minLength: Int): List<PartialCollectionMatch<T>> {
+fun<T> findPartialMatches(expected: List<T>, value: List<T>, minLength: Int): List<PartialCollectionMatch> {
    val indexes = toCharIndex(value)
    val matches = expected.asSequence().mapIndexed { index, char ->
       index to char
@@ -37,20 +37,19 @@ internal fun <T> extendPartialMatchToRequiredLength(
    target: List<T>,
    matchedElement: MatchedCollectionElement,
    minLength: Int
-): PartialCollectionMatch<T>? {
+): PartialCollectionMatch? {
    val lengthOfMatch = lengthOfMatch(value, target, matchedElement)
    return if (lengthOfMatch >= minLength) {
       PartialCollectionMatch(
          matchedElement,
          lengthOfMatch,
-         value
       )
    } else null
 }
 
-internal fun<T> removeShorterMatchesWithSameEnd(
-   matches: List<PartialCollectionMatch<T>>
-): List<PartialCollectionMatch<T>> {
+internal fun removeShorterMatchesWithSameEnd(
+   matches: List<PartialCollectionMatch>
+): List<PartialCollectionMatch> {
    val matchesGroupedByEnd = matches.groupBy {
       it.endOfMatchAtTarget
    }
@@ -73,15 +72,12 @@ data class MatchedCollectionElement(
    val startIndexInValue: Int
 )
 
-data class PartialCollectionMatch<T>(
+data class PartialCollectionMatch(
    val matchedElement: MatchedCollectionElement,
    val length: Int,
-   val value: List<T>
 ) {
    val endOfMatchAtTarget: Int
       get() = matchedElement.startIndexInValue + length - 1
-   val partOfValue: List<T>
-      get() = value.subList(matchedElement.startIndexInExpected, matchedElement.startIndexInExpected + length)
    val rangeOfExpected: IntRange = rangeOfLength(matchedElement.startIndexInExpected, length)
    val rangeOfValue: IntRange = rangeOfLength(matchedElement.startIndexInValue, length)
 

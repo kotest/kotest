@@ -10,7 +10,6 @@ class PartialCollectionMatchTest : StringSpec() {
    private val systemToTest = PartialCollectionMatch(
       MatchedCollectionElement(2, 3),
       length = 4,
-      value = "buzzword".toList()
    )
 
    init {
@@ -19,9 +18,6 @@ class PartialCollectionMatchTest : StringSpec() {
       }
       "rangeOfTarget" {
          systemToTest.rangeOfValue shouldBe 3..6
-      }
-      "partOfValue" {
-         systemToTest.partOfValue.joinToString("") shouldBe "zzwo"
       }
    }
 }
