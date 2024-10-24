@@ -49,14 +49,16 @@ internal data class StringMismatch(
 ): ComparisonResult {
    override fun description() = if(distance.distance >
       BigDecimal(AssertionsConfig.similarityThresholdInPercentForStrings.value) * Distance.PERCENT_TO_DISTANCE)
-      "    \"$field\" expected: <${expected.print().value}>, found a similar value: <${actual.print().value}>\n$mismatchDescription"
-   else "    \"$field\" expected: <${expected.print().value}>, but was: <${actual.print().value}>"
+      "    ${quotedIfNotEmpty(field)} expected: <${expected.print().value}>, found a similar value: <${actual.print().value}>\n$mismatchDescription"
+   else "    ${quotedIfNotEmpty(field)} expected: <${expected.print().value}>, but was: <${actual.print().value}>"
 
    override val match: Boolean
       get() = false
    override val canBeSimilar: Boolean
       get() = true
 }
+
+internal fun quotedIfNotEmpty(value: String) = if(value.isEmpty()) "" else "\"$value\""
 
 internal data class MismatchByField(
     val field: String,
