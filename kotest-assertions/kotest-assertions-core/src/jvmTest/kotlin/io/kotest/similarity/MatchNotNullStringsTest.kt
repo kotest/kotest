@@ -11,7 +11,7 @@ class MatchNotNullStringsTest: StringSpec() {
       "work for same string" {
          matchNotNullStrings("field", "hello", "hello") shouldBe Match("field", "hello")
       }
-      "work for two different strings" {
+      "work for two different strings above threshold" {
          val expectedStr = "0123456789abcdefghijklmnopqrstuvwxyz"
          val actualStr = "$expectedStr?"
          val actual = matchNotNullStrings("field", expectedStr, actualStr)
@@ -23,6 +23,15 @@ class MatchNotNullStringsTest: StringSpec() {
                """Match[0]= ++++++++++++++++++++++++++++++++++++-"""
             )
             (actual as StringMismatch).distance shouldBe Distance(BigDecimal("0.97"))
+         }
+      }
+
+      "work for two different strings below threshold" {
+         val actual = matchNotNullStrings("field", "0123456789abcdefghijklmnopqrstuvwxyz", "SFGHSRGHSFDGHSFGHSDFGHSDFGHDF")
+         assertSoftly {
+            actual.match shouldBe false
+            actual.description() shouldBe """    "field" expected: <"0123456789abcdefghijklmnopqrstuvwxyz">, but was: <"SFGHSRGHSFDGHSFGHSDFGHSDFGHDF">"""
+            (actual as AtomicMismatch).distance shouldBe Distance(BigDecimal("0.00"))
          }
       }
    }

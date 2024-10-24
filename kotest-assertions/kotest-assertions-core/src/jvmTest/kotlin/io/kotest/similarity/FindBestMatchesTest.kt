@@ -23,7 +23,8 @@ class FindBestMatchesTest : StringSpec() {
       }
 
       "find two closest matches" {
-         findBestMatches(oneApple, listOf(twoApples, twoOranges, oneOrange)) shouldBe listOf(
+         val findBestMatches = findBestMatches(oneApple, listOf(twoApples, twoOranges, oneOrange))
+         findBestMatches shouldBe listOf(
             IndexedComparisonResult(
                0,
                MismatchByField(
@@ -49,7 +50,7 @@ class FindBestMatchesTest : StringSpec() {
                   comparisonResults = listOf(
                      AtomicMismatch(
                         field = "name", expected = "orange", actual = "apple",
-                        distance = Distance(BigDecimal.ZERO)
+                        distance = Distance(BigDecimal("0.00"))
                      ),
                      Match(field = "count", value = 1),
                   ),
