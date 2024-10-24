@@ -4,6 +4,7 @@ import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
@@ -19,18 +20,23 @@ import io.kotest.property.internal.escapeUnprintable
 class OutputHexForUnprintableCharsTest : StringSpec({
 
    "should handle unprintable characters in failure messages" {
+      var unprintableCount = 0
+
       checkAll(
          PropTestConfig(outputHexForUnprintableChars = true, seed = -5556043119863981334),
          Arb.string(1..127, codepoints = Codepoint.ascii())
       ) { str ->
          val message = shouldThrow<AssertionFailedError> { str shouldBe "expectedString" }.message
-
          val escapedMessage = message?.escapeUnprintable()
+
+         if (message != escapedMessage) unprintableCount++
 
          val expectedEscapedString = str.escapeUnprintable()
          escapedMessage shouldContain expectedEscapedString
          escapedMessage shouldContain "expectedString"
       }
+
+      unprintableCount.shouldBeGreaterThan(0)
    }
 
    "should handle printable characters without escaping" {
