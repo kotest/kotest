@@ -49,7 +49,7 @@ internal data class StringMismatch(
 ): ComparisonResult {
    override fun description() = if(distance.distance >
       BigDecimal(AssertionsConfig.similarityThresholdInPercentForStrings.value) * Distance.PERCENT_TO_DISTANCE)
-   mismatchDescription
+      "    \"$field\" expected: <${expected.print().value}>, found a similar value: <${actual.print().value}>\n$mismatchDescription"
    else "    \"$field\" expected: <${expected.print().value}>, but was: <${actual.print().value}>"
 
    override val match: Boolean
