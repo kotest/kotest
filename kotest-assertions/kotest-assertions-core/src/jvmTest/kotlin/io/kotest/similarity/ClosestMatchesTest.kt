@@ -9,7 +9,7 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class ClosestMatchesTest : WordSpec() {
    init {
       "closestMatches" should {

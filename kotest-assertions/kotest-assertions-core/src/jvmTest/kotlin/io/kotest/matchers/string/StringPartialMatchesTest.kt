@@ -13,7 +13,7 @@ import io.kotest.submatching.describePartialMatchesInStringForSlice
 import io.kotest.submatching.describePartialMatchesInStringForSuffix
 import io.kotest.submatching.underscoreSubstring
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class StringPartialMatchesTest : WordSpec() {
    val value = "0123456789"
    val text = """The quick brown fox

@@ -5,7 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class PartialCollectionMatchTest : StringSpec() {
    private val systemToTest = PartialCollectionMatch(
       MatchedCollectionElement(2, 3),
