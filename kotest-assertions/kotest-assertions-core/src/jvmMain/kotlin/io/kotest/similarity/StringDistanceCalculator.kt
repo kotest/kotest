@@ -1,5 +1,6 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.submatching.PartialCollectionMatch
 import io.kotest.submatching.describePartialMatchesInStringForSlice
 import java.math.BigDecimal
@@ -17,7 +18,11 @@ internal fun matchNotNullStrings(field: String, expected: String, actual: String
       val partialMatchesAreUnordered = partialMatchesAreUnordered(comparison.partialMatches)
       val discountForUnorderedPartialMatches = if(partialMatchesAreUnordered) BigDecimal("0.8") else BigDecimal.ONE
       val distance = Distance(ratioOfPartialMatches.multiply(discountForUnorderedPartialMatches))
-      StringMismatch(field, expected, actual, comparison.toString(), distance)
+      if(distance.aboveThresholdForStrings()) {
+         StringMismatch(field, expected, actual, comparison.toString(), distance)
+      } else {
+         AtomicMismatch(field, expected, actual, distance)
+      }
    }
 }
 
