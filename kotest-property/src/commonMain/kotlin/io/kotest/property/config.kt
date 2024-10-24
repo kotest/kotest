@@ -54,6 +54,9 @@ object PropertyTesting {
 
    @ExperimentalKotest
    var statisticsReportMode: StatisticsReportMode = StatisticsReportMode.ON
+
+   var defaultOutputHexForUnprintableChars: Boolean =
+      sysprop("kotest.proptest.arb.string.output-hex-for-unprintable-chars", false)
 }
 
 enum class LabelOrder {
@@ -74,6 +77,7 @@ data class PropTest(
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
    val constraints: Constraints? = null,
+   val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars
 )
 
 fun PropTest.toPropTestConfig() =
@@ -84,7 +88,8 @@ fun PropTest.toPropTestConfig() =
       iterations = iterations,
       shrinkingMode = shrinkingMode,
       listeners = listeners,
-      edgeConfig = edgeConfig
+      edgeConfig = edgeConfig,
+      outputHexForUnprintableChars = outputHexForUnprintableChars,
    )
 
 /**
@@ -109,7 +114,8 @@ data class PropTestConfig(
    val labelsReporter: LabelsReporter = StandardLabelsReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
-   val skipTo: Int = 0
+   val skipTo: Int = 0,
+   val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars,
 )
 
 interface PropTestListener {
