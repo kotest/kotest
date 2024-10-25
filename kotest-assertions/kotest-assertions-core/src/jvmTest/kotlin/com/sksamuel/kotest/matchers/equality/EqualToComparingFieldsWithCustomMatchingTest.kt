@@ -2,12 +2,22 @@ package com.sksamuel.kotest.matchers.equality
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.equality.matchBigDecimalsIgnoringScale
 import io.kotest.matchers.equality.matchDoublesWithTolerance
+import io.kotest.matchers.equality.matchInstantsWithTolerance
 import io.kotest.matchers.equality.matchListsIgnoringOrder
+import io.kotest.matchers.equality.matchLocalDateTimesWithTolerance
+import io.kotest.matchers.equality.matchOffsetDateTimesWithTolerance
 import io.kotest.matchers.equality.matchStringsIgnoringCase
+import io.kotest.matchers.equality.matchZonedDateTimesWithTolerance
 import io.kotest.matchers.equality.shouldBeEqualUsingFields
 import io.kotest.matchers.string.shouldContainInOrder
+import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZonedDateTime
+import kotlin.time.Duration.Companion.seconds
 
 class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
    init {
@@ -138,6 +148,56 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
             expected
          }
       }
+      "matchBigDecimalsIgnoringScale" {
+         val expected = withManyFields
+         val actual = withManyFields.copy(bigDecimal = BigDecimal("1.000"))
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               WithManyFields::bigDecimal to matchBigDecimalsIgnoringScale()
+            )
+            expected
+         }
+      }
+      "matchLocalDateTimesWithTolerance" {
+         val expected = withManyFields
+         val actual = withManyFields.copy(localDateTime = withManyFields.localDateTime.plusSeconds(1))
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               WithManyFields::localDateTime to matchLocalDateTimesWithTolerance(2.seconds)
+            )
+            expected
+         }
+      }
+      "matchZonedDateTimesWithTolerance" {
+         val expected = withManyFields
+         val actual = withManyFields.copy(zonedDateTime = withManyFields.zonedDateTime.plusSeconds(1))
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               WithManyFields::zonedDateTime to matchZonedDateTimesWithTolerance(2.seconds)
+            )
+            expected
+         }
+      }
+      "matchOffsetDateTimesWithTolerance" {
+         val expected = withManyFields
+         val actual = withManyFields.copy(offsetDateTime = withManyFields.offsetDateTime.plusSeconds(1))
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               WithManyFields::offsetDateTime to matchOffsetDateTimesWithTolerance(2.seconds)
+            )
+            expected
+         }
+      }
+      "matchInstantsWithTolerance" {
+         val expected = withManyFields
+         val actual = withManyFields.copy(instant = withManyFields.instant.plusSeconds(1))
+         actual shouldBeEqualUsingFields {
+            overrideMatchers = mapOf(
+               WithManyFields::instant to matchInstantsWithTolerance(2.seconds)
+            )
+            expected
+         }
+      }
    }
 
    data class SimpleDataClass(
@@ -160,5 +220,19 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
    data class DataClassWithListOfDataClasses(
       val name: String,
       val elements: List<SimpleDataClass>
+   )
+   data class WithManyFields(
+      val bigDecimal: BigDecimal,
+      val localDateTime: LocalDateTime,
+      val zonedDateTime: ZonedDateTime,
+      val offsetDateTime: OffsetDateTime,
+      val instant: Instant,
+   )
+   private val withManyFields = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
    )
 }

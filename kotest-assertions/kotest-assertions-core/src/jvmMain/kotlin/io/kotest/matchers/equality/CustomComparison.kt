@@ -1,5 +1,6 @@
 package io.kotest.matchers.equality
 
+import io.kotest.matchers.bigdecimal.shouldBeEqualIgnoringScale
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.date.plusOrMinus
 import io.kotest.matchers.doubles.plusOrMinus
@@ -51,6 +52,12 @@ inline fun<reified T: Any> customComparison(
 fun matchDoublesWithTolerance(tolerance: Double) = Assertable { expected: Any?, actual: Any? ->
    customComparison<Double>(expected, actual) { expected: Double, actual: Double ->
       actual shouldBe (expected plusOrMinus tolerance)
+   }
+}
+
+fun matchBigDecimalsIgnoringScale() = Assertable { expected: Any?, actual: Any? ->
+   customComparison<BigDecimal>(expected, actual) { expected: BigDecimal, actual: BigDecimal ->
+      actual shouldBeEqualIgnoringScale expected
    }
 }
 
