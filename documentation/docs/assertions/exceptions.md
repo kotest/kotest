@@ -38,7 +38,7 @@ If you simply want to test that _any_ exception is thrown, regardles of type, th
 
 
 ```kotlin
-shouldThrowAny {
+val exception = shouldThrowAny {
   // test here can throw any type of Throwable!
 }
 ```
