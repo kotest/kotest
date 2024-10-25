@@ -179,7 +179,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
 | `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
 | `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
-| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equ|
+| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equal to n|
 | `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n |
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
 | `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range |
