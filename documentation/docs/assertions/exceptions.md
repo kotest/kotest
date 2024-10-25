@@ -43,4 +43,10 @@ val exception = shouldThrowAny {
 }
 ```
 
+If you need to assert that _no_ exception is thrown, then use `shouldNotThrowAny`.
 
+```kotlin
+val exception = shouldNotThrowAny {
+  // test here should not throw any type of Throwable!
+}
+```
