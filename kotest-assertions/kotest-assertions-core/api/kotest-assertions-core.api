@@ -1319,6 +1319,7 @@ public final class io/kotest/matchers/equality/CompareResult$Companion {
 
 public final class io/kotest/matchers/equality/CustomComparisonKt {
 	public static final fun getMatchStringsIgnoringCase ()Lio/kotest/matchers/equality/Assertable;
+	public static final fun matchBigDecimalsIgnoringScale ()Lio/kotest/matchers/equality/Assertable;
 	public static final fun matchDoublesWithTolerance (D)Lio/kotest/matchers/equality/Assertable;
 	public static final fun matchInstantsWithTolerance-LRDsOJo (J)Lio/kotest/matchers/equality/Assertable;
 	public static final fun matchListsIgnoringOrder ()Lio/kotest/matchers/equality/Assertable;
