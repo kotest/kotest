@@ -1,7 +1,7 @@
 package io.kotest.property
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.property.classifications.ClassificationReporter
+import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardClassificationReporter
 
 enum class LabelOrder {
@@ -54,7 +54,7 @@ data class PropTestConfig(
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
-   val classificationReporter: ClassificationReporter = StandardClassificationReporter,
+   val classificationReporter: LabelsReporter = StandardClassificationReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
    val skipTo: Int = 0
