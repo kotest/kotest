@@ -1,5 +1,9 @@
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.json.file.shouldEqualSpecifiedJson
+import io.kotest.assertions.json.file.shouldEqualSpecifiedJsonIgnoringOrder
+import io.kotest.assertions.json.paths.shouldEqualSpecifiedJson
+import io.kotest.assertions.json.paths.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.json.shouldEqualSpecifiedJson
 import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.shouldFail

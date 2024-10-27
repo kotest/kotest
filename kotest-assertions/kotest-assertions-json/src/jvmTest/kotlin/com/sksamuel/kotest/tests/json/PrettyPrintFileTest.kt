@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.json.file.shouldEqualJson
+import io.kotest.assertions.json.paths.shouldEqualJson
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec

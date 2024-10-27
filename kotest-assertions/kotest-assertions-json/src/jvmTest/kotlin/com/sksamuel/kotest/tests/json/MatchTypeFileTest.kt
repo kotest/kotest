@@ -1,11 +1,17 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.shouldBeJsonArray
-import io.kotest.assertions.json.shouldBeJsonObject
-import io.kotest.assertions.json.shouldBeValidJson
-import io.kotest.assertions.json.shouldNotBeJsonArray
-import io.kotest.assertions.json.shouldNotBeJsonObject
-import io.kotest.assertions.json.shouldNotBeValidJson
+import io.kotest.assertions.json.file.shouldBeJsonArray
+import io.kotest.assertions.json.file.shouldBeJsonObject
+import io.kotest.assertions.json.file.shouldBeValidJson
+import io.kotest.assertions.json.file.shouldNotBeJsonArray
+import io.kotest.assertions.json.file.shouldNotBeJsonObject
+import io.kotest.assertions.json.file.shouldNotBeValidJson
+import io.kotest.assertions.json.paths.shouldBeJsonArray
+import io.kotest.assertions.json.paths.shouldBeJsonObject
+import io.kotest.assertions.json.paths.shouldBeValidJson
+import io.kotest.assertions.json.paths.shouldNotBeJsonArray
+import io.kotest.assertions.json.paths.shouldNotBeJsonObject
+import io.kotest.assertions.json.paths.shouldNotBeValidJson
 import io.kotest.core.spec.style.FunSpec
 
 class MatchTypeFileTest : FunSpec({

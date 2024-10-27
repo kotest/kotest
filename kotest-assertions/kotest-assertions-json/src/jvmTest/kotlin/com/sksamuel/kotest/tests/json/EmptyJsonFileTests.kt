@@ -1,9 +1,10 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.shouldBeEmptyJsonArray
-import io.kotest.assertions.json.shouldBeEmptyJsonObject
+import io.kotest.assertions.json.file.shouldBeEmptyJsonArray
+import io.kotest.assertions.json.file.shouldBeEmptyJsonObject
+import io.kotest.assertions.json.paths.shouldBeEmptyJsonArray
+import io.kotest.assertions.json.paths.shouldBeEmptyJsonObject
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.spec.tempfile
 
 class EmptyJsonFileTests : FunSpec({
    test("should match empty array") {
