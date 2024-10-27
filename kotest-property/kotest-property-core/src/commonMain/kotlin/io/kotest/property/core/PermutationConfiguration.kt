@@ -5,6 +5,8 @@ import io.kotest.property.AssumptionFailedException
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.classifications.ClassificationReporter
+import io.kotest.property.classifications.StandardClassificationReporter
 import io.kotest.property.core.constraints.Constraints
 import io.kotest.property.core.constraints.ConstraintsBuilder
 import io.kotest.property.core.delegates.GenDelegate
@@ -69,24 +71,30 @@ class PermutationConfiguration {
    // Custom seed to use for this property test. If null, a random seed will be generated.
    var seed: Long? = null
 
+   // override the labels reporter used for classifications
+   var classificationReporter: ClassificationReporter? = null
+
    internal val registry = GenDelegateRegistry()
 
    // callbacks
-   internal var beforePermutation: suspend () -> Unit = {}
-   internal var afterPermutation: suspend () -> Unit = {}
+   internal var beforePermutation: (suspend () -> Unit)? = null
+   internal var afterPermutation: (suspend () -> Unit)? = null
 
    // the main test
-   internal var test: suspend Permutation.() -> Unit = {}
+   internal var test: (suspend Permutation.() -> Unit)? = null
 
    fun forEach(test: suspend Permutation.() -> Unit) {
+      if (this.test != null) error("test has already been set")
       this.test = test
    }
 
    fun beforePermutation(fn: suspend () -> Unit) {
+      if (this.beforePermutation != null) error("beforePermutation has already been set")
       beforePermutation = fn
    }
 
    fun afterPermutation(fn: suspend () -> Unit) {
+      if (this.afterPermutation != null) error("afterPermutation has already been set")
       afterPermutation = fn
    }
 
@@ -121,14 +129,15 @@ internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
       maxDiscardPercentage = maxDiscardPercentage,
       shouldPrintGeneratedValues = shouldPrintGeneratedValues,
       outputClassifications = outputClassifications,
+      classificationReporter = StandardClassificationReporter,
       shouldPrintConfig = shouldPrintConfig,
       customSeed = this.seed == null,
       failOnSeed = failOnSeed,
       writeFailedSeed = writeFailedSeed,
       rs = createRandomSource(this),
       registry = registry,
-      beforePermutation = beforePermutation,
-      afterPermutation = afterPermutation,
-      test = test,
+      beforePermutation = beforePermutation ?: {},
+      afterPermutation = afterPermutation ?: {},
+      test = test ?: error("test has not been set"),
    )
 }

@@ -9,28 +9,25 @@ import io.kotest.property.core.constraints.Iteration
 import kotlin.time.TimeSource
 
 /**
- * The [PermutationExecutor] is responsible for executing a single property test with the given [PermutationConfiguration].
+ * The [PermutationExecutor] is responsible for executing a single property test with the given [PermutationContext].
  */
 internal class PermutationExecutor(
    private val context: PermutationContext,
 ) {
 
-   private val beforeChecks = listOf(AllowCustomSeedBeforeCheck)
-   private val afterChecks = listOf(MinSuccessCheck, MaxDiscardCheck)
-
    internal suspend fun execute(
       test: suspend PermutationContext.() -> Unit
    ): PermutationResult {
 
-      beforeChecks.forEach { it.evaluate(context) }
+      AllowCustomSeedBeforeCheck.check(context)
 
-      var index = 0
+      var iterations = 0
       var discards = 0
       var successes = 0
       var failures = 0
-      val start = TimeSource.Monotonic.markNow()
+      val mark = TimeSource.Monotonic.markNow()
 
-      while (context.constraints.evaluate(Iteration(index, start))) {
+      while (context.constraints.evaluate(Iteration(iterations, mark))) {
 
          try {
 
@@ -39,42 +36,51 @@ internal class PermutationExecutor(
             test(context)
             context.afterPermutation()
             successes++
+            iterations++
 
          } catch (e: AssumptionFailedException) {
 
             // we don't mark failed assumptions as errors but we do increase discard count
             discards++
 
+            // eagerly check if we should stop
+            MaxDiscardCheck.check(context, discards, iterations)
+
          } catch (e: Throwable) {
 
             failures++
+            iterations++
 
             val result = IterationResult(
-               iteration = index,
+               iteration = iterations,
                success = false,
                successes = successes,
                failures = failures,
-               duration = start.elapsedNow(),
-               inputs = context.registry.samples(),
+               duration = mark.elapsedNow(),
+               inputs = context.registry.samples().map { it.value },
                error = e
             )
 
-            FailureHandler.handleFailure(context, result)
+            // we might be able to tolerate this failure, if max failure is set > 0,
+            // otherwise, this test will now throw an exception
+            if (failures > context.maxFailures) {
+               FailureHandler.handleFailure(context, result)
+            }
          }
-         index++
       }
 
       val result = PermutationResult(
-         iterations = index,
+         iterations = iterations,
          successes = successes,
          failures = failures,
          discards = discards,
-         duration = start.elapsedNow()
+         duration = mark.elapsedNow(),
+         shrinks = emptyList(),
       )
 
-      afterChecks.forEach { it.evaluate(context, result) }
+      // ensure we have met the min success criteria
+      MinSuccessCheck.check(context, result)
 
       return result
    }
-
 }

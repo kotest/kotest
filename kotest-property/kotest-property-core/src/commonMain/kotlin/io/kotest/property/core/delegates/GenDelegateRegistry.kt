@@ -26,6 +26,9 @@ internal class GenDelegateRegistry {
       delegates.forEach { it.reset() }
    }
 
+   /**
+    * Returns the current sample from each generator.
+    */
    fun samples(): List<Sample<Any?>> {
       return delegates.map { it.sample() }
    }

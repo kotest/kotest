@@ -9,12 +9,18 @@ import kotlin.math.roundToInt
  * Pluggable interface for outputting input value labels used in property testing.
  */
 @ExperimentalKotest
-interface LabelsReporter {
+interface ClassificationReporter {
    fun output(result: PropertyResult)
 }
 
+@Deprecated("Use ClassificationReporter since 6.0", ReplaceWith("ClassificationReporter"))
+typealias LabelsReporter = ClassificationReporter
+
+@Deprecated("Use StandardClassificationReporter since 6.0", ReplaceWith("StandardClassificationReporter"))
+typealias StandardLabelsReporter = StandardClassificationReporter
+
 @ExperimentalKotest
-object StandardLabelsReporter : LabelsReporter {
+object StandardClassificationReporter : ClassificationReporter {
 
    private fun row(label: String, count: Int, attempts: Int, countPad: Int) {
       val percentage = max(((count / attempts.toDouble() * 100.0)).roundToInt(), 1)

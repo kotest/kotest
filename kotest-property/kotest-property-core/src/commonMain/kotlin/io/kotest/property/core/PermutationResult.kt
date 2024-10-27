@@ -11,6 +11,7 @@ data class PermutationResult(
    val failures: Int, // total number of iterations that failed
    val discards: Int, // total number of iterations that were discarded due to failed assumptions
    val duration: Duration, // the duration of the test
+   val shrinks: List<Any?>, // the shrunk values
 )
 
 data class IterationResult(
