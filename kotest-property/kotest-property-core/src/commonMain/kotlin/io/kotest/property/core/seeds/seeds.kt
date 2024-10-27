@@ -1,12 +1,11 @@
 package io.kotest.property.core.seeds
 
+import io.kotest.common.TestPath
 import io.kotest.common.TestPathContextElement
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
 import io.kotest.property.core.PermutationConfiguration
 import io.kotest.property.random
-import io.kotest.property.seed.readSeed
-import io.kotest.property.seed.writeSeed
 import kotlinx.coroutines.currentCoroutineContext
 
 internal suspend fun createRandomSource(configuration: PermutationConfiguration): RandomSource {
@@ -25,3 +24,9 @@ suspend fun writeFailedSeed(seed: Long) {
       writeSeed(path, seed)
    }
 }
+
+internal fun readSeed(path: TestPath): Long? = TODO()
+
+internal fun writeSeed(path: TestPath, seed: Long): Nothing = TODO()
+
+internal fun clearSeed(path: TestPath): Nothing = TODO()

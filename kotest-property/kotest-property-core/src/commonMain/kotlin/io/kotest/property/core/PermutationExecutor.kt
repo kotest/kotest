@@ -3,8 +3,8 @@ package io.kotest.property.core
 import io.kotest.property.AssumptionFailedException
 import io.kotest.property.core.checks.AllowCustomSeedBeforeCheck
 import io.kotest.property.core.checks.FailureHandler
+import io.kotest.property.core.checks.MaxDiscardCheck
 import io.kotest.property.core.checks.MinSuccessCheck
-import io.kotest.property.core.checks.WriteSeedCheck
 import io.kotest.property.core.constraints.Iteration
 import kotlin.time.TimeSource
 
@@ -16,7 +16,7 @@ internal class PermutationExecutor(
 ) {
 
    private val beforeChecks = listOf(AllowCustomSeedBeforeCheck)
-   private val afterChecks = listOf(MinSuccessCheck, WriteSeedCheck)
+   private val afterChecks = listOf(MinSuccessCheck, MaxDiscardCheck)
 
    internal suspend fun execute(
       test: suspend PermutationContext.() -> Unit
@@ -55,13 +55,11 @@ internal class PermutationExecutor(
                successes = successes,
                failures = failures,
                duration = start.elapsedNow(),
-               inputs = emptyList(),
+               inputs = context.registry.samples(),
                error = e
             )
 
             FailureHandler.handleFailure(context, result)
-
-
          }
          index++
       }

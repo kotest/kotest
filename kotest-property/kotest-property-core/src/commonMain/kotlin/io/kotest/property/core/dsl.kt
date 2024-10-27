@@ -1,8 +1,6 @@
 package io.kotest.property.core
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.property.core.constraints.Iteration
-import kotlin.time.TimeSource
 
 /**
  * The permutationConfig builder is used to configure various settings for property-based that can be reused
@@ -11,11 +9,9 @@ import kotlin.time.TimeSource
  */
 @ExperimentalKotest
 fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): PermutationConfiguration {
-   // would need to add this from the coroutineContext, but that is immutable
-   // so we need to extend kotest framework with a mutable map of elements that can change at runtime and put it there
-   val context = PermutationConfiguration()
-   context.configure()
-   return context
+   val configuration = PermutationConfiguration()
+   configuration.configure()
+   return configuration
 }
 
 /**
@@ -24,7 +20,7 @@ fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): Pe
  */
 @ExperimentalKotest
 suspend fun permutations(
-   configure: suspend PermutationConfiguration.() -> Unit
+   configure: suspend PermutationConfiguration.() -> Unit,
 ): PermutationResult {
 
    val configuration = PermutationConfiguration()
@@ -32,7 +28,7 @@ suspend fun permutations(
 
    val context = configuration.toContext()
    val executor = PermutationExecutor(context)
-   val result = executor.execute { context.test.invoke(Iteration(0, TimeSource.Monotonic.markNow())) }
+   val result = executor.execute { context.test.invoke(Permutation(0, context.rs)) }
    return result
 }
 

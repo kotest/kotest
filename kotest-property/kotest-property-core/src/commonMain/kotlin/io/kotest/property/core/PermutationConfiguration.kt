@@ -1,16 +1,15 @@
 package io.kotest.property.core
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.property.AssumptionFailedException
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.core.constraints.Constraints
 import io.kotest.property.core.constraints.ConstraintsBuilder
-import io.kotest.property.core.constraints.Iteration
 import io.kotest.property.core.delegates.GenDelegate
 import io.kotest.property.core.delegates.GenDelegateRegistry
 import io.kotest.property.core.seeds.createRandomSource
-import io.kotest.property.statistics.Label
 import kotlin.time.Duration
 
 @ExperimentalKotest
@@ -72,37 +71,14 @@ class PermutationConfiguration {
 
    internal val registry = GenDelegateRegistry()
 
-   internal val statistics = Statistics()
-
    // callbacks
    internal var beforePermutation: suspend () -> Unit = {}
    internal var afterPermutation: suspend () -> Unit = {}
 
    // the main test
-   internal var test: suspend Iteration.() -> Unit = {}
+   internal var test: suspend Permutation.() -> Unit = {}
 
-   fun assume(predicateFn: () -> Unit) {
-
-   }
-
-   fun assume(predicate: Boolean) {
-   }
-
-   fun collect(classification: Any?) {
-      collect(null, classification)
-   }
-
-   fun collect(label: String, classification: Any?) {
-      collect(Label(label), classification)
-   }
-
-   private fun collect(label: Label?, classification: Any?) {
-//      val stats = statistics.getOrPut(label) { mutableMapOf() }
-//      val count = stats.getOrElse(classification) { 0 }
-//      stats[classification] = count + 1
-   }
-
-   fun forEach(test: suspend Iteration.() -> Unit) {
+   fun forEach(test: suspend Permutation.() -> Unit) {
       this.test = test
    }
 
@@ -116,9 +92,21 @@ class PermutationConfiguration {
 
    fun <T> gen(initializer: () -> Gen<T>): GenDelegate<T> {
       val gen = initializer()
-      val delegate = GenDelegate(rs, gen)
+      val delegate = GenDelegate(TODO(), gen)
       registry.add(delegate)
       return delegate
+   }
+
+   fun assume(assumptions: () -> Unit) {
+      try {
+         assumptions()
+      } catch (e: AssertionError) {
+         throw AssumptionFailedException
+      }
+   }
+
+   fun assume(predicate: Boolean) {
+      if (!predicate) throw AssumptionFailedException
    }
 }
 
@@ -137,9 +125,8 @@ internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
       customSeed = this.seed == null,
       failOnSeed = failOnSeed,
       writeFailedSeed = writeFailedSeed,
-      random = createRandomSource(this),
+      rs = createRandomSource(this),
       registry = registry,
-      statistics = statistics,
       beforePermutation = beforePermutation,
       afterPermutation = afterPermutation,
       test = test,

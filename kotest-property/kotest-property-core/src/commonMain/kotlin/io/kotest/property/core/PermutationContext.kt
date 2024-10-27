@@ -3,7 +3,6 @@ package io.kotest.property.core
 import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.core.constraints.Constraints
-import io.kotest.property.core.constraints.Iteration
 import io.kotest.property.core.delegates.GenDelegateRegistry
 
 /**
@@ -21,13 +20,12 @@ internal data class PermutationContext(
    val edgecasesGenerationProbability: Double,
    val minSuccess: Int,
    val maxFailures: Int,
-   val random: RandomSource,
+   val rs: RandomSource,
    val customSeed: Boolean, // true if the seed was set programmatically
    val registry: GenDelegateRegistry,
-   val statistics: Statistics,
    val beforePermutation: suspend () -> Unit,
    val afterPermutation: suspend () -> Unit,
    val writeFailedSeed: Boolean,
-   val test: suspend Iteration.() -> Unit,
+   val test: suspend Permutation.() -> Unit,
 )
 

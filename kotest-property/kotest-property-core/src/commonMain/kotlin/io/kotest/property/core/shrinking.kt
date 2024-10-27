@@ -1,12 +1,13 @@
 package io.kotest.property.core
 
 import io.kotest.assertions.print.print
+import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.core.delegates.GenDelegate
 import io.kotest.property.internal.Counter
 import io.kotest.property.internal.ShrinkResult
 
-internal suspend fun shrink(context: PermutationConfiguration, test: suspend EvaluationContextToBeRenamed.() -> Unit): List<ShrinkResult<Any?>> {
+internal suspend fun shrink(context: PermutationConfiguration, test: suspend Permutation.() -> Unit): List<ShrinkResult<Any?>> {
 
    // we need to switch each delegate to shrink mode so they lock in the current failed random values
    context.registry.delegates.forEach { it.setShrinking() }
@@ -18,7 +19,7 @@ internal suspend fun shrink(context: PermutationConfiguration, test: suspend Eva
    println()
 
    // the values after each of the args of the failed iteration have been shrunk (or same value if they could not be)
-   return context.registry.delegates.map { delegate ->
+   return context.registry.delegates.map { delegate: GenDelegate<*> ->
       doShrinking(delegate, context, test)
    }
 }
@@ -26,7 +27,7 @@ internal suspend fun shrink(context: PermutationConfiguration, test: suspend Eva
 internal suspend fun <A> doShrinking(
    delegate: GenDelegate<A>,
    context: PermutationConfiguration,
-   test: suspend EvaluationContextToBeRenamed.() -> Unit,
+   test: suspend Permutation.() -> Unit,
 ): ShrinkResult<A> {
 
    // if no more shrinking return null (if we've hit the bounds)
@@ -42,7 +43,7 @@ internal suspend fun <A> doShrinking(
    while (delegate.hasNextCandidate()) {
       val candidate = delegate.candidate().value()
       try {
-         test(EvaluationContextToBeRenamed(context.rs.seed))
+         test(Permutation(0, RandomSource.default()))
          if (context.shouldPrintShrinkSteps)
             sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
       } catch (t: Throwable) {

@@ -30,8 +30,8 @@ internal suspend fun clearFailedSeed() {
    clearSeed(path)
 }
 
-expect fun readSeed(path: TestPath): Long?
+internal expect fun readSeed(path: TestPath): Long?
 
-expect fun writeSeed(path: TestPath, seed: Long)
+internal expect fun writeSeed(path: TestPath, seed: Long)
 
-expect fun clearSeed(path: TestPath)
+internal expect fun clearSeed(path: TestPath)

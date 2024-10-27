@@ -3,7 +3,6 @@ package io.kotest.property.core.checks
 import io.kotest.property.core.PermutationContext
 import io.kotest.property.core.PermutationResult
 import io.kotest.property.core.throwPropertyTestAssertionError
-import io.kotest.property.seed.writeFailedSeed
 import kotlin.math.min
 
 /**
@@ -16,14 +15,7 @@ internal object MinSuccessCheck : AfterCheck {
       val requiredMin = min(context.minSuccess, result.iterations)
       if (result.successes < requiredMin) {
          val error = "Property passed ${result.successes} times (minSuccess rate was $requiredMin)\n"
-        throwPropertyTestAssertionError(AssertionError(error), result.iterations, context.seed)
+        throwPropertyTestAssertionError(AssertionError(error), result.iterations, context.rs.seed)
       }
-   }
-}
-
-internal object WriteSeedCheck : AfterCheck {
-   override suspend fun evaluate(context: PermutationContext, result: PermutationResult) {
-      if (result.failures > 0)
-         writeFailedSeed(context.seed)
    }
 }

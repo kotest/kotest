@@ -8,3 +8,4 @@ internal object AllowCustomSeedBeforeCheck : BeforeCheck {
          error("A seed is specified on this permutation but failOnSeed is true")
    }
 }
+
