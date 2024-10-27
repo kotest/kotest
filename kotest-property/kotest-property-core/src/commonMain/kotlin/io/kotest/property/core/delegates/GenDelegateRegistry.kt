@@ -1,4 +1,4 @@
-package io.kotest.property.core
+package io.kotest.property.core.delegates
 
 import io.kotest.property.Sample
 

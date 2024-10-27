@@ -8,7 +8,7 @@ class PermutationResultTest : FunSpec() {
       test("PermutationResult should contain eval count") {
          permutations {
             iterations = 22
-         }.evaluations shouldBe 22
+         }.iterations shouldBe 22
       }
    }
 }

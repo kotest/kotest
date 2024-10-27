@@ -16,7 +16,7 @@ class MaxFailureTest : FunSpec({
       val message = shouldThrowAny {
          permutations {
             seed = 1900646515
-            maxFailure = 5
+            maxFailures = 5
             val a by gen { Exhaustive.ints(0..10) }
             forEach {
                a shouldBeLessThan 8

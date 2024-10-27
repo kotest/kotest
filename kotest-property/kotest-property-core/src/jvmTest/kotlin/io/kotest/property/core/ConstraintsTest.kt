@@ -5,6 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import io.kotest.property.core.constraints.Constraints
 import kotlin.time.Duration.Companion.milliseconds
 
 @EnabledIf(LinuxCondition::class)

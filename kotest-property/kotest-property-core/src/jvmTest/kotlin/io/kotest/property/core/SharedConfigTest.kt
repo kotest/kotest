@@ -7,17 +7,17 @@ class SharedConfigTest : FunSpec() {
    init {
       test("shared config should be used") {
 
-         val context = permutationContext {
+         val context = permutationConfiguration {
             iterations = 42 // run this property test 42 times
          }
 
          permutations {
             forEach {  }
-         }.evaluations shouldBe 42
+         }.iterations shouldBe 42
 
          permutations {
             forEach {  }
-         }.evaluations shouldBe 42
+         }.iterations shouldBe 42
       }
    }
 }

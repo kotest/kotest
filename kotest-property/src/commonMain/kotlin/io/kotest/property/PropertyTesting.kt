@@ -27,10 +27,12 @@ object PropertyTesting {
 
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
 
+   var defaultShrinkingBound = sysprop("kotest.proptest.default.shrinking.bound", 1000)
+
    var defaultShrinkingMode: ShrinkingMode = when(val mode =
      sysprop("kotest.proptest.default.shrinking.mode", "bounded")) {
       "off" -> ShrinkingMode.Off
-      "bounded" -> ShrinkingMode.Bounded(sysprop("kotest.proptest.default.shrinking.bound", 1000))
+      "bounded" -> ShrinkingMode.Bounded(defaultShrinkingBound)
       "unbounded" -> ShrinkingMode.Unbounded
       else -> error("Invalid shrinking mode: $mode")
    }

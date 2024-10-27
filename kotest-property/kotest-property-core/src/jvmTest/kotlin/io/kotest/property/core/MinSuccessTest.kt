@@ -17,7 +17,7 @@ class MinSuccessTest : FunSpec({
          permutations {
             iterations = 1000
             minSuccess = 999
-            maxFailure = 1000
+            maxFailures = 1000
             val a by gen { Exhaustive.ints(0..10) }
             forEach {
                a shouldBeLessThan 8

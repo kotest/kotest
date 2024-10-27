@@ -1,6 +1,5 @@
-package io.kotest.property.core
+package io.kotest.property.core.delegates
 
-import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource

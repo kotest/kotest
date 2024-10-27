@@ -1,15 +1,16 @@
-package io.kotest.property.seed
+package io.kotest.property.core.seeds
 
-import io.kotest.common.TestPath
 import io.kotest.common.TestPathContextElement
-import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
+import io.kotest.property.core.PermutationConfiguration
 import io.kotest.property.random
+import io.kotest.property.seed.readSeed
+import io.kotest.property.seed.writeSeed
 import kotlinx.coroutines.currentCoroutineContext
 
-internal suspend fun createRandom(config: PropTestConfig): RandomSource {
-   return config.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
+internal suspend fun createRandomSource(configuration: PermutationConfiguration): RandomSource {
+   return configuration.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
 }
 
 internal suspend fun getFailedSeed(): Long? {
@@ -24,14 +25,3 @@ suspend fun writeFailedSeed(seed: Long) {
       writeSeed(path, seed)
    }
 }
-
-internal suspend fun clearFailedSeed() {
-   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
-   clearSeed(path)
-}
-
-expect fun readSeed(path: TestPath): Long?
-
-expect fun writeSeed(path: TestPath, seed: Long)
-
-expect fun clearSeed(path: TestPath)

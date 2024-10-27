@@ -3,22 +3,32 @@ package io.kotest.property.core
 import io.kotest.common.ExperimentalKotest
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
-import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.core.constraints.Constraints
+import io.kotest.property.core.constraints.ConstraintsBuilder
+import io.kotest.property.core.constraints.Iteration
+import io.kotest.property.core.delegates.GenDelegate
+import io.kotest.property.core.delegates.GenDelegateRegistry
+import io.kotest.property.core.seeds.createRandomSource
 import io.kotest.property.statistics.Label
-import kotlin.random.Random
 import kotlin.time.Duration
 
 @ExperimentalKotest
-class PermutationContext {
+class PermutationConfiguration {
 
-   // use iteration based constraint
+   /**
+    * Use iteration based [Constraints]
+    */
    var iterations: Int = PropertyTesting.defaultIterationCount
 
-   // use duration based constraint, if not null will override iterations
+   /**
+    * Use duration based [Constraints], if not null will override [iterations]
+    */
    var duration: Duration? = null
 
-   // specify custom constraits, if not null will override iterations and duration
+   /**
+    * Specify custom [Constraints], if not null will override [iterations] and [duration]
+    */
    var constraints: Constraints? = null
 
    // The minSuccess variable is used to specify the minimum number of successful permutations that must be achieved
@@ -30,7 +40,7 @@ class PermutationContext {
    // property testing. This ensures that the property test will fail if the number of failed tests exceeds
    // this threshold. It is useful for controlling the tolerance for flaky tests or tests that are expected to
    // have some level of failure.
-   var maxFailure: Int = PropertyTesting.defaultMaxFailure
+   var maxFailures: Int = PropertyTesting.defaultMaxFailure
 
    // The edgecasesGenerationProbability is used to determine the likelihood that a generated
    // value will be an edge case rather than a random sample. This probability is used within
@@ -60,8 +70,6 @@ class PermutationContext {
    // Custom seed to use for this property test. If null, a random seed will be generated.
    var seed: Long? = null
 
-   val rs = RandomSource.seeded(seed ?: Random.nextLong())
-
    internal val registry = GenDelegateRegistry()
 
    internal val statistics = Statistics()
@@ -69,6 +77,9 @@ class PermutationContext {
    // callbacks
    internal var beforePermutation: suspend () -> Unit = {}
    internal var afterPermutation: suspend () -> Unit = {}
+
+   // the main test
+   internal var test: suspend Iteration.() -> Unit = {}
 
    fun assume(predicateFn: () -> Unit) {
 
@@ -91,9 +102,8 @@ class PermutationContext {
 //      stats[classification] = count + 1
    }
 
-   suspend fun forEach(test: suspend EvaluationContextToBeRenamed.() -> Unit) {
-      val result = executePropTest(this, test)
-      checkMinSuccess(this, result)
+   fun forEach(test: suspend Iteration.() -> Unit) {
+      this.test = test
    }
 
    fun beforePermutation(fn: suspend () -> Unit) {
@@ -112,8 +122,26 @@ class PermutationContext {
    }
 }
 
-data class EvaluationContextToBeRenamed(val seed: Long)
-
-class Statistics(
-   val statistics: MutableMap<Label, Any> = mutableMapOf()
-)
+internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
+   return PermutationContext(
+      constraints = ConstraintsBuilder.build(this),
+      minSuccess = minSuccess,
+      maxFailures = maxFailures,
+      edgecasesGenerationProbability = edgecasesGenerationProbability,
+      shouldPrintShrinkSteps = shouldPrintShrinkSteps,
+      shrinkingMode = shrinkingMode,
+      maxDiscardPercentage = maxDiscardPercentage,
+      shouldPrintGeneratedValues = shouldPrintGeneratedValues,
+      outputClassifications = outputClassifications,
+      shouldPrintConfig = shouldPrintConfig,
+      customSeed = this.seed == null,
+      failOnSeed = failOnSeed,
+      writeFailedSeed = writeFailedSeed,
+      random = createRandomSource(this),
+      registry = registry,
+      statistics = statistics,
+      beforePermutation = beforePermutation,
+      afterPermutation = afterPermutation,
+      test = test,
+   )
+}

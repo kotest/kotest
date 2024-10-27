@@ -2,10 +2,11 @@ package io.kotest.property.core
 
 import io.kotest.assertions.print.print
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.core.delegates.GenDelegate
 import io.kotest.property.internal.Counter
 import io.kotest.property.internal.ShrinkResult
 
-internal suspend fun shrink(context: PermutationContext, test: suspend EvaluationContextToBeRenamed.() -> Unit): List<ShrinkResult<Any?>> {
+internal suspend fun shrink(context: PermutationConfiguration, test: suspend EvaluationContextToBeRenamed.() -> Unit): List<ShrinkResult<Any?>> {
 
    // we need to switch each delegate to shrink mode so they lock in the current failed random values
    context.registry.delegates.forEach { it.setShrinking() }
@@ -24,7 +25,7 @@ internal suspend fun shrink(context: PermutationContext, test: suspend Evaluatio
 
 internal suspend fun <A> doShrinking(
    delegate: GenDelegate<A>,
-   context: PermutationContext,
+   context: PermutationConfiguration,
    test: suspend EvaluationContextToBeRenamed.() -> Unit,
 ): ShrinkResult<A> {
 
