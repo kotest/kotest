@@ -58,3 +58,29 @@ class PropertyExample: StringSpec({
    }
 })
 ```
+
+### Handling Unprintable Characters in Failure Messages
+
+When property tests involve strings with unprintable characters, failure messages can be hard to read and debug.
+By setting `outputHexForUnprintableChars` to true in `PropTestConfig`,
+unprintable characters in failure messages are displayed as their Unicode code points in the format `U+XXXX`.
+
+```kotlin
+class PropertyExample : StringSpec({
+    "handle unprintable characters in failure messages" {
+        forAll<String>(
+            PropTestConfig(outputHexForUnprintableChars = true)
+        ) { str ->
+            // some assertion
+        }
+    }
+})
+```
+
+**Default Value**: `outputHexForUnprintableChars` is `false` by default.
+
+Alternatively, you can set this option as a common project-wide setting
+in a `kotest.properties` file located in your classpath:
+```properties
+kotest.proptest.arb.string.output-hex-for-unprintable-chars=true
+```

@@ -29,8 +29,11 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
    val allUnderscores = getAllUnderscores(value.length, partialMatches)
    val lineIndexRanges = indexRangesOfLines(value)
    val valueAndUnderscores = lineIndexRanges.mapIndexed { index, indexRange ->
-      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexed { matchIndex, underscores ->
-         "Match[$matchIndex]= ${takeIndexRange(underscores, indexRange)}"
+      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexedNotNull { matchIndex, underscores ->
+         val underscoreLine = takeIndexRange(underscores, indexRange)
+         if(underscoreLine.contains('+'))
+            "Match[$matchIndex]= $underscoreLine"
+         else null
       }
    }.flatten().joinToString("\n")
    return PartialMatchesInStringDescription(partialMatchesList, valueAndUnderscores)
