@@ -9,8 +9,8 @@ import io.kotest.assertions.print.print
 internal fun throwPropertyTestAssertionError(
    e: Throwable, // the underlying failure reason,
    attempts: Int,
-   seed: Long
-): Unit = throw propertyAssertionError(e, attempts, seed, emptyList())
+   seed: Long,
+): Unit = throw propertyAssertionError(e, attempts, seed, emptyList(), false)
 
 /**
  * Generates an [AssertionError] for a property test with arg details and then throws it.
@@ -23,9 +23,10 @@ fun throwPropertyTestAssertionError(
    results: List<ShrinkResult<Any?>>,
    e: Throwable,
    attempts: Int,
-   seed: Long
+   seed: Long,
+   outputHexForUnprintableChars: Boolean,
 ) {
-   throw propertyAssertionError(e, attempts, seed, results)
+   throw propertyAssertionError(e, attempts, seed, results, outputHexForUnprintableChars)
 }
 
 /**
@@ -39,9 +40,10 @@ internal fun propertyAssertionError(
    e: Throwable,
    attempt: Int,
    seed: Long,
-   results: List<ShrinkResult<Any?>>
+   results: List<ShrinkResult<Any?>>,
+   outputHexForUnprintableChars: Boolean,
 ): Throwable {
-   return failure(propertyTestFailureMessage(attempt, results, seed, e), e)
+   return failure(propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars), e)
 }
 
 /**
@@ -52,17 +54,25 @@ internal fun propertyTestFailureMessage(
    attempt: Int,
    results: List<ShrinkResult<Any?>>,
    seed: Long,
-   cause: Throwable
+   cause: Throwable,
+   outputHexForUnprintableChars: Boolean,
 ): String {
    val sb = StringBuilder()
    sb.append("Property failed after $attempt attempts\n")
    if (results.isNotEmpty()) {
       sb.append("\n")
       results.withIndex().forEach { (index, result) ->
-         val input = if (result.initial == result.shrink) {
-            "\tArg ${index}: ${result.initial.print().value}"
+         val initialPrintable = result.initial.print().value.let {
+            if (outputHexForUnprintableChars) it.escapeUnprintable() else it
+         }
+         val shrinkPrintable = result.shrink.print().value.let {
+            if (outputHexForUnprintableChars) it.escapeUnprintable() else it
+         }
+
+         val input: String = if (result.initial == result.shrink) {
+            "\tArg ${index}: $initialPrintable"
          } else {
-            "\tArg ${index}: ${result.shrink.print().value} (shrunk from ${result.initial})"
+            "\tArg ${index}: $shrinkPrintable (shrunk from $initialPrintable)"
          }
          sb.append(input)
          sb.append("\n")

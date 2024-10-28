@@ -3,6 +3,60 @@ package io.kotest.property
 import io.kotest.common.ExperimentalKotest
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardClassificationReporter
+import io.kotest.property.statistics.DefaultStatisticsReporter
+import io.kotest.property.statistics.StatisticsReportMode
+import io.kotest.property.statistics.StatisticsReporter
+
+/**
+ * Global object containing settings for property testing.
+ */
+object PropertyTesting {
+
+   var maxFilterAttempts: Int = 10
+
+   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", true)
+
+   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
+
+   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
+
+   var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null) { it.toLong() }
+
+   var defaultMinSuccess: Int = sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
+
+   var defaultMaxFailure: Int = sysprop("kotest.proptest.default.max-failure", 0)
+
+   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
+
+   var defaultShrinkingMode: ShrinkingMode = when(val mode = sysprop("kotest.proptest.default.shrinking.mode", "bounded")) {
+      "off" -> ShrinkingMode.Off
+      "bounded" -> ShrinkingMode.Bounded(sysprop("kotest.proptest.default.shrinking.bound", 1000))
+      "unbounded" -> ShrinkingMode.Unbounded
+      else -> error("Invalid shrinking mode: $mode")
+   }
+
+   var defaultListeners: List<PropTestListener> = listOf()
+
+   var defaultEdgecasesGenerationProbability: Double =
+      sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
+
+   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", false)
+
+   var failOnSeed: Boolean = sysprop("kotest.proptest.seed.fail-if-set", false)
+
+   var writeFailedSeed: Boolean = sysprop("kotest.proptest.seed.write-failed", true)
+
+   var labelOrder: LabelOrder = LabelOrder.Quantity
+
+   @ExperimentalKotest
+   var statisticsReporter: StatisticsReporter = DefaultStatisticsReporter
+
+   @ExperimentalKotest
+   var statisticsReportMode: StatisticsReportMode = StatisticsReportMode.ON
+
+   var defaultOutputHexForUnprintableChars: Boolean =
+      sysprop("kotest.proptest.arb.string.output-hex-for-unprintable-chars", false)
+}
 
 enum class LabelOrder {
    Quantity,
@@ -22,6 +76,7 @@ data class PropTest(
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
    val constraints: Constraints? = null,
+   val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars
 )
 
 fun PropTest.toPropTestConfig() =
@@ -32,7 +87,8 @@ fun PropTest.toPropTestConfig() =
       iterations = iterations,
       shrinkingMode = shrinkingMode,
       listeners = listeners,
-      edgeConfig = edgeConfig
+      edgeConfig = edgeConfig,
+      outputHexForUnprintableChars = outputHexForUnprintableChars,
    )
 
 /**
@@ -57,7 +113,8 @@ data class PropTestConfig(
    val classificationReporter: LabelsReporter = StandardClassificationReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
-   val skipTo: Int = 0
+   val skipTo: Int = 0,
+   val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars,
 )
 
 interface PropTestListener {

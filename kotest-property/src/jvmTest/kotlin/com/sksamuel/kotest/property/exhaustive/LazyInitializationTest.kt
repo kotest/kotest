@@ -1,10 +1,13 @@
 package com.sksamuel.kotest.property.exhaustive
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.lazy
 
+@EnabledIf(LinuxCondition::class)
 class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should not evaluate given exhaustive provider when return arb is not used") {
@@ -19,7 +22,7 @@ class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should evaluate given exhaustive provider only once when return arb is used") {
       var callCount = 0
-     
+
       val lazyExhaustive = Exhaustive.lazy {
          callCount++
          MyDummyExhaustive(2)

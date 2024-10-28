@@ -2,7 +2,16 @@ package io.kotest.submatching
 
 import io.kotest.assertions.AssertionsConfig
 
-internal fun describePartialMatchesInString(expectedSlice: String, value: String): PartialMatchesInCollectionDescription {
+internal fun describePartialMatchesInStringForSlice(expectedSlice: String, value: String) =
+   describePartialMatchesInString(expectedSlice, value, PartialMatchType.Slice)
+
+internal fun describePartialMatchesInStringForSuffix(expectedSlice: String, value: String) =
+   describePartialMatchesInString(expectedSlice, value, PartialMatchType.Suffix)
+
+internal fun describePartialMatchesInStringForPrefix(expectedSlice: String, value: String) =
+   describePartialMatchesInString(expectedSlice, value, PartialMatchType.Prefix)
+
+internal fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInCollectionDescription {
    if(!AssertionsConfig.enabledSubmatchesInStrings.value ||
          substringNotEligibleForSubmatching(expectedSlice) ||
          valueNotEligibleForSubmatching(value)
@@ -15,16 +24,42 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
       return PartialMatchesInCollectionDescription("", "")
    }
    val partialMatchesList = partialMatches.withIndex().joinToString("\n") { indexedValue ->
-      "Match[${indexedValue.index}]: expected[${indexedValue.value.rangeOfExpected}] matched actual[${indexedValue.value.rangeOfValue}]"
+      "Match[${indexedValue.index}]: ${describeMatchedSlice(expectedSlice, indexedValue.value.rangeOfExpected, type)} matched actual[${indexedValue.value.rangeOfValue}]"
    }
    val allUnderscores = getAllUnderscores(value.length, partialMatches)
    val lineIndexRanges = indexRangesOfLines(value)
    val valueAndUnderscores = lineIndexRanges.mapIndexed { index, indexRange ->
-      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexed { matchIndex, underscores ->
-         "Match[$matchIndex]= ${takeIndexRange(underscores, indexRange)}"
+      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexedNotNull { matchIndex, underscores ->
+         val underscoreLine = takeIndexRange(underscores, indexRange)
+         if(underscoreLine.contains('+'))
+            "Match[$matchIndex]= $underscoreLine"
+         else null
       }
    }.flatten().joinToString("\n")
    return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores)
+}
+
+internal fun describeMatchedSlice(expectedSlice: String, range: IntRange, type: PartialMatchType): String {
+   return when {
+      range == expectedSlice.indices -> "whole ${type.description}"
+      else -> "part of ${type.description} with indexes [$range]"
+   }
+}
+
+internal sealed interface PartialMatchType {
+   val description: String
+
+   data object Prefix: PartialMatchType {
+      override val description: String = "prefix"
+   }
+
+   data object Suffix: PartialMatchType {
+      override val description: String = "suffix"
+   }
+
+   data object Slice: PartialMatchType {
+      override val description: String = "slice"
+   }
 }
 
 private fun substringNotEligibleForSubmatching(value: String) =

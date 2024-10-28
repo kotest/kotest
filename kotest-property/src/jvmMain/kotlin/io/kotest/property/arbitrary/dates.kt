@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.asSample
 import io.kotest.property.RandomSource
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -89,9 +90,10 @@ fun Arb.Companion.localDate(
  * @see [localDateTime]
  * @see [localDate]
  */
-fun Arb.Companion.localTime(): Arb<LocalTime> = arbitrary(listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))) {
-   LocalTime.of(it.random.nextInt(24), it.random.nextInt(60), it.random.nextInt(60))
-}
+fun Arb.Companion.localTime(): Arb<LocalTime> =
+   arbitrary(listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))) {
+      LocalTime.of(it.random.nextInt(24), it.random.nextInt(60), it.random.nextInt(60))
+   }
 
 /**
  * Arberates a stream of random LocalDateTimes
@@ -172,8 +174,8 @@ fun Arb.Companion.localDateTime(
          generateSequence {
             val date = localDate(minLocalDateTime.toLocalDate(), maxLocalDateTime.toLocalDate()).edgecase(it)
             val time = localTime().edgecase(it)
-            if (date == null || time == null) null else date.atTime(time)
-         }.find { !it.isBefore(minLocalDateTime) && !it.isAfter(maxLocalDateTime) }
+            time?.let { date?.value?.atTime(time.value)?.asSample() }
+         }.firstOrNull { !it.value.isBefore(minLocalDateTime) && !it.value.isAfter(maxLocalDateTime) }
       },
       sampleFn = {
          generateSequence {

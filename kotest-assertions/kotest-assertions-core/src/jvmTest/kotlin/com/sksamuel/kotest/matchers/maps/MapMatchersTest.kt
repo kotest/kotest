@@ -591,12 +591,19 @@ private fun matchMapTests(contextName: String) = wordSpec {
       }
 
       "works correctly within assertSoftly" {
+         val expectedLineNumber = Exception().stackTrace
+            .first { it.className.contains("MapMatchersTest") }.lineNumber + 5
+
          shouldFail {
             assertSoftly {
                mapOf("key" to "hi") should matcher("key" to { it shouldHaveLength 4 })
             }
          }.also {
-            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)], Unexpected keys were []."""
+            it.message.shouldContainInOrder(
+               "The following assertion failed:",
+               "1) Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, \"hi\" should have length 4, but instead was 2)], Unexpected keys were [].",
+               "   at com.sksamuel.kotest.matchers.maps.MapMatchersTestKt${'$'}matchMapTests${'$'}1${'$'}1${'$'}3.invokeSuspend(MapMatchersTest.kt:$expectedLineNumber)",
+            )
          }
       }
 

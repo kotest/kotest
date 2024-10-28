@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.assertions
 
+import io.kotest.assertions.ExceptionWithClue
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
@@ -12,6 +13,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
@@ -135,6 +137,24 @@ class ClueTest : FreeSpec({
          }
          ex.message shouldBe "null\nexpected:<2> but was:<1>"
       }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            withClue("some clue") {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "some clue\n"
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
    }
    "asClue()" - {
       "should prepend clue to message with a newline" {
@@ -208,6 +228,66 @@ class ClueTest : FreeSpec({
                null shouldBe "hello"
             }
          }.message shouldBe "A actual is null value\nExpected \"hello\" but actual was null"
+      }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            "some clue".asClue {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "some clue\n"
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
+
+      "should not duplicate clue messages when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            "outer clue".asClue {
+               "inner clue".asClue {
+                  val list = listOf("a", "b")
+                     .single { it.length == 2 }
+
+                  list.shouldContain("something")
+               }
+            }
+         }
+            .run {
+               clue shouldBe "outer clue\ninner clue\n"
+               message.shouldContainInOrder(
+                  "outer clue",
+                  "inner clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
+
+      "should not contain inner clue when Exception is thrown in outer scope" {
+         shouldThrow<ExceptionWithClue> {
+            "outer clue".asClue {
+               "inner clue".asClue {
+                  1 shouldBe 1
+               }
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "outer clue\n"
+               message.shouldContainInOrder(
+                  "outer clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
       }
    }
 

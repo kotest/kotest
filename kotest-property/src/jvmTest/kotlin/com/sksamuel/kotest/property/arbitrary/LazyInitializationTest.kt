@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -9,7 +11,9 @@ import io.kotest.property.arbitrary.int
 
 import io.kotest.property.arbitrary.lazy
 import io.kotest.property.arbitrary.take
+import io.kotest.property.asSample
 
+@EnabledIf(LinuxCondition::class)
 class LazyInitializationTest : FunSpec({
    test("Arb.lzy should not evaluate given arb provider when return arb is not used") {
       var callCount = 0
@@ -36,7 +40,7 @@ class LazyInitializationTest : FunSpec({
 })
 
 private class MyDummyArb(private val seed: Int) : Arb<Int>() {
-   override fun edgecase(rs: RandomSource): Int = listOf(1, 2, 3).random()
+   override fun edgecase(rs: RandomSource): Sample<Int> = listOf(1, 2, 3).random().asSample()
    override fun sample(rs: RandomSource): Sample<Int> = Sample(seed)
 }
 
