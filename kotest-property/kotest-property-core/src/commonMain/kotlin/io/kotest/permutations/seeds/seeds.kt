@@ -8,20 +8,28 @@ import io.kotest.property.RandomSource
 import io.kotest.property.random
 import kotlinx.coroutines.currentCoroutineContext
 
-internal suspend fun createRandomSource(configuration: PermutationConfiguration): RandomSource {
-   return configuration.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
-}
+internal object SeedOperations {
 
-internal suspend fun getFailedSeed(): Long? {
-   if (!PropertyTesting.writeFailedSeed) return null
-   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
-   return readSeed(path)
-}
+   suspend fun createRandomSource(configuration: PermutationConfiguration): RandomSource {
+      return configuration.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
+   }
 
-suspend fun writeFailedSeed(seed: Long) {
-   if (PropertyTesting.writeFailedSeed) {
+   suspend fun getFailedSeed(): Long? {
+      if (!PropertyTesting.writeFailedSeed) return null
+      val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
+      return readSeed(path)
+   }
+
+   suspend fun writeFailedSeed(seed: Long) {
+      if (PropertyTesting.writeFailedSeed) {
+         val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+         writeSeed(path, seed)
+      }
+   }
+
+   suspend fun clearFailedSeed() {
       val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
-      writeSeed(path, seed)
+      clearSeed(path)
    }
 }
 

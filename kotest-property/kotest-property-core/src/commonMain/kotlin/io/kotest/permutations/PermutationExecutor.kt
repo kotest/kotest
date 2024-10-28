@@ -6,6 +6,7 @@ import io.kotest.permutations.checks.FailureHandler
 import io.kotest.permutations.checks.MaxDiscardCheck
 import io.kotest.permutations.checks.MinSuccessCheck
 import io.kotest.permutations.constraints.Iteration
+import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.ClassificationsWriter
 import io.kotest.property.AssumptionFailedException
 import kotlin.time.TimeSource
@@ -21,6 +22,7 @@ internal class PermutationExecutor(
       test: suspend PermutationContext.() -> Unit
    ): PermutationResult {
 
+      ConfigWriter.writeIfEnabled(context)
       AllowCustomSeedBeforeCheck.check(context)
 
       var iterations = 0
@@ -45,7 +47,7 @@ internal class PermutationExecutor(
             // we don't mark failed assumptions as errors but we do increase discard count
             discards++
 
-            // eagerly check if we should stop
+            // eagerly check if we should stop because we've hit the max discards
             MaxDiscardCheck.check(context, discards, iterations)
 
          } catch (e: Throwable) {
@@ -81,10 +83,12 @@ internal class PermutationExecutor(
          shrinks = emptyList(),
       )
 
-      // ensure we have met the min success criteria
       ClassificationsWriter.writeIfEnabled(context, true)
       MinSuccessCheck.check(context, result)
       CoverageCheck.check(context, result)
+
+      // at this point the test can't fail, so we can clear the seed
+      SeedOperations.clearFailedSeed()
 
       return result
    }

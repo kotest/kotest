@@ -8,7 +8,7 @@ import io.kotest.property.exhaustive.constant
 
 class ShouldPrintGeneratedValuesTest : FunSpec() {
    init {
-      test("should print generated values") {
+      test("should print generated values when enabled") {
          captureStandardOut {
             permutations {
                val a by gen { Exhaustive.constant(324234324) }

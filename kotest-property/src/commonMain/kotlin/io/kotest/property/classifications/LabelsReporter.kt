@@ -8,13 +8,13 @@ import kotlin.math.roundToInt
 /**
  * Pluggable interface for outputting input value labels used in property testing.
  */
-@Deprecated("Use StatisticsReporter since 6.0", ReplaceWith("StatisticsReporter"))
+@Deprecated("Use StatisticsReporter or update to permutations since 6.0", ReplaceWith("StatisticsReporter"))
 @ExperimentalKotest
 interface LabelsReporter {
    fun output(result: PropertyResult)
 }
 
-@Deprecated("Use DefaultStatisticsReporter since 6.0", ReplaceWith("DefaultStatisticsReporter"))
+@Deprecated("Use StatisticsReporter or update to permutations since 6.0", ReplaceWith("DefaultStatisticsReporter"))
 @ExperimentalKotest
 object StandardClassificationReporter : LabelsReporter {
 
