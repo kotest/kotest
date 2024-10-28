@@ -43,6 +43,16 @@ fun beInClosedRange(range: ClosedRange<BigDecimal>) = object : Matcher<BigDecima
    )
 }
 
+infix fun BigDecimal.shouldBeInOpenEndRange(range: OpenEndRange<BigDecimal>) = this should beInOpenEndRange(range)
+infix fun BigDecimal.shouldNotBeInOpenEndRange(range: OpenEndRange<BigDecimal>) = this shouldNot beInOpenEndRange(range)
+fun beInOpenEndRange(range: OpenEndRange<BigDecimal>) = object : Matcher<BigDecimal> {
+   override fun test(value: BigDecimal) = MatcherResult(
+      range.contains(value),
+      { "Value $value should be in range from ${range.start} to ${range.endExclusive} (Exclusive)" },
+      { "Value $value should not be in range from ${range.start} to ${range.endExclusive} (Exclusive)" }
+   )
+}
+
 infix fun BigDecimal.shouldBeEqualIgnoringScale(other: BigDecimal) = this should beEqualIgnoringScale(other)
 infix fun BigDecimal.shouldNotBeEqualIgnoringScale(other: BigDecimal) = this shouldNot beEqualIgnoringScale(other)
 
