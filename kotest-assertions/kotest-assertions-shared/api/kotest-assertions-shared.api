@@ -3014,38 +3014,3 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 }
 
-public final class io/kotest/utils/CondensedIndexes {
-	public fun <init> ()V
-}
-
-public final class io/kotest/utils/CondensedIndexesKt {
-	public static final fun condenseToRanges (Ljava/lang/Iterable;I)Lkotlin/sequences/Sequence;
-}
-
-public abstract interface class io/kotest/utils/IndexesToPrint {
-}
-
-public final class io/kotest/utils/IndexesToPrint$RangeOfIndexes : io/kotest/utils/IndexesToPrint {
-	public fun <init> (II)V
-	public final fun component1 ()I
-	public final fun component2 ()I
-	public final fun copy (II)Lio/kotest/utils/IndexesToPrint$RangeOfIndexes;
-	public static synthetic fun copy$default (Lio/kotest/utils/IndexesToPrint$RangeOfIndexes;IIILjava/lang/Object;)Lio/kotest/utils/IndexesToPrint$RangeOfIndexes;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEnd ()I
-	public final fun getStart ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/utils/IndexesToPrint$SingleIndex : io/kotest/utils/IndexesToPrint {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lio/kotest/utils/IndexesToPrint$SingleIndex;
-	public static synthetic fun copy$default (Lio/kotest/utils/IndexesToPrint$SingleIndex;IILjava/lang/Object;)Lio/kotest/utils/IndexesToPrint$SingleIndex;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getIndex ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
