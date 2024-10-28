@@ -68,6 +68,7 @@ internal class PermutationExecutor(
             // we might be able to tolerate this failure, if max failure is set > 0,
             // otherwise, this test will now throw an exception
             if (failures > context.maxFailures) {
+               SeedOperations.writeFailedSeed(context.rs.seed)
                ClassificationsWriter.writeIfEnabled(context, true)
                FailureHandler.handleFailure(context, result)
             }

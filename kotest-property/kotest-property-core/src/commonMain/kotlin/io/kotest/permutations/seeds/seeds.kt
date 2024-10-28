@@ -14,7 +14,7 @@ internal object SeedOperations {
       return configuration.seed?.random() ?: getFailedSeed()?.random() ?: RandomSource.default()
    }
 
-   suspend fun getFailedSeed(): Long? {
+   private suspend fun getFailedSeed(): Long? {
       if (!PropertyTesting.writeFailedSeed) return null
       val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
       return readSeed(path)

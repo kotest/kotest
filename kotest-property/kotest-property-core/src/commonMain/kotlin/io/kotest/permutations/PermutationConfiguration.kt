@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.permutations.constraints.Constraints
 import io.kotest.permutations.constraints.ConstraintsBuilder
 import io.kotest.permutations.delegates.GenDelegateRegistry
-import io.kotest.permutations.seeds.createRandomSource
+import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.DefaultStatisticsReporter
 import io.kotest.permutations.statistics.StatisticsReporter
 import io.kotest.property.AssumptionFailedException
@@ -244,7 +244,7 @@ internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
       customSeed = this.seed == null,
       failOnSeed = failOnSeed,
       writeFailedSeed = writeFailedSeed,
-      rs = createRandomSource(this),
+      rs = SeedOperations.createRandomSource(this),
       registry = registry,
       beforePermutation = beforePermutation ?: {},
       afterPermutation = afterPermutation ?: {},
