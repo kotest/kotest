@@ -1,51 +1,51 @@
 package io.kotest.assertions.json.file
 
-import io.kotest.assertions.json.beJsonArray
-import io.kotest.assertions.json.beJsonObject
-import io.kotest.assertions.json.beValidJson
-import io.kotest.assertions.json.matchJson
-import io.kotest.matchers.and
-import io.kotest.matchers.file.aFile
-import io.kotest.matchers.file.exist
-import io.kotest.matchers.should
+import io.kotest.assertions.json.paths.shouldBeEmptyJsonArray
+import io.kotest.assertions.json.paths.shouldBeEmptyJsonObject
+import io.kotest.assertions.json.paths.shouldBeJsonArray
+import io.kotest.assertions.json.paths.shouldBeJsonObject
+import io.kotest.assertions.json.paths.shouldBeValidJson
+import io.kotest.assertions.json.paths.shouldNotBeJsonArray
+import io.kotest.assertions.json.paths.shouldNotBeJsonObject
+import io.kotest.assertions.json.paths.shouldNotBeValidJson
 import java.io.File
 
 fun File.shouldBeEmptyJsonArray(): File {
-   this should (exist() and aFile() and matchJson("[]").contramap { it.readText() })
+   this.toPath().shouldBeEmptyJsonArray()
    return this
 }
 
 fun File.shouldBeEmptyJsonObject(): File {
-   this should (exist() and aFile() and matchJson("{}").contramap { it.readText() })
+   this.toPath().shouldBeEmptyJsonObject()
    return this
 }
 
 fun File.shouldBeJsonArray(): File {
-   this should (exist() and aFile() and beJsonArray().contramap { it.readText() })
+   this.toPath().shouldBeJsonArray()
    return this
 }
 
 fun File.shouldNotBeJsonArray(): File {
-   this should (exist() and aFile() and beJsonArray().contramap<File> { it.readText() }.invert())
+   this.toPath().shouldNotBeJsonArray()
    return this
 }
 
 fun File.shouldBeJsonObject(): File {
-   this should (exist() and aFile() and beJsonObject().contramap { it.readText() })
+   this.toPath().shouldBeJsonObject()
    return this
 }
 
 fun File.shouldNotBeJsonObject(): File {
-   this should (exist() and aFile() and beJsonObject().contramap<File> { it.readText() }.invert())
+   this.toPath().shouldNotBeJsonObject()
    return this
 }
 
 fun File.shouldBeValidJson(): File {
-   this should (exist() and aFile() and beValidJson().contramap { it.readText() })
+   this.toPath().shouldBeValidJson()
    return this
 }
 
 fun File.shouldNotBeValidJson(): File {
-   this should (exist() and aFile() and beValidJson().contramap<File> { it.readText() }.invert())
+   this.toPath().shouldNotBeValidJson()
    return this
 }
