@@ -81,7 +81,7 @@ include(
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
-   ":kotest-property:kotest-property-core",
+   ":kotest-property:kotest-permutation",
 
    // contains  extensions for property testing that build on the kotest test framework
 //   ":kotest-property:kotest-property-lifecycle",
