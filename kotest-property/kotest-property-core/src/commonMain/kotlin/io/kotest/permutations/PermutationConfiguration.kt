@@ -3,6 +3,7 @@ package io.kotest.permutations
 import io.kotest.common.ExperimentalKotest
 import io.kotest.permutations.constraints.Constraints
 import io.kotest.permutations.constraints.ConstraintsBuilder
+import io.kotest.permutations.delegates.GenDelegate
 import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.DefaultStatisticsReporter
@@ -68,7 +69,7 @@ class PermutationConfiguration {
    // used to specify whether a seed should be written to the test output if a test fails.
    var writeFailedSeed: Boolean = PropertyTesting.writeFailedSeed
 
-   // Custom seed to use for this property test. If null, a random seed will be generated.
+   // Custom seed to use for this property test. If null, a random seed will be used.
    var seed: Long? = null
 
    // override the reporter used for statistics
@@ -89,7 +90,7 @@ class PermutationConfiguration {
    var requiredCoveragePercentages: Map<Any?, Double> = emptyMap()
 
    fun forEach(test: suspend Permutation.() -> Unit) {
-      if (this.test != null) error("test has already been set")
+      if (this.test != null) error("forEach has already been set")
       this.test = test
    }
 
@@ -103,9 +104,11 @@ class PermutationConfiguration {
       afterPermutation = fn
    }
 
-   fun <T> gen(initializer: () -> Gen<T>): io.kotest.permutations.delegates.GenDelegate<T> {
-      val gen = initializer()
-      val delegate = io.kotest.permutations.delegates.GenDelegate(TODO(), gen)
+   /**
+    * Register a generator with this permutation test.
+    */
+   fun <T> gen(fn: () -> Gen<T>): GenDelegate<T> {
+      val delegate = GenDelegate(fn())
       registry.add(delegate)
       return delegate
    }
@@ -154,7 +157,7 @@ class PermutationConfiguration {
     *
     * For example, to check that at least 25% of the iterations where classified as 'even':
     *
-    *       requireCoveragePercentage("even", 25.0)
+    *       requireCoveragePercentages("even", 25.0)
     *
     *       forEach {
     *          classify(a % 2 == 0, "even")

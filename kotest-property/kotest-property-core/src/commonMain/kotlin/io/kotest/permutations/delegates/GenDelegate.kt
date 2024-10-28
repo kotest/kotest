@@ -32,18 +32,18 @@ private object UNINITIALZED_VALUE
  *
  */
 class GenDelegate<A>(
-   rs: RandomSource,
-   gen: Gen<A>,
+   private val gen: Gen<A>,
 ) : ReadOnlyProperty<Any?, A> {
 
    // the current random value in this iteration as a Sample<A>
-   private var _random: Any = io.kotest.permutations.delegates.UNINITIALZED_VALUE
+   private var _random: Any = UNINITIALZED_VALUE
 
    // the current shrink candidate in this iteration, as an RTree<A>
-   private var _candidate: Any? = io.kotest.permutations.delegates.UNINITIALZED_VALUE
+   private var _candidate: Any? = UNINITIALZED_VALUE
 
    // this is the generators infinite sequence for returning random values
-   private var _samples: Iterator<Sample<A>> = gen.generate(rs).iterator()
+   // this will be empty until the delegate is initialized
+   private var _samples: Iterator<Sample<A>> = emptyList<Sample<A>>().iterator()
 
    // when true, shrink candidates are returned instead of random values
    private var _shrinking = false
@@ -55,21 +55,28 @@ class GenDelegate<A>(
    // to avoid infinite loops or slow shrinking
    private val _tested = hashSetOf<A>()
 
-   // contains the property name when accessed so we can use it in the shrink output
-   private var _property: Any = io.kotest.permutations.delegates.UNINITIALZED_VALUE
+   // contains the property name when accessed so we can use it error output
+   private var _property: Any = UNINITIALZED_VALUE
+
+   /**
+    * Called once before the first iteration occurs.
+    */
+   fun initialize(rs: RandomSource) {
+      _samples = gen.generate(rs).iterator()
+   }
 
    /**
     * Returns the current value for use in this iteration, obtained from the generators sequence on first read.
     * If we are in shrinking mode, then the value will be from the shrinking process.
     */
    override operator fun getValue(thisRef: Any?, property: KProperty<*>): A {
-      if (_property == io.kotest.permutations.delegates.UNINITIALZED_VALUE) {
+      if (_property == UNINITIALZED_VALUE) {
          _property = property
       }
       if (_shrinking) {
          return (_candidate as RTree<A>).value()
       } else {
-         if (_random === io.kotest.permutations.delegates.UNINITIALZED_VALUE) {
+         if (_random === UNINITIALZED_VALUE) {
             _random = _samples.next()
          }
          return (_random as Sample<A>).value
@@ -80,7 +87,45 @@ class GenDelegate<A>(
     * Returns the property that this delegate is associated with or null if the delegate was not yet accessed.
     */
    internal fun property(): KProperty<*>? {
-      return if (_property == io.kotest.permutations.delegates.UNINITIALZED_VALUE) null else _property as KProperty<*>
+      return if (_property == UNINITIALZED_VALUE) null else _property as KProperty<*>
+   }
+
+   /**
+    * Invoked before a permutation starts.
+    * This sets up the random source for the generator.
+    */
+   internal fun reset() {
+      _random = UNINITIALZED_VALUE
+   }
+
+   /**
+    * Enables the shrinking mode for this [GenDelegate] and sets the first level of candidates
+    * taken from the last random value.
+    *
+    * Values now returned by getValue will be from the shrinking process.
+    *
+    * Instead of [reset] being called after each iteration, the next candidate will be set from [hasNextCandidate].
+    */
+   internal fun setShrinking() {
+      _shrinking = true
+      // setup the first level of candidates
+      // note: not all generators may have started by the time of the first failure, so we must check
+      _candidates = if (_random == UNINITIALZED_VALUE) {
+         emptyList()
+      } else {
+         (_random as Sample<A>).shrinks.children.value
+      }
+   }
+
+   /**
+    * Returns the value used in the last iteration.
+    */
+   fun sample(): Sample<A> {
+      return _random as Sample<A>
+   }
+
+   fun candidate(): RTree<A> {
+      return _candidate as RTree<A>
    }
 
    /**
@@ -98,40 +143,6 @@ class GenDelegate<A>(
          }
       }
       return false
-   }
-
-   internal fun reset() {
-      _random = io.kotest.permutations.delegates.UNINITIALZED_VALUE
-   }
-
-   /**
-    * Enables the shrinking mode for this [GenDelegate] and sets the first level of candidates
-    * taken from the last random value.
-    *
-    * Values now returned by getValue will be from the shrinking process.
-    *
-    * Instead of [reset] being called after each iteration, the next candidate will be set from [hasNextCandidate].
-    */
-   internal fun setShrinking() {
-      _shrinking = true
-      // setup the first level of candidates
-      // note: not all generators may have started by the time of the first failure, so we must check
-      _candidates = if (_random == io.kotest.permutations.delegates.UNINITIALZED_VALUE) {
-         emptyList()
-      } else {
-         (_random as Sample<A>).shrinks.children.value
-      }
-   }
-
-   /**
-    * Returns the value used in the last iteration.
-    */
-   fun sample(): Sample<A> {
-      return _random as Sample<A>
-   }
-
-   fun candidate(): RTree<A> {
-      return _candidate as RTree<A>
    }
 
    /**

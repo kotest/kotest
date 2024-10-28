@@ -33,8 +33,8 @@ internal object SeedOperations {
    }
 }
 
-internal fun readSeed(path: TestPath): Long? = TODO()
+internal expect fun readSeed(path: TestPath): Long?
 
-internal fun writeSeed(path: TestPath, seed: Long): Nothing = TODO()
+internal expect fun writeSeed(path: TestPath, seed: Long)
 
-internal fun clearSeed(path: TestPath): Nothing = TODO()
+internal expect fun clearSeed(path: TestPath)

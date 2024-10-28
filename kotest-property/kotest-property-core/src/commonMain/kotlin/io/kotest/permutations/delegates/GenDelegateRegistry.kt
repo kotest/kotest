@@ -13,9 +13,9 @@ import io.kotest.property.Sample
  */
 internal class GenDelegateRegistry {
 
-   val delegates = mutableListOf<io.kotest.permutations.delegates.GenDelegate<*>>()
+   val delegates = mutableListOf<GenDelegate<*>>()
 
-   fun add(delegate: io.kotest.permutations.delegates.GenDelegate<*>) {
+   fun add(delegate: GenDelegate<*>) {
       delegates.add(delegate)
    }
 

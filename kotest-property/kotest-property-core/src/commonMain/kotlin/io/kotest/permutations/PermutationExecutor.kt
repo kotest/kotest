@@ -12,7 +12,7 @@ import io.kotest.property.AssumptionFailedException
 import kotlin.time.TimeSource
 
 /**
- * The [PermutationExecutor] is responsible for executing a single property test with the given [PermutationContext].
+ * The [PermutationExecutor] is responsible for executing a single permutation test with the given [PermutationContext].
  */
 internal class PermutationExecutor(
    private val context: PermutationContext,
@@ -24,6 +24,10 @@ internal class PermutationExecutor(
 
       ConfigWriter.writeIfEnabled(context)
       AllowCustomSeedBeforeCheck.check(context)
+
+      // generators are initialized with the random source here, since it is not available when the
+      // delegates are registered
+      context.registry.delegates.forEach { it.initialize(context.rs) }
 
       var iterations = 0
       var discards = 0
