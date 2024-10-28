@@ -3,6 +3,7 @@ package io.kotest.permutations.statistics
 import io.kotest.common.TestNameContextElement
 import io.kotest.property.LabelOrder
 import io.kotest.property.PropertyTesting
+import io.kotest.property.statistics.Label
 import kotlin.coroutines.coroutineContext
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -11,7 +12,7 @@ import kotlin.math.roundToInt
  * Pluggable interface for outputting input value labels used in property testing.
  */
 interface StatisticsReporter {
-   suspend fun output(statistics: Statistics)
+   suspend fun output(classifications: Classifications)
 }
 
 object DefaultStatisticsReporter : StatisticsReporter {
@@ -39,26 +40,26 @@ object DefaultStatisticsReporter : StatisticsReporter {
       }
    }
 
-   override suspend fun output(statistics: Statistics) {
-      val unlabelled = statistics.statistics[null]
-      if (unlabelled != null && unlabelled.isNotEmpty()) {
-         val header = header(statistics.iterations, statistics.args, null)
-         println()
-         println(header)
-         println()
-         stats(unlabelled, statistics.iterations)
-         println()
-      }
-
-      statistics.statistics.forEach { (label, stats) ->
-         if (label != null) {
-            val header = header(statistics.iterations, statistics.args, label)
-            println()
-            println(header)
-            println()
-            stats(stats, statistics.iterations)
-            println()
-         }
-      }
+   override suspend fun output(classifications: Classifications) {
+//      val unlabelled = statistics.statistics[null]
+//      if (unlabelled != null && unlabelled.isNotEmpty()) {
+//         val header = header(statistics.iterations, statistics.args, null)
+//         println()
+//         println(header)
+//         println()
+//         stats(unlabelled, statistics.iterations)
+//         println()
+//      }
+//
+//      statistics.statistics.forEach { (label, stats) ->
+//         if (label != null) {
+//            val header = header(statistics.iterations, statistics.args, label)
+//            println()
+//            println(header)
+//            println()
+//            stats(stats, statistics.iterations)
+//            println()
+//         }
+//      }
    }
 }

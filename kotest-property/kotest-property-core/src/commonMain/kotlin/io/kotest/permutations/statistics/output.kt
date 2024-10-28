@@ -1,25 +1,29 @@
 package io.kotest.permutations.statistics
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.property.PropertyContext
-import io.kotest.property.PropertyTesting
+import io.kotest.permutations.PermutationContext
+import io.kotest.property.statistics.StatisticsReportMode
 
 @ExperimentalKotest
-suspend fun outputStatistics(context: PropertyContext, args: Int, success: Boolean) {
-   suspend fun write() {
-      val statistics = Statistics(
-         context.attempts(),
-         args,
-         context.labels(),
-         context.statistics(),
-         success = success,
-      )
-      PropertyTesting.statisticsReporter.output(statistics)
+internal object ClassificationsWriter {
+
+   suspend fun writeIfEnabled(context: PermutationContext, success: Boolean) {
+      when (context.statisticsReportMode) {
+         StatisticsReportMode.ON -> doWrite(context)
+         StatisticsReportMode.SUCCESS -> if (success) doWrite(context)
+         StatisticsReportMode.FAILED -> if (!success) doWrite(context)
+         StatisticsReportMode.OFF -> Unit
+      }
    }
-   when (PropertyTesting.statisticsReportMode) {
-      StatisticsReportMode.ON -> write()
-      StatisticsReportMode.SUCCESS -> if (success) write()
-      StatisticsReportMode.FAILED -> if (!success) write()
-      StatisticsReportMode.OFF -> Unit
+
+   private suspend fun doWrite(context: PermutationContext) {
+      val classifications = Classifications()
+//         context.attempts(),
+//         args,
+//         context.labels(),
+//         context.statistics(),
+//         success = success,
+//      )
+      context.statisticsReporter.output(classifications)
    }
 }

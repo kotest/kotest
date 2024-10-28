@@ -4,6 +4,7 @@ import io.kotest.assertions.print.print
 import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.permutations.delegates.GenDelegate
+import io.kotest.permutations.statistics.Classifications
 import io.kotest.property.internal.Counter
 import io.kotest.property.internal.ShrinkResult
 
@@ -25,7 +26,7 @@ internal suspend fun shrink(context: PermutationConfiguration, test: suspend Per
 }
 
 internal suspend fun <A> doShrinking(
-   delegate: io.kotest.permutations.delegates.GenDelegate<A>,
+   delegate: GenDelegate<A>,
    context: PermutationConfiguration,
    test: suspend Permutation.() -> Unit,
 ): ShrinkResult<A> {
@@ -43,7 +44,7 @@ internal suspend fun <A> doShrinking(
    while (delegate.hasNextCandidate()) {
       val candidate = delegate.candidate().value()
       try {
-         test(Permutation(0, RandomSource.default()))
+         test(Permutation(0, RandomSource.default(), Classifications()))
          if (context.shouldPrintShrinkSteps)
             sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
       } catch (t: Throwable) {

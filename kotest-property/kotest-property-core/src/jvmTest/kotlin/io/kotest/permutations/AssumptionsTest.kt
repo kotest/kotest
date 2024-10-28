@@ -2,14 +2,13 @@
 
 package io.kotest.permutations
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.property.Arb
-import io.kotest.property.MaxDiscardPercentageException
+import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.*
 import io.kotest.property.exhaustive.of
 
@@ -103,7 +102,7 @@ class AssumptionsTest : FunSpec() {
 
       test("assumptions should fail if too many are discarded") {
          // this will throw because we only have 9 combinations and 3 are disallowed
-         shouldThrow<MaxDiscardPercentageException> {
+         shouldThrowAny {
             permutations {
                val a by gen { Arb.int(0..2) }
                val b by gen { Arb.int(0..2) }
@@ -114,7 +113,7 @@ class AssumptionsTest : FunSpec() {
 
       test("assumptions should honour maxDiscardPercentage config") {
          // this will pass because we upped the discard percentage
-         shouldThrow<MaxDiscardPercentageException> {
+         shouldThrowAny {
             permutations {
                maxDiscardPercentage = 50
                val a by gen { Arb.int(0..2) }

@@ -2,9 +2,9 @@ package io.kotest.permutations.checks
 
 import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
+import io.kotest.permutations.IterationResult
+import io.kotest.permutations.PermutationContext
 import io.kotest.property.PropertyContext
-import io.kotest.property.core.IterationResult
-import io.kotest.property.core.PermutationContext
 
 internal object FailureHandler {
 

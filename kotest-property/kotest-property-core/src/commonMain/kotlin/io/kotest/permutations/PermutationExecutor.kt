@@ -1,11 +1,12 @@
 package io.kotest.permutations
 
 import io.kotest.permutations.checks.AllowCustomSeedBeforeCheck
-import io.kotest.permutations.checks.CoverageCheck
+import io.kotest.permutations.statistics.CoverageCheck
 import io.kotest.permutations.checks.FailureHandler
 import io.kotest.permutations.checks.MaxDiscardCheck
 import io.kotest.permutations.checks.MinSuccessCheck
 import io.kotest.permutations.constraints.Iteration
+import io.kotest.permutations.statistics.ClassificationsWriter
 import io.kotest.property.AssumptionFailedException
 import kotlin.time.TimeSource
 
@@ -65,6 +66,7 @@ internal class PermutationExecutor(
             // we might be able to tolerate this failure, if max failure is set > 0,
             // otherwise, this test will now throw an exception
             if (failures > context.maxFailures) {
+               ClassificationsWriter.writeIfEnabled(context, true)
                FailureHandler.handleFailure(context, result)
             }
          }
@@ -80,6 +82,7 @@ internal class PermutationExecutor(
       )
 
       // ensure we have met the min success criteria
+      ClassificationsWriter.writeIfEnabled(context, true)
       MinSuccessCheck.check(context, result)
       CoverageCheck.check(context, result)
 

@@ -1,6 +1,6 @@
 package io.kotest.permutations.constraints
 
-import io.kotest.property.core.PermutationConfiguration
+import io.kotest.permutations.PermutationConfiguration
 
 object ConstraintsBuilder {
 

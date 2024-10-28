@@ -1,7 +1,5 @@
 package io.kotest.permutations
 
-import io.kotest.assertions.print.print
-
 ///**
 // * Generates an [AssertionError] for a property test without arg details and then throws it.
 // */

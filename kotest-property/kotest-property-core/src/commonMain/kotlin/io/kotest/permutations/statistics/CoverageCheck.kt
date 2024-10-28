@@ -1,15 +1,15 @@
-package io.kotest.permutations.checks
+package io.kotest.permutations.statistics
 
+import io.kotest.permutations.ErrorBuilder
 import io.kotest.permutations.PermutationContext
 import io.kotest.permutations.PermutationResult
-import io.kotest.permutations.ErrorBuilder
 import kotlin.math.min
 
 /**
  * Checks that the number of times this permutation passed is at least the
  * configured min success rate.
  */
-internal object MinSuccessCheck {
+internal object CoverageCheck {
    fun check(context: PermutationContext, result: PermutationResult) {
       // if the min success rate is not configured we default to the number of iterations
       val requiredMin = min(context.minSuccess, result.iterations)
@@ -19,4 +19,3 @@ internal object MinSuccessCheck {
       }
    }
 }
-

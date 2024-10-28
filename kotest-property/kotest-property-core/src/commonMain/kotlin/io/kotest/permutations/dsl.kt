@@ -1,7 +1,7 @@
 package io.kotest.permutations
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.property.core.statistics.Statistics
+import io.kotest.permutations.statistics.Classifications
 
 /**
  * The permutationConfig builder is used to configure various settings for property-based that can be reused
@@ -29,7 +29,7 @@ suspend fun permutations(
 
    val context = configuration.toContext()
    val executor = PermutationExecutor(context)
-   val result = executor.execute { context.test.invoke(Permutation(0, context.rs, Statistics())) }
+   val result = executor.execute { context.test.invoke(Permutation(0, context.rs, Classifications())) }
    return result
 }
 

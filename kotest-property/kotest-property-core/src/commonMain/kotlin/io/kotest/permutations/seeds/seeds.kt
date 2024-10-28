@@ -2,9 +2,9 @@ package io.kotest.permutations.seeds
 
 import io.kotest.common.TestPath
 import io.kotest.common.TestPathContextElement
+import io.kotest.permutations.PermutationConfiguration
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
-import io.kotest.property.core.PermutationConfiguration
 import io.kotest.property.random
 import kotlinx.coroutines.currentCoroutineContext
 

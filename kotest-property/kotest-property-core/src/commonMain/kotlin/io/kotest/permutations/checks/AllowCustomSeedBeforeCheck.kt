@@ -1,6 +1,6 @@
 package io.kotest.permutations.checks
 
-import io.kotest.property.core.PermutationContext
+import io.kotest.permutations.PermutationContext
 
 internal object AllowCustomSeedBeforeCheck {
    fun check(context: PermutationContext) {

@@ -149,6 +149,19 @@ class PermutationConfiguration {
       requireCoveragePercentages(mapOf(classification to percentage))
    }
 
+   /**
+    * Asserts that the given classifications percentages were statisfied.
+    *
+    * For example, to check that at least 25% of the iterations where classified as 'even':
+    *
+    *       requireCoveragePercentage("even", 25.0)
+    *
+    *       forEach {
+    *          classify(a % 2 == 0, "even")
+    *          a + a == 2 * a
+    *       }
+    *
+    */
    fun requireCoveragePercentages(
       classifications: Map<Any?, Double>,
    ) {
@@ -169,15 +182,15 @@ class PermutationConfiguration {
     *
     * For example, to check that at least 150 of the iterations were classified as 'even':
     *
-    *       withCoverageCount("even", 150) {
-    *          forAll(Arb.int()) { a ->
+    *       requireCoverageCount("even", 150)
+    *
+    *       forEach {
     *             classify(a % 2 == 0, "even")
     *             a + a == 2 * a
-    *          }
     *       }
     *
     */
-   suspend fun requireCoverageCount(
+   fun requireCoverageCount(
       classification: Any?,
       count: Int,
    ) {
@@ -189,15 +202,15 @@ class PermutationConfiguration {
     *
     * For example, to check that at least 150 of the iterations were classified as 'even', and 200 were 'positive':
     *
-    *       withCoverageCounts("even", 150, "positive", 200) {
-    *          forAll(Arb.int()) { a ->
+    *       requireCoverageCounts("even", 150, "positive", 200)
+    *
+    *       forEach {
     *             classify(a % 2 == 0, "even")
     *             a + a == 2 * a
-    *          }
     *       }
     *
     */
-   suspend fun requireCoverageCounts(
+   fun requireCoverageCounts(
       classifications: Map<Any?, Int>,
    ) {
       requiredCoverageCounts = requiredCoverageCounts + classifications
