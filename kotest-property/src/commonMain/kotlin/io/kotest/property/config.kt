@@ -19,7 +19,11 @@ object PropertyTesting {
 
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
 
+   var shouldPrintConfig: Boolean = sysprop("kotest.proptest.output.config", false)
+
    var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
+
+   var maxDiscardPercentage: Int = sysprop("kotest.proptest.max.discard.percentage", 20)
 
    var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null) { it.toLong() }
 
