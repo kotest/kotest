@@ -6,13 +6,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
+import io.kotest.permutations.constraints.Constraints
 
 @EnabledIf(LinuxCondition::class)
 class ConstraintsTest : FunSpec() {
    init {
       test("iterations should be used by default") {
          var counter = 0
-        io.kotest.permutations.permutations {
+        permutations {
           iterations = 3
           forEach {
             counter++
@@ -23,7 +24,7 @@ class ConstraintsTest : FunSpec() {
 
       test("duration should override iterations") {
          var counter = 0
-        io.kotest.permutations.permutations {
+        permutations {
           iterations = 3
           duration = 100.milliseconds
           forEach {
@@ -35,7 +36,7 @@ class ConstraintsTest : FunSpec() {
 
       test("custom contraints should override durations and iterations") {
          var counter = 0
-        io.kotest.permutations.permutations {
+        permutations {
           iterations = 3
           duration = 100.milliseconds
           constraints = Constraints.iterations(5)
