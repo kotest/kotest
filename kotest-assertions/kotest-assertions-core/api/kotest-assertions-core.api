@@ -222,6 +222,14 @@ public final class io/kotest/matchers/atomic/AtomicBooleanMatchersKt {
 	public static final fun shouldNotBeTrue (Ljava/util/concurrent/atomic/AtomicBoolean;)Z
 }
 
+public final class io/kotest/matchers/bigdecimal/BigDecimalToleranceKt {
+	public static final fun beWithinPercentageOf (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
+	public static final fun plusOrMinus (Ljava/math/BigDecimal;Lio/kotest/matchers/doubles/Percentage;)Lio/kotest/matchers/bigdecimal/ToleranceMatcher;
+	public static final fun plusOrMinus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Lio/kotest/matchers/bigdecimal/ToleranceMatcher;
+	public static final fun shouldBeWithinPercentageOf (Ljava/math/BigDecimal;Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
+	public static final fun shouldNotBeWithinPercentageOf (Ljava/math/BigDecimal;Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
+}
+
 public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun beEqualIgnoringScale (Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
 	public static final fun beInClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
@@ -245,6 +253,15 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotHaveScale (Ljava/math/BigDecimal;I)I
+}
+
+public final class io/kotest/matchers/bigdecimal/ToleranceMatcher : io/kotest/matchers/Matcher {
+	public fun <init> (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+	public fun test (Ljava/math/BigDecimal;)Lio/kotest/matchers/MatcherResult;
 }
 
 public final class io/kotest/matchers/booleans/BooleanMatchersKt {
