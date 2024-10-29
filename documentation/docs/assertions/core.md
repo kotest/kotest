@@ -183,7 +183,6 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n              |
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
 | `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range                          |
-| `bigDecimal.shouldBeInOpenEndRange(r)`      | Asserts that the bigDecimal is in the given open-end range                 |
 | `bigDecimal.shouldBeEqualIgnoringScale(r)`  | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
 
 | Channels                                          ||
