@@ -1876,8 +1876,11 @@ public final class io/kotest/matchers/property/MatchersKt {
 
 public final class io/kotest/matchers/ranges/BeinKt {
 	public static final fun beIn (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun beInOpenEndRange (Lkotlin/ranges/OpenEndRange;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+	public static final fun shouldBeInOpenEndRange (Ljava/lang/Comparable;Lkotlin/ranges/OpenEndRange;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeIn (Ljava/lang/Comparable;Lkotlin/ranges/ClosedRange;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeInOpenEndRange (Ljava/lang/Comparable;Lkotlin/ranges/OpenEndRange;)Ljava/lang/Comparable;
 }
 
 public final class io/kotest/matchers/ranges/BewithinKt {
