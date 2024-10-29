@@ -4,7 +4,6 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThan
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEquals
-import io.kotest.matchers.bigdecimal.shouldBeInOpenEndRange
 import io.kotest.matchers.bigdecimal.shouldBeInRange
 import io.kotest.matchers.bigdecimal.shouldBeLessThan
 import io.kotest.matchers.bigdecimal.shouldBeLessThanOrEquals
@@ -15,7 +14,6 @@ import io.kotest.matchers.bigdecimal.shouldHavePrecision
 import io.kotest.matchers.bigdecimal.shouldHaveScale
 import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThan
 import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThanOrEquals
-import io.kotest.matchers.bigdecimal.shouldNotBeInOpenEndRange
 import io.kotest.matchers.bigdecimal.shouldNotBeInRange
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThan
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEquals
@@ -103,11 +101,5 @@ class BigDecimalMatchersTest : StringSpec() {
       (-BigDecimal.ONE) shouldBeInRange BigDecimal(-1) .. BigDecimal(1)
       BigDecimal.TEN shouldNotBeInRange BigDecimal(-1) .. BigDecimal(1)
     }
-     "shouldBeInOpenEndRange" {
-      BigDecimal("0.2") shouldBeInOpenEndRange BigDecimal("0.1") ..< BigDecimal(1)
-      BigDecimal.ONE shouldNotBeInOpenEndRange BigDecimal("0.1") ..< BigDecimal(1)
-      BigDecimal.ZERO shouldBeInOpenEndRange BigDecimal.ZERO ..< BigDecimal(1)
-      BigDecimal.TEN shouldNotBeInOpenEndRange BigDecimal("0.1") ..< BigDecimal(1)
-     }
   }
 }

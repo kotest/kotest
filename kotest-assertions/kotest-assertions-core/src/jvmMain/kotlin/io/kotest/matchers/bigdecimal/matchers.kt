@@ -33,23 +33,19 @@ infix fun BigDecimal.shouldBeGreaterThanOrEquals(other: BigDecimal) = this shoul
 infix fun BigDecimal.shouldNotBeGreaterThan(other: BigDecimal) = this shouldNotBe gt(other)
 infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this shouldNotBe gte(other)
 
+@Deprecated("use <T: Comparable<T>> shouldBeIn",
+   ReplaceWith("this should beIn(range)", "io.kotest.matchers.should")
+)
 infix fun BigDecimal.shouldBeInRange(range: ClosedRange<BigDecimal>) = this should beInClosedRange(range)
+@Deprecated("use <T: Comparable<T>> shouldNotBeIn",
+   ReplaceWith("this shouldNot beIn(range)", "io.kotest.matchers.shouldNot")
+)
 infix fun BigDecimal.shouldNotBeInRange(range: ClosedRange<BigDecimal>) = this shouldNot beInClosedRange(range)
 fun beInClosedRange(range: ClosedRange<BigDecimal>) = object : Matcher<BigDecimal> {
    override fun test(value: BigDecimal) = MatcherResult(
       range.contains(value),
       { "Value $value should be in range from ${range.start} to ${range.endInclusive} (Inclusive)" },
       { "Value $value should not be in range from ${range.start} to ${range.endInclusive} (Inclusive)" }
-   )
-}
-
-infix fun BigDecimal.shouldBeInOpenEndRange(range: OpenEndRange<BigDecimal>) = this should beInOpenEndRange(range)
-infix fun BigDecimal.shouldNotBeInOpenEndRange(range: OpenEndRange<BigDecimal>) = this shouldNot beInOpenEndRange(range)
-fun beInOpenEndRange(range: OpenEndRange<BigDecimal>) = object : Matcher<BigDecimal> {
-   override fun test(value: BigDecimal) = MatcherResult(
-      range.contains(value),
-      { "Value $value should be in range from ${range.start} to ${range.endExclusive} (Exclusive)" },
-      { "Value $value should not be in range from ${range.start} to ${range.endExclusive} (Exclusive)" }
    )
 }
 
