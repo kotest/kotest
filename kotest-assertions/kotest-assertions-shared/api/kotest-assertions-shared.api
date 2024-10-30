@@ -3081,12 +3081,12 @@ public final class io/kotest/submatching/PartialMatchType$Suffix : io/kotest/sub
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/submatching/PartialMatchesInCollectionDescription {
+public final class io/kotest/submatching/PartialMatchesInStringDescription {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
-	public static synthetic fun copy$default (Lio/kotest/submatching/PartialMatchesInCollectionDescription;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInStringDescription;
+	public static synthetic fun copy$default (Lio/kotest/submatching/PartialMatchesInStringDescription;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/submatching/PartialMatchesInStringDescription;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getPartialMatchesDescription ()Ljava/lang/String;
 	public final fun getPartialMatchesList ()Ljava/lang/String;
@@ -3104,10 +3104,10 @@ public final class io/kotest/submatching/StringPartialMatch {
 }
 
 public final class io/kotest/submatching/StringPartialMatchesKt {
-	public static final fun describePartialMatchesInString (Ljava/lang/String;Ljava/lang/String;Lio/kotest/submatching/PartialMatchType;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
-	public static final fun describePartialMatchesInStringForPrefix (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
-	public static final fun describePartialMatchesInStringForSlice (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
-	public static final fun describePartialMatchesInStringForSuffix (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInCollectionDescription;
+	public static final fun describePartialMatchesInString (Ljava/lang/String;Ljava/lang/String;Lio/kotest/submatching/PartialMatchType;)Lio/kotest/submatching/PartialMatchesInStringDescription;
+	public static final fun describePartialMatchesInStringForPrefix (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInStringDescription;
+	public static final fun describePartialMatchesInStringForSlice (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInStringDescription;
+	public static final fun describePartialMatchesInStringForSuffix (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/submatching/PartialMatchesInStringDescription;
 	public static final fun underscoreSubstring (III)Ljava/lang/String;
 }
 
