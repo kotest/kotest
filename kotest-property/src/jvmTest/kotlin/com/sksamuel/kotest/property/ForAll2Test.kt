@@ -119,7 +119,7 @@ Caused by: Property passed 8 times (minSuccess rate was 9)"""
       }.message shouldBe """Property failed after 1 attempts
 
 	Arg 0: 1 (shrunk from 2)
-	Arg 1: "r" (shrunk from rDi)
+	Arg 1: "r" (shrunk from "rDi")
 
 Repeat this test by using seed 1234
 

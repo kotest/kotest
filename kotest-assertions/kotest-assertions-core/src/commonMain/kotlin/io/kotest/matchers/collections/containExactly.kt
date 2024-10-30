@@ -221,10 +221,9 @@ internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expe
 }
 
 private fun <T> StringBuilder.appendSubmatches(actual: Collection<T>, expected: Collection<T>) {
-   val (partialMatchesList, partialMatchesDescription) = describePartialMatchesInCollection(expected, actual.toList())
-   if (partialMatchesList.isNotEmpty()) {
+   val partialMatchesDescription = describePartialMatchesInCollection(expected, actual.toList()).toString()
+   if (partialMatchesDescription.isNotEmpty()) {
       appendLine()
-      appendLine(partialMatchesList)
       appendLine(partialMatchesDescription)
    }
 }

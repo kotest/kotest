@@ -85,7 +85,7 @@ internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCol
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
 }
 
-internal data class PartialMatchesInCollectionDescription(
+internal data class PartialMatchesInStringDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String,
    val partialMatches: List<PartialCollectionMatch>,
