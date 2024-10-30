@@ -14,11 +14,16 @@ import kotlinx.serialization.json.JsonElement
 
 @ExperimentalKotest
 infix fun String?.shouldMatchSchema(schema: JsonSchema) =
-   this should parseToJson.and(matchSchema(schema).contramap { it?.let(Json::parseToJsonElement) })
+   this should stringJsonMatcher(schema)
 
 @ExperimentalKotest
 infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
-   this shouldNot parseToJson.and(matchSchema(schema).contramap { it?.let(Json::parseToJsonElement) })
+   this shouldNot stringJsonMatcher(schema)
+
+@ExperimentalKotest
+internal fun stringJsonMatcher(schema: JsonSchema): Matcher<String?> {
+   return parseToJson.and(matchSchema(schema).contramap { it?.let(Json::parseToJsonElement) })
+}
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)

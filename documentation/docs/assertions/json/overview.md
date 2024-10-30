@@ -6,6 +6,8 @@ sidebar_label: Overview
 
 To use these matchers add `testImplementation("io.kotest:kotest-assertions-json:<version>")` to your build.
 
+There exist copies of all matchers that validate a `File` or a `Path` instead of a `String` for the JVM platform.
+
 ## Basic matchers
 
 | Matcher              | Description                                        | Targets       |

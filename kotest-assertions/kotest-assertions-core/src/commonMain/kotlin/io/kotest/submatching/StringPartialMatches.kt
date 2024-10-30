@@ -11,17 +11,17 @@ internal fun describePartialMatchesInStringForSuffix(expectedSlice: String, valu
 internal fun describePartialMatchesInStringForPrefix(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Prefix)
 
-internal fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInCollectionDescription {
+internal fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInStringDescription {
    if(!AssertionsConfig.enabledSubmatchesInStrings.value ||
          substringNotEligibleForSubmatching(expectedSlice) ||
          valueNotEligibleForSubmatching(value)
       ) {
-      return PartialMatchesInCollectionDescription("", "")
+      return PartialMatchesInStringDescription("", "")
    }
    val minLength = maxOf(expectedSlice.length / 3, 2)
    val partialMatches = findPartialMatches(expectedSlice.toList(), value.toList(), minLength = minLength).take(9)
    if(partialMatches.isEmpty()) {
-      return PartialMatchesInCollectionDescription("", "")
+      return PartialMatchesInStringDescription("", "")
    }
    val partialMatchesList = partialMatches.withIndex().joinToString("\n") { indexedValue ->
       "Match[${indexedValue.index}]: ${describeMatchedSlice(expectedSlice, indexedValue.value.rangeOfExpected, type)} matched actual[${indexedValue.value.rangeOfValue}]"
@@ -29,11 +29,14 @@ internal fun describePartialMatchesInString(expectedSlice: String, value: String
    val allUnderscores = getAllUnderscores(value.length, partialMatches)
    val lineIndexRanges = indexRangesOfLines(value)
    val valueAndUnderscores = lineIndexRanges.mapIndexed { index, indexRange ->
-      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexed { matchIndex, underscores ->
-         "Match[$matchIndex]= ${takeIndexRange(underscores, indexRange)}"
+      listOf("Line[$index] =\"${takeIndexRange(value, indexRange)}\"") + allUnderscores.mapIndexedNotNull { matchIndex, underscores ->
+         val underscoreLine = takeIndexRange(underscores, indexRange)
+         if(underscoreLine.contains('+'))
+            "Match[$matchIndex]= $underscoreLine"
+         else null
       }
    }.flatten().joinToString("\n")
-   return PartialMatchesInCollectionDescription(partialMatchesList, valueAndUnderscores)
+   return PartialMatchesInStringDescription(partialMatchesList, valueAndUnderscores)
 }
 
 internal fun describeMatchedSlice(expectedSlice: String, range: IntRange, type: PartialMatchType): String {
@@ -72,7 +75,7 @@ internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCol
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
 }
 
-internal data class PartialMatchesInCollectionDescription(
+internal data class PartialMatchesInStringDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String
 ) {
