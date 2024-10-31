@@ -953,9 +953,9 @@ class CollectionMatchersTest : WordSpec() {
 
          "Fail when all elements are in the list" {
             shouldThrow<AssertionError> {
-               listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3)
+               listOf(1, 2, 3).shouldNotContainAnyOf(3, 2, 1)
             }.message.shouldContainInOrder(
-               "Collection [1, 2, 3] should not contain any of [1, 2, 3]",
+               "Collection [1, 2, 3] should not contain any of [3, 2, 1]",
                "Forbidden elements found in collection:",
                "[0] => 1",
                "[1] => 2",

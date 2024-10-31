@@ -133,7 +133,7 @@ infix fun <T> Collection<T>.shouldNotContainAnyOf(ts: Collection<T>) = this shou
 fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       if (ts.isEmpty()) throwEmptyCollectionError()
-      val elementsInValue = ts.mapIndexedNotNull { index, t -> if(value.contains(t)) IndexedValue(index, t) else null }
+      val elementsInValue = value.mapIndexedNotNull { index, t -> if(ts.contains(t)) IndexedValue(index, t) else null }
       return MatcherResult(
          elementsInValue.isNotEmpty(),
          { "Collection ${value.print().value} should contain any of ${ts.print().value}" },
