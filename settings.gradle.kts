@@ -153,3 +153,5 @@ buildCache {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include("kotest-assertions:kotest-assertions-yaml")
+findProject(":kotest-assertions:kotest-assertions-yaml")?.name = "kotest-assertions-yaml"
