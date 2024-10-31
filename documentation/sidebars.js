@@ -94,7 +94,8 @@ module.exports = {
         "assertions/klock",
         "assertions/compiler",
         "assertions/jsoup",
-        "assertions/ranges"
+        "assertions/ranges",
+        "assertions/yaml"
       ]
     }
   ],

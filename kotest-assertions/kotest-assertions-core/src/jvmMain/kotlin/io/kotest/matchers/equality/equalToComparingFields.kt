@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import java.lang.AssertionError
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -93,6 +94,7 @@ class FieldEqualityConfig {
    var includedProperties: Collection<KProperty<*>> = emptySet()
    var excludedProperties: Collection<KProperty<*>> = emptySet()
    var useDefaultShouldBeForFields: Collection<KClass<*>> = emptySet()
+   var overrideMatchers: Map<KProperty<*>, Assertable> = emptyMap()
 }
 
 fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matcher<T> {
@@ -113,7 +115,7 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                   |${result.fields.joinToString("\n") { " - $it" }}
                   |
                   |Fields that differ:
-                  |${result.errors.entries.joinToString("\n") { " - ${it.key}  =>  ${it.value.message}" }}
+                  |${result.errors.entries.flatMap { printDifference(it.key, it.value.message ?: "") }.joinToString("\n")}"
                   |
                """.trimMargin()
                   },
@@ -142,6 +144,13 @@ fun <T : Any> beEqualUsingFields(expected: T, config: FieldEqualityConfig): Matc
                   })
             }
          )
+      }
+
+      private fun printDifference(key: String, message: String): List<String> {
+         val prefix = " - $key  =>  "
+         return message.split("\n").mapIndexed { index, line ->
+            if (index == 0) "$prefix$line" else "${" ".repeat(prefix.length)}$line"
+         }
       }
    }
 }
