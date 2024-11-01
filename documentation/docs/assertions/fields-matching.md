@@ -163,6 +163,27 @@ actual shouldBeEqualUsingFields {
      }
 ```
 
+### matchOffsetDateTimesWithTolerance
+
+```kotlin
+val expected = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
+   )
+val actual = expected.copy(offsetDateTime = expected.instant.plusSeconds(1))
+
+actual shouldBeEqualUsingFields {
+  overrideMatchers = mapOf(
+     WithManyFields::offsetDateTime to matchOffsetDateTimesWithTolerance(2.seconds)
+  )
+  expected
+}
+```
+
+
 ### matchStringsIgnoringCase
 
 ```kotlin
