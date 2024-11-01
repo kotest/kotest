@@ -6,8 +6,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.MatchedCollectionElement
 import io.kotest.submatching.PartialCollectionMatch
-import io.kotest.submatching.PartialMatchesInCollectionDescription
-import io.kotest.submatching.describePartialMatchesInString
+import io.kotest.submatching.PartialMatchesInStringDescription
 import io.kotest.submatching.describePartialMatchesInStringForPrefix
 import io.kotest.submatching.describePartialMatchesInStringForSlice
 import io.kotest.submatching.describePartialMatchesInStringForSuffix
@@ -35,7 +34,7 @@ class StringPartialMatchesTest : WordSpec() {
       }
       "describePartialMatchesInString" should {
          "return empty if no matches" {
-            describePartialMatchesInStringForSlice("hawk", text) shouldBe PartialMatchesInCollectionDescription.Empty
+            describePartialMatchesInStringForSlice("hawk", text) shouldBe PartialMatchesInStringDescription.Empty
          }
          "handle empty slice" {
             val actual = describePartialMatchesInStringForSlice("", text)

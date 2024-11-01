@@ -1,6 +1,5 @@
 package io.kotest.similarity
 
-import io.kotest.assertions.AssertionsConfig
 import io.kotest.submatching.PartialCollectionMatch
 import io.kotest.submatching.describePartialMatchesInStringForSlice
 import java.math.BigDecimal
