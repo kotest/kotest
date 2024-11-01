@@ -25,3 +25,54 @@ Likewise, we can explicitly say which fields to match on, and all other fields w
       actual
    }
 ```
+
+For nested classes, comparison goes recursively, as follows:
+
+```kotlin
+         val doctor1 = Doctor("billy", 23, emptyList())
+         val doctor2 = Doctor("barry", 23, emptyList())
+
+         val city = City("test1", Hospital("test-hospital1", doctor1))
+         val city2 = City("test2", Hospital("test-hospital2", doctor2))
+
+         shouldThrowAny {
+            city.shouldBeEqualUsingFields {
+               city2
+            }
+         }.message shouldContain """Using fields:
+ - mainHospital.mainDoctor.age
+ - mainHospital.mainDoctor.name
+ - mainHospital.name
+ - name
+
+Fields that differ:
+ - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
+ - mainHospital.name  =>  expected:<"test-hospital2"> but was:<"test-hospital1">
+ - name  =>  expected:<"test2"> but was:<"test1">"""
+```
+
+But we can explicitly stop recursive comparison. In the following example, we are comparing instances of `Doctor` class as a whole, not comparing their individual fields. So the difference in `mainHospital.mainDoctor` is detected, as opposed to detected differences in `mainHospital.mainDoctor.name` in the previous example:
+
+```kotlin
+         val doctor1 = Doctor("billy", 22, emptyList())
+         val doctor2 = Doctor("billy", 22, emptyList())
+
+         val city = City("test", Hospital("test-hospital", doctor1))
+         val city2 = City("test", Hospital("test-hospital", doctor2))
+
+         shouldFail {
+            city.shouldBeEqualUsingFields {
+               useDefaultShouldBeForFields = listOf(Doctor::class)
+               city2
+            }
+         }.message shouldContain """Using fields:
+ - mainHospital.mainDoctor
+ - mainHospital.name
+ - name
+
+Fields that differ:
+ - mainHospital.mainDoctor  =>
+
+```
+
+We can explicitly
