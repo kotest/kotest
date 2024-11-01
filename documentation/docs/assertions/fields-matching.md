@@ -237,3 +237,38 @@ actual shouldBeEqualUsingFields {
   expected
 }
 ```
+
+## Building Your Own Override Matcher
+
+Implement `Assertable` interface:
+
+```kotlin
+fun interface Assertable {
+   fun assert(expected: Any?, actual: Any?): CustomComparisonResult
+}
+
+sealed interface CustomComparisonResult {
+   val comparable: Boolean
+   data object NotComparable: CustomComparisonResult {
+      override val comparable = false
+   }
+   data object Equal: CustomComparisonResult {
+      override val comparable = true
+   }
+   data class Different(val assertionError: AssertionError): CustomComparisonResult {
+      override val comparable = true
+   }
+}
+```
+
+For instance, here is the implementation of `matchListsIgnoringOrder`:
+
+```kotlin
+fun<T> matchListsIgnoringOrder() = Assertable { expected: Any?, actual: Any? ->
+   customComparison<List<T>>(expected, actual) { expected: List<T>, actual: List<T> ->
+      actual shouldContainExactlyInAnyOrder expected
+   }
+}
+```
+
+We can use any of Kotest's `should***` assertions.
