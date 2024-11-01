@@ -163,6 +163,26 @@ actual shouldBeEqualUsingFields {
      }
 ```
 
+### matchLocalDateTimesWithTolerance
+
+```kotlin
+val expected = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
+   )
+val actual = expected.copy(localDateTime = expected.localDateTime.plusSeconds(1))
+
+actual shouldBeEqualUsingFields {
+  overrideMatchers = mapOf(
+     WithManyFields::localDateTime to matchLocalDateTimesWithTolerance(2.seconds)
+  )
+  expected
+}
+```
+
 ### matchOffsetDateTimesWithTolerance
 
 ```kotlin
@@ -173,7 +193,7 @@ val expected = WithManyFields(
       OffsetDateTime.now(),
       Instant.now()
    )
-val actual = expected.copy(offsetDateTime = expected.instant.plusSeconds(1))
+val actual = expected.copy(offsetDateTime = expected.offsetDateTime.plusSeconds(1))
 
 actual shouldBeEqualUsingFields {
   overrideMatchers = mapOf(
@@ -196,4 +216,24 @@ actual shouldBeEqualUsingFields {
       )
       expected
    }
+```
+
+### matchZonedDateTimesWithTolerance
+
+```kotlin
+val expected = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
+   )
+val actual = expected.copy(zonedDateTime = expected.zonedDateTime.plusSeconds(1))
+
+actual shouldBeEqualUsingFields {
+  overrideMatchers = mapOf(
+     WithManyFields::zonedDateTime to matchOffsetDateTimesWithTolerance(2.seconds)
+  )
+  expected
+}
 ```
