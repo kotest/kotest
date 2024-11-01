@@ -97,3 +97,28 @@ Also we can provide custom matchers for fields. In the following example we are 
 Kotest provides the following override matchers:
 
 ### matchDoublesWithTolerance
+
+```kotlin
+      val expected = SimpleDataClass("apple", 1.0, LocalDateTime.now())
+      val actual = expected.copy(weight = 1.001)
+
+      actual shouldBeEqualUsingFields {
+         overrideMatchers = mapOf(
+            SimpleDataClass::weight to matchDoublesWithTolerance(0.01)
+         )
+         expected
+      }
+```
+
+### matchListsIgnoringOrder
+
+```kotlin
+     val expected = DataClassWithList("name", listOf(1, 2, 3))
+     val actual = expected.copy(elements = listOf(3, 2, 1))
+     actual shouldBeEqualUsingFields {
+        overrideMatchers = mapOf(
+           DataClassWithList::elements to matchListsIgnoringOrder<Int>()
+        )
+        expected
+     }
+```
