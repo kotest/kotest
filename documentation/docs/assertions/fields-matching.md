@@ -96,6 +96,26 @@ Also we can provide custom matchers for fields. In the following example we are 
 
 Kotest provides the following override matchers:
 
+### matchBigDecimalsIgnoringScale
+
+```kotlin
+ val expected = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
+   )
+ val actual = expected.copy(bigDecimal = BigDecimal("1.000"))
+
+ actual shouldBeEqualUsingFields {
+    overrideMatchers = mapOf(
+       WithManyFields::bigDecimal to matchBigDecimalsIgnoringScale()
+    )
+    expected
+ }
+```
+
 ### matchDoublesWithTolerance
 
 ```kotlin
@@ -110,6 +130,26 @@ Kotest provides the following override matchers:
       }
 ```
 
+### matchInstantsWithTolerance
+
+```kotlin
+val expected = WithManyFields(
+      BigDecimal.ONE,
+      LocalDateTime.now(),
+      ZonedDateTime.now(),
+      OffsetDateTime.now(),
+      Instant.now()
+   )
+val actual = expected.copy(instant = expected.instant.plusSeconds(1))
+
+actual shouldBeEqualUsingFields {
+  overrideMatchers = mapOf(
+     WithManyFields::instant to matchInstantsWithTolerance(2.seconds)
+  )
+  expected
+}
+```
+
 ### matchListsIgnoringOrder
 
 ```kotlin
@@ -121,4 +161,18 @@ Kotest provides the following override matchers:
         )
         expected
      }
+```
+
+### matchStringsIgnoringCase
+
+```kotlin
+   val expected = SimpleDataClass("apple", 1.0, LocalDateTime.now())
+   val actual = expected.copy(name = "Apple")
+
+   actual shouldBeEqualUsingFields {
+      overrideMatchers = mapOf(
+         SimpleDataClass::name to matchStringsIgnoringCase
+      )
+      expected
+   }
 ```
