@@ -75,4 +75,25 @@ Fields that differ:
 
 ```
 
-We can explicitly
+Also we can provide custom matchers for fields. In the following example we are matching `SimpleDataClass::name` as case-insensitive strings:
+
+```kotlin
+     val expected = SimpleDataClass("apple", 1.0, LocalDateTime.now())
+     val actual = expected.copy(name = "Apple")
+     shouldThrow<AssertionError> {
+        actual shouldBeEqualUsingFields expected
+     }.message.shouldContainInOrder(
+        "Fields that differ:",
+        """- name  =>  expected:<"apple"> but was:<"Apple">""",
+     )
+     actual shouldBeEqualUsingFields {
+        overrideMatchers = mapOf(
+           SimpleDataClass::name to matchStringsIgnoringCase
+        )
+        expected
+     }
+```
+
+Kotest provides the following override matchers:
+
+### matchDoublesWithTolerance
