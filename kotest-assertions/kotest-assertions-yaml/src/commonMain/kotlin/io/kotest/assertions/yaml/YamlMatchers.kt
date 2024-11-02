@@ -32,7 +32,7 @@ fun beValidYaml() = object : Matcher<String?> {
       } catch (ex: Exception) {
          MatcherResult(
             false,
-            { "expected: actual YAML to be valid YAML: $value" },
+            { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $value" },
             { "expected: actual YAML to be invalid YAML: $value" }
          )
       }
@@ -65,7 +65,7 @@ fun equalYaml(
          } catch (ex: Exception) {
             return@Matcher MatcherResult(
                false,
-               { "expected: actual YAML to be valid YAML: $actual" },
+               { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" },
                { "expected: actual YAML to be invalid YAML: $actual" }
             )
          }
@@ -74,7 +74,7 @@ fun equalYaml(
          } catch (ex: Exception) {
             return@Matcher MatcherResult(
                false,
-               { "expected: expected YAML to be valid YAML: $expected" },
+               { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" },
                { "expected: expected YAML to be invalid YAML: $expected" }
             )
          }
