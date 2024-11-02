@@ -160,6 +160,32 @@ Fields that differ:
          )
       }
 
+      test("error messages handles new lines in actual/expected") {
+
+         val doctor1 = Doctor("billy", 23, emptyList())
+         val doctor2 = Doctor("barry", 23, emptyList())
+
+         val city = City("test1", Hospital("test\nhospital1", doctor1))
+         val city2 = City("test2", Hospital("test\nhospital2", doctor2))
+
+         shouldThrowAny {
+            city.shouldBeEqualUsingFields {
+               city2
+            }
+         }.message.shouldContainInOrder( "Using fields:",
+" - mainHospital.mainDoctor.age",
+" - mainHospital.mainDoctor.name",
+" - mainHospital.name",
+" - name",
+"Fields that differ:",
+""" - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
+""" - mainHospital.name  =>  expected:<"test""",
+"""                          hospital2"> but was:<"test""",
+"""                          hospital1">""",
+""" - name  =>  expected:<"test2"> but was:<"test1">""",
+         )
+      }
+
       test("check equality comparing field by field recursively handling nullable fields") {
 
          val jasmineSociety = Society(
