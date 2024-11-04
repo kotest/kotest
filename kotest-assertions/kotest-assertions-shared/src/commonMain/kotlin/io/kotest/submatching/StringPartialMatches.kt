@@ -2,16 +2,25 @@ package io.kotest.submatching
 
 import io.kotest.assertions.AssertionsConfig
 
-internal fun describePartialMatchesInStringForSlice(expectedSlice: String, value: String) =
+class StringPartialMatch(val expected: String, val value: String) {
+   private val description: PartialMatchesInStringDescription by lazy {
+      describePartialMatchesInStringForSlice(expected, value)
+   }
+   val matched: Boolean by lazy { description.partialMatchesList.isNotEmpty() }
+   val descriptionString: String by lazy { description.toString() }
+   fun error(): AssertionError = AssertionError("")
+}
+
+fun describePartialMatchesInStringForSlice(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Slice)
 
-internal fun describePartialMatchesInStringForSuffix(expectedSlice: String, value: String) =
+fun describePartialMatchesInStringForSuffix(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Suffix)
 
-internal fun describePartialMatchesInStringForPrefix(expectedSlice: String, value: String) =
+fun describePartialMatchesInStringForPrefix(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Prefix)
 
-internal fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInStringDescription {
+fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInStringDescription {
    if(!AssertionsConfig.enabledSubmatchesInStrings.value ||
          substringNotEligibleForSubmatching(expectedSlice) ||
          valueNotEligibleForSubmatching(value)
@@ -46,7 +55,7 @@ internal fun describeMatchedSlice(expectedSlice: String, range: IntRange, type: 
    }
 }
 
-internal sealed interface PartialMatchType {
+sealed interface PartialMatchType {
    val description: String
 
    data object Prefix: PartialMatchType {
@@ -75,7 +84,7 @@ internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCol
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
 }
 
-internal data class PartialMatchesInStringDescription(
+data class PartialMatchesInStringDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String
 ) {
@@ -83,7 +92,7 @@ internal data class PartialMatchesInStringDescription(
       .filter { it.isNotEmpty() }.joinToString("\n")
 }
 
-internal fun underscoreSubstring(
+fun underscoreSubstring(
    valueLength: Int,
    fromIndex: Int,
    toIndex: Int

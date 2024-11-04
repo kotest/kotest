@@ -147,16 +147,17 @@ Fields that differ:
             city.shouldBeEqualUsingFields {
                city2
             }
-         }.message shouldContain """Using fields:
- - mainHospital.mainDoctor.age
- - mainHospital.mainDoctor.name
- - mainHospital.name
- - name
-
-Fields that differ:
- - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">
- - mainHospital.name  =>  expected:<"test-hospital2"> but was:<"test-hospital1">
- - name  =>  expected:<"test2"> but was:<"test1">"""
+         }.message.shouldContainInOrder(
+            "Using fields:",
+            "- mainHospital.mainDoctor.age",
+            "- mainHospital.mainDoctor.name",
+            "- name",
+            "Fields that differ:",
+            """- mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
+            "- mainHospital.name  =>",
+            """expected:<"test-hospital2"> but was:<"test-hospital1">""",
+            """- name  =>  expected:<"test2"> but was:<"test1">""",
+         )
       }
 
       test("error messages handles new lines in actual/expected") {
@@ -178,7 +179,8 @@ Fields that differ:
 " - name",
 "Fields that differ:",
 """ - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
-""" - mainHospital.name  =>  expected:<"test""",
+""" - mainHospital.name  =>""",
+"""expected:<"test""",
 """                          hospital2"> but was:<"test""",
 """                          hospital1">""",
 """ - name  =>  expected:<"test2"> but was:<"test1">""",
