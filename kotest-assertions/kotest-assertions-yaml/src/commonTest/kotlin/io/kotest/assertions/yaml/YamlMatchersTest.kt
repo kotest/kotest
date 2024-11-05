@@ -1,10 +1,6 @@
 package io.kotest.assertions.yaml
 
 import io.kotest.core.spec.style.StringSpec
-import shouldBeValidYaml
-import shouldEqualYaml
-import shouldNotBeValidYaml
-import shouldNotEqualYaml
 
 class YamlMatchersTest: StringSpec() {
    init {
@@ -46,6 +42,22 @@ class YamlMatchersTest: StringSpec() {
             # some comment
             key: "value"
          """ shouldEqualYaml "key: value"
+      }
+      "should not equal YAML when first is invalid" {
+         """
+            items:
+            - id: 001
+            title: A Book
+             author: Unknown
+         """ shouldNotEqualYaml "key: value"
+      }
+      "should not equal YAML when second is invalid" {
+         "key: value" shouldNotEqualYaml """
+            items:
+            - id: 001
+            title: A Book
+             author: Unknown
+         """
       }
    }
 }

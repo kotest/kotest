@@ -1,3 +1,5 @@
+package io.kotest.assertions.yaml
+
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlNode
 import io.kotest.matchers.ComparableMatcherResult
@@ -30,7 +32,7 @@ fun beValidYaml() = object : Matcher<String?> {
       } catch (ex: Exception) {
          MatcherResult(
             false,
-            { "expected: actual YAML to be valid YAML: $value" },
+            { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $value" },
             { "expected: actual YAML to be invalid YAML: $value" }
          )
       }
@@ -58,8 +60,25 @@ fun equalYaml(
             { "Expected value to be not equal to YAML '$expected', but was: null" }
          )
       } else {
-         val (expectedTree, actualTree) = parse(expected, actual)
-         equalYamlNode(expectedTree).test(actualTree)
+         val actualYaml = try {
+            yaml.parseToYamlNode(actual)
+         } catch (ex: Exception) {
+            return@Matcher MatcherResult(
+               false,
+               { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" },
+               { "expected: actual YAML to be invalid YAML: $actual" }
+            )
+         }
+         val expectedYaml = try {
+            yaml.parseToYamlNode(expected)
+         } catch (ex: Exception) {
+            return@Matcher MatcherResult(
+               false,
+               { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" },
+               { "expected: expected YAML to be invalid YAML: $expected" }
+            )
+         }
+         equalYamlNode(expectedYaml).test(actualYaml)
       }
    }
 
@@ -77,9 +96,3 @@ private fun equalYamlNode(
          expected.contentToString(),
       )
    }
-
-internal fun parse(expected: String, actual: String): Pair<YamlNode, YamlNode> {
-   val enode = yaml.parseToYamlNode(expected)
-   val anode = yaml.parseToYamlNode(actual)
-   return Pair(enode, anode)
-}

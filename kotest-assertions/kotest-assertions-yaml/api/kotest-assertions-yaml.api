@@ -1,4 +1,4 @@
-public final class YamlMatchersKt {
+public final class io/kotest/assertions/yaml/YamlMatchersKt {
 	public static final fun beValidYaml ()Lio/kotest/matchers/Matcher;
 	public static final fun equalYaml (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeValidYaml (Ljava/lang/String;)Ljava/lang/String;
