@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.pom.java.LanguageLevel
 import com.intellij.testFramework.IdeaTestUtil
@@ -52,7 +53,7 @@ class ClassTests : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/plugin/intellij/abstractspec.kt",
          "/io/kotest/core/spec/style/specs.kt"
       )[0]
-      val supers = psiFile.elementAtLine(11)?.enclosingKtClass()!!.getAllSuperClasses().map { it.asString() }
+      val supers = ActionUtil.underModalProgress(myFixture.project, "") {  psiFile.elementAtLine(11)?.enclosingKtClass()!!.getAllSuperClasses().map { it.asString() } }
       // the order varies depending on the intellij version, so using set to compare
       supers.toSet() shouldBe setOf("io.kotest.plugin.intellij.MyParentSpec", "io.kotest.core.spec.style.FunSpec")
    }

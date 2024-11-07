@@ -1,5 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runReadAction
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
@@ -28,6 +30,10 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
       return path.toString()
    }
 
+   override fun runInDispatchThread(): Boolean {
+      return false
+   }
+
    fun testGutterIcons() {
 
       myFixture.configureByFiles(
@@ -35,34 +41,36 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      val model =
-         createTreeModel(myFixture.file.virtualFile, myFixture.project, myFixture.file.specs(), myFixture.module)
+      ApplicationManager.getApplication().runReadAction {
+         val model =
+            createTreeModel(myFixture.file.virtualFile, myFixture.project, myFixture.file.specs(), myFixture.module)
 
-      val root = model.root as DefaultMutableTreeNode
-      val kotest = root.userObject as KotestRootNodeDescriptor
-      kotest.presentation.presentableText shouldBe Constants().FrameworkName
+         val root = model.root as DefaultMutableTreeNode
+         val kotest = root.userObject as KotestRootNodeDescriptor
+         kotest.presentation.presentableText shouldBe Constants().FrameworkName
 
-      val children = root.children().toList() as List<DefaultMutableTreeNode>
-      children.size shouldBe 3
-      children[0].userObject.shouldBeInstanceOf<ModulesNodeDescriptor>()
+         val children = root.children().toList() as List<DefaultMutableTreeNode>
+         children.size shouldBe 3
+         children[0].userObject.shouldBeInstanceOf<ModulesNodeDescriptor>()
 
-      children[1].userObject.shouldBeInstanceOf<TagsNodeDescriptor>()
+         children[1].userObject.shouldBeInstanceOf<TagsNodeDescriptor>()
 
-      val testfile = children[2]
-      testfile.userObject.shouldBeInstanceOf<TestFileNodeDescriptor>()
+         val testfile = children[2]
+         testfile.userObject.shouldBeInstanceOf<TestFileNodeDescriptor>()
 
-      val specs = testfile.children().toList() as List<DefaultMutableTreeNode>
-      specs.size shouldBe 1
-      val spec = specs[0]
-      spec.userObject.shouldBeInstanceOf<SpecNodeDescriptor>()
+         val specs = testfile.children().toList() as List<DefaultMutableTreeNode>
+         specs.size shouldBe 1
+         val spec = specs[0]
+         spec.userObject.shouldBeInstanceOf<SpecNodeDescriptor>()
 
-      val elements = spec.children().toList() as List<DefaultMutableTreeNode>
-      elements.size shouldBe 5
+         val elements = spec.children().toList() as List<DefaultMutableTreeNode>
+         elements.size shouldBe 5
 
-      (elements[0].userObject as CallbackNodeDescriptor).presentation.presentableText shouldBe "beforeTest"
-      (elements[1].userObject as CallbackNodeDescriptor).presentation.presentableText shouldBe "afterTest"
-      (elements[2].userObject as IncludeNodeDescriptor).presentation.presentableText shouldBe "Include: myfactory"
-      (elements[3].userObject as IncludeNodeDescriptor).presentation.presentableText shouldBe "Include: myfactory2"
-      (elements[4].userObject as TestNodeDescriptor).presentation.presentableText shouldBe "a string cannot be blank"
+         (elements[0].userObject as CallbackNodeDescriptor).presentation.presentableText shouldBe "beforeTest"
+         (elements[1].userObject as CallbackNodeDescriptor).presentation.presentableText shouldBe "afterTest"
+         (elements[2].userObject as IncludeNodeDescriptor).presentation.presentableText shouldBe "Include: myfactory"
+         (elements[3].userObject as IncludeNodeDescriptor).presentation.presentableText shouldBe "Include: myfactory2"
+         (elements[4].userObject as TestNodeDescriptor).presentation.presentableText shouldBe "a string cannot be blank"
+      }
    }
 }

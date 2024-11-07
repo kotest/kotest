@@ -46,13 +46,6 @@ data class PluginDescriptor(
 
 val descriptors = listOf(
    PluginDescriptor(
-      since = "223.4884.69", // this version is 2022.3
-      until = "223.*",
-      sdkVersion = "2022.3",
-      sourceFolder = "IC-223",
-      useInstaller = true,
-   ),
-   PluginDescriptor(
       since = "231.8109.163", // this version is 2023.1 release
       until = "231.*",
       sdkVersion = "2023.1",
@@ -83,7 +76,7 @@ val descriptors = listOf(
    PluginDescriptor(
       since = "242.*", // this version is 2024.2.x
       until = "243.*",
-      sdkVersion = "2024.2",
+      sdkVersion = "2024.2.2",
       sourceFolder = "IC-242",
       useInstaller = true,
    ),
@@ -108,6 +101,12 @@ val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
    prepareSandboxTask {
       sandboxDirectory = project.layout.buildDirectory.dir(project.property("sandbox").toString())
       sandboxSuffix = ""
+   }
+}
+
+val runWithK2Mode by intellijPlatformTesting.runIde.registering {
+   task {
+      jvmArgs = listOf("-Didea.kotlin.plugin.use.k2=true")
    }
 }
 
@@ -165,7 +164,7 @@ dependencies {
 //   testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
-configurations.all {
+configurations.runtimeOnly {
    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-jdk8")

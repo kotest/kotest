@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.25"
+kotlin = "2.0.21"
 runtime-kotest = "4.2.0"
 # We separate these from the actual runtime dependencies
 test-kotest = "5.9.1"
