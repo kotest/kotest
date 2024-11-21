@@ -1,10 +1,12 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
+import io.kotest.extensions.system.setEnvironmentMap
 import io.kotest.extensions.system.withEnvironment
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
@@ -73,10 +75,18 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
 
    override fun extensions() = listOf(setl)
 
+   override suspend fun beforeSpec(spec: Spec) {
+      setEnvironmentMap(mapOf("dop" to "mop"))
+      System.getenv("dop") shouldBe "mop"
+   }
+
    init {
       "sys environment extension" should {
          "set environment variable" {
             System.getenv("mop") shouldBe "dop"
+         }
+
+         "clear environment variable" {
             System.getenv("dop") shouldBe null
          }
       }
