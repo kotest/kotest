@@ -1,6 +1,6 @@
 [versions]
 blockhound = "1.0.9.RELEASE"
-classgraph = "4.8.175"
+classgraph = "4.8.177"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
@@ -9,6 +9,7 @@ json-path = "2.9.0"
 junit4 = "4.13.2"
 junit-platform = "1.8.2"
 junit-jupiter = "5.8.2"
+kaml = "0.62.2"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
@@ -40,6 +41,7 @@ diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref 
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml"}
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver-netty" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
