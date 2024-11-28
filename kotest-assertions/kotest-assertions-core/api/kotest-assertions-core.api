@@ -2263,6 +2263,12 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun sortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/sets/SetsIntersectionKt {
+	public static final fun intersectWith (Ljava/util/Set;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldIntersect (Ljava/util/Set;Ljava/util/Set;)V
+	public static final fun shouldNotIntersect (Ljava/util/Set;Ljava/util/Set;)V
+}
+
 public final class io/kotest/matchers/short/ShortKt {
 	public static final fun between (SS)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeBetween (SSS)S
