@@ -11,7 +11,7 @@ infix fun <T> Set<T>.shouldNotIntersect(ts: Set<T>) = this shouldNot intersectWi
 
 fun <T> intersectWith(ts: Set<T>): Matcher<Set<T>> = object : Matcher<Set<T>> {
    override fun test(value: Set<T>): MatcherResult {
-      val intersection = ts.filter { value.contains(it) }
+      val intersection = ts intercect value
       val passed = intersection.isNotEmpty()
 
       val failure = { "Set should intersect with ${ts.print().value} but did not." }
