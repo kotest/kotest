@@ -4,7 +4,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.sets.shouldIntersect
 import io.kotest.matchers.sets.shouldNotIntersect
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
 
 class SetsIntersectionTest: WordSpec() {
