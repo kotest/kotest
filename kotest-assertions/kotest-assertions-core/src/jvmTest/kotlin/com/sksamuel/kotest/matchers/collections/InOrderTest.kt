@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.containsInOrder
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class InOrderTest : WordSpec() {
@@ -51,6 +52,15 @@ class InOrderTest : WordSpec() {
          "support arrays with vararg" {
             val actual = arrayOf(1, 2, 3, 4, 5)
             actual.shouldContainInOrder(2, 3, 4)
+         }
+         "find mismatched element before" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3, 4, 5) should containsInOrder(3, 4, 5, 2)
+            }.message.shouldContainInOrder(
+               "did not contain the elements [3, 4, 5, 2] in order",
+               "could not match element 2 at index 3",
+               "but found it before at index(es) [1]"
+            )
          }
       }
    }
