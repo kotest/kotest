@@ -3029,22 +3029,18 @@ public final class io/kotest/submatching/MatchedCollectionElement {
 
 public final class io/kotest/submatching/PartialCollectionMatch {
 	public static final field Companion Lio/kotest/submatching/PartialCollectionMatch$Companion;
-	public fun <init> (Lio/kotest/submatching/MatchedCollectionElement;ILjava/util/List;)V
+	public fun <init> (Lio/kotest/submatching/MatchedCollectionElement;I)V
 	public final fun component1 ()Lio/kotest/submatching/MatchedCollectionElement;
 	public final fun component2 ()I
-	public final fun component3 ()Ljava/util/List;
-	public final fun copy (Lio/kotest/submatching/MatchedCollectionElement;ILjava/util/List;)Lio/kotest/submatching/PartialCollectionMatch;
-	public static synthetic fun copy$default (Lio/kotest/submatching/PartialCollectionMatch;Lio/kotest/submatching/MatchedCollectionElement;ILjava/util/List;ILjava/lang/Object;)Lio/kotest/submatching/PartialCollectionMatch;
+	public final fun copy (Lio/kotest/submatching/MatchedCollectionElement;I)Lio/kotest/submatching/PartialCollectionMatch;
+	public static synthetic fun copy$default (Lio/kotest/submatching/PartialCollectionMatch;Lio/kotest/submatching/MatchedCollectionElement;IILjava/lang/Object;)Lio/kotest/submatching/PartialCollectionMatch;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEndOfMatchAtTarget ()I
 	public final fun getLength ()I
 	public final fun getMatchedElement ()Lio/kotest/submatching/MatchedCollectionElement;
-	public final fun getPartOfValue ()Ljava/util/List;
 	public final fun getRangeOfExpected ()Lkotlin/ranges/IntRange;
 	public final fun getRangeOfValue ()Lkotlin/ranges/IntRange;
-	public final fun getValue ()Ljava/util/List;
 	public fun hashCode ()I
-	public final fun indexInExpected (I)I
 	public final fun indexIsInValue (I)Z
 	public fun toString ()Ljava/lang/String;
 }
