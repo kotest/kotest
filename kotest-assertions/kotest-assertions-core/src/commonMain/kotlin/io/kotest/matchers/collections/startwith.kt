@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.submatching.PartialCollectionMatch
 import io.kotest.submatching.findPartialMatches
 
 infix fun <T> Iterable<T>.shouldStartWith(element: T) = toList().shouldStartWith(listOf(element))
@@ -73,6 +74,7 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
       partialMatchesList,
       partialMatchesDescription,
       unmatchedElementsDescription,
+      partialMatches,
       )
 }
 
@@ -80,6 +82,7 @@ internal data class PartialMatchesInCollectionDescription(
    val partialMatchesList: String,
    val partialMatchesDescription: String,
    val unmatchedElementsDescription: String,
+   val partialMatches: List<PartialCollectionMatch>,
 ) {
    override fun toString(): String = prefixIfNotEmpty(
       listOf(partialMatchesList,
@@ -90,6 +93,11 @@ internal data class PartialMatchesInCollectionDescription(
          .joinToString("\n"),
       "\n"
    )
+
+
+   companion object {
+      val Empty = PartialMatchesInCollectionDescription("", "", "", listOf())
+   }
 }
 
 private data class SliceComparison<T>(
