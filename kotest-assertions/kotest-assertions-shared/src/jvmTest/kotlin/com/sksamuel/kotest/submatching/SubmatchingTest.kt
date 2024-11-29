@@ -26,29 +26,29 @@ class SubmatchingTest : WordSpec() {
          }
          "match end of one string to beginning of another" {
             findPartialMatchesInString("broom", "roommate", minLength = 4) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(1, 0), 4, "broom".toList())
+               PartialCollectionMatch(MatchedCollectionElement(1, 0), 4)
             )
          }
          "match two middles" {
             findPartialMatchesInString("room", "boot", minLength = 2) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(1, 1), 2, "room".toList())
+               PartialCollectionMatch(MatchedCollectionElement(1, 1), 2)
             )
          }
          "find common end" {
             findPartialMatchesInString("river", "driver", minLength = 3) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 1), 5, "river".toList())
+               PartialCollectionMatch(MatchedCollectionElement(0, 1), 5)
             )
          }
          "find two common substrings in same order" {
             findPartialMatchesInString("roommate", "room-mate", minLength = 3) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 0), 4, "roommate".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(4, 5), 4, "roommate".toList()),
+               PartialCollectionMatch(MatchedCollectionElement(0, 0), 4),
+               PartialCollectionMatch(MatchedCollectionElement(4, 5), 4),
             )
          }
          "find two common substrings in opposite order" {
             findPartialMatchesInString("downsize", "size down", minLength = 3) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4, "downsize".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4, "downsize".toList()),
+               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4),
+               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4),
             )
          }
          "maintain performance".config(timeout = 1.seconds) {
@@ -66,7 +66,7 @@ class SubmatchingTest : WordSpec() {
                value = listOf(0, 1, 2, 3, 4, 3, 6),
                minLength = 4
             ) shouldBe listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 1), 4, expected),
+               PartialCollectionMatch(MatchedCollectionElement(0, 1), 4),
             )
          }
       }
@@ -115,7 +115,7 @@ class SubmatchingTest : WordSpec() {
                target = "stable".toList(),
                matchedElement = matchedElement,
                minLength = 5
-            ) shouldBe PartialCollectionMatch(matchedElement, 5, value)
+            ) shouldBe PartialCollectionMatch(matchedElement, 5)
          }
          "return null if submatch is too short" {
             val matchedElement = MatchedCollectionElement(0, 1)
@@ -131,17 +131,17 @@ class SubmatchingTest : WordSpec() {
       "removeShorterMatchesWithSameEnd" should {
          "leave matches as is when there is nothing to remove" {
             val matches = listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4, "down".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4, "size".toList()),
+               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4),
+               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4),
             )
             removeShorterMatchesWithSameEnd(matches) shouldBe matches
          }
          "remove shorter matches that are inside longer ones" {
             val matches = listOf(
-               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4, "down".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4, "size".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(1, 6), 3, "own".toList()),
-               PartialCollectionMatch(MatchedCollectionElement(5, 1), 3, "ize".toList()),
+               PartialCollectionMatch(MatchedCollectionElement(0, 5), 4),
+               PartialCollectionMatch(MatchedCollectionElement(4, 0), 4),
+               PartialCollectionMatch(MatchedCollectionElement(1, 6), 3),
+               PartialCollectionMatch(MatchedCollectionElement(5, 1), 3),
             )
             removeShorterMatchesWithSameEnd(matches) shouldBe matches.filter { it.length == 4 }
          }
