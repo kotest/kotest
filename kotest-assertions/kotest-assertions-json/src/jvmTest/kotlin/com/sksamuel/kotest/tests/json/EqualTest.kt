@@ -22,7 +22,7 @@ import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class EqualTest : FunSpec() {
    init {
       test("compare non equal objects") {
