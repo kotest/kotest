@@ -12,15 +12,19 @@ internal fun compareObjects(
    if (FieldComparison.Strict == options.fieldComparison) {
       val expectedKeys = expected.elements.keys
       val actualKeys = actual.elements.keys
+      val extraKeys = actualKeys - expectedKeys
+      val missingKeys = expectedKeys - actualKeys
 
-      if (actualKeys.size > expectedKeys.size) {
-         val extra = actualKeys - expectedKeys
-         return JsonError.ObjectExtraKeys(path, extra)
+      if (extraKeys.isNotEmpty() && missingKeys.isNotEmpty()) {
+         return JsonError.ObjectExtraAndMissingKeys(path, extraKeys, missingKeys)
       }
 
-      if (actualKeys.size < expectedKeys.size) {
-         val missing = expectedKeys - actualKeys
-         return JsonError.ObjectMissingKeys(path, missing)
+      if (extraKeys.isNotEmpty()) {
+         return JsonError.ObjectExtraKeys(path, extraKeys)
+      }
+
+      if (missingKeys.isNotEmpty()) {
+         return JsonError.ObjectMissingKeys(path, missingKeys)
       }
    }
 
