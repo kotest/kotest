@@ -22,7 +22,7 @@ import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
-@EnabledIf(LinuxCondition::class)
+//@EnabledIf(LinuxCondition::class)
 class EqualTest : FunSpec() {
    init {
       test("compare non equal objects") {
@@ -170,7 +170,7 @@ expected:<{
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c]
+            """The top level object has extra field(s) [b] and missing field(s) [c]
 
 expected:<{
   "a": "foo",
