@@ -21,7 +21,7 @@ internal fun matchNotNullStrings(field: String, expected: String, actual: String
       if(distance.aboveThresholdForStrings()) {
          StringMismatch(field, expected, actual, comparison.toString(), distance)
       } else {
-         AtomicMismatch(field, expected, actual, distance)
+         AtomicMismatch(field, expected, actual)
       }
    }
 }

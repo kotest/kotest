@@ -33,7 +33,7 @@ class MatchNotNullStringsTest: StringSpec() {
             actual.match shouldBe false
             actual.description() shouldBe """    "field" expected: <"0123456789abcdefghijklmnopqrstuvwxyz">, but was: <"SFGHSRGHSFDGHSFGHSDFGHSDFGHDF">"""
             actual.shouldBeInstanceOf<AtomicMismatch>()
-            (actual as AtomicMismatch).distance shouldBe Distance(BigDecimal("0.00"))
+            (actual as AtomicMismatch).distance shouldBe Distance(BigDecimal.ZERO)
          }
       }
    }
