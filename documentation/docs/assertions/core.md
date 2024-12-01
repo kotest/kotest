@@ -104,6 +104,9 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
 | `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
 
+| Sets ||
+|------|----|
+| shouldIntersect | Asserts that the set has at least one element in common with the other set. |
 
 | Strings                                     ||
 |---------------------------------------------| ---- |
