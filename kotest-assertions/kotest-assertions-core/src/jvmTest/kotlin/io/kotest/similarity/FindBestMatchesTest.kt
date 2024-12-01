@@ -1,8 +1,10 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.equality.shouldBeEqualUsingFields
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal
 
@@ -23,8 +25,10 @@ class FindBestMatchesTest : StringSpec() {
       }
 
       "find two closest matches" {
-         findBestMatches(oneApple, listOf(twoApples, twoOranges, oneOrange)) shouldBe listOf(
-            IndexedComparisonResult(
+         val actual = findBestMatches(oneApple, listOf(twoApples, twoOranges, oneOrange))
+         assertSoftly {
+            actual.size shouldBe 2
+            actual[0] shouldBeEqualUsingFields IndexedComparisonResult(
                0,
                MismatchByField(
                   field = "",
@@ -39,8 +43,8 @@ class FindBestMatchesTest : StringSpec() {
                   ),
                   distance = Distance(BigDecimal("0.5"))
                )
-            ),
-            IndexedComparisonResult(
+            )
+            actual[1] shouldBeEqualUsingFields IndexedComparisonResult(
                2,
                MismatchByField(
                   field = "",
@@ -56,7 +60,7 @@ class FindBestMatchesTest : StringSpec() {
                   distance = Distance(BigDecimal("0.5"))
                )
             )
-         )
+         }
       }
 
       "find nothing if complete mismatch" {
