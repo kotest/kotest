@@ -2420,6 +2420,7 @@ public final class io/kotest/matchers/string/MatchKt {
 	public static final fun shouldMatch (Ljava/lang/CharSequence;Ljava/lang/String;)Ljava/lang/CharSequence;
 	public static final fun shouldMatch (Ljava/lang/CharSequence;Lkotlin/text/Regex;)Ljava/lang/CharSequence;
 	public static final fun shouldNotMatch (Ljava/lang/CharSequence;Ljava/lang/String;)Ljava/lang/CharSequence;
+	public static final fun shouldNotMatch (Ljava/lang/CharSequence;Lkotlin/text/Regex;)Ljava/lang/CharSequence;
 }
 
 public final class io/kotest/matchers/string/MatchersKt {
