@@ -11,7 +11,10 @@ import io.kotest.equals.SimpleEqualityResultDetail
 import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -113,6 +116,30 @@ class ShouldContainTest : WordSpec({
          shouldThrow<AssertionError> {
             listOf<Any>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21).shouldContain(listOf<Any>(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L))
          }.shouldHaveMessage("Collection should contain element [1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] based on object equality; but the collection is [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]")
+      }
+
+      "print indexes of matching elements" {
+         val message = shouldThrow<AssertionError> {
+            listOf(1, 2, 3, 2, 4, 5).shouldNotContain(2)
+         }.message
+         message.shouldContain("but it did at index(es):[1, 3]")
+      }
+
+      "print index of matching element with custom verifier" {
+         val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
+            override fun name() = "Case Insensitive String Matcher"
+
+            override fun verify(actual: String, expected: String): EqualityResult {
+               return if (actual.uppercase() == expected.uppercase())
+                  EqualityResult.equal(actual, expected, this)
+               else
+                  EqualityResult.notEqual(actual, expected, this)
+            }
+         }
+         val message = shouldThrow<AssertionError> {
+            listOf("apple", "orange", "lemon").shouldNotContain("Orange", caseInsensitiveStringEquality)
+         }.message
+         message.shouldContain("but it did at index(es):[1]")
       }
    }
 })
