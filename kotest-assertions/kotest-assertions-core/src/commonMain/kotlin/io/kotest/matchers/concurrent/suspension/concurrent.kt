@@ -13,9 +13,17 @@ import kotlin.time.measureTimedValue
 /**
  * Assert [operation] completes within [duration].
  *
- * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
- */
+ * Note: When invoked within [assertSoftly], wrap it in [shouldNotThrowAny], as follows:
+ * assertSoftly {
+ *   shouldNotThrowAny {
+ *     shouldCompleteWithin(4.seconds) {
+ *             delay(3.seconds)
+ *          }
+ *   }
+ *   (2+2) shouldBe 4
+ * }
+ *
+ * */
 suspend fun <A> shouldCompleteWithin(
    duration: Duration,
    operation: suspend () -> A,
@@ -37,8 +45,15 @@ suspend fun <A> shouldCompleteWithin(
 /**
  * Assert [operation] completes within [durationRange].
  *
- * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
+ * Note: When invoked within [assertSoftly], wrap it in [shouldNotThrowAny], as follows:
+ * assertSoftly {
+ *   shouldNotThrowAny {
+ *     shouldCompleteWithin(1.seconds..2.seconds) {
+ *             delay(1.5.seconds)
+ *          }
+ *   }
+ *   (2+2) shouldBe 4
+ * }
  */
 suspend fun <A> shouldCompleteBetween(
    durationRange: ClosedRange<Duration>,
@@ -66,8 +81,15 @@ suspend fun <A> shouldCompleteBetween(
 /**
  * Assert [operation] does not complete within [duration].
  *
- * Note: It does not work well within [assertSoftly].
- * If used within [assertSoftly] and this assertion fails, any later assertions won't run.
+ * Note: When invoked within [assertSoftly], wrap it in [shouldNotThrowAny], as follows:
+ * assertSoftly {
+ *   shouldNotThrowAny {
+ *     shouldTimeout(1.2.seconds) {
+ *             delay(1.1.seconds)
+ *          }
+ *   }
+ *   (2+2) shouldBe 4
+ * }
  */
 suspend fun shouldTimeout(
    duration: Duration,
