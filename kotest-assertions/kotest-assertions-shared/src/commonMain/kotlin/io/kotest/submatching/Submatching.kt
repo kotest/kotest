@@ -3,7 +3,7 @@ package io.kotest.submatching
 fun findPartialMatchesInString(expected: String, value: String, minLength: Int) =
    findPartialMatches(expected.toList(), value.toList(), minLength)
 
-fun<T> findPartialMatches(expected: List<T>, value: List<T>, minLength: Int): List<PartialCollectionMatch<T>> {
+fun<T> findPartialMatches(expected: List<T>, value: List<T>, minLength: Int): List<PartialCollectionMatch> {
    val indexes = toCharIndex(value)
    val matches = expected.asSequence().mapIndexed { index, char ->
       index to char
@@ -33,24 +33,23 @@ internal fun <T> matchedElements(
 } ?: listOf()
 
 internal fun <T> extendPartialMatchToRequiredLength(
-   value: List<T>,
-   target: List<T>,
-   matchedElement: MatchedCollectionElement,
-   minLength: Int
-): PartialCollectionMatch<T>? {
+    value: List<T>,
+    target: List<T>,
+    matchedElement: MatchedCollectionElement,
+    minLength: Int
+): PartialCollectionMatch? {
    val lengthOfMatch = lengthOfMatch(value, target, matchedElement)
    return if (lengthOfMatch >= minLength) {
       PartialCollectionMatch(
          matchedElement,
          lengthOfMatch,
-         value
       )
    } else null
 }
 
-internal fun<T> removeShorterMatchesWithSameEnd(
-   matches: List<PartialCollectionMatch<T>>
-): List<PartialCollectionMatch<T>> {
+internal fun removeShorterMatchesWithSameEnd(
+   matches: List<PartialCollectionMatch>
+): List<PartialCollectionMatch> {
    val matchesGroupedByEnd = matches.groupBy {
       it.endOfMatchAtTarget
    }
@@ -73,21 +72,15 @@ data class MatchedCollectionElement(
    val startIndexInValue: Int
 )
 
-data class PartialCollectionMatch<T>(
-   val matchedElement: MatchedCollectionElement,
-   val length: Int,
-   val value: List<T>
+data class PartialCollectionMatch(
+    val matchedElement: MatchedCollectionElement,
+    val length: Int,
 ) {
    val endOfMatchAtTarget: Int
       get() = matchedElement.startIndexInValue + length - 1
-   val partOfValue: List<T>
-      get() = value.subList(matchedElement.startIndexInExpected, matchedElement.startIndexInExpected + length)
    val rangeOfExpected: IntRange = rangeOfLength(matchedElement.startIndexInExpected, length)
    val rangeOfValue: IntRange = rangeOfLength(matchedElement.startIndexInValue, length)
-
    fun indexIsInValue(index: Int) = index in rangeOfValue
-   fun indexInExpected(indexInValue: Int) = matchedElement.startIndexInExpected +
-      (indexInValue - matchedElement.startIndexInValue)
 
    companion object {
       fun rangeOfLength(start: Int, length: Int): IntRange = (start..<start+length)

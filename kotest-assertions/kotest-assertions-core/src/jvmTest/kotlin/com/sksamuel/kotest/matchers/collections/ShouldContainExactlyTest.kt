@@ -20,7 +20,6 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
-import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
@@ -160,13 +159,11 @@ class ShouldContainExactlyTest : WordSpec() {
          "print errors unambiguously" {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
-            } shouldHaveMessage
-               """
-                  |Collection should contain exactly: [1, 2] but was: [1L, 2L]
-                  |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
-                  |
-                  |expected:<[1, 2]> but was:<[1L, 2L]>
-               """.trimMargin()
+            }.message.shouldContainInOrder(
+               "Collection should contain exactly: [1, 2] but was: [1L, 2L]",
+               "Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]",
+               "expected:<[1, 2]> but was:<[1L, 2L]>",
+            )
          }
 
          "print dataclasses" {
@@ -224,13 +221,11 @@ class ShouldContainExactlyTest : WordSpec() {
                ).shouldContainExactly(
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
-               """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
-               """.trimMargin()
+            }.message.shouldContainInOrder(
+               "Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
+               "Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
+               "expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>",
+            )
          }
 
          "include missing and extras when not the right amount" {
@@ -332,6 +327,16 @@ class ShouldContainExactlyTest : WordSpec() {
                "[7] 7 => slice 0",
                "[8] 8 => slice 0",
                "[9] 9 => slice 0",
+            )
+         }
+
+         "find elements not in matched slice" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) shouldContainExactly listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0,)
+            }.message
+            message.shouldContainInOrder(
+               "Element(s) not in matched slice(s):",
+               "[9] 0 => Found At Index(es): [0]"
             )
          }
 
@@ -441,6 +446,23 @@ class ShouldContainExactlyTest : WordSpec() {
                |  The following fields did not match:
                |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
+         }
+         "find similar element for String" {
+            val message = shouldThrow<AssertionError> {
+               listOf("sweet green apple", "sweet red apple").shouldContainExactlyInAnyOrder(
+                  listOf(
+                     "sweet green apple",
+                     "sweet red plum",
+                  )
+               )
+            }.message
+            println(message)
+            message.shouldContainInOrder(
+               "Possible matches for unexpected elements:",
+               """expected: <"sweet red plum">, found a similar value: <"sweet red apple">""",
+               """Line[0] ="sweet red apple"""",
+               """Match[0]= ++++++++++-----""",
+            )
          }
 
          "disambiguate when using optional expected value" {

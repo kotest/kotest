@@ -170,7 +170,7 @@ expected:<{
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """The top level object was missing expected field(s) [c]
+            """The top level object has extra field(s) [b] and missing field(s) [c]
 
 expected:<{
   "a": "foo",

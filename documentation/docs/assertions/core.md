@@ -104,6 +104,9 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
 | `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
 
+| Sets ||
+|------|----|
+| shouldIntersect | Asserts that the set has at least one element in common with the other set. |
 
 | Strings                                     ||
 |---------------------------------------------| ---- |
@@ -169,21 +172,22 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||
-|---------------------------------------------| ---- |
-| `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
-| `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
-| `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive |
-| `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative |
-| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive |
-| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
-| `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
-| `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
-| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equal to n|
-| `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n |
+| BigDecimal                                  |                                                                            |
+|---------------------------------------------|----------------------------------------------------------------------------|
+| `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n     |
+| `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n         |
+| `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive                                    |
+| `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative                                    |
+| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive                                |
+| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative                                |
+| `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero                                        |
+| `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n                 |
+| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equal to n                     |
+| `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n              |
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
-| `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range |
-| `bigDecimal.shouldBeEqualIgnoringScale(r)`  | Asserts that the bigDecimal is equal to the given value n ignoring scale |
+| `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range                          |
+| `bigDecimal.shouldBeEqualIgnoringScale(r)`  | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
+| `bigDecimal.shouldBe(value plusOrMinus(tolerance))` | Asserts that the bigDecimal is equal to the given value within a tolerance range. |
 
 | Channels                                          ||
 |---------------------------------------------------| ---- |

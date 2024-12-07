@@ -93,8 +93,10 @@ module.exports = {
         "assertions/konform",
         "assertions/klock",
         "assertions/compiler",
+        "assertions/field-matching",
         "assertions/jsoup",
-        "assertions/ranges"
+        "assertions/ranges",
+        "assertions/yaml"
       ]
     }
   ],
