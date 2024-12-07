@@ -1,6 +1,6 @@
 package io.kotest.permutations.statistics
 
-import io.kotest.permutations.ErrorBuilder
+import io.kotest.permutations.errors.ErrorBuilder
 import io.kotest.permutations.PermutationContext
 import io.kotest.permutations.PermutationResult
 import kotlin.math.min

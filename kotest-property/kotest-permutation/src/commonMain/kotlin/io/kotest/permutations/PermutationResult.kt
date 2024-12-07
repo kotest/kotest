@@ -20,6 +20,8 @@ data class IterationFailure(
    val successes: Int, // the total number of successful iterations so far
    val failures: Int, // the total number of failed iterations so far
    val duration: Duration, // the duration of the iteration
-   val inputs: List<Any?>, // the inputs used for this iteration
+   val inputs: List<Input>, // the inputs used for this iteration
    val error: Throwable, // the particular error in case of a failure
 )
+
+data class Input(val name: String?, val value: Any?)

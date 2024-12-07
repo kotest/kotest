@@ -1344,23 +1344,6 @@ public final class io/kotest/property/classifications/StandardClassificationRepo
 	public fun output (Lio/kotest/property/PropertyResult;)V
 }
 
-public final class io/kotest/property/errors/PropertyErrorMessageBuilder {
-	public static final field Companion Lio/kotest/property/errors/PropertyErrorMessageBuilder$Companion;
-	public fun <init> (ILjava/lang/Long;ILjava/lang/Throwable;)V
-	public final fun build ()Ljava/lang/String;
-	public final fun copy (ILjava/lang/Long;ILjava/lang/Throwable;)Lio/kotest/property/errors/PropertyErrorMessageBuilder;
-	public static synthetic fun copy$default (Lio/kotest/property/errors/PropertyErrorMessageBuilder;ILjava/lang/Long;ILjava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/property/errors/PropertyErrorMessageBuilder;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-	public final fun withMaxFailures (I)Lio/kotest/property/errors/PropertyErrorMessageBuilder;
-	public final fun withSeed (J)Lio/kotest/property/errors/PropertyErrorMessageBuilder;
-}
-
-public final class io/kotest/property/errors/PropertyErrorMessageBuilder$Companion {
-	public final fun builder (ILjava/lang/Throwable;)Lio/kotest/property/errors/PropertyErrorMessageBuilder;
-}
-
 public final class io/kotest/property/exhaustive/BasicsKt {
 	public static final fun andNull (Lio/kotest/property/Exhaustive;)Lio/kotest/property/Exhaustive;
 	public static final fun boolean (Lio/kotest/property/Exhaustive$Companion;)Lio/kotest/property/Exhaustive;

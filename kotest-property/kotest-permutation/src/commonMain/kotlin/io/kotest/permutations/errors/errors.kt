@@ -1,45 +1,7 @@
-package io.kotest.permutations
+package io.kotest.permutations.errors
 
-///**
-// * Generates an [AssertionError] for a property test without arg details and then throws it.
-// */
-//internal fun throwPropertyTestAssertionError(
-//   e: Throwable, // the underlying failure reason,
-//   attempts: Int,
-//   seed: Long,
-//): Unit = throw propertyAssertionError(e, attempts, seed, emptyList())
-//
-///**
-// * Generates an [AssertionError] for a property test with arg details and then throws it.
-// *
-// * @param results the reduced (shrunk) values along with the initial values
-// * @param e the underlying failure reason
-// * @param attempts the iteration count at the time of failure
-// */
-//fun throwPropertyTestAssertionError(
-//   results: List<ShrinkResult<Any?>>,
-//   e: Throwable,
-//   attempts: Int,
-//   seed: Long,
-//) {
-//   throw propertyAssertionError(e, attempts, seed, results)
-//}
-//
-///**
-// * Generates an [AssertionError] for a failed property test.
-// *
-// * @param e the test failure cause
-// * @param attempt the iteration count at the time of failure
-// * @param results the inputs that the test failed for
-// */
-//internal fun propertyAssertionError(
-//   e: Throwable,
-//   attempt: Int,
-//   seed: Long,
-//   results: List<ShrinkResult<Any?>>
-//): Throwable {
-//   return failure(propertyTestFailureMessage(attempt, results, seed, e), e)
-//}
+import io.kotest.permutations.PermutationContext
+import io.kotest.permutations.PermutationResult
 
 internal object ErrorBuilder {
 

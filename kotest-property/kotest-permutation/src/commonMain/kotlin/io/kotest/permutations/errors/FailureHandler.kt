@@ -1,9 +1,7 @@
-package io.kotest.permutations.checks
+package io.kotest.permutations.errors
 
-import io.kotest.assertions.print.print
 import io.kotest.permutations.IterationFailure
 import io.kotest.permutations.PermutationContext
-import io.kotest.property.errors.PropertyErrorMessageBuilder
 
 internal object FailureHandler {
 
@@ -13,21 +11,10 @@ internal object FailureHandler {
          .builder(result.iteration, result.error)
          .withMaxFailures(context.maxFailures)
          .withSeed(context.rs.seed)
+         .withInputs(result.inputs)
          .build()
 
       throw AssertionError(message)
-
-      //      if (config.maxFailure == 0) {
-//         printFailureMessage(context, inputs, e)
-//         io.kotest.property.internal.throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
-//      } else if (context.failures() > config.maxFailure) {
-//         io.kotest.property.internal.throwPropertyTestAssertionError(
-//            shrinkfn(),
-//            AssertionError(error),
-//            context.attempts(),
-//            seed
-//         )
-//      }
    }
 
    fun shrinky() {
@@ -61,19 +48,6 @@ internal object FailureHandler {
 //         appendLine()
 //      }
 //   }
-
-   private fun StringBuilder.appendInputs(inputs: List<Any?>) {
-      iterator {
-         inputs.forEach { input ->
-            yield(input.print().value)
-         }
-//         context.generatedSamples().forEach { sample ->
-//            yield("${sample.value.print().value} (generated within property context)")
-//         }
-      }.withIndex().forEach { (index, input) ->
-         appendLine("$index) $input")
-      }
-   }
 
 //   private fun buildException(maxFailure: Int, failures: Int, inputs: List<Any?>): String {
 //      return buildString {

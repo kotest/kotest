@@ -1,5 +1,6 @@
 package io.kotest.permutations.delegates
 
+import io.kotest.permutations.Input
 import io.kotest.property.Sample
 
 /**
@@ -33,4 +34,7 @@ class GenDelegateRegistry {
       return delegates.map { it.sample() }
    }
 
+   fun inputs(): List<Input> {
+      return delegates.map { it.inputs() }
+   }
 }

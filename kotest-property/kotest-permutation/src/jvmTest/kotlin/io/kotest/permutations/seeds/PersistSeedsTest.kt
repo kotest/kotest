@@ -1,4 +1,4 @@
-package io.kotest.permutations
+package io.kotest.permutations.seeds
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
@@ -6,6 +6,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
+import io.kotest.permutations.permutations
 import io.kotest.property.PropertyTesting
 import io.kotest.property.seed.seedDirectory
 import kotlin.io.path.ExperimentalPathApi

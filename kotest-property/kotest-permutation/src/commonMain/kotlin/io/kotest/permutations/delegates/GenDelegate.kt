@@ -1,5 +1,6 @@
 package io.kotest.permutations.delegates
 
+import io.kotest.permutations.Input
 import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
@@ -127,6 +128,10 @@ class GenDelegate<A>(
     */
    fun sample(): Sample<A> {
       return _random as Sample<A>
+   }
+
+   fun inputs(): Input {
+      return Input(property()?.name, sample().value)
    }
 
    fun candidate(): RTree<A> {

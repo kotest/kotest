@@ -1,13 +1,13 @@
 package io.kotest.permutations
 
 import io.kotest.permutations.checks.AllowCustomSeedBeforeCheck
-import io.kotest.permutations.statistics.CoverageCheck
-import io.kotest.permutations.checks.FailureHandler
 import io.kotest.permutations.checks.MaxDiscardCheck
 import io.kotest.permutations.checks.MinSuccessCheck
 import io.kotest.permutations.constraints.Iteration
+import io.kotest.permutations.errors.FailureHandler
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.ClassificationsWriter
+import io.kotest.permutations.statistics.CoverageCheck
 import io.kotest.property.AssumptionFailedException
 import kotlin.time.TimeSource
 
@@ -68,7 +68,7 @@ internal class PermutationExecutor(
                successes = successes,
                failures = failures,
                duration = mark.elapsedNow(),
-               inputs = context.registry.samples().map { it.value },
+               inputs = context.registry.inputs(),
                error = e,
             )
 

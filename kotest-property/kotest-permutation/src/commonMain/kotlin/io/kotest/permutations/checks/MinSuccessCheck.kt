@@ -2,7 +2,7 @@ package io.kotest.permutations.checks
 
 import io.kotest.permutations.PermutationContext
 import io.kotest.permutations.PermutationResult
-import io.kotest.permutations.ErrorBuilder
+import io.kotest.permutations.errors.ErrorBuilder
 import kotlin.math.min
 
 /**
