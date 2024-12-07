@@ -61,14 +61,14 @@ sealed interface AnnotationSearchParameter
 /**
  * Search should also include composed annotations.
  */
-object IncludingAnnotations : AnnotationSearchParameter
+data object IncludingAnnotations : AnnotationSearchParameter
 
 /**
  * Search should include full type hierarchy.
  *
  * If used with [IncludingAnnotations] also include composed annotations of superclasses.
  */
-object IncludingSuperclasses : AnnotationSearchParameter
+data object IncludingSuperclasses : AnnotationSearchParameter
 
 object BasicReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = null
