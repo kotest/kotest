@@ -4,6 +4,9 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.permutations.PermutationContext
 import io.kotest.property.statistics.StatisticsReportMode
 
+/**
+ * The [ClassificationsWriter] is responsible for writing the classifications to the output.
+ */
 @ExperimentalKotest
 internal object ClassificationsWriter {
 

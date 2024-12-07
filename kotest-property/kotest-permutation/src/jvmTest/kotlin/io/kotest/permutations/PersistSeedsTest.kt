@@ -20,7 +20,7 @@ class PersistSeedsTest : FunSpec({
       seedDirectory().deleteRecursively()
    }
 
-   afterTest {
+   beforeTest {
       PropertyTesting.writeFailedSeed = true
    }
 
@@ -34,7 +34,7 @@ class PersistSeedsTest : FunSpec({
          }
       }
       seedDirectory()
-         .resolve("com.sksamuel.kotest.property.core.PersistSeedsTest_failed tests should persist seeds")
+         .resolve("io.kotest.permutations.PersistSeedsTest_failed tests should persist seeds")
          .readText().shouldBe("2344324")
    }
 
@@ -48,7 +48,7 @@ class PersistSeedsTest : FunSpec({
          }
       }
       seedDirectory()
-         .resolve("com.sksamuel.kotest.property.core.PersistSeedsTest_failed tests should persist seeds even for illegal chars in the test name _______")
+         .resolve("io.kotest.permutations.PersistSeedsTest_failed tests should persist seeds even for illegal chars in the test name _______")
          .readText().shouldBe("623515")
    }
 

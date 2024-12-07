@@ -12,18 +12,18 @@ import io.kotest.property.exhaustive.ints
 @EnabledIf(LinuxCondition::class)
 class MaxFailureTest : FunSpec({
 
-   test("test should fail if the failure rate is higher than maxFailure setting") {
+   test("test should fail once the failure rate is higher than maxFailure setting") {
       val message = shouldThrowAny {
-        io.kotest.permutations.permutations {
-          seed = 1900646515
-          maxFailures = 5
-          val a by gen { Exhaustive.ints(0..10) }
-          forEach {
-            a shouldBeLessThan 8
-          }
-        }
+         permutations {
+            seed = 1900646515
+            maxFailures = 5
+            val a by gen { Exhaustive.ints(0..10) }
+            forEach {
+               a shouldBeLessThan 8
+            }
+         }
       }.message
-      message shouldContain """Property failed after 6 attempts"""
-      message shouldContain """Caused by: Property failed 6 times (maxFailure rate was 5)"""
+      message shouldContain """Property failed after 22 attempts"""
+      message shouldContain """Max failures was 5"""
    }
 })

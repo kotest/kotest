@@ -59,7 +59,7 @@ internal class PermutationExecutor(
             failures++
             iterations++
 
-            val result = IterationResult(
+            val result = IterationFailure(
                iteration = iterations,
                success = false,
                successes = successes,
@@ -69,10 +69,10 @@ internal class PermutationExecutor(
                error = e
             )
 
-            // we might be able to tolerate this failure, if max failure is set > 0,
-            // otherwise, this test will now throw an exception
+            // we might be able to tolerate this failure, if max failure is set > 0 and we haven't hit it yet
+            // otherwise, this test will now throw an exception and do the failure state operations
             if (failures > context.maxFailures) {
-               SeedOperations.writeFailedSeed(context.rs.seed)
+               SeedOperations.writeFailedSeed(context.writeFailedSeed, context.rs.seed)
                ClassificationsWriter.writeIfEnabled(context, true)
                FailureHandler.handleFailure(context, result)
             }

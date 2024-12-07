@@ -14,12 +14,12 @@ data class PermutationResult(
    val shrinks: List<Any?>, // the shrunk values
 )
 
-data class IterationResult(
+data class IterationFailure(
    val iteration: Int, // the index of this iteration
    val success: Boolean, // whether the iteration was successful
    val successes: Int, // the total number of successful iterations so far
    val failures: Int, // the total number of failed iterations so far
    val duration: Duration, // the duration of the iteration
    val inputs: List<Any?>, // the inputs used for this iteration
-   val error: Throwable?, // the particular error in case of a failure
+   val error: Throwable, // the particular error in case of a failure
 )

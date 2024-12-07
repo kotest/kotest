@@ -3,7 +3,7 @@ package io.kotest.permutations
 internal object ConfigWriter {
 
    fun writeIfEnabled(context: PermutationContext) {
-      if (context.shouldPrintConfig)
+      if (context.printConfig)
          doWrite(context)
    }
 

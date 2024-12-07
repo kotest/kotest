@@ -14,9 +14,9 @@ internal data class PermutationContext(
    val constraints: Constraints,
    val maxDiscardPercentage: Int,
    val shrinkingMode: ShrinkingMode,
-   val shouldPrintShrinkSteps: Boolean,
-   val shouldPrintGeneratedValues: Boolean,
-   val shouldPrintConfig: Boolean,
+   val printShrinkSteps: Boolean,
+   val printGeneratedValues: Boolean,
+   val printConfig: Boolean,
    val failOnSeed: Boolean,
    val writeFailedSeed: Boolean,
    val customSeed: Boolean, // true if the seed was set programmatically

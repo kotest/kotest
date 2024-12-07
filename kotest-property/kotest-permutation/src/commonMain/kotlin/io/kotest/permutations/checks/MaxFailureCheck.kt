@@ -2,15 +2,21 @@ package io.kotest.permutations.checks
 
 import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
-import io.kotest.permutations.IterationResult
+import io.kotest.permutations.IterationFailure
 import io.kotest.permutations.PermutationContext
 import io.kotest.property.PropertyContext
+import io.kotest.property.errors.PropertyErrorMessageBuilder
 
 internal object FailureHandler {
 
-   fun handleFailure(context: PermutationContext, result: IterationResult) {
-//         throw AssertionError(ErrorBuilder.build(context.maxFailures, result.failures, result.inputs))
-//         throw AssertionError(buildException(context.maxFailures, result.failures, result.inputs))
+   fun handleFailure(context: PermutationContext, result: IterationFailure) {
+
+      val message = PropertyErrorMessageBuilder
+         .builder(result.iteration, result.error)
+         .withMaxFailures(context.maxFailures)
+         .build()
+
+      throw AssertionError(message)
 
       //      if (config.maxFailure == 0) {
 //         printFailureMessage(context, inputs, e)

@@ -51,7 +51,7 @@ class SeedTest : FunSpec({
                1 shouldBe 0
             }
          }
-      }.message shouldBe ("Repeat this test by using seed 12345")
+      }.message shouldContain "Repeat this test by using seed 12345"
    }
 
    test("errored test should print seed") {
@@ -62,6 +62,6 @@ class SeedTest : FunSpec({
                error("boom")
             }
          }
-      }.message.shouldContain("Repeat this test by using seed 12345")
+      }.message shouldContain "Repeat this test by using seed 12345"
    }
 })

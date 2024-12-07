@@ -6,8 +6,8 @@ import io.kotest.matchers.shouldBe
 class PermutationResultTest : FunSpec() {
    init {
       test("PermutationResult should contain eval count") {
-         io.kotest.permutations.permutations {
-           iterations = 22
+         permutations {
+            iterations = 22
          }.iterations shouldBe 22
       }
    }

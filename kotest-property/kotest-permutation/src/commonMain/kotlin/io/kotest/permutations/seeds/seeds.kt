@@ -20,8 +20,11 @@ internal object SeedOperations {
       return readSeed(path)
    }
 
-   suspend fun writeFailedSeed(seed: Long) {
-      if (PropertyTesting.writeFailedSeed) {
+   /**
+    * Writes the seed to the test output if [PropertyTesting.writeFailedSeed] is enabled.
+    */
+   suspend fun writeFailedSeed(writeFailedSeed: Boolean, seed: Long) {
+      if (writeFailedSeed) {
          val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
          writeSeed(path, seed)
       }

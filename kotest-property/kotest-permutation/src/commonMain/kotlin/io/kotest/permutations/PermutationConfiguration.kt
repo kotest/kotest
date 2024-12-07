@@ -89,6 +89,9 @@ class PermutationConfiguration {
    var requiredCoverageCounts: Map<Any?, Int> = emptyMap()
    var requiredCoveragePercentages: Map<Any?, Double> = emptyMap()
 
+   /**
+    * Registers the permutation test to execute.
+    */
    fun forEach(test: suspend Permutation.() -> Unit) {
       if (this.test != null) error("forEach has already been set")
       this.test = test
@@ -234,17 +237,17 @@ internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
       minSuccess = minSuccess,
       maxFailures = maxFailures,
       edgecasesGenerationProbability = edgecasesGenerationProbability,
-      shouldPrintShrinkSteps = shouldPrintShrinkSteps,
+      printShrinkSteps = shouldPrintShrinkSteps,
       shrinkingMode = shrinkingMode,
       maxDiscardPercentage = maxDiscardPercentage,
-      shouldPrintGeneratedValues = shouldPrintGeneratedValues,
+      printGeneratedValues = shouldPrintGeneratedValues,
       outputStatistics = outputStatistics,
       statisticsReporter = statisticsReporter ?: DefaultStatisticsReporter,
       statisticsReportMode = statisticsReportMode,
       requiredCoveragePercentages = requiredCoveragePercentages,
       requiredCoverageCounts = requiredCoverageCounts,
-      shouldPrintConfig = shouldPrintConfig,
-      customSeed = this.seed == null,
+      printConfig = shouldPrintConfig,
+      customSeed = this.seed != null,
       failOnSeed = failOnSeed,
       writeFailedSeed = writeFailedSeed,
       rs = SeedOperations.createRandomSource(this),

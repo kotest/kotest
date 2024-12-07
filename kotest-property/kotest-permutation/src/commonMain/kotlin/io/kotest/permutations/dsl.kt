@@ -17,7 +17,8 @@ fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): Pe
 
 /**
  * The entry point to running a permutation test. This function takes a lambda that configures the permutation.
- * Once the configuration callback has completed, the permutations are generated and run.
+ *
+ * Once the [configure] callback has completed, the permutations are executed.
  */
 @ExperimentalKotest
 suspend fun permutations(

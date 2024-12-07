@@ -15,10 +15,10 @@ class FailOnSeedTest : FunSpec() {
                failOnSeed = true
                seed = 1234
                forEach {
-
+                  1 shouldBe 1
                }
             }
-         }.message shouldBe """A seed is specified on this property test and failOnSeed is true"""
+         }.message shouldBe """A seed is specified on this permutation but failOnSeed is true"""
       }
    }
 }
