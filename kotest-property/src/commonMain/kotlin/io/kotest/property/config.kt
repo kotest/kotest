@@ -3,7 +3,7 @@ package io.kotest.property
 import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
-import io.kotest.property.classifications.StandardLabelsReporter
+import io.kotest.property.classifications.StandardClassificationReporter
 import io.kotest.property.statistics.DefaultStatisticsReporter
 import io.kotest.property.statistics.StatisticsReportMode
 import io.kotest.property.statistics.StatisticsReporter
@@ -19,7 +19,20 @@ object PropertyTesting {
 
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
 
+   var shouldPrintConfig: Boolean = sysprop("kotest.proptest.output.config", false)
+
    var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
+
+   /**
+    * The maximum percentage of discards allowed before the test aborts to avoid infinite loops.
+    */
+   var maxDiscardPercentage: Int = sysprop("kotest.proptest.max.discard.percentage", 20)
+
+   /**
+    * The threshold at which we start checking for the max discard percentage.
+    * Otherwise we would fail on the first discards as it would be 100% of the iterations.
+    */
+   var discardCheckThreshold: Int = sysprop("kotest.proptest.discard.threshold", 50)
 
    var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null) { it.toLong() }
 
@@ -111,7 +124,7 @@ data class PropTestConfig(
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
-   val labelsReporter: LabelsReporter = StandardLabelsReporter,
+   val classificationReporter: LabelsReporter = StandardClassificationReporter,
    val constraints: Constraints? = null,
    val maxDiscardPercentage: Int = 20,
    val skipTo: Int = 0,

@@ -49,7 +49,8 @@ class Counter {
 
 /**
  * The result of shrinking a failed arg.
- * If no shrinking took place, shrink should be set to the same as iniital
+ * If no shrinking took place, shrink should be set to the same as the initial.
+ * Each arg that was part of the failed test will have a [ShrinkResult] associated with it.
  */
 data class ShrinkResult<out A>(val initial: A, val shrink: A, val cause: Throwable?)
 
