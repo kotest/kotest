@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.property
+package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition

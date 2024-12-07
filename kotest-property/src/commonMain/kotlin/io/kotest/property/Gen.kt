@@ -150,10 +150,6 @@ abstract class Exhaustive<out A> : Gen<A>() {
    companion object
 }
 
-fun interface Classifier<A> {
-   fun classify(value: A): String?
-}
-
 /**
  * Contains a single generated value from a [Gen] and an [RTree] of lazily evaluated shrinks.
  */
