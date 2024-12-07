@@ -78,6 +78,7 @@ include(
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
    ":kotest-assertions:kotest-assertions-json",
+   ":kotest-assertions:kotest-assertions-yaml",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
@@ -153,5 +154,3 @@ buildCache {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-include("kotest-assertions:kotest-assertions-yaml")
-findProject(":kotest-assertions:kotest-assertions-yaml")?.name = "kotest-assertions-yaml"
