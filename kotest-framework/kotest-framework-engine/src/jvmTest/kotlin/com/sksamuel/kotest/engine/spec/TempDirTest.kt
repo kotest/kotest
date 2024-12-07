@@ -23,5 +23,6 @@ class TempDirTest : FunSpec({
 
    afterProject {
       dir1.shouldNotExist()
+      dir2.shouldExist()
    }
 })
