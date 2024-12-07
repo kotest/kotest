@@ -6,7 +6,6 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
@@ -428,8 +427,8 @@ class DateTest : WordSpec({
 
          val zoneId = ZoneId.systemDefault()
          val testedArb = Arb.javaDate(
-            minDate = SimpleDateFormat("yyyy-mm-dd").parse("1970-01-01"),
-            maxDate = SimpleDateFormat("yyyy-mm-dd").parse("2050-12-31"),
+            minDate = SimpleDateFormat("yyyy-MM-dd").parse("1970-01-01"),
+            maxDate = SimpleDateFormat("yyyy-MM-dd").parse("2050-12-31"),
             zoneId = Arb.of(zoneId)
          )
 
@@ -440,9 +439,26 @@ class DateTest : WordSpec({
             years.add(localDate.year)
          }
 
-         days.sorted() shouldBe (1..31).toSet()
-         months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970..2050).toSet()
+         days shouldBe (1..31).toSet()
+         months shouldBe (1..12).toSet()
+         years shouldBe (1970..2050).toSet()
+      }
+
+      "use correct month symbols" {
+         val months = mutableSetOf<Int>()
+         val zoneId = ZoneId.systemDefault()
+         val testedArb = Arb.javaDate(
+            minDate = SimpleDateFormat("yyyy-MM-dd").parse("1979-05-01"),
+            maxDate = SimpleDateFormat("yyyy-MM-dd").parse("1979-05-02"),
+            zoneId = Arb.of(zoneId)
+         )
+
+         checkAll(5000, testedArb) { date ->
+            val localDate = ZonedDateTime.ofInstant(date.toInstant(), zoneId)
+            months.add(localDate.monthValue)
+         }
+
+         months.toSet() shouldBe setOf(5)
       }
    }
 })
