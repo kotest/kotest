@@ -7,6 +7,7 @@ import io.kotest.property.Sample
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+@Suppress("ClassName")
 private object UNINITIALZED_VALUE
 
 /**
@@ -33,6 +34,7 @@ private object UNINITIALZED_VALUE
  */
 class GenDelegate<A>(
    private val gen: Gen<A>,
+   private val shouldPrintGeneratedValues: Boolean,
 ) : ReadOnlyProperty<Any?, A> {
 
    // the current random value in this iteration as a Sample<A>
@@ -59,7 +61,7 @@ class GenDelegate<A>(
    private var _property: Any = UNINITIALZED_VALUE
 
    /**
-    * Called once before the first iteration occurs.
+    * Called once before the first iteration occurs to setup the stream.
     */
    fun initialize(rs: RandomSource) {
       _samples = gen.generate(rs).iterator()
@@ -78,6 +80,9 @@ class GenDelegate<A>(
       } else {
          if (_random === UNINITIALZED_VALUE) {
             _random = _samples.next()
+            if (shouldPrintGeneratedValues) {
+               println("Generated value ${property.name} = ${(_random as Sample<A>).value}")
+            }
          }
          return (_random as Sample<A>).value
       }

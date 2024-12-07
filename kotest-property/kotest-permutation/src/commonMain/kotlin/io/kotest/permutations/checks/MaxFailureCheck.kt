@@ -14,6 +14,7 @@ internal object FailureHandler {
       val message = PropertyErrorMessageBuilder
          .builder(result.iteration, result.error)
          .withMaxFailures(context.maxFailures)
+         .withSeed(context.rs.seed)
          .build()
 
       throw AssertionError(message)

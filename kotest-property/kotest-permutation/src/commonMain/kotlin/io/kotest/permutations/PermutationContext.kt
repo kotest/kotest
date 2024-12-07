@@ -8,9 +8,9 @@ import io.kotest.property.ShrinkingMode
 import io.kotest.property.statistics.StatisticsReportMode
 
 /**
- * The immutable state of a property test.
+ * The immutable state of a permutation test.
  */
-internal data class PermutationContext(
+data class PermutationContext(
    val constraints: Constraints,
    val maxDiscardPercentage: Int,
    val shrinkingMode: ShrinkingMode,
@@ -20,7 +20,7 @@ internal data class PermutationContext(
    val failOnSeed: Boolean,
    val writeFailedSeed: Boolean,
    val customSeed: Boolean, // true if the seed was set programmatically
-   val rs: RandomSource,
+   val rs: RandomSource, // the final random source, either from custom seed or random seed
    val edgecasesGenerationProbability: Double,
    val minSuccess: Int,
    val maxFailures: Int,

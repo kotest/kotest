@@ -111,7 +111,7 @@ class PermutationConfiguration {
     * Register a generator with this permutation test.
     */
    fun <T> gen(fn: () -> Gen<T>): GenDelegate<T> {
-      val delegate = GenDelegate(fn())
+      val delegate = GenDelegate(fn(), shouldPrintGeneratedValues)
       registry.add(delegate)
       return delegate
    }
@@ -229,9 +229,30 @@ class PermutationConfiguration {
 //      }
 //      return context
    }
+
+   fun from(default: PermutationConfiguration) {
+      this.maxFailures = default.maxFailures
+      this.minSuccess = default.minSuccess
+      this.edgecasesGenerationProbability = default.edgecasesGenerationProbability
+      this.shouldPrintShrinkSteps = default.shouldPrintShrinkSteps
+      this.shrinkingMode = default.shrinkingMode
+      this.maxDiscardPercentage = default.maxDiscardPercentage
+      this.shouldPrintGeneratedValues = default.shouldPrintGeneratedValues
+      this.outputStatistics = default.outputStatistics
+      this.statisticsReporter = default.statisticsReporter
+      this.statisticsReportMode = default.statisticsReportMode
+      this.requiredCoveragePercentages = default.requiredCoveragePercentages
+      this.requiredCoverageCounts = default.requiredCoverageCounts
+      this.shouldPrintConfig = default.shouldPrintConfig
+      this.failOnSeed = default.failOnSeed
+      this.writeFailedSeed = default.writeFailedSeed
+      this.seed = default.seed
+      this.constraints = default.constraints
+      this.iterations = default.iterations
+   }
 }
 
-internal suspend fun PermutationConfiguration.toContext(): PermutationContext {
+suspend fun PermutationConfiguration.toContext(): PermutationContext {
    return PermutationContext(
       constraints = ConstraintsBuilder.build(this),
       minSuccess = minSuccess,

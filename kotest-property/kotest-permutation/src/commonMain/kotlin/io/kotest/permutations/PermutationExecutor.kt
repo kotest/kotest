@@ -48,7 +48,7 @@ internal class PermutationExecutor(
 
          } catch (e: AssumptionFailedException) {
 
-            // we don't mark failed assumptions as errors but we do increase discard count
+            // we don't mark failed assumptions as errors or attempts but we do increase discard count
             discards++
 
             // eagerly check if we should stop because we've hit the max discards
