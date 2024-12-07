@@ -6,11 +6,15 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterInvocationListener
+import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeContainerListener
+import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeSpecListener
+import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -213,7 +217,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      extension(object : TestListener {
+      extension(object : BeforeEachListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -231,7 +235,7 @@ abstract class TestConfiguration {
     * top level callbacks.
     */
    fun afterEach(f: AfterEach) {
-      prependExtension(object : TestListener {
+      prependExtension(object : AfterEachListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -245,7 +249,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeAny(f: BeforeAny) {
-      register(object : TestListener {
+      register(object : BeforeTestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -292,7 +296,7 @@ abstract class TestConfiguration {
     * top level callbacks.
     */
    fun afterAny(f: AfterAny) {
-      prependExtension(object : TestListener {
+      prependExtension(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -323,10 +327,11 @@ abstract class TestConfiguration {
 
    /**
     * Registers a callback to be executed after all tests in this spec.
+    *
     * The spec instance is provided as a parameter.
     */
    open fun afterSpec(f: AfterSpec) {
-      register(object : TestListener {
+      register(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             f(spec)
          }

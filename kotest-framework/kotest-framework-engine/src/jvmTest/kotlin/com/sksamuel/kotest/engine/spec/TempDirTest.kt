@@ -10,13 +10,18 @@ import io.kotest.matchers.file.shouldNotExist
 @EnabledIf(LinuxCondition::class)
 class TempDirTest : FunSpec({
 
-   val dir = tempdir().apply { resolve("test.txt").writeText("This is a test file.") }
+   val dir1 = tempdir().apply { resolve("test.txt").writeText("This is a test file.") }
+   val dir2 = tempdir(keepOnFailure = true).apply { resolve("test.txt").writeText("This is a test file.") }
 
    test("temp directory should be deleted after spec") {
-      dir.shouldExist()
+      dir1.shouldExist()
+   }
+
+   test("temp dir should support optional to not delete on failures") {
+      dir2.shouldExist()
    }
 
    afterProject {
-      dir.shouldNotExist()
+      dir1.shouldNotExist()
    }
 })
