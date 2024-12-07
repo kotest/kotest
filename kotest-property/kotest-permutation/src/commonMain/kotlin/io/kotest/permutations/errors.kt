@@ -58,7 +58,7 @@ internal object ErrorBuilder {
    fun build(context: PermutationContext, result: PermutationResult, cause: Throwable): String {
 
       val sb = StringBuilder()
-      sb.append("Property failed after ${result.iterations} iterations\n")
+      sb.append("Property failed after ${result.attempts} iterations\n")
       if (result.shrinks.isNotEmpty()) {
          sb.append("\n")
 //         result.shrinks.withIndex().forEach { (index, result) ->

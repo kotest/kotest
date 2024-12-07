@@ -1,6 +1,7 @@
 package io.kotest.permutations
 
 import io.kotest.permutations.statistics.Classifications
+import io.kotest.property.AssumptionFailedException
 import io.kotest.property.RandomSource
 import io.kotest.property.statistics.Label
 
@@ -12,6 +13,28 @@ class Permutation(
    val rs: RandomSource,
    private val classifications: Classifications,
 ) {
+
+   /**
+    * Adds an assumption to the test by checking for an [AssertionError].
+    *
+    * If the [assumptions] function throws an [AssertionError] that permutation is discarded.
+    */
+   fun assume(assumptions: () -> Unit) {
+      try {
+         assumptions()
+      } catch (e: AssertionError) {
+         throw AssumptionFailedException
+      }
+   }
+
+   /**
+    * Adds a simple assumption to the test.
+    *
+    * If the [predicate] is false, that permutation is discarded.
+    */
+   fun assume(predicate: Boolean) {
+      if (!predicate) throw AssumptionFailedException
+   }
 
    private fun classify(label: Label?, classification: Any?) {
       val stats = classifications.counts.getOrPut(label) { mutableMapOf() }

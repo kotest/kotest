@@ -23,7 +23,16 @@ object PropertyTesting {
 
    var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
 
+   /**
+    * The maximum percentage of discards allowed before the test aborts to avoid infinite loops.
+    */
    var maxDiscardPercentage: Int = sysprop("kotest.proptest.max.discard.percentage", 20)
+
+   /**
+    * The threshold at which we start checking for the max discard percentage.
+    * Otherwise we would fail on the first discards as it would be 100% of the iterations.
+    */
+   var discardCheckThreshold: Int = sysprop("kotest.proptest.discard.threshold", 50)
 
    var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null) { it.toLong() }
 

@@ -96,8 +96,8 @@ class GenDelegate<A>(
    }
 
    /**
-    * Invoked before a permutation starts.
-    * This sets up the random source for the generator.
+    * Invoked before a permutation starts and sets the value back to [UNINITIALZED_VALUE],
+    * so the next call to [getValue] will return the next random value.
     */
    internal fun reset() {
       _random = UNINITIALZED_VALUE

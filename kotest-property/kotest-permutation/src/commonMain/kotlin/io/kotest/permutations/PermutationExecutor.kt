@@ -43,21 +43,24 @@ internal class PermutationExecutor(
             context.beforePermutation()
             test(context)
             context.afterPermutation()
-            successes++
+
             iterations++
+            successes++
 
          } catch (e: AssumptionFailedException) {
+
+            MaxDiscardCheck.ensureConfigured(context.maxDiscardPercentage)
 
             // we don't mark failed assumptions as errors or attempts but we do increase discard count
             discards++
 
-            // eagerly check if we should stop because we've hit the max discards
+            // once discards have hit the discard threshold, we start to test the max discard percentage check
             MaxDiscardCheck.check(context, discards, iterations)
 
          } catch (e: Throwable) {
 
-            failures++
             iterations++
+            failures++
 
             val result = IterationFailure(
                iteration = iterations,
@@ -66,7 +69,7 @@ internal class PermutationExecutor(
                failures = failures,
                duration = mark.elapsedNow(),
                inputs = context.registry.samples().map { it.value },
-               error = e
+               error = e,
             )
 
             // we might be able to tolerate this failure, if max failure is set > 0 and we haven't hit it yet
@@ -80,7 +83,7 @@ internal class PermutationExecutor(
       }
 
       val result = PermutationResult(
-         iterations = iterations,
+         attempts = iterations,
          successes = successes,
          failures = failures,
          discards = discards,

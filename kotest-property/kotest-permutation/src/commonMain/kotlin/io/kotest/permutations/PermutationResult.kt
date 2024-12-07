@@ -6,7 +6,7 @@ import kotlin.time.Duration
  * Models the overall result of a property test.
  */
 data class PermutationResult(
-   val iterations: Int, // total number of iterations regardless of success or failure
+   val attempts: Int, // total number of iterations regardless of success or failure
    val successes: Int, // total number of iterations that were successful
    val failures: Int, // total number of iterations that failed
    val discards: Int, // total number of iterations that were discarded due to failed assumptions

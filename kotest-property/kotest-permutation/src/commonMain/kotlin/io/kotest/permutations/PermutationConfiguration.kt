@@ -55,6 +55,8 @@ class PermutationConfiguration {
 
    var maxDiscardPercentage: Int = PropertyTesting.maxDiscardPercentage
 
+   var discardCheckThreshold: Int = PropertyTesting.discardCheckThreshold
+
    // output each generated value
    var shouldPrintGeneratedValues: Boolean = PropertyTesting.shouldPrintGeneratedValues
 
@@ -114,25 +116,6 @@ class PermutationConfiguration {
       val delegate = GenDelegate(fn(), shouldPrintGeneratedValues)
       registry.add(delegate)
       return delegate
-   }
-
-   /**
-    * Adds an assumption to the test. If the assumption function throws an [AssertionError],
-    * that permutation is discarded.
-    */
-   fun assume(assumptions: () -> Unit) {
-      try {
-         assumptions()
-      } catch (e: AssertionError) {
-         throw AssumptionFailedException
-      }
-   }
-
-   /**
-    * Adds an assumption to the test. If the [predicate] is false, that permutation is discarded.
-    */
-   fun assume(predicate: Boolean) {
-      if (!predicate) throw AssumptionFailedException
    }
 
    /**
@@ -230,28 +213,34 @@ class PermutationConfiguration {
 //      return context
    }
 
-   fun from(default: PermutationConfiguration) {
-      this.maxFailures = default.maxFailures
-      this.minSuccess = default.minSuccess
-      this.edgecasesGenerationProbability = default.edgecasesGenerationProbability
-      this.shouldPrintShrinkSteps = default.shouldPrintShrinkSteps
-      this.shrinkingMode = default.shrinkingMode
-      this.maxDiscardPercentage = default.maxDiscardPercentage
-      this.shouldPrintGeneratedValues = default.shouldPrintGeneratedValues
-      this.outputStatistics = default.outputStatistics
-      this.statisticsReporter = default.statisticsReporter
-      this.statisticsReportMode = default.statisticsReportMode
-      this.requiredCoveragePercentages = default.requiredCoveragePercentages
-      this.requiredCoverageCounts = default.requiredCoverageCounts
-      this.shouldPrintConfig = default.shouldPrintConfig
-      this.failOnSeed = default.failOnSeed
-      this.writeFailedSeed = default.writeFailedSeed
-      this.seed = default.seed
-      this.constraints = default.constraints
-      this.iterations = default.iterations
+   /**
+    * Applies the given [other] configuration to this configuration.
+    */
+   fun from(other: PermutationConfiguration) {
+      this.maxFailures = other.maxFailures
+      this.minSuccess = other.minSuccess
+      this.edgecasesGenerationProbability = other.edgecasesGenerationProbability
+      this.shouldPrintShrinkSteps = other.shouldPrintShrinkSteps
+      this.shrinkingMode = other.shrinkingMode
+      this.maxDiscardPercentage = other.maxDiscardPercentage
+      this.shouldPrintGeneratedValues = other.shouldPrintGeneratedValues
+      this.outputStatistics = other.outputStatistics
+      this.statisticsReporter = other.statisticsReporter
+      this.statisticsReportMode = other.statisticsReportMode
+      this.requiredCoveragePercentages = other.requiredCoveragePercentages
+      this.requiredCoverageCounts = other.requiredCoverageCounts
+      this.shouldPrintConfig = other.shouldPrintConfig
+      this.failOnSeed = other.failOnSeed
+      this.writeFailedSeed = other.writeFailedSeed
+      this.seed = other.seed
+      this.constraints = other.constraints
+      this.iterations = other.iterations
    }
 }
 
+/**
+ * Returns an immutable [PermutationContext] from this configuration.
+ */
 suspend fun PermutationConfiguration.toContext(): PermutationContext {
    return PermutationContext(
       constraints = ConstraintsBuilder.build(this),
@@ -261,6 +250,7 @@ suspend fun PermutationConfiguration.toContext(): PermutationContext {
       printShrinkSteps = shouldPrintShrinkSteps,
       shrinkingMode = shrinkingMode,
       maxDiscardPercentage = maxDiscardPercentage,
+      discardCheckThreshold = discardCheckThreshold,
       printGeneratedValues = shouldPrintGeneratedValues,
       outputStatistics = outputStatistics,
       statisticsReporter = statisticsReporter ?: DefaultStatisticsReporter,

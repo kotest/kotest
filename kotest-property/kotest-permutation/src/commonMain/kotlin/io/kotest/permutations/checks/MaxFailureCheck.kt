@@ -1,10 +1,8 @@
 package io.kotest.permutations.checks
 
 import io.kotest.assertions.print.print
-import io.kotest.mpp.stacktraces
 import io.kotest.permutations.IterationFailure
 import io.kotest.permutations.PermutationContext
-import io.kotest.property.PropertyContext
 import io.kotest.property.errors.PropertyErrorMessageBuilder
 
 internal object FailureHandler {
@@ -43,26 +41,26 @@ internal object FailureHandler {
 //      )
    }
 
-   fun buildFailureMessage(
-      context: PropertyContext,
-      inputs: List<Any?>,
-      e: Throwable,
-   ): String {
-      return buildString {
-         appendLine("Property test failed for inputs\n")
-         appendInputs(inputs)
-         appendLine()
-         val cause = stacktraces.root(e)
-         when (val stack = stacktraces.throwableLocation(cause, 4)) {
-            null -> appendLine("Caused by $e")
-            else -> {
-               appendLine("Caused by $e at")
-               stack.forEach { appendLine("\t$it") }
-            }
-         }
-         appendLine()
-      }
-   }
+//   fun buildFailureMessage(
+//      context: PropertyContext,
+//      inputs: List<Any?>,
+//      e: Throwable,
+//   ): String {
+//      return buildString {
+//         appendLine("Property test failed for inputs\n")
+//         appendInputs(inputs)
+//         appendLine()
+//         val cause = stacktraces.root(e)
+//         when (val stack = stacktraces.throwableLocation(cause, 4)) {
+//            null -> appendLine("Caused by $e")
+//            else -> {
+//               appendLine("Caused by $e at")
+//               stack.forEach { appendLine("\t$it") }
+//            }
+//         }
+//         appendLine()
+//      }
+//   }
 
    private fun StringBuilder.appendInputs(inputs: List<Any?>) {
       iterator {
@@ -77,13 +75,13 @@ internal object FailureHandler {
       }
    }
 
-   private fun buildException(maxFailure: Int, failures: Int, inputs: List<Any?>): String {
-      return buildString {
-         appendLine("Permutation failed $failures times (maxFailure rate was ${maxFailure})")
-         appendLine("Last error was caused by args:")
-         inputs.withIndex().forEach { (index, value) ->
-            appendLine("  $index) ${value.print().value}")
-         }
-      }
-   }
+//   private fun buildException(maxFailure: Int, failures: Int, inputs: List<Any?>): String {
+//      return buildString {
+//         appendLine("Permutation failed $failures times (maxFailure rate was ${maxFailure})")
+//         appendLine("Last error was caused by args:")
+//         inputs.withIndex().forEach { (index, value) ->
+//            appendLine("  $index) ${value.print().value}")
+//         }
+//      }
+//   }
 }

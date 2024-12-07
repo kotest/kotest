@@ -12,7 +12,7 @@ import kotlin.math.min
 internal object MinSuccessCheck {
    fun check(context: PermutationContext, result: PermutationResult) {
       // if the min success rate is not configured we default to the number of iterations
-      val requiredMin = min(context.minSuccess, result.iterations)
+      val requiredMin = min(context.minSuccess, result.attempts)
       if (result.successes < requiredMin) {
          val error = "Property passed ${result.successes} times (minSuccess rate was $requiredMin)\n"
          throw ErrorBuilder.decorate(AssertionError(error), context, result)

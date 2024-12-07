@@ -20,7 +20,7 @@ class GenDelegateRegistry {
    }
 
    /**
-    * Reset all random values for another iteration
+    * Reset all random values for another iteration.
     */
    fun reset() {
       delegates.forEach { it.reset() }

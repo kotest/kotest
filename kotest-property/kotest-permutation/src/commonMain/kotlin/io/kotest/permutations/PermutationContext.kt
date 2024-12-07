@@ -13,6 +13,7 @@ import io.kotest.property.statistics.StatisticsReportMode
 data class PermutationContext(
    val constraints: Constraints,
    val maxDiscardPercentage: Int,
+   val discardCheckThreshold: Int,
    val shrinkingMode: ShrinkingMode,
    val printShrinkSteps: Boolean,
    val printGeneratedValues: Boolean,
