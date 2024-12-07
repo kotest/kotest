@@ -6,10 +6,10 @@ import kotlin.math.roundToInt
 internal object MaxDiscardCheck {
 
    fun check(context: PermutationContext, discards: Int, iterations: Int) {
-      if (context.discardCheckThreshold < discards) return
+      if (discards < context.discardCheckThreshold) return
       val discardPercentage = discardPercentage(discards, iterations)
       if (discardPercentage > context.maxDiscardPercentage) {
-         error("Percentage of discarded inputs ($discardPercentage%) exceeds max (${context.maxDiscardPercentage}%). Adjust your generators to increase the probability of an acceptable value, or increase the max discard percentage in permutation config.")
+         error("Percentage of discarded inputs ($discards/$iterations $discardPercentage%) exceeds max (${context.maxDiscardPercentage}%). Adjust your generators to increase the probability of an acceptable value, or increase the max discard percentage in permutation config.")
       }
    }
 
