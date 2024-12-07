@@ -9,7 +9,19 @@ internal object MaxDiscardCheck {
       if (discards < context.discardCheckThreshold) return
       val discardPercentage = discardPercentage(discards, iterations)
       if (discardPercentage > context.maxDiscardPercentage) {
-         error("Percentage of discarded inputs ($discards/$iterations $discardPercentage%) exceeds max (${context.maxDiscardPercentage}%). Adjust your generators to increase the probability of an acceptable value, or increase the max discard percentage in permutation config.")
+         error(errorMessage(discards, iterations, context.maxDiscardPercentage, discardPercentage))
+      }
+   }
+
+   internal fun errorMessage(
+      discards: Int,
+      iterations: Int,
+      maxDiscardPercentage: Int,
+      discardPercentage: Int
+   ): String {
+      return buildString {
+         appendLine("Percentage of discarded inputs ($discards/$iterations $discardPercentage%) exceeds max ($maxDiscardPercentage%).")
+         appendLine("Adjust your generators to increase the probability of an acceptable value, or increase the max discard percentage in permutation config.")
       }
    }
 
