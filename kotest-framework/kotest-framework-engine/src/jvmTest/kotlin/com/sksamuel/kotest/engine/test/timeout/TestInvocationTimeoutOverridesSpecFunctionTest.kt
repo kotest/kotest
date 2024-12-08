@@ -18,7 +18,7 @@ class TestInvocationTimeoutOverridesSpecFunctionTest : FunSpec() {
    }
 
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
       test("test case config timeout should take precedence").config(
          invocations = 3,
          invocationTimeout = 1.milliseconds,

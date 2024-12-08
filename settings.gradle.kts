@@ -78,9 +78,11 @@ include(
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
    ":kotest-assertions:kotest-assertions-json",
+   ":kotest-assertions:kotest-assertions-yaml",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
+   ":kotest-property:kotest-permutation",
 
    // contains  extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
@@ -133,23 +135,23 @@ develocity {
    }
 }
 
-buildCache {
-   val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
-   val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
-   remote<HttpBuildCache> {
-      url = uri("https://kotest-gradle.duckdns.org/cache")
-      credentials {
-         username = kotestUser
-         password = kotestPass
-      }
-      isPush = kotestUser != null && kotestPass != null
-   }
-   local {
-      // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
-      // and to ensure that CI builds updates the remote cache.
-      val isCI = System.getenv("CI") == "true"
-      isEnabled = !isCI
-   }
-}
+//buildCache {
+//   val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
+//   val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
+//   remote<HttpBuildCache> {
+//      url = uri("https://kotest-gradle.duckdns.org/cache")
+//      credentials {
+//         username = kotestUser
+//         password = kotestPass
+//      }
+//      isPush = kotestUser != null && kotestPass != null
+//   }
+//   local {
+//      // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
+//      // and to ensure that CI builds updates the remote cache.
+//      val isCI = System.getenv("CI") == "true"
+//      isEnabled = !isCI
+//   }
+//}
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

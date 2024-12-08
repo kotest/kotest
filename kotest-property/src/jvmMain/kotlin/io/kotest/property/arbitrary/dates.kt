@@ -313,7 +313,7 @@ fun Arb.Companion.javaDate(
    maxDate: Date,
    zoneId: Arb<ZoneId> = zoneId()
 ): Arb<Date> {
-   val dateFormat = SimpleDateFormat("yyyy-mm-dd")
+   val dateFormat = SimpleDateFormat("yyyy-MM-dd")
    return javaDate(
       minDate = dateFormat.format(minDate),
       maxDate = dateFormat.format(maxDate),

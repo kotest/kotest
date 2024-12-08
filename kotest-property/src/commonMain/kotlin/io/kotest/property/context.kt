@@ -78,17 +78,22 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
       return if (discards == 0 || evals() == 0) 0 else (discards / evals().toDouble() * 100.0).roundToInt()
    }
 
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun classifications(): Map<String, Int> = classifications.toMap()
+
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun autoclassifications(): Map<String, Map<String, Int>> = autoclassifications.toMap()
 
    /**
     * Increase the count of [label].
     */
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun classify(label: String) {
       val current = classifications.getOrElse(label) { 0 }
       classifications[label] = current + 1
    }
 
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun classify(input: Int, label: String) {
       val current = autoclassifications.getOrPut(input.toString()) { mutableMapOf() }
       val count = current[label] ?: 0
@@ -99,6 +104,7 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
    /**
     * Increase the count of [label] if [condition] is true.
     */
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun classify(condition: Boolean, label: String) {
       if (condition) classify(label)
    }
@@ -107,6 +113,7 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
     * Increase the count of [trueLabel] if [condition] is true, otherwise increases
     * the count of [falseLabel].
     */
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
    fun classify(condition: Boolean, trueLabel: String, falseLabel: String) {
       if (condition) {
          val current = classifications.getOrElse(trueLabel) { 0 }

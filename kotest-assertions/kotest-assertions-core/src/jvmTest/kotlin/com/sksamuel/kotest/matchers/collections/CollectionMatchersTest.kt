@@ -924,25 +924,43 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when one element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               )
          }
 
          "Fail when one element is in the iterable" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).asIterable().shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+            )
          }
 
          "Fail when one element is in the array" {
             shouldThrow<AssertionError> {
                arrayOf(1, 2, 3).shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               )
          }
 
          "Fail when all elements are in the list" {
             shouldThrow<AssertionError> {
-               listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1, 2, 3]")
+               listOf(1, 2, 3).shouldNotContainAnyOf(3, 2, 1)
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [3, 2, 1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               "[1] => 2",
+               "[2] => 3",
+               )
          }
       }
 
@@ -1000,6 +1018,19 @@ class CollectionMatchersTest : WordSpec() {
                "but was: Fruit(name=apple, color=red, taste=sweet),",
                "The following fields did not match:",
                """"color" expected: <"green">, but was: <"red">"""
+            )
+         }
+
+         "fail and find similar items for Strings" {
+            val message = shouldThrow<AssertionError> {
+               "sweet green fruit" shouldBeIn listOf(
+                  "sweet green pear", "sweet red apple"
+               )
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               """Line[0] ="sweet green pear"""",
+               """Match[0]= ++++++++++++----""",
             )
          }
       }

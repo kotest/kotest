@@ -1,6 +1,5 @@
 package io.kotest.property.exhaustive
 
-import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import kotlin.jvm.JvmName
 

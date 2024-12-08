@@ -20,7 +20,7 @@ private val factory = funSpec {
 @EnabledIf(LinuxCondition::class)
 class SpecTimeoutInlineTest : FunSpec() {
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       timeout = 10.milliseconds.inWholeMilliseconds
 

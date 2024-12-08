@@ -23,7 +23,7 @@ class SpecTimeoutFunctionTest : FunSpec() {
    override fun timeout(): Long = 10.milliseconds.inWholeMilliseconds
 
    init {
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       test("should timeout from spec setting") {
          delay(10.hours)
