@@ -52,7 +52,7 @@ internal class InstancePerLeafSpecRunner(
    private val started = mutableSetOf<Descriptor>()
 
    /** we keep a count to break ties (first discovered) */
-   data class Enqueued(val testCase: TestCase, val count: Int)
+   data class Enqueued(val testCase: TestCase, val count: Int, val specContext: SpecContext)
 
    private val counter = AtomicInteger(0)
 
@@ -65,7 +65,7 @@ internal class InstancePerLeafSpecRunner(
 
    /** enqueues a test case that will execute in its own spec instance */
    private fun enqueue(testCase: TestCase) {
-      queue.add(Enqueued(testCase, counter.incrementAndGet()))
+      queue.add(Enqueued(testCase, counter.incrementAndGet(), SpecContext.create()))
    }
 
    /**
@@ -82,8 +82,8 @@ internal class InstancePerLeafSpecRunner(
          // until it is empty. When it is empty that means all tests have finished and nothing
          // new is left to be found to be added to the queue
          while (queue.isNotEmpty()) {
-            val (testCase, _) = queue.remove()
-            executeInCleanSpecIfRequired(testCase, spec).getOrThrow()
+            val (testCase, _, specContext) = queue.remove()
+            executeInCleanSpecIfRequired(testCase, spec, specContext).getOrThrow()
          }
          results
       }
@@ -95,18 +95,19 @@ internal class InstancePerLeafSpecRunner(
     */
    private suspend fun executeInCleanSpecIfRequired(
       test: TestCase,
-      defaultSpec: Spec
+      defaultSpec: Spec,
+      specContext: SpecContext
    ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
-         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, SpecContext.create()) }
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, specContext) }
       } else {
-         executeInCleanSpec(test)
+         executeInCleanSpec(test, specContext)
       }
    }
 
-   private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
+   private suspend fun executeInCleanSpec(test: TestCase, specContext: SpecContext): Result<Map<TestCase, TestResult>> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry)
-         .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create()) }
+         .flatMap { spec -> executeInGivenSpec(test, spec, specContext) }
    }
 
    private suspend fun executeInGivenSpec(
@@ -116,23 +117,28 @@ internal class InstancePerLeafSpecRunner(
    ): Result<Map<TestCase, TestResult>> {
       return pipeline.execute(spec, specContext, object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-            return locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
+            return locateAndRunRoot(spec, test, specContext).map { testResults -> mapOf(test to testResults) }
          }
       })
    }
 
    // when we start a test from the queue, we must find the root test that is the ancestor of our
    // target test and begin executing that.
-   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase): Result<TestResult> = runCatching {
+   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase, specContext: SpecContext): Result<TestResult> =
+      runCatching {
 
-      val root = materializer.materialize(spec)
-         .firstOrNull { it.descriptor == test.descriptor.root() }
-         ?: error("Unable to locate root test ${test.descriptor.path()}")
+         val root = materializer.materialize(spec)
+            .firstOrNull { it.descriptor == test.descriptor.root() }
+            ?: error("Unable to locate root test ${test.descriptor.path()}")
 
-      val specContext = SpecContext.create()
-      logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
-      locateAndRunRoot(root, test, specContext)
-   }
+         logger.log {
+            Pair(
+               spec::class.bestName(),
+               "Searching root '${root.name.testName}' for '${test.name.testName}'"
+            )
+         }
+         locateAndRunRoot(root, test, specContext)
+      }
 
    private suspend fun locateAndRunRoot(test: TestCase, target: TestCase, specContext: SpecContext): TestResult {
       logger.log { Pair(test.name.testName, "Executing test in search of target '${target.name.testName}'") }
