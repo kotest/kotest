@@ -29,8 +29,12 @@ internal class BeforeSpecListenerInterceptor(
       test: NextTestExecutionInterceptor,
    ): TestResult {
 
-      val shouldRunBeforeSpec = specContext.beforeSpecInvoked.compareAndSet(expect = false, update = true)
-      return if (shouldRunBeforeSpec) {
+      val shouldRun = specContext.beforeSpecInvoked.compareAndSet(
+         expect = false,
+         update = true
+      )
+
+      return if (shouldRun) {
          SpecExtensions(registry)
             .beforeSpec(testCase.spec)
             .fold(
@@ -45,7 +49,8 @@ internal class BeforeSpecListenerInterceptor(
       } else {
          if (specContext.beforeSpecError == null)
             test(testCase, scope)
-         else TestResult.Ignored("Skipped due to beforeSpec failure")
+         else
+            TestResult.Ignored("Skipped due to beforeSpec failure")
       }
    }
 }

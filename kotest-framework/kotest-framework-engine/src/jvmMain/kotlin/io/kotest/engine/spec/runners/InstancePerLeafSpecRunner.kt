@@ -98,7 +98,7 @@ internal class InstancePerLeafSpecRunner(
       defaultSpec: Spec
    ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
-         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, SpecContext.create()) }
       } else {
          executeInCleanSpec(test)
       }
@@ -106,11 +106,15 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry)
-         .flatMap { spec -> executeInGivenSpec(test, spec) }
+         .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create()) }
    }
 
-   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec, object : NextSpecInterceptor {
+   private suspend fun executeInGivenSpec(
+      test: TestCase,
+      spec: Spec,
+      specContext: SpecContext,
+   ): Result<Map<TestCase, TestResult>> {
+      return pipeline.execute(spec, specContext, object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
             return locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
          }

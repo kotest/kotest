@@ -122,7 +122,7 @@ internal class InstancePerTestSpecRunner(
       spec: Spec,
       specContext: SpecContext,
    ): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec, object : NextSpecInterceptor {
+      return pipeline.execute(spec, specContext, object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
             return run(spec, specContext, test, results).map { results }
          }

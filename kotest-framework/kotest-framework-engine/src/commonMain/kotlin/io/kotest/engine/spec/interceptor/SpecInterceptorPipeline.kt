@@ -39,9 +39,9 @@ internal class SpecInterceptorPipeline(
     */
    suspend fun execute(
       spec: Spec,
+      context: SpecContext,
       initial: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
-      val context = SpecContext.create()
       val interceptors = createPipeline(context)
       logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
       return interceptors.foldRight(initial) { ext, next ->
