@@ -7,6 +7,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.kotlinJsTestFramework
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
@@ -34,7 +35,7 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       val cc = coroutineContext
-
+      val specContext = SpecContext.create()
       // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
       // which declares a single level of `test`s.
       kotlinJsTestFramework.suite(testNameEscape(spec::class.bestName()), ignored = false) {
@@ -50,7 +51,7 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
                @OptIn(DelicateCoroutinesApi::class)
                GlobalScope.testFunctionPromise {
                   TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, context)
-                     .execute(testCase, TerminalTestScope(testCase, cc))
+                     .execute(testCase, TerminalTestScope(testCase, cc), specContext)
                      .errorOrNull?.let { throw it }
                }
             }

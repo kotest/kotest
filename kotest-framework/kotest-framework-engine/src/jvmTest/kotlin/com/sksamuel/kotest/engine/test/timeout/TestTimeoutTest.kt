@@ -14,6 +14,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.NoopTestScope
@@ -52,7 +53,7 @@ class TestTimeoutTest : FunSpec() {
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
          }
       }
 
@@ -79,7 +80,7 @@ class TestTimeoutTest : FunSpec() {
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
          }
       }
    }

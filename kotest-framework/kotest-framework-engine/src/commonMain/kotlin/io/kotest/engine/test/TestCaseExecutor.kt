@@ -9,6 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
@@ -48,7 +49,7 @@ internal class TestCaseExecutor(
 
    private val logger = Logger(TestCaseExecutor::class)
 
-   suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
+   suspend fun execute(testCase: TestCase, testScope: TestScope, specContext: SpecContext): TestResult {
       logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
 
       val timeMark = TimeSource.Monotonic.markNow()
@@ -71,7 +72,7 @@ internal class TestCaseExecutor(
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(context.configuration),
-         BeforeSpecListenerInterceptor(context.configuration.registry, context),
+         BeforeSpecListenerInterceptor(context.configuration.registry, specContext),
          TestCaseExtensionInterceptor(context.configuration.registry),
          LifecycleInterceptor(listener, timeMark, context.configuration.registry),
          AssertionModeInterceptor,
@@ -104,7 +105,7 @@ internal class TestCaseExecutor(
       }
 
       return interceptors.foldRight(innerExecute) { ext, fn ->
-         NextTestExecutionInterceptor { tc, sc -> ext.intercept(tc, sc, fn) }
+         NextTestExecutionInterceptor { tc, tscope -> ext.intercept(tc, tscope, fn) }
       }.invoke(testCase, testScope)
    }
 }
