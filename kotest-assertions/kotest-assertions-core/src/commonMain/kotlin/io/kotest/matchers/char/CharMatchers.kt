@@ -38,7 +38,8 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
 
 
 /**
- * Assert that [Char] is in between from and to.
+ * Assert that [Char] is in between [from, to] (inclusive, inclusive).
+ *
  * @see [shouldNotBeBetween]
  * @see [between]
  * */
@@ -52,7 +53,8 @@ fun Char.shouldBeBetween(from: Char, to: Char): Char {
 }
 
 /**
- * Assert that [Char] is not in between from and to.
+ * Assert that [Char] is not between [from, to] (inclusive, inclusive).
+ *
  * @see [shouldBeBetween]
  * @see [between]
  * */
@@ -73,6 +75,7 @@ fun between(from: Char, to: Char): Matcher<Char> = between(from, to)
 
 /**
  * Assert that [Char] is equal to [other] ignoring case sensitivity
+ *
  * @see [shouldNotBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
@@ -83,6 +86,7 @@ infix fun Char.shouldBeEqualToIgnoreCase(other: Char): Char {
 
 /**
  * Assert that [Char] is not equal to [other] ignoring case sensitivity
+ *
  * @see [shouldBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
