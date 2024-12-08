@@ -34,12 +34,16 @@ object JvmReflection : Reflection {
       includeSuperclasses: Boolean,
       includeAnnotations: Boolean
    ): List<Annotation> {
-      val classes = listOf(kclass) + if (includeSuperclasses) kclass.superclasses else emptyList()
+      val classes = listOf(kclass) + if (includeSuperclasses) supers(kclass) else emptyList()
       return if (includeAnnotations) {
          classes.flatMap(::composedAnnotations)
       } else {
          classes.flatMap { it.annotationsSafe() }
       }
+   }
+
+   private fun supers(kclass: KClass<*>): Iterable<KClass<*>> {
+      return kclass.superclasses + kclass.superclasses.flatMap { supers(it) }
    }
 
    private fun composedAnnotations(kclass: KClass<*>, checked: Set<String> = emptySet()): List<Annotation> {
@@ -91,7 +95,7 @@ object JvmReflection : Reflection {
    }
 
    internal fun <T : Any> getPropertiesByName(klass: KClass<T>) = klass::members.get()
-      .filter { it is KProperty<*> }
+      .filterIsInstance<KProperty<*>>()
       .associateBy(KCallable<*>::name)
 
    // ignored because on JDK 8 newInstance is the only option
