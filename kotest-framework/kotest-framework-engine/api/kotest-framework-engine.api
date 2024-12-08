@@ -566,7 +566,7 @@ public final class io/kotest/engine/spec/interceptor/SpecContext {
 }
 
 public final class io/kotest/engine/spec/interceptor/SpecContext$Companion {
-	public final fun default ()Lio/kotest/engine/spec/interceptor/SpecContext;
+	public final fun create ()Lio/kotest/engine/spec/interceptor/SpecContext;
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
