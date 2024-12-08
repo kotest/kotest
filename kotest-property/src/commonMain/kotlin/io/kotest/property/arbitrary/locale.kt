@@ -713,3 +713,4 @@ private val jdk17SafeLocales =
 fun Arb.Companion.locale() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { locales.random(it.random) }
 
 fun Arb.Companion.localeJdk17() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { jdk17SafeLocales.random(it.random) }
+
