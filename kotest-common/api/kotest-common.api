@@ -95,10 +95,16 @@ public final class io/kotest/mpp/BasicStackTraces : io/kotest/mpp/StackTraces {
 
 public final class io/kotest/mpp/IncludingAnnotations : io/kotest/mpp/AnnotationSearchParameter {
 	public static final field INSTANCE Lio/kotest/mpp/IncludingAnnotations;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/mpp/IncludingSuperclasses : io/kotest/mpp/AnnotationSearchParameter {
 	public static final field INSTANCE Lio/kotest/mpp/IncludingSuperclasses;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/mpp/IsPlatformStableKt {
