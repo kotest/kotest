@@ -162,7 +162,7 @@ class TeamCityMessageBuilder(
    fun id(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ID, value)
 
    // workaround for TC colon issue, see main javadoc
-   fun escapeColons(value: String) = when (escapeColons) {
+   private fun escapeColons(value: String) = when (escapeColons) {
       true -> value.replace(":", "\u02D0")
       false -> value
    }
