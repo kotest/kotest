@@ -21,6 +21,7 @@ import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import io.kotest.core.log
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -113,13 +114,17 @@ internal class InstancePerTestSpecRunner(
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry)
-         .flatMap { spec -> executeInGivenSpec(test, spec) }
+         .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create()) }
    }
 
-   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
+   private suspend fun executeInGivenSpec(
+      test: TestCase,
+      spec: Spec,
+      specContext: SpecContext,
+   ): Result<Map<TestCase, TestResult>> {
       return pipeline.execute(spec, object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-            return run(spec, test, results).map { results }
+            return run(spec, specContext, test, results).map { results }
          }
       })
    }
@@ -134,22 +139,32 @@ internal class InstancePerTestSpecRunner(
       defaultSpec: Spec
    ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
-         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, SpecContext.create()) }
       } else {
          executeInCleanSpec(test)
       }
    }
 
-   private suspend fun run(spec: Spec, test: TestCase, results: ConcurrentHashMap<TestCase, TestResult>): Result<Unit> =
+   private suspend fun run(
+      spec: Spec,
+      specContext: SpecContext,
+      test: TestCase,
+      results: ConcurrentHashMap<TestCase, TestResult>,
+   ): Result<Unit> =
       runCatching {
          log { "Created new spec instance $spec" }
          // we need to find the same root test but in the newly created spec
          val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
          log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
-         run(root, test, results)
+         run(root, test, specContext, results)
       }
 
-   private suspend fun run(test: TestCase, target: TestCase, results: ConcurrentHashMap<TestCase, TestResult>) {
+   private suspend fun run(
+      test: TestCase,
+      target: TestCase,
+      specContext: SpecContext,
+      results: ConcurrentHashMap<TestCase, TestResult>
+   ) {
       val isTarget = test.descriptor == target.descriptor
       coroutineScope {
          val context = object : TestScope {
@@ -166,7 +181,7 @@ internal class InstancePerTestSpecRunner(
                if (isTarget) {
                   executeInCleanSpec(t).getOrThrow()
                } else if (t.descriptor.isOnPath(target.descriptor)) {
-                  run(t, target, results)
+                  run(t, target, specContext, results)
                }
             }
          }
@@ -194,7 +209,7 @@ internal class InstancePerTestSpecRunner(
             this@InstancePerTestSpecRunner.context
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test, context2, specContext)
          results[test] = result
       }
    }

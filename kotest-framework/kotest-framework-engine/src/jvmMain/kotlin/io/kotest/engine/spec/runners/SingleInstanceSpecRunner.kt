@@ -12,6 +12,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestExtensions
@@ -41,6 +42,7 @@ internal class SingleInstanceSpecRunner(
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.configuration)
    private val listener = context.listener
+   private val specContext = SpecContext.create()
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
@@ -116,7 +118,7 @@ internal class SingleInstanceSpecRunner(
          SingleInstanceTestScope(testCase, coroutineContext, parentScope)
       )
 
-      val result = testExecutor.execute(testCase, scope)
+      val result = testExecutor.execute(testCase, scope, specContext)
       results[testCase] = result
       return result
    }

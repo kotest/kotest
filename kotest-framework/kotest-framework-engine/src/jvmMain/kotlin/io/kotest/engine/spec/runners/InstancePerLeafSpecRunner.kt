@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.engine.flatMap
+import io.kotest.core.Logger
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.root
@@ -10,15 +10,16 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.core.Logger
-import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -124,11 +125,12 @@ internal class InstancePerLeafSpecRunner(
          .firstOrNull { it.descriptor == test.descriptor.root() }
          ?: error("Unable to locate root test ${test.descriptor.path()}")
 
+      val specContext = SpecContext.create()
       logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
-      locateAndRunRoot(root, test)
+      locateAndRunRoot(root, test, specContext)
    }
 
-   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase): TestResult {
+   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase, specContext: SpecContext): TestResult {
       logger.log { Pair(test.name.testName, "Executing test in search of target '${target.name.testName}'") }
 
       return coroutineScope {
@@ -146,14 +148,14 @@ internal class InstancePerLeafSpecRunner(
                if (t.descriptor.isOnPath(target.descriptor)) {
                   open = false
                   seen.add(t.descriptor)
-                  locateAndRunRoot(t, target)
+                  locateAndRunRoot(t, target, specContext)
                   // otherwise, if we're already past our target we are finding new tests and so
                   // the first new test we run, the rest we queue
                } else if (target.descriptor.isOnPath(t.descriptor)) {
                   if (seen.add(t.descriptor)) {
                      if (open) {
                         open = false
-                        locateAndRunRoot(t, target)
+                        locateAndRunRoot(t, target, specContext)
                      } else {
                         enqueue(t)
                      }
@@ -193,7 +195,7 @@ internal class InstancePerLeafSpecRunner(
             this@InstancePerLeafSpecRunner.context,
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test, context2, specContext)
          results[test] = result
          result
       }
