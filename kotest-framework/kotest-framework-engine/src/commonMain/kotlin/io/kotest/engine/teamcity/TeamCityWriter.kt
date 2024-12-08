@@ -106,7 +106,7 @@ internal class TeamCityWriter(
    internal fun outputTestFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.testName, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testFinished(prefix)
+         .testFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
