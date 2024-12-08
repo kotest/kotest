@@ -6,12 +6,13 @@ import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbService
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import javax.swing.Icon
 
 class KotestStructureViewExtension : StructureViewExtension {
 
@@ -20,32 +21,24 @@ class KotestStructureViewExtension : StructureViewExtension {
    }
 
    override fun getChildren(parent: PsiElement): Array<StructureViewTreeElement> {
+      if (DumbService.isDumb(parent.project)) return emptyArray()
       val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
       val spec = ktClassOrObject.specStyle() ?: return emptyArray()
       val tests = spec.tests(parent, false)
       return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
    }
 
-   class KotestTestStructureViewTreeElement(private val test: TestElement) : StructureViewTreeElement {
-      override fun getPresentation(): ItemPresentation {
-         return object : ItemPresentation {
-            override fun getIcon(unused: Boolean): Icon {
-               return AllIcons.Nodes.Test
-            }
+   class KotestTestStructureViewTreeElement(private val testElement: TestElement) : StructureViewTreeElement {
 
-            override fun getPresentableText(): String {
-               return test.test.name.displayName()
-            }
-         }
-      }
+      override fun getPresentation(): ItemPresentation = KotestStructureItemPresentation(testElement.test)
 
       override fun getChildren(): Array<TreeElement> {
-         return test.nestedTests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
+         return testElement.nestedTests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
       }
 
       override fun navigate(requestFocus: Boolean) {
-         if (test.psi is NavigatablePsiElement) {
-            test.psi.navigate(true)
+         if (testElement.psi is NavigatablePsiElement) {
+            testElement.psi.navigate(true)
          }
       }
 
@@ -58,11 +51,18 @@ class KotestStructureViewExtension : StructureViewExtension {
       }
 
       override fun getValue(): Any {
-         return test
+         return testElement.psi
       }
    }
 
    override fun getCurrentEditorElement(editor: Editor?, parent: PsiElement?): Any? {
       return null
+   }
+}
+
+class KotestStructureItemPresentation(private val test: Test) : ItemPresentation {
+   override fun getIcon(unused: Boolean) = AllIcons.Nodes.Test
+   override fun getPresentableText(): String {
+      return test.name.displayName()
    }
 }
