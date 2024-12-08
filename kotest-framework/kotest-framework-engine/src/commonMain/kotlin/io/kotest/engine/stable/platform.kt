@@ -28,7 +28,7 @@ internal fun platformStableValue(value: Any?): String? {
       is UShort -> value.toString()
       is UInt -> value.toString()
       is ULong -> value.toString()
-      is KClass<*> -> value.qualifiedName ?: value.bestName()
+      is KClass<*> -> value.bestName()
       is Regex -> value.toString()
       is BooleanArray -> value.joinToString(",")
       is ByteArray -> value.joinToString(",")
