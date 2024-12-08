@@ -77,6 +77,8 @@ assertSoftly {
 
 **Note:** by design, some of Kotest's own assertions are not compatible with `assertSoftly`, including:
 
+* `shouldCompleteWithin`
+* `shouldCompleteBetween`
 * `shouldNotThrowExactly`
 * `shouldNotThrowExactlyUnit`
 * `shouldNotThrowMessage`
@@ -87,5 +89,6 @@ assertSoftly {
 * `shouldThrowUnit`
 * `shouldThrowUnitWithMessage`
 * `shouldThrowWithMessage`
+* `shouldTimeout`
 
 But `shouldThrowSoftly` is compatible with `assertSoftly`.

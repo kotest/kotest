@@ -54,9 +54,9 @@ internal actual fun clearSeed(path: TestPath) {
    }
 }
 
-internal fun seedDirectory(): Path = seedDirectory
+fun seedDirectory(): Path = seedDirectory
 
-private val seedDirectory: Path by lazy {
+internal val seedDirectory: Path by lazy {
    val baseDir = System.getenv("XDG_CACHE_HOME")?.ifBlank { null }
       ?: System.getProperty("user.home")
 

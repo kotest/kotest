@@ -372,6 +372,11 @@ class StringMatchersTest : FreeSpec() {
             "foo" shouldMatch "f.."
             "boo" shouldNotMatch "foo"
             "boo" shouldNotMatch "f.."
+            "123" shouldMatch Regex("\\d{3}")
+         }
+         "string should not match Regex" {
+            "123" shouldNotMatch Regex("\\d{2}")
+            "123" shouldNotMatch Regex("\\d{4}")
          }
          "should fail if value is null" {
             shouldThrow<AssertionError> {

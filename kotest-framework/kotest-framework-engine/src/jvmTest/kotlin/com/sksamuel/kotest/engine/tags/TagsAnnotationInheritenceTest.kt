@@ -23,9 +23,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("simple tag") {
 
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression.include(Linux)
-         }
+         val ext = TagExtension { TagExpression.include(Linux) }
 
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
@@ -38,9 +36,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("simple exclude tag") {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression.exclude(Linux)
-         }
+         val ext = TagExtension { TagExpression.exclude(Linux) }
 
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
@@ -54,9 +50,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("inheritence with OR") {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression("Linux | Mysql")
-         }
+         val ext = TagExtension { TagExpression("Linux | Mysql") }
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
@@ -69,9 +63,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("inheritence with AND") {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression.include(Linux).exclude(Postgres)
-         }
+         val ext = TagExtension { TagExpression.include(Linux).exclude(Postgres) }
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
@@ -84,9 +76,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("@Tags should be ignored when not applicable to an exclude") {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression.exclude(Mysql)
-         }
+         val ext = TagExtension { TagExpression.exclude(Mysql) }
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
@@ -99,9 +89,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       }
 
       test("@Tags should be ignored when not applicable to an test") {
-         val ext = object : TagExtension {
-            override fun tags(): TagExpression = TagExpression.include(Postgres)
-         }
+         val ext = TagExtension { TagExpression.include(Postgres) }
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
@@ -118,9 +106,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             true to setOf("a"),
             false to setOf()
          ) { (inheritanceEnabled, expectedTests) ->
-            val ext = object : TagExtension {
-               override fun tags(): TagExpression = TagExpression.include(NamedTag("SuperSuper"))
-            }
+            val ext = TagExtension { TagExpression.include(NamedTag("SuperSuper")) }
 
             val conf = ProjectConfiguration()
             conf.registry.add(ext)
