@@ -55,7 +55,7 @@ Environment variables are only supported when targeting Kotlin/JVM and Kotlin/Na
 
 This example would execute all tests in the com.somepackage (and nested) packages by setting the `kotest.filter.specs` system property:
 
-```gradle test -Dkotest.filter.specs='com.somepackage.*'```
+```systemProperty("kotest.filter.specs", "com.somepackage*")```
 
 This example would do the same, but uses the environment variable and so works for both Kotlin/JVM and Kotlin/Native:
 
@@ -68,8 +68,15 @@ rather than double quotes to avoid your shell performing globbing on any `*` cha
 
 This example would execute only tests that contain `Foo` in the com.somepackage (and nested) packages:
 
-```gradle test -Dkotest.filter.specs='com.somepackage.*' -Dkotest.filter.tests='*Foo*'```
+```systemProperty("kotest.filter.specs", "com.somepackage.*")```
+```systemProperty("kotest.filter.tests", "*Foo*")```
 
 This example would execute only tests that start with `Foo` in any package:
 
-```gradle test -Dkotest.filter.tests='Foo*'```
+```systemProperty("kotest.filter.tests", "Foo*")```
+
+:::note
+Passing system properties to the main Gradle task usually does not work with tests.
+Gradle forks another JVM for the test runner and fails to pass system properties.
+Therefore, you need to use the `systemProperty(...)` syntax in the test task of the `build.gradle` file.
+:::
