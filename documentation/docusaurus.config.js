@@ -173,7 +173,7 @@ module.exports = {
                   from: ['/quick_start'],
                },
                {
-                  to: '/docs/changelog.html',
+                  to: 'https://github.com/kotest/kotest/releases',
                   from: ['/changelog'],
                },
                {
