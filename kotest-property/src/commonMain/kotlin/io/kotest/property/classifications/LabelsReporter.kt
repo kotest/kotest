@@ -16,6 +16,7 @@ interface LabelsReporter {
 
 @Deprecated("Use StatisticsReporter or update to permutations since 6.0", ReplaceWith("DefaultStatisticsReporter"))
 @ExperimentalKotest
+@Suppress("DEPRECATION")
 object StandardClassificationReporter : LabelsReporter {
 
    private fun row(label: String, count: Int, attempts: Int, countPad: Int) {

@@ -55,12 +55,14 @@ internal object GradlePostDiscoveryFilterExtractor {
    private fun commandLineIncludePatterns(obj: Any): List<Any> {
       val field = obj::class.java.getDeclaredField("commandLineIncludePatterns")
       field.isAccessible = true
+      @Suppress("UNCHECKED_CAST")
       return field.get(obj) as List<Any>
    }
 
    private fun buildScriptIncludePatterns(obj: Any): List<Any> {
       val field = obj::class.java.getDeclaredField("buildScriptIncludePatterns")
       field.isAccessible = true
+      @Suppress("UNCHECKED_CAST")
       return field.get(obj) as List<Any>
    }
 

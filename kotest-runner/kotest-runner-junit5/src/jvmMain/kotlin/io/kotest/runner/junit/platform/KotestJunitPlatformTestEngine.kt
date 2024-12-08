@@ -96,6 +96,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { request.string() }
 
       val configuration = ConfigManager.initialize(ProjectConfiguration()) {
+         @Suppress("DEPRECATION")
          detectAbstractProjectConfigsJVM() +
             loadProjectConfigsJVM()
       }

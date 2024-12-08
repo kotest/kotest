@@ -25,8 +25,8 @@ object NullEq : Eq<Any?> {
    override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? {
       return when {
          actual == null && expected == null -> null
-         actual == null && expected != null && actual != expected -> actualIsNull(expected)
-         actual != null && expected == null && actual != expected -> expectedIsNull(actual)
+         actual == null && expected != null -> actualIsNull(expected)
+         actual != null && expected == null -> expectedIsNull(actual)
          actual != expected -> error("[$NullEq] should not be used when both values are not null")
          else -> null
       }

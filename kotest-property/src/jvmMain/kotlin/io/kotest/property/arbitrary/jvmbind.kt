@@ -80,6 +80,7 @@ fun <T : Any> Arb.Companion.bind(
 ): Arb<T> {
    val arb = Arb.forType(providedArbs, arbsForProps, type)
       ?: error("Could not locate generator for ${kclass.simpleName}, consider making it a dataclass or provide an Arb for it.")
+   @Suppress("UNCHECKED_CAST")
    return arb as Arb<T>
 }
 

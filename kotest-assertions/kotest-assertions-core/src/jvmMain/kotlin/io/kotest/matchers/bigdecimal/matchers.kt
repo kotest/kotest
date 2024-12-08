@@ -34,11 +34,11 @@ infix fun BigDecimal.shouldNotBeGreaterThan(other: BigDecimal) = this shouldNotB
 infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this shouldNotBe gte(other)
 
 @Deprecated("use <T: Comparable<T>> shouldBeIn",
-   ReplaceWith("this should beIn(range)", "io.kotest.matchers.should")
+   ReplaceWith("this shouldBeIn (range)", "io.kotest.matchers.ranges.shouldBeIn")
 )
 infix fun BigDecimal.shouldBeInRange(range: ClosedRange<BigDecimal>) = this should beInClosedRange(range)
 @Deprecated("use <T: Comparable<T>> shouldNotBeIn",
-   ReplaceWith("this shouldNot beIn(range)", "io.kotest.matchers.shouldNot")
+   ReplaceWith("this shouldNotBeIn (range)", "io.kotest.matchers.ranges.shouldNotBeIn")
 )
 infix fun BigDecimal.shouldNotBeInRange(range: ClosedRange<BigDecimal>) = this shouldNot beInClosedRange(range)
 fun beInClosedRange(range: ClosedRange<BigDecimal>) = object : Matcher<BigDecimal> {

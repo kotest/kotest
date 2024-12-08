@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.matchers.char
 
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.char.shouldBeBetween
 import io.kotest.matchers.char.shouldBeEqualToIgnoreCase
 import io.kotest.matchers.char.shouldBeInRange
-import io.kotest.matchers.char.shouldNotBeBetween
 import io.kotest.matchers.char.shouldNotBeEqualToIgnoreCase
 import io.kotest.matchers.char.shouldNotBeInRange
+import io.kotest.matchers.comparables.shouldBeBetween
+import io.kotest.matchers.comparables.shouldNotBeBetween
 
 class CharMatchersTest : StringSpec() {
    init {

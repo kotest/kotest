@@ -361,7 +361,7 @@ public final class io/kotest/assertions/eq/IsOrderedSetKt {
 
 public final class io/kotest/assertions/eq/IterableEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/IterableEq;
-	public static final field trigger Ljava/lang/String;
+	public static final field TRIGGER Ljava/lang/String;
 	public final fun asIterable (Ljava/lang/Object;)Ljava/lang/Iterable;
 	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Throwable;
 	public fun equals (Ljava/lang/Iterable;Ljava/lang/Iterable;Z)Ljava/lang/Throwable;

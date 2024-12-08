@@ -17,8 +17,8 @@ import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
-import io.kotest.matchers.longs.shouldBeBetween
-import io.kotest.matchers.longs.between
+import io.kotest.matchers.comparables.between
+import io.kotest.matchers.comparables.shouldBeBetween
 
 class LongMatchersTest : StringSpec() {
   init {

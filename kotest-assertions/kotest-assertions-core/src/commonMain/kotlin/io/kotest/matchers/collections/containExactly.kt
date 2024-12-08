@@ -69,7 +69,7 @@ fun <T, C : Collection<T>> containExactly(
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
-      this?.message?.startsWith(IterableEq.trigger) == true
+      this?.message?.startsWith(IterableEq.TRIGGER) == true
 
    val failureReason = if(verifier == null) {
       eq(actual, expected, strictNumberEq = true)

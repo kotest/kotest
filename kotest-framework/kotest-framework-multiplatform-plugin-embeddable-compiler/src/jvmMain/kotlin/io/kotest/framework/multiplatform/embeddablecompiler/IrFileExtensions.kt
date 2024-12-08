@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationContainer
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 import java.io.File
 
@@ -20,6 +21,7 @@ internal val IrFile.name: String get() = File(path).name
 // These extension methods were moved from org.jetbrains.kotlin.backend.common.ir to org.jetbrains.kotlin.ir.util in Kotlin 1.7.20.
 // (see https://github.com/JetBrains/kotlin/commit/f3252334b2ef679aa40e94002d9e65b1b76e95b6)
 // For similar reasons to above, we've copied them here so the compiler plugin can work with Kotlin 1.6, 1.7.0 and 1.7.20.
+@OptIn(UnsafeDuringIrConstructionAPI::class)
 fun IrDeclarationContainer.addChild(declaration: IrDeclaration) {
    this.declarations += declaration
    declaration.setDeclarationsParent(this)

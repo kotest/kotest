@@ -54,6 +54,7 @@ internal class BlockedThreadTimeoutInterceptor(
          val timeout = testCase.config.timeout
          logger.log { Pair(testCase.name.testName, "this test will time out in $timeout") }
 
+         @OptIn(ExperimentalCoroutinesApi::class)
          val timeoutJob = CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
             delay(timeout)
             logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }

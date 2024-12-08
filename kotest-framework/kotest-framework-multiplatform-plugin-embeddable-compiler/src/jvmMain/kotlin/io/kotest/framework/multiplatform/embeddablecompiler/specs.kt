@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.isClass
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
@@ -26,6 +27,7 @@ val abstractProjectConfigFqName = FqName("io.kotest.core.config.AbstractProjectC
 /**
  * Returns any specs declared at the top level in this file.
  */
+@OptIn(UnsafeDuringIrConstructionAPI::class)
 fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
 
 /**

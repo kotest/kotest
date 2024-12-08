@@ -15,7 +15,7 @@ private object UNINITIALZED_VALUE
  * A [GenDelegate] is the delegated property used in a `permutations` block to return random values.
  *
  * The `gen` function is the entry point to creating the delegate, which accepts a lambda that returns
- * either an [Arb] or an [Exhaustive] when invoked.
+ * either an [io.kotest.property.Arb] or an [io.kotest.property.Exhaustive] when invoked.
  *
  * For example:
  *
@@ -77,14 +77,17 @@ class GenDelegate<A>(
          _property = property
       }
       if (_shrinking) {
+         @Suppress("UNCHECKED_CAST")
          return (_candidate as RTree<A>).value()
       } else {
          if (_random === UNINITIALZED_VALUE) {
             _random = _samples.next()
             if (shouldPrintGeneratedValues) {
+               @Suppress("UNCHECKED_CAST")
                println("Generated value ${property.name} = ${(_random as Sample<A>).value}")
             }
          }
+         @Suppress("UNCHECKED_CAST")
          return (_random as Sample<A>).value
       }
    }
@@ -119,6 +122,7 @@ class GenDelegate<A>(
       _candidates = if (_random == UNINITIALZED_VALUE) {
          emptyList()
       } else {
+         @Suppress("UNCHECKED_CAST")
          (_random as Sample<A>).shrinks.children.value
       }
    }
@@ -127,6 +131,7 @@ class GenDelegate<A>(
     * Returns the value used in the last iteration.
     */
    fun sample(): Sample<A> {
+      @Suppress("UNCHECKED_CAST")
       return _random as Sample<A>
    }
 
@@ -135,6 +140,7 @@ class GenDelegate<A>(
    }
 
    fun candidate(): RTree<A> {
+      @Suppress("UNCHECKED_CAST")
       return _candidate as RTree<A>
    }
 
@@ -159,6 +165,7 @@ class GenDelegate<A>(
     * Replaces the current candidates list with the children of the current candidate.
     */
    fun nextCandidates() {
+      @Suppress("UNCHECKED_CAST")
       _candidates = (_candidate as RTree<A>).children.value
    }
 }
