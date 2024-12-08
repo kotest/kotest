@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.engine.stable
 
 import java.io.File
 import java.nio.file.Path
