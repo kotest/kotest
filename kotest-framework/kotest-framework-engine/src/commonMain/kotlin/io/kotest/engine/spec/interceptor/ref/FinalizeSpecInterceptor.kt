@@ -13,12 +13,14 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
  * A [SpecRefInterceptor] that invokes any [FinalizeSpecListener.finalizeSpec] callbacks.
  */
 internal class FinalizeSpecInterceptor(
-   private val registry: ExtensionRegistry,
+   registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
+
+   private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return next.invoke(ref)
-         .onSuccess { SpecExtensions(registry).finalizeSpec(ref.kclass, it, null) }
-         .onFailure { SpecExtensions(registry).finalizeSpec(ref.kclass, emptyMap(), it) }
+         .onSuccess { extensions.finalizeSpec(ref.kclass, it, null) }
+         .onFailure { extensions.finalizeSpec(ref.kclass, emptyMap(), it) }
    }
 }

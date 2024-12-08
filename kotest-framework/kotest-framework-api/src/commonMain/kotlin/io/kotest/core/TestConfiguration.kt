@@ -15,7 +15,6 @@ import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.BeforeTestListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -71,27 +70,32 @@ abstract class TestConfiguration {
    var assertSoftly: Boolean? = null
 
    /**
-    * Register a single [TestListener] of type T return that listener.
+    * Register a single [Extension] of type T return that listener.
     */
-   fun <T : TestListener> register(extension: T): T {
+   fun <T : Extension> register(extension: T): T {
       register(listOf(extension))
       return extension
    }
 
    /**
-    * Register a single [TestCaseExtension] of type T return that extension.
+    * Register a single [Extension] of type T and return that extension.
+    * Invoked after all existing extensions.
     */
    fun <T : Extension> extension(extension: T): T {
       extensions(extension)
       return extension
    }
 
+   /**
+    * Registers one or more [Extension]s.
+    */
    fun register(vararg extensions: Extension) {
+      require(extensions.isNotEmpty()) { "Cannot register empty list of extensions" }
       register(extensions.toList())
    }
 
    /**
-    * Register [Extension]s to be invoked after all current extensions.
+    * Register one or more [Extension]s to be invoked after all current extensions.
     */
    fun register(extensions: List<Extension>) {
       _extensions = _extensions + extensions
@@ -159,7 +163,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    open fun beforeTest(f: BeforeTest) {
-      register(object : TestListener {
+      register(object : BeforeTestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -327,7 +331,6 @@ abstract class TestConfiguration {
 
    /**
     * Registers a callback to be executed after all tests in this spec.
-    *
     * The spec instance is provided as a parameter.
     */
    open fun afterSpec(f: AfterSpec) {
