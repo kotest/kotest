@@ -11,7 +11,7 @@ import kotlin.uuid.Uuid
  * or null if not a stable type.
  */
 @OptIn(ExperimentalUuidApi::class)
-fun platformStableValue(value: Any?): String? {
+internal fun platformStableValue(value: Any?): String? {
    return when (value) {
       is String -> value
       is Int -> value.toString()
@@ -44,7 +44,7 @@ fun platformStableValue(value: Any?): String? {
 }
 
 @OptIn(ExperimentalUuidApi::class)
-fun isAllPlatformStable(kclass: KClass<*>): Boolean {
+internal fun isAllPlatformStable(kclass: KClass<*>): Boolean {
    return when (kclass) {
       String::class -> true
       Int::class -> true
