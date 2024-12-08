@@ -4,11 +4,12 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.stable.StableIdents
 import kotlin.jvm.JvmName
 
 /**
  * Registers tests inside the given test context for each element.
- * The test name will be generated from the stable properties of the elements. See [StableIdentifiers].
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
 suspend fun <T> ContainerScope.withData(
    first: T,
@@ -20,7 +21,7 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- * The test names will be generated from the stable properties of the elements. See [StableIdentifiers].
+ * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 suspend fun <T> ContainerScope.withData(
    ts: Sequence<T>,
@@ -29,13 +30,13 @@ suspend fun <T> ContainerScope.withData(
 
 /**
  * Registers tests inside the given test context for each element of [ts].
- * The test names will be generated from the stable properties of the elements. See [StableIdentifiers].
+ * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 suspend fun <T> ContainerScope.withData(
    ts: Iterable<T>,
    test: suspend ContainerScope.(T) -> Unit
 ) {
-   withData({ getStableIdentifier(it) }, ts, test)
+   withData({ StableIdents.getStableIdentifier(it) }, ts, test)
 }
 
 /**
