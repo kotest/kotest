@@ -6,11 +6,13 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.deleteRecursively
 
 @OptIn(ExperimentalPathApi::class)
-fun TestConfiguration.tempdir(prefix: String? = null, suffix: String? = null): File {
+fun TestConfiguration.tempdir(prefix: String? = null, suffix: String? = null, keepOnFailure: Boolean = false): File {
    val dir = kotlin.io.path.createTempDirectory((prefix ?: javaClass.name) + (suffix ?: "")).toFile()
+   var hasErrors = false
+   afterAny { (_, result) -> if (result.isErrorOrFailure) hasErrors = true }
    afterSpec {
       runCatching {
-         dir.toPath().deleteRecursively()
+         if (keepOnFailure && hasErrors) Unit else dir.toPath().deleteRecursively()
       }.onFailure {
          throw TempDirDeletionException(dir)
       }
