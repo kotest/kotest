@@ -118,7 +118,7 @@ module.exports = {
                items: [
                   {
                      label: 'Changelog',
-                     href: 'https://kotest.io/docs/next/changelog.html',
+                     href: 'https://github.com/kotest/kotest/releases',
                   },
                   {
                      label: 'Releases',
@@ -171,10 +171,6 @@ module.exports = {
                {
                   to: '/docs/quickstart',
                   from: ['/quick_start'],
-               },
-               {
-                  to: 'https://github.com/kotest/kotest/releases',
-                  from: ['/changelog'],
                },
                {
                   to: '/docs/assertions/clues.html',
