@@ -14,6 +14,10 @@ import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
+/**
+ * This adds Kotest nodes to the Structure view in intellij (note structure view is not the project view).
+ * This is used to display the tests in the structure view which are navigable.
+ */
 class KotestStructureViewExtension : StructureViewExtension {
 
    override fun getType(): Class<out PsiElement> {
