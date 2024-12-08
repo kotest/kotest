@@ -701,6 +701,9 @@ val locales = listOf(
    "zu_ZA",
 )
 
+private val jdk17SafeLocales =
+   locales.filterNot { it.startsWith("in") || it.startsWith("ji") || it.startsWith("iw") || it.startsWith("no") }
+
 /**
  * Returns an Arb that generates locales.
  *
@@ -708,3 +711,5 @@ val locales = listOf(
  * that has a variant.
  */
 fun Arb.Companion.locale() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { locales.random(it.random) }
+
+fun Arb.Companion.localeJdk17() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { jdk17SafeLocales.random(it.random) }
