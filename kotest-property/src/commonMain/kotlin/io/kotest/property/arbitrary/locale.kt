@@ -712,5 +712,23 @@ private val jdk17SafeLocales =
  */
 fun Arb.Companion.locale() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { locales.random(it.random) }
 
+/**
+ * An Arb that produces locales filtering out locales that are not compatible with JDK 17.
+ *
+ * The excluded locales include those with language codes starting with:
+ * - "in" (deprecated code for Indonesian, replaced by "id")
+ * - "ji" (deprecated code for Yiddish, replaced by "yi")
+ * - "iw" (deprecated code for Hebrew, replaced by "he")
+ * - "no" (Norwegian, replaced by "nb" for Bokmål or "nn" for Nynorsk)
+ *
+ * This ensures the generated locales are safe for use in environments running JDK 17,
+ * where these deprecated codes are no longer supported.
+ *
+ * Example edge cases include:
+ * - A locale that only specifies the language (e.g., "en")
+ * - A locale that includes a variant (e.g., "ca_ES_VALENCIA")
+ *
+ * @return an Arb instance that generates JDK 17-safe locales.
+ */
 fun Arb.Companion.localeJdk17() = arbitrary(listOf("en", "ca_ES_VALENCIA")) { jdk17SafeLocales.random(it.random) }
 
