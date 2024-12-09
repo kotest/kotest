@@ -3,7 +3,6 @@ package com.sksamuel.kotest.matchers.numerics
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.ints.beOdd
-import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThan
@@ -22,6 +21,8 @@ import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.comparables.between
+import io.kotest.matchers.comparables.shouldBeBetween
 
 class IntMatchersTest : StringSpec() {
    init {
@@ -126,7 +127,7 @@ class IntMatchersTest : StringSpec() {
          )
 
          forAll(table) { a, b ->
-            1 shouldBe io.kotest.matchers.ints.between(a, b)
+            1 shouldBe between(a, b)
             1.shouldBeBetween(a, b)
          }
       }
@@ -142,7 +143,7 @@ class IntMatchersTest : StringSpec() {
          )
 
          forNone(table) { a, b ->
-            3 shouldBe io.kotest.matchers.ints.between(a, b)
+            3 shouldBe between(a, b)
          }
       }
 

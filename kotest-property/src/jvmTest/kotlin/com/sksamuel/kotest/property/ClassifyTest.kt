@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest.property
 
 import io.kotest.core.annotation.EnabledIf

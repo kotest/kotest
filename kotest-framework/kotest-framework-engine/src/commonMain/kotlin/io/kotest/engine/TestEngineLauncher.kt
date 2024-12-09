@@ -204,6 +204,7 @@ class TestEngineLauncher(
 
       val configuration = if (configurationIsInitialized) projectConfiguration else {
          ConfigManager.initialize(projectConfiguration) {
+            @Suppress("DEPRECATION")
             configs +
                detectAbstractProjectConfigs() +
                loadProjectConfigsFromClassname()
