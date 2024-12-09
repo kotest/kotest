@@ -8,13 +8,6 @@ public final class io/kotest/datatest/ContainerKt {
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/datatest/IdentifierKt {
-	public static final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
-}
-
-public abstract interface annotation class io/kotest/datatest/IsStableType : java/lang/annotation/Annotation {
-}
-
 public final class io/kotest/datatest/RootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
@@ -23,11 +16,6 @@ public final class io/kotest/datatest/RootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/StableIdentifiers {
-	public static final field INSTANCE Lio/kotest/datatest/StableIdentifiers;
-	public final fun stableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/datatest/WithDataTestName {
@@ -539,6 +527,18 @@ public final class io/kotest/engine/spec/TempdirKt {
 public final class io/kotest/engine/spec/TempfileKt {
 	public static final fun tempfile (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;)Ljava/io/File;
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
+}
+
+public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
+}
+
+public final class io/kotest/engine/stable/Platform_jvmKt {
+	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/engine/stable/StableIdents {
+	public static final field INSTANCE Lio/kotest/engine/stable/StableIdents;
+	public final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
