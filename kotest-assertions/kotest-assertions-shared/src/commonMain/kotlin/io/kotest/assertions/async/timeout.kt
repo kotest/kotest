@@ -5,7 +5,7 @@ import io.kotest.assertions.failure
 import io.kotest.common.testTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
-import kotlin.contracts.InvocationKind.EXACTLY_ONCE
+import kotlin.contracts.InvocationKind.AT_MOST_ONCE
 import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.measureTime
@@ -27,7 +27,7 @@ suspend fun shouldTimeout(
    duration: Duration,
    operation: suspend () -> Unit,
 ) {
-   contract { callsInPlace(operation, EXACTLY_ONCE) }
+   contract { callsInPlace(operation, AT_MOST_ONCE) }
 
    try {
       val timeSource = testTimeSource()

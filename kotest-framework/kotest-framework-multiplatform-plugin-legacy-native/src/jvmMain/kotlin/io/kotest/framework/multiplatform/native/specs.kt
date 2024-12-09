@@ -2,6 +2,7 @@ package io.kotest.framework.multiplatform.native
 
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
@@ -21,6 +22,7 @@ val specClasses = listOf(
 /**
  * Returns any specs declared at the top level in this file.
  */
+@OptIn(UnsafeDuringIrConstructionAPI::class)
 fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
 
 /**
