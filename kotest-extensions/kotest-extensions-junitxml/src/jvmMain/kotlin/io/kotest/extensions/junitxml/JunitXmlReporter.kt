@@ -36,6 +36,9 @@ import kotlin.time.TimeMark
  *
  * This implementation handles nesting, whereas the JUnit implementation will only output for leaf tests.
  *
+ * Note: This site has a good set of schemas and examples of the format: https://github.com/testmoapp/junitxml
+ * Another useful,but less details is https://llg.cubic.org/docs/junit
+ *
  * @param includeContainers when `true`, all intermediate tests are included in the report as
  * tests in their own right.
  * Defaults to `false`.
@@ -58,7 +61,7 @@ class JunitXmlReporter(
    constructor(
       includeContainers: Boolean = false,
       useTestPathAsName: Boolean = true,
-      outputDir: String = DefaultTestResultRelativeDir,
+      outputDir: String = DEFAULT_TEST_RESULT_RELATIVE_DIR,
       clock: Clock = Clock.systemDefaultZone(),
    ) : this(
       includeContainers = includeContainers,
@@ -68,23 +71,27 @@ class JunitXmlReporter(
    )
 
    companion object {
-      const val DefaultBuildDir = "./build"
+      private const val DEFAULT_BUILD_DIR = "./build"
 
       /**
        * System property that provides the project's build directory.
        *
        * @see defaultOutputDir
        */
-      const val BuildDirKey = "gradle.build.dir"
+      private const val BUILD_DIR_KEY = "gradle.build.dir"
 
-      const val AttributeName = "name"
+      const val ELEMENT_FAILURE = "failure"
+      const val ELEMENT_ERROR = "error"
+      const val ATTRIBUTE_NAME = "name"
+      const val ATTRIBUTE_TYPE = "type"
+      const val ATTRIBUTE_MESSAGE = "message"
 
-      private const val DefaultTestResultRelativeDir = "test-results/test"
+      private const val DEFAULT_TEST_RESULT_RELATIVE_DIR = "test-results/test"
 
       private fun defaultOutputDir(
-         testResultsPath: String = DefaultTestResultRelativeDir,
+         testResultsPath: String = DEFAULT_TEST_RESULT_RELATIVE_DIR,
       ): Path {
-         val buildDir = Path(System.getProperty(BuildDirKey) ?: DefaultBuildDir)
+         val buildDir = Path(System.getProperty(BUILD_DIR_KEY) ?: DEFAULT_BUILD_DIR)
          return buildDir.resolve(testResultsPath).normalize().absolute()
       }
 
@@ -129,7 +136,7 @@ class JunitXmlReporter(
          setAttribute("failures", filtered.count { it.value.isFailure }.toString())
          setAttribute("skipped", filtered.count { it.value.isIgnored }.toString())
          setAttribute("tests", filtered.size.toString())
-         setAttribute(AttributeName, formatter.format(kclass))
+         setAttribute(ATTRIBUTE_NAME, formatter.format(kclass))
       }
       document.addContent(testSuite)
 
@@ -140,38 +147,7 @@ class JunitXmlReporter(
             false -> formatter.format(testcase)
          }
 
-         val e = Element("testcase")
-         e.setAttribute(AttributeName, name)
-         e.setAttribute("classname", kclass.java.canonicalName)
-         e.setAttribute("time", result.duration.toDouble(DurationUnit.SECONDS).toString())
-
-         when (result) {
-            is TestResult.Error -> {
-               e.addContent(
-                  Element("error").apply {
-                     result.errorOrNull?.let { throwable ->
-                        setAttribute("type", throwable.javaClass.name)
-                        setText(throwable.message)
-                     }
-                  }
-               )
-            }
-
-            is TestResult.Failure -> {
-               val failure = Element("failure")
-               result.errorOrNull?.let { throwable ->
-                  failure.setAttribute("type", throwable.javaClass.name)
-                  failure.setText(throwable.message)
-               }
-               e.addContent(failure)
-            }
-
-            is TestResult.Ignored,
-            is TestResult.Success -> {
-               // Only report failures, not Ignored or Success
-            }
-         }
-
+         val e = createTestCaseElement(name, result, kclass)
          testSuite.addContent(e)
       }
 
@@ -193,4 +169,39 @@ class JunitXmlReporter(
       ISO_LOCAL_DATE_TIME.format(
          LocalDateTime.now(clock).withNano(0)
       )
+
+   internal fun createTestCaseElement(name: String, result: TestResult, kclass: KClass<out Spec>): Element {
+      val e = Element("testcase")
+      e.setAttribute(ATTRIBUTE_NAME, name)
+      e.setAttribute("classname", kclass.java.canonicalName)
+      e.setAttribute("time", result.duration.toDouble(DurationUnit.SECONDS).toString())
+
+      when (result) {
+         is TestResult.Error -> {
+            result.errorOrNull?.let { throwable ->
+               val error = Element(ELEMENT_ERROR)
+               error.setAttribute(ATTRIBUTE_TYPE, throwable.javaClass.name)
+               error.setAttribute(ATTRIBUTE_MESSAGE, throwable.message ?: "No message")
+               error.setText(throwable.stackTraceToString())
+               e.addContent(error)
+            }
+         }
+
+         is TestResult.Failure -> {
+            result.errorOrNull?.let { throwable ->
+               val failure = Element(ELEMENT_FAILURE)
+               failure.setAttribute(ATTRIBUTE_TYPE, throwable.javaClass.name)
+               failure.setAttribute(ATTRIBUTE_MESSAGE, throwable.message ?: "No message")
+               failure.setText(throwable.stackTraceToString())
+               e.addContent(failure)
+            }
+         }
+
+         is TestResult.Ignored,
+         is TestResult.Success -> {
+            // Only report failures, not Ignored or Success
+         }
+      }
+      return e
+   }
 }
