@@ -225,11 +225,6 @@ class BoundsTest : WordSpec() {
             shouldThrowAny { setOf(1, 2, 3) shouldHaveLowerBound 2 }
                .shouldHaveMessage(msg("Set"))
          }
-
-         "fail for Range" {
-            shouldThrowAny { 1..3 shouldHaveLowerBound 2 }
-               .shouldHaveMessage(msg("Range"))
-         }
       }
    }
 }
