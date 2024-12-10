@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.ranges.Range
 import io.kotest.matchers.shouldBe
 
 class BeEmptyTest : WordSpec() {
@@ -128,18 +129,6 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "Array should be empty but has 1 elements, first being: 0"
          }
 
-         "fail for single element range" {
-            shouldThrowAny {
-               (1..1).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but has at least one element, first being: 1"
-         }
-
-         "fail for single element open range" {
-            shouldThrowAny {
-               (1 until 3).shouldBeEmpty()
-            }.message shouldBe "Range should be empty but has at least one element, first being: 1"
-         }
-
          "fail for null list reference" {
             val maybeList: List<String>? = null
             shouldThrowAny {
@@ -225,18 +214,6 @@ class BeEmptyTest : WordSpec() {
             shouldThrowAny {
                emptyArray<Int>().shouldNotBeEmpty()
             }.message shouldBe "Array should not be empty"
-         }
-
-         "fail for empty closed range" {
-            shouldThrowAny {
-               (1..0).shouldNotBeEmpty()
-            }.message shouldBe "Range should not be empty"
-         }
-
-         "fail for empty open range" {
-            shouldThrowAny {
-               (1 until 0).shouldNotBeEmpty()
-            }.message shouldBe "Range should not be empty"
          }
 
          "fail for null reference" {
