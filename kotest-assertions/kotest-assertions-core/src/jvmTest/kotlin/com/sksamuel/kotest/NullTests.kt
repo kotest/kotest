@@ -13,7 +13,7 @@ class NullTests : WordSpec() {
    // don't want compiler to compile this away
    private fun getNull(): String? = if (nonConstantTrue()) null else throw RuntimeException()
 
-   private fun notNull(): String? = if (nonConstantTrue()) "qwerty" else throw RuntimeException()
+   private fun notNull(): String = if (nonConstantTrue()) "qwerty" else throw RuntimeException()
 
    init {
 
@@ -44,6 +44,7 @@ class NullTests : WordSpec() {
    }
 }
 
+@Suppress("EqualsOrHashCode")
 private class A(var i: Int) {
    override fun equals(other: Any?): Boolean = other == null && i == 0
 }

@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_USAGE")
+
 package io.kotest.framework.multiplatform.native
 
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext

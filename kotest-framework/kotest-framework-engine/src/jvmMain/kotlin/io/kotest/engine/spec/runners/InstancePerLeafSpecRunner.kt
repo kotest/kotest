@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.engine.flatMap
+import io.kotest.core.Logger
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.root
@@ -10,15 +10,16 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.core.Logger
-import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -51,7 +52,7 @@ internal class InstancePerLeafSpecRunner(
    private val started = mutableSetOf<Descriptor>()
 
    /** we keep a count to break ties (first discovered) */
-   data class Enqueued(val testCase: TestCase, val count: Int)
+   data class Enqueued(val testCase: TestCase, val count: Int, val specContext: SpecContext)
 
    private val counter = AtomicInteger(0)
 
@@ -64,7 +65,7 @@ internal class InstancePerLeafSpecRunner(
 
    /** enqueues a test case that will execute in its own spec instance */
    private fun enqueue(testCase: TestCase) {
-      queue.add(Enqueued(testCase, counter.incrementAndGet()))
+      queue.add(Enqueued(testCase, counter.incrementAndGet(), SpecContext.create()))
    }
 
    /**
@@ -81,8 +82,8 @@ internal class InstancePerLeafSpecRunner(
          // until it is empty. When it is empty that means all tests have finished and nothing
          // new is left to be found to be added to the queue
          while (queue.isNotEmpty()) {
-            val (testCase, _) = queue.remove()
-            executeInCleanSpecIfRequired(testCase, spec).getOrThrow()
+            val (testCase, _, specContext) = queue.remove()
+            executeInCleanSpecIfRequired(testCase, spec, specContext).getOrThrow()
          }
          results
       }
@@ -94,41 +95,52 @@ internal class InstancePerLeafSpecRunner(
     */
    private suspend fun executeInCleanSpecIfRequired(
       test: TestCase,
-      defaultSpec: Spec
+      defaultSpec: Spec,
+      specContext: SpecContext
    ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
-         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it) }
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, specContext) }
       } else {
-         executeInCleanSpec(test)
+         executeInCleanSpec(test, specContext)
       }
    }
 
-   private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
+   private suspend fun executeInCleanSpec(test: TestCase, specContext: SpecContext): Result<Map<TestCase, TestResult>> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry)
-         .flatMap { spec -> executeInGivenSpec(test, spec) }
+         .flatMap { spec -> executeInGivenSpec(test, spec, specContext) }
    }
 
-   private suspend fun executeInGivenSpec(test: TestCase, spec: Spec): Result<Map<TestCase, TestResult>> {
-      return pipeline.execute(spec, object : NextSpecInterceptor {
+   private suspend fun executeInGivenSpec(
+      test: TestCase,
+      spec: Spec,
+      specContext: SpecContext,
+   ): Result<Map<TestCase, TestResult>> {
+      return pipeline.execute(spec, specContext, object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-            return locateAndRunRoot(spec, test).map { testResults -> mapOf(test to testResults) }
+            return locateAndRunRoot(spec, test, specContext).map { testResults -> mapOf(test to testResults) }
          }
       })
    }
 
    // when we start a test from the queue, we must find the root test that is the ancestor of our
    // target test and begin executing that.
-   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase): Result<TestResult> = runCatching {
+   private suspend fun locateAndRunRoot(spec: Spec, test: TestCase, specContext: SpecContext): Result<TestResult> =
+      runCatching {
 
-      val root = materializer.materialize(spec)
-         .firstOrNull { it.descriptor == test.descriptor.root() }
-         ?: error("Unable to locate root test ${test.descriptor.path()}")
+         val root = materializer.materialize(spec)
+            .firstOrNull { it.descriptor == test.descriptor.root() }
+            ?: error("Unable to locate root test ${test.descriptor.path()}")
 
-      logger.log { Pair(spec::class.bestName(), "Searching root '${root.name.testName}' for '${test.name.testName}'") }
-      locateAndRunRoot(root, test)
-   }
+         logger.log {
+            Pair(
+               spec::class.bestName(),
+               "Searching root '${root.name.testName}' for '${test.name.testName}'"
+            )
+         }
+         locateAndRunRoot(root, test, specContext)
+      }
 
-   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase): TestResult {
+   private suspend fun locateAndRunRoot(test: TestCase, target: TestCase, specContext: SpecContext): TestResult {
       logger.log { Pair(test.name.testName, "Executing test in search of target '${target.name.testName}'") }
 
       return coroutineScope {
@@ -146,14 +158,14 @@ internal class InstancePerLeafSpecRunner(
                if (t.descriptor.isOnPath(target.descriptor)) {
                   open = false
                   seen.add(t.descriptor)
-                  locateAndRunRoot(t, target)
+                  locateAndRunRoot(t, target, specContext)
                   // otherwise, if we're already past our target we are finding new tests and so
                   // the first new test we run, the rest we queue
                } else if (target.descriptor.isOnPath(t.descriptor)) {
                   if (seen.add(t.descriptor)) {
                      if (open) {
                         open = false
-                        locateAndRunRoot(t, target)
+                        locateAndRunRoot(t, target, specContext)
                      } else {
                         enqueue(t)
                      }
@@ -193,7 +205,7 @@ internal class InstancePerLeafSpecRunner(
             this@InstancePerLeafSpecRunner.context,
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test, context2, specContext)
          results[test] = result
          result
       }
