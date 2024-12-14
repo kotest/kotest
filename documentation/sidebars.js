@@ -1,7 +1,6 @@
 module.exports = {
   "docs": [
     "quickstart",
-    "changelog",
     "blogs"
   ],
   "proptest": [

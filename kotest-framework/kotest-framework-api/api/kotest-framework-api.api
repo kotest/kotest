@@ -98,7 +98,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
 	public final fun prependExtension (Lio/kotest/core/extensions/Extension;)V
 	public final fun prependExtensions (Ljava/util/List;)V
-	public final fun register (Lio/kotest/core/listeners/TestListener;)Lio/kotest/core/listeners/TestListener;
+	public final fun register (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
 	public final fun register (Ljava/util/List;)V
 	public final fun register ([Lio/kotest/core/extensions/Extension;)V
 	public final fun registeredAutoCloseables ()Ljava/util/List;
@@ -1455,6 +1455,11 @@ public final class io/kotest/core/factory/FactoryConstrainedAfterContainerListen
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/core/factory/FactoryConstrainedAfterEachListener : io/kotest/core/listeners/AfterEachListener {
+	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/AfterEachListener;)V
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/core/factory/FactoryConstrainedAfterTestListener : io/kotest/core/listeners/AfterTestListener {
 	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/AfterTestListener;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1466,28 +1471,15 @@ public final class io/kotest/core/factory/FactoryConstrainedBeforeContainerListe
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/core/factory/FactoryConstrainedBeforeEachListener : io/kotest/core/listeners/BeforeEachListener {
+	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/BeforeEachListener;)V
+	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/core/factory/FactoryConstrainedBeforeTestListener : io/kotest/core/listeners/BeforeTestListener {
 	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/BeforeTestListener;)V
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/core/factory/FactoryConstrainedTestListener : io/kotest/core/listeners/TestListener {
-	public fun <init> (Lio/kotest/core/factory/FactoryId;Lio/kotest/core/listeners/TestListener;)V
-	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/factory/FactoryId {

@@ -8,5 +8,9 @@ actual fun createAtomicBoolean(value: Boolean): io.kotest.engine.atomic.AtomicBo
       override fun compareAndSet(expect: Boolean, update: Boolean): Boolean {
          return b.compareAndSet(expect, update)
       }
+
+      override fun get(): Boolean {
+         return b.get()
+      }
    }
 }
