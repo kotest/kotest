@@ -5,6 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.atomic.AtomicBoolean
 import io.kotest.engine.atomic.createAtomicBoolean
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Interceptors that are executed after a spec is instantiated.
@@ -22,11 +23,16 @@ internal interface SpecInterceptor {
  * It contains mutable state that can be modified by the interceptors.
  */
 data class SpecContext(
+   val specCoroutineContext: CoroutineContext,
    val beforeSpecInvoked: AtomicBoolean,
    var beforeSpecError: Throwable? = null,
 ) {
    companion object {
-      fun create() = SpecContext(createAtomicBoolean(false), null)
+      fun create(specCoroutineContext: CoroutineContext) = SpecContext(
+         specCoroutineContext = specCoroutineContext,
+         beforeSpecInvoked = createAtomicBoolean(false),
+         beforeSpecError = null,
+      )
    }
 }
 

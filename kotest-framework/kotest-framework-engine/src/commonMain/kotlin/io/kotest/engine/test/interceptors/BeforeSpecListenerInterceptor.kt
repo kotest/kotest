@@ -36,7 +36,7 @@ internal class BeforeSpecListenerInterceptor(
 
       return if (shouldRun) {
          SpecExtensions(registry)
-            .beforeSpec(testCase.spec)
+            .beforeSpec(testCase.spec, specContext.specCoroutineContext)
             .fold(
                {
                   test(testCase, scope)

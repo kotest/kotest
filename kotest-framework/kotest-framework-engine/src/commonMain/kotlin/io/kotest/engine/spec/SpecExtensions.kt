@@ -19,6 +19,10 @@ import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
 import io.kotest.mpp.bestName
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 
 /**
@@ -40,18 +44,21 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
          registry.all() // globals
    }
 
+   private inline fun <reified T> extensionsOf(spec: Spec) = extensions(spec).filterIsInstance<T>()
+
    /**
-    * Runs all the [BeforeSpecListener] for this [Spec]. All errors are caught and wrapped
+    * Runs all the [BeforeSpecListener]s for this [Spec]. All errors are caught and wrapped
     * in [ExtensionException.BeforeSpecException] and if more than one error,
     * all will be wrapped in a [MultipleExceptions].
+    *
+    * [BeforeSpecListener]s are invoked in a child coroutine of the given [specCoroutineContext].
     */
-   suspend fun beforeSpec(spec: Spec): Result<Spec> {
+   fun beforeSpec(spec: Spec, specCoroutineContext: CoroutineContext): Result<Spec> {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
-
-      val errors = extensions(spec)
-         .filterIsInstance<BeforeSpecListener>()
+      val scope = CoroutineScope(specCoroutineContext + CoroutineName("before-spec-scope"))
+      val errors = extensionsOf<BeforeSpecListener>(spec)
          .mapNotNull { ext ->
-            runCatching { ext.beforeSpec(spec) }
+            runCatching { scope.launch { ext.beforeSpec(spec) } }
                .mapError { ExtensionException.BeforeSpecException(it) }
                .exceptionOrNull()
          }
@@ -68,7 +75,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
     * in [ExtensionException.AfterSpecException] and if more than one error,
     * all will be wrapped in a [MultipleExceptions].
     */
-   suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
+   fun afterSpec(spec: Spec, specCoroutineContext: CoroutineContext): Result<Spec> = runCatching {
       logger.log { Pair(spec::class.bestName(), "afterSpec $spec") }
 
       spec.registeredAutoCloseables().let { closeables ->
@@ -77,9 +84,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
             if (it.isInitialized()) it.value.close() else Unit
          }
       }
-
-      val errors = extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
-         runCatching { ext.afterSpec(spec) }
+      val scope = CoroutineScope(specCoroutineContext + CoroutineName("after-spec-scope"))
+      val errors = extensionsOf<AfterSpecListener>(spec).mapNotNull { ext ->
+         runCatching { scope.launch { ext.afterSpec(spec) } }
             .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
       }
 
@@ -120,7 +127,6 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
-      t: Throwable?
    ): Result<KClass<out Spec>> {
 
       val exts = registry.all().filterIsInstance<FinalizeSpecListener>()

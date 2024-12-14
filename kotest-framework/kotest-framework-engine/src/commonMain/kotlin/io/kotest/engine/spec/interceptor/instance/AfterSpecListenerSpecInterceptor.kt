@@ -8,13 +8,17 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.flatMap
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 
 /**
  * Invokes any [AfterSpecListener] callbacks for the given spec.
  * These listeners are only invoked if the spec has at least one defined test AND all defined tests are not ignored.
  */
-internal class AfterSpecListenerSpecInterceptor(private val registry: ExtensionRegistry) : SpecInterceptor {
+internal class AfterSpecListenerSpecInterceptor(
+   private val registry: ExtensionRegistry,
+   private val specContext: SpecContext,
+) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
       next: NextSpecInterceptor,
@@ -22,7 +26,7 @@ internal class AfterSpecListenerSpecInterceptor(private val registry: ExtensionR
       return next.invoke(spec).flatMap { results ->
          if (hasActiveTest(results)) {
             SpecExtensions(registry)
-               .afterSpec(spec)
+               .afterSpec(spec, specContext.specCoroutineContext)
                .map { results }
          } else {
             Result.success(results)

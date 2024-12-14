@@ -52,7 +52,7 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.testName == "a" }
-      executor.execute(testCase, context(testCase), SpecContext.create()).isSuccess shouldBe true
+      executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext)).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
    }
@@ -73,7 +73,7 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.testName == "b" }
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext))
       result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
       started shouldBe true
@@ -88,7 +88,7 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val spec = BeforeTest()
       val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase), SpecContext.create())
+      executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext))
       spec.before.shouldBeTrue()
    }
 
@@ -100,7 +100,7 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val spec = AfterTest()
       val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase), SpecContext.create())
+      executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext))
       spec.after.shouldBeTrue()
    }
 
@@ -118,7 +118,7 @@ class TestCaseExecutorTest : FunSpec({
          }
       }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(BeforeTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext))
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
       started shouldBe true
@@ -139,7 +139,7 @@ class TestCaseExecutorTest : FunSpec({
          }
       }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(AfterTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(testCase, context(testCase), SpecContext.create(coroutineContext))
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       started shouldBe true

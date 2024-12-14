@@ -53,7 +53,7 @@ class TestTimeoutTest : FunSpec() {
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create(coroutineContext))
          }
       }
 
@@ -80,7 +80,7 @@ class TestTimeoutTest : FunSpec() {
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create(coroutineContext))
          }
       }
    }

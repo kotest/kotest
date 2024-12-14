@@ -69,7 +69,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create(coroutineContext))
          }
 
          blockingCount.get() shouldBe 1
@@ -110,7 +110,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create())
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext), SpecContext.create(coroutineContext))
          }
 
          suspendingCount.get() shouldBe 1

@@ -23,6 +23,7 @@ import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
@@ -46,7 +47,7 @@ internal class SingleInstanceSpecRunner(
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
       try {
-         val specContext = SpecContext.create()
+         val specContext = SpecContext.create(coroutineContext)
          return coroutineScope {
             pipeline.execute(
                spec,

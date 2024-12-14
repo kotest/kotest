@@ -20,7 +20,7 @@ internal class FinalizeSpecInterceptor(
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return next.invoke(ref)
-         .onSuccess { extensions.finalizeSpec(ref.kclass, it, null) }
-         .onFailure { extensions.finalizeSpec(ref.kclass, emptyMap(), it) }
+         .onSuccess { extensions.finalizeSpec(ref.kclass, it) }
+         .onFailure { extensions.finalizeSpec(ref.kclass, emptyMap()) }
    }
 }
