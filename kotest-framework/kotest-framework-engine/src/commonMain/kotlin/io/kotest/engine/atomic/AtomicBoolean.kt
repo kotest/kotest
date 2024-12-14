@@ -10,6 +10,11 @@ interface AtomicBoolean {
     * the actual value was not equal to the expected value.
     */
    fun compareAndSet(expect: Boolean, update: Boolean): Boolean
+
+   /**
+    * @return the current value
+    */
+   fun get(): Boolean
 }
 
 expect fun createAtomicBoolean(value: Boolean): AtomicBoolean
