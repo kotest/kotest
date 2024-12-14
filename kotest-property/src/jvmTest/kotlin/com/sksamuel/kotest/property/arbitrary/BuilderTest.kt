@@ -7,7 +7,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
@@ -205,7 +205,7 @@ class BuilderTest : FunSpec() {
       }
 
       context("suspend arbitrary builder with unrestricted continuation") {
-         suspend fun combineAsString(vararg values: Any?): String = values.joinToString(" ")
+         fun combineAsString(vararg values: Any?): String = values.joinToString(" ")
 
          test("should build arb on the parent coroutine context") {
             val arb = withContext(Foo("hello")) {
@@ -354,7 +354,7 @@ class BuilderTest : FunSpec() {
       override val key: CoroutineContext.Key<*> = Foo
    }
 
-   private suspend fun execute(rs: RandomSource, arb: Arb<*>): Unit {
+   private fun execute(rs: RandomSource, arb: Arb<*>): Unit {
       arb.generate(rs).take(1000).last()
    }
 }

@@ -95,14 +95,16 @@ public final class io/kotest/mpp/BasicStackTraces : io/kotest/mpp/StackTraces {
 
 public final class io/kotest/mpp/IncludingAnnotations : io/kotest/mpp/AnnotationSearchParameter {
 	public static final field INSTANCE Lio/kotest/mpp/IncludingAnnotations;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/mpp/IncludingSuperclasses : io/kotest/mpp/AnnotationSearchParameter {
 	public static final field INSTANCE Lio/kotest/mpp/IncludingSuperclasses;
-}
-
-public final class io/kotest/mpp/IsPlatformStableKt {
-	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/mpp/JvmReflection : io/kotest/mpp/Reflection {
@@ -147,13 +149,6 @@ public abstract interface class io/kotest/mpp/Reflection {
 
 public final class io/kotest/mpp/ReflectionKt {
 	public static final fun bestName (Lkotlin/reflect/KClass;)Ljava/lang/String;
-}
-
-public final class io/kotest/mpp/StableKt {
-	public static final fun isStable (Lkotlin/reflect/KClass;)Z
-	public static final fun isStable (Lkotlin/reflect/KClass;Ljava/lang/Object;)Z
-	public static final fun isStable (Lkotlin/reflect/KType;)Z
-	public static synthetic fun isStable$default (Lkotlin/reflect/KClass;Ljava/lang/Object;ILjava/lang/Object;)Z
 }
 
 public abstract interface class io/kotest/mpp/StackTraces {

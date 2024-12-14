@@ -82,7 +82,7 @@ object IterableEq : Eq<Iterable<*>> {
 
    private fun checkIterableCompatibility(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       val isCompatible =
-         ((actual is Collection || actual is Array<*>) && (expected is Collection) || (expected is Array<*>))
+         ((actual is Collection) && (expected is Collection))
             || (actual::class.isInstance(expected) && expected::class.isInstance(actual))
       return if (isCompatible) null else errorWithTypeDetails(actual,expected)
    }
@@ -98,7 +98,7 @@ object IterableEq : Eq<Iterable<*>> {
 
       fun equalWithDetection(elementInActualSet: Any?, it: Any?) =
          eq(elementInActualSet, it, strictNumberEq)?.let {
-            if (null == innerError && (it.message?.startsWith(trigger) == true)) innerError = it
+            if (null == innerError && (it.message?.startsWith(TRIGGER) == true)) innerError = it
             false
          } ?: true
 
@@ -129,7 +129,7 @@ object IterableEq : Eq<Iterable<*>> {
       }, innerError)
    }
 
-   const val trigger = "Disallowed"
+   const val TRIGGER = "Disallowed"
 
    private fun errorWithTypeDetails(actual: Iterable<*>, expected: Iterable<*>): Throwable {
       val actualTypeName = actual::class.simpleName ?: actual::class
@@ -142,15 +142,15 @@ object IterableEq : Eq<Iterable<*>> {
                if (actual is Set<*>) actualTypeName to expectedTypeName
                else expectedTypeName to actualTypeName
 
-            "$trigger: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
+            "$TRIGGER: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
          }
-         (actual is Collection || actual is Array<*>) || (expected is Collection || expected is Array<*>) -> "$trigger typed contract\nMay not compare $tag"
-         else -> "$trigger promiscuous iterators\nMay not compare $tag"
+         (actual is Collection) || (expected is Collection) -> "$TRIGGER typed contract\nMay not compare $tag"
+         else -> "$TRIGGER promiscuous iterators\nMay not compare $tag"
       }
       return failure(detailErrorMessage)
    }
 
-   private const val disallowed = "$trigger nesting iterator"
+   private const val DISALLOWED = "$TRIGGER nesting iterator"
 
    private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
 
@@ -160,7 +160,7 @@ object IterableEq : Eq<Iterable<*>> {
 
       fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
          if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(it))) {
-         """$disallowed $it (${it::class.simpleName ?: "anonymous" }) within $oracle (${oracle::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
+         """$DISALLOWED $it (${it::class.simpleName ?: "anonymous" }) within $oracle (${oracle::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
       } else null }
 
       var nestedIteratorError: String? = null
@@ -173,7 +173,7 @@ object IterableEq : Eq<Iterable<*>> {
       }
 
       fun equalXorDisallowed(signal: Throwable?): Throwable? = signal?.let {
-         if (it.message?.startsWith(disallowed) == true) {
+         if (it.message?.startsWith(DISALLOWED) == true) {
             setDisallowedState(it.message!!)
             failure(nestedIteratorError!!)
          } else it

@@ -159,6 +159,7 @@ class Discovery(
       }
 
       // do not change this to use reject as it will break clients using older versions of classgraph
+      @Suppress("DEPRECATION")
       return cg.blacklistPackages(
          "java.*",
          "javax.*",

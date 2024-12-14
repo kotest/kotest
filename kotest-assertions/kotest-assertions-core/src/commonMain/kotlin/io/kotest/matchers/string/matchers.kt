@@ -8,7 +8,6 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
-import io.kotest.submatching.describePartialMatchesInString
 import io.kotest.submatching.describePartialMatchesInStringForSlice
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE

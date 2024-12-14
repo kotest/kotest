@@ -11,6 +11,7 @@ internal object VanillaDistanceCalculator: IDistanceCalculator {
 internal fun matchNotNull(field: String, expected: Any, actual: Any): ComparisonResult = when {
     expected == actual -> Match(field, expected)
     expected::class.isData && expected.javaClass == actual.javaClass -> matchByFields(field, expected, actual)
+    expected is String && actual is String -> matchNotNullStrings(field, expected, actual)
     else -> AtomicMismatch(field, expected, actual)
 }
 

@@ -24,9 +24,21 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
       if (predicates[subsequenceIndex](actualIterator.next())) subsequenceIndex += 1
    }
 
+   val passed = subsequenceIndex == predicates.size
+
+   val predicateMatchedOutOfOrderDescription = run {
+      val predicateMatchedOutOfOrderIndexes = if (passed) emptyList() else {
+         actual.mapIndexedNotNull { index, element ->
+            if (predicates[subsequenceIndex](element)) index else null
+         }
+      }
+      if (predicateMatchedOutOfOrderIndexes.isEmpty()) "" else
+         ",\nbut found element(s) matching the predicate out of order at index(es): ${predicateMatchedOutOfOrderIndexes.print().value}"
+   }
+
    MatcherResult(
-      subsequenceIndex == predicates.size,
-      { "${actual.print().value} did not match the predicates in order. Predicate at index $subsequenceIndex did not match." },
+      passed,
+      { "${actual.print().value} did not match the predicates in order. Predicate at index $subsequenceIndex did not match.$predicateMatchedOutOfOrderDescription" },
       { "${actual.print().value} should not match the predicates in order" }
    )
 }

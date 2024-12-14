@@ -69,7 +69,7 @@ fun <T, C : Collection<T>> containExactly(
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
-      this?.message?.startsWith(IterableEq.trigger) == true
+      this?.message?.startsWith(IterableEq.TRIGGER) == true
 
    val failureReason = if(verifier == null) {
       eq(actual, expected, strictNumberEq = true)
@@ -221,10 +221,9 @@ internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expe
 }
 
 private fun <T> StringBuilder.appendSubmatches(actual: Collection<T>, expected: Collection<T>) {
-   val (partialMatchesList, partialMatchesDescription) = describePartialMatchesInCollection(expected, actual.toList())
-   if (partialMatchesList.isNotEmpty()) {
+   val partialMatchesDescription = describePartialMatchesInCollection(expected, actual.toList()).toString()
+   if (partialMatchesDescription.isNotEmpty()) {
       appendLine()
-      appendLine(partialMatchesList)
       appendLine(partialMatchesDescription)
    }
 }

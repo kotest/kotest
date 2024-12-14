@@ -18,6 +18,7 @@ sealed class JsonError {
 
    data class ObjectMissingKeys(override val path: List<String>, val missing: Set<String>) : JsonError()
    data class ObjectExtraKeys(override val path: List<String>, val extra: Set<String>) : JsonError()
+   data class ObjectExtraAndMissingKeys(override val path: List<String>, val extra: Set<String>, val missing: Set<String>) : JsonError()
    data class ExpectedObject(override val path: List<String>, val b: JsonNode) : JsonError()
    data class ExpectedArray(override val path: List<String>, val b: JsonNode) : JsonError()
    data class UnequalStrings(override val path: List<String>, val a: String, val b: String) : JsonError()
@@ -40,6 +41,7 @@ fun JsonError.asString(): String {
       is JsonError.UnequalArrayLength -> "$dotpath expected array length ${this.expected} but was ${this.actual}"
       is JsonError.ObjectMissingKeys -> "$dotpath object was missing expected field(s) [${missing.joinToString(",")}]"
       is JsonError.ObjectExtraKeys -> "$dotpath object has extra field(s) [${extra.joinToString(",")}]"
+      is JsonError.ObjectExtraAndMissingKeys -> "$dotpath object has extra field(s) [${extra.joinToString(",")}] and missing field(s) [${missing.joinToString(",")}]"
       is JsonError.ExpectedObject -> "$dotpath expected object type but was ${b.type()}"
       is JsonError.ExpectedArray -> "$dotpath expected array type but was ${b.type()}"
       is JsonError.UnequalStrings -> "$dotpath expected '$a' but was '$b'"

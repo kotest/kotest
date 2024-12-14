@@ -46,6 +46,7 @@ internal suspend fun test(
                classifier as Classifier<Any?>
                val value = inputs[k]
                val label = classifier.classify(value)
+               @Suppress("DEPRECATION")
                if (label != null) context.classify(k, label)
             }
          }
@@ -78,14 +79,14 @@ internal suspend fun handleException(
    writeFailedSeed(seed)
    if (config.maxFailure == 0) {
       printFailureMessage(context, inputs, e)
-      throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
+      throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed, config.outputHexForUnprintableChars)
    } else if (context.failures() > config.maxFailure) {
       val error = buildMaxFailureErrorMessage(context, config, inputs)
-      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
+      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed, config.outputHexForUnprintableChars)
    }
 }
 
-private fun printFailureMessage(
+fun printFailureMessage(
    context: PropertyContext,
    inputs: List<Any?>,
    e: Throwable,
