@@ -96,6 +96,7 @@ include(
    ":kotest-extensions:kotest-extensions-blockhound",
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
+   ":kotest-extensions:kotest-extensions-allure",
 
    // allows overriding the .now() functionality on time classes
    ":kotest-extensions:kotest-extensions-now",
