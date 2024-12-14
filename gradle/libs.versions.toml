@@ -1,5 +1,5 @@
 [versions]
-blockhound = "1.0.9.RELEASE"
+blockhound = "1.0.10.RELEASE"
 classgraph = "4.8.179"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
