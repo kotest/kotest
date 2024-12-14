@@ -2,4 +2,4 @@ Changelog
 =========
 
 
-Changelog has moved to [here](https://kotest.io/docs/changelog.html)
+Changelog has moved to [here](https://github.com/kotest/kotest/releases)
