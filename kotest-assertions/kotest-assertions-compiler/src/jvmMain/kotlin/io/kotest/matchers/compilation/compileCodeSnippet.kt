@@ -1,8 +1,8 @@
 package io.kotest.matchers.compilation
 
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
-import com.tschuchort.compiletesting.KotlinCompilation.Result
 import com.tschuchort.compiletesting.SourceFile
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)
-private fun compileCodeSnippet(codeSnippet: String): Result {
+private fun compileCodeSnippet(codeSnippet: String): JvmCompilationResult {
    val kotlinCompilation = KotlinCompilation()
       .apply {
          sources = listOf(SourceFile.kotlin("KClass.kt", codeSnippet))
