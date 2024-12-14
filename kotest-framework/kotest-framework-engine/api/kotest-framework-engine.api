@@ -529,8 +529,8 @@ public final class io/kotest/engine/spec/TempFileDeletionException : java/lang/E
 }
 
 public final class io/kotest/engine/spec/TempdirKt {
-	public static final fun tempdir (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;)Ljava/io/File;
-	public static synthetic fun tempdir$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
+	public static final fun tempdir (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;Z)Ljava/io/File;
+	public static synthetic fun tempdir$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Ljava/io/File;
 }
 
 public final class io/kotest/engine/spec/TempfileKt {
