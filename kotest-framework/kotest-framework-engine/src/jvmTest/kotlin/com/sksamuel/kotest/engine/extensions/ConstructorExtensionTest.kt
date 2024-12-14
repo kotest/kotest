@@ -4,7 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ApplyExtension
-import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

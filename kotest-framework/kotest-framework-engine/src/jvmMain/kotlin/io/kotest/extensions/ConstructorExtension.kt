@@ -1,5 +1,6 @@
-package io.kotest.core.extensions
+package io.kotest.extensions
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
