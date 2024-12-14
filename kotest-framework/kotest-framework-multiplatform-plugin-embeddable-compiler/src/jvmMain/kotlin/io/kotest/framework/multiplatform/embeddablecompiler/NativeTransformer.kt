@@ -16,14 +16,21 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
-class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+@OptIn(UnsafeDuringIrConstructionAPI::class)
+class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) :
+   Transformer(messageCollector, pluginContext) {
 
-   override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
+   override fun generateLauncher(
+      specs: Iterable<IrClass>,
+      configs: Iterable<IrClass>,
+      declarationParent: IrDeclarationParent
+   ): IrDeclaration {
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
       }.apply {

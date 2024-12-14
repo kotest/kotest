@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.Name
 
@@ -30,6 +31,7 @@ class JsTransformer(override val withPlatformMethodName: String, messageCollecto
       return main
    }
 
+   @OptIn(UnsafeDuringIrConstructionAPI::class)
    private val promiseFn by lazy {
       launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
          ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
