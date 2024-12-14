@@ -123,6 +123,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 
 public abstract interface class io/kotest/engine/atomic/AtomicBoolean {
 	public abstract fun compareAndSet (ZZ)Z
+	public abstract fun get ()Z
 }
 
 public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
