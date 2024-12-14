@@ -11,6 +11,7 @@ import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListe
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scopes.InOrderTestScope
 import io.kotest.core.log
+import io.kotest.engine.spec.interceptor.SpecContext
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -20,31 +21,33 @@ import kotlin.coroutines.coroutineContext
 @ExperimentalKotest
 internal class DefaultSpecExecutorDelegate(
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val context: EngineContext
+   private val engineContext: EngineContext
 ) : SpecExecutorDelegate {
 
-   private val materializer = Materializer(context.configuration)
+   private val materializer = Materializer(engineContext.configuration)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
+      val specContext = SpecContext.create()
       materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val scope = DuplicateNameHandlingTestScope(
-               context.configuration.duplicateTestNameMode,
+               engineContext.configuration.duplicateTestNameMode,
                InOrderTestScope(
+                  specContext,
                   testCase,
                   coroutineContext,
-                  context.configuration.duplicateTestNameMode,
+                  engineContext.configuration.duplicateTestNameMode,
                   coroutineDispatcherFactory,
-                  context
+                  engineContext,
                )
             )
             TestCaseExecutor(
-               TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
+               TestCaseExecutionListenerToTestEngineListenerAdapter(engineContext.listener),
                coroutineDispatcherFactory,
-               context,
-            ).execute(testCase, scope)
+               engineContext,
+            ).execute(testCase, scope, specContext)
          }
       return emptyMap()
    }

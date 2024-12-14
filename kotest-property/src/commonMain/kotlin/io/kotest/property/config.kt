@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.property
 
 import io.kotest.common.ExperimentalKotest
@@ -42,12 +44,13 @@ object PropertyTesting {
 
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
 
-   var defaultShrinkingMode: ShrinkingMode = when(val mode = sysprop("kotest.proptest.default.shrinking.mode", "bounded")) {
-      "off" -> ShrinkingMode.Off
-      "bounded" -> ShrinkingMode.Bounded(sysprop("kotest.proptest.default.shrinking.bound", 1000))
-      "unbounded" -> ShrinkingMode.Unbounded
-      else -> error("Invalid shrinking mode: $mode")
-   }
+   var defaultShrinkingMode: ShrinkingMode =
+      when (val mode = sysprop("kotest.proptest.default.shrinking.mode", "bounded")) {
+         "off" -> ShrinkingMode.Off
+         "bounded" -> ShrinkingMode.Bounded(sysprop("kotest.proptest.default.shrinking.bound", 1000))
+         "unbounded" -> ShrinkingMode.Unbounded
+         else -> error("Invalid shrinking mode: $mode")
+      }
 
    var defaultListeners: List<PropTestListener> = listOf()
 
@@ -114,7 +117,7 @@ fun PropTest.toPropTestConfig() =
  *
  * @param constraints controls the loop for properties. See [Constraints].
  */
-@OptIn(ExperimentalKotest::class)
+@Suppress("DEPRECATION")
 data class PropTestConfig(
    val seed: Long? = PropertyTesting.defaultSeed,
    val minSuccess: Int = PropertyTesting.defaultMinSuccess,
