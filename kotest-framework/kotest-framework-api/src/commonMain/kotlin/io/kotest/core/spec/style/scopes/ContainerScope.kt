@@ -1,6 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tuple2
+import io.kotest.core.extensions.Extension
+import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeContainerListener
+import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.project.projectContext
@@ -74,11 +79,11 @@ interface ContainerScope : TestScope {
       registerTest(name, disabled, config, TestType.Test, test)
    }
 
-   private fun prependExtension(listener: TestListener) {
+   private fun prependExtension(listener: Extension) {
       testCase.spec.prependExtensions(listOf(listener))
    }
 
-   private fun appendExtension(listener: TestListener) {
+   private fun appendExtension(listener: Extension) {
       testCase.spec.register(listener)
    }
 
@@ -138,7 +143,7 @@ interface ContainerScope : TestScope {
    fun afterAny(f: AfterAny) {
       if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
-      prependExtension(object : TestListener {
+      prependExtension(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) f(Tuple2(testCase, result))
          }
@@ -154,7 +159,7 @@ interface ContainerScope : TestScope {
    fun beforeContainer(f: BeforeContainer) {
       if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
-      appendExtension(object : TestListener {
+      appendExtension(object : BeforeContainerListener {
          override suspend fun beforeContainer(testCase: TestCase) {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
                f(testCase)
@@ -176,7 +181,7 @@ interface ContainerScope : TestScope {
    fun afterContainer(f: AfterContainer) {
       if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
-      prependExtension(object : TestListener {
+      prependExtension(object : AfterContainerListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
                f(Tuple2(testCase, result))
@@ -192,7 +197,7 @@ interface ContainerScope : TestScope {
    fun beforeEach(f: BeforeEach) {
       if (hasChildren() && !projectContext.configuration.allowOutOfOrderCallbacks) throw outOfOrderCallbacksException
       val thisTestCase = this.testCase
-      appendExtension(object : TestListener {
+      appendExtension(object : BeforeEachListener {
          override suspend fun beforeEach(testCase: TestCase) {
             if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor)) {
                f(testCase)
