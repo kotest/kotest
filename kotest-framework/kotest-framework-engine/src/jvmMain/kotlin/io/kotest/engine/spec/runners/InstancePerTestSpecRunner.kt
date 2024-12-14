@@ -26,6 +26,7 @@ import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -114,7 +115,7 @@ internal class InstancePerTestSpecRunner(
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
       return createAndInitializeSpec(test.spec::class, context.configuration.registry)
-         .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create()) }
+         .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create(coroutineContext)) }
    }
 
    private suspend fun executeInGivenSpec(
@@ -139,7 +140,7 @@ internal class InstancePerTestSpecRunner(
       defaultSpec: Spec
    ): Result<Map<TestCase, TestResult>> {
       return if (defaultInstanceUsed.compareAndSet(false, true)) {
-         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, SpecContext.create()) }
+         Result.success(defaultSpec).flatMap { executeInGivenSpec(test, it, SpecContext.create(coroutineContext)) }
       } else {
          executeInCleanSpec(test)
       }

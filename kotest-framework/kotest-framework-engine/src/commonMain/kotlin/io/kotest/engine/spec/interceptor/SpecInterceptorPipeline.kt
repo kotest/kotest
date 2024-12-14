@@ -65,7 +65,7 @@ internal class SpecInterceptorPipeline(
          ConfigurationInContextSpecInterceptor(configuration),
          InlineTagSpecInterceptor(listener, configuration),
          BeforeSpecFailureInterceptor(specContext),
-         AfterSpecListenerSpecInterceptor(configuration.registry),
+         AfterSpecListenerSpecInterceptor(configuration.registry, specContext),
       )
    }
 }

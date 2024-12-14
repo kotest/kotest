@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 @ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
@@ -64,8 +65,8 @@ internal class InstancePerLeafSpecRunner(
    })
 
    /** enqueues a test case that will execute in its own spec instance */
-   private fun enqueue(testCase: TestCase) {
-      queue.add(Enqueued(testCase, counter.incrementAndGet(), SpecContext.create()))
+   private suspend fun enqueue(testCase: TestCase) {
+      queue.add(Enqueued(testCase, counter.incrementAndGet(), SpecContext.create(coroutineContext)))
    }
 
    /**

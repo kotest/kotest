@@ -35,7 +35,7 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       val cc = coroutineContext
-      val specContext = SpecContext.create()
+      val specContext = SpecContext.create(coroutineContext)
       // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
       // which declares a single level of `test`s.
       kotlinJsTestFramework.suite(testNameEscape(spec::class.bestName()), ignored = false) {
