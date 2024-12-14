@@ -8,9 +8,11 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.ByteArrayOutputStream
 import java.io.File
 
+@OptIn(ExperimentalCompilerApi::class)
 private fun compileCodeSnippet(codeSnippet: String): Result {
    val kotlinCompilation = KotlinCompilation()
       .apply {
@@ -25,6 +27,7 @@ private fun compileCodeSnippet(codeSnippet: String): Result {
    return compilationResult
 }
 
+@OptIn(ExperimentalCompilerApi::class)
 private val compiles = object : Matcher<String> {
    override fun test(value: String): MatcherResult {
       val compilationResult = compileCodeSnippet(value)
