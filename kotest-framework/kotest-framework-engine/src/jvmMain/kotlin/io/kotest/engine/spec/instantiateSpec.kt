@@ -2,8 +2,8 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
-import io.kotest.core.extensions.ConstructorExtension
-import io.kotest.core.extensions.PostInstantiationExtension
+import io.kotest.extensions.ConstructorExtension
+import io.kotest.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
