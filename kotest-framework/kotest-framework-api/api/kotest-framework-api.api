@@ -2370,6 +2370,7 @@ public class io/kotest/core/spec/style/scopes/AbstractContainerScope : io/kotest
 	public fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public fun afterEach (Lkotlin/jvm/functions/Function2;)V
+	public fun afterScope (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
@@ -2461,6 +2462,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/ContainerScope 
 	public abstract fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterContainer (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterEach (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun afterScope (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
@@ -2476,6 +2478,7 @@ public final class io/kotest/core/spec/style/scopes/ContainerScope$DefaultImpls 
 	public static fun afterAny (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterEach (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
+	public static fun afterScope (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun afterTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeAny (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
