@@ -34,6 +34,14 @@ public abstract interface annotation class io/kotest/core/annotation/RequiresPla
 	public abstract fun values ()[Lio/kotest/core/Platform;
 }
 
+public abstract interface class io/kotest/core/extensions/EnabledExtension : io/kotest/core/extensions/Extension {
+	public abstract fun isEnabled (Lio/kotest/core/descriptors/Descriptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class io/kotest/core/extensions/ProjectExtension : io/kotest/core/extensions/Extension {
+	public abstract fun interceptProject (Lio/kotest/core/project/ProjectContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/datatest/ContainerKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
