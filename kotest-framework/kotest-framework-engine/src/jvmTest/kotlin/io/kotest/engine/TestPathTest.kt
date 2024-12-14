@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.core.api
+package io.kotest.engine
 
 import io.kotest.core.descriptors.TestPath
 import io.kotest.core.descriptors.append
