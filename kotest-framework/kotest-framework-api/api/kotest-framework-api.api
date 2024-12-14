@@ -22,20 +22,6 @@ public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/core/Platform : java/lang/Enum {
-	public static final field JS Lio/kotest/core/Platform;
-	public static final field JVM Lio/kotest/core/Platform;
-	public static final field Native Lio/kotest/core/Platform;
-	public static final field WasmJs Lio/kotest/core/Platform;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
-	public static fun values ()[Lio/kotest/core/Platform;
-}
-
-public final class io/kotest/core/PlatformKt {
-	public static final fun getPlatform ()Lio/kotest/core/Platform;
-}
-
 public abstract class io/kotest/core/Tag {
 	public static final field Companion Lio/kotest/core/Tag$Companion;
 	public fun <init> ()V
@@ -836,17 +822,6 @@ public final class io/kotest/core/annotation/AlwaysEnabledCondition : io/kotest/
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
-public abstract interface annotation class io/kotest/core/annotation/Description : java/lang/annotation/Annotation {
-	public abstract fun value ()Ljava/lang/String;
-}
-
-public abstract interface annotation class io/kotest/core/annotation/DisplayName : java/lang/annotation/Annotation {
-	public abstract fun name ()Ljava/lang/String;
-}
-
-public abstract interface annotation class io/kotest/core/annotation/DoNotParallelize : java/lang/annotation/Annotation {
-}
-
 public abstract interface class io/kotest/core/annotation/EnabledCondition {
 	public abstract fun enabled (Lkotlin/reflect/KClass;)Z
 }
@@ -855,20 +830,9 @@ public abstract interface annotation class io/kotest/core/annotation/EnabledIf :
 	public abstract fun enabledIf ()Ljava/lang/Class;
 }
 
-public abstract interface annotation class io/kotest/core/annotation/Ignored : java/lang/annotation/Annotation {
-	public abstract fun reason ()Ljava/lang/String;
-}
-
-public abstract interface annotation class io/kotest/core/annotation/Isolate : java/lang/annotation/Annotation {
-}
-
 public final class io/kotest/core/annotation/NeverEnabled : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
-}
-
-public abstract interface annotation class io/kotest/core/annotation/RequiresPlatform : java/lang/annotation/Annotation {
-	public abstract fun values ()[Lio/kotest/core/Platform;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresTag : java/lang/annotation/Annotation {
@@ -877,10 +841,6 @@ public abstract interface annotation class io/kotest/core/annotation/RequiresTag
 
 public abstract interface annotation class io/kotest/core/annotation/Tags : java/lang/annotation/Annotation {
 	public abstract fun values ()[Ljava/lang/String;
-}
-
-public final class io/kotest/core/annotation/displayname/WrapperKt {
-	public static final fun getWrapper (Lio/kotest/core/annotation/DisplayName;)Ljava/lang/String;
 }
 
 public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/EnabledCondition {
@@ -1204,28 +1164,6 @@ public final class io/kotest/core/config/ProjectConfiguration {
 public final class io/kotest/core/config/ProjectConfiguration$Companion {
 }
 
-public final class io/kotest/core/coroutines/BackgroundScopeKt {
-	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
-}
-
-public final class io/kotest/core/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
-	public static final field Companion Lio/kotest/core/coroutines/TestScopeElement$Companion;
-	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
-	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
-	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
-	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
-	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
-}
-
-public final class io/kotest/core/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/core/coroutines/TestScopeElementKt {
-	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
-}
-
 public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public static final field Companion Lio/kotest/core/descriptors/Descriptor$Companion;
 	public static final field SpecDelimiter Ljava/lang/String;
@@ -1353,10 +1291,6 @@ public final class io/kotest/core/descriptors/DescriptorKt {
 	public static final fun append (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;)Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public static final fun append (Lio/kotest/core/descriptors/Descriptor;Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public static final fun root (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;)Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
-}
-
-public final class io/kotest/core/descriptors/KclassesKt {
-	public static final fun toDescriptor (Lkotlin/reflect/KClass;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
 public abstract interface annotation class io/kotest/core/extensions/ApplyExtension : java/lang/annotation/Annotation {

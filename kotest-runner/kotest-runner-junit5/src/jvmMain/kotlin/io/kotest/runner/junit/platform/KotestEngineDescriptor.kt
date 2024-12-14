@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter

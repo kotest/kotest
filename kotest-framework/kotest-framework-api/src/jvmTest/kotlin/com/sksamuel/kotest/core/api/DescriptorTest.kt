@@ -2,7 +2,7 @@ package com.sksamuel.kotest.core.api
 
 import io.kotest.core.descriptors.TestPath
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

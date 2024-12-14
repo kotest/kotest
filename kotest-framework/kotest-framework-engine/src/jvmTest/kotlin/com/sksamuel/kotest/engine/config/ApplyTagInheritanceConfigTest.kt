@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.LogLevel
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Isolate

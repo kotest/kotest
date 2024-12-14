@@ -1,4 +1,4 @@
-package io.kotest.core.coroutines
+package io.kotest.engine.coroutines
 
 import io.kotest.common.KotestInternal
 import kotlinx.coroutines.test.TestScope

@@ -1,6 +1,6 @@
 package io.kotest.engine.teamcity
 
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter

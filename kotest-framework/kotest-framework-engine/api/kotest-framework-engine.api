@@ -1,3 +1,39 @@
+public final class io/kotest/core/Platform : java/lang/Enum {
+	public static final field JS Lio/kotest/core/Platform;
+	public static final field JVM Lio/kotest/core/Platform;
+	public static final field Native Lio/kotest/core/Platform;
+	public static final field WasmJs Lio/kotest/core/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
+	public static fun values ()[Lio/kotest/core/Platform;
+}
+
+public final class io/kotest/core/PlatformKt {
+	public static final fun getPlatform ()Lio/kotest/core/Platform;
+}
+
+public abstract interface annotation class io/kotest/core/annotation/Description : java/lang/annotation/Annotation {
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class io/kotest/core/annotation/DisplayName : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class io/kotest/core/annotation/DoNotParallelize : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class io/kotest/core/annotation/Ignored : java/lang/annotation/Annotation {
+	public abstract fun reason ()Ljava/lang/String;
+}
+
+public abstract interface annotation class io/kotest/core/annotation/Isolate : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class io/kotest/core/annotation/RequiresPlatform : java/lang/annotation/Annotation {
+	public abstract fun values ()[Lio/kotest/core/Platform;
+}
+
 public final class io/kotest/datatest/ContainerKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -163,6 +199,32 @@ public final class io/kotest/engine/config/DumpKt {
 
 public final class io/kotest/engine/config/LoadProjectConfigFromClassnameKt {
 	public static final fun loadProjectConfigsJVM ()Ljava/util/List;
+}
+
+public final class io/kotest/engine/coroutines/BackgroundScopeKt {
+	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
+	public static final field Companion Lio/kotest/engine/coroutines/TestScopeElement$Companion;
+	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
+	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElementKt {
+	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
+}
+
+public final class io/kotest/engine/descriptors/KclassesKt {
+	public static final fun toDescriptor (Lkotlin/reflect/KClass;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
 public final class io/kotest/engine/errors/ExtensionExceptionExtractor {
