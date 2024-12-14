@@ -68,7 +68,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing", version = "1.4.5" }
+kotlin-compile-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing", version = "1.6.0" }
 
 kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.3.0" }
 
