@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class Components {
+open class Components {
 
    @Bean
-   fun userService(repo: DefaultRepository) = UserService(repo)
+   open fun userService(repo: DefaultRepository) = UserService(repo)
 
    @Bean
-   fun userRepository() = DefaultRepository()
+   open fun userRepository() = DefaultRepository()
 }
