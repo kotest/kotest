@@ -29,7 +29,7 @@ internal class SpecWrapperExtension(
    val target: KClass<*>
 ) : InstantiationErrorListener,
    SpecExtension,
-   IgnoredSpecListener,
+  IgnoredSpecListener,
    AfterSpecListener,
    BeforeSpecListener,
    PrepareSpecListener,
