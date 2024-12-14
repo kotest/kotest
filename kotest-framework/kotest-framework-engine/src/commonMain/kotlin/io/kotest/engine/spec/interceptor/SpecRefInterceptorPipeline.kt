@@ -8,7 +8,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.ref.BeforeSpecStateInterceptor
 import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
@@ -72,7 +71,6 @@ internal class SpecRefInterceptorPipeline(
          SpecFinishedInterceptor(listener),
          if (platform == Platform.JVM) ApplyExtensionsInterceptor(configuration.registry) else null,
          PrepareSpecInterceptor(configuration.registry),
-         BeforeSpecStateInterceptor(context),
          FinalizeSpecInterceptor(configuration.registry),
       )
    }
