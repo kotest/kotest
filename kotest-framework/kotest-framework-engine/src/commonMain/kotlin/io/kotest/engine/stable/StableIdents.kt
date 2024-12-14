@@ -105,13 +105,6 @@ object StableIdents {
       }
    }
 
-   internal fun isStableCollection(kclass: KClass<*>): Boolean {
-      return when (kclass) {
-         Map::class -> true
-         else -> false
-      }
-   }
-
    /**
     * Returns true if all members of the given [kclass] are "stable".
     */

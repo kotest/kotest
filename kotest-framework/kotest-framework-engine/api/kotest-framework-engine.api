@@ -537,6 +537,38 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
+public final class io/kotest/engine/spec/interceptor/SpecContext {
+	public static final field Companion Lio/kotest/engine/spec/interceptor/SpecContext$Companion;
+	public fun <init> (Lio/kotest/engine/atomic/AtomicBoolean;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Lio/kotest/engine/atomic/AtomicBoolean;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/kotest/engine/atomic/AtomicBoolean;
+	public final fun component2 ()Ljava/lang/Throwable;
+	public final fun copy (Lio/kotest/engine/atomic/AtomicBoolean;Ljava/lang/Throwable;)Lio/kotest/engine/spec/interceptor/SpecContext;
+	public static synthetic fun copy$default (Lio/kotest/engine/spec/interceptor/SpecContext;Lio/kotest/engine/atomic/AtomicBoolean;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/engine/spec/interceptor/SpecContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBeforeSpecError ()Ljava/lang/Throwable;
+	public final fun getBeforeSpecInvoked ()Lio/kotest/engine/atomic/AtomicBoolean;
+	public fun hashCode ()I
+	public final fun setBeforeSpecError (Ljava/lang/Throwable;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/interceptor/SpecContext$Companion {
+	public final fun create ()Lio/kotest/engine/spec/interceptor/SpecContext;
+}
+
+public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
+}
+
+public final class io/kotest/engine/stable/Platform_jvmKt {
+	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/engine/stable/StableIdents {
+	public static final field INSTANCE Lio/kotest/engine/stable/StableIdents;
+	public final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
+}
+
 public final class io/kotest/engine/tags/ActiveKt {
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Lio/kotest/core/Tag;)Z
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Ljava/util/Set;)Z
