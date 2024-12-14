@@ -1556,10 +1556,6 @@ public abstract class io/kotest/core/factory/TestFactoryConfiguration : io/kotes
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 }
 
-public final class io/kotest/core/factory/UuidKt {
-	public static final fun uniqueId ()Ljava/lang/String;
-}
-
 public abstract interface class io/kotest/core/filter/SpecFilter : io/kotest/core/extensions/Extension {
 	public abstract fun filter (Lkotlin/reflect/KClass;)Lio/kotest/core/filter/SpecFilterResult;
 }
