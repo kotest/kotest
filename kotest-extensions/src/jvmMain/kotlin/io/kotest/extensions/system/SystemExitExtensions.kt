@@ -176,6 +176,7 @@ class NoExitSecurityManager(private val originalSecurityManager: SecurityManager
         originalSecurityManager?.checkMulticast(maddr)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun checkMulticast(maddr: InetAddress, ttl: Byte) {
         originalSecurityManager?.checkMulticast(maddr, ttl)
     }

@@ -104,7 +104,10 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
    /**
     * Increase the count of [label] if [condition] is true.
     */
-   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html")
+   @Suppress("DEPRECATION")
+   @Deprecated("Use labels via collect. See https://kotest.io/docs/proptest/property-test-statistics.html",
+      ReplaceWith("if (condition) classify(label)")
+   )
    fun classify(condition: Boolean, label: String) {
       if (condition) classify(label)
    }

@@ -18,7 +18,7 @@ internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInter
 
    override suspend fun intercept(
       spec: Spec,
-      next: NextSpecInterceptor,
+      next: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
       return extensions.intercept(spec) { next.invoke(spec) } ?: Result.success(emptyMap())
    }
