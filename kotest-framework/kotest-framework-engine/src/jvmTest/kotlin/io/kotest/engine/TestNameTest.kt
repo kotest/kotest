@@ -1,4 +1,4 @@
-package io.kotest.core.test.names
+package io.kotest.engine
 
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.FunSpec

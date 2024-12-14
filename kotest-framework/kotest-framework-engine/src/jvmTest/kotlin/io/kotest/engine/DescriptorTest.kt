@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.core.api
+package io.kotest.engine
 
 import io.kotest.core.descriptors.TestPath
 import io.kotest.core.descriptors.append
@@ -78,9 +78,9 @@ class DescriptorTest : FunSpec({
 
    test("path") {
 
-      spec.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest")
-      container.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context")
-      test.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context -- nested test")
+      spec.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest")
+      container.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest/a context")
+      test.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest/a context -- nested test")
 
       container.path(false) shouldBe TestPath("a context")
       test.path(false) shouldBe TestPath("a context -- nested test")

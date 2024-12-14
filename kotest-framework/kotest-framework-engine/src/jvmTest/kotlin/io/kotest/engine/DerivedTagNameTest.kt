@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.core.api
+package io.kotest.engine
 
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
