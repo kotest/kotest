@@ -6,13 +6,13 @@ import io.kotest.core.test.TestResult
 import java.io.File
 
 class CompilationsMatcherTest : StringSpec() {
-   lateinit var file: File
+   private lateinit var file: File
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       file = File("codeSnippet.kt")
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       file.delete()
    }
 
