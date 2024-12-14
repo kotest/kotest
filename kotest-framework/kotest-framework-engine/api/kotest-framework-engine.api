@@ -308,6 +308,28 @@ public final class io/kotest/engine/config/LoadProjectConfigFromClassnameKt {
 	public static final fun loadProjectConfigsJVM ()Ljava/util/List;
 }
 
+public final class io/kotest/engine/coroutines/BackgroundScopeKt {
+	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
+	public static final field Companion Lio/kotest/engine/coroutines/TestScopeElement$Companion;
+	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
+	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElementKt {
+	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
+}
+
 public final class io/kotest/engine/errors/ExtensionExceptionExtractor {
 	public static final field INSTANCE Lio/kotest/engine/errors/ExtensionExceptionExtractor;
 	public final fun resolve (Ljava/lang/Throwable;)Lkotlin/Pair;
@@ -956,11 +978,6 @@ public final class io/kotest/engine/test/interceptors/BlockedThreadTestTimeoutEx
 
 public abstract interface class io/kotest/engine/test/interceptors/NextTestExecutionInterceptor {
 	public abstract fun invoke (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/test/interceptors/TestCoroutineInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
-	public fun <init> ()V
-	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lio/kotest/engine/test/interceptors/NextTestExecutionInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/test/interceptors/TestDispatcherInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
