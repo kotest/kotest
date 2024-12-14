@@ -14,15 +14,15 @@ class TestPathTest : FunSpec() {
       val test = container.append("nested test")
 
       test("test path should include spec and use spec separator") {
-         container.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context")
+         container.path() shouldBe TestPath("io.kotest.engine.DescriptorTest/a context")
       }
 
       test("test path should include parent tests and use test path separator") {
-         test.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context -- nested test")
+         test.path() shouldBe TestPath("io.kotest.engine.DescriptorTest/a context -- nested test")
       }
 
       test("test path for spec should be fqn") {
-         spec.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest")
+         spec.path() shouldBe TestPath("io.kotest.engine.DescriptorTest")
       }
    }
 }
