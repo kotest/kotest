@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.retry

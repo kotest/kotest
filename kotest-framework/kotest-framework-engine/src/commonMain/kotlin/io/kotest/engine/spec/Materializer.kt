@@ -68,9 +68,18 @@ class Materializer(private val configuration: ProjectConfiguration) {
     * Materializes a [NestedTest] into a runtime [TestCase] by attaching it to the given parent.
     */
    fun materialize(nested: NestedTest, parent: TestCase): TestCase {
+
+      // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
+      // then it will remove the common prefix from the child, to workaround this, we will add a dash at the
+      // start of the nested test to make the child nest have a different prefix.
+      // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
+      val resolvedName = if (nested.name.testName.startsWith(parent.name.testName))
+         nested.name.copy(testName = "- " + nested.name.testName)
+      else nested.name
+
       return TestCase(
-         descriptor = parent.descriptor.append(nested.name),
-         name = nested.name,
+         descriptor = parent.descriptor.append(resolvedName),
+         name = resolvedName,
          spec = parent.spec,
          test = nested.test,
          source = nested.source,
@@ -84,7 +93,6 @@ class Materializer(private val configuration: ProjectConfiguration) {
          factoryId = parent.factoryId,
          parent = parent,
       )
-
    }
 
    /**

@@ -109,6 +109,14 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
 }
 
+public abstract interface class io/kotest/engine/atomic/AtomicBoolean {
+	public abstract fun compareAndSet (ZZ)Z
+}
+
+public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
+	public static final fun createAtomicBoolean (Z)Lio/kotest/engine/atomic/AtomicBoolean;
+}
+
 public final class io/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory {
 	public static final field INSTANCE Lio/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory;
 	public fun close ()V
@@ -529,18 +537,6 @@ public final class io/kotest/engine/spec/TempfileKt {
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
 }
 
-public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
-}
-
-public final class io/kotest/engine/stable/Platform_jvmKt {
-	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
-}
-
-public final class io/kotest/engine/stable/StableIdents {
-	public static final field INSTANCE Lio/kotest/engine/stable/StableIdents;
-	public final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
-}
-
 public final class io/kotest/engine/tags/ActiveKt {
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Lio/kotest/core/Tag;)Z
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Ljava/util/Set;)Z
@@ -697,7 +693,6 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
 	public final fun build ()Ljava/lang/String;
 	public final fun details (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun duration-LRDsOJo (J)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun escapeColons (Ljava/lang/String;)Ljava/lang/String;
 	public final fun expected (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun id (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun locationHint (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -926,7 +921,7 @@ public final class io/kotest/engine/test/scopes/RegistrationKt {
 }
 
 public final class io/kotest/engine/test/scopes/ScopesKt {
-	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
+	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lio/kotest/engine/spec/interceptor/SpecContext;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
 }
 
 public final class io/kotest/engine/test/scopes/TerminalTestScope : io/kotest/core/test/TestScope {
