@@ -1,5 +1,5 @@
 plugins {
-   id("kotest-js-conventions")
+   id("kotest-js-not-wasm-conventions")
    id("kotest-jvm-conventions")
 }
 
