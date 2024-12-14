@@ -7,6 +7,7 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
+            implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlin.compiler.embeddable)
             implementation(libs.kotlin.compile.testing)
          }
