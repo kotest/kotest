@@ -1309,10 +1309,6 @@ public abstract interface class io/kotest/core/extensions/DisplayNameFormatterEx
 	public abstract fun formatter ()Lio/kotest/core/names/DisplayNameFormatter;
 }
 
-public abstract interface class io/kotest/core/extensions/EnabledExtension : io/kotest/core/extensions/Extension {
-	public abstract fun isEnabled (Lio/kotest/core/descriptors/Descriptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class io/kotest/core/extensions/Extension {
 }
 
@@ -1337,10 +1333,6 @@ public final class io/kotest/core/extensions/MountableExtensionKt {
 
 public abstract interface class io/kotest/core/extensions/PostInstantiationExtension : io/kotest/core/extensions/Extension {
 	public abstract fun instantiated (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/core/extensions/ProjectExtension : io/kotest/core/extensions/Extension {
-	public abstract fun interceptProject (Lio/kotest/core/project/ProjectContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/extensions/RuntimeTagExpressionExtension : io/kotest/core/extensions/TagExtension {
