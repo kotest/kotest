@@ -13,7 +13,7 @@ kaml = "0.66.0"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
-ktor = "1.6.8"
+ktor = "2.3.9"
 mockserver-netty = "5.15.0"
 mockk = "1.13.13"
 mordant = "1.2.1"
@@ -68,6 +68,8 @@ ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
 kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.7.0" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }

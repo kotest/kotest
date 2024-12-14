@@ -29,7 +29,7 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.coroutines.CoroutineContext
 
 private val outOfOrderCallbacksException =
-   InvalidDslException("Cannot use afterTest after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true")
+   InvalidDslException("Cannot register callbacks after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true but be aware this can lead to subtle bugs in your tests.")
 
 /**
  * Extends a [TestScope] with convenience methods for registering tests and listeners.
@@ -43,11 +43,11 @@ interface ContainerScope : TestScope {
    fun hasChildren(): Boolean
 
    suspend fun registerTest(
-     name: TestName,
-     disabled: Boolean,
-     config: TestConfig?,
-     type: TestType,
-     test: suspend TestScope.() -> Unit,
+      name: TestName,
+      disabled: Boolean,
+      config: TestConfig?,
+      type: TestType,
+      test: suspend TestScope.() -> Unit,
    ) {
       registerTestCase(
          NestedTest(
@@ -62,19 +62,19 @@ interface ContainerScope : TestScope {
    }
 
    suspend fun registerContainer(
-     name: TestName,
-     disabled: Boolean,
-     config: TestConfig?,
-     test: suspend TestScope.() -> Unit,
+      name: TestName,
+      disabled: Boolean,
+      config: TestConfig?,
+      test: suspend TestScope.() -> Unit,
    ) {
       registerTest(name, disabled, config, TestType.Container, test)
    }
 
    suspend fun registerTest(
-     name: TestName,
-     disabled: Boolean,
-     config: TestConfig?,
-     test: suspend TestScope.() -> Unit,
+      name: TestName,
+      disabled: Boolean,
+      config: TestConfig?,
+      test: suspend TestScope.() -> Unit,
    ) {
       registerTest(name, disabled, config, TestType.Test, test)
    }
@@ -101,6 +101,24 @@ interface ContainerScope : TestScope {
     */
    fun afterTest(f: AfterTest) {
       afterAny(f)
+   }
+
+   /**
+    * Registers a callback that is executed once for this container after all tests have completed.
+    *
+    * This differs from [afterContainer] which is executed after each container including child containers,
+    * whereas this callback is executed only for this exact container.
+    */
+   fun afterScope(f: suspend (TestCase) -> Unit) {
+      val thisTestCase = this.testCase
+      if (hasChildren()) throw outOfOrderCallbacksException
+      prependExtension(object : TestListener {
+         override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+            if (thisTestCase.descriptor == testCase.descriptor) {
+               f(testCase)
+            }
+         }
+      })
    }
 
    /**
