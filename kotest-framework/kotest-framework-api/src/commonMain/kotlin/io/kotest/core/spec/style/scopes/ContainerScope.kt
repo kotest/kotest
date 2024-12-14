@@ -106,9 +106,10 @@ interface ContainerScope : TestScope {
    /**
     * Registers a callback that is executed once for this container after all tests have completed.
     *
-    * This differs from [afterContainer] which is executed after each container including child containers.
+    * This differs from [afterContainer] which is executed after each container including child containers,
+    * whereas this callback is executed only for this exact container.
     */
-   fun after(f: suspend (TestCase) -> Unit) {
+   fun afterScope(f: suspend (TestCase) -> Unit) {
       val thisTestCase = this.testCase
       if (hasChildren()) throw outOfOrderCallbacksException
       prependExtension(object : TestListener {

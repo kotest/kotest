@@ -11,7 +11,7 @@ class AfterFunSpecTest : FunSpec() {
 
       context("container1") {
 
-         after {
+         afterScope {
             a += "1"
          }
 
@@ -29,7 +29,7 @@ class AfterFunSpecTest : FunSpec() {
 
       context("container2") {
 
-         after {
+         afterScope {
             a += "2"
          }
 
@@ -58,7 +58,7 @@ class AfterDescribeSpecTest : DescribeSpec() {
 
       describe("container1") {
 
-         after {
+         afterScope {
             a += "1"
          }
 
@@ -76,7 +76,7 @@ class AfterDescribeSpecTest : DescribeSpec() {
 
       describe("container2") {
 
-         after {
+         afterScope {
             a += "2"
          }
 
