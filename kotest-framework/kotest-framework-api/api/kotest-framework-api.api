@@ -1204,28 +1204,6 @@ public final class io/kotest/core/config/ProjectConfiguration {
 public final class io/kotest/core/config/ProjectConfiguration$Companion {
 }
 
-public final class io/kotest/core/coroutines/BackgroundScopeKt {
-	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
-}
-
-public final class io/kotest/core/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
-	public static final field Companion Lio/kotest/core/coroutines/TestScopeElement$Companion;
-	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
-	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
-	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
-	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
-	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
-}
-
-public final class io/kotest/core/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
-}
-
-public final class io/kotest/core/coroutines/TestScopeElementKt {
-	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
-}
-
 public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public static final field Companion Lio/kotest/core/descriptors/Descriptor$Companion;
 	public static final field SpecDelimiter Ljava/lang/String;
