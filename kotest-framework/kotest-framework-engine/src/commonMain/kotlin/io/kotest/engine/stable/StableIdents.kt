@@ -40,7 +40,7 @@ import kotlin.reflect.KType
  *
  * Therefore, to avoid this, data-testing requires data test elements to be stable.
  */
-object StableIdents {
+internal object StableIdents {
 
    /**
     * Returns a stable identifier for the given object.

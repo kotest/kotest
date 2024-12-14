@@ -564,11 +564,6 @@ public final class io/kotest/engine/stable/Platform_jvmKt {
 	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/engine/stable/StableIdents {
-	public static final field INSTANCE Lio/kotest/engine/stable/StableIdents;
-	public final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
-}
-
 public final class io/kotest/engine/tags/ActiveKt {
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Lio/kotest/core/Tag;)Z
 	public static final fun isActive (Lio/kotest/engine/tags/Expression;Ljava/util/Set;)Z
