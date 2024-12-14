@@ -27,9 +27,7 @@ allure {
    adapter.autoconfigureListeners.set(false)
    adapter {
       frameworks {
-         junit5 {
-            enabled.set(false)
-         }
+         junit5.enabled.set(false)
       }
    }
 }

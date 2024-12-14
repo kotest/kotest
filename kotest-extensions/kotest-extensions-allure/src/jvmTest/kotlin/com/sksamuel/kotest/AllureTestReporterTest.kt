@@ -1,4 +1,4 @@
-package io.kotest.extensions.allure
+package com.sksamuel.kotest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
@@ -10,7 +10,8 @@ import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
 // this must have a higher order number than the dummy tests
-// so that when we get to this test, we have some data
+// so that when we get to this test, we have already run those tests and got data
+// this means you can't run this test in isolation as it depends on the other tests
 @Order(1)
 class AllureTestReporterTest : WordSpec() {
 
@@ -20,7 +21,7 @@ class AllureTestReporterTest : WordSpec() {
       return Paths.get("./build/allure-results").toFile().listFiles()
         ?.filter { it.name.endsWith(".json") }
          ?.map { mapper.readTree(it) }
-         ?.first { it.get("name").textValue() == name } ?: error("Could not find test file for $name")
+         ?.firstOrNull { it.get("name").textValue() == name } ?: error("Could not find test file for $name")
    }
 
    init {
