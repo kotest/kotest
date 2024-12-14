@@ -8,13 +8,6 @@ public final class io/kotest/datatest/ContainerKt {
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/datatest/IdentifierKt {
-	public static final fun getStableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
-}
-
-public abstract interface annotation class io/kotest/datatest/IsStableType : java/lang/annotation/Annotation {
-}
-
 public final class io/kotest/datatest/RootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
@@ -23,11 +16,6 @@ public final class io/kotest/datatest/RootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/StableIdentifiers {
-	public static final field INSTANCE Lio/kotest/datatest/StableIdentifiers;
-	public final fun stableIdentifier (Ljava/lang/Object;)Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/datatest/WithDataTestName {
@@ -568,6 +556,13 @@ public final class io/kotest/engine/spec/interceptor/SpecContext {
 
 public final class io/kotest/engine/spec/interceptor/SpecContext$Companion {
 	public final fun create ()Lio/kotest/engine/spec/interceptor/SpecContext;
+}
+
+public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
+}
+
+public final class io/kotest/engine/stable/Platform_jvmKt {
+	public static final fun isPlatformStable (Lkotlin/reflect/KClass;)Z
 }
 
 public final class io/kotest/engine/tags/ActiveKt {
