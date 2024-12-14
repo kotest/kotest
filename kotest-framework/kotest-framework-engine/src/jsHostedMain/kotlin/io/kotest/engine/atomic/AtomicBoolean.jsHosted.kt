@@ -11,5 +11,9 @@ actual fun createAtomicBoolean(value: Boolean): AtomicBoolean {
             return false
          }
       }
+
+      override fun get(): Boolean {
+         return b
+      }
    }
 }
