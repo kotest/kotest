@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
 import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.Tags
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
@@ -132,10 +132,10 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
    }
 }
 
-@io.kotest.core.annotation.Tags("SpecExcluded")
+@Tags("SpecExcluded")
 private class ExcludedSpec : ExpectSpec()
 
-@io.kotest.core.annotation.Tags("SpecIncluded")
+@Tags("SpecIncluded")
 private class IncludedSpec : BehaviorSpec()
 
 private class UntaggedSpec : FunSpec()

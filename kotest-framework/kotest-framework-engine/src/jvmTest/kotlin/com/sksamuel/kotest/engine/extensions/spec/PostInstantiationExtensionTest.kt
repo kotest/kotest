@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.extensions.PostInstantiationExtension
+import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
