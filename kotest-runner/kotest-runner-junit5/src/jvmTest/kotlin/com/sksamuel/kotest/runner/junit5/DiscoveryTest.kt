@@ -38,7 +38,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
    test("kotest should return Nil if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
-            excludeEngines(KotestJunitPlatformTestEngine.EngineId)
+            excludeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -49,7 +49,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
    test("kotest should return classes if request includes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
-            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+            includeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -191,7 +191,7 @@ class DiscoveryTestWithSelectors : FunSpec({
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(
             DiscoverySelectors.selectUniqueId(
-               UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+               UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
                   .append(
                      Segment.Spec.value,
                      com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.qualifiedName
@@ -199,7 +199,7 @@ class DiscoveryTestWithSelectors : FunSpec({
             )
          )
          .filters(
-            excludeEngines(KotestJunitPlatformTestEngine.EngineId)
+            excludeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -219,20 +219,20 @@ class DiscoveryTestWithSelectors : FunSpec({
             )
          )
          .filters(
-            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+            includeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId))
+      val descriptor = engine.discover(req, UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
       descriptor.children.size shouldBe 0
    }
 
    test("kotest should return Nil for uniqueId selectors on non existing class") {
-      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(DiscoverySelectors.selectUniqueId(engineId.append(Segment.Spec.value, "whatever")))
          .filters(
-            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+            includeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -241,7 +241,7 @@ class DiscoveryTestWithSelectors : FunSpec({
    }
 
    test("kotest should return class for uniqueId selectors") {
-      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.EngineId)
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
       val testClass = com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(DiscoverySelectors.selectUniqueId(engineId.append(Segment.Spec.value, testClass.qualifiedName)))

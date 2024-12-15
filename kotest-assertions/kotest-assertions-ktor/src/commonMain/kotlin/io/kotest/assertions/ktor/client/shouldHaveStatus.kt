@@ -21,7 +21,22 @@ fun haveStatus(expected: Int) = object : Matcher<HttpResponse> {
    }
 }
 
-fun HttpResponse.shouldBeOK() = this.shouldHaveStatus(HttpStatusCode.OK)
-fun HttpResponse.shouldBeInternalServerError() = this.shouldHaveStatus(HttpStatusCode.InternalServerError)
-fun HttpResponse.shouldBeBadRequest() = this.shouldHaveStatus(HttpStatusCode.BadRequest)
-fun HttpResponse.shouldBeNotFound() = this.shouldHaveStatus(HttpStatusCode.NotFound)
+fun HttpResponse.shouldBeOK(): HttpResponse {
+   this.shouldHaveStatus(HttpStatusCode.OK)
+   return this
+}
+
+fun HttpResponse.shouldBeInternalServerError(): HttpResponse {
+   this.shouldHaveStatus(HttpStatusCode.InternalServerError)
+   return this
+}
+
+fun HttpResponse.shouldBeBadRequest(): HttpResponse {
+   this.shouldHaveStatus(HttpStatusCode.BadRequest)
+   return this
+}
+
+fun HttpResponse.shouldBeNotFound(): HttpResponse {
+   this.shouldHaveStatus(HttpStatusCode.NotFound)
+   return this
+}

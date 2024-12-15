@@ -9,7 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine.Companion.EngineId
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine.Companion.ENGINE_ID
 import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
@@ -24,7 +24,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecHappyPathSample::class.java),
          selectUniqueId(
-            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
+            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
@@ -63,7 +63,7 @@ class FeatureSpecEngineKitTest : FunSpec({
    test("verify engine events all errors path") {
       listOf(
          selectClass(FeatureSpecSample::class.java),
-         selectUniqueId(UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName))
+         selectUniqueId(UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName))
       ).forAll { selector ->
          EngineTestKit
             .engine("kotest")
@@ -106,7 +106,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecWithZeroAssertions::class.java),
          selectUniqueId(
-            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
+            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
