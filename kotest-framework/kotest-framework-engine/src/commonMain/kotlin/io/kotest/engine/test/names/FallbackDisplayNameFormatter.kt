@@ -1,13 +1,13 @@
 package io.kotest.engine.test.names
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.names.DisplayNameFormatter
+import io.kotest.engine.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
 
 class FallbackDisplayNameFormatter(
-   private val custom: DisplayNameFormatter?,
-   private val fallback: DefaultDisplayNameFormatter,
+  private val custom: DisplayNameFormatter?,
+  private val fallback: DefaultDisplayNameFormatter,
 ) {
 
    companion object {

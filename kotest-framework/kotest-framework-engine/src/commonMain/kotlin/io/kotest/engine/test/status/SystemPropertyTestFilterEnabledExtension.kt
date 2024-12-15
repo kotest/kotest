@@ -1,12 +1,12 @@
 package io.kotest.engine.test.status
 
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.Logger
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.mpp.syspropOrEnv
 
 /**

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.launcher
 
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec

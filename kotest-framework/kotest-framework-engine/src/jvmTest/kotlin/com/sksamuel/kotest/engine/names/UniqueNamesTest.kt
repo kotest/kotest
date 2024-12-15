@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.names
 
-import io.kotest.core.names.UniqueNames
+import io.kotest.engine.names.UniqueNames
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

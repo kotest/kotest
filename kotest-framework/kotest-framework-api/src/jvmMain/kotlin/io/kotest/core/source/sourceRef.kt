@@ -1,6 +1,5 @@
 package io.kotest.core.source
 
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
@@ -11,7 +10,9 @@ import kotlin.reflect.full.isSubclassOf
  * Users can disable the source ref via the system property [KotestEngineProperties.disableSourceRef].
  */
 actual fun sourceRef(): SourceRef {
-   if (sysprop(KotestEngineProperties.disableSourceRef, "false") == "true") return SourceRef.None
+   // todo once this moves into engine, use the constant again
+//   if (sysprop(KotestEngineProperties.disableSourceRef, "false") == "true") return SourceRef.None
+   if (sysprop("kotest.framework.sourceref.disable", "false") == "true") return SourceRef.None
 
    val stack = Thread.currentThread().stackTrace
    if (stack.isEmpty()) return SourceRef.None
