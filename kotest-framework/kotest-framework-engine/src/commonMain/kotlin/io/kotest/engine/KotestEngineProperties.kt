@@ -86,14 +86,6 @@ object KotestEngineProperties {
    const val concurrentTests = "kotest.framework.test.concurrent"
 
    /**
-    * Enable scanning the classpath for configuration classes by setting this property to true.
-    * This is a legacy setting and should only be used for backwards compatibility with projects
-    * that used configuration in Kotest 5.x and below.
-    */
-   @Deprecated("Use convention by naming your config classes KotestProjectConfig and placing them in your common package parent")
-   const val enableConfigurationClassPathScanning = "kotest.framework.classpath.scanning.config.enabled"
-
-   /**
     * Specify a fully qualified name to use for project config.
     * This class will be instantiated via reflection.
     *
@@ -127,8 +119,6 @@ object KotestEngineProperties {
     * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
     */
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
-
-   const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"
 
    /**
     * If set to true, then private classes will not be included in the test plan.
