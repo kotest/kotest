@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.core.config.ConfigurationContextElement
+import io.kotest.engine.config.ConfigurationContextElement
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

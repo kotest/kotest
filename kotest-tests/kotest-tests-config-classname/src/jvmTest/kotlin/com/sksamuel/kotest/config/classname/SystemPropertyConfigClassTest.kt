@@ -5,10 +5,10 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener

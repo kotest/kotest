@@ -9,7 +9,7 @@ sealed class DiscoverySelector {
 
    data class ClassDiscoverySelector(val className: String) : DiscoverySelector() {
       override fun test(kclass: KClass<out Spec>): Boolean =
-         className == kclass.qualifiedName ?: kclass.java.canonicalName
+         className == (kclass.qualifiedName ?: kclass.java.canonicalName)
    }
 
    // accepts a package if it is a subpackage of the given name

@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform.gradle
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData

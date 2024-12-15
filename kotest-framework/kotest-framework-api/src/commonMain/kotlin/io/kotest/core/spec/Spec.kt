@@ -25,6 +25,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.js.JsName
+import kotlin.time.Duration
 
 /**
  * A [Spec] is the top most container of tests.
@@ -190,6 +191,10 @@ abstract class Spec : TestConfiguration() {
    var isolationMode: IsolationMode? = null
 
    var failfast: Boolean? = null
+
+   var retries: Int? = null
+
+   var retryDelay: Duration? = null
 
    /**
     * Sets the number of tests that will be launched concurrently.

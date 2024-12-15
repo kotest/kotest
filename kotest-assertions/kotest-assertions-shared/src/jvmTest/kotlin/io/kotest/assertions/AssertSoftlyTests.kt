@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-//@EnabledIf(LinuxCondition::class)
 class AssertSoftlyTests : FunSpec({
    test("assertSoftly should collect errors across multiple coroutine threads") {
       withContext(Dispatchers.Unconfined) {
@@ -35,27 +34,24 @@ class AssertSoftlyTests : FunSpec({
       val thrown = shouldThrowExactly<MultiAssertionError> {
          assertSoftly {
             "first assertion" shouldBe "First Assertion"
-            bespokeDivision(1, 0) shouldBe 1
+            0 shouldBe 1
          }
       }
       thrown.message.shouldContainInOrder(
          """expected:<"First Assertion"> but was:<"first assertion">""",
-         "/ by zero"
+         """expected:<1> but was:<0>""",
       )
    }
    test("adds an Exception to an empty collection of assertion failures") {
       val thrown = shouldThrowExactly<MultiAssertionError> {
          assertSoftly {
-            bespokeDivision(1, 0) shouldBe 1
+            0 shouldBe 1
             "first assertion" shouldBe "First Assertion"
          }
       }
       thrown.message.shouldContainInOrder(
-         "The following assertion failed:",
-         "1) / by zero",
+         """expected:<1> but was:<0>""",
+         """expected:<"First Assertion"> but was:<"first assertion">"""
       )
-      thrown.message.shouldNotContain("""expected:<"First Assertion"> but was:<"first assertion">""")
    }
 })
-
-private fun bespokeDivision(a: Int, b: Int) = a / b

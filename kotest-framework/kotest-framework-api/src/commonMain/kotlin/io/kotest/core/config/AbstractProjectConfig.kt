@@ -9,6 +9,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.time.Duration
 
@@ -247,6 +248,27 @@ abstract class AbstractProjectConfig {
     * If set to false then private spec classes will be ignored by the test engine.
     */
    open var ignorePrivateClasses: Boolean? = null
+
+   /**
+    * If set, then this is the maximum number of times we will retry a test if it fails.
+    */
+   open var retries: Int? = Defaults.defaultRetries
+
+   /**
+    * Similar to [retries] but allows a function to determine if we should retry based on the test case and
+    * attempted retries so far.
+    */
+   open var retryFn: ((TestCase) -> Int)? = Defaults.defaultRetriesFn
+
+   /**
+    * If set, then this is the delay between retries.
+    */
+   open var retryDelay: Duration? = null
+
+   /**
+    * Similar to [retryDelay] but allows a function to determine the delay based on the number of retries.
+    */
+   open var retryDelayFn: ((TestCase, Int) -> Duration)? = null
 
    /**
     * Executed before the first test of the project, but after the

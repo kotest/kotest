@@ -5,7 +5,6 @@ package io.kotest.framework.discovery
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.syspropOrEnv
@@ -171,7 +170,7 @@ class Discovery(
          "org.jetbrains.kotlin.*",
          "org.junit.*"
       ).apply {
-         if (syspropOrEnv(KotestEngineProperties.disableJarDiscovery) == "true") {
+         if (syspropOrEnv("kotest.framework.discovery.jar.scan.disable") == "true") {
             disableJarScanning()
          }
       }

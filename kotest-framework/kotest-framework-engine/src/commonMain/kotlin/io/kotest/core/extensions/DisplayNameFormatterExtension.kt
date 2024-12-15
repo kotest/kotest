@@ -1,6 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.names.DisplayNameFormatter
+import io.kotest.engine.names.DisplayNameFormatter
 
 /**
  * An extension point that allows users to inject their own [DisplayNameFormatter].

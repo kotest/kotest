@@ -1,4 +1,4 @@
-package io.kotest.core.names
+package io.kotest.engine.names
 
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
