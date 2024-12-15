@@ -16,7 +16,6 @@ dependencies {
 
    testImplementation(libs.kotlin.gradle.plugin)
    testImplementation(projects.kotestAssertions.kotestAssertionsCore)
-   testImplementation(projects.kotestFramework.kotestFrameworkApi)
    testImplementation(projects.kotestFramework.kotestFrameworkEngine)
    testImplementation(projects.kotestRunner.kotestRunnerJunit5)
 
@@ -27,7 +26,6 @@ dependencies {
    devPublication(projects.kotestExtensions)
    devPublication(projects.kotestFramework.kotestFrameworkDiscovery)
    devPublication(projects.kotestCommon)
-   devPublication(projects.kotestFramework.kotestFrameworkApi)
    devPublication(projects.kotestFramework.kotestFrameworkEngine)
    devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler)
    devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative)

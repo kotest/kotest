@@ -50,9 +50,6 @@ plugins {
 include(
    ":kotest-common",
 
-   // defines data classes and the spec styles; all classes needed to define specs/testcases live here
-   ":kotest-framework:kotest-framework-api",
-
    // used to discovery specs from the classpath at runtime
    // brings in the API dependency for required data types
    ":kotest-framework:kotest-framework-discovery",

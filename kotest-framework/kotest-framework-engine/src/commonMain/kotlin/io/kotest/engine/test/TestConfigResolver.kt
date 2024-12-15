@@ -35,10 +35,10 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
    private val disabledByXMethod = Enabled.disabled("Disabled by xmethod")
 
    fun resolve(
-      testConfig: TestConfig?,
-      xdisabled: Boolean?,
-      parent: TestCase?,
-      spec: Spec,
+     testConfig: TestConfig?,
+     xdisabled: Boolean?,
+     parent: TestCase?,
+     spec: Spec,
    ): ResolvedTestConfig {
       return ResolvedTestConfig(
          enabled = enabledIf(xdisabled ?: false, testConfig, spec),

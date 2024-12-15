@@ -15,7 +15,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            api(projects.kotestFramework.kotestFrameworkApi)
             api(projects.kotestCommon)
             api(projects.kotestFramework.kotestFrameworkEngine)
             api(projects.kotestFramework.kotestFrameworkDiscovery)

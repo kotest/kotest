@@ -34,12 +34,12 @@ fun interface NextEngineInterceptor {
 
 @KotestInternal
 data class EngineContext(
-   val suite: TestSuite,
-   val listener: TestEngineListener,
-   val tags: TagExpression,
-   val configuration: ProjectConfiguration,
-   val platform: Platform,
-   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
+  val suite: TestSuite,
+  val listener: TestEngineListener,
+  val tags: TagExpression,
+  val configuration: ProjectConfiguration,
+  val platform: Platform,
+  val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
    constructor(configuration: ProjectConfiguration, platform: Platform) : this(

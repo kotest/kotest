@@ -4,8 +4,6 @@ import io.kotest.assertions.json.file.shouldEqualJson
 import io.kotest.assertions.json.file.shouldNotEqualJson
 import io.kotest.assertions.json.paths.shouldEqualJson
 import io.kotest.assertions.json.paths.shouldNotEqualJson
-import io.kotest.assertions.json.shouldEqualJson
-import io.kotest.assertions.json.shouldNotEqualJson
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

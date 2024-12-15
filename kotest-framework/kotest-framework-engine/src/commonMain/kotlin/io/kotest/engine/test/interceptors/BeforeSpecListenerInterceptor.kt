@@ -19,8 +19,8 @@ import kotlin.time.Duration.Companion.seconds
  * we must defer execution until after the test blocks have been registered (if any).
  */
 internal class BeforeSpecListenerInterceptor(
-   private val registry: ExtensionRegistry,
-   private val specContext: SpecContext,
+  private val registry: ExtensionRegistry,
+  private val specContext: SpecContext,
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(

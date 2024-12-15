@@ -8,16 +8,15 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.replay
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
-import io.kotest.engine.concurrency.replay
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
 internal class TestInvocationInterceptor(
-   registry: ExtensionRegistry,
-   private val timeMark: TimeMark,
-   private val invocationInterceptors: List<TestExecutionInterceptor>,
+  registry: ExtensionRegistry,
+  private val timeMark: TimeMark,
+  private val invocationInterceptors: List<TestExecutionInterceptor>,
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)

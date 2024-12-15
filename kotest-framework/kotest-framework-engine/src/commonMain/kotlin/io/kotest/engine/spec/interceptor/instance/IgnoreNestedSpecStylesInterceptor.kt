@@ -21,8 +21,8 @@ import io.kotest.engine.spec.interceptor.NextSpecInterceptor
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
  */
 internal class IgnoreNestedSpecStylesInterceptor(
-   private val listener: TestEngineListener,
-   registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  registry: ExtensionRegistry,
 ) : SpecInterceptor {
 
    // note: this must be a spec interceptor until js / native have the ability to poke into the class hierarchy

@@ -22,8 +22,8 @@ import io.kotest.mpp.annotation
  * Note: annotations are only available on the JVM.
  */
 internal class EnabledIfInterceptor(
-   private val listener: TestEngineListener,
-   registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)

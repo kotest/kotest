@@ -3,7 +3,6 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldExistInOrder
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
 
 class ShouldExistInOrderTest: WordSpec() {

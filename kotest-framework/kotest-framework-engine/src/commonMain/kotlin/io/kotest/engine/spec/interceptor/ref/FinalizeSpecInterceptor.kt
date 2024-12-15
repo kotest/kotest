@@ -13,7 +13,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
  * A [SpecRefInterceptor] that invokes any [FinalizeSpecListener.finalizeSpec] callbacks.
  */
 internal class FinalizeSpecInterceptor(
-   registry: ExtensionRegistry,
+  registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
