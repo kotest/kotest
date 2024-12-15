@@ -1,7 +1,9 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("DuplicatedCode")
 
 package io.kotest.extensions.spring
 
+import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
@@ -14,40 +16,43 @@ import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
 import net.bytebuddy.implementation.FixedValue
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.UUID
-import kotlin.coroutines.AbstractCoroutineContextElement
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
-
-class SpringTestContextCoroutineContextElement(val value: TestContextManager) : AbstractCoroutineContextElement(Key) {
-   companion object Key : CoroutineContext.Key<SpringTestContextCoroutineContextElement>
-}
+import kotlin.reflect.full.primaryConstructor
 
 /**
- * Determines how the spring test context lifecycle is mapped to test cases.
+ * An [Extension] which adds support for testing spring components.
  *
- * [SpringTestLifecycleMode.Root] will setup and teardown the test context before and after root tests only.
- * [SpringTestLifecycleMode.Test] will setup and teardown the test context only at leaf tests.
+ * This extension has two parts:
  *
+ * 1. Supports creating non-zero arg test classes by delegating to spring's [TestContextManager]
+ * to autowire the constructors
+ *
+ * 2. Adds support for spring lifecycle methods to be called before and after tests.
  */
-enum class SpringTestLifecycleMode {
-   Root, Test
-}
+class SpringExtension(
+   private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
+) : ConstructorExtension, SpecExtension, TestCaseExtension {
 
-/**
- * Returns the [TestContextManager] from a test or spec.
- */
-suspend fun testContextManager(): TestContextManager =
-   coroutineContext[SpringTestContextCoroutineContextElement]?.value
-      ?: error("No TestContextManager defined in this coroutine context")
-
-@Deprecated("Use SpringExtension which combines this and SpringAutowireConstructorExtension. Deprecated since 6.0")
-class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test) : TestCaseExtension,
-   SpecExtension {
+   override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
+      // we only instantiate via spring if there's actually parameters in the constructor
+      // otherwise there's nothing to inject there
+      val constructor = clazz.primaryConstructor
+      return if (constructor == null || constructor.parameters.isEmpty()) {
+         null
+      } else {
+         val manager = TestContextManager(clazz.java)
+         val context = manager.testContext.applicationContext
+         context.autowireCapableBeanFactory.autowire(
+            clazz.java,
+            AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, true
+         ) as Spec
+      }
+   }
 
    var ignoreSpringListenerOnFinalClassWarning: Boolean = false
 
@@ -63,7 +68,6 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
       }
    }
 
-   @Suppress("DuplicatedCode")
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
       val methodName = method(testCase)
       if (testCase.isApplicable()) {
@@ -90,14 +94,13 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
     * Check https://github.com/kotest/kotest/issues/950#issuecomment-524127221
     * for an in-depth explanation. Too much to write here
     */
-   @Suppress("DuplicatedCode")
    private fun method(testCase: TestCase): Method = if (Modifier.isFinal(testCase.spec::class.java.modifiers)) {
       if (!ignoreFinalWarning) {
          @Suppress("MaxLineLength")
          println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
       }
       // the method here must exist since we can't add our own
-      this@SpringTestExtension::class.java.methods.firstOrNull { it.name == "intercept" }
+      this@SpringExtension::class.java.methods.firstOrNull { it.name == "intercept" }
          ?: error("Could not find method 'intercept' to attach spring lifecycle methods to")
    } else {
       val methodName = methodName(testCase)

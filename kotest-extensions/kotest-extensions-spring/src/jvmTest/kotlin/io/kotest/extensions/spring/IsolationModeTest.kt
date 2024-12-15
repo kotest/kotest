@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = [(Components::class)])
-@ApplyExtension(SpringTestExtension::class)
+@ApplyExtension(SpringExtension::class)
 class IsolationModeTest : WordSpec() {
 
    override fun isolationMode() = IsolationMode.InstancePerTest
