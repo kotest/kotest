@@ -1,3 +1,18 @@
+public final class io/kotest/extensions/clock/TestClock : java/time/Clock {
+	public static final field Companion Lio/kotest/extensions/clock/TestClock$Companion;
+	public fun <init> (Ljava/time/Instant;Ljava/time/ZoneId;)V
+	public fun getZone ()Ljava/time/ZoneId;
+	public fun instant ()Ljava/time/Instant;
+	public final fun minus-LRDsOJo (J)V
+	public final fun plus-LRDsOJo (J)V
+	public final fun setInstant (Ljava/time/Instant;)V
+	public fun withZone (Ljava/time/ZoneId;)Ljava/time/Clock;
+}
+
+public final class io/kotest/extensions/clock/TestClock$Companion {
+	public final fun utc (Ljava/time/Instant;)Lio/kotest/extensions/clock/TestClock;
+}
+
 public abstract class io/kotest/extensions/locale/LocaleListener {
 	public fun <init> (Ljava/util/Locale;)V
 	protected final fun changeLocale ()V
