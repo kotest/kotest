@@ -98,6 +98,14 @@ public abstract interface annotation class io/kotest/core/extensions/ApplyExtens
 	public abstract fun value ()[Lio/kotest/core/extensions/ApplyExtension;
 }
 
+public abstract interface class io/kotest/core/extensions/ConstructorExtension : io/kotest/core/extensions/Extension {
+	public abstract fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
+}
+
+public abstract interface class io/kotest/core/extensions/PostInstantiationExtension : io/kotest/core/extensions/Extension {
+	public abstract fun instantiated (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class io/kotest/core/extensions/ProjectExtension : io/kotest/core/extensions/Extension {
 	public abstract fun interceptProject (Lio/kotest/core/project/ProjectContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1124,13 +1132,5 @@ public final class io/kotest/engine/test/scopes/TerminalTestScope : io/kotest/co
 
 public final class io/kotest/engine/test/status/EnabledKt {
 	public static final fun isEnabled (Lio/kotest/core/test/TestCase;Lio/kotest/core/config/ProjectConfiguration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/extensions/ConstructorExtension : io/kotest/core/extensions/Extension {
-	public abstract fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
-}
-
-public abstract interface class io/kotest/extensions/PostInstantiationExtension : io/kotest/core/extensions/Extension {
-	public abstract fun instantiated (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
