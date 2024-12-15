@@ -8,7 +8,9 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.replay
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
+import io.kotest.engine.concurrency.replay
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
@@ -27,6 +29,22 @@ internal class TestInvocationInterceptor(
       test: NextTestExecutionInterceptor
    ): TestResult {
       return try {
+         invokeWithRetry(testCase, scope, test, 0)
+         logger.log { Pair(testCase.name.testName, "Test returned without error") }
+         TestResult.Success(timeMark.elapsedNow())
+      } catch (t: Throwable) {
+         logger.log { Pair(testCase.name.testName, "Test threw error $t") }
+         createTestResult(timeMark.elapsedNow(), t)
+      }
+   }
+
+   private suspend fun invokeWithRetry(
+      testCase: TestCase,
+      scope: TestScope,
+      test: NextTestExecutionInterceptor,
+      attemptedRetries: Int,
+   ) {
+      try {
          // we wrap in a coroutine scope so that we wait for any user-launched coroutines to finish,
          // and so we can grab any exceptions they throw
          coroutineScope {
@@ -36,19 +54,34 @@ internal class TestInvocationInterceptor(
             )
             { runBeforeTestAfter(testCase, scope, it, test) }
          }
-         logger.log { Pair(testCase.name.testName, "Test returned without error") }
-         try {
-            TestResult.Success(timeMark.elapsedNow())
-         } catch (e: Throwable) {
-            TestResult.Success(Duration.ZERO) // workaround for kotlin 1.5
-         }
       } catch (t: Throwable) {
-         logger.log { Pair(testCase.name.testName, "Test threw error $t") }
-         try {
-            createTestResult(timeMark.elapsedNow(), t)
-         } catch (e: Throwable) {
-            TestResult.Error(Duration.ZERO, t) // workaround for kotlin 1.5
-         }
+         if (shouldRetry(attemptedRetries, testCase)) {
+            delay(retryDelay(testCase, attemptedRetries))
+            invokeWithRetry(testCase, scope, test, attemptedRetries + 1)
+         } else throw t
+      }
+   }
+
+   private fun retryDelay(testCase: TestCase, attemptedRetries: Int): Duration {
+      val retryDelay = testCase.config.retryDelay
+      val retryDelayFn = testCase.config.retryDelayFn
+      return when {
+         retryDelay != null -> retryDelay
+         retryDelayFn != null -> retryDelayFn(testCase, attemptedRetries)
+         else -> Duration.ZERO
+      }
+   }
+
+   private fun shouldRetry(
+      attemptedRetries: Int,
+      testCase: TestCase,
+   ): Boolean {
+      val retries = testCase.config.retries
+      val retryFn = testCase.config.retryFn
+      return when {
+         retries != null -> attemptedRetries < retries
+         retryFn != null -> attemptedRetries < retryFn(testCase)
+         else -> false
       }
    }
 
