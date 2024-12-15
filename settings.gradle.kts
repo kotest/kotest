@@ -80,6 +80,7 @@ include(
    ":kotest-assertions:kotest-assertions-json",
    ":kotest-assertions:kotest-assertions-ktor",
    ":kotest-assertions:kotest-assertions-yaml",
+   ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
 
    // base classes for property testing, plus std lib generators
