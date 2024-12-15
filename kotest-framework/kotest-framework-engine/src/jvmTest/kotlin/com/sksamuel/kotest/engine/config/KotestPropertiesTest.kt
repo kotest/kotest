@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.config.configuration
+import io.kotest.engine.config.configuration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

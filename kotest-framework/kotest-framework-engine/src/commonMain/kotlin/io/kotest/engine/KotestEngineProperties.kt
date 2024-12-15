@@ -1,4 +1,4 @@
-package io.kotest.core.internal
+package io.kotest.engine
 
 object KotestEngineProperties {
 

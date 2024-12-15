@@ -1,8 +1,8 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.EngineResult
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.mpp.syspropOrEnv
 

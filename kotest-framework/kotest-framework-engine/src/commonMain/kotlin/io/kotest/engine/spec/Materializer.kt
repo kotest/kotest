@@ -3,7 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec

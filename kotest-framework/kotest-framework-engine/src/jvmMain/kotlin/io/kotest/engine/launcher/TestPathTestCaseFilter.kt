@@ -3,7 +3,7 @@ package io.kotest.engine.launcher
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.Descriptor.Companion.TestDelimiter
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec

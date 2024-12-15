@@ -2,7 +2,7 @@ package io.kotest.engine.test.names
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
-import io.kotest.core.names.UniqueNames
+import io.kotest.engine.names.UniqueNames
 
 /**
  * Tracks test names for a context, and based on the given [DuplicateTestNameMode] either fails

@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.test.status
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef

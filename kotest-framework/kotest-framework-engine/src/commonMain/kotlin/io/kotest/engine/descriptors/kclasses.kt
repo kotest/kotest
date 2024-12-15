@@ -1,6 +1,7 @@
-package io.kotest.core.descriptors
+package io.kotest.engine.descriptors
 
 import io.kotest.core.descriptors.Descriptor.SpecDescriptor
+import io.kotest.core.descriptors.DescriptorId
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
