@@ -308,7 +308,6 @@ public final class io/kotest/engine/KotestEngineProperties {
 	public static final field parallelism Ljava/lang/String;
 	public static final field projectTimeout Ljava/lang/String;
 	public static final field propertiesFilename Ljava/lang/String;
-	public static final field scriptsEnabled Ljava/lang/String;
 	public static final field tagExpression Ljava/lang/String;
 	public static final field tagInheritance Ljava/lang/String;
 	public static final field testNameAppendTags Ljava/lang/String;
