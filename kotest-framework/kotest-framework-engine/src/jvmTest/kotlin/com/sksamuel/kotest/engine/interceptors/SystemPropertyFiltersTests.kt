@@ -6,10 +6,10 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.extensions.system.withSystemProperties
 import io.kotest.matchers.collections.shouldContainExactly
@@ -25,10 +25,6 @@ internal fun TestScope.testAndIncrementCounter() {
 
 private fun numberOfTestsRunShouldBe(expected: Int) {
    executed.size shouldBe expected
-}
-
-private fun testsRunShouldBe(vararg name: String) {
-   executed shouldContainExactly name.toList()
 }
 
 private val testSuite = listOf<KClass<out Spec>>(
@@ -151,7 +147,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       ) { TestEngineLauncher().withClasses(testSuite).withConfiguration(ProjectConfiguration()).launch() }
 
       numberOfTestsRunShouldBe(2)
-      testsRunShouldBe("Daedalus BC-304", "Odyssey BC-304")
+      executed.shouldContainExactly("Daedalus BC-304", "Odyssey BC-304")
    }
 })
 

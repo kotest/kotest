@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.config.configuration
-import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
