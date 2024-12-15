@@ -27,7 +27,8 @@ class MaterializerTest : FunSpec({
          descriptor = Descriptor.TestDescriptor(
             parent = MaterializerTest::class.toDescriptor(),
             id = DescriptorId(value = "quidam")
-         ), name = TestName(
+         ),
+         name = TestName(
             testName = "prefix",
             focus = false,
             bang = false,
@@ -35,7 +36,8 @@ class MaterializerTest : FunSpec({
             suffix = null,
             defaultAffixes = false,
             originalName = "prefix"
-         ), spec = self,
+         ),
+         spec = self,
          test = {},
          source = sourceRef(),
          type = TestType.Dynamic,
@@ -53,8 +55,14 @@ class MaterializerTest : FunSpec({
             assertSoftly = false,
             coroutineDebugProbes = false,
             coroutineTestScope = false,
-            blockingTest = false
-         ), factoryId = null, parent = null
+            blockingTest = false,
+            retries = null,
+            retryFn = null,
+            retryDelay = null,
+            retryDelayFn = null,
+         ),
+         factoryId = null,
+         parent = null,
       )
 
       val nested = NestedTest(

@@ -6,6 +6,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
@@ -36,4 +37,8 @@ data class DefaultTestConfig(
    val coroutineDebugProbes: Boolean? = null,
    val duplicateTestNameMode: DuplicateTestNameMode? = null,
    val failfast: Boolean? = null,
+   var retries: Int? = null,
+   var retryFn: ((TestCase) -> Int)? = null,
+   var retryDelay: Duration? = null,
+   var retryDelayFn: ((TestCase, Int) -> Duration)? = null,
 )
