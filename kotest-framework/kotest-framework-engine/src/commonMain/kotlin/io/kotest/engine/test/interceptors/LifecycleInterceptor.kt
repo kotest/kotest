@@ -27,9 +27,9 @@ import kotlin.time.TimeMark
  * or after code is returned as higher priority than the result from the test case itself.
  */
 internal class LifecycleInterceptor(
-   private val listener: TestCaseExecutionListener,
-   private val timeMark: TimeMark,
-   registry: ExtensionRegistry,
+  private val listener: TestCaseExecutionListener,
+  private val timeMark: TimeMark,
+  registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)

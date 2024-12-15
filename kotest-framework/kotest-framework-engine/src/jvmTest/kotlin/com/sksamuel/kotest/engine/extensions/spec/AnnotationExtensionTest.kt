@@ -108,7 +108,7 @@ class MyExtension : BeforeSpecListener,
    BeforeTestListener,
    AfterTestListener,
    SpecExtension,
-   PrepareSpecListener {
+  PrepareSpecListener {
 
    init {
       instantiations++

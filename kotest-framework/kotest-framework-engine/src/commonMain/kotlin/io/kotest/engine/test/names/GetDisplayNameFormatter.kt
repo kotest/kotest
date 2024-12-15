@@ -7,8 +7,8 @@ import io.kotest.core.extensions.DisplayNameFormatterExtension
 
 @KotestInternal
 fun getFallbackDisplayNameFormatter(
-   registry: ExtensionRegistry,
-   configuration: ProjectConfiguration,
+  registry: ExtensionRegistry,
+  configuration: ProjectConfiguration,
 ): FallbackDisplayNameFormatter {
    val custom = registry.all()
       .filterIsInstance<DisplayNameFormatterExtension>()

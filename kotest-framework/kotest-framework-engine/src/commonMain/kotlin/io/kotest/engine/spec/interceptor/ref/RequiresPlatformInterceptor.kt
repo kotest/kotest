@@ -18,9 +18,9 @@ import io.kotest.mpp.annotation
  * and the engine is not executing on that platform.
  */
 internal class RequiresPlatformInterceptor(
-   private val listener: TestEngineListener,
-   private val context: EngineContext,
-   registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  private val context: EngineContext,
+  registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)

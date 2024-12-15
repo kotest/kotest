@@ -1,41 +1,50 @@
 package io.kotest.runner.junit4
 
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.WordSpec
 import org.junit.runner.RunWith
 
 @RunWith(KotestTestRunner::class)
-abstract class FunSpec(body: io.kotest.core.spec.style.FunSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.FunSpec(body)
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) :
+   FunSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class StringSpec(body: io.kotest.core.spec.style.StringSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.StringSpec(body)
+abstract class StringSpec(body: StringSpec.() -> Unit = {}) :
+   StringSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class ShouldSpec(body: io.kotest.core.spec.style.ShouldSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.ShouldSpec(body)
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) :
+   ShouldSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class DescribeSpec(body: io.kotest.core.spec.style.DescribeSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.DescribeSpec(body)
+abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) :
+   DescribeSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class ExpectSpec(body: io.kotest.core.spec.style.ExpectSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.ExpectSpec(body)
+abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) :
+   ExpectSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class FeatureSpec(body: io.kotest.core.spec.style.FeatureSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.FeatureSpec(body)
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) :
+   FeatureSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class FreeSpec(body: io.kotest.core.spec.style.FreeSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.FreeSpec(body)
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) :
+   FreeSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class WordSpec(body: io.kotest.core.spec.style.WordSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.WordSpec(body)
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) :
+   WordSpec(body)
 
 @RunWith(KotestTestRunner::class)
-abstract class BehaviorSpec(body: io.kotest.core.spec.style.BehaviorSpec.() -> Unit = {}) :
-   io.kotest.core.spec.style.BehaviorSpec(body)
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) :
+   BehaviorSpec(body)
 
 

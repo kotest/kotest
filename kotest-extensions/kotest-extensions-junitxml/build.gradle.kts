@@ -10,7 +10,6 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(libs.jdom2)
          }
       }

@@ -19,8 +19,8 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
  * are before spec listeners that have not been invoked.
  */
 internal class AfterSpecListenerInterceptor(
-   private val specContext: SpecContext,
-   private val registry: ExtensionRegistry,
+  private val specContext: SpecContext,
+  private val registry: ExtensionRegistry,
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,

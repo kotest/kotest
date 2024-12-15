@@ -9,7 +9,6 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(libs.jdom2)
          }
       }

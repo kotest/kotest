@@ -17,7 +17,6 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkApi)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestProperty)
          }

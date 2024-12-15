@@ -9,8 +9,8 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 
 internal class TestFinishedInterceptor(
-   private val listener: TestCaseExecutionListener,
-   registry: ExtensionRegistry,
+  private val listener: TestCaseExecutionListener,
+  registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(TestFinishedInterceptor::class)

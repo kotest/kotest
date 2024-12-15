@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 
 // Verifies fix for : https://github.com/kotest/kotest/issues/2710

@@ -22,9 +22,9 @@ import io.kotest.mpp.annotation
  * and those tags are not present in the runtime tags.
  */
 internal class RequiresTagInterceptor(
-   private val listener: TestEngineListener,
-   private val configuration: ProjectConfiguration,
-   private val registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  private val configuration: ProjectConfiguration,
+  private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {

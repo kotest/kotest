@@ -13,8 +13,8 @@ import kotlin.random.Random
  * to delegate to a [SpecSorter] perform sorting.
  */
 internal class DefaultSpecExecutionOrderExtension(
-   private val order: SpecExecutionOrder,
-   private val configuration: ProjectConfiguration,
+  private val order: SpecExecutionOrder,
+  private val configuration: ProjectConfiguration,
 ) : SpecExecutionOrderExtension {
 
    override fun sort(specs: List<SpecRef>): List<SpecRef> {
