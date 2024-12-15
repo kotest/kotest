@@ -1,10 +1,12 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
+import io.kotest.extensions.system.setEnvironmentMap
 import io.kotest.extensions.system.withEnvironment
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
@@ -16,15 +18,15 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    private val value = "SystemEnvironmentExtensionTestBar"
 
    init {
-         "Should return original environment to its place after execution" - {
-            val before = System.getenv().toMap()
+      "Should return original environment to its place after execution" - {
+         val before = System.getenv().toMap()
 
-            executeOnAllEnvironmentOverloads {
-               System.getenv() shouldNotBe before
-            }
-            System.getenv() shouldBe before
-
+         executeOnAllEnvironmentOverloads {
+            System.getenv() shouldNotBe before
          }
+         System.getenv() shouldBe before
+
+      }
 
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
@@ -63,14 +65,29 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
-   private val setl = SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride)
+   private val setl = SystemEnvironmentTestListener(
+      environment = mapOf(
+         "mop" to "dop",
+         "dop" to null,
+      ),
+      mode = OverrideMode.SetOrOverride
+   )
 
    override fun extensions() = listOf(setl)
+
+   override suspend fun beforeSpec(spec: Spec) {
+      setEnvironmentMap(mapOf("dop" to "mop"))
+      System.getenv("dop") shouldBe "mop"
+   }
 
    init {
       "sys environment extension" should {
          "set environment variable" {
             System.getenv("mop") shouldBe "dop"
+         }
+
+         "clear environment variable" {
+            System.getenv("dop") shouldBe null
          }
       }
    }
