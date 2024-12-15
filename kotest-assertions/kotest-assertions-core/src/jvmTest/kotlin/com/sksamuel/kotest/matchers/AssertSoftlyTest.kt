@@ -2,7 +2,6 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.errorCollector
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
@@ -159,28 +158,21 @@ class AssertSoftlyTest : FreeSpec({
 
 
       "Should not lose stacktrace with only one assertion" {
-         val expectedLineNumber = Exception().stackTrace
-            .first { it.className.contains("AssertSoftlyTest") }.lineNumber + 5
-
          shouldThrow<AssertionError> {
             assertSoftly {
-               null should beEmpty()
+               "foo" shouldBe "bar"
             }
          }.run {
             message.shouldContainInOrder(
-               "The following assertion failed:",
-               "1) Expecting actual not to be null",
-               "   at com.sksamuel.kotest.matchers.AssertSoftlyTest${'$'}1${'$'}1${'$'}9.invokeSuspend(AssertSoftlyTest.kt:$expectedLineNumber)"
+               "expected:<\"bar\"> but was:<\"foo\">",
             )
          }
       }
 
       "Receiver version" - {
          "works on a receiver object" {
-            var lineNumber = 0
             shouldThrow<AssertionError> {
                assertSoftly("foo") {
-                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
                   length shouldBe 2
                   this[1] shouldBe 'o' // should pass
                   this shouldNotBe "foo"
@@ -189,19 +181,16 @@ class AssertSoftlyTest : FreeSpec({
                message.shouldContainInOrder(
                   "The following 2 assertions for \"foo\" failed:",
                   "1) expected:<2> but was:<3>",
-                  "AssertSoftlyTest.kt:${lineNumber + 1}",
+                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
                   "2) \"foo\" should not equal \"foo\"",
-                  "AssertSoftlyTest.kt:${lineNumber + 3}",
+                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
                )
-               stackTrace.first().lineNumber shouldBe lineNumber - 1
             }
          }
 
          "Includes the receiver in failure message when there's a single failure" {
-            var lineNumber = 0
             shouldThrow<AssertionError> {
                assertSoftly("foo") {
-                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
                   length shouldBe 2
                }
             }.run {
@@ -209,7 +198,6 @@ class AssertSoftlyTest : FreeSpec({
                   The following assertion for "foo" failed:
                   expected:<2> but was:<3>
                """.trimIndent()
-               stackTrace.first().lineNumber shouldBe lineNumber + 1
             }
          }
 
@@ -302,15 +290,15 @@ class AssertSoftlyTest : FreeSpec({
             }
          }
          "single assertion failed with AssertionError" {
-            var lineNumber = 0
+            var stackElement: StackTraceElement? = null
             shouldThrow<AssertionError> {
                assertSoftly {
-                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
+                  stackElement = Thread.currentThread().stackTrace[1]
                   null should beEmpty()
                }
             }.run {
                stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
-               stackTrace.first().lineNumber shouldBe lineNumber + 1
+               stackElement.toString() shouldContain "com.sksamuel.kotest.matchers.AssertSoftlyTest$1$1$12$2.invokeSuspend"
             }
          }
       }

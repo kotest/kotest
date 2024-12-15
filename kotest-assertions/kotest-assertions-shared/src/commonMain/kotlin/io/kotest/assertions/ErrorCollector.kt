@@ -176,7 +176,6 @@ inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, blo
 internal fun List<Throwable>.toAssertionError(depth: Int, subject: Printed?): AssertionError? {
    return when {
       isEmpty() -> null
-      // todo: here we loose the original stack trace
       size == 1 && subject != null -> AssertionError("The following assertion for ${subject.value} failed:\n" + this[0].message)
       size == 1 && subject == null -> AssertionError(this[0].message)
       else -> MultiAssertionError(this, depth, subject)
