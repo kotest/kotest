@@ -20,10 +20,10 @@ import kotlin.reflect.KFunction2
 data class HeaderTest(
    val headerName: String,
    val headerValue: String,
-   val shouldExist: KFunction1<HttpResponse, Unit>,
-   val shouldNotExist: KFunction1<HttpResponse, Unit>,
-   val shouldHaveValue: KFunction2<HttpResponse, String, Unit>,
-   val shouldNotHaveValue: KFunction2<HttpResponse, String, Unit>
+   val shouldExist: KFunction1<HttpResponse, HttpResponse>,
+   val shouldNotExist: KFunction1<HttpResponse, HttpResponse>,
+   val shouldHaveValue: KFunction2<HttpResponse, String, HttpResponse>,
+   val shouldNotHaveValue: KFunction2<HttpResponse, String, HttpResponse>
 )
 
 class ResponseKtTest : StringSpec({

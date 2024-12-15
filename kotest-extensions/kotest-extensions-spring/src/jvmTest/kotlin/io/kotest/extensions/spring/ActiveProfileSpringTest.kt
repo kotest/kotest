@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(classes = [Components::class])
 @ActiveProfiles("test-profile")
-@ApplyExtension(SpringTestExtension::class)
+@ApplyExtension(SpringExtension::class)
 class ActiveProfileSpringTest : FunSpec() {
 
     @Value("\${test-foo}")

@@ -22,7 +22,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    private var runningSpec: String? = null
    private val callbacks = mutableListOf<suspend () -> Unit>()
 
-   private suspend fun queue(fn: suspend () -> Unit) {
+   private fun queue(fn: suspend () -> Unit) {
       callbacks.add { fn() }
    }
 
