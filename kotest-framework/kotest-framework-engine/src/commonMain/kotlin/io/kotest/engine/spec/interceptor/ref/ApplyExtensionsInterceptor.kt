@@ -25,10 +25,10 @@ internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistr
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return runCatching {
-         ref.kclass.annotation<ApplyExtension>()?.extensions?.map { extensionClass ->
-            val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
-            SpecWrapperExtension(extension, ref.kclass)
-         } ?: emptyList()
+         val classes = ref.kclass.annotation<ApplyExtension>()?.extensions?.toList() ?: emptyList()
+         classes
+            .map { it.newInstanceNoArgConstructorOrObjectInstance() }
+            .map { SpecWrapperExtension(it, ref.kclass) }
       }.flatMap { exts ->
          exts.forEach { registry.add(it) }
          next.invoke(ref).apply {
