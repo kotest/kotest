@@ -2,8 +2,8 @@ package io.kotest.engine.timeout
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.extensions.system.withSystemProperty
