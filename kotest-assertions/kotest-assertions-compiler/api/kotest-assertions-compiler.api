@@ -1,0 +1,7 @@
+public final class io/kotest/matchers/compilation/CompileCodeSnippetKt {
+	public static final fun shouldCompile (Ljava/io/File;)V
+	public static final fun shouldCompile (Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Ljava/io/File;)V
+	public static final fun shouldNotCompile (Ljava/lang/String;)V
+}
+
