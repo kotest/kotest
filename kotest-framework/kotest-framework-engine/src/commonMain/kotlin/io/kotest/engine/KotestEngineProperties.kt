@@ -1,8 +1,6 @@
-package io.kotest.core.internal
+package io.kotest.engine
 
 object KotestEngineProperties {
-
-   const val scriptsEnabled = "kotest.framework.scripts.enabled"
 
    const val dumpConfig = "kotest.framework.dump.config"
 

@@ -1,8 +1,8 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.log
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.instantiateOrObject
 import org.jetbrains.annotations.ApiStatus.Internal
 

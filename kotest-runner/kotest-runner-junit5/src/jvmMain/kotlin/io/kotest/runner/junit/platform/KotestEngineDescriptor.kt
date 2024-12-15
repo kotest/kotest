@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
@@ -12,12 +12,12 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
 
 class KotestEngineDescriptor(
-   id: UniqueId,
-   internal val configuration: ProjectConfiguration,
-   val classes: List<KClass<out Spec>>,
-   val scripts: List<KClass<*>>,
-   val testFilters: List<TestFilter>,
-   val error: Throwable?, // an error during discovery
+  id: UniqueId,
+  internal val configuration: ProjectConfiguration,
+  val classes: List<KClass<out Spec>>,
+  val scripts: List<KClass<*>>,
+  val testFilters: List<TestFilter>,
+  val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, "Kotest") {
    // Only reports dynamic children (see ExtensionExceptionExtractor) if there are no test classes to run.
    override fun mayRegisterTests(): Boolean = classes.isEmpty()

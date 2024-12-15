@@ -1,7 +1,7 @@
 package io.kotest.engine.config
 
 import io.github.classgraph.ClassGraph
-import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.mpp.syspropOrEnv
 
 /**
