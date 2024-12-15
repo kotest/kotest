@@ -17,7 +17,7 @@ class IllegalPackageNameTest : FunSpec() {
       test("should throw clear error on illegal package name") {
          @Suppress("MaxLineLength")
          shouldThrowAny {
-            SpringExtension.intercept(this@IllegalPackageNameTest) {}
+            SpringExtension().intercept(this@IllegalPackageNameTest) {}
          }.message shouldBe "Spec package name cannot contain a java keyword: import,finally,catch,const,final,inner,protected,private,public"
       }
    }
@@ -29,7 +29,7 @@ class IllegalPackageNameTest : FunSpec() {
 private class SoftKeywordTest(
    @Suppress("UNUSED_PARAMETER") service: UserService
 ) : StringSpec({
-   extensions(SpringExtension)
+   extensions(SpringExtension())
    "empty test should always be green" {
    }
 })

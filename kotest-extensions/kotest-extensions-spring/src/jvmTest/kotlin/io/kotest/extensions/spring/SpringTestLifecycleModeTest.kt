@@ -10,7 +10,7 @@ import org.springframework.test.context.TestExecutionListeners
 class SpringTestLifecycleModeTest : DescribeSpec() {
    init {
 
-      extensions(SpringTestExtension(SpringTestLifecycleMode.Test))
+      extensions(SpringExtension(SpringTestLifecycleMode.Test))
 
       beforeSpec {
          before shouldBe 0

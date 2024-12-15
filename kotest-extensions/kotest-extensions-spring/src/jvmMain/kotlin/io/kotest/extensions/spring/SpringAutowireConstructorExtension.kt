@@ -1,7 +1,7 @@
 package io.kotest.extensions.spring
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.spec.Spec
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.test.context.TestContextManager
 import kotlin.reflect.KClass
@@ -13,7 +13,9 @@ import kotlin.reflect.full.primaryConstructor
  *
  * The extension will delegate to spring's [TestContextManager] to autowire the constructors.
  */
+@Deprecated("Use SpringExtension which combines this and SpringTestExtension. Deprecated since 6.0")
 object SpringAutowireConstructorExtension : ConstructorExtension {
+
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
       // we only instantiate via spring if there's actually parameters in the constructor
       // otherwise there's nothing to inject there
