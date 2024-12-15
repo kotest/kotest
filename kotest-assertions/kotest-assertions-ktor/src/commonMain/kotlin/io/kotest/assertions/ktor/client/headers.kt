@@ -110,12 +110,12 @@ fun haveVersion(version: HttpProtocolVersion) = object : Matcher<HttpResponse> {
    }
 }
 
-fun HttpResponse.shouldHaveContentType(contentType: ContentType): HttpResponse {
+infix fun HttpResponse.shouldHaveContentType(contentType: ContentType): HttpResponse {
    this should haveContentType(contentType)
    return this
 }
 
-fun HttpResponse.shouldNotHaveContentType(contentType: ContentType): HttpResponse {
+infix fun HttpResponse.shouldNotHaveContentType(contentType: ContentType): HttpResponse {
    this shouldNot haveContentType(contentType)
    return this
 }
