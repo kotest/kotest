@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [Components::class])
 class SpringExtensionTest : WordSpec() {
 
-   override fun extensions() = listOf(SpringExtension)
+   override fun extensions() = listOf(SpringExtension())
 
    @Autowired
    private lateinit var service: UserService
@@ -30,7 +30,7 @@ class SpringExtensionTest : WordSpec() {
             testContextManager().shouldNotBeNull()
          }
          "generate applicable method name for a root test" {
-            SpringExtension.methodName(
+            SpringExtension().methodName(
                TestCase(
                   descriptor = SpringExtensionTest::class.toDescriptor()
                      .append("0foo__!!55@#woo"),
@@ -43,7 +43,7 @@ class SpringExtensionTest : WordSpec() {
             ) shouldStartWith "_0foo____55__woo"
          }
          "generate applicable method name for a nested test" {
-            SpringExtension.methodName(
+            SpringExtension().methodName(
                TestCase(
                   descriptor = SpringExtensionTest::class.toDescriptor()
                      .append("0foo__!!55@#woo")
