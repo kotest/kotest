@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.spec.config
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.nonConstantFalse
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition

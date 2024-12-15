@@ -78,6 +78,7 @@ include(
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
    ":kotest-assertions:kotest-assertions-json",
+   ":kotest-assertions:kotest-assertions-ktor",
    ":kotest-assertions:kotest-assertions-yaml",
 
    // base classes for property testing, plus std lib generators
@@ -97,6 +98,7 @@ include(
    ":kotest-extensions:kotest-extensions-junitxml",
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-spring",
+   ":kotest-extensions:kotest-extensions-allure",
 
    // allows overriding the .now() functionality on time classes
    ":kotest-extensions:kotest-extensions-now",
