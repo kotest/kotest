@@ -1,0 +1,54 @@
+public final class io/kotest/extensions/allure/AllureTestReporter : io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeTestListener, io/kotest/core/listeners/InstantiationErrorListener {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/allure/AllureWriter {
+	public static final field Companion Lio/kotest/extensions/allure/AllureWriter$Companion;
+	public static final field FRAMEWORK_LABEL Ljava/lang/String;
+	public static final field LANGUAGE_LABEL Ljava/lang/String;
+	public fun <init> ()V
+	public final fun allureResultSpecInitFailure (Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
+	public final fun finishTestCase (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;)V
+	public final fun id (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
+	public final fun startTestCase (Lio/kotest/core/test/TestCase;)V
+}
+
+public final class io/kotest/extensions/allure/AllureWriter$Companion {
+}
+
+public final class io/kotest/extensions/allure/EpicKt {
+	public static final fun description (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
+	public static final fun description (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public static final fun epic (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Label;
+	public static final fun epic (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Label;
+	public static final fun feature (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Label;
+	public static final fun feature (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Label;
+	public static final fun owner (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Label;
+	public static final fun owner (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Label;
+	public static final fun severity (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Label;
+	public static final fun story (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Label;
+	public static final fun story (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Label;
+}
+
+public final class io/kotest/extensions/allure/IssueKt {
+	public static final fun issue (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Link;
+	public static final fun issue (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Link;
+	public static final fun link (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/model/Link;
+	public static final fun link (Lkotlin/reflect/KClass;)Lio/qameta/allure/model/Link;
+	public static final fun links (Lio/kotest/core/test/TestCase;)Ljava/util/List;
+	public static final fun links (Lkotlin/reflect/KClass;)Ljava/util/List;
+}
+
+public final class io/kotest/extensions/allure/MaxSeverityKt {
+	public static final fun maxSeverity (Lio/kotest/core/test/TestCase;)Lio/qameta/allure/SeverityLevel;
+	public static final fun toAllureSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)Lio/qameta/allure/SeverityLevel;
+	public static final fun toTestCaseSeverity (Lio/qameta/allure/SeverityLevel;)Lio/kotest/core/test/TestCaseSeverityLevel;
+}
+
