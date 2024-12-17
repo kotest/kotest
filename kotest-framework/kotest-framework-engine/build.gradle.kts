@@ -23,7 +23,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            api(libs.classgraph)
 
             // we use AssertionFailedError from opentest4j
             api(libs.opentest4j)

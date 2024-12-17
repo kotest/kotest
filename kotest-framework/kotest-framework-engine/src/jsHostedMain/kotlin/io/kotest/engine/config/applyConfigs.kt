@@ -18,12 +18,6 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
 internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {}
 
 /**
- * Scan the classpath for [AbstractProjectConfig] instances.
- * Only applies on the JVM.
- */
-internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
-
-/**
  * Only applies on the JVM.
  */
 internal actual fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig> = emptyList()
