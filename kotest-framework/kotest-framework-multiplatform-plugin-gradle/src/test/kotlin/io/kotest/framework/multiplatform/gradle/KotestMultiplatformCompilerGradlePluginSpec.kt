@@ -29,7 +29,7 @@ import kotlin.io.path.name
 @DoNotParallelize
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
-      "2.0.20-RC",
+      "2.0.20",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
 
