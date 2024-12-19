@@ -1,9 +1,8 @@
-@file:Suppress("DEPRECATION") // Remove when removing Listener
-
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterSpecListener
@@ -22,13 +21,14 @@ import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
 /**
- * Wraps another extension, delegating spec extensions only for the specified spec.
+ * Wraps another [Extension], delegating all calls to that extension, but only for the given [target] spec.
  */
 internal class SpecWrapperExtension(
    val delegate: Extension,
    val target: KClass<*>
 ) : InstantiationErrorListener,
    SpecExtension,
+   TestCaseExtension,
    IgnoredSpecListener,
    AfterSpecListener,
    BeforeSpecListener,
@@ -40,6 +40,13 @@ internal class SpecWrapperExtension(
    AfterEachListener,
    BeforeContainerListener,
    AfterContainerListener {
+
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when {
+         testCase.spec::class == target && delegate is TestCaseExtension -> delegate.intercept(testCase, execute)
+         else -> execute(testCase)
+      }
+   }
 
    override suspend fun beforeContainer(testCase: TestCase) {
       if (delegate is BeforeContainerListener && testCase.spec::class == target) delegate.beforeContainer(testCase)

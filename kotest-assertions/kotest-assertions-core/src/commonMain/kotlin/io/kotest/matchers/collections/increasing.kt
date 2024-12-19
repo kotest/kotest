@@ -182,7 +182,11 @@ fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 
 private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
+   val failure = value
+      .asSequence()
+      .zipWithNext()
+      .withIndex()
+      .find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
    val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""
@@ -212,7 +216,11 @@ fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 
 private fun <T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
+   val failure = value
+      .asSequence()
+      .zipWithNext()
+      .withIndex()
+      .find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
    val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""

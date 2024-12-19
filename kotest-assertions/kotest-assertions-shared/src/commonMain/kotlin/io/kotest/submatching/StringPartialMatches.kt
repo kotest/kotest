@@ -11,8 +11,8 @@ class StringPartialMatch(val expected: String, val value: String) {
    fun error(): AssertionError = AssertionError("")
 }
 
-fun describePartialMatchesInStringForSlice(expectedSlice: String, value: String) =
-   describePartialMatchesInString(expectedSlice, value, PartialMatchType.Slice)
+fun describePartialMatchesInStringForSlice(expectedSlice: String, value: String, forceComparison: Boolean = false) =
+   describePartialMatchesInString(expectedSlice, value, PartialMatchType.Slice, forceComparison)
 
 fun describePartialMatchesInStringForSuffix(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Suffix)
@@ -20,7 +20,7 @@ fun describePartialMatchesInStringForSuffix(expectedSlice: String, value: String
 fun describePartialMatchesInStringForPrefix(expectedSlice: String, value: String) =
    describePartialMatchesInString(expectedSlice, value, PartialMatchType.Prefix)
 
-fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType): PartialMatchesInStringDescription {
+fun describePartialMatchesInString(expectedSlice: String, value: String, type: PartialMatchType, forceComparison: Boolean = false): PartialMatchesInStringDescription {
    if(!AssertionsConfig.enabledSubmatchesInStrings.value ||
          substringNotEligibleForSubmatching(expectedSlice) ||
          valueNotEligibleForSubmatching(value)
@@ -45,7 +45,7 @@ fun describePartialMatchesInString(expectedSlice: String, value: String, type: P
          else null
       }
    }.flatten().joinToString("\n")
-   return PartialMatchesInStringDescription(partialMatchesList, valueAndUnderscores)
+   return PartialMatchesInStringDescription(partialMatchesList, valueAndUnderscores, partialMatches)
 }
 
 internal fun describeMatchedSlice(expectedSlice: String, range: IntRange, type: PartialMatchType): String {
@@ -80,16 +80,20 @@ private fun valueNotEligibleForSubmatching(value: String) =
    AssertionsConfig.minValueSubmatchingSize.value > value.length ||
       value.length > AssertionsConfig.maxValueSubmatchingSize.value
 
-internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCollectionMatch<Char>>): List<String> {
+internal fun getAllUnderscores(valueLength: Int, partialMatches: List<PartialCollectionMatch>): List<String> {
    return partialMatches.map { underscoreSubstring(valueLength, it.rangeOfValue.first, it.rangeOfValue.last) }
 }
 
 data class PartialMatchesInStringDescription(
    val partialMatchesList: String,
-   val partialMatchesDescription: String
+   val partialMatchesDescription: String,
+   val partialMatches: List<PartialCollectionMatch> = listOf(),
 ) {
    override fun toString(): String = listOf(partialMatchesList, partialMatchesDescription)
       .filter { it.isNotEmpty() }.joinToString("\n")
+   companion object {
+      val Empty = PartialMatchesInStringDescription("", "", listOf())
+   }
 }
 
 fun underscoreSubstring(

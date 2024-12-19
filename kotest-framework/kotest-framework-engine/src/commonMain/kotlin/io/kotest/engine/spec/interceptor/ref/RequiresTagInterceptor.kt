@@ -3,7 +3,6 @@ package io.kotest.engine.spec.interceptor.ref
 import io.kotest.engine.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
-import io.kotest.core.annotation.requirestag.wrapper
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
@@ -23,16 +22,16 @@ import io.kotest.mpp.annotation
  * and those tags are not present in the runtime tags.
  */
 internal class RequiresTagInterceptor(
-   private val listener: TestEngineListener,
-   private val configuration: ProjectConfiguration,
-   private val registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  private val configuration: ProjectConfiguration,
+  private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return when (val annotation = ref.kclass.annotation<RequiresTag>()) {
          null -> next.invoke(ref)
          else -> {
-            val requiredTags = annotation.wrapper.map { NamedTag(it) }.toSet()
+            val requiredTags = annotation.values.map { NamedTag(it) }.toSet()
             val expr = configuration.runtimeTagExpression().parse()
             if (requiredTags.isEmpty() || (expr != null && expr.isActive(requiredTags))) {
                next.invoke(ref)

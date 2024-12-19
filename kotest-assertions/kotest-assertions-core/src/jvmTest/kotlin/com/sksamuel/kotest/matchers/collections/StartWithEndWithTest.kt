@@ -10,11 +10,9 @@ import io.kotest.matchers.collections.shouldNotStartWith
 import io.kotest.matchers.collections.shouldStartWith
 import io.kotest.matchers.collections.startWith
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
-import io.kotest.matchers.throwable.shouldHaveMessage
 
 class StartWithEndWithTest : WordSpec() {
    init {

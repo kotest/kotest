@@ -44,6 +44,12 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
    config.ignorePrivateClasses?.let { configuration.ignorePrivateClasses = it }
 
+   // retries
+   config.retries?.let { configuration.retries = it }
+   config.retryFn?.let { configuration.retryFn = it }
+   config.retryDelay?.let { configuration.retryDelay = it }
+   config.retryDelayFn?.let { configuration.retryDelayFn = it }
+
    // test names
    config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
    config.testNameRemoveWhitespace?.let { configuration.removeTestNameWhitespace = it }

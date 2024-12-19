@@ -13,13 +13,9 @@ kotlin {
             implementation(kotlin("reflect"))
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
-            // this is API because we want people to be able to use the functionality in their tests
-            // without needing to declare this dependency as well
-            api(projects.kotestFramework.kotestFrameworkApi)
-
             // used to install the debug probes for coroutines
-            implementation(libs.kotlinx.coroutines.debug)
-            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.coroutines.debug)
+            api(libs.kotlinx.coroutines.core)
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
          }
@@ -27,15 +23,9 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(libs.kotlinx.coroutines.test)
-
-            api(libs.classgraph)
-
-            // needed to scan for spec classes
-            api(projects.kotestFramework.kotestFrameworkDiscovery)
 
             // we use AssertionFailedError from opentest4j
-            implementation(libs.opentest4j)
+            api(libs.opentest4j)
 
             // used to write to the console with fancy colours!
             api(libs.mordant)
@@ -49,6 +39,12 @@ kotlin {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
+            implementation(libs.junit.platform.engine)
+            implementation(libs.junit.platform.api)
+            implementation(libs.junit.platform.launcher)
+            implementation(libs.junit.jupiter.api)
+            // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
+            implementation(libs.junit.jupiter.engine)
          }
       }
    }

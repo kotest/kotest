@@ -51,7 +51,7 @@ jobs:
                distribution: "temurin"
                java-version: "21"
 
-         -  uses: gradle/actions/setup-gradle@v3
+         -  uses: gradle/actions/setup-gradle@v4
 
          -  name: publish
             run: ./gradlew ${{ matrix.target }}

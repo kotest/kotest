@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.assertions.asClue
-import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration

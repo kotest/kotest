@@ -1565,6 +1565,15 @@ public final class io/kotest/matchers/floats/FloatToleranceMatcher : io/kotest/m
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
+public final class io/kotest/matchers/floats/InfinityKt {
+	public static final fun beNegativeInfinity ()Lio/kotest/matchers/Matcher;
+	public static final fun bePositiveInfinity ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeNegativeInfinity (F)F
+	public static final fun shouldBePositiveInfinity (F)F
+	public static final fun shouldNotBeNegativeInfinity (F)F
+	public static final fun shouldNotBePositiveInfinity (F)F
+}
+
 public final class io/kotest/matchers/floats/MatchersKt {
 	public static final fun beGreaterThan (F)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThanOrEqualTo (F)Lio/kotest/matchers/Matcher;
@@ -1597,6 +1606,18 @@ public final class io/kotest/matchers/floats/NaNKt {
 	public static final fun beNaN ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeNaN (F)F
 	public static final fun shouldNotBeNaN (F)F
+}
+
+public final class io/kotest/matchers/floats/NegativeKt {
+	public static final fun negative ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeNegative (F)F
+	public static final fun shouldNotBeNegative (F)F
+}
+
+public final class io/kotest/matchers/floats/PositiveKt {
+	public static final fun positive ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBePositive (F)F
+	public static final fun shouldNotBePositive (F)F
 }
 
 public final class io/kotest/matchers/future/MatchersKt {
@@ -2263,6 +2284,12 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun sortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/sets/SetsIntersectionKt {
+	public static final fun intersectWith (Ljava/util/Set;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldIntersect (Ljava/util/Set;Ljava/util/Set;)V
+	public static final fun shouldNotIntersect (Ljava/util/Set;Ljava/util/Set;)V
+}
+
 public final class io/kotest/matchers/short/ShortKt {
 	public static final fun between (SS)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeBetween (SSS)S
@@ -2414,6 +2441,7 @@ public final class io/kotest/matchers/string/MatchKt {
 	public static final fun shouldMatch (Ljava/lang/CharSequence;Ljava/lang/String;)Ljava/lang/CharSequence;
 	public static final fun shouldMatch (Ljava/lang/CharSequence;Lkotlin/text/Regex;)Ljava/lang/CharSequence;
 	public static final fun shouldNotMatch (Ljava/lang/CharSequence;Ljava/lang/String;)Ljava/lang/CharSequence;
+	public static final fun shouldNotMatch (Ljava/lang/CharSequence;Lkotlin/text/Regex;)Ljava/lang/CharSequence;
 }
 
 public final class io/kotest/matchers/string/MatchersKt {

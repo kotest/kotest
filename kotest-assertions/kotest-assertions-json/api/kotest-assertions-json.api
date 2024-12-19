@@ -130,6 +130,21 @@ public final class io/kotest/assertions/json/JsonError$NameOrderDiff : io/kotest
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/assertions/json/JsonError$ObjectExtraAndMissingKeys : io/kotest/assertions/json/JsonError {
+	public fun <init> (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Set;
+	public final fun component3 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)Lio/kotest/assertions/json/JsonError$ObjectExtraAndMissingKeys;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/JsonError$ObjectExtraAndMissingKeys;Ljava/util/List;Ljava/util/Set;Ljava/util/Set;ILjava/lang/Object;)Lio/kotest/assertions/json/JsonError$ObjectExtraAndMissingKeys;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExtra ()Ljava/util/Set;
+	public final fun getMissing ()Ljava/util/Set;
+	public fun getPath ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/json/JsonError$ObjectExtraKeys : io/kotest/assertions/json/JsonError {
 	public fun <init> (Ljava/util/List;Ljava/util/Set;)V
 	public final fun component1 ()Ljava/util/List;

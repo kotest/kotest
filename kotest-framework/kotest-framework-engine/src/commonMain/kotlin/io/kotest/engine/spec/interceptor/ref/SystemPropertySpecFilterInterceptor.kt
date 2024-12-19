@@ -4,7 +4,6 @@ import io.kotest.engine.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,6 +11,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv

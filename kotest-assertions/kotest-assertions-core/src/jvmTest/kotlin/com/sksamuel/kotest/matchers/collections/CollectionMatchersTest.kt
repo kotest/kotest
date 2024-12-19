@@ -1020,6 +1020,19 @@ class CollectionMatchersTest : WordSpec() {
                """"color" expected: <"green">, but was: <"red">"""
             )
          }
+
+         "fail and find similar items for Strings" {
+            val message = shouldThrow<AssertionError> {
+               "sweet green fruit" shouldBeIn listOf(
+                  "sweet green pear", "sweet red apple"
+               )
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               """Line[0] ="sweet green pear"""",
+               """Match[0]= ++++++++++++----""",
+            )
+         }
       }
 
       "Be in (negative)" should {

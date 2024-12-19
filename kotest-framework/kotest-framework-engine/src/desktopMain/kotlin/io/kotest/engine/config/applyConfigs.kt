@@ -7,6 +7,4 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
 
 internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {}
 
-internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
-
 internal actual fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig> = emptyList()

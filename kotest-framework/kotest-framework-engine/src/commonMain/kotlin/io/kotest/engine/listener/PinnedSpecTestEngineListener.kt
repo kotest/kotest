@@ -2,7 +2,7 @@
 
 package io.kotest.engine.listener
 
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
@@ -22,7 +22,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    private var runningSpec: String? = null
    private val callbacks = mutableListOf<suspend () -> Unit>()
 
-   private suspend fun queue(fn: suspend () -> Unit) {
+   private fun queue(fn: suspend () -> Unit) {
       callbacks.add { fn() }
    }
 

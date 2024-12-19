@@ -22,8 +22,8 @@ import io.kotest.mpp.hasAnnotation
  * Note: annotations are only available on the JVM.
  */
 internal class IgnoredSpecInterceptor(
-   private val listener: TestEngineListener,
-   registry: ExtensionRegistry,
+  private val listener: TestEngineListener,
+  registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    private val logger = Logger(IgnoredSpecInterceptor::class)

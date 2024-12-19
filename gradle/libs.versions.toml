@@ -1,6 +1,6 @@
 [versions]
-blockhound = "1.0.9.RELEASE"
-classgraph = "4.8.177"
+blockhound = "1.0.10.RELEASE"
+classgraph = "4.8.179"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
@@ -9,19 +9,23 @@ json-path = "2.9.0"
 junit4 = "4.13.2"
 junit-platform = "1.8.2"
 junit-jupiter = "5.8.2"
-kaml = "0.62.2"
+kaml = "0.66.0"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
-ktor = "1.6.8"
+ktor = "2.3.9"
 mockserver-netty = "5.15.0"
-mockk = "1.13.12"
+mockk = "1.13.13"
 mordant = "1.2.1"
 opentest4j = "1.3.0"
 plugin-publish = "1.3.0"
 rgxgen = "1.4"
 shadowjar = "8.1.1"
 devPublishPlugin = "0.4.2"
+spring-boot = "2.7.16"
+spring = "5.3.39"
+byte-buddy = "1.15.10"
+allure = "2.24.0"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -41,7 +45,7 @@ diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref 
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
-kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml"}
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver-netty" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
@@ -52,7 +56,6 @@ junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit",
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 junit-platform-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform" }
-junit-platform-commons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junit-platform" }
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
@@ -68,15 +71,28 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.3.0" }
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.7.0" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
+
+spring-context = { group = "org.springframework", name = "spring-context", version.ref = "spring" }
+spring-test = { group = "org.springframework", name = "spring-test", version.ref = "spring" }
+spring-boot-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
+byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
+
+allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "devPublishPlugin" }
+
 
 [bundles]
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
@@ -86,3 +102,4 @@ gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugi
 shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.14.0" }
+allure = { id = "io.qameta.allure", version = "2.12.0" }

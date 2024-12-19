@@ -41,11 +41,16 @@ fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
       { "${value.print().value} should have maximum length of ${length - 1}" })
 }
 
+/**
+ * Match that verifies a given [CharSequence] has a length within the given [IntRange].
+ */
 fun <A : CharSequence> A?.shouldHaveLengthBetween(range: IntRange): A {
    this should haveLengthBetween(range.first, range.last)
    return this!!
 }
-
+/**
+ * Match that verifies a given [CharSequence] has a length between [min, max] (inclusive, inclusive).
+ */
 fun <A : CharSequence> A?.shouldHaveLengthBetween(min: Int, max: Int): A {
    this should haveLengthBetween(min, max)
    return this!!
@@ -56,12 +61,17 @@ fun <A : CharSequence> A?.shouldNotHaveLengthBetween(range: IntRange): A {
    return this!!
 }
 
-
+/**
+ * Match that verifies a given [CharSequence] does not have a length between [min, max] (inclusive, inclusive).
+ */
 fun <A : CharSequence> A?.shouldNotHaveLengthBetween(min: Int, max: Int): A {
    this shouldNot haveLengthBetween(min, max)
    return this!!
 }
 
+/**
+ * Match that verifies a given [CharSequence] has a length between [min, max] (inclusive, inclusive).
+ */
 fun haveLengthBetween(min: Int, max: Int): Matcher<CharSequence?> {
    require(min <= max)
    return neverNullMatcher { value ->
@@ -71,7 +81,6 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<CharSequence?> {
          { "${value.print().value} should not have length between $min and $max" })
    }
 }
-
 
 fun <A : CharSequence> A?.shouldHaveLengthIn(range: IntRange): A {
    this should haveLengthIn(range)

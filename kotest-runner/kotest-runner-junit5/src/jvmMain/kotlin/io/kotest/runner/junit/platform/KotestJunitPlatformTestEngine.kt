@@ -5,7 +5,6 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.detectAbstractProjectConfigsJVM
 import io.kotest.engine.config.loadProjectConfigsJVM
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -31,10 +30,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
    private val logger = Logger(KotestJunitPlatformTestEngine::class)
 
    companion object {
-      internal const val EngineId = "kotest"
+      internal const val ENGINE_ID = "kotest"
    }
 
-   override fun getId(): String = EngineId
+   override fun getId(): String = ENGINE_ID
 
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
@@ -96,8 +95,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { request.string() }
 
       val configuration = ConfigManager.initialize(ProjectConfiguration()) {
-         detectAbstractProjectConfigsJVM() +
-            loadProjectConfigsJVM()
+         loadProjectConfigsJVM()
       }
 
       // if we are excluded from the engines then we say goodnight according to junit rules

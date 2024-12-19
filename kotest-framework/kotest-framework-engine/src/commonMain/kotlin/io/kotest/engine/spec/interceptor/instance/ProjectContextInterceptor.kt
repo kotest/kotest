@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
  * A [SpecInterceptor] that adds the [ProjectContext] to the coroutine context.
  */
 internal class ProjectContextInterceptor(
-   private val context: ProjectContext,
+  private val context: ProjectContext,
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,

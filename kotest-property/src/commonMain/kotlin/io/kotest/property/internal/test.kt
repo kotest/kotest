@@ -46,6 +46,7 @@ internal suspend fun test(
                classifier as Classifier<Any?>
                val value = inputs[k]
                val label = classifier.classify(value)
+               @Suppress("DEPRECATION")
                if (label != null) context.classify(k, label)
             }
          }
@@ -85,7 +86,7 @@ internal suspend fun handleException(
    }
 }
 
-private fun printFailureMessage(
+fun printFailureMessage(
    context: PropertyContext,
    inputs: List<Any?>,
    e: Throwable,

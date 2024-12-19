@@ -3,14 +3,8 @@ package com.sksamuel.kotest.eq
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.SequenceEq
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.inspectors.forAll
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import java.nio.file.Paths
-import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.time.Duration.Companion.seconds
 
 class SequenceEqTest : FunSpec({
 

@@ -180,10 +180,10 @@ public final class io/kotest/property/PropTestConfig {
 	public final fun copy (Ljava/lang/Long;IILio/kotest/property/ShrinkingMode;Ljava/lang/Integer;Ljava/util/List;Lio/kotest/property/EdgeConfig;ZLio/kotest/property/classifications/LabelsReporter;Lio/kotest/property/Constraints;IIZ)Lio/kotest/property/PropTestConfig;
 	public static synthetic fun copy$default (Lio/kotest/property/PropTestConfig;Ljava/lang/Long;IILio/kotest/property/ShrinkingMode;Ljava/lang/Integer;Ljava/util/List;Lio/kotest/property/EdgeConfig;ZLio/kotest/property/classifications/LabelsReporter;Lio/kotest/property/Constraints;IIZILjava/lang/Object;)Lio/kotest/property/PropTestConfig;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClassificationReporter ()Lio/kotest/property/classifications/LabelsReporter;
 	public final fun getConstraints ()Lio/kotest/property/Constraints;
 	public final fun getEdgeConfig ()Lio/kotest/property/EdgeConfig;
 	public final fun getIterations ()Ljava/lang/Integer;
-	public final fun getLabelsReporter ()Lio/kotest/property/classifications/LabelsReporter;
 	public final fun getListeners ()Ljava/util/List;
 	public final fun getMaxDiscardPercentage ()I
 	public final fun getMaxFailure ()I
@@ -559,10 +559,13 @@ public final class io/kotest/property/PropertyTesting {
 	public final fun getDefaultOutputHexForUnprintableChars ()Z
 	public final fun getDefaultSeed ()Ljava/lang/Long;
 	public final fun getDefaultShrinkingMode ()Lio/kotest/property/ShrinkingMode;
+	public final fun getDiscardCheckThreshold ()I
 	public final fun getEdgecasesBindDeterminism ()D
 	public final fun getFailOnSeed ()Z
 	public final fun getLabelOrder ()Lio/kotest/property/LabelOrder;
+	public final fun getMaxDiscardPercentage ()I
 	public final fun getMaxFilterAttempts ()I
+	public final fun getShouldPrintConfig ()Z
 	public final fun getShouldPrintGeneratedValues ()Z
 	public final fun getShouldPrintShrinkSteps ()Z
 	public final fun getStatisticsReportMode ()Lio/kotest/property/statistics/StatisticsReportMode;
@@ -577,10 +580,13 @@ public final class io/kotest/property/PropertyTesting {
 	public final fun setDefaultOutputHexForUnprintableChars (Z)V
 	public final fun setDefaultSeed (Ljava/lang/Long;)V
 	public final fun setDefaultShrinkingMode (Lio/kotest/property/ShrinkingMode;)V
+	public final fun setDiscardCheckThreshold (I)V
 	public final fun setEdgecasesBindDeterminism (D)V
 	public final fun setFailOnSeed (Z)V
 	public final fun setLabelOrder (Lio/kotest/property/LabelOrder;)V
+	public final fun setMaxDiscardPercentage (I)V
 	public final fun setMaxFilterAttempts (I)V
+	public final fun setShouldPrintConfig (Z)V
 	public final fun setShouldPrintGeneratedValues (Z)V
 	public final fun setShouldPrintShrinkSteps (Z)V
 	public final fun setStatisticsReportMode (Lio/kotest/property/statistics/StatisticsReportMode;)V
@@ -623,11 +629,6 @@ public final class io/kotest/property/RandomSource {
 public final class io/kotest/property/RandomSource$Companion {
 	public final fun default ()Lio/kotest/property/RandomSource;
 	public final fun seeded (J)Lio/kotest/property/RandomSource;
-}
-
-public final class io/kotest/property/RandomsKt {
-	public static final fun azchar (Lkotlin/random/Random;)C
-	public static final fun azstring (Lkotlin/random/Random;I)Ljava/lang/String;
 }
 
 public final class io/kotest/property/Sample {
@@ -697,6 +698,8 @@ public abstract interface class io/kotest/property/arbitrary/ArbitraryBuilderCon
 }
 
 public final class io/kotest/property/arbitrary/ArbsKt {
+	public static final fun drop (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;)Lkotlin/sequences/Sequence;
+	public static synthetic fun drop$default (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;ILjava/lang/Object;)Lkotlin/sequences/Sequence;
 	public static final fun lazy (Lio/kotest/property/Arb$Companion;Lkotlin/jvm/functions/Function0;)Lio/kotest/property/Arb;
 	public static final fun next (Lio/kotest/property/Arb;Lio/kotest/property/RandomSource;)Ljava/lang/Object;
 	public static synthetic fun next$default (Lio/kotest/property/Arb;Lio/kotest/property/RandomSource;ILjava/lang/Object;)Ljava/lang/Object;
@@ -1060,6 +1063,7 @@ public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/propert
 public final class io/kotest/property/arbitrary/LocaleKt {
 	public static final fun getLocales ()Ljava/util/List;
 	public static final fun locale (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
+	public static final fun localeJdk17 (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/LongShrinker : io/kotest/property/Shrinker {
@@ -1336,8 +1340,8 @@ public final class io/kotest/property/classifications/OutputKt {
 	public static final fun outputClassifications (Lio/kotest/property/PropertyContext;ILio/kotest/property/PropTestConfig;J)V
 }
 
-public final class io/kotest/property/classifications/StandardLabelsReporter : io/kotest/property/classifications/LabelsReporter {
-	public static final field INSTANCE Lio/kotest/property/classifications/StandardLabelsReporter;
+public final class io/kotest/property/classifications/StandardClassificationReporter : io/kotest/property/classifications/LabelsReporter {
+	public static final field INSTANCE Lio/kotest/property/classifications/StandardClassificationReporter;
 	public fun output (Lio/kotest/property/PropertyResult;)V
 }
 
@@ -1378,6 +1382,7 @@ public final class io/kotest/property/exhaustive/CartesianKt {
 
 public final class io/kotest/property/exhaustive/CharKt {
 	public static final fun az (Lio/kotest/property/Exhaustive$Companion;)Lio/kotest/property/Exhaustive;
+	public static final fun char (Lio/kotest/property/Exhaustive$Companion;Lkotlin/ranges/CharRange;)Lio/kotest/property/Exhaustive;
 }
 
 public final class io/kotest/property/exhaustive/CollectionsKt {
@@ -1424,6 +1429,10 @@ public final class io/kotest/property/internal/Counter {
 	public final fun getCount ()I
 	public final fun inc ()I
 	public final fun setCount (I)V
+}
+
+public final class io/kotest/property/internal/ErrorsKt {
+	public static final fun throwPropertyTestAssertionError (Ljava/util/List;Ljava/lang/Throwable;IJZ)V
 }
 
 public final class io/kotest/property/internal/EscapeUnprintableKt {
@@ -1513,6 +1522,10 @@ public final class io/kotest/property/internal/StepResult {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/property/internal/TestKt {
+	public static final fun printFailureMessage (Lio/kotest/property/PropertyContext;Ljava/util/List;Ljava/lang/Throwable;)V
+}
+
 public final class io/kotest/property/resolution/GlobalArbResolver : io/kotest/property/resolution/ArbResolver {
 	public static final field INSTANCE Lio/kotest/property/resolution/GlobalArbResolver;
 	public final fun register (Lkotlin/reflect/KType;Lio/kotest/property/Arb;)V
@@ -1533,10 +1546,11 @@ public final class io/kotest/property/resolution/ResolveKt {
 }
 
 public final class io/kotest/property/seed/SeedKt {
-	public static final fun clearFailedSeed (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun createRandom (Lio/kotest/property/PropTestConfig;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun getFailedSeed (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun writeFailedSeed (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/property/seed/SeedioKt {
+	public static final fun seedDirectory ()Ljava/nio/file/Path;
 }
 
 public final class io/kotest/property/statistics/CoverageKt {

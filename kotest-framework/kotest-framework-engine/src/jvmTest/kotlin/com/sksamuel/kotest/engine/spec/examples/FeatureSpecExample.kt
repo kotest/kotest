@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.spec.examples
 
-import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldHaveLength

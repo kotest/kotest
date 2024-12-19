@@ -52,6 +52,7 @@ fun targetDefaultForType(
          val upperBound = type.arguments.first().type ?: error("No bound for Array")
          Arb.array(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>) {
             val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
+            @Suppress("UNCHECKED_CAST")
             val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
             for ((i, item) in this.withIndex()) {
                java.lang.reflect.Array.set(array, i, item)

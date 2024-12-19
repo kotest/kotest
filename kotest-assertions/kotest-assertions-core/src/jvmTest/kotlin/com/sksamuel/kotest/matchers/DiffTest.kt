@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
-import io.kotest.matchers.string.startWith
 
 class DiffTest : WordSpec() {
   init {

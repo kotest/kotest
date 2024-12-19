@@ -4,8 +4,6 @@ import io.kotest.assertions.json.file.shouldEqualSpecifiedJson
 import io.kotest.assertions.json.file.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.json.paths.shouldEqualSpecifiedJson
 import io.kotest.assertions.json.paths.shouldEqualSpecifiedJsonIgnoringOrder
-import io.kotest.assertions.json.shouldEqualSpecifiedJson
-import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.throwable.shouldHaveMessage

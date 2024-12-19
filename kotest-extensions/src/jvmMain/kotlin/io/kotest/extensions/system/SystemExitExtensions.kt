@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 import java.io.FileDescriptor
 import java.net.InetAddress
@@ -176,6 +176,7 @@ class NoExitSecurityManager(private val originalSecurityManager: SecurityManager
         originalSecurityManager?.checkMulticast(maddr)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun checkMulticast(maddr: InetAddress, ttl: Byte) {
         originalSecurityManager?.checkMulticast(maddr, ttl)
     }

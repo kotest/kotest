@@ -1,6 +1,6 @@
 package io.kotest.engine.teamcity
 
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  */
 internal class TeamCityWriter(
    private val prefix: String,
-   private val formatter: FallbackDisplayNameFormatter
+   private val formatter: FallbackDisplayNameFormatter,
 ) {
 
    private val logger = Logger(TeamCityWriter::class)
@@ -50,12 +50,12 @@ internal class TeamCityWriter(
     * For a [TestCase] will output the "test started" message.
     */
    internal fun outputTestStarted(name: String, parent: String) {
-      val msg1 = TeamCityMessageBuilder
+      val msg = TeamCityMessageBuilder
          .testStarted(prefix, name)
          .id(name)
          .parent(parent)
          .build()
-      println(msg1)
+      println(msg)
    }
 
    internal fun outputTestStarted(testName: String) {

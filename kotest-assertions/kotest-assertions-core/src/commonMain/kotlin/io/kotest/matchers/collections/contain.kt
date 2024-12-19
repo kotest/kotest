@@ -35,7 +35,10 @@ fun <T> Array<T>.shouldContain(t: T, comparator: Equality<T>): Array<T> = apply 
 // Matcher
 fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.default()) = object : Matcher<C> {
    override fun test(value: C) : MatcherResult {
-      val passed = value.any { verifier.verify(it, t).areEqual() }
+      val passedAtIndexes = value.mapIndexedNotNull {
+         index, it -> if(verifier.verify(it, t).areEqual()) index else null
+      }
+      val passed = passedAtIndexes.isNotEmpty()
       val possibleMatches = if(!passed && (verifier.name() == Equality.default<T>().name())) {
          val candidates = possibleMatchesDescription(value.toSet(), t)
          if(candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
@@ -46,7 +49,7 @@ fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.defaul
             "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
                "but the collection is ${value.print().value}$possibleMatches"
          },
-         { "Collection should not contain element ${t.print().value} based on ${verifier.name()}" }
+         { "Collection should not contain element ${t.print().value} based on ${verifier.name()}, but it did at index(es):${passedAtIndexes.print().value}" }
       )
    }
 }

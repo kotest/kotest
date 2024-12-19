@@ -3,9 +3,8 @@ package com.sksamuel.kotest.engine.config
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.config.applyConfigFromProjectConfig
 import io.kotest.engine.config.applyConfigFromSystemProperties
 import io.kotest.extensions.system.OverrideMode
@@ -15,7 +14,7 @@ import io.kotest.matchers.shouldBe
 
 private const val key = KotestEngineProperties.logLevel
 
-@Isolate
+@io.kotest.core.annotation.Isolate
 class ApplyConfigTest : FunSpec({
    test("log level can come from sys props") {
       val expected = LogLevel.Info

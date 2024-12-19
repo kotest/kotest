@@ -9,7 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine.Companion.EngineId
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine.Companion.ENGINE_ID
 import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
@@ -24,7 +24,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecHappyPathSample::class.java),
          selectUniqueId(
-            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
+            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
@@ -36,57 +36,25 @@ class FeatureSpecEngineKitTest : FunSpec({
                started().shouldHaveNames(
                   "Kotest",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
-                  "1",
-                  "1.1",
-                  "1.2",
-                  "1.2.1",
-                  "1.2.2",
-                  "1.2.2.1",
-                  "1.2.2.2",
-                  "2",
-                  "2.1"
+                  "a", "b", "c", "d", "e", "f", "g", "h", "i",
                )
                aborted().shouldBeEmpty()
-               skipped().shouldHaveNames("2.1.2")
+               skipped().shouldHaveNames("k")
                failed().shouldHaveNames(
-                  "1.2.2.2",
-                  "2.1",
+                  "g", "i",
                )
                succeeded().shouldHaveNames(
-                  "1.1",
-                  "1.2.1",
-                  "1.2.2.1",
-                  "1.2.2",
-                  "1.2",
-                  "1",
-                  "2",
+                  "b", "d", "f", "e", "c", "a", "h",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
                   "Kotest"
                )
                finished().shouldHaveNames(
-                  "1.1",
-                  "1.2.1",
-                  "1.2.2.1",
-                  "1.2.2.2",
-                  "1.2.2",
-                  "1.2",
-                  "1",
-                  "2.1",
-                  "2",
+                  "b", "d", "f", "g", "e", "c", "a", "i", "h",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
-                  "1",
-                  "1.1",
-                  "1.2",
-                  "1.2.1",
-                  "1.2.2",
-                  "1.2.2.1",
-                  "1.2.2.2",
-                  "2",
-                  "2.1",
-                  "2.1.2"
+                  "a", "b", "c", "d", "e", "f", "g", "h", "i", "k"
                )
             }
       }
@@ -95,7 +63,7 @@ class FeatureSpecEngineKitTest : FunSpec({
    test("verify engine events all errors path") {
       listOf(
          selectClass(FeatureSpecSample::class.java),
-         selectUniqueId(UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName))
+         selectUniqueId(UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName))
       ).forAll { selector ->
          EngineTestKit
             .engine("kotest")
@@ -106,35 +74,29 @@ class FeatureSpecEngineKitTest : FunSpec({
                started().shouldHaveNames(
                   "Kotest",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
-                  "1",
-                  "1.1",
-                  "1.2",
-                  "2"
+                  "a", "b", "c", "h",
                )
                aborted().shouldBeEmpty()
                skipped().shouldHaveNames()
                failed().shouldHaveNames(
-                  "1.2", "2",
+                  "c", "h"
                )
                succeeded().shouldHaveNames(
-                  "1.1",
-                  "1",
+                  "b",
+                  "a",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
                   "Kotest"
                )
                finished().shouldHaveNames(
-                  "1.1",
-                  "1.2",
-                  "1",
-                  "2",
+                  "b",
+                  "c",
+                  "a",
+                  "h",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
-                  "1",
-                  "1.1",
-                  "1.2",
-                  "2"
+                  "a", "b", "c", "h"
                )
             }
       }
@@ -144,7 +106,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecWithZeroAssertions::class.java),
          selectUniqueId(
-            UniqueId.forEngine(EngineId).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
+            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
@@ -167,29 +129,29 @@ class FeatureSpecEngineKitTest : FunSpec({
 
 private class FeatureSpecHappyPathSample : FeatureSpec() {
    init {
-      feature("1") {
-         scenario("1.1") {
+      feature("a") {
+         scenario("b") {
          }
-         feature("1.2") {
-            scenario("1.2.1") {
+         feature("c") {
+            scenario("d") {
             }
-            feature("1.2.2") {
-               scenario("1.2.2.1") {
+            feature("e") {
+               scenario("f") {
                }
-               scenario("1.2.2.2") {
+               scenario("g") {
                   1 shouldBe 2
                }
             }
          }
       }
 
-      feature("2") {
-         feature("2.1") {
+      feature("h") {
+         feature("i") {
             "a".shouldHaveLength(0)
-            scenario("2.1.1") {
+            scenario("j") {
             }
          }
-         scenario("2.1.2").config(enabledIf = { nonConstantFalse() }) {
+         scenario("k").config(enabledIf = { nonConstantFalse() }) {
          }
       }
    }
@@ -201,36 +163,36 @@ private class FeatureSpecSample : FeatureSpec() {
 
       val count = AtomicInteger(0)
 
-      feature("1") {
+      feature("a") {
          count.incrementAndGet().shouldBe(1)
-         scenario("1.1") {
+         scenario("b") {
             count.incrementAndGet().shouldBe(2)
          }
-         feature("1.2") {
+         feature("c") {
             count.incrementAndGet().shouldBe(2)
-            scenario("1.2.1") {
+            scenario("d") {
                count.incrementAndGet().shouldBe(3)
             }
-            feature("1.2.2") {
+            feature("e") {
                count.incrementAndGet().shouldBe(3)
-               scenario("1.2.2.1") {
+               scenario("f") {
                   count.incrementAndGet().shouldBe(4)
                }
-               scenario("1.2.2.2") {
+               scenario("g") {
                   count.incrementAndGet().shouldBe(4)
                }
             }
          }
       }
 
-      feature("2") {
+      feature("h") {
          count.incrementAndGet().shouldBe(1)
-         feature("2.1") {
+         feature("i") {
             count.incrementAndGet().shouldBe(2)
-            scenario("2.1.1") {
+            scenario("j") {
                count.incrementAndGet().shouldBe(3)
             }
-            scenario("2.1.2") {
+            scenario("k") {
                count.incrementAndGet().shouldBe(3)
             }
          }

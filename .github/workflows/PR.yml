@@ -84,7 +84,7 @@ jobs:
          -  uses: actions/checkout@v4
             with:
                ref: ${{ inputs.ref }}
-         -  uses: actions/setup-node@v3
+         -  uses: actions/setup-node@v4
             with:
                node-version: '18.4.0'
          -  name: Build static docusaurus pages

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
-import com.sksamuel.kotest.engine.spec.multilinename.DescribeSpecMultiLineTestTest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec

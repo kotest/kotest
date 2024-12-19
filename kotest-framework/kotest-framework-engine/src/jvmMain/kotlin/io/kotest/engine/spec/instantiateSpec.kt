@@ -29,8 +29,10 @@ suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>, registry: Exte
       null -> runCatching {
          val initial: Spec? = null
 
-         val spec = constructorExtensions(registry, kclass)
-            .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) } ?: javaReflectNewInstance(kclass)
+         val constructorExtensions = constructorExtensions(registry, kclass)
+         val spec = constructorExtensions
+            .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) }
+            ?: javaReflectNewInstance(kclass)
 
          postInstantiationExtensions(registry, kclass)
             .fold(spec) { acc, ext -> ext.instantiated(acc) }
@@ -42,14 +44,17 @@ suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>, registry: Exte
    }
 }
 
+internal inline fun <reified T> extensionsFromApplyExtension(kclass: KClass<*>): List<T> {
+   val components = kclass.annotation<ApplyExtension>()?.extensions ?: return emptyList()
+   return components.filter { it.isSubclassOf(T::class) }.map { (it.objectInstance ?: it.createInstance()) as T }
+}
+
 internal fun constructorExtensions(
    registry: ExtensionRegistry,
    kclass: KClass<*>
 ): List<ConstructorExtension> {
    return registry.all().filterIsInstance<ConstructorExtension>() +
-      (kclass.annotation<ApplyExtension>()?.extensions
-         ?.filter { it.isSubclassOf(ConstructorExtension::class) }
-         ?.map { it.createInstance() as ConstructorExtension } ?: emptyList())
+      extensionsFromApplyExtension<ConstructorExtension>(kclass)
 }
 
 internal fun postInstantiationExtensions(
@@ -57,9 +62,7 @@ internal fun postInstantiationExtensions(
    kclass: KClass<*>
 ): List<PostInstantiationExtension> {
    return registry.all().filterIsInstance<PostInstantiationExtension>() +
-      (kclass.annotation<ApplyExtension>()?.extensions
-         ?.filter { it.isSubclassOf(PostInstantiationExtension::class) }
-         ?.map { it.createInstance() as PostInstantiationExtension } ?: emptyList())
+      extensionsFromApplyExtension<PostInstantiationExtension>(kclass)
 }
 
 internal fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {

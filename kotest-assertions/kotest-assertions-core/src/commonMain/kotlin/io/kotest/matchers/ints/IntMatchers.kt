@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.math.absoluteValue
 
 /**
- * Verifies that the given integer is between a and b inclusive.
+ * Verifies that the given integer is between [a, b] (inclusive, inclusive).
  */
 @Deprecated(
    "Int-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Int import `io.kotest.matchers.ints.shouldBeBetween` manually.",
@@ -18,7 +18,7 @@ import kotlin.math.absoluteValue
 fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
 
 /**
- * Verifies that the given integer is NOT between a and b inclusive.
+ * Verifies that the given integer is NOT between [a, b] (inclusive, inclusive).
  */
 @Deprecated(
    "Int-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Int import `io.kotest.matchers.ints.shouldNotBeBetween` manually.",
@@ -27,7 +27,7 @@ fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
 fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
 
 /**
- * Verifies that the given integer is between a and b inclusive.
+ * Verifies that the given integer is between [a, b] (inclusive, inclusive).
  */
 @Deprecated(
    "Int-specific matcher is getting replaced with a new Comparable matcher of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Int import `io.kotest.matchers.ints.beBetween` manually.",
@@ -80,8 +80,19 @@ fun beGreaterThanOrEqualTo(x: Int) = object : Matcher<Int> {
          { "$value should not be >= $x" })
 }
 
+/**
+ * Match that verifies a given integer is within the given [IntRange].
+ */
 infix fun Int.shouldBeInRange(range: IntRange) = this should beInRange(range)
+
+/**
+ * Match that verifies a given integer is not within the given [IntRange].
+ */
 infix fun Int.shouldNotBeInRange(range: IntRange) = this shouldNot beInRange(range)
+
+/**
+ * Match that verifies a given integer is within the given [IntRange].
+ */
 fun beInRange(range: IntRange) = object : Matcher<Int> {
    override fun test(value: Int): MatcherResult =
       MatcherResult(
