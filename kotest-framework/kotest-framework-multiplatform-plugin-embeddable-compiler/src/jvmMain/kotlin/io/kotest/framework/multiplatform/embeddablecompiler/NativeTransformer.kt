@@ -3,6 +3,7 @@ package io.kotest.framework.multiplatform.embeddablecompiler
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.IrSingleStatementBuilder
 import org.jetbrains.kotlin.ir.builders.Scope
@@ -33,6 +34,7 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
    ): IrDeclaration {
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
+         visibility = DescriptorVisibilities.PRIVATE
       }.apply {
          parent = declarationParent
          annotations += IrSingleStatementBuilder(
