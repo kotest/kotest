@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestScope
+import io.kotest.engine.stable.StableIdents
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -73,5 +74,83 @@ interface DescribeSpecRootScope : RootScope {
 
    fun xit(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestName(name), true, null, test)
+   }
+
+   // -- data-test DSL follows
+
+   // data-test DSL follows
+
+   /**
+    * Registers tests at the root level for each element.
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(
+      first: T,
+      second: T, // we need two elements here so the compiler can disambiguate from the sequence version
+      vararg rest: T,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) {
+      withData(listOf(first, second) + rest, test)
+   }
+
+   fun <T> withData(
+      nameFn: (T) -> String,
+      first: T,
+      second: T,  // we need two elements here so the compiler can disambiguate from the sequence version
+      vararg rest: T,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) = withData(nameFn, listOf(first, second) + rest, test)
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(ts: Sequence<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+      withData(ts.toList(), test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+      withData(nameFn, ts.toList(), test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(ts: Iterable<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+      withData({ StableIdents.getStableIdentifier(it) }, ts, test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the given [nameFn] function.
+    */
+   fun <T> withData(
+      nameFn: (T) -> String,
+      ts: Iterable<T>,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) {
+      ts.forEach { t ->
+         addContainer(TestName("Describe: ", nameFn(t), false), false, null) { DescribeSpecContainerScope(this).test(t) }
+      }
+   }
+
+   /**
+    * Registers tests at the root level for each tuple of [data], with the first value of the tuple
+    * used as the test name, and the second value passed to the test.
+    */
+   fun <T> withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+      data.forEach { (name, t) ->
+         addContainer(TestName("Describe: ", name, false), false, null) { DescribeSpecContainerScope(this).test(t) }
+      }
    }
 }
