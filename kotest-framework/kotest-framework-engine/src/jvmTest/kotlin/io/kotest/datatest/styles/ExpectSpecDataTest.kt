@@ -20,7 +20,7 @@ class ExpectSpecDataTest : ExpectSpec() {
       }
 
       afterSpec {
-         count shouldBe 68
+         count shouldBe 65
       }
 
       // test root level with varargs
