@@ -26,7 +26,7 @@ import kotlin.time.Duration
 @KotestTestScope
 class WordSpecShouldContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope<WordSpecShouldContainerScope>(testScope) {
 
    suspend fun String.config(
       enabled: Boolean? = null,
@@ -64,8 +64,15 @@ class WordSpecShouldContainerScope(
       registerTest(TestName(this), false, null) { WordSpecTerminalScope(this).test() }
    }
 
-   // we need to override the should method to stop people nesting a should inside a should
-   @Suppress("UNUSED_PARAMETER")
-   @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.HIDDEN)
-   infix fun String.should(init: () -> Unit) = Unit
+   override suspend fun <T> withData(
+      nameFn: (T) -> String,
+      ts: Iterable<T>,
+      test: suspend WordSpecShouldContainerScope.(T) -> Unit
+   ) {
+      ts.forEach { t ->
+         registerContainer(TestName("Context: ", nameFn(t), false), false, null) {
+            WordSpecShouldContainerScope(this).test(t)
+         }
+      }
+   }
 }

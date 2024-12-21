@@ -76,8 +76,6 @@ interface DescribeSpecRootScope : RootScope {
       addTest(TestName(name), true, null, test)
    }
 
-   // -- data-test DSL follows
-
    // data-test DSL follows
 
    /**
@@ -107,7 +105,10 @@ interface DescribeSpecRootScope : RootScope {
     *
     * The test name will be generated from the stable properties of the elements. See [StableIdents].
     */
-   fun <T> withData(ts: Sequence<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+   fun <T> withData(
+      ts: Sequence<T>,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) {
       withData(ts.toList(), test)
    }
 
@@ -116,7 +117,10 @@ interface DescribeSpecRootScope : RootScope {
     *
     * The test name will be generated from the stable properties of the elements. See [StableIdents].
     */
-   fun <T> withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+   fun <T> withData(
+      nameFn: (T) -> String,
+      ts: Sequence<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) {
       withData(nameFn, ts.toList(), test)
    }
 
@@ -125,7 +129,10 @@ interface DescribeSpecRootScope : RootScope {
     *
     * The test name will be generated from the stable properties of the elements. See [StableIdents].
     */
-   fun <T> withData(ts: Iterable<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+   fun <T> withData(
+      ts: Iterable<T>,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
+   ) {
       withData({ StableIdents.getStableIdentifier(it) }, ts, test)
    }
 
@@ -140,17 +147,11 @@ interface DescribeSpecRootScope : RootScope {
       test: suspend DescribeSpecContainerScope.(T) -> Unit
    ) {
       ts.forEach { t ->
-         addContainer(TestName("Describe: ", nameFn(t), false), false, null) { DescribeSpecContainerScope(this).test(t) }
-      }
-   }
-
-   /**
-    * Registers tests at the root level for each tuple of [data], with the first value of the tuple
-    * used as the test name, and the second value passed to the test.
-    */
-   fun <T> withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
-      data.forEach { (name, t) ->
-         addContainer(TestName("Describe: ", name, false), false, null) { DescribeSpecContainerScope(this).test(t) }
+         addContainer(
+            TestName("Describe: ", nameFn(t), false),
+            false,
+            null
+         ) { DescribeSpecContainerScope(this).test(t) }
       }
    }
 }

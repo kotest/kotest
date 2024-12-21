@@ -19,7 +19,7 @@ import kotlin.jvm.JvmName
 @KotestTestScope
 class FunSpecContainerScope(
    testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope<FunSpecContainerScope>(testScope) {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
@@ -101,66 +101,13 @@ class FunSpecContainerScope(
    // data-test DSL follows
 
    /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      first: T,
-      second: T, // we need second to help the compiler disambiguate between this and the sequence version
-      vararg rest: T,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) = withData(listOf(first, second) + rest, test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Sequence<T>,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) = withData(ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Iterable<T>,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) {
-      withData({ StableIdents.getStableIdentifier(it) }, ts, test)
-   }
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Sequence<T>,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) = withData(nameFn, ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      first: T,
-      second: T,
-      vararg rest: T,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) = withData(nameFn, listOf(first, second) + rest, test)
-
-   /**
     * Registers tests inside the given [FunSpecContainerScope] for each element of [ts].
     * The test name will be generated from the given [nameFn] function.
     */
-   suspend fun <T> withData(
+   override suspend fun <T> withData(
       nameFn: (T) -> String,
-      @BuilderInference ts: Iterable<T>,
-      @BuilderInference test: suspend FunSpecContainerScope.(T) -> Unit
+      ts: Iterable<T>,
+      test: suspend FunSpecContainerScope.(T) -> Unit
    ) {
       ts.forEach { t ->
          registerTest(TestName(nameFn(t)), false, null, TestType.Container) { FunSpecContainerScope(this).test(t) }

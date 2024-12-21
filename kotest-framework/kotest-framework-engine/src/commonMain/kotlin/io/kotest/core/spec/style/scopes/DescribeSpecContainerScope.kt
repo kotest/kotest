@@ -4,9 +4,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.TestType
-import io.kotest.engine.stable.StableIdents
-import kotlin.jvm.JvmName
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -33,25 +30,37 @@ import kotlin.jvm.JvmName
 @KotestTestScope
 class DescribeSpecContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope<DescribeSpecContainerScope>(testScope) {
 
    /**
     * Registers a container test.
     */
    suspend fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName("Context: ", name, false), false, null) { DescribeSpecContainerScope(this).test() }
+      registerContext(name = name, disabled = false, test = test)
    }
-
-   @ExperimentalKotest
-   fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      ContainerWithConfigBuilder(TestName(name), this, false) { DescribeSpecContainerScope(it) }
 
    /**
     * Registers a disabled container test.
     */
    suspend fun xcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName("Context: ", name, false), true, null) { DescribeSpecContainerScope(this).test() }
+      registerContext(name = name, disabled = true, test = test)
    }
+
+   private suspend fun registerContext(
+      name: String,
+      disabled: Boolean,
+      test: suspend DescribeSpecContainerScope.() -> Unit
+   ) {
+      registerContainer(
+         name = TestName("Context: ", name, disabled),
+         disabled = false,
+         config = null
+      ) { DescribeSpecContainerScope(this).test() }
+   }
+
+   @ExperimentalKotest
+   fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(TestName(name), this, false) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
    fun xcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
@@ -88,7 +97,7 @@ class DescribeSpecContainerScope(
       ) { DescribeSpecContainerScope(it) }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,
@@ -97,7 +106,7 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          TestName("It: ", name, false),
          this,
@@ -116,80 +125,16 @@ class DescribeSpecContainerScope(
    // data-test DSL follows
 
    /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      first: T,
-      second: T, // we need second to help the compiler disambiguate between this and the sequence version
-      vararg rest: T,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) = withData(listOf(first, second) + rest, test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Sequence<T>,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) = withData(ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Iterable<T>,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) {
-      withData({ StableIdents.getStableIdentifier(it) }, ts, test)
-   }
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Sequence<T>,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) = withData(nameFn, ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      first: T,
-      second: T,
-      vararg rest: T,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) = withData(nameFn, listOf(first, second) + rest, test)
-
-   /**
     * Registers tests inside the given [DescribeSpecContainerScope] for each element of [ts].
     * The test name will be generated from the given [nameFn] function.
     */
-   suspend fun <T> withData(
+   override suspend fun <T> withData(
       nameFn: (T) -> String,
-      @BuilderInference ts: Iterable<T>,
-      @BuilderInference test: suspend DescribeSpecContainerScope.(T) -> Unit
+      ts: Iterable<T>,
+      test: suspend DescribeSpecContainerScope.(T) -> Unit
    ) {
       ts.forEach { t ->
-         registerTest(TestName(nameFn(t)), false, null, TestType.Container) { DescribeSpecContainerScope(this).test(t) }
-      }
-   }
-
-   /**
-    * Registers tests inside the given test context for each tuple of [data], with the first value
-    * of the tuple used as the test name, and the second value passed to the test.
-    */
-   @JvmName("withDataMap")
-   suspend fun <T> withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
-      data.forEach { (name, t) ->
-         registerTest(TestName(name), false, null, TestType.Container) { DescribeSpecContainerScope(this).test(t) }
+         registerContext(name = nameFn(t), disabled = false) { this.test(t) }
       }
    }
 }

@@ -11,13 +11,13 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 @KotestTestScope
-class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope<FreeSpecContainerScope>(testScope) {
 
    /**
     * Creates a new container scope inside this spec.
     */
    suspend infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(this), false, null) { FreeSpecContainerScope(this).test() }
+      registerContainer(name = TestName(this), disabled = false, config = null) { FreeSpecContainerScope(this).test() }
    }
 
    /**
@@ -129,5 +129,19 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
          failfast = failfast,
       )
       return FreeSpecContextConfigBuilder(this, config)
+   }
+
+   override suspend fun <T> withData(
+      nameFn: (T) -> String,
+      ts: Iterable<T>,
+      test: suspend FreeSpecContainerScope.(T) -> Unit
+   ) {
+      ts.forEach { t ->
+         registerContainer(
+            name = TestName(nameFn(t)),
+            disabled = false,
+            config = null
+         ) { FreeSpecContainerScope(this).test(t) }
+      }
    }
 }
