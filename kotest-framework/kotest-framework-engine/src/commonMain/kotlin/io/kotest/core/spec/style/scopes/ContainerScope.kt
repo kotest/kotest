@@ -69,7 +69,7 @@ interface ContainerScope : TestScope {
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name, disabled, config, TestType.Container, test)
+      registerTest(name = name, disabled = disabled, config = config, type = TestType.Container, test = test)
    }
 
    suspend fun registerTest(
@@ -78,7 +78,7 @@ interface ContainerScope : TestScope {
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name, disabled, config, TestType.Test, test)
+      registerTest(name = name, disabled = disabled, config = config, type = TestType.Test, test = test)
    }
 
    private fun prependExtension(listener: Extension) {

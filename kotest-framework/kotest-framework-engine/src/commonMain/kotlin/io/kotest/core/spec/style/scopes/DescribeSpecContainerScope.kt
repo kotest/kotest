@@ -53,7 +53,7 @@ class DescribeSpecContainerScope(
    ) {
       registerContainer(
          name = TestName("Context: ", name, disabled),
-         disabled = false,
+         disabled = disabled,
          config = null
       ) { DescribeSpecContainerScope(this).test() }
    }
@@ -70,14 +70,22 @@ class DescribeSpecContainerScope(
     * Registers a container test.
     */
    suspend fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName("Describe: ", name, false), false, null) { DescribeSpecContainerScope(this).test() }
+      registerContainer(
+         name = TestName("Describe: ", name, false),
+         disabled = false,
+         config = null
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
    /**
     * Registers a container test.
     */
    suspend fun xdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName("Describe: ", name, false), true, null) { DescribeSpecContainerScope(this).test() }
+      registerContainer(
+         name = TestName("Describe: ", name, false),
+         disabled = true,
+         config = null
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
    @ExperimentalKotest
@@ -115,11 +123,11 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), false, null) { DescribeSpecContainerScope(this).test() }
+      registerTest(name = TestName(name), disabled = false, config = null) { DescribeSpecContainerScope(this).test() }
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), true, null) { DescribeSpecContainerScope(this).test() }
+      registerTest(name = TestName(name), disabled = true, config = null) { DescribeSpecContainerScope(this).test() }
    }
 
    // data-test DSL follows

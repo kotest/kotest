@@ -11,11 +11,11 @@ import io.kotest.engine.stable.StableIdents
 interface ExpectSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      addContext(name, test, false)
+      addContext(name = name, test = test, disabled = false)
    }
 
    fun xcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      addContext(name, test, true)
+      addContext(name = name, test = test, disabled = true)
    }
 
    /**
@@ -33,11 +33,11 @@ interface ExpectSpecRootScope : RootScope {
       RootContainerWithConfigBuilder(TestName("Context: ", name, true), false, this) { ExpectSpecContainerScope(it) }
 
    fun expect(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(name, test, true)
+      addExpect(name = name, test = test, disabled = false)
    }
 
    fun xexpect(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(name, test, true)
+      addExpect(name = name, test = test, disabled = true)
    }
 
    fun expect(name: String): RootTestWithConfigBuilder {
@@ -56,7 +56,7 @@ interface ExpectSpecRootScope : RootScope {
       ) { ExpectSpecContainerScope(this).test() }
    }
 
-   private fun addTest(name: String, test: suspend ExpectSpecContainerScope.() -> Unit, disabled: Boolean) {
+   private fun addExpect(name: String, test: suspend ExpectSpecContainerScope.() -> Unit, disabled: Boolean) {
       addTest(
          testName = TestName("Expect: ", name, false),
          disabled = disabled,

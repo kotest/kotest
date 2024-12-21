@@ -14,7 +14,6 @@ class ExpectSpecMultiLineTest : ExpectSpec() {
          names shouldBe setOf("test case 1", "test case 2")
       }
 
-
       expect(
          """
     test

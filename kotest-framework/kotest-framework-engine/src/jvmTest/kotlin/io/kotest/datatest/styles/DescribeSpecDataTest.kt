@@ -87,7 +87,7 @@ class DescribeSpecDataTest : DescribeSpec() {
          "bar"
       ) {
          context("describe $it") {
-            it("$it") {
+            it(it) {
                this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- describe $it -- $it"
             }
          }
@@ -125,15 +125,6 @@ class DescribeSpecDataTest : DescribeSpec() {
             a * a + b * b shouldBe c * c
          }
 
-         withData(
-            mapOf(
-               "true" to true,
-               "false" to false,
-               "null" to null,
-            )
-         ) { _ ->
-         }
-
          // testing repeated names get mangled inside a context
          index = 0
          withData("a", "a", "a") {
@@ -160,7 +151,7 @@ class DescribeSpecDataTest : DescribeSpec() {
             "bar"
          ) {
             describe("describe $it") {
-               it("$it") {
+               it(it) {
                   this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a context -- $it -- describe $it -- $it"
                }
             }

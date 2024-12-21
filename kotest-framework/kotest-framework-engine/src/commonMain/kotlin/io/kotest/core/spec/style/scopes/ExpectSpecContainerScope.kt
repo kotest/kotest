@@ -39,11 +39,15 @@ class ExpectSpecContainerScope(
       xdisabled: Boolean,
       test: suspend ExpectSpecContainerScope.() -> Unit
    ) {
-      registerContainer(TestName("Context: ", name, false), xdisabled, null) { ExpectSpecContainerScope(this).test() }
+      registerContainer(
+         name = TestName("Context: ", name, false),
+         disabled = xdisabled,
+         config = null
+      ) { ExpectSpecContainerScope(this).test() }
    }
 
    suspend fun expect(name: String, test: suspend TestScope.() -> Unit) {
-      registerExpect(name = name, xdisabled = true, test = test)
+      registerExpect(name = name, xdisabled = false, test = test)
    }
 
    suspend fun xexpect(name: String, test: suspend TestScope.() -> Unit) {
@@ -51,7 +55,7 @@ class ExpectSpecContainerScope(
    }
 
    private suspend fun registerExpect(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("Expect: ", name, false), xdisabled, null, test)
+      registerTest(name = TestName("Expect: ", name, false), disabled = xdisabled, config = null, test = test)
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
