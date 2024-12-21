@@ -67,6 +67,9 @@ abstract class TestConfiguration {
     */
    var assertions: AssertionMode? = null
 
+   /**
+    * Whether soft assertion mode should be applied for all tests in the spec.
+    */
    var assertSoftly: Boolean? = null
 
    /**

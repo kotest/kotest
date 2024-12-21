@@ -3,17 +3,15 @@ package io.kotest.engine.test.interceptors
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.collectiveError
 import io.kotest.assertions.errorCollector
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.TestType
-import io.kotest.core.Logger
 
 /**
- * Executes the test with assertSoftly if [assertSoftly] is enabled for this test
- * and if the [TestCase] is a [TestType.Test].
+ * Executes the test with assertSoftly if [assertSoftly] is enabled for this test or container.
  */
-internal class SoftAssertInterceptor() : TestExecutionInterceptor {
+internal class SoftAssertInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(SoftAssertInterceptor::class)
 
@@ -23,7 +21,6 @@ internal class SoftAssertInterceptor() : TestExecutionInterceptor {
       test: NextTestExecutionInterceptor
    ): TestResult {
 
-      if (testCase.type != TestType.Test) return test(testCase, scope)
       if (!testCase.config.assertSoftly) return test(testCase, scope)
 
       logger.log { Pair(testCase.name.testName, "Invoking test with soft assert") }
