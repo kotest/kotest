@@ -1768,10 +1768,6 @@ public final class io/kotest/core/names/TestNameCase : java/lang/Enum {
 	public static fun values ()[Lio/kotest/core/names/TestNameCase;
 }
 
-public abstract interface class io/kotest/core/names/WithDataTestName {
-	public abstract fun dataTestName ()Ljava/lang/String;
-}
-
 public final class io/kotest/core/project/ProjectContext {
 	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
 	public fun <init> (Lio/kotest/core/project/TestSuite;Lio/kotest/core/TagExpression;Lio/kotest/core/config/ProjectConfiguration;)V
@@ -3168,7 +3164,6 @@ public final class io/kotest/core/test/TestStatus : java/lang/Enum {
 
 public final class io/kotest/core/test/TestType : java/lang/Enum {
 	public static final field Container Lio/kotest/core/test/TestType;
-	public static final field Dynamic Lio/kotest/core/test/TestType;
 	public static final field Test Lio/kotest/core/test/TestType;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestType;
@@ -3863,6 +3858,10 @@ public final class io/kotest/engine/names/UniqueNames {
 	public static final field INSTANCE Lio/kotest/engine/names/UniqueNames;
 	public final fun unique (Ljava/lang/String;Ljava/util/Set;Lkotlin/jvm/functions/Function2;)Ljava/lang/String;
 	public static synthetic fun unique$default (Lio/kotest/engine/names/UniqueNames;Ljava/lang/String;Ljava/util/Set;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/engine/names/WithDataTestName {
+	public abstract fun dataTestName ()Ljava/lang/String;
 }
 
 public final class io/kotest/engine/project/ProjectExtensions {
