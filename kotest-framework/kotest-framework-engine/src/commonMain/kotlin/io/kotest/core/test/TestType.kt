@@ -1,7 +1,5 @@
 package io.kotest.core.test
 
-import io.kotest.common.ExperimentalKotest
-
 /**
  * Tests in Kotest are arranged in a tree with the "Engine" sitting at the root, and each
  * [Spec][io.kotest.core.spec.Spec] sitting directly under the Engine.
@@ -24,11 +22,4 @@ enum class TestType {
     * Used when a test has been defined programmatically via the DSL.
     */
    Test,
-
-   /**
-    * Can either be a container or a test and is used when tests are
-    * added dynamically via functionality such as property tests or data tests.
-    */
-   @ExperimentalKotest
-   Dynamic,
 }

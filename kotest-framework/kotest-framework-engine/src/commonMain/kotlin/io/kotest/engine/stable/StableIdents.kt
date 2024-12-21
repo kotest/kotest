@@ -2,7 +2,7 @@ package io.kotest.engine.stable
 
 import io.kotest.core.Platform
 import io.kotest.core.platform
-import io.kotest.core.names.WithDataTestName
+import io.kotest.engine.names.WithDataTestName
 import io.kotest.mpp.bestName
 import io.kotest.mpp.hasAnnotation
 import io.kotest.mpp.reflection

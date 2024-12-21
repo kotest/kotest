@@ -1,4 +1,4 @@
-package io.kotest.core.names
+package io.kotest.engine.names
 
 /**
  *  In case you want to customise the test name generation for a given type when used in data testing,
