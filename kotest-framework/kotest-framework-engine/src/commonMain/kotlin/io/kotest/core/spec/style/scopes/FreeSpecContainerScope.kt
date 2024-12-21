@@ -11,7 +11,7 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 @KotestTestScope
-class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope<FreeSpecContainerScope>(testScope) {
+class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    /**
     * Creates a new container scope inside this spec.
@@ -129,19 +129,5 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope<
          failfast = failfast,
       )
       return FreeSpecContextConfigBuilder(this, config)
-   }
-
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend FreeSpecContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         registerContainer(
-            name = TestName(nameFn(t)),
-            disabled = false,
-            config = null
-         ) { FreeSpecContainerScope(this).test(t) }
-      }
    }
 }

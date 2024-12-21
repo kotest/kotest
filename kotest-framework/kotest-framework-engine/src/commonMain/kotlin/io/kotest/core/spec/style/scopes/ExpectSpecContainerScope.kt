@@ -24,17 +24,17 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class ExpectSpecContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope<ExpectSpecContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    suspend fun context(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      registerContext(name = name, xdisabled = false, test = test)
+      context(name = name, xdisabled = false, test = test)
    }
 
    suspend fun xcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      registerContext(name = name, xdisabled = true, test = test)
+      context(name = name, xdisabled = true, test = test)
    }
 
-   private suspend fun registerContext(
+   private suspend fun context(
       name: String,
       xdisabled: Boolean,
       test: suspend ExpectSpecContainerScope.() -> Unit
@@ -74,19 +74,5 @@ class ExpectSpecContainerScope(
          context = this,
          xdisabled = true,
       )
-   }
-
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend ExpectSpecContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         registerContainer(
-            name = TestName("Context: ", nameFn(t), false),
-            disabled = false,
-            config = null
-         ) { ExpectSpecContainerScope(this).test(t) }
-      }
    }
 }

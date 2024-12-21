@@ -4,9 +4,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.TestType
-import io.kotest.engine.stable.StableIdents
-import kotlin.jvm.JvmName
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -19,13 +16,20 @@ import kotlin.jvm.JvmName
 @KotestTestScope
 class FunSpecContainerScope(
    testScope: TestScope,
-) : AbstractContainerScope<FunSpecContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
     */
    suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       registerContainer(TestName(name), false, null) { FunSpecContainerScope(this).test() }
+   }
+
+   /**
+    * Adds a disabled container test to this context.
+    */
+   suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
@@ -39,13 +43,6 @@ class FunSpecContainerScope(
          xdisabled = false,
          contextFn = { FunSpecContainerScope(it) }
       )
-   }
-
-   /**
-    * Adds a disabled container test to this context.
-    */
-   suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
@@ -88,40 +85,13 @@ class FunSpecContainerScope(
     * Adds a test case to this context.
     */
    suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), false, null, test)
+      registerTest(name = TestName(name), disabled = false, config = null, test = test)
    }
 
    /**
     * Adds a disabled test case to this context.
     */
    suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), true, null, test)
-   }
-
-   // data-test DSL follows
-
-   /**
-    * Registers tests inside the given [FunSpecContainerScope] for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend FunSpecContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         registerTest(TestName(nameFn(t)), false, null, TestType.Container) { FunSpecContainerScope(this).test(t) }
-      }
-   }
-
-   /**
-    * Registers tests inside the given test context for each tuple of [data], with the first value
-    * of the tuple used as the test name, and the second value passed to the test.
-    */
-   @JvmName("withDataMap")
-   suspend fun <T> withData(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
-      data.forEach { (name, t) ->
-         registerTest(TestName(name), false, null, TestType.Container) { FunSpecContainerScope(this).test(t) }
-      }
+      registerTest(name = TestName(name), disabled = true, config = null, test = test)
    }
 }

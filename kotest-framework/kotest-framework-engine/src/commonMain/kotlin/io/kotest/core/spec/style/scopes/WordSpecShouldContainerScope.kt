@@ -26,7 +26,7 @@ import kotlin.time.Duration
 @KotestTestScope
 class WordSpecShouldContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope<WordSpecShouldContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    suspend fun String.config(
       enabled: Boolean? = null,
@@ -62,17 +62,5 @@ class WordSpecShouldContainerScope(
 
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
       registerTest(TestName(this), false, null) { WordSpecTerminalScope(this).test() }
-   }
-
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend WordSpecShouldContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         registerContainer(TestName("Context: ", nameFn(t), false), false, null) {
-            WordSpecShouldContainerScope(this).test(t)
-         }
-      }
    }
 }

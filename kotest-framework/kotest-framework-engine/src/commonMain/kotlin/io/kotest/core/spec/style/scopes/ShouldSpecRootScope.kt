@@ -29,16 +29,22 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top level context scope to the spec.
     */
    fun context(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      addContainer(TestName("context ", name, false), false, null) {
-         ShouldSpecContainerScope(this).test()
-      }
+      context(name = name, disabled = false, test = test)
    }
 
    /**
     * Adds a top level context scope to the spec.
     */
    fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      addContainer(TestName("context ", name, false), true, null) { ShouldSpecContainerScope(this).test() }
+      context(name = name, disabled = true, test = test)
+   }
+
+   private fun context(name: String, disabled: Boolean, test: suspend ShouldSpecContainerScope.() -> Unit) {
+      addContainer(
+         testName = TestName("context ", name, false),
+         disabled = disabled,
+         config = null
+      ) { ShouldSpecContainerScope(this).test() }
    }
 
    /**
@@ -60,19 +66,23 @@ interface ShouldSpecRootScope : RootScope {
     * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
    fun should(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(this, TestName("should ", name, true), false)
+      RootTestWithConfigBuilder(context = this, name = TestName("should ", name, true), xdisabled = false)
 
    fun xshould(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(this, TestName("should ", name, true), true)
+      RootTestWithConfigBuilder(context = this, name = TestName("should ", name, true), xdisabled = true)
 
    /**
     * Adds a top level test, with the given name and test function, with default test config.
     */
    fun should(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(TestName("should ", name, false), false, null, test)
+      should(name, false, test)
    }
 
    fun xshould(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(TestName("should ", name, false), true, null, test)
+      should(name, true, test)
+   }
+
+   private fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
+      addTest(testName = TestName("should ", name, false), disabled = xdisabled, config = null, test = test)
    }
 }

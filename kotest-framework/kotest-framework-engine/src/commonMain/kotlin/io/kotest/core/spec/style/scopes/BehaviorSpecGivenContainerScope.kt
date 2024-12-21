@@ -27,7 +27,7 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class BehaviorSpecGivenContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope<BehaviorSpecGivenContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, xdisabled = false, test)
@@ -104,19 +104,5 @@ class BehaviorSpecGivenContainerScope(
 
    private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xdisabled: Boolean) {
       registerTest(TestName("Then: ", name, true), disabled = xdisabled, null, test)
-   }
-
-   // data-test DSL follows
-
-   /**
-    * Registers tests inside the given [FunSpecContainerScope] for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t -> addAnd(nameFn(t), false) { test(t) } }
    }
 }

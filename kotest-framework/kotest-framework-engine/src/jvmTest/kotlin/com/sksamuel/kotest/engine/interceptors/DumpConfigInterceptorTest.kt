@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext

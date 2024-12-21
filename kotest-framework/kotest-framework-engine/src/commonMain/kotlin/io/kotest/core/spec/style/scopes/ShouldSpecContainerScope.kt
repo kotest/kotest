@@ -17,7 +17,7 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class ShouldSpecContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope<ShouldSpecContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    /**
     * Adds a nested context scope to this scope.
@@ -54,20 +54,14 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("should ", name, false), false, null, test)
+      should(name, false, test)
    }
 
    suspend fun xshould(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("should ", name, true), true, null, test)
+      should(name, true, test)
    }
 
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend ShouldSpecContainerScope.(T) -> Unit
-   ) {
-      for (t in ts) {
-         registerContainer(TestName(nameFn(t)), false, null) { ShouldSpecContainerScope(this).test(t) }
-      }
+   private suspend fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
+      registerTest(name = TestName("should ", name, true), disabled = xdisabled, config = null, test = test)
    }
 }

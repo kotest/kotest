@@ -4,6 +4,7 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
+import io.kotest.datatest.withData
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -20,7 +21,7 @@ class FeatureSpecDataTest : FeatureSpec() {
       }
 
       afterSpec {
-         count shouldBe 68
+         count shouldBe 65
       }
 
       // test root level with varargs
@@ -151,7 +152,7 @@ class FeatureSpecDataTest : FeatureSpec() {
             "bar"
          ) {
             feature("feature $it") {
-               scenario("test $it") {
+               scenario("scenario $it") {
                   this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a feature -- $it -- feature $it -- scenario $it"
                }
             }

@@ -27,7 +27,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
-import io.kotest.engine.stable.StableIdents
 import kotlin.coroutines.CoroutineContext
 
 private val outOfOrderCallbacksException =
@@ -234,7 +233,7 @@ interface ContainerScope : TestScope {
 
 @KotestTestScope
 @KotestInternal
-abstract class AbstractContainerScope<S : AbstractContainerScope<S>>(
+abstract class AbstractContainerScope(
    private val testScope: TestScope
 ) : ContainerScope {
 
@@ -249,67 +248,4 @@ abstract class AbstractContainerScope<S : AbstractContainerScope<S>>(
    }
 
    override fun hasChildren(): Boolean = registered
-
-   /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      first: T,
-      second: T, // we need second to help the compiler disambiguate between this and the sequence version
-      vararg rest: T,
-      test: suspend S.(T) -> Unit
-   ) = withData(listOf(first, second) + rest, test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Sequence<T>,
-      test: suspend S.(T) -> Unit
-   ) = withData(ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test names will be generated from the stable properties of the elements. See [StableIdents].
-    */
-   suspend fun <T> withData(
-      ts: Iterable<T>,
-      test: suspend S.(T) -> Unit
-   ) {
-      withData({ StableIdents.getStableIdentifier(it) }, ts, test)
-   }
-
-   /**
-    * Registers tests inside the given test context for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Sequence<T>,
-      test: suspend S.(T) -> Unit
-   ) = withData(nameFn, ts.toList(), test)
-
-   /**
-    * Registers tests inside the given test context for each element.
-    * The test name will be generated from the given [nameFn] function.
-    */
-   suspend fun <T> withData(
-      nameFn: (T) -> String,
-      first: T,
-      second: T,
-      vararg rest: T,
-      test: suspend S.(T) -> Unit
-   ) = withData(nameFn, listOf(first, second) + rest, test)
-
-   /**
-    * Registers tests inside the given [T] for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   abstract suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend S.(T) -> Unit
-   )
 }

@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 
 /**
@@ -23,19 +22,17 @@ import io.kotest.core.test.TestScope
  */
 class FeatureSpecContainerScope(
    val testScope: TestScope
-) : AbstractContainerScope<FeatureSpecContainerScope>(testScope) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
+) : AbstractContainerScope(testScope) {
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      addFeature(name, false, test)
+      feature(name = name, disabled = false, test = test)
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      addFeature(name, true, test)
+      feature(name = name, disabled = true, test = test)
    }
 
-   private suspend fun addFeature(name: String, disabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
+   private suspend fun feature(name: String, disabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
          TestName("Feature: ", name, false),
          disabled = disabled,
@@ -44,11 +41,11 @@ class FeatureSpecContainerScope(
    }
 
    suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, false), disabled = false, null, test)
+      scenario(name = name, xdisabled = false, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, true), disabled = true, null, test)
+      scenario(name = name, xdisabled = true, test = test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
@@ -69,13 +66,7 @@ class FeatureSpecContainerScope(
       )
    }
 
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend FeatureSpecContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         addFeature(nameFn(t), false) { this.test(t) }
-      }
+   private suspend fun scenario(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
+      registerTest(name = TestName("Scenario: ", name, false), disabled = xdisabled, config = null, test = test)
    }
 }

@@ -2,6 +2,7 @@ package io.kotest.datatest.styles
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {

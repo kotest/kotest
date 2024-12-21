@@ -30,23 +30,23 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class DescribeSpecContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope<DescribeSpecContainerScope>(testScope) {
+) : AbstractContainerScope(testScope) {
 
    /**
     * Registers a container test.
     */
    suspend fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContext(name = name, disabled = false, test = test)
+      context(name = name, disabled = false, test = test)
    }
 
    /**
     * Registers a disabled container test.
     */
    suspend fun xcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContext(name = name, disabled = true, test = test)
+      context(name = name, disabled = true, test = test)
    }
 
-   private suspend fun registerContext(
+   private suspend fun context(
       name: String,
       disabled: Boolean,
       test: suspend DescribeSpecContainerScope.() -> Unit
@@ -70,23 +70,28 @@ class DescribeSpecContainerScope(
     * Registers a container test.
     */
    suspend fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      registerContainer(
-         name = TestName("Describe: ", name, false),
-         disabled = false,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+      describe(name = name, xdisabled = false, test = test)
    }
 
    /**
     * Registers a container test.
     */
    suspend fun xdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      describe(name = name, xdisabled = true, test = test)
+   }
+
+   private suspend fun describe(
+      name: String,
+      xdisabled: Boolean,
+      test: suspend DescribeSpecContainerScope.() -> Unit
+   ) {
       registerContainer(
-         name = TestName("Describe: ", name, false),
-         disabled = true,
-         config = null
+         name = TestName("Describe: ", name, xdisabled),
+         disabled = xdisabled,
+         config = null,
       ) { DescribeSpecContainerScope(this).test() }
    }
+
 
    @ExperimentalKotest
    fun describe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
@@ -128,21 +133,5 @@ class DescribeSpecContainerScope(
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(name = TestName(name), disabled = true, config = null) { DescribeSpecContainerScope(this).test() }
-   }
-
-   // data-test DSL follows
-
-   /**
-    * Registers tests inside the given [DescribeSpecContainerScope] for each element of [ts].
-    * The test name will be generated from the given [nameFn] function.
-    */
-   override suspend fun <T> withData(
-      nameFn: (T) -> String,
-      ts: Iterable<T>,
-      test: suspend DescribeSpecContainerScope.(T) -> Unit
-   ) {
-      ts.forEach { t ->
-         registerContext(name = nameFn(t), disabled = false) { this.test(t) }
-      }
    }
 }
