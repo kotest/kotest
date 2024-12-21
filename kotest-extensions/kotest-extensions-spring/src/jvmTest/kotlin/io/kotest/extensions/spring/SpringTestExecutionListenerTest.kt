@@ -1,7 +1,6 @@
 package io.kotest.extensions.spring
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -30,27 +29,17 @@ class SpringTestExecutionListenerTest : FunSpec() {
          // Only here to verify counts are incremented
       }
 
-      withData(
-         3, 4
-      ) {
-         // Only here to verify counts are incremented
-      }
-
       context("wrapped withData") {
-         withData(
-            5, 6, 7
-         ) {
-            // Only here to verify counts are incremented
-         }
+         test("a") { }
       }
 
       afterProject {
          DummyTestExecutionListener.beforeTestClass shouldBe 1
-         DummyTestExecutionListener.beforeTestMethod shouldBe 7
-         DummyTestExecutionListener.beforeTestExecution shouldBe 7
+         DummyTestExecutionListener.beforeTestMethod shouldBe 3
+         DummyTestExecutionListener.beforeTestExecution shouldBe 3
          DummyTestExecutionListener.prepareTestInstance shouldBe 1
-         DummyTestExecutionListener.afterTestExecution shouldBe 7
-         DummyTestExecutionListener.afterTestMethod shouldBe 7
+         DummyTestExecutionListener.afterTestExecution shouldBe 3
+         DummyTestExecutionListener.afterTestMethod shouldBe 3
          DummyTestExecutionListener.afterTestClass shouldBe 1
       }
    }
