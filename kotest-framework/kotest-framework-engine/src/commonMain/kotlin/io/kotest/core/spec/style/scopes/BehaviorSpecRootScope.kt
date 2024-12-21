@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
+import io.kotest.engine.stable.StableIdents
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -68,5 +69,75 @@ interface BehaviorSpecRootScope : RootScope {
          disabled = xdisabled,
          null
       ) { BehaviorSpecContextContainerScope(this).test() }
+   }
+
+   // data-test DSL follows
+
+   /**
+    * Registers tests at the root level for each element.
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(
+      first: T,
+      second: T, // we need two elements here so the compiler can disambiguate from the sequence version
+      vararg rest: T,
+      test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
+   ) {
+      withData(listOf(first, second) + rest, test)
+   }
+
+   fun <T> withData(
+      nameFn: (T) -> String,
+      first: T,
+      second: T,  // we need two elements here so the compiler can disambiguate from the sequence version
+      vararg rest: T,
+      test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
+   ) = withData(nameFn, listOf(first, second) + rest, test)
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(ts: Sequence<T>, test: suspend BehaviorSpecContextContainerScope.(T) -> Unit) {
+      withData(ts.toList(), test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend BehaviorSpecContextContainerScope.(T) -> Unit) {
+      withData(nameFn, ts.toList(), test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the stable properties of the elements. See [StableIdents].
+    */
+   fun <T> withData(ts: Iterable<T>, test: suspend BehaviorSpecContextContainerScope.(T) -> Unit) {
+      withData({ StableIdents.getStableIdentifier(it) }, ts, test)
+   }
+
+   /**
+    * Registers tests at the root level for each element of [ts].
+    *
+    * The test name will be generated from the given [nameFn] function.
+    */
+   fun <T> withData(
+      nameFn: (T) -> String,
+      ts: Iterable<T>,
+      test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
+   ) {
+      ts.forEach { t ->
+         addContainer(
+            TestName("Context: ", nameFn(t), true),
+            disabled = false,
+            null
+         ) { BehaviorSpecContextContainerScope(this).test(t) }
+      }
    }
 }
