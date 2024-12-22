@@ -10,11 +10,34 @@ class WordSpecWhenContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
 
-   suspend infix fun String.Should(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.should(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.xshould(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, true)
+   @Suppress("FunctionName")
+   suspend infix fun String.When(init: suspend WordSpecWhenContainerScope.() -> Unit) = `when`(this, false, init)
+   suspend infix fun String.xWhen(init: suspend WordSpecWhenContainerScope.() -> Unit) = `when`(this, true, init)
 
-   private suspend fun addShould(
+   suspend infix fun String.`when`(init: suspend WordSpecWhenContainerScope.() -> Unit) = `when`(this, false, init)
+   suspend infix fun String.xwhen(init: suspend WordSpecWhenContainerScope.() -> Unit) = `when`(this, true, init)
+
+   private suspend fun `when`(name: String, xdisabled: Boolean, test: suspend WordSpecWhenContainerScope.() -> Unit) {
+      registerContainer(
+         name = TestName(null, name, " when", true),
+         disabled = xdisabled,
+         config = null,
+      ) { WordSpecWhenContainerScope(this).test() }
+   }
+
+   suspend infix fun String.Should(test: suspend WordSpecShouldContainerScope.() -> Unit) {
+      should(name = this, test = test, xdisabled = false)
+   }
+
+   suspend infix fun String.should(test: suspend WordSpecShouldContainerScope.() -> Unit) {
+      should(name = this, test = test, xdisabled = false)
+   }
+
+   suspend infix fun String.xshould(test: suspend WordSpecShouldContainerScope.() -> Unit) {
+      should(name = this, test = test, xdisabled = true)
+   }
+
+   private suspend fun should(
       name: String,
       test: suspend WordSpecShouldContainerScope.() -> Unit,
       xdisabled: Boolean
