@@ -1,6 +1,5 @@
 package io.kotest.datatest
 
-import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.core.spec.style.scopes.FreeSpecRootScope
 import io.kotest.engine.stable.StableIdents
@@ -10,7 +9,6 @@ import io.kotest.engine.stable.StableIdents
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    first: T,
    second: T, // we need two elements here so the compiler can disambiguate from the sequence version
@@ -20,7 +18,6 @@ fun <T> FreeSpecRootScope.withData(
    withData(listOf(first, second) + rest, test)
 }
 
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -36,7 +33,6 @@ fun <T> FreeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    ts: Sequence<T>,
    test: suspend FreeSpecContainerScope.(T) -> Unit
@@ -49,7 +45,6 @@ fun <T> FreeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
@@ -63,7 +58,6 @@ fun <T> FreeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    ts: Iterable<T>,
    test: suspend FreeSpecContainerScope.(T) -> Unit
@@ -76,7 +70,6 @@ fun <T> FreeSpecRootScope.withData(
  *
  * The test name will be generated from the given [nameFn] function.
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Iterable<T>,
@@ -91,7 +84,6 @@ fun <T> FreeSpecRootScope.withData(
  * Registers tests at the root level for each tuple of [data], with the first value of the tuple
  * used as the test name, and the second value passed to the test.
  */
-@KotestTestScope
 fun <T> FreeSpecRootScope.withData(
    data: Map<String, T>,
    test: suspend FreeSpecContainerScope.(T) -> Unit

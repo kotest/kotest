@@ -161,7 +161,7 @@ class ShouldSpecDataTest : ShouldSpec() {
             "bar"
          ) {
             context("context $it") {
-               should("test $it") {
+               should("should $it") {
                   this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a context -- $it -- context $it -- should $it"
                }
             }

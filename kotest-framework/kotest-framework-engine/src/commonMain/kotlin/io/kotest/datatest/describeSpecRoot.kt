@@ -1,6 +1,5 @@
 package io.kotest.datatest
 
-import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
 import io.kotest.core.spec.style.scopes.DescribeSpecRootScope
 import io.kotest.engine.stable.StableIdents
@@ -10,7 +9,6 @@ import io.kotest.engine.stable.StableIdents
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(
    first: T,
    second: T, // we need two elements here so the compiler can disambiguate from the sequence version
@@ -20,7 +18,6 @@ fun <T> DescribeSpecRootScope.withData(
    withData(listOf(first, second) + rest, test)
 }
 
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -36,7 +33,6 @@ fun <T> DescribeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(
    ts: Sequence<T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
@@ -49,7 +45,6 @@ fun <T> DescribeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
@@ -63,7 +58,6 @@ fun <T> DescribeSpecRootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(ts: Iterable<T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
    withData({ StableIdents.getStableIdentifier(it) }, ts, test)
 }
@@ -73,7 +67,6 @@ fun <T> DescribeSpecRootScope.withData(ts: Iterable<T>, test: suspend DescribeSp
  *
  * The test name will be generated from the given [nameFn] function.
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Iterable<T>,
@@ -88,7 +81,6 @@ fun <T> DescribeSpecRootScope.withData(
  * Registers tests at the root level for each tuple of [data], with the first value of the tuple
  * used as the test name, and the second value passed to the test.
  */
-@KotestTestScope
 fun <T> DescribeSpecRootScope.withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
       context(name) { this.test(t) }
