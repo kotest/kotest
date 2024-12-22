@@ -5,6 +5,7 @@ package io.kotest.engine.launcher
 //import io.kotest.framework.discovery.DiscoveryResult
 //import io.kotest.framework.discovery.DiscoverySelector
 import io.kotest.common.KotestInternal
+import io.kotest.common.TestPath
 import io.kotest.core.TagExpression
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
@@ -28,7 +29,7 @@ internal fun setupLauncher(
    val specs = emptyList<KClass<out Spec>>()
    val error: Throwable? = null
    val filter = if (args.testpath == null || specClass == null) null else {
-      TestPathTestCaseFilter(args.testpath, specClass)
+      TestPathTestCaseFilter(TestPath(args.testpath), specClass)
    }
 
    if (error != null) throw error

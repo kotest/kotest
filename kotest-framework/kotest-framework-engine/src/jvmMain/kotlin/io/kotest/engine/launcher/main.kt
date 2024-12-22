@@ -10,9 +10,9 @@ import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import kotlin.system.exitProcess
 
 /**
- * The entry point for the launcher.
+ * The entry point for running the test engine.
  *
- * Parses the cli args, creates the reporter and passes them to the [execute] method.
+ * Parses the cli args, creates a launcher and executes it via the async method.
  *
  * This is used by the kotest-intellij-plugin (and other third party clients).
  * Therefore, the package name and args for this main method should remain backwards compatible.
@@ -21,8 +21,8 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
 
    val launcherArgs = parseLauncherArgs(args.toList())
-
    val collector = CollectingTestEngineListener()
+
    val listener = CompositeTestEngineListener(
       listOf(
          collector,

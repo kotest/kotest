@@ -3,7 +3,15 @@ package io.kotest.common
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
-data class TestPath(val value: String)
+/**
+ * A [TestPath] is a unique flattened string identifier for a test.
+ * Note: A test path can include an optional spec name.
+ */
+data class TestPath(val value: String) {
+   init {
+      require(value.trim() == value) { "TestPath cannot have leading or trailing whitespace" }
+   }
+}
 
 @ExperimentalKotest
 class TestPathContextElement(
