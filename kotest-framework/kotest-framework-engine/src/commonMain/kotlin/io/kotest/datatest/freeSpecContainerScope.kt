@@ -1,7 +1,7 @@
 package io.kotest.datatest
 
 import io.kotest.core.spec.KotestTestScope
-import io.kotest.core.spec.style.scopes.FunSpecContainerScope
+import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.engine.stable.StableIdents
 import kotlin.jvm.JvmName
 
@@ -10,11 +10,11 @@ import kotlin.jvm.JvmName
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    first: T,
    second: T, // we need second to help the compiler disambiguate between this and the sequence version
    vararg rest: T,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    withData(listOf(first, second) + rest, test)
 }
@@ -24,9 +24,9 @@ suspend fun <T> FunSpecContainerScope.withData(
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    ts: Sequence<T>,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    withData(ts.toList(), test)
 }
@@ -36,9 +36,9 @@ suspend fun <T> FunSpecContainerScope.withData(
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    ts: Iterable<T>,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    withData({ StableIdents.getStableIdentifier(it) }, ts, test)
 }
@@ -48,10 +48,10 @@ suspend fun <T> FunSpecContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    withData(nameFn, ts.toList(), test)
 }
@@ -61,12 +61,12 @@ suspend fun <T> FunSpecContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    nameFn: (T) -> String,
    first: T,
    second: T,
    vararg rest: T,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    withData(nameFn, listOf(first, second) + rest, test)
 }
@@ -76,13 +76,13 @@ suspend fun <T> FunSpecContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(
+suspend fun <T> FreeSpecContainerScope.withData(
    nameFn: (T) -> String,
    ts: Iterable<T>,
-   test: suspend FunSpecContainerScope.(T) -> Unit
+   test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      nameFn(t).minus { test(t) }
    }
 }
 
@@ -92,8 +92,11 @@ suspend fun <T> FunSpecContainerScope.withData(
  */
 @JvmName("withDataMap")
 @KotestTestScope
-suspend fun <T> FunSpecContainerScope.withData(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
+suspend fun <T> FreeSpecContainerScope.withData(
+   data: Map<String, T>,
+   test: suspend FreeSpecContainerScope.(T) -> Unit
+) {
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      name.minus { test(t) }
    }
 }

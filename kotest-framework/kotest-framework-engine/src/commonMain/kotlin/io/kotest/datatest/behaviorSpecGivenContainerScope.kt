@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
 import io.kotest.engine.stable.StableIdents
 import kotlin.jvm.JvmName
@@ -8,6 +9,7 @@ import kotlin.jvm.JvmName
  * Registers tests inside the given test context for each element.
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    first: T,
    second: T, // we need second to help the compiler disambiguate between this and the sequence version
@@ -21,6 +23,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * Registers tests inside the given test context for each element of [ts].
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    ts: Sequence<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
@@ -32,6 +35,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * Registers tests inside the given test context for each element of [ts].
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    ts: Iterable<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
@@ -43,6 +47,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * Registers tests inside the given test context for each element of [ts].
  * The test name will be generated from the given [nameFn] function.
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
@@ -55,6 +60,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * Registers tests inside the given test context for each element.
  * The test name will be generated from the given [nameFn] function.
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -69,6 +75,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * Registers tests inside the given [T] for each element of [ts].
  * The test name will be generated from the given [nameFn] function.
  */
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    nameFn: (T) -> String,
    ts: Iterable<T>,
@@ -82,6 +89,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withDataMap")
+@KotestTestScope
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    data: Map<String, T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit

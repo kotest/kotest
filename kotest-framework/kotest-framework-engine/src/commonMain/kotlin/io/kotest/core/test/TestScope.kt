@@ -1,13 +1,9 @@
 package io.kotest.core.test
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
-
-@SoftDeprecated("Renamed in 5.0 to TestScope")
-typealias TestContext = TestScope
 
 /**
  * A test in Kotest is simply a function `suspend TestScope.() -> Unit`

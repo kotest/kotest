@@ -23,14 +23,22 @@ class ShouldSpecContainerScope(
     * Adds a nested context scope to this scope.
     */
    suspend fun context(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), false, null) { ShouldSpecContainerScope(this).test() }
+      context(name, false, test)
    }
 
    /**
     * Adds a disabled nested context scope to this scope.
     */
    suspend fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), true, null) { ShouldSpecContainerScope(this).test() }
+      context(name, true, test)
+   }
+
+   private suspend fun context(name: String, xdisabled: Boolean, test: suspend ShouldSpecContainerScope.() -> Unit) {
+      registerContainer(
+         name = TestName(name),
+         disabled = xdisabled,
+         config = null,
+      ) { ShouldSpecContainerScope(this).test() }
    }
 
    @ExperimentalKotest
@@ -44,12 +52,12 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(TestName("should ", name, false), this, true)
    }
 

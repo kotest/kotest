@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestScope
 
@@ -50,14 +49,12 @@ interface ShouldSpecRootScope : RootScope {
    /**
     * Adds a top level context scope accepting config to the spec.
     */
-   @ExperimentalKotest
    fun context(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a disabled top level context scope accepting config to the spec.
     */
-   @ExperimentalKotest
    fun xcontext(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerScope(it) }
 
