@@ -26,6 +26,10 @@ class TestPathBuilderTest : FunSpec({
       TestPathBuilder.builder().withTest("  spaces  ").build() shouldBe TestPath("spaces")
    }
 
+   test("trim new lines") {
+      TestPathBuilder.builder().withTest("  trim new lines \n  ").build() shouldBe TestPath("trim new lines")
+   }
+
    test("multiple test names should be trimmed") {
       TestPathBuilder.builder()
          .withTest("  spaces  ")
@@ -38,6 +42,12 @@ class TestPathBuilderTest : FunSpec({
             .withTest("a")
             .withSpec(TestPathBuilderTest::class)
       }
+   }
+
+   test("escape all characters") {
+      TestPathBuilder.builder()
+         .withTest(" \$foobar \\\$barfoo \\n ")
+         .build() shouldBe TestPath("\$foobar \\\$barfoo \\n")
    }
 
    test("test path should include spec and use spec separator") {
