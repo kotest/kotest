@@ -3770,10 +3770,8 @@ public final class io/kotest/engine/launcher/ParseLauncherArgsKt {
 }
 
 public final class io/kotest/engine/launcher/TestPathTestCaseFilter : io/kotest/core/filter/TestFilter {
-	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;)V
+	public fun <init> (Lio/kotest/common/TestPath;Lkotlin/reflect/KClass;)V
 	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/filter/TestFilterResult;
-	public final fun getShould ()Z
-	public final fun setShould (Z)V
 }
 
 public abstract class io/kotest/engine/listener/AbstractTestEngineListener : io/kotest/engine/listener/TestEngineListener {

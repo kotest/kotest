@@ -3,7 +3,7 @@ package io.kotest.engine.launcher
 import io.kotest.engine.cli.parseArgs
 
 data class LauncherArgs(
-   // A path to the test to execute. Nested tests will also be executed
+   // A test path to execute. Nested tests will also be executed. Must not include a spec name.
    val testpath: String?,
    // Restrict tests to the package or subpackages
    val packageName: String?,
