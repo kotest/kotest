@@ -19,7 +19,7 @@ class TestPathBuilderTest : FunSpec({
       TestPathBuilder.builder().withSpec(TestPathBuilderTest::class).withTest(
          """  A test case
         with a line break  """
-      ).build() shouldBe TestPath("TestPathBuilderTest/A test case with a line break")
+      ).build() shouldBe TestPath("io.kotest.engine.test.TestPathBuilderTest/A test case with a line break")
    }
 
    test("test names should be trimmed") {
@@ -38,5 +38,20 @@ class TestPathBuilderTest : FunSpec({
             .withTest("a")
             .withSpec(TestPathBuilderTest::class)
       }
+   }
+
+   test("test path should include spec and use spec separator") {
+      TestPathBuilder.builder()
+         .withSpec(TestPathBuilderTest::class)
+         .withTest("a context")
+         .build() shouldBe TestPath("io.kotest.engine.test.TestPathBuilderTest/a context")
+   }
+
+   test("test path should include parent tests and use test path separator") {
+      TestPathBuilder.builder()
+         .withSpec(TestPathBuilderTest::class)
+         .withTest("a context")
+         .withTest("nested test")
+         .build() shouldBe TestPath("io.kotest.engine.test.TestPathBuilderTest/a context -- nested test")
    }
 })

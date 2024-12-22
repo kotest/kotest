@@ -1,6 +1,7 @@
 package io.kotest.engine.test.path
 
 import io.kotest.common.TestPath
+import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
@@ -40,7 +41,7 @@ internal data class TestPathBuilder(
 
    fun build(): TestPath {
       require(tests.isNotEmpty())
-      val specPath = spec?.simpleName
+      val specPath = spec?.bestName()
       val testPath = tests.joinToString(TEST_DELIMITER)
       val path = listOfNotNull(specPath, testPath).joinToString(SPEC_DELIMITER)
       return TestPath(path.trim())
