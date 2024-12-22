@@ -99,40 +99,13 @@ class TeamCityTestEngineListener(
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
          TestType.Container -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
             writer.outputTestSuiteStarted(testCase)
             started.add(testCase.descriptor)
          }
 
          TestType.Test -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start it
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
             writer.outputTestStarted(testCase)
             started.add(testCase.descriptor)
-         }
-
-         TestType.Dynamic -> {
-            val p = testCase.parent
-            // we might have a dynamic inside another dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
          }
       }
    }
@@ -159,18 +132,6 @@ class TeamCityTestEngineListener(
             if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
             writer.outputTestFinished(testCase, result)
          }
-
-         TestType.Dynamic -> {
-            if (isParent(testCase)) {
-               if (!started.contains(testCase.descriptor)) writer.outputTestSuiteStarted(testCase)
-               failTestSuiteIfError(testCase, result)
-               writer.outputTestSuiteFinished(testCase, result)
-            } else {
-               if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
-               if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
-               writer.outputTestFinished(testCase, result)
-            }
-         }
       }
    }
 
@@ -182,9 +143,4 @@ class TeamCityTestEngineListener(
          else -> insertPlaceholder(t, testCase.descriptor)
       }
    }
-
-   // returns true if this test case contains child tests
-   private fun isParent(testCase: TestCase) = children.getOrElse(testCase.descriptor) { mutableListOf() }.isNotEmpty()
-
-
 }

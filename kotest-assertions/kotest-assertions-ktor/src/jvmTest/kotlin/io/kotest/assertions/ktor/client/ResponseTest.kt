@@ -1,7 +1,7 @@
 package io.kotest.assertions.ktor.client
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.get
@@ -26,7 +26,7 @@ data class HeaderTest(
    val shouldNotHaveValue: KFunction2<HttpResponse, String, HttpResponse>
 )
 
-class ResponseKtTest : StringSpec({
+class ResponseKtTest : FreeSpec({
    withData(
       nameFn = { "Header test: ${it.headerName}" },
       HeaderTest(

@@ -82,7 +82,7 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
     * Returns true if this test case should have the spring lifecycle methods applied
     */
    private fun TestCase.isApplicable() = (mode == SpringTestLifecycleMode.Root && isRootTest()) ||
-      (mode == SpringTestLifecycleMode.Test && type in arrayOf(TestType.Test, TestType.Dynamic))
+      (mode == SpringTestLifecycleMode.Test && type == TestType.Test)
 
    /**
     * Generates a fake [Method] for the given [TestCase].

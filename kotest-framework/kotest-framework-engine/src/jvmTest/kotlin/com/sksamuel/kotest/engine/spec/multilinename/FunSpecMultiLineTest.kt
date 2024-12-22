@@ -14,7 +14,6 @@ class FunSpecMultiLineTest : FunSpec() {
          names shouldBe setOf("test case 1", "test case 2")
       }
 
-
       test(
          """
     test

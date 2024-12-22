@@ -15,11 +15,21 @@ import io.kotest.core.names.TestName
  */
 interface FeatureSpecRootScope : RootScope {
 
-   fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) =
-      addFeature(name = name, xdisabled = false, test = test)
+   fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      addContainer(
+         testName = TestName("Feature: ", name, false),
+         disabled = false,
+         config = null
+      ) { FeatureSpecContainerScope(this).test() }
+   }
 
-   fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) =
-      addFeature(name = name, xdisabled = true, test = test)
+   fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      addContainer(
+         testName = TestName("Feature: ", name, false),
+         disabled = true,
+         config = null
+      ) { FeatureSpecContainerScope(this).test() }
+   }
 
    @ExperimentalKotest
    fun feature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
@@ -28,9 +38,4 @@ interface FeatureSpecRootScope : RootScope {
    @ExperimentalKotest
    fun xfeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(TestName("Feature: ", name, false), true, this) { FeatureSpecContainerScope(it) }
-
-   fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      val testName = TestName("Feature: ", name, false)
-      addContainer(testName, xdisabled, null) { FeatureSpecContainerScope(this).test() }
-   }
 }

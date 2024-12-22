@@ -3,21 +3,19 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-@KotestTestScope
 class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    /**
     * Creates a new container scope inside this spec.
     */
    suspend infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(this), false, null) { FreeSpecContainerScope(this).test() }
+      registerContainer(name = TestName(this), disabled = false, config = null) { FreeSpecContainerScope(this).test() }
    }
 
    /**

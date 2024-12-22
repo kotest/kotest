@@ -15,7 +15,7 @@ import io.kotest.core.test.TestScope
  */
 @KotestTestScope
 class FunSpecContainerScope(
-   private val testScope: TestScope,
+   testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
 
    /**
@@ -23,6 +23,13 @@ class FunSpecContainerScope(
     */
    suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       registerContainer(TestName(name), false, null) { FunSpecContainerScope(this).test() }
+   }
+
+   /**
+    * Adds a disabled container test to this context.
+    */
+   suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
@@ -36,13 +43,6 @@ class FunSpecContainerScope(
          xdisabled = false,
          contextFn = { FunSpecContainerScope(it) }
       )
-   }
-
-   /**
-    * Adds a disabled container test to this context.
-    */
-   suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
@@ -61,7 +61,7 @@ class FunSpecContainerScope(
     * Adds a test case to this context, expecting config.
     */
    suspend fun test(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
@@ -73,7 +73,7 @@ class FunSpecContainerScope(
     * Adds a disabled test case to this context, expecting config.
     */
    suspend fun xtest(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
@@ -85,13 +85,13 @@ class FunSpecContainerScope(
     * Adds a test case to this context.
     */
    suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), false, null, test)
+      registerTest(name = TestName(name), disabled = false, config = null, test = test)
    }
 
    /**
     * Adds a disabled test case to this context.
     */
    suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName(name), true, null, test)
+      registerTest(name = TestName(name), disabled = true, config = null, test = test)
    }
 }

@@ -30,33 +30,44 @@ class BehaviorSpecGivenContainerScope(
 ) : AbstractContainerScope(testScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = false)
+      addAnd(name, xdisabled = false, test)
 
    suspend fun and(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = false)
+      addAnd(name, xdisabled = false, test)
 
    suspend fun xand(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = true)
+      addAnd(name, xdisabled = true, test)
 
    suspend fun xAnd(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = true)
+      addAnd(name, xdisabled = true, test)
 
    private suspend fun addAnd(
       name: String,
+      xdisabled: Boolean,
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
-      xdisabled: Boolean
    ) {
       registerContainer(TestName("And: ", name, true), xdisabled, null) {
          BehaviorSpecGivenContainerScope(this).test()
       }
    }
 
-   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = true)
-   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = true)
+   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      addWhen(name, test, xdisabled = false)
 
-   private suspend fun addWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit, xdisabled: Boolean) {
+   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      addWhen(name, test, xdisabled = false)
+
+   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      addWhen(name, test, xdisabled = true)
+
+   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      addWhen(name, test, xdisabled = true)
+
+   private suspend fun addWhen(
+      name: String,
+      test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
+      xdisabled: Boolean
+   ) {
       registerContainer(TestName("When: ", name, true), disabled = xdisabled, null) {
          BehaviorSpecWhenContainerScope(this).test()
       }

@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterContainerListener
@@ -67,7 +68,7 @@ interface ContainerScope : TestScope {
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name, disabled, config, TestType.Container, test)
+      registerTest(name = name, disabled = disabled, config = config, type = TestType.Container, test = test)
    }
 
    suspend fun registerTest(
@@ -76,7 +77,7 @@ interface ContainerScope : TestScope {
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name, disabled, config, TestType.Test, test)
+      registerTest(name = name, disabled = disabled, config = config, type = TestType.Test, test = test)
    }
 
    private fun prependExtension(listener: Extension) {
@@ -231,12 +232,16 @@ interface ContainerScope : TestScope {
 }
 
 @KotestTestScope
-open class AbstractContainerScope(private val testScope: TestScope) : ContainerScope {
+@KotestInternal
+abstract class AbstractContainerScope(
+   private val testScope: TestScope
+) : ContainerScope {
 
    private var registered = false
    override val testCase: TestCase = testScope.testCase
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
+
    override suspend fun registerTestCase(nested: NestedTest) {
       registered = true
       testScope.registerTestCase(nested)

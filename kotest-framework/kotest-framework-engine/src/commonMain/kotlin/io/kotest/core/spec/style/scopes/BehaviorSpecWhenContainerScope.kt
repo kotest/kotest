@@ -21,24 +21,25 @@ import io.kotest.core.test.TestScope
  */
 @Suppress("FunctionName")
 @KotestTestScope
-class BehaviorSpecWhenContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
+   AbstractContainerScope(testScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = false)
+      and(name, xdisabled = false, test)
 
    suspend fun and(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = false)
+      and(name, xdisabled = false, test)
 
    suspend fun xand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = true)
+      and(name, xdisabled = true, test)
 
    suspend fun xAnd(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addAnd(name, test, xdisabled = true)
+      and(name, xdisabled = true, test)
 
-   private suspend fun addAnd(
+   private suspend fun and(
       name: String,
+      xdisabled: Boolean,
       test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
-      xdisabled: Boolean
    ) {
       registerContainer(TestName("And: ", name, true), xdisabled, null) {
          BehaviorSpecWhenContainerScope(this).test()
@@ -73,12 +74,16 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) : AbstractContain
          xdisabled = true
       )
 
-   suspend fun Then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = false)
-   suspend fun then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = false)
-   suspend fun xthen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = true)
-   suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = true)
+   suspend fun Then(name: String, test: suspend TestScope.() -> Unit) =
+      then(name, test, xdisabled = false)
+   suspend fun then(name: String, test: suspend TestScope.() -> Unit) =
+      then(name, test, xdisabled = false)
+   suspend fun xthen(name: String, test: suspend TestScope.() -> Unit) =
+      then(name, test, xdisabled = true)
+   suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) =
+      then(name, test, xdisabled = true)
 
-   private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xdisabled: Boolean) {
-      registerTest(TestName("Then: ", name, true), xdisabled, null, test)
+   private suspend fun then(name: String, test: suspend TestScope.() -> Unit, xdisabled: Boolean) {
+      registerTest(name = TestName("Then: ", name, true), disabled = xdisabled, config = null, test = test)
    }
 }

@@ -19,8 +19,8 @@ class GlobalTimeoutTest : FunSpec() {
       context("global timeouts should apply if no other timeout is set") {
          withData(
             nameFn = { "coroutineTestScope = $it" },
-            false,
-            true,
+            first = false,
+            second = true,
          ) { enableCoroutineTestScope ->
             val c = ProjectConfiguration().apply {
                timeout = 100

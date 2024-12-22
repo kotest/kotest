@@ -2,7 +2,6 @@ package io.kotest.engine.js
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import io.kotest.datatest.withData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds

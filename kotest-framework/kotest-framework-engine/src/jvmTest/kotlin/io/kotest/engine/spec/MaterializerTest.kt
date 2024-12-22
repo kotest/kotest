@@ -40,7 +40,7 @@ class MaterializerTest : FunSpec({
          spec = self,
          test = {},
          source = sourceRef(),
-         type = TestType.Dynamic,
+         type = TestType.Test,
          config = ResolvedTestConfig(
             enabled = { Enabled.enabled },
             invocations = 3075,

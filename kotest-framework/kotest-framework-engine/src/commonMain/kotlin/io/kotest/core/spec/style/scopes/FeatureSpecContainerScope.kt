@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.test.NestedTest
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 /**
@@ -21,36 +21,37 @@ import io.kotest.core.test.TestScope
  * xscenario("some test").config(...)
  * ```
  */
-class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
+@KotestTestScope
+class FeatureSpecContainerScope(
+   val testScope: TestScope
+) : AbstractContainerScope(testScope) {
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      registerContainer(
-         TestName("Feature: ", name, false),
-         disabled = false,
-         null
-      ) { FeatureSpecContainerScope(this).test() }
+      feature(name = name, disabled = false, test = test)
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      feature(name = name, disabled = true, test = test)
+   }
+
+   private suspend fun feature(name: String, disabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
-         TestName("Feature: ", name, true),
-         disabled = true,
+         TestName("Feature: ", name, false),
+         disabled = disabled,
          null
       ) { FeatureSpecContainerScope(this).test() }
    }
 
    suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, false), disabled = false, null, test)
+      scenario(name = name, xdisabled = false, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, true), disabled = true, null, test)
+      scenario(name = name, xdisabled = true, test = test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,
@@ -59,11 +60,15 @@ class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerSco
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-     TestDslState.startTest(name)
+      TestDslState.startTest(name)
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,
          xdisabled = true,
       )
+   }
+
+   private suspend fun scenario(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
+      registerTest(name = TestName("Scenario: ", name, false), disabled = xdisabled, config = null, test = test)
    }
 }

@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.engine.names.WithDataTestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
