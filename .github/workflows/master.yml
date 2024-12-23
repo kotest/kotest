@@ -14,17 +14,8 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-231", "IC-232", "IC-233", "IC-241", "IC-242", "IC-243" ]
+            product: [ "IC-241", "IC-242", "IC-243" ]
             include:
-               -  product: "IC-231"
-                  java: "17"
-                  distribution: "temurin"
-               -  product: "IC-232"
-                  java: "17"
-                  distribution: "temurin"
-               -  product: "IC-233"
-                  java: "17"
-                  distribution: "temurin"
                -  product: "IC-241"
                   java: "17"
                   distribution: "temurin"

@@ -5,7 +5,7 @@ import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 plugins {
    id("java")
    alias(libs.plugins.kotlin.jvm)
-   id("org.jetbrains.intellij.platform") version "2.1.0"
+   id("org.jetbrains.intellij.platform") version "2.2.0"
 }
 
 repositories {
@@ -46,27 +46,6 @@ data class PluginDescriptor(
 
 val descriptors = listOf(
    PluginDescriptor(
-      since = "231.8109.163", // this version is 2023.1 release
-      until = "231.*",
-      sdkVersion = "2023.1",
-      sourceFolder = "IC-231",
-      useInstaller = true,
-   ),
-   PluginDescriptor(
-      since = "232.5150.116", // this version is 2023.2
-      until = "232.*",
-      sdkVersion = "2023.2",
-      sourceFolder = "IC-232",
-      useInstaller = true,
-   ),
-   PluginDescriptor(
-      since = "233.9802.16", // this version is 2023.3
-      until = "233.*",
-      sdkVersion = "2023.3",
-      sourceFolder = "IC-233",
-      useInstaller = true,
-   ),
-   PluginDescriptor(
       since = "241.15989.150", // this version is 2024.1.x
       until = "242.*",
       sdkVersion = "2024.1",
@@ -89,7 +68,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-243"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 
@@ -146,16 +125,6 @@ dependencies {
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
       testFramework(TestFrameworkType.Plugin.Java)
-   }
-
-   // we bundle this for 4.1 support
-   // in kotest 4.2.0 the launcher has moved to a stand-alone module
-   implementation(libs.runtime.kotest.legacy.launcher)
-
-   // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
-   // into the engine dep which should already be on the classpath
-   implementation(libs.runtime.kotest.framework.launcher) {
-
    }
 
    // needed for the resource files which are loaded into java light tests
