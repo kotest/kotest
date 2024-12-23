@@ -62,13 +62,13 @@ val descriptors = listOf(
    PluginDescriptor(
       since = "243.*", // this version is 2024.3.x
       until = "244.*",
-      sdkVersion = "243-EAP-SNAPSHOT",
+      sdkVersion = "2024.3.1",
       sourceFolder = "IC-243",
       useInstaller = false,
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-243"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 
@@ -118,7 +118,6 @@ dependencies {
       intellijIdeaCommunity(descriptor.sdkVersion, useInstaller = descriptor.useInstaller)
       if (!descriptor.useInstaller)
          jetbrainsRuntime()
-      instrumentationTools()
       pluginVerifier()
       zipSigner()
       bundledPlugin("com.intellij.java")
