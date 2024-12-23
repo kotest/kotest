@@ -199,6 +199,7 @@ module.exports = {
       ]
     },
     "framework/test_factories",
+    "framework/fake_functions",
     "framework/test_output",
     {
       "type": "category",
