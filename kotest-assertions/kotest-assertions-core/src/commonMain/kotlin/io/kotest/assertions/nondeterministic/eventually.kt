@@ -239,6 +239,11 @@ private class EventuallyControl(
          return true
       }
 
+      // do not intercept Error unless it's an AssertionError
+      if (e is Error && e !is AssertionError) {
+         return true
+      }
+
       return !config.expectedExceptionsFn(e)
    }
 
