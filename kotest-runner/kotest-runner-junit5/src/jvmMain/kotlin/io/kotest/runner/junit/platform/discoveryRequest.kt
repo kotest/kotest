@@ -38,9 +38,9 @@ import org.junit.platform.launcher.PostDiscoveryFilter
  * Unsupported selectors are:
  *
  * - [MethodSelector] - not supported because kotest does not define tests as methods
- * - [NestedMethodSelector] - not supported becase kotest does not define tests as methods
- * - [UniqueIdSelector] - not supported becase kotest does not assign ids to tests
- * - [DirectorySelector] - not supported becase kotest is not directory based
+ * - [NestedMethodSelector] - not supported because kotest does not define tests as methods
+ * - [UniqueIdSelector] - not supported because kotest does not assign ids to tests
+ * - [DirectorySelector] - not supported because kotest is not directory based
  */
 internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(engineId: UniqueId): DiscoveryRequest {
 
