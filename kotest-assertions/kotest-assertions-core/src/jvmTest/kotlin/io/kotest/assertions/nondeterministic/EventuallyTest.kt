@@ -197,6 +197,26 @@ class EventuallyTest : FunSpec() {
          }
       }
 
+      test("do not retry after OutOfMemoryError and StackOverflowError") {
+         mapOf(
+            "OutOfMemoryError" to OutOfMemoryError(),
+            "StackOverflowError" to StackOverflowError(),
+         ).entries.forEach { (name, error) ->
+            var count = 0
+            val thrown = shouldThrow<Error> {
+               testEventually(1.seconds) {
+                  count++
+                  throw error
+               }
+            }
+            assertSoftly {
+               thrown::class shouldBe AssertionError::class
+               thrown.message shouldContain name
+               count shouldBe 1
+            }
+         }
+      }
+
       test("display the first and last underlying failures") {
          var count = 0
          val message = shouldFail {
