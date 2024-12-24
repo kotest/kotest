@@ -3015,6 +3015,24 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 }
 
+public final class io/kotest/playback/PlaybackElements {
+	public fun <init> (Lkotlin/sequences/Sequence;)V
+	public final fun next ()Ljava/lang/Object;
+}
+
+public final class io/kotest/playback/PlaybackElementsKt {
+	public static final fun toFunction (Lkotlin/sequences/Sequence;)Lio/kotest/playback/PlaybackElements;
+}
+
+public final class io/kotest/playback/PlaybackOrThrowKt {
+	public static final fun toFunction (Lkotlin/sequences/Sequence;)Lio/kotest/playback/PlaybackResults;
+}
+
+public final class io/kotest/playback/PlaybackResults {
+	public fun <init> (Lkotlin/sequences/Sequence;)V
+	public final fun next ()Ljava/lang/Object;
+}
+
 public final class io/kotest/submatching/MatchedCollectionElement {
 	public fun <init> (II)V
 	public final fun component1 ()I
