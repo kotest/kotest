@@ -3,7 +3,6 @@ package io.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 
 class NullsMatchersTest : FunSpec({
@@ -451,14 +450,13 @@ class NullsMatchersTest : FunSpec({
 
       test("should fail for shouldNot when the collection contains no null elements") {
          val collection = listOf("a", "b", "c")
-         shouldThrow<AssertionError> {
-            collection shouldNot containNoNulls()
-         }
+         shouldThrow<AssertionError> { collection shouldNot containNoNulls() }
+
       }
 
-      test("should pass for shouldNot when the collection is empty") {
+      test("should fail for shouldNot when the collection is empty") {
          val collection = emptyList<String?>()
-         collection shouldNot containNoNulls()
+         shouldThrow<AssertionError> { collection shouldNot containNoNulls() }
       }
    }
 
