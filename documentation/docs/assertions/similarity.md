@@ -19,6 +19,8 @@ PossibleMatches:
     "color" expected: <"red">, but was: <"green">
 ```
 
+By default, kotest will only consider pairs of objects that have more than 50% matching fields. If needed, we can change `similarityThresholdInPercent` in configuration.
+
 Likewise, if kotest does not detect an exact match, it may try to find a similar `String`. In the output, the matching part of String is indicated with plus signs:
 
 ```kotlin
@@ -33,7 +35,7 @@ Match[0]= ++++++++++++-----
 ```
 
 By default, searching for similar strings is only enabled for strings with lengthes between 8 and 1024. 
-If needed, we can change configuration values named `minSubtringSubmatchingSize` and `maxSubtringSubmatchingSize`.
+If needed, we can change configuration values named `minValueSubmatchingSize` and `maxSubtringSubmatchingSize`.
 <br/>
 <br/>
 To disable searching for similar strings altogether, set `enabledSubmatchesInStrings` to `false` in configuration.
