@@ -161,7 +161,7 @@ fun <T> Array<T>.shouldBeUnique(): Array<T> = apply { asList() should beUniqueBy
  * Example:
  * ```
  * val array = arrayOf("apple", "banana", "APPLE")
- * array.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion passes
+ * array.shouldBeUnique(compareBy { it.first() })   // Assertion passes
  *
  * val array = arrayOf("apple", "banana", "apple")
  * array.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
@@ -220,7 +220,7 @@ fun <T, I : Iterable<T>> I.shouldBeUnique(): I = apply { this should beUniqueByE
  * Example:
  * ```
  * val list = listOf("apple", "banana", "APPLE")
- * list.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion passes
+ * list.shouldBeUnique(compareBy { it.first() })   // Assertion passes
  *
  * val list = listOf("apple", "banana", "apple")
  * list.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
