@@ -41,4 +41,7 @@ If we need to consider shorter or longer expected values, we can change configur
 Likewise, should we need to consider shorter or longer actual values, we can change configuration values named `minValueSubmatchingSize` and `maxValueSubmatchingSize`.
 <br/>
 <br/>
+By default, only strings that are at least 66% similar are considered, and that default can be changed via `similarityThresholdInPercentForStrings` value in configuration.
+<br/>
+<br/>
 To disable searching for similar strings altogether, set `enabledSubmatchesInStrings` to `false` in configuration.
