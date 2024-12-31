@@ -5,139 +5,251 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun BooleanArray.shouldBeUnique(): BooleanArray {
-   asList() should beUniqueByEquals("BooleanArray")
-   return this
-}
-
-fun BooleanArray.shouldNotBeUnique(): BooleanArray {
-   asList() shouldNot beUniqueByEquals("BooleanArray")
-   return this
-}
-
-fun ByteArray.shouldBeUnique(): ByteArray {
-   asList() should beUniqueByEquals("ByteArray")
-   return this
-}
-
-fun ByteArray.shouldNotBeUnique(): ByteArray {
-   asList() shouldNot beUniqueByEquals("ByteArray")
-   return this
-}
-
-fun ShortArray.shouldBeUnique(): ShortArray {
-   asList() should beUniqueByEquals("ShortArray")
-   return this
-}
-
-fun ShortArray.shouldNotBeUnique(): ShortArray {
-   asList() shouldNot beUniqueByEquals("ShortArray")
-   return this
-}
-
-fun CharArray.shouldBeUnique(): CharArray {
-   asList() should beUniqueByEquals("CharArray")
-   return this
-}
-
-fun CharArray.shouldNotBeUnique(): CharArray {
-   asList() shouldNot beUniqueByEquals("CharArray")
-   return this
-}
-
-fun IntArray.shouldBeUnique(): IntArray {
-   asList() should beUniqueByEquals("IntArray")
-   return this
-}
-
-fun IntArray.shouldNotBeUnique(): IntArray {
-   asList() shouldNot beUniqueByEquals("IntArray")
-   return this
-}
-
-fun LongArray.shouldBeUnique(): LongArray {
-   asList() should beUniqueByEquals("LongArray")
-   return this
-}
-
-fun LongArray.shouldNotBeUnique(): LongArray {
-   asList() shouldNot beUniqueByEquals("LongArray")
-   return this
-}
-
-fun FloatArray.shouldBeUnique(): FloatArray {
-   asList() should beUniqueByEquals("FloatArray")
-   return this
-}
-
-fun FloatArray.shouldNotBeUnique(): FloatArray {
-   asList() shouldNot beUniqueByEquals("FloatArray")
-   return this
-}
-
-fun DoubleArray.shouldBeUnique(): DoubleArray {
-   asList() should beUniqueByEquals("DoubleArray")
-   return this
-}
-
-fun DoubleArray.shouldNotBeUnique(): DoubleArray {
-   asList() shouldNot beUniqueByEquals("DoubleArray")
-   return this
-}
-
 /**
- * Asserts that the given [Array] contains no duplicate elements using the equality
+ * Asserts that the given [BooleanArray] contains no duplicate elements using the equality
  * method of the elements themselves.
  *
  * @return the input instance is returned for chaining
  */
-fun <T> Array<T>.shouldBeUnique(): Array<T> {
-   asList() should beUniqueByEquals("Array")
-   return this
-}
+fun BooleanArray.shouldBeUnique(): BooleanArray = apply { asList() should beUniqueByEquals("BooleanArray") }
 
 /**
- * Asserts that the given [Array] contains no duplicate elements using the given
+ * Asserts that the given [BooleanArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun BooleanArray.shouldNotBeUnique(): BooleanArray = apply { asList() shouldNot beUniqueByEquals("BooleanArray") }
+
+/**
+ * Asserts that the given [ByteArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun ByteArray.shouldBeUnique(): ByteArray = apply { asList() should beUniqueByEquals("ByteArray") }
+
+/**
+ * Asserts that the given [ByteArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun ByteArray.shouldNotBeUnique(): ByteArray = apply { asList() shouldNot beUniqueByEquals("ByteArray") }
+
+/**
+ * Asserts that the given [ShortArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun ShortArray.shouldBeUnique(): ShortArray = apply { asList() should beUniqueByEquals("ShortArray") }
+
+/**
+ * Asserts that the given [ShortArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun ShortArray.shouldNotBeUnique(): ShortArray = apply { asList() shouldNot beUniqueByEquals("ShortArray") }
+
+/**
+ * Asserts that the given [CharArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun CharArray.shouldBeUnique(): CharArray = apply { asList() should beUniqueByEquals("CharArray") }
+
+/**
+ * Asserts that the given [CharArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun CharArray.shouldNotBeUnique(): CharArray = apply { asList() shouldNot beUniqueByEquals("CharArray") }
+
+/**
+ * Asserts that the given [IntArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun IntArray.shouldBeUnique(): IntArray = apply { asList() should beUniqueByEquals("IntArray") }
+
+/**
+ * Asserts that the given [IntArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun IntArray.shouldNotBeUnique(): IntArray = apply { asList() shouldNot beUniqueByEquals("IntArray") }
+
+/**
+ * Asserts that the given [LongArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun LongArray.shouldBeUnique(): LongArray = apply { asList() should beUniqueByEquals("LongArray") }
+
+/**
+ * Asserts that the given [LongArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun LongArray.shouldNotBeUnique(): LongArray = apply { asList() shouldNot beUniqueByEquals("LongArray") }
+
+/**
+ * Asserts that the given [FloatArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun FloatArray.shouldBeUnique(): FloatArray = apply { asList() should beUniqueByEquals("FloatArray") }
+
+/**
+ * Asserts that the given [FloatArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun FloatArray.shouldNotBeUnique(): FloatArray = apply { asList() shouldNot beUniqueByEquals("FloatArray") }
+
+/**
+ * Asserts that the given [DoubleArray] contains no duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun DoubleArray.shouldBeUnique(): DoubleArray = apply { asList() should beUniqueByEquals("DoubleArray") }
+
+/**
+ * Asserts that the given [DoubleArray] contains duplicate elements using the equality
+ * method of the elements themselves.
+ *
+ * @return the input instance is returned for chaining
+ */
+fun DoubleArray.shouldNotBeUnique(): DoubleArray = apply { asList() shouldNot beUniqueByEquals("DoubleArray") }
+
+/**
+ * Asserts that the given [Array] contains no duplicate elements using the default equality
+ * method of the elements themselves.
+ *
+ * This assertion checks for uniqueness of elements based on their `equals` implementation.
+ *
+ * Example:
+ * ```
+ * val array = arrayOf("apple", "banana", "cherry")
+ * array.shouldBeUnique()   // Assertion passes
+ *
+ * val array = arrayOf("apple", "banana", "apple")
+ * array.shouldBeUnique()   // Assertion fails
+ * ```
+ *
+ * @return the input instance is returned for chaining.
+ */
+fun <T> Array<T>.shouldBeUnique(): Array<T> = apply { asList() should beUniqueByEquals("Array") }
+
+/**
+ * Asserts that the given [Array] contains no duplicate elements using the provided
  * [comparator] for equality.
  *
- * @return the input instance is returned for chaining
+ * This assertion uses the specified [comparator] to compare elements for uniqueness.
+ *
+ * Example:
+ * ```
+ * val array = arrayOf("apple", "banana", "APPLE")
+ * array.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion passes
+ *
+ * val array = arrayOf("apple", "banana", "apple")
+ * array.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
+ * ```
+ *
+ * @param comparator the [Comparator] used to compare elements for equality.
+ * @return the input instance is returned for chaining.
  */
-fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> {
-   asList() should beUniqueByCompare("Array", comparator)
-   return this
-}
-
-fun <T> Array<T>.shouldNotBeUnique(): Array<T> {
-   asList() shouldNot beUniqueByEquals("Array")
-   return this
-}
+fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> = apply { asList() should beUniqueByCompare("Array", comparator) }
 
 /**
- * Asserts that the given [Iterable] contains no duplicate elements using the equality
+ * Asserts that the given [Array] contains duplicate elements using the default equality
  * method of the elements themselves.
  *
- * @return the input instance is returned for chaining, maintaining the input type
+ * This assertion checks for duplicates without any custom comparison logic.
+ *
+ * Example:
+ * ```
+ * val array = arrayOf("apple", "banana", "apple")
+ * array.shouldNotBeUnique()   // Assertion passes
+ *
+ * val array = arrayOf("apple", "banana", "cherry")
+ * array.shouldNotBeUnique()   // Assertion fails
+ * ```
+ *
+ * @return the input instance is returned for chaining.
  */
-fun <T, I : Iterable<T>> I.shouldBeUnique(): I {
-   this should beUniqueByEquals(null)
-   return this
-}
+fun <T> Array<T>.shouldNotBeUnique(): Array<T> = apply { asList() shouldNot beUniqueByEquals("Array") }
+
+/**
+ * Asserts that the given [Iterable] contains no duplicate elements using the default equality
+ * method of the elements themselves.
+ *
+ * This assertion checks for uniqueness of elements based on their `equals` implementation.
+ *
+ * Example:
+ * ```
+ * val list = listOf("apple", "banana", "cherry")
+ * list.shouldBeUnique()   // Assertion passes
+ *
+ * val list = listOf("apple", "banana", "apple")
+ * list.shouldBeUnique()   // Assertion fails
+ * ```
+ *
+ * @return the input instance is returned for chaining, maintaining the input type.
+ */
+fun <T, I : Iterable<T>> I.shouldBeUnique(): I = apply { this should beUniqueByEquals(null) }
+
 
 /**
  * Asserts that the given [Iterable] contains no duplicate elements using the given
  * [comparator] for equality.
  *
- * @return the input instance is returned for chaining, maintaining the input type
+ * This assertion uses the provided [comparator] to compare elements for uniqueness.
+ *
+ * Example:
+ * ```
+ * val list = listOf("apple", "banana", "APPLE")
+ * list.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion passes
+ *
+ * val list = listOf("apple", "banana", "apple")
+ * list.shouldBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
+ * ```
+ *
+ * @param comparator the [Comparator] used to compare elements for equality.
+ * @return the input instance is returned for chaining, maintaining the input type.
  */
-fun <T, I : Iterable<T>> I.shouldBeUnique(comparator: Comparator<T>): I {
-   this should beUniqueByCompare(null, comparator)
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldBeUnique(comparator: Comparator<T>): I = apply { this should beUniqueByCompare(null, comparator) }
 
-fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I {
-   this shouldNot beUniqueByEquals(null)
-   return this
-}
+/**
+ * Asserts that the given [Iterable] contains duplicate elements using the default equality
+ * method of the elements themselves.
+ *
+ * This assertion checks for duplicates without any custom comparison logic.
+ *
+ * Example:
+ * ```
+ * val list = listOf("apple", "banana", "apple")
+ * list.shouldNotBeUnique()   // Assertion passes
+ *
+ * val list = listOf("apple", "banana", "cherry")
+ * list.shouldNotBeUnique()   // Assertion fails
+ * ```
+ *
+ * @return the input instance is returned for chaining, maintaining the input type.
+ */
+fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I = apply { this shouldNot beUniqueByEquals(null) }
+
 
 fun <T> beUnique(): Matcher<Iterable<T>> = beUniqueByEquals(null)
 
