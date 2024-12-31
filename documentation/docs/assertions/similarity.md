@@ -34,8 +34,11 @@ Line[0] ="sweet green apple"
 Match[0]= ++++++++++++-----
 ```
 
-By default, searching for similar strings is only enabled for strings with lengthes between 8 and 1024. 
-If needed, we can change configuration values named `minValueSubmatchingSize` and `maxSubtringSubmatchingSize`.
+By default, searching for similar strings is only enabled when both expected and actuals strings' lengthes are between 8 and 1024. 
+<br/>
+If we need to consider shorter or longer expected values, we can change configuration values named `minSubstringSubmatchingSize` and `maxSubtringSubmatchingSize`.
+<br/>
+Likewise, should we need to consider shorter or longer actual values, we can change configuration values named `minValueSubmatchingSize` and `maxValueSubmatchingSize`.
 <br/>
 <br/>
 To disable searching for similar strings altogether, set `enabledSubmatchesInStrings` to `false` in configuration.
