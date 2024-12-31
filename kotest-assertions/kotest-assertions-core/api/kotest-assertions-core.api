@@ -682,22 +682,16 @@ public final class io/kotest/matchers/collections/NullsKt {
 	public static final fun containNull ()Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyNulls ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainNoNulls (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldContainNoNulls (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainNoNulls ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldContainNull (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldContainNull (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainNull ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldContainOnlyNulls (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldContainOnlyNulls (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainOnlyNulls ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotContainNoNulls (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotContainNoNulls (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainNoNulls ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotContainNull (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotContainNull (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainNull ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotContainOnlyNulls (Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldNotContainOnlyNulls (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainOnlyNulls ([Ljava/lang/Object;)[Ljava/lang/Object;
 }
 
