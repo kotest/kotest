@@ -10,7 +10,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * The [TestScope] receiver allows the test function to interact with the test engine at runtime.
  * For instance fetching details of the executing [TestCase] (such as timeouts, tags) or by
- * registering a dynamic nested test
+ * registering a dynamic nested test.
  *
  * This context extends [CoroutineScope] giving the ability for any test to launch
  * coroutines directly, without requiring the user to supply a coroutine scope, and to retrieve
@@ -27,7 +27,7 @@ interface TestScope : CoroutineScope {
    /**
     * Registers a [NestedTest] with the engine as a child of the current [testCase].
     *
-    * Will throw if the current [testCase] is not a container test.
+    * Will throw an error if the current [testCase] is not a container test.
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
