@@ -3,8 +3,10 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.beUnique
 import io.kotest.matchers.collections.shouldBeUnique
 import io.kotest.matchers.collections.shouldNotBeUnique
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
 class UniqueTest : WordSpec({
@@ -289,6 +291,8 @@ class UniqueTest : WordSpec({
       }
    }
 
+
+
    "shouldNotBeUnique using COMPARATOR" should {
       "succeed for non unique Array with comparator" {
          arrayOf("apple", "APPLE", "banana").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
@@ -320,6 +324,34 @@ class UniqueTest : WordSpec({
          }.message shouldBe "List should contain duplicates by comparison, but all elements are unique"
       }
    }
+
+   "beUnique() matcher" should {
+      "validate unique elements" {
+         val uniqueList = listOf(1, 2, 3, 4)
+         uniqueList should beUnique()
+      }
+
+      "fail for non-unique elements" {
+         val nonUniqueList = listOf(1, 2, 2, 3)
+         shouldThrowAny {
+            nonUniqueList.shouldBeUnique()
+         }.message shouldBe "List should be unique, but has:\n2 at indexes: [1, 2]"
+      }
+
+      "beUnique(comparator) matcher" {
+         val list = listOf("apple", "banana", "APPLE")
+         list should beUnique(compareBy { it.first() })
+
+         val list2 = listOf("apple", "banana", "apple")
+         shouldThrowAny {
+            list2 should beUnique(compareBy { it })
+         }.message shouldBe "List should be unique by comparison, but has:\n\"apple\" at indexes: [0, 2]"
+      }
+   }
+
+
+
+
 
 
    "Javadocs tests" should {
