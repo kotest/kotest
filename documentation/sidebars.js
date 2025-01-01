@@ -50,6 +50,7 @@ module.exports = {
     "assertions/custom_matchers",
     "assertions/composed_matchers",
     "assertions/exceptions",
+    "assertions/similarity",
     "assertions/clues",
     "assertions/soft_assertions",
     {
