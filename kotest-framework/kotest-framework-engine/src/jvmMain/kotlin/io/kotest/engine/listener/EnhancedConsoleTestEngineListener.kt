@@ -19,7 +19,8 @@ import kotlin.time.TimeSource
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.
  */
-class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
+@Suppress("SameParameterValue")
+internal class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
 
    private var errors = 0
    private var start = TimeSource.Monotonic.markNow()

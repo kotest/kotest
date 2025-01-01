@@ -7,7 +7,7 @@ import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
-object LoggingTestEngineListener : AbstractTestEngineListener() {
+internal object LoggingTestEngineListener : AbstractTestEngineListener() {
 
    private val logger = Logger(SpecExecutorDelegate::class)
 

@@ -3827,26 +3827,6 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener$TestCa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
-	public fun <init> (Lcom/github/ajalt/mordant/TermColors;)V
-	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/listener/LoggingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
-	public static final field INSTANCE Lio/kotest/engine/listener/LoggingTestEngineListener;
-	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/listener/PinnedSpecTestEngineListener : io/kotest/engine/listener/TestEngineListener {
 	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
