@@ -1,27 +1,27 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.engine.flatMap
+import io.kotest.core.Logger
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
-import io.kotest.engine.spec.createAndInitializeSpec
+import io.kotest.engine.spec.SpecInstantiator
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
-import io.kotest.core.log
-import io.kotest.engine.spec.interceptor.NextSpecInterceptor
-import io.kotest.engine.spec.interceptor.SpecContext
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -113,7 +113,7 @@ internal class InstancePerTestSpecRunner(
     * can be registered back with the stack for execution later.
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Map<TestCase, TestResult>> {
-      return createAndInitializeSpec(test.spec::class, context.configuration.registry)
+      return SpecInstantiator(context.configuration.registry).createAndInitializeSpec(test.spec::class)
          .flatMap { spec -> executeInGivenSpec(test, spec, SpecContext.create()) }
    }
 
