@@ -9,10 +9,9 @@ import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 import org.opentest4j.TestAbortedException
 
 /**
- * Writes failed specs to a file so that the [io.kotest.engine.spec.FailureFirstSorter]
- * can use the file to run failed specs first.
- *
- * Note: This is a JVM only feature.
+ * [TestAbortedException] is a special exception from opentest4j that can be used to mark a test
+ * as ignored (aborted). This interceptor catches [TestAbortedException]s and converts the result
+ * to an [TestResult.Ignored].
  */
 @JVMOnly
 internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInterceptor {

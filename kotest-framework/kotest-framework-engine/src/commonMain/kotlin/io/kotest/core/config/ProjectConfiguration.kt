@@ -238,7 +238,7 @@ class ProjectConfiguration {
    /**
     * If set to true, then will cause the test suite to fail if there were no executed tests.
     */
-   var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+   var failOnEmptyTestSuite: Boolean = Defaults.FAIL_ON_EMPTY_TEST_SUITE
 
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
