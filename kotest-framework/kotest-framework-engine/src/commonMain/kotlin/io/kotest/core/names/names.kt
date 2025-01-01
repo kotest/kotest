@@ -1,5 +1,7 @@
 package io.kotest.core.names
 
+import io.kotest.common.KotestInternal
+
 /**
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
  *
@@ -30,6 +32,7 @@ data class TestName(
    }
 }
 
+@KotestInternal
 data class TestNameBuilder(
    val rawname: String,
    val prefix: String?,
@@ -37,6 +40,7 @@ data class TestNameBuilder(
    val defaultAffixes: Boolean,
 ) {
 
+   @KotestInternal
    companion object {
       fun builder(rawname: String) = TestNameBuilder(
          rawname = rawname,
