@@ -192,6 +192,28 @@ fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> = apply { a
 fun <T> Array<T>.shouldNotBeUnique(): Array<T> = apply { asList() shouldNot beUniqueByEquals("Array") }
 
 /**
+ * Asserts that the given [Array] contains duplicate elements using the provided
+ * [comparator] for equality.
+ *
+ * This assertion uses the specified [comparator] to compare elements for duplicates.
+ *
+ * Example:
+ * ```
+ * val array = arrayOf("apple", "banana", "APPLE")
+ * array.shouldNotBeUnique(compareBy { it.first() })   // Assertion passes
+ *
+ * val array = arrayOf("apple", "banana", "apple")
+ * array.shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
+ * ```
+ *
+ * @param comparator the [Comparator] used to compare elements for equality.
+ * @return the input instance is returned for chaining.
+ */
+fun <T> Array<T>.shouldNotBeUnique(comparator: Comparator<T>): Array<T> = apply { asList() shouldNot beUniqueByCompare("Array", comparator) }
+
+
+
+/**
  * Asserts that the given [Iterable] contains no duplicate elements using the default equality
  * method of the elements themselves.
  *
@@ -250,6 +272,25 @@ fun <T, I : Iterable<T>> I.shouldBeUnique(comparator: Comparator<T>): I = apply 
  */
 fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I = apply { this shouldNot beUniqueByEquals(null) }
 
+/**
+ * Asserts that the given [Iterable] contains duplicate elements using the provided
+ * [comparator] for equality.
+ *
+ * This assertion uses the specified [comparator] to compare elements for duplicates.
+ *
+ * Example:
+ * ```
+ * val list = listOf("apple", "banana", "APPLE")
+ * list.shouldNotBeUnique(compareBy { it.first() })   // Assertion passes
+ *
+ * val list = listOf("apple", "banana", "apple")
+ * list.shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)   // Assertion fails
+ * ```
+ *
+ * @param comparator the [Comparator] used to compare elements for equality.
+ * @return the input instance is returned for chaining, maintaining the input type.
+ */
+fun <T, I : Iterable<T>> I.shouldNotBeUnique(comparator: Comparator<T>): I = apply { this shouldNot beUniqueByCompare(null, comparator) }
 
 fun <T> beUnique(): Matcher<Iterable<T>> = beUniqueByEquals(null)
 
@@ -277,7 +318,7 @@ internal fun <T> beUniqueByCompare(
       return MatcherResult(
          !report.hasDuplicates(),
          { "$name should be unique by comparison, but has:\n${report.standardMessage()}" },
-         { "$name should contain duplicates elements by comparison, but all elements are unique" }
+         { "$name should contain duplicates by comparison, but all elements are unique" }
       )
    }
 }

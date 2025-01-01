@@ -900,6 +900,7 @@ public final class io/kotest/matchers/collections/UniqueKt {
 	public static final fun shouldBeUnique ([S)[S
 	public static final fun shouldBeUnique ([Z)[Z
 	public static final fun shouldNotBeUnique (Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeUnique (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeUnique ([B)[B
 	public static final fun shouldNotBeUnique ([C)[C
 	public static final fun shouldNotBeUnique ([D)[D
@@ -907,6 +908,7 @@ public final class io/kotest/matchers/collections/UniqueKt {
 	public static final fun shouldNotBeUnique ([I)[I
 	public static final fun shouldNotBeUnique ([J)[J
 	public static final fun shouldNotBeUnique ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeUnique ([Ljava/lang/Object;Ljava/util/Comparator;)[Ljava/lang/Object;
 	public static final fun shouldNotBeUnique ([S)[S
 	public static final fun shouldNotBeUnique ([Z)[Z
 }
