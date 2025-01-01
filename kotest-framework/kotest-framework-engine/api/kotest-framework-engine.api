@@ -2769,9 +2769,9 @@ public abstract class io/kotest/core/spec/style/scopes/TerminalScope : io/kotest
 public final class io/kotest/core/spec/style/scopes/TestDslState {
 	public static final field INSTANCE Lio/kotest/core/spec/style/scopes/TestDslState;
 	public final fun checkState ()V
-	public final fun clear (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun clear (Lio/kotest/core/names/TestName;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun startTest (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun startTest (Lio/kotest/core/names/TestName;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {
