@@ -24,7 +24,7 @@ shadowjar = "8.1.1"
 devPublishPlugin = "0.4.2"
 spring-boot = "2.7.16"
 spring = "5.3.39"
-byte-buddy = "1.15.10"
+byte-buddy = "1.15.11"
 allure = "2.24.0"
 
 ### Java compilation ###
