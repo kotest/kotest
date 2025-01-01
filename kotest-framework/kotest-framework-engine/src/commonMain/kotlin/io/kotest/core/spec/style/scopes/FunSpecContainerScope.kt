@@ -62,9 +62,10 @@ class FunSpecContainerScope(
     * Adds a test case to this context, expecting config.
     */
    suspend fun test(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = testName,
          context = this,
          xdisabled = false,
       )
@@ -74,9 +75,10 @@ class FunSpecContainerScope(
     * Adds a disabled test case to this context, expecting config.
     */
    suspend fun xtest(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = testName,
          context = this,
          xdisabled = true,
       )

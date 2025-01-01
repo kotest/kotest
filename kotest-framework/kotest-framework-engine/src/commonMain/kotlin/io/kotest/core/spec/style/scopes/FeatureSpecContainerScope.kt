@@ -51,18 +51,20 @@ class FeatureSpecContainerScope(
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
+         name = testName,
          context = this,
          xdisabled = false,
       )
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
+         name = testName,
          context = this,
          xdisabled = true,
       )

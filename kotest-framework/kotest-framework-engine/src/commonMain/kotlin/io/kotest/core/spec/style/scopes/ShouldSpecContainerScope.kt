@@ -52,13 +52,15 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
-      return TestWithConfigBuilder(TestNameBuilder.builder(name).withPrefix("should ").build(), this, false)
+      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(testName, this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
-      return TestWithConfigBuilder(TestNameBuilder.builder(name).withPrefix("should ").build(), this, true)
+      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(testName, this, true)
    }
 
    suspend fun should(name: String, test: suspend TestScope.() -> Unit) {

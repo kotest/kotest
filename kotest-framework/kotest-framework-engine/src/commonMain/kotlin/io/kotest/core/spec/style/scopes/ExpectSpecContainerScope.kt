@@ -59,18 +59,20 @@ class ExpectSpecContainerScope(
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
+         name = testName,
          context = this,
          xdisabled = false,
       )
    }
 
    suspend fun xexpect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
+         name = testName,
          context = this,
          xdisabled = true,
       )

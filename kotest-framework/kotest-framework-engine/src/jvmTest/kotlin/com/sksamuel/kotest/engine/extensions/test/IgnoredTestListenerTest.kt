@@ -27,10 +27,10 @@ class IgnoredTestListenerTest : FunSpec({
          .withExtensions(ignoredTestListener)
          .launch()
       ignoredTests shouldBe setOf(
+         "should be ignored by failfast strategy",
          "should be disabled by enabled flag in config",
-         "!should be disabled by bang",
          "should be disabled by xmethod",
-         "should be ignored by failfast strategy"
+         "!should be disabled by bang",
       )
    }
 })

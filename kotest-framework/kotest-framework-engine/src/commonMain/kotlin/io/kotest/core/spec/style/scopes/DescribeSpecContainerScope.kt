@@ -114,18 +114,20 @@ class DescribeSpecContainerScope(
       ) { DescribeSpecContainerScope(it) }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("It: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         TestNameBuilder.builder(name).withPrefix("It: ").build(),
-         this,
+         name = testName,
+         context = this,
          xdisabled = false,
       )
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
+      val testName = TestNameBuilder.builder(name).withPrefix("It: ").build()
+      TestDslState.startTest(testName)
       return TestWithConfigBuilder(
-         TestNameBuilder.builder(name).withPrefix("It: ").build(),
+         testName,
          this,
          xdisabled = true,
       )

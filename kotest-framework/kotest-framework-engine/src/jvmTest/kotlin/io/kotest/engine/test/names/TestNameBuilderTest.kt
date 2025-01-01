@@ -12,11 +12,11 @@ class TestNameBuilderTest : FunSpec({
    }
 
    test("parse focus") {
-      TestNameBuilder.Companion.builder("f:foo") shouldBe TestName("foo", true, false, null, null, false)
+      TestNameBuilder.Companion.builder("f:foo").build() shouldBe TestName("foo", true, false, null, null, false)
    }
 
    test("parse bang") {
-      TestNameBuilder.Companion.builder("!foo") shouldBe TestName("foo", false, true, null, null, false)
+      TestNameBuilder.Companion.builder("!foo").build() shouldBe TestName("foo", false, true, null, null, false)
       TestNameBuilder.Companion.builder("!!foo").build() shouldBe TestName("!foo", false, true, null, null, false)
    }
 
@@ -32,7 +32,7 @@ class TestNameBuilderTest : FunSpec({
    }
 
    test("parse with whitespace") {
-      TestNameBuilder.Companion.builder("    !foo") shouldBe TestName("foo", false, true, null, null, false)
+      TestNameBuilder.Companion.builder("    !foo").build() shouldBe TestName("foo", false, true, null, null, false)
    }
 
    test("parse with prefix") {

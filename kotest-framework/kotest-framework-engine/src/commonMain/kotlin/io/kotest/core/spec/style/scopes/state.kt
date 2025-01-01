@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
@@ -8,12 +9,12 @@ object TestDslState {
    private val started = mutableSetOf<String>()
    private val mutex = Semaphore(1)
 
-   suspend fun startTest(name: String) = mutex.withPermit {
-      started.add(name)
+   suspend fun startTest(name: TestName) = mutex.withPermit {
+      started.add(name.name)
    }
 
-   suspend fun clear(name: String) = mutex.withPermit {
-      started.remove(name)
+   suspend fun clear(name: TestName) = mutex.withPermit {
+      started.remove(name.name)
    }
 
    /**
