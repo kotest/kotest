@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
+import io.kotest.core.annotation.DisplayName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
@@ -13,7 +14,6 @@ import io.kotest.core.descriptors.append
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
-import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType

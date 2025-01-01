@@ -5,26 +5,26 @@ import io.kotest.core.log
 import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.instantiateOrObject
 import org.jetbrains.annotations.ApiStatus.Internal
+import kotlin.reflect.KClass
 
 internal actual fun loadProjectConfigsFromClassname(): List<AbstractProjectConfig> = loadProjectConfigsJVM()
 
 private const val defaultConfigFqn = "io.kotest.provided.ProjectConfig"
 
+@Suppress("UNCHECKED_CAST")
 @Internal
 fun loadProjectConfigsJVM(): List<AbstractProjectConfig> {
-   return when (val fqns = System.getProperty(KotestEngineProperties.configurationClassNames)) {
+   val fqns = fqns()
+   log { "Loading project configs from fqn(s): $fqns" }
+   return fqns.split(";")
+      .mapNotNull { runCatching { Class.forName(it).kotlin }.getOrNull() }
+      .map { instantiateOrObject(it as KClass<out AbstractProjectConfig>).getOrThrow() }
+}
 
-      null -> {
-         log { "No project config class name provided, checking for default at $defaultConfigFqn" }
-         val clazz = runCatching { Class.forName(defaultConfigFqn) }.getOrNull()
-         if (clazz == null) emptyList() else listOf(instantiateOrObject(clazz).getOrThrow() as AbstractProjectConfig)
-      }
-
-      else -> {
-         log { "Loading project configs from fqn(s): $fqns" }
-         fqns.split(";").map {
-            instantiateOrObject(Class.forName(it)).getOrThrow() as AbstractProjectConfig
-         }
-      }
-   }
+private fun fqns(): String {
+   val fqns = System.getProperty(KotestEngineProperties.configurationClassNames)
+   return if (fqns == null) {
+      log { "No project config class name provided, checking for default at $defaultConfigFqn" }
+      defaultConfigFqn
+   } else fqns
 }
