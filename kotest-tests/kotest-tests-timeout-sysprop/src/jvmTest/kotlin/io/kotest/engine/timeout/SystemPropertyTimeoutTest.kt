@@ -20,7 +20,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
             TestEngineLauncher(collector)
                .withClasses(TimeoutTest::class)
                .launch()
-            collector.tests.mapKeys { it.key.name.testName }["a"]?.isError shouldBe true
+            collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }
       }
 
@@ -30,7 +30,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
             TestEngineLauncher(collector)
                .withClasses(TimeoutTest::class)
                .launch()
-            collector.tests.mapKeys { it.key.name.testName }["a"]?.isError shouldBe true
+            collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }
       }
    }

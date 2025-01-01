@@ -138,15 +138,15 @@ object ProjectConfig : AbstractProjectConfig() {
  * and the test is permitted to finish.
  */
 internal suspend fun TestScope.startAndLockTest() {
-   testStatuses.emit(TestStatus(testCase.name.testName, Started))
+   testStatuses.emit(TestStatus(testCase.name.name, Started))
    try {
       withTimeout(10.seconds) {
          testCompletionLock.withLock {
-            testStatuses.emit(TestStatus(testCase.name.testName, Finished))
+            testStatuses.emit(TestStatus(testCase.name.name, Finished))
          }
       }
    } catch (ex: TimeoutCancellationException) {
-      testStatuses.emit(TestStatus(testCase.name.testName, TimedOut))
+      testStatuses.emit(TestStatus(testCase.name.name, TimedOut))
    }
 }
 

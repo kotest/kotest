@@ -15,7 +15,7 @@ class IgnoredTestListenerTest : FunSpec({
 
    val ignoredTestListener = object : IgnoredTestListener {
       override suspend fun ignoredTest(testCase: TestCase, reason: String?) {
-         ignoredTests.add(testCase.name.originalName)
+         ignoredTests.add(testCase.name.name)
       }
    }
 

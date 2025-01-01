@@ -20,13 +20,13 @@ class AssertionCounterFunSpecTest : FunSpec() {
    override fun extensions(): List<Extension> = listOf(
       object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-            return when (testCase.name.testName) {
+            return when (testCase.name.name) {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   when (val result = execute(testCase)) {
                      is TestResult.Error, is TestResult.Failure -> TestResult.Success(result.duration)
                      else -> TestResult.Error(
                         result.duration,
-                        RuntimeException("Should have failed: ${testCase.name.testName}")
+                        RuntimeException("Should have failed: ${testCase.name.name}")
                      )
                   }
                }

@@ -19,7 +19,7 @@ internal object InvocationCountCheckInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      logger.log { Pair(testCase.name.testName, "Checking that invocation count is 1 for containers") }
+      logger.log { Pair(testCase.name.name, "Checking that invocation count is 1 for containers") }
       return when {
          testCase.type == TestType.Test || testCase.config.invocations <= 1 -> test(testCase, scope)
          else -> TestResult.Error(

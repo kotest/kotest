@@ -22,7 +22,7 @@ class FreeSpecPerLeafTest : FreeSpec({
    }
 
    afterTest {
-      tests.add(it.a.name.testName)
+      tests.add(it.a.name.name)
    }
 
    afterProject {

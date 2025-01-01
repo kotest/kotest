@@ -58,9 +58,9 @@ class BehaviorSpecDataTest : BehaviorSpec() {
     var index = 0
     withData("a", "a", "a") {
       when (index) {
-        0 -> this.testCase.name.testName shouldBe "a"
-        1 -> this.testCase.name.testName shouldBe "(1) a"
-        2 -> this.testCase.name.testName shouldBe "(2) a"
+        0 -> this.testCase.name.name shouldBe "a"
+        1 -> this.testCase.name.name shouldBe "(1) a"
+        2 -> this.testCase.name.name shouldBe "(2) a"
       }
       index++
     }
@@ -132,9 +132,9 @@ class BehaviorSpecDataTest : BehaviorSpec() {
       index = 0
       withData("a", "a", "a") {
         when (index) {
-          0 -> this.testCase.name.testName shouldBe "a"
-          1 -> this.testCase.name.testName shouldBe "(1) a"
-          2 -> this.testCase.name.testName shouldBe "(2) a"
+          0 -> this.testCase.name.name shouldBe "a"
+          1 -> this.testCase.name.name shouldBe "(1) a"
+          2 -> this.testCase.name.name shouldBe "(2) a"
         }
         index++
       }

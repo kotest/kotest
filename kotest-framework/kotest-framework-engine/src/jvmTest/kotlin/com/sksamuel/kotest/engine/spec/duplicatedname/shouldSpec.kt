@@ -9,15 +9,15 @@ abstract class ShouldSpecDuplicateNameTest(iso: IsolationMode) : ShouldSpec() {
       isolationMode = iso
       context("foo") {
          should("woo") {}
-         should("woo") { this.testCase.name.testName shouldBe "(1) woo" }
-         should("woo") { this.testCase.name.testName shouldBe "(2) woo" }
+         should("woo") { this.testCase.name.name shouldBe "(1) woo" }
+         should("woo") { this.testCase.name.name shouldBe "(2) woo" }
       }
       context("foo") {
-         this.testCase.name.testName shouldBe "(1) foo"
+         this.testCase.name.name shouldBe "(1) foo"
          should("a") { }
       }
       context("foo") {
-         this.testCase.name.testName shouldBe "(2) foo"
+         this.testCase.name.name shouldBe "(2) foo"
          should("a") { }
       }
    }

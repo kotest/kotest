@@ -20,7 +20,7 @@ private val executed = mutableListOf<String>()
 
 internal fun TestScope.testAndIncrementCounter() {
    1 shouldBe 1 // fake assertion so tests don't fail from fail on no assertion setting if it's set
-   executed.add(this.testCase.name.testName)
+   executed.add(this.testCase.name.name)
 }
 
 private fun numberOfTestsRunShouldBe(expected: Int) {

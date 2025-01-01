@@ -22,4 +22,4 @@ data class DynamicRootTest(
    val factoryId: FactoryId
 )
 
-fun DynamicRootTest.addPrefix(prefix: String): DynamicRootTest = copy(name = name.copy(testName = "$prefix $name"))
+fun DynamicRootTest.addPrefix(prefix: String): DynamicRootTest = copy(name = name.copy(name = "$prefix $name"))

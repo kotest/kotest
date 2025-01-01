@@ -21,7 +21,7 @@ internal object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
    ): TestResult {
 
       return if (testCase.config.coroutineDebugProbes) {
-         logger.log { Pair(testCase.name.testName, "Installing coroutine debug probe") }
+         logger.log { Pair(testCase.name.name, "Installing coroutine debug probe") }
          withDebugProbe {
             test(testCase, scope)
          }

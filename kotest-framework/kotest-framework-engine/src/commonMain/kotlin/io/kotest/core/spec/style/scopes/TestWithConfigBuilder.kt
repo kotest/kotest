@@ -17,7 +17,7 @@ class TestWithConfigBuilder(
 ) {
 
    suspend fun config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-     TestDslState.clear(name.originalName)
+     TestDslState.clear(name.name)
       context.registerTest(name, xdisabled, config, test)
    }
 
@@ -36,7 +36,7 @@ class TestWithConfigBuilder(
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit
    ) {
-     TestDslState.clear(name.originalName)
+     TestDslState.clear(name.name)
       val config = TestConfig(
          enabled = enabled,
          enabledIf = enabledIf,

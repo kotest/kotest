@@ -21,7 +21,7 @@ class CoroutineExceptionTest : FunSpec({
 
       val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            if (testCase.name.testName == "exception in coroutine") {
+            if (testCase.name.name == "exception in coroutine") {
                _result = result
             }
          }

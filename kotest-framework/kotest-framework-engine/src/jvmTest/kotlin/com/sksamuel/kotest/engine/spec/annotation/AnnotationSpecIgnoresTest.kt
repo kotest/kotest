@@ -18,7 +18,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener).withClasses(AnnotationSpecWithBangTest::class).launch()
          listener.tests
-            .mapKeys { it.key.name.testName }
+            .mapKeys { it.key.name.name }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("foo" to "Disabled by bang")
       }
 
@@ -26,7 +26,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener).withClasses(AnnotationSpecAtIgnoreTest::class).launch()
          listener.tests
-            .mapKeys { it.key.name.testName }
+            .mapKeys { it.key.name.name }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("bar" to "Disabled by xmethod")
       }
    }

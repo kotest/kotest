@@ -28,16 +28,16 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
       } else {
 
          val timeout = testCase.timeout
-         logger.log { Pair(testCase.name.testName, "Switching context to add invocationTimeout $timeout") }
+         logger.log { Pair(testCase.name.name, "Switching context to add invocationTimeout $timeout") }
 
          try {
             // we use orNull because we want to disambiguate between our timeouts and user level timeouts
             // user level timeouts will throw an exception, ours will return null
             withTimeoutOrNull(timeout) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
-            } ?: throw TestTimeoutException(timeout, testCase.name.testName)
+            } ?: throw TestTimeoutException(timeout, testCase.name.name)
          } catch (t: TimeoutCancellationException) {
-            logger.log { Pair(testCase.name.testName, "Caught user timeout $t") }
+            logger.log { Pair(testCase.name.name, "Caught user timeout $t") }
             throw t
          }
       }

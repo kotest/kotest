@@ -27,11 +27,11 @@ internal class TestEnabledCheckInterceptor(private val configuration: ProjectCon
       val enabled = testCase.isEnabled(configuration)
       return when (enabled.isEnabled) {
          true -> {
-            logger.log { Pair(testCase.name.testName, "Test is enabled") }
+            logger.log { Pair(testCase.name.name, "Test is enabled") }
             test(testCase, scope)
          }
          false -> {
-            logger.log { Pair(testCase.name.testName, "Test is disabled: ${enabled.reason}") }
+            logger.log { Pair(testCase.name.name, "Test is disabled: ${enabled.reason}") }
             TestResult.Ignored(enabled)
          }
       }

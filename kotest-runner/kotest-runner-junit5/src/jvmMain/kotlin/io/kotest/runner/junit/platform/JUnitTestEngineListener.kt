@@ -233,7 +233,7 @@ class JUnitTestEngineListener(
       //
       // Therefore, our workaround is to just add the execution time into the test name.
 
-      logger.log { Pair(testCase.name.testName, "test started") }
+      logger.log { Pair(testCase.name.name, "test started") }
 //      if (testCase.parent != null) rootTests.add(testCase)
 
       // start tracking the time for this test
@@ -261,7 +261,7 @@ class JUnitTestEngineListener(
       // because of the gradle bugs described elsewhere, if this was a leaf test, we would not yet have
       // started it, so we need to start it if not.
 
-      logger.log { Pair(testCase.name.testName, "test finished $result") }
+      logger.log { Pair(testCase.name.name, "test finished $result") }
       results[testCase.descriptor] = result
 
       // if this test was started, we don't need to register it again
@@ -270,7 +270,7 @@ class JUnitTestEngineListener(
 
       val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
-      logger.log { Pair(testCase.name.testName, "executionFinished: $descriptor") }
+      logger.log { Pair(testCase.name.name, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
    }
 
@@ -287,13 +287,13 @@ class JUnitTestEngineListener(
       // ignored test should be a TEST type, because an ignored test will never have child tests.
       val descriptor = createTestTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
 
-      logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
+      logger.log { Pair(testCase.name.name, "Registering dynamic test: $descriptor") }
       listener.dynamicTestRegistered(descriptor)
 
-      logger.log { Pair(testCase.name.testName, "test ignored $reason") }
+      logger.log { Pair(testCase.name.name, "test ignored $reason") }
       results[testCase.descriptor] = TestResult.Ignored(reason)
 
-      logger.log { Pair(testCase.name.testName, "executionSkipped: $descriptor") }
+      logger.log { Pair(testCase.name.name, "executionSkipped: $descriptor") }
       listener.executionSkipped(descriptor, reason)
    }
 
@@ -320,10 +320,10 @@ class JUnitTestEngineListener(
          p.addChild(testDescriptor)
          descriptors[testCase.descriptor] = testDescriptor
 
-         logger.log { Pair(testCase.name.testName, "Registering dynamic container test: $testDescriptor") }
+         logger.log { Pair(testCase.name.name, "Registering dynamic container test: $testDescriptor") }
          listener.dynamicTestRegistered(testDescriptor)
 
-         logger.log { Pair(testCase.name.testName, "executionStarted: $testDescriptor") }
+         logger.log { Pair(testCase.name.name, "executionStarted: $testDescriptor") }
          listener.executionStarted(testDescriptor)
 
          // now mark it as started so we can safely call this method again

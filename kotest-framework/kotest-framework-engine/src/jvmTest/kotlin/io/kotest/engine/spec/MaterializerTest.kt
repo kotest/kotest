@@ -29,7 +29,7 @@ class MaterializerTest : FunSpec({
             id = DescriptorId(value = "quidam")
          ),
          name = TestName(
-            testName = "prefix",
+            name = "prefix",
             focus = false,
             bang = false,
             prefix = null,
@@ -73,7 +73,7 @@ class MaterializerTest : FunSpec({
          type = TestType.Container,
          source = sourceRef(),
       )
-      Materializer(ProjectConfiguration()).materialize(nested, parent).name.testName shouldBe "- prefixes are swallowed"
+      Materializer(ProjectConfiguration()).materialize(nested, parent).name.name shouldBe "- prefixes are swallowed"
    }
 
 

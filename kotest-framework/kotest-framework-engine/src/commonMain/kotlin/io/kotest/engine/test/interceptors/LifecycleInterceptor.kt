@@ -41,7 +41,7 @@ internal class LifecycleInterceptor(
       test: NextTestExecutionInterceptor
    ): TestResult {
 
-      logger.log { Pair(testCase.name.testName, "Notifying listener test started") }
+      logger.log { Pair(testCase.name.name, "Notifying listener test started") }
       listener.testStarted(testCase)
 
       return extensions.beforeTestBeforeAnyBeforeContainer(testCase)

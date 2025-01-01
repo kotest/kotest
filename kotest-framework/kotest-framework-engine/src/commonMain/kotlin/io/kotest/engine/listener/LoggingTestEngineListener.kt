@@ -24,10 +24,10 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "testStarted") }
+      logger.log { Pair(testCase.name.name, "testStarted") }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "testFinished") }
+      logger.log { Pair(testCase.name.name, "testFinished") }
    }
 }

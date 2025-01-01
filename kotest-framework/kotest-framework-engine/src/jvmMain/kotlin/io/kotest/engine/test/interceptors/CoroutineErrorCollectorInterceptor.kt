@@ -28,7 +28,7 @@ internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
    ): TestResult {
       logger.log {
          Pair(
-            testCase.name.testName,
+            testCase.name.name,
             "Adding $errorCollectorContextElement and $assertionCounterContextElement to coroutine context"
          )
       }

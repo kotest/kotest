@@ -52,12 +52,12 @@ internal class BlockedThreadTimeoutInterceptor(
          val executor = Executors.newSingleThreadExecutor()
 
          val timeout = testCase.config.timeout
-         logger.log { Pair(testCase.name.testName, "this test will time out in $timeout") }
+         logger.log { Pair(testCase.name.name, "this test will time out in $timeout") }
 
          @OptIn(ExperimentalCoroutinesApi::class)
          val timeoutJob = CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
             delay(timeout)
-            logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
+            logger.log { Pair(testCase.name.name, "Scheduled timeout has hit") }
             executor.shutdownNow()
          }
 
@@ -72,10 +72,10 @@ internal class BlockedThreadTimeoutInterceptor(
                }
             }
          } catch (t: InterruptedException) {
-            logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
+            logger.log { Pair(testCase.name.name, "Caught InterruptedException ${t.message}") }
             TestResult.Error(
                start.elapsedNow(),
-               BlockedThreadTestTimeoutException(testCase.config.timeout, testCase.name.testName, t)
+               BlockedThreadTestTimeoutException(testCase.config.timeout, testCase.name.name, t)
             )
          }
       } else {

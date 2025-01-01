@@ -24,7 +24,7 @@ internal object AssertionModeInterceptor : TestExecutionInterceptor {
       if (testCase.type != TestType.Test) return test(testCase, scope)
       if (testCase.config.assertionMode == AssertionMode.None) return test(testCase, scope)
 
-      val warningMessage = "Test '${testCase.name.testName}' did not invoke any assertions"
+      val warningMessage = "Test '${testCase.name.name}' did not invoke any assertions"
       assertionCounter.reset()
 
       val result = test(testCase, scope)

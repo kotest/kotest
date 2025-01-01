@@ -31,7 +31,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
@@ -45,7 +45,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // all tests should be filtered out because of the @Tags
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe emptySet()
       }
 
@@ -58,7 +58,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // linux is included for all, and we're using an 'or'
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
@@ -71,7 +71,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // linux should be included for all, but then postgres tests excluded as well
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("a", "d")
       }
 
@@ -84,7 +84,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // Mysql tests should be excluded
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("b", "d")
       }
 
@@ -97,7 +97,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // Mysql tests should be excluded
          Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("b", "c")
       }
 
@@ -115,7 +115,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
             Materializer(conf).materialize(InheritingTest())
                .filter { it.isEnabledInternal(conf).isEnabled }
-               .map { it.name.testName }
+               .map { it.name.name }
                .toSet() shouldBe expectedTests
          }
       }

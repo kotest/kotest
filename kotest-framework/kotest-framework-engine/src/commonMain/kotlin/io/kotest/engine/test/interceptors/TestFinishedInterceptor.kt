@@ -24,7 +24,7 @@ internal class TestFinishedInterceptor(
    ): TestResult {
 
       val result = test(testCase, scope)
-      logger.log { Pair(testCase.name.testName, "Test result $result") }
+      logger.log { Pair(testCase.name.name, "Test result $result") }
 
       when (result) {
          is TestResult.Ignored -> {

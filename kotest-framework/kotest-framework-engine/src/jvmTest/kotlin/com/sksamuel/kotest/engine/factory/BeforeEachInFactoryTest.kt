@@ -9,7 +9,7 @@ var factoryBeforeEach = mutableListOf<String>()
 
 private val factory = funSpec {
    beforeEach {
-      factoryBeforeEach.add(it.name.testName)
+      factoryBeforeEach.add(it.name.name)
    }
    context("factory") {
       test("a") { }
@@ -20,7 +20,7 @@ private val factory = funSpec {
 class BeforeEachInFactoryTest : FunSpec({
 
    beforeEach {
-      specBeforeEach.add(it.name.testName)
+      specBeforeEach.add(it.name.name)
    }
 
    afterSpec {

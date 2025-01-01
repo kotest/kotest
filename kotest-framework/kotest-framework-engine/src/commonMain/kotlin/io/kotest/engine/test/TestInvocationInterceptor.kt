@@ -29,10 +29,10 @@ internal class TestInvocationInterceptor(
    ): TestResult {
       return try {
          invokeWithRetry(testCase, scope, test, 0)
-         logger.log { Pair(testCase.name.testName, "Test returned without error") }
+         logger.log { Pair(testCase.name.name, "Test returned without error") }
          TestResult.Success(timeMark.elapsedNow())
       } catch (t: Throwable) {
-         logger.log { Pair(testCase.name.testName, "Test threw error $t") }
+         logger.log { Pair(testCase.name.name, "Test threw error $t") }
          createTestResult(timeMark.elapsedNow(), t)
       }
    }

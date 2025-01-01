@@ -15,7 +15,7 @@ class StringSpecMultilineNameTest : StringSpec() {
 
       """multi line
          name test""" {
-         names.add(this.testCase.name.testName)
+         names.add(this.testCase.name.name)
       }
    }
 }

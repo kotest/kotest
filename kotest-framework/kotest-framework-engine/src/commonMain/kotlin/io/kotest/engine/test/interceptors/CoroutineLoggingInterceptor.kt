@@ -26,7 +26,7 @@ internal class CoroutineLoggingInterceptor(private val configuration: ProjectCon
       val extensions = TestExtensions(configuration.registry).logExtensions(testCase)
       return when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> {
-            logger.log { Pair(testCase.name.testName, "Test logging is disabled (exts = $extensions)") }
+            logger.log { Pair(testCase.name.name, "Test logging is disabled (exts = $extensions)") }
             test(testCase, scope)
          }
          else -> {

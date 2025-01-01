@@ -95,7 +95,7 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "testStarted $testCase") }
+      logger.log { Pair(testCase.name.name, "testStarted $testCase") }
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
          TestType.Container -> {
@@ -119,7 +119,7 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "testFinished $testCase") }
+      logger.log { Pair(testCase.name.name, "testFinished $testCase") }
       results[testCase.descriptor] = result
       when (testCase.type) {
          TestType.Container -> {

@@ -57,7 +57,7 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
             .launch()
 
          // if apply extension was not applied, it would fail to intercept the failing test
-         collector.tests.keys.single().name.testName shouldBe "foo"
+         collector.tests.keys.single().name.name shouldBe "foo"
          collector.tests.values.single().isSuccess shouldBe true
       }
    }

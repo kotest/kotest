@@ -23,7 +23,7 @@ internal class SoftAssertInterceptor : TestExecutionInterceptor {
 
       if (!testCase.config.assertSoftly) return test(testCase, scope)
 
-      logger.log { Pair(testCase.name.testName, "Invoking test with soft assert") }
+      logger.log { Pair(testCase.name.name, "Invoking test with soft assert") }
       return assertSoftly {
          val result = test(testCase, scope)
          // assertSoftly throws the collected error in finally block,

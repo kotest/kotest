@@ -211,7 +211,7 @@ a      | b      | c
 
    context("file.writeTable - validation") {
       test("Table file must have a .table extension") {
-         shouldThrowMessage(testCase.name.testName) {
+         shouldThrowMessage(testCase.name.name) {
             val fileMissingTableExtension = tempfile()
             fileMissingTableExtension.writeTable(usersTable.headers, emptyList())
          }
@@ -220,7 +220,7 @@ a      | b      | c
       test("Cells con't contain new lines") {
          val tableWithNewLines =
             mapOf("1" to "one\n", "two" to "two", "three" to "three\nthree").toTable()
-         shouldThrowMessage(testCase.name.testName) {
+         shouldThrowMessage(testCase.name.name) {
             tempfile(suffix = ".table").writeTable(tableWithNewLines.headers, tableWithNewLines.rows)
          }
       }

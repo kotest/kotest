@@ -7,24 +7,22 @@ package io.kotest.core.names
  * e.g. when using BehaviorSpec or WordSpec. Note that the prefix or suffix should include
  * any whitespace required.
  *
- * Test names can be prefixed with `!` or `f:` to indicate bang or focus respectively.
+ * Test names can also  be prefixed with `!` or `f:` to indicate bang or focus respectively.
  *
- * @param testName the name exactly as the user entered it but with focus or bang stripped
- * @param focus if the test name was specified with `f:` prefix
- * @param bang if the test name was specified with `!` prefix
+ * @param name the name as the user entered it but with focus, bang and whitespace stripped
+ * @param focus if the test name was specified with the focus `f:` prefix
+ * @param bang if the test name was specified with the bang `!` prefix
  * @param prefix if the test style includes a test name prefix, such as "should"
  * @param suffix if the test style includes a test name suffix, such as "when"
  * @param defaultAffixes if the test style recommends test affixes by default, such as [BehaviorSpec][io.kotest.core.spec.style.BehaviorSpec]
- * @param originalName the name exactly as the user entered it
  */
 data class TestName(
-   val testName: String,
+   val name: String,
    val focus: Boolean,
    val bang: Boolean,
    val prefix: String?,
    val suffix: String?,
    val defaultAffixes: Boolean,
-   val originalName: String,
 ) {
 
    companion object {
@@ -48,12 +46,12 @@ data class TestName(
             else -> Triple(first = false, second = false, third = trimmed)
          }
 
-         return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes, name)
+         return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes)
       }
    }
 
    init {
-      require(testName.isNotBlank() && testName.isNotEmpty()) { "Cannot create test with blank or empty name" }
+      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot create test with blank or empty name" }
       require(!focus || !bang) { "Bang and focus cannot both be true" }
    }
 }

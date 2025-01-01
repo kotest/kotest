@@ -22,11 +22,11 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.testName
+      befores += testCase.name.name
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.testName
+      afters += testCase.name.name
    }
 
    override suspend fun afterSpec(spec: Spec) {
@@ -54,11 +54,11 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.testName
+      befores += testCase.name.name
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.testName
+      afters += testCase.name.name
    }
 
    override suspend fun afterSpec(spec: Spec) {
@@ -86,11 +86,11 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.testName
+      befores += testCase.name.name
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.testName
+      afters += testCase.name.name
    }
 
    override suspend fun afterSpec(spec: Spec) {
@@ -118,11 +118,11 @@ class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.testName
+      befores += testCase.name.name
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.testName
+      afters += testCase.name.name
    }
 
    override suspend fun afterSpec(spec: Spec) {

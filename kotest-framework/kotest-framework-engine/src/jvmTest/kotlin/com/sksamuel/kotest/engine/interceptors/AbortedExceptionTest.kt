@@ -22,15 +22,15 @@ class AbortedExceptionTest : FreeSpec({
 
       collector.tests.toList().shouldMatchEach(
          {
-            it.first.name.testName shouldBe "Test should be marked as Ignored"
+            it.first.name.name shouldBe "Test should be marked as Ignored"
             it.second.isIgnored.shouldBeTrue()
          },
          {
-            it.first.name.testName shouldBe "Failure is not reclassified"
+            it.first.name.name shouldBe "Failure is not reclassified"
             it.second.isFailure.shouldBeTrue()
          },
          {
-            it.first.name.testName shouldBe "Successful test is not reclassified"
+            it.first.name.name shouldBe "Successful test is not reclassified"
             it.second.isSuccess.shouldBeTrue()
          }
       )

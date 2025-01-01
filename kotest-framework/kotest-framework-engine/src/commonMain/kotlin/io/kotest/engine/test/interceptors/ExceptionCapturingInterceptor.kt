@@ -24,10 +24,10 @@ internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : T
       return try {
          test(testCase, scope)
       } catch (t: Throwable) {
-         logger.log { Pair(testCase.name.testName, "Throwable $t") }
+         logger.log { Pair(testCase.name.name, "Throwable $t") }
          createTestResult(timeMark.elapsedNow(), t)
       } catch (e: AssertionError) {
-         logger.log { Pair(testCase.name.testName, "AssertionError $e") }
+         logger.log { Pair(testCase.name.name, "AssertionError $e") }
          createTestResult(timeMark.elapsedNow(), e)
       }
    }

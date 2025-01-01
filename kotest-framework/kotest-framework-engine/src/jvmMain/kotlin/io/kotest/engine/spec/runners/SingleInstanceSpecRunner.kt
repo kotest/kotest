@@ -84,12 +84,12 @@ internal class SingleInstanceSpecRunner(
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
+         logger.log { Pair(testCase.name.name, "Registering nested test '${nested}") }
 
          val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
          if (skipRemaining) {
             val reason = "Skipping test due to fail fast"
-            logger.log { Pair(testCase.name.testName, reason) }
+            logger.log { Pair(testCase.name.name, reason) }
             listener.testIgnored(nestedTestCase, reason)
             TestExtensions(context.configuration.registry).ignoredTestListenersInvocation(nestedTestCase, reason)
          } else {
@@ -97,7 +97,7 @@ internal class SingleInstanceSpecRunner(
             val result = runTest(nestedTestCase, specContext, coroutineContext, this@SingleInstanceTestScope)
             if (result.isErrorOrFailure) {
                if (testCase.config.failfast || context.configuration.projectWideFailFast) {
-                  logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
+                  logger.log { Pair(testCase.name.name, "Test failed - setting skipRemaining = true") }
                   skipRemaining = true
                   parentScope?.skipRemaining = true
                }

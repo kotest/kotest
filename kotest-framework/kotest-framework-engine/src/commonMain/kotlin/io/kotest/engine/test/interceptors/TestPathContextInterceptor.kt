@@ -31,7 +31,7 @@ internal object TestNameContextInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      return withContext(TestNameContextElement(testCase.name.testName)) {
+      return withContext(TestNameContextElement(testCase.name.name)) {
          test(testCase, scope)
       }
    }

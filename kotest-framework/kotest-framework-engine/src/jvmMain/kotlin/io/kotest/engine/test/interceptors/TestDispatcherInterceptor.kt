@@ -34,7 +34,7 @@ class TestDispatcherInterceptor : TestExecutionInterceptor {
          is TestDispatcher -> test(testCase, scope)
          else -> {
             val dispatcher = UnconfinedTestDispatcher()
-            logger.log { Pair(testCase.name.testName, "Switching context to StandardTestDispatcher: $dispatcher") }
+            logger.log { Pair(testCase.name.name, "Switching context to StandardTestDispatcher: $dispatcher") }
             withContext(dispatcher + CoroutineName("wibble")) {
                test(testCase, scope.withCoroutineContext(dispatcher))
             }
