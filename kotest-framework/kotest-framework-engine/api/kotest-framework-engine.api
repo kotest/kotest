@@ -3949,9 +3949,13 @@ public final class io/kotest/engine/spec/Materializer {
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
 }
 
+public final class io/kotest/engine/spec/NoopSpecSorter : io/kotest/engine/spec/SpecSorter {
+	public static final field INSTANCE Lio/kotest/engine/spec/NoopSpecSorter;
+	public fun sort (Ljava/util/List;)Ljava/util/List;
+}
+
 public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spec/SpecSorter {
 	public fun <init> (Lkotlin/random/Random;)V
-	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
@@ -3969,12 +3973,7 @@ public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/
 }
 
 public abstract interface class io/kotest/engine/spec/SpecSorter {
-	public abstract fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
 	public abstract fun sort (Ljava/util/List;)Ljava/util/List;
-}
-
-public final class io/kotest/engine/spec/SpecSorter$DefaultImpls {
-	public static fun sort (Lio/kotest/engine/spec/SpecSorter;Ljava/util/List;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/spec/TempDirDeletionException : java/lang/Exception {
