@@ -35,7 +35,6 @@ class MaterializerTest : FunSpec({
             prefix = null,
             suffix = null,
             defaultAffixes = false,
-            originalName = "prefix"
          ),
          spec = self,
          test = {},
