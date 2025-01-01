@@ -10,11 +10,6 @@ public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/
 public abstract interface annotation class io/kotest/common/KotestInternal : java/lang/annotation/Annotation {
 }
 
-public final class io/kotest/common/NonConstantResultsKt {
-	public static final fun nonConstantFalse ()Z
-	public static final fun nonConstantTrue ()Z
-}
-
 public final class io/kotest/common/NonDeterministicTestVirtualTimeEnabled : kotlin/coroutines/CoroutineContext$Element, kotlin/coroutines/CoroutineContext$Key {
 	public static final field INSTANCE Lio/kotest/common/NonDeterministicTestVirtualTimeEnabled;
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;

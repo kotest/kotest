@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * A [TestEngineListener] that wraps one or more other test engine listeners,
  * forwarding calls to all listeners.
  */
-class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
+internal class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
    init {
       require(listeners.isNotEmpty())

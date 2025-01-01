@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.inspectors
 
+import com.sksamuel.kotest.nonConstantTrue
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.common.nonConstantTrue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec

@@ -20,8 +20,7 @@ import kotlin.coroutines.coroutineContext
  * If the current dispatcher is already a [TestDispatcher] then this interceptor is a no-op.
  */
 @ExperimentalCoroutinesApi
-@ExperimentalStdlibApi
-class TestDispatcherInterceptor : TestExecutionInterceptor {
+internal class TestDispatcherInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(TestDispatcherInterceptor::class)
 

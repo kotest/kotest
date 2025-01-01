@@ -33,7 +33,7 @@ private val outOfOrderCallbacksException =
    InvalidDslException("Cannot register callbacks after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true but be aware this can lead to subtle bugs in your tests.")
 
 /**
- * Extends a [TestScope] with convenience methods for registering tests and listeners.
+ * Extends a [TestScope] with convenience methods for registering tests and callbacks.
  */
 @KotestTestScope
 interface ContainerScope : TestScope {

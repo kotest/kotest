@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.common.nonConstantFalse
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FeatureSpec
@@ -157,6 +156,8 @@ private class FeatureSpecHappyPathSample : FeatureSpec() {
    }
 }
 
+/** returns `false` while preventing the compiler from optimizing it away. */
+fun nonConstantFalse() = System.currentTimeMillis() == 0L
 
 private class FeatureSpecSample : FeatureSpec() {
    init {

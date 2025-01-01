@@ -1,6 +1,6 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.common.nonConstantTrue
+import com.sksamuel.kotest.nonConstantTrue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec

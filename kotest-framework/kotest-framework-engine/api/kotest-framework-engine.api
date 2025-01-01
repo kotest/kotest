@@ -3827,19 +3827,6 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener$TestCa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/engine/listener/CompositeTestEngineListener : io/kotest/engine/listener/TestEngineListener {
-	public fun <init> (Ljava/util/List;)V
-	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> (Lcom/github/ajalt/mordant/TermColors;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -4265,15 +4252,6 @@ public final class io/kotest/engine/test/interceptors/BlockedThreadTestTimeoutEx
 	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JLjava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public abstract interface class io/kotest/engine/test/interceptors/NextTestExecutionInterceptor {
-	public abstract fun invoke (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/test/interceptors/TestDispatcherInterceptor : io/kotest/engine/test/interceptors/TestExecutionInterceptor {
-	public fun <init> ()V
-	public fun intercept (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestScope;Lio/kotest/engine/test/interceptors/NextTestExecutionInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class io/kotest/engine/test/interceptors/TestTimeoutException : java/lang/Exception {

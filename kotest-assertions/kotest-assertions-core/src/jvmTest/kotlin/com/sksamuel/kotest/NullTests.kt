@@ -1,7 +1,6 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.common.nonConstantTrue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
