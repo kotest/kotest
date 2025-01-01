@@ -49,3 +49,4 @@ class WordSpecWhenContainerScope(
       ) { WordSpecShouldContainerScope(this).test() }
    }
 }
+
