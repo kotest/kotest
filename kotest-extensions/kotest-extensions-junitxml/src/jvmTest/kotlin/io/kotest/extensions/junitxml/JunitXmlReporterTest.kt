@@ -1,6 +1,6 @@
 package io.kotest.extensions.junitxml
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,7 +8,6 @@ import io.kotest.core.test.TestScope
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import java.io.IOException
-
 import kotlin.time.Duration.Companion.seconds
 
 class JunitXmlReporterTest : FreeSpec({
@@ -19,7 +18,7 @@ class JunitXmlReporterTest : FreeSpec({
          JunitXmlReporterTest::class, mapOf(
             TestCase(
                this.testCase.descriptor,
-               name = TestName("dummy"),
+               name = TestNameBuilder.builder("dummy").build(),
                spec = this.testCase.spec,
                test = { TODO() },
                source = this.testCase.source,

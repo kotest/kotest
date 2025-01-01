@@ -3,8 +3,8 @@ package io.kotest.engine.spec
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
-import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -14,6 +14,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
 
@@ -65,7 +66,7 @@ class MaterializerTest : FunSpec({
       )
 
       val nested = NestedTest(
-         name = TestName("prefixes are swallowed"),
+         name = TestNameBuilder.builder("prefixes are swallowed").build(),
          test = { },
          disabled = false,
          config = null,

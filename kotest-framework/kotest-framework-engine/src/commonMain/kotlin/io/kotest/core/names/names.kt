@@ -30,14 +30,14 @@ data class TestName(
    }
 }
 
-internal data class TestNameBuilder(
+data class TestNameBuilder(
    val rawname: String,
    val prefix: String?,
    val suffix: String?,
    val defaultAffixes: Boolean,
 ) {
 
-   internal companion object {
+   companion object {
       fun builder(rawname: String) = TestNameBuilder(
          rawname = rawname,
          prefix = null,

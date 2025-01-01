@@ -34,7 +34,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
 
          val tc = TestCase(
             EmptyTestSuiteInterceptorTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             EmptyTestSuiteInterceptorTest(),
             {},
             sourceRef(),

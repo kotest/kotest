@@ -24,7 +24,7 @@ class TimeoutInterceptorTest : FunSpec() {
 
          val tc = TestCase(
             InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             InvocationCountCheckInterceptorTest(),
             {},
             sourceRef(),

@@ -24,7 +24,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should invoke downstream if invocation count == 1 for containers") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),
@@ -44,7 +44,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should invoke downstream if invocation count > 1 for tests") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),
@@ -64,7 +64,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should error if invocation count > 1 for containers") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),

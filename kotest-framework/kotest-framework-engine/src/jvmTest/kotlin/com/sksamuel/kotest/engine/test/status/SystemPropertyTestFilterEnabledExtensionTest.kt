@@ -22,7 +22,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should include tests when no filter system property or environment variable is specified") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -35,7 +35,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should include tests that match pattern in system property") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -58,7 +58,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should exclude tests that do not match pattern in system property") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -84,7 +84,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should include tests that match pattern in environment variable") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -107,7 +107,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should exclude tests that do not match pattern in environment variable") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -133,7 +133,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should include tests that match pattern in environment variable with underscores") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),
@@ -156,7 +156,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
       test("should exclude tests that do not match pattern in environment variable with underscores") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+             TestNameBuilder.builder("foo").build(),
             SystemPropertyTestFilterEnabledExtensionTest(),
             {},
             sourceRef(),

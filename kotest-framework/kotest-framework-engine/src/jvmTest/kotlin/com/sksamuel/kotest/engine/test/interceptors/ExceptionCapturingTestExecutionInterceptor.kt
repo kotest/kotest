@@ -21,7 +21,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
       val tc = TestCase(
          ExceptionCapturingTestExecutionInterceptorTest::class.toDescriptor().append("foo"),
-         TestName("foo"),
+          TestNameBuilder.builder("foo").build(),
          ExceptionCapturingTestExecutionInterceptorTest(),
          {},
          sourceRef(),
@@ -39,7 +39,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
       val tc = TestCase(
          ExceptionCapturingTestExecutionInterceptorTest::class.toDescriptor().append("foo"),
-         TestName("foo"),
+          TestNameBuilder.builder("foo").build(),
          ExceptionCapturingTestExecutionInterceptorTest(),
          {},
          sourceRef(),

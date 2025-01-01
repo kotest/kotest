@@ -28,7 +28,7 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
          it("should dispatch to coroutineDispatcher") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),
