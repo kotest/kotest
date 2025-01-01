@@ -16,9 +16,9 @@ private const val defaultConfigFqn = "io.kotest.provided.ProjectConfig"
 fun loadProjectConfigsJVM(): List<AbstractProjectConfig> {
    val fqns = fqns()
    log { "Loading project configs from fqn(s): $fqns" }
-   return fqns.split(";").map {
-      instantiateOrObject(Class.forName(it).kotlin as KClass<out AbstractProjectConfig>).getOrThrow()
-   }
+   return fqns.split(";")
+      .mapNotNull { runCatching { Class.forName(it).kotlin }.getOrNull() }
+      .map { instantiateOrObject(it as KClass<out AbstractProjectConfig>).getOrThrow() }
 }
 
 private fun fqns(): String {
