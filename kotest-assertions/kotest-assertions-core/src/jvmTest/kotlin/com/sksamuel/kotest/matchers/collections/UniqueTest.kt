@@ -289,6 +289,39 @@ class UniqueTest : WordSpec({
       }
    }
 
+   "shouldNotBeUnique using COMPARATOR" should {
+      "succeed for non unique Array with comparator" {
+         arrayOf("apple", "APPLE", "banana").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         arrayOf("test", "Test", "TEST").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+      }
+
+      "succeed for non unique List with comparator" {
+         listOf("apple", "APPLE", "banana").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         listOf("test", "Test", "TEST").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+      }
+
+      "fail for unique Array with comparator" {
+         shouldThrowAny {
+            arrayOf("apple", "banana", "cherry").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "Array should contain duplicates by comparison, but all elements are unique"
+
+         shouldThrowAny {
+            arrayOf("TEST", "binary", "human").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "Array should contain duplicates by comparison, but all elements are unique"
+      }
+
+      "fail for unique List with comparator" {
+         shouldThrowAny {
+            listOf("apple", "banana", "cherry").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "List should contain duplicates by comparison, but all elements are unique"
+
+         shouldThrowAny {
+            listOf("TEST", "binary", "human").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "List should contain duplicates by comparison, but all elements are unique"
+      }
+   }
+
+
    "Javadocs tests" should {
       "Array.shouldBeUnique()" {
          val array = arrayOf("apple", "banana", "cherry")
