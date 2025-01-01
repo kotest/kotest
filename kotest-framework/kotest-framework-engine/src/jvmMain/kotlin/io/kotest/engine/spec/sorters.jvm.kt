@@ -20,8 +20,7 @@ actual val FailureFirstSorter: SpecSorter = object : SpecSorter {
             val afailed = classnames.contains(a.kclass.qualifiedName)
             val bfailed = classnames.contains(b.kclass.qualifiedName)
             when {
-               afailed && bfailed -> a.kclass.bestName().compareTo(b.kclass.bestName())
-               afailed -> -1
+               afailed && !bfailed -> -1
                bfailed -> 1
                else -> a.kclass.bestName().compareTo(b.kclass.bestName())
             }
