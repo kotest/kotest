@@ -988,6 +988,7 @@ public final class io/kotest/core/config/DefaultExtensionRegistry : io/kotest/co
 }
 
 public final class io/kotest/core/config/Defaults {
+	public static final field FAIL_ON_EMPTY_TEST_SUITE Z
 	public static final field INSTANCE Lio/kotest/core/config/Defaults;
 	public static final field allowOutOfOrderCallbacks Z
 	public static final field blockingTest Z
@@ -1001,7 +1002,6 @@ public final class io/kotest/core/config/Defaults {
 	public static final field dispatcherAffinity Z
 	public static final field displayFullTestPath Z
 	public static final field displaySpecIfNoActiveTests Z
-	public static final field failOnEmptyTestSuite Z
 	public static final field failOnIgnoredTests Z
 	public static final field failfast Z
 	public static final field globalAssertSoftly Z
@@ -1010,7 +1010,6 @@ public final class io/kotest/core/config/Defaults {
 	public static final field parallelism I
 	public static final field projectWideFailFast Z
 	public static final field specFailureFilePath Ljava/lang/String;
-	public static final field testCoroutineDispatcher Z
 	public static final field threads I
 	public static final field writeSpecFailureFile Z
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
@@ -3939,19 +3938,19 @@ public final class io/kotest/engine/project/ProjectExtensions {
 	public final fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/spec/InstantiateSpecKt {
-	public static final fun createAndInitializeSpec (Lkotlin/reflect/KClass;Lio/kotest/core/config/ExtensionRegistry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/spec/Materializer {
 	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
 	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
 }
 
+public final class io/kotest/engine/spec/NoopSpecSorter : io/kotest/engine/spec/SpecSorter {
+	public static final field INSTANCE Lio/kotest/engine/spec/NoopSpecSorter;
+	public fun sort (Ljava/util/List;)Ljava/util/List;
+}
+
 public final class io/kotest/engine/spec/RandomSpecSorter : io/kotest/engine/spec/SpecSorter {
 	public fun <init> (Lkotlin/random/Random;)V
-	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
 	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
@@ -3968,13 +3967,13 @@ public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
 
-public abstract interface class io/kotest/engine/spec/SpecSorter {
-	public abstract fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
-	public abstract fun sort (Ljava/util/List;)Ljava/util/List;
+public final class io/kotest/engine/spec/SpecInstantiator {
+	public fun <init> (Lio/kotest/core/config/ExtensionRegistry;)V
+	public final fun createAndInitializeSpec-gIAlu-s (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/spec/SpecSorter$DefaultImpls {
-	public static fun sort (Lio/kotest/engine/spec/SpecSorter;Ljava/util/List;)Ljava/util/List;
+public abstract interface class io/kotest/engine/spec/SpecSorter {
+	public abstract fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/spec/TempDirDeletionException : java/lang/Exception {

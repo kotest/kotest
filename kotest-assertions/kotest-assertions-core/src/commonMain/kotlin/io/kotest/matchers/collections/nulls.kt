@@ -20,10 +20,7 @@ import io.kotest.matchers.shouldNot
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I {
-   toList().shouldContainOnlyNulls()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I = apply { toList() should containOnlyNulls() }
 
 /**
  * Asserts that this array contains only null elements.
@@ -40,30 +37,7 @@ fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldContainOnlyNulls(): Array<T> {
-   asList().shouldContainOnlyNulls()
-   return this
-}
-
-/**
- * Asserts that this collection contains only null elements.
- *
- * Verifies that all elements in the collection are null.
- *
- * Opposite of [shouldNotContainOnlyNulls].
- *
- * Example:
- * ```
- * listOf(null, null).shouldContainOnlyNulls() // Assertion passes
- * listOf(null, "a").shouldContainOnlyNulls()  // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldContainOnlyNulls(): C {
-   this should containOnlyNulls()
-   return this
-}
+fun <T> Array<T>.shouldContainOnlyNulls(): Array<T> = apply { asList().shouldContainOnlyNulls() }
 
 /**
  * Asserts that this iterable does not contain only null elements.
@@ -80,10 +54,7 @@ fun <T, C : Collection<T>> C.shouldContainOnlyNulls(): C {
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I {
-   toList().shouldNotContainOnlyNulls()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I = apply { toList() shouldNot containOnlyNulls() }
 
 /**
  * Asserts that this array does not contain only null elements.
@@ -100,31 +71,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldNotContainOnlyNulls(): Array<T> {
-   asList().shouldNotContainOnlyNulls()
-   return this
-}
-
-/**
- * Asserts that this collection does not contain only null elements.
- *
- * Verifies that the collection contains at least one non-null element.
- *
- * Opposite of [shouldContainOnlyNulls].
- *
- * Example:
- * ```
- * listOf(null, "a").shouldNotContainOnlyNulls()  // Assertion passes
- * listOf(null, null).shouldNotContainOnlyNulls() // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldNotContainOnlyNulls(): C {
-   this shouldNot containOnlyNulls()
-   return this
-}
-
+fun <T> Array<T>.shouldNotContainOnlyNulls(): Array<T> = apply { asList().shouldNotContainOnlyNulls() }
 
 /**
  * Matcher that asserts a collection contains only null elements.
@@ -170,10 +117,7 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldContainNull(): I {
-   toList().shouldContainNull()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldContainNull(): I = apply { toList() should containNull() }
 
 /**
  * Asserts that this array contains at least one null element.
@@ -190,30 +134,7 @@ fun <T, I : Iterable<T>> I.shouldContainNull(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldContainNull(): Array<T> {
-   asList().shouldContainNull()
-   return this
-}
-
-/**
- * Asserts that this collection contains at least one null element.
- *
- * Verifies that the collection has at least one null element.
- *
- * Opposite of [shouldNotContainNull].
- *
- * Example:
- * ```
- * listOf(null, "a").shouldContainNull() // Assertion passes
- * listOf("a", "b").shouldContainNull()  // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldContainNull(): C {
-   this should containNull()
-   return this
-}
+fun <T> Array<T>.shouldContainNull(): Array<T> = apply { asList().shouldContainNull() }
 
 
 /**
@@ -231,10 +152,7 @@ fun <T, C : Collection<T>> C.shouldContainNull(): C {
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldNotContainNull(): I {
-   toList().shouldNotContainNull()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldNotContainNull(): I = apply { toList() shouldNot containNull() }
 
 /**
  * Asserts that this array does not contain any null elements.
@@ -251,31 +169,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainNull(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldNotContainNull(): Array<T> {
-   asList().shouldNotContainNull()
-   return this
-}
-
-/**
- * Asserts that this collection does not contain any null elements.
- *
- * Verifies that the collection contains no null elements.
- *
- * Opposite of [shouldContainNull].
- *
- * Example:
- * ```
- * listOf("a", "b").shouldNotContainNull()  // Assertion passes
- * listOf("a", null).shouldNotContainNull() // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldNotContainNull(): C {
-   this shouldNot containNull()
-   return this
-}
-
+fun <T> Array<T>.shouldNotContainNull(): Array<T> = apply { asList().shouldNotContainNull() }
 
 /**
  * Matcher that asserts a collection contains at least one null element.
@@ -321,10 +215,7 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I {
-   toList().shouldContainNoNulls()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I = apply { toList() should containNoNulls() }
 
 /**
  * Asserts that this array contains no null elements.
@@ -341,30 +232,8 @@ fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldContainNoNulls(): Array<T> {
-   asList().shouldContainNoNulls()
-   return this
-}
+fun <T> Array<T>.shouldContainNoNulls(): Array<T> = apply { asList().shouldContainNoNulls() }
 
-/**
- * Asserts that this collection contains no null elements.
- *
- * Verifies that all elements in the collection are non-null.
- *
- * Opposite of [shouldNotContainNoNulls].
- *
- * Example:
- * ```
- * listOf("a", "b").shouldContainNoNulls()  // Assertion passes
- * listOf("a", null).shouldContainNoNulls() // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldContainNoNulls(): C {
-   this should containNoNulls()
-   return this
-}
 
 /**
  * Asserts that this iterable does not contain exclusively non-null elements.
@@ -381,10 +250,7 @@ fun <T, C : Collection<T>> C.shouldContainNoNulls(): C {
  *
  * @return the same iterable for further assertions
  */
-fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I {
-   toList().shouldNotContainNoNulls()
-   return this
-}
+fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I = apply { toList() shouldNot containNoNulls() }
 
 /**
  * Asserts that this array does not contain exclusively non-null elements.
@@ -401,30 +267,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I {
  *
  * @return the same array for further assertions
  */
-fun <T> Array<T>.shouldNotContainNoNulls(): Array<T> {
-   asList().shouldNotContainNoNulls()
-   return this
-}
-
-/**
- * Asserts that this collection does not contain exclusively non-null elements.
- *
- * Verifies that the collection contains at least one null element.
- *
- * Opposite of [shouldContainNoNulls].
- *
- * Example:
- * ```
- * listOf("a", null).shouldNotContainNoNulls() // Assertion passes
- * listOf("a", "b").shouldNotContainNoNulls()  // Assertion fails
- * ```
- *
- * @return the same collection for further assertions
- */
-fun <T, C : Collection<T>> C.shouldNotContainNoNulls(): C {
-   this shouldNot containNoNulls()
-   return this
-}
+fun <T> Array<T>.shouldNotContainNoNulls(): Array<T> = apply { asList().shouldNotContainNoNulls() }
 
 /**
  * Matcher that asserts a collection contains no null elements.

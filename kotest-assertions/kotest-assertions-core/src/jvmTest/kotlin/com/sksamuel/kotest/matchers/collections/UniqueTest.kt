@@ -3,8 +3,10 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.beUnique
 import io.kotest.matchers.collections.shouldBeUnique
 import io.kotest.matchers.collections.shouldNotBeUnique
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
 class UniqueTest : WordSpec({
@@ -286,6 +288,64 @@ class UniqueTest : WordSpec({
          shouldThrowWithMessage<AssertionError>("List should be unique by comparison, but has:\n<null> at indexes: [0, 1]") {
             listOf<Int?>(null, null).shouldBeUnique(compareBy { it })
          }
+      }
+   }
+
+
+
+   "shouldNotBeUnique using COMPARATOR" should {
+      "succeed for non unique Array with comparator" {
+         arrayOf("apple", "APPLE", "banana").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         arrayOf("test", "Test", "TEST").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+      }
+
+      "succeed for non unique List with comparator" {
+         listOf("apple", "APPLE", "banana").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         listOf("test", "Test", "TEST").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+      }
+
+      "fail for unique Array with comparator" {
+         shouldThrowAny {
+            arrayOf("apple", "banana", "cherry").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "Array should contain duplicates by comparison, but all elements are unique"
+
+         shouldThrowAny {
+            arrayOf("TEST", "binary", "human").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "Array should contain duplicates by comparison, but all elements are unique"
+      }
+
+      "fail for unique List with comparator" {
+         shouldThrowAny {
+            listOf("apple", "banana", "cherry").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "List should contain duplicates by comparison, but all elements are unique"
+
+         shouldThrowAny {
+            listOf("TEST", "binary", "human").shouldNotBeUnique(String.CASE_INSENSITIVE_ORDER)
+         }.message shouldBe "List should contain duplicates by comparison, but all elements are unique"
+      }
+   }
+
+   "beUnique() matcher" should {
+      "validate unique elements" {
+         val uniqueList = listOf(1, 2, 3, 4)
+         uniqueList should beUnique()
+      }
+
+      "fail for non-unique elements" {
+         val nonUniqueList = listOf(1, 2, 2, 3)
+         shouldThrowAny {
+            nonUniqueList.shouldBeUnique()
+         }.message shouldBe "List should be unique, but has:\n2 at indexes: [1, 2]"
+      }
+
+      "beUnique(comparator) matcher" {
+         val list = listOf("apple", "banana", "APPLE")
+         list should beUnique(compareBy { it.first() })
+
+         val list2 = listOf("apple", "banana", "apple")
+         shouldThrowAny {
+            list2 should beUnique(compareBy { it })
+         }.message shouldBe "List should be unique by comparison, but has:\n\"apple\" at indexes: [0, 2]"
       }
    }
 

@@ -35,13 +35,12 @@ object Defaults {
    val severity: TestCaseSeverityLevel = TestCaseSeverityLevel.NORMAL
 
    const val coroutineDebugProbes: Boolean = false
-   const val testCoroutineDispatcher: Boolean = false
    const val coroutineTestScope: Boolean = false
    const val blockingTest: Boolean = false
 
    const val displaySpecIfNoActiveTests: Boolean = true
 
-   const val failOnEmptyTestSuite = false
+   const val FAIL_ON_EMPTY_TEST_SUITE = false
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
