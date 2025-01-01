@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -36,9 +36,9 @@ class FeatureSpecContainerScope(
 
    private suspend fun feature(name: String, disabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
-         TestName("Feature: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
          disabled = disabled,
-         null
+         config = null
       ) { FeatureSpecContainerScope(this).test() }
    }
 
@@ -53,7 +53,7 @@ class FeatureSpecContainerScope(
    suspend fun scenario(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName("Scenario: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
          context = this,
          xdisabled = false,
       )
@@ -62,13 +62,18 @@ class FeatureSpecContainerScope(
    suspend fun xscenario(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName("Scenario: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
          context = this,
          xdisabled = true,
       )
    }
 
    private suspend fun scenario(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName("Scenario: ", name, false), disabled = xdisabled, config = null, test = test)
+      registerTest(
+         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
+         disabled = xdisabled,
+         config = null,
+         test = test
+      )
    }
 }

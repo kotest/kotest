@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
@@ -38,7 +38,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    @ExperimentalKotest
    suspend fun ContainerScope.Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       registerContainer(
-         TestName("Context: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecContextContainerScope(this).test() }
@@ -49,7 +49,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    @ExperimentalKotest
    suspend fun ContainerScope.context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       registerContainer(
-         TestName("Context: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecContextContainerScope(this).test() }
@@ -61,7 +61,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    @ExperimentalKotest
    suspend fun ContainerScope.Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       registerContainer(
-         TestName("Given: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecGivenContainerScope(this).test() }
@@ -72,7 +72,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    @ExperimentalKotest
    suspend fun ContainerScope.given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       registerContainer(
-         TestName("Given: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecGivenContainerScope(this).test() }
@@ -83,7 +83,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    @Suppress("FunctionName")
    suspend fun ContainerScope.When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       registerContainer(
-         TestName("When: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecWhenContainerScope(this).test() }
@@ -93,7 +93,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
     */
    suspend fun ContainerScope.`when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       registerContainer(
-         TestName("When: ", name, true),
+         TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
          disabled = false,
          null,
       ) { BehaviorSpecWhenContainerScope(this).test() }

@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
@@ -40,9 +40,9 @@ interface StringSpecRootScope : RootScope {
       test: suspend TestScope.() -> Unit,
    ) {
       RootTestWithConfigBuilder(
-         this@StringSpecRootScope,
-         TestName(null, this, false),
-         false
+         context = this@StringSpecRootScope,
+         name = TestNameBuilder.builder(this).build(),
+         xdisabled = false
       ).config(
          enabled = enabled,
          invocations = invocations,
@@ -64,7 +64,11 @@ interface StringSpecRootScope : RootScope {
     * Adds a String Spec test using the default test case config.
     */
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
-      addTest(TestName(null, this, false), false, null) {
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         disabled = false,
+         config = null
+      ) {
          StringSpecScope(this.coroutineContext, testCase).test()
       }
    }

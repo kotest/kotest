@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -40,7 +40,7 @@ class ExpectSpecContainerScope(
       test: suspend ExpectSpecContainerScope.() -> Unit
    ) {
       registerContainer(
-         name = TestName("Context: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          disabled = xdisabled,
          config = null
       ) { ExpectSpecContainerScope(this).test() }
@@ -55,13 +55,13 @@ class ExpectSpecContainerScope(
    }
 
    private suspend fun registerExpect(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName("Expect: ", name, false), disabled = xdisabled, config = null, test = test)
+      registerTest(name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(), disabled = xdisabled, config = null, test = test)
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName("Expect: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
          context = this,
          xdisabled = false,
       )
@@ -70,7 +70,7 @@ class ExpectSpecContainerScope(
    suspend fun xexpect(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName("Expect: ", name, false),
+         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
          context = this,
          xdisabled = true,
       )

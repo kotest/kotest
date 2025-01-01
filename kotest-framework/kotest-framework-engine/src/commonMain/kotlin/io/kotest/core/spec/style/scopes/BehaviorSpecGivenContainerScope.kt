@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -46,7 +46,11 @@ class BehaviorSpecGivenContainerScope(
       xdisabled: Boolean,
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
    ) {
-      registerContainer(TestName("And: ", name, true), xdisabled, null) {
+      registerContainer(
+         name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
+         disabled = xdisabled,
+         config = null
+      ) {
          BehaviorSpecGivenContainerScope(this).test()
       }
    }
@@ -68,31 +72,31 @@ class BehaviorSpecGivenContainerScope(
       test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
       xdisabled: Boolean
    ) {
-      registerContainer(TestName("When: ", name, true), disabled = xdisabled, null) {
+      registerContainer(TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(), disabled = xdisabled, null) {
          BehaviorSpecWhenContainerScope(this).test()
       }
    }
 
    fun Then(name: String) = TestWithConfigBuilder(
-      TestName("Then: ", name, true),
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecGivenContainerScope,
       xdisabled = false
    )
 
    fun then(name: String) = TestWithConfigBuilder(
-      TestName("Then: ", name, true),
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecGivenContainerScope,
       xdisabled = false
    )
 
    fun xthen(name: String) = TestWithConfigBuilder(
-      TestName("Then: ", name, true),
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecGivenContainerScope,
       xdisabled = true
    )
 
    fun xThen(name: String) = TestWithConfigBuilder(
-      TestName("Then: ", name, true),
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecGivenContainerScope,
       xdisabled = true
    )
@@ -103,6 +107,6 @@ class BehaviorSpecGivenContainerScope(
    suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xdisabled: Boolean) {
-      registerTest(TestName("Then: ", name, true), disabled = xdisabled, null, test)
+      registerTest(TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(), disabled = xdisabled, null, test)
    }
 }

@@ -24,36 +24,50 @@ data class TestName(
    val suffix: String?,
    val defaultAffixes: Boolean,
 ) {
-
-   companion object {
-
-      operator fun invoke(name: String): TestName = TestName(null, name, null, false)
-
-      operator fun invoke(prefix: String?, name: String, defaultAffixes: Boolean): TestName =
-         TestName(prefix, name, null, defaultAffixes)
-
-      operator fun invoke(
-         prefix: String?,
-         name: String,
-         suffix: String?,
-         defaultAffixes: Boolean,
-      ): TestName {
-
-         val trimmed = name.removeAllExtraWhitespaces()
-         val (focus, bang, parsedName) = when {
-            trimmed.startsWith("!") -> Triple(first = false, second = true, third = trimmed.drop(1).trim())
-            trimmed.startsWith("f:") -> Triple(first = true, second = false, third = trimmed.drop(2).trim())
-            else -> Triple(first = false, second = false, third = trimmed)
-         }
-
-         return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes)
-      }
-   }
-
    init {
       require(name.isNotBlank() && name.isNotEmpty()) { "Cannot create test with blank or empty name" }
       require(!focus || !bang) { "Bang and focus cannot both be true" }
    }
 }
 
-private fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
+internal data class TestNameBuilder(
+   val rawname: String,
+   val prefix: String?,
+   val suffix: String?,
+   val defaultAffixes: Boolean,
+) {
+
+   internal companion object {
+      fun builder(rawname: String) = TestNameBuilder(
+         rawname = rawname,
+         prefix = null,
+         suffix = null,
+         defaultAffixes = false
+      )
+   }
+
+   fun withDefaultAffixes(): TestNameBuilder {
+      return copy(defaultAffixes = true)
+   }
+
+   fun withPrefix(prefix: String): TestNameBuilder {
+      return copy(prefix = prefix)
+   }
+
+   fun withSuffix(suffix: String): TestNameBuilder {
+      return copy(suffix = suffix)
+   }
+
+   fun build(): TestName {
+      val trimmed = rawname.removeAllExtraWhitespaces()
+      val (focus, bang, parsedName) = when {
+         trimmed.startsWith("!") -> Triple(first = false, second = true, third = trimmed.drop(1).trim())
+         trimmed.startsWith("f:") -> Triple(first = true, second = false, third = trimmed.drop(2).trim())
+         else -> Triple(first = false, second = false, third = trimmed)
+      }
+
+      return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes)
+   }
+
+   fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
+}

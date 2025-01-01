@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -52,7 +52,7 @@ class DescribeSpecContainerScope(
       test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
       registerContainer(
-         name = TestName("Context: ", name, disabled),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          disabled = disabled,
          config = null
       ) { DescribeSpecContainerScope(this).test() }
@@ -60,11 +60,15 @@ class DescribeSpecContainerScope(
 
    @ExperimentalKotest
    fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      ContainerWithConfigBuilder(TestName(name), this, false) { DescribeSpecContainerScope(it) }
+      ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, false) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
    fun xcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      ContainerWithConfigBuilder(TestName("Context: ", name, false), this, true) { DescribeSpecContainerScope(it) }
+      ContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         this,
+         true
+      ) { DescribeSpecContainerScope(it) }
 
    /**
     * Registers a container test.
@@ -86,7 +90,7 @@ class DescribeSpecContainerScope(
       test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
       registerContainer(
-         name = TestName("Describe: ", name, xdisabled),
+         name = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          disabled = xdisabled,
          config = null,
       ) { DescribeSpecContainerScope(this).test() }
@@ -96,7 +100,7 @@ class DescribeSpecContainerScope(
    @ExperimentalKotest
    fun describe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         TestName("Describe: ", name, false),
+         TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          this,
          false
       ) { DescribeSpecContainerScope(it) }
@@ -104,7 +108,7 @@ class DescribeSpecContainerScope(
    @ExperimentalKotest
    fun xdescribe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         TestName("Describe: ", name, false),
+         TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          this,
          true
       ) { DescribeSpecContainerScope(it) }
@@ -112,7 +116,7 @@ class DescribeSpecContainerScope(
    suspend fun it(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         TestName("It: ", name, false),
+         TestNameBuilder.builder(name).withPrefix("It: ").build(),
          this,
          xdisabled = false,
       )
@@ -121,17 +125,25 @@ class DescribeSpecContainerScope(
    suspend fun xit(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         TestName("It: ", name, false),
+         TestNameBuilder.builder(name).withPrefix("It: ").build(),
          this,
          xdisabled = true,
       )
    }
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName(name), disabled = false, config = null) { DescribeSpecContainerScope(this).test() }
+      registerTest(
+         name = TestNameBuilder.builder(name).build(),
+         disabled = false,
+         config = null
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName(name), disabled = true, config = null) { DescribeSpecContainerScope(this).test() }
+      registerTest(
+         name = TestNameBuilder.builder(name).build(),
+         disabled = true,
+         config = null
+      ) { DescribeSpecContainerScope(this).test() }
    }
 }

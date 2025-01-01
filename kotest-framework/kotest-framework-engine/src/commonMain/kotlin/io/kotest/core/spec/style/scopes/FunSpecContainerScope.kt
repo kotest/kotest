@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -22,14 +23,14 @@ class FunSpecContainerScope(
     * Adds a 'context' container test as a child of the current test case.
     */
    suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), false, null) { FunSpecContainerScope(this).test() }
+      registerContainer(TestNameBuilder.builder(name).build(), false, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
     * Adds a disabled container test to this context.
     */
    suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
+      registerContainer(TestNameBuilder.builder(name).build(), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
@@ -38,7 +39,7 @@ class FunSpecContainerScope(
    @ExperimentalKotest
    fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestName(name),
+         name = TestNameBuilder.builder(name).build(),
          context = this,
          xdisabled = false,
          contextFn = { FunSpecContainerScope(it) }
@@ -51,7 +52,7 @@ class FunSpecContainerScope(
    @ExperimentalKotest
    fun xcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         TestName(name),
+         TestNameBuilder.builder(name).build(),
          this,
          true
       ) { FunSpecContainerScope(it) }
@@ -63,7 +64,7 @@ class FunSpecContainerScope(
    suspend fun test(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName(name),
+         name = TestNameBuilder.builder(name).build(),
          context = this,
          xdisabled = false,
       )
@@ -75,7 +76,7 @@ class FunSpecContainerScope(
    suspend fun xtest(name: String): TestWithConfigBuilder {
       TestDslState.startTest(name)
       return TestWithConfigBuilder(
-         name = TestName(name),
+         name = TestNameBuilder.builder(name).build(),
          context = this,
          xdisabled = true,
       )
@@ -85,13 +86,13 @@ class FunSpecContainerScope(
     * Adds a test case to this context.
     */
    suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName(name), disabled = false, config = null, test = test)
+      registerTest(name = TestNameBuilder.builder(name).build(), disabled = false, config = null, test = test)
    }
 
    /**
     * Adds a disabled test case to this context.
     */
    suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName(name), disabled = true, config = null, test = test)
+      registerTest(name = TestNameBuilder.builder(name).build(), disabled = true, config = null, test = test)
    }
 }

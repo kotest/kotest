@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style
 
 import io.kotest.core.extensions.Extension
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
@@ -63,7 +63,7 @@ abstract class AnnotationSpec : Spec() {
       return if (this.isExpectingException()) {
          val expected = this.getExpectedException()
          RootTest(
-            name = TestName(name),
+            name = TestNameBuilder.builder(name).build(),
             test = callExpectingException(expected),
             source = sourceRef(),
             type = TestType.Test,
@@ -73,7 +73,7 @@ abstract class AnnotationSpec : Spec() {
          )
       } else {
          RootTest(
-            name = TestName(name),
+            name = TestNameBuilder.builder(name).build(),
             test = callNotExpectingException(),
             source = sourceRef(),
             type = TestType.Test,
@@ -250,7 +250,9 @@ abstract class AnnotationSpec : Spec() {
     * ```
     */
    annotation class Test(val expected: KClass<out Throwable> = None::class) {
-      object None : Throwable()
+      object None : Throwable() {
+         private fun readResolve(): Any = None
+      }
    }
 
    /**
