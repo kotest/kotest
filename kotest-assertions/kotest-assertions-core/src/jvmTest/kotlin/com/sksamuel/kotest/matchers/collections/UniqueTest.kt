@@ -349,11 +349,6 @@ class UniqueTest : WordSpec({
       }
    }
 
-
-
-
-
-
    "Javadocs tests" should {
       "Array.shouldBeUnique()" {
          val array = arrayOf("apple", "banana", "cherry")
