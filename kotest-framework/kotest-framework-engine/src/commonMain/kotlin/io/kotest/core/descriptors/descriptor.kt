@@ -6,6 +6,7 @@ import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.names.TestName
 import kotlin.reflect.KClass
 
+@Deprecated("Use TestPath from io.kotest.common", ReplaceWith("io.kotest.common.TestPath"))
 typealias TestPath = io.kotest.common.TestPath
 
 /**

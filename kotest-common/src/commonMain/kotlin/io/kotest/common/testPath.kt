@@ -5,7 +5,11 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * A [TestPath] is a unique flattened string identifier for a test.
- * Note: A test path can include an optional spec name.
+ *
+ * They begin with the spec fully qualified name and then include the hierarchy of test names
+ * separated by a delimiter.
+ *
+ * For example, a test path might be "io.kotest.MyTest/test case parent -- test case"
  */
 data class TestPath(val value: String) {
    init {

@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  * The path is constructed by appending an optional spec name and then the test names using the provided delimiters.
  */
 internal data class TestPathBuilder(
-   private val spec: KClass<*>? = null,
+   private val spec: KClass<*>,
    private val tests: List<String>,
 ) {
 
@@ -20,19 +20,20 @@ internal data class TestPathBuilder(
       const val TEST_DELIMITER = " -- "
 
       /**
-       * Returns a new [TestPathBuilder] instance with the default delimiters.
+       * Returns a new [TestPathBuilder] instance for the given spec.
        */
-      fun builder(): TestPathBuilder = TestPathBuilder(null, emptyList())
+      fun builder(spec: KClass<*>): TestPathBuilder = TestPathBuilder(spec, emptyList())
+
+      /**
+       * Returns a new [TestPathBuilder] instance for the given spec.
+       */
+      inline fun <reified T> builder(): TestPathBuilder = builder(T::class)
 
       fun parse(path: String): TestPath {
-         val parts = path.split(TEST_DELIMITER)
-         return parts.fold(builder()) { acc, op -> acc.withTest(op) }.build()
+//         val parts = path.split(TEST_DELIMITER)
+//         return parts.fold(builder()) { acc, op -> acc.withTest(op) }.build()
+         return TestPath("")
       }
-   }
-
-   fun withSpec(spec: KClass<*>): TestPathBuilder {
-      require(tests.isEmpty()) { "Must add spec before tests" }
-      return this.copy(spec = spec)
    }
 
    fun withTest(testName: String): TestPathBuilder {
@@ -41,9 +42,8 @@ internal data class TestPathBuilder(
 
    fun build(): TestPath {
       require(tests.isNotEmpty())
-      val specPath = spec?.bestName()
       val testPath = tests.joinToString(TEST_DELIMITER)
-      val path = listOfNotNull(specPath, testPath).joinToString(SPEC_DELIMITER)
+      val path = listOf(spec.bestName(), testPath).joinToString(SPEC_DELIMITER)
       return TestPath(path.trim())
    }
 }
