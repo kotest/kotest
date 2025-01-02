@@ -148,11 +148,11 @@ abstract class Spec : TestConfiguration() {
     * allows the test engine to spool up a new thread just for that test.
     */
    @ExperimentalKotest
-   @JsName("testExecutionMode_js")
-   var testExecutionMode: TestExecutionMode? = null
+   open fun testExecutionMode(): TestExecutionMode? = null
 
    @ExperimentalKotest
-   open fun testExecutionMode(): TestExecutionMode? = null
+   @JsName("testExecutionMode_js")
+   var testExecutionMode: TestExecutionMode? = null
 
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.

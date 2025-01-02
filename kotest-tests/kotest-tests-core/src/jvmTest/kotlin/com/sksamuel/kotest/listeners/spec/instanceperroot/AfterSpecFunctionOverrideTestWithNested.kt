@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class AfterSpecFunctionOverrideTest : FunSpec() {
+class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
 
    companion object {
       private val counter = AtomicInteger(0)
@@ -14,7 +14,7 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
 
-   // should be invoked once per isolated root
+   // should be invoked once per isolated root test
    override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -22,16 +22,19 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
    init {
 
       afterProject {
-         counter.get() shouldBe 4
+         counter.get() shouldBe 2 // not 3 because one of the roots is ignored
       }
 
-      // this shouldn't trigger the after spec as its in an isolated instance
       test("ignored test").config(enabled = false) {}
 
-      test("a") { }
-      test("b") { }
-      test("c") { }
-      test("d") { }
+      context("context 1") {
+         test("a") { }
+         test("b") { }
+      }
+
+      context("context 2") {
+         test("c") { }
+         test("d") { }
+      }
    }
 }
-
