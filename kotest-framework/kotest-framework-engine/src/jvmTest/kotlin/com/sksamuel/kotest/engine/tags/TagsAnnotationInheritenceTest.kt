@@ -29,7 +29,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("a", "b", "c", "d")
@@ -43,7 +43,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.testCaseOrder = TestCaseOrder.Random
 
          // all tests should be filtered out because of the @Tags
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe emptySet()
@@ -56,7 +56,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.testCaseOrder = TestCaseOrder.Random
 
          // linux is included for all, and we're using an 'or'
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("a", "b", "c", "d")
@@ -69,7 +69,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.testCaseOrder = TestCaseOrder.Random
 
          // linux should be included for all, but then postgres tests excluded as well
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("a", "d")
@@ -82,7 +82,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.testCaseOrder = TestCaseOrder.Random
 
          // Mysql tests should be excluded
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("b", "d")
@@ -95,7 +95,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          conf.testCaseOrder = TestCaseOrder.Random
 
          // Mysql tests should be excluded
-         Materializer(conf).roots(MyTestClass())
+         Materializer(conf).materialize(MyTestClass())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("b", "c")
@@ -113,7 +113,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             conf.tagInheritance = inheritanceEnabled
             conf.testCaseOrder = TestCaseOrder.Random
 
-            Materializer(conf).roots(InheritingTest())
+            Materializer(conf).materialize(InheritingTest())
                .filter { it.isEnabledInternal(conf).isEnabled }
                .map { it.name.name }
                .toSet() shouldBe expectedTests

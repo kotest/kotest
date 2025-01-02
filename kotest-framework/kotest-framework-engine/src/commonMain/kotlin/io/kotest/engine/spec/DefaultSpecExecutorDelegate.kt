@@ -31,7 +31,7 @@ internal class DefaultSpecExecutorDelegate(
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
       val specContext = SpecContext.create()
-      materializer.roots(spec)
+      materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val scope = DuplicateNameHandlingTestScope(

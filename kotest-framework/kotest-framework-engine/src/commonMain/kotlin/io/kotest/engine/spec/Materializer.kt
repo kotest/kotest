@@ -32,7 +32,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
     * Will adjust names to be unique based on the duplicateTestNameMode setting in either
     * the spec or project configuration.
     */
-   fun roots(spec: Spec): List<TestCase> {
+   fun materialize(spec: Spec): List<TestCase> {
 
       val duplicateTestNameMode = spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode
       val handler = DuplicateTestNameHandler(duplicateTestNameMode)
@@ -75,7 +75,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
    /**
     * Materializes a [NestedTest] into a runtime [TestCase] by attaching it to the given parent.
     */
-   fun nested(nested: NestedTest, parent: TestCase): TestCase {
+   fun materialize(nested: NestedTest, parent: TestCase): TestCase {
 
       // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
       // then it will remove the common prefix from the child, to workaround this, we will add a dash at the

@@ -65,7 +65,7 @@ internal class SpecExecutor2(
       return withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          val specContext = SpecContext.create()
          runInstancePipeline(spec, specContext) {
-            val tests = Materializer(engineContext.configuration).roots(spec).withIndex().toList()
+            val tests = Materializer(engineContext.configuration).materialize(spec).withIndex().toList()
             enqueueRootTests(spec, tests, specContext)
          }
       }
@@ -117,7 +117,7 @@ internal class SpecExecutor2(
          // we switch to a new coroutine for each spec instance
          withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
             runInstancePipeline(spec, specContext) {
-               val test = Materializer(engineContext.configuration).roots(spec).first { it.descriptor == target }
+               val test = Materializer(engineContext.configuration).materialize(spec).first { it.descriptor == target }
                val result = executeTest(testCase = test, specContext = specContext)
                Result.success(mapOf(test to result))
             }
@@ -224,7 +224,7 @@ internal class SpecExecutor2(
          logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
 
          val nestedTestCase = Materializer(engineContext.configuration)
-            .nested(nested, testCase)
+            .materialize(nested, testCase)
 
          if (skipRemaining) {
 

@@ -138,7 +138,7 @@ class TestCaseExecutorTest : FunSpec({
             finished = true
          }
       }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
-      val testCase = Materializer(ProjectConfiguration()).roots(AfterTestWithException()).shuffled().first()
+      val testCase = Materializer(ProjectConfiguration()).materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
