@@ -41,7 +41,6 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    suspend fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -59,7 +58,6 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
       ).config(
          enabled = enabled,
          invocations = invocations,
-         threads = threads,
          tags = tags,
          timeout = timeout,
          extensions = extensions,
@@ -110,7 +108,6 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -127,7 +124,6 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
          invocationTimeout = invocationTimeout,
          enabledIf = enabledIf,
          invocations = invocations,
-         threads = threads,
          severity = severity,
          failfast = failfast,
       )

@@ -12,7 +12,7 @@ private val counterBeforeTestConcurrent = AtomicInteger(0)
 class SpecThreadBeforeTestConcurrentSingleInstanceTest : FunSpec({
 
    isolationMode = IsolationMode.SingleInstance
-   threads = 3
+//   threads = 3
 
    val lock = ReentrantLock()
 

@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration
 @ApplyExtension(SpringExtension::class)
 class IsolationModeTest : WordSpec() {
 
-   override fun isolationMode() = IsolationMode.InstancePerTest
+   override fun isolationMode() = IsolationMode.InstancePerRoot
 
    @Autowired
    private lateinit var service: UserService

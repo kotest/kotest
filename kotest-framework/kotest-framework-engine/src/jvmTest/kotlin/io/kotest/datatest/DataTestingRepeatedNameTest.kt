@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldBe
 class DataTestingRepeatedTestNameTest : FunSpec() {
    init {
 
-      isolationMode = IsolationMode.InstancePerLeaf
+      isolationMode = IsolationMode.InstancePerRoot
 
       test("with describe spec repeated names should have count appended") {
 

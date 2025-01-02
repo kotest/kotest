@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.spec.coroutine
 
-import com.sksamuel.kotest.engine.coroutines.provokeThreadSwitch
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FeatureSpec
@@ -52,27 +51,11 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
             counter.get() shouldBe 2
          }
          scenario("multiple invocations").config(invocations = 20) {
-            delay(5)
+            delay(2)
             count.incrementAndGet()
          }
          scenario("previous test result") {
             count.get() shouldBe 20
-         }
-         scenario("multiple invocations and parallelism").config(invocations = 20, threads = 10) {
-            count.incrementAndGet()
-            provokeThreadSwitch()
-         }
-         scenario("previous test result 2") {
-            count.get() shouldBe 40
-         }
-         // we need enough invocations to ensure multiple threads get used up
-         scenario("multiple threads should use a thread pool for the coroutines").config(
-            invocations = 6,
-            threads = 6
-         ) {
-            // strip off the coroutine suffix
-            threadnames.add(currentThreadWithoutCoroutine())
-            provokeThreadSwitch()
          }
          scenario("previous test result 3") {
             threadnames.size shouldBeGreaterThan 1
@@ -84,7 +67,7 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
    }
 
    private suspend fun longop() {
-      delay(500)
+      delay(10)
       longOpCompleted = true
    }
 }
