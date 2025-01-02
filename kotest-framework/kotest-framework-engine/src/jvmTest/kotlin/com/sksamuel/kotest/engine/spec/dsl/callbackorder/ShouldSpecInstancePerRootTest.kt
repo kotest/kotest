@@ -27,7 +27,7 @@ class ShouldSpecInstancePerRootTest : ShouldSpec() {
          Counters.specs.size shouldBe 3
          Counters.threads.size shouldBe 1
          withClue("riker") {
-            Counters.executed.count { it == "riker" } shouldBe 3
+            Counters.executed.count { it == "riker" } shouldBe 1
          }
          withClue("data") {
             Counters.executed.count { it == "data" } shouldBe 1
@@ -36,7 +36,7 @@ class ShouldSpecInstancePerRootTest : ShouldSpec() {
             Counters.executed.count { it == "lwaxana" } shouldBe 1
          }
          withClue("crusher") {
-            Counters.executed.count { it == "crusher" } shouldBe 4
+            Counters.executed.count { it == "crusher" } shouldBe 1
          }
          withClue("worf") {
             Counters.executed.count { it == "worf" } shouldBe 1
@@ -45,13 +45,13 @@ class ShouldSpecInstancePerRootTest : ShouldSpec() {
             Counters.executed.count { it == "keiko" } shouldBe 1
          }
          withClue("mott") {
-            Counters.executed.count { it == "mott" } shouldBe 4
+            Counters.executed.count { it == "mott" } shouldBe 1
          }
          withClue("ro") {
             Counters.executed.count { it == "ro" } shouldBe 1
          }
          withClue("obrien") {
-            Counters.executed.count { it == "obrien" } shouldBe 2
+            Counters.executed.count { it == "obrien" } shouldBe 1
          }
          withClue("barclay") {
             Counters.executed.count { it == "barclay" } shouldBe 1

@@ -1,7 +1,6 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.Logger
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.log
 import io.kotest.core.spec.DslDrivenSpec
@@ -13,6 +12,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
@@ -164,7 +164,7 @@ internal class SpecExecutor2(
 
       val scope = DuplicateNameHandlingTestScope(
          engineContext.configuration.duplicateTestNameMode,
-         SpecExecutor2TestScope(testCase, specContext, coroutineContext, null),
+         SpecExecutor2TestScope(testCase, specContext, coroutineContext),
       )
 
       val result = testExecutor.execute(testCase, scope, specContext)
@@ -204,21 +204,17 @@ internal class SpecExecutor2(
    /**
     * A [TestScope] that runs discovered tests as soon as they are registered in the same spec instance.
     *
-    * This implementation tracks fail fast if configured via TestCase config or globally.
+    * This implementation tracks fail fast if configured via spec config or globally.
     */
    inner class SpecExecutor2TestScope(
       override val testCase: TestCase,
       val specContext: SpecContext,
       override val coroutineContext: CoroutineContext,
-      private val parentScope: SpecExecutor2TestScope?,
    ) : TestScope {
 
       private val logger = Logger(SpecExecutor2TestScope::class)
 
-      // set to true if we failed fast and should ignore further tests
-      private var skipRemaining = false
-
-      val failFast = "Skipping test due to fail fast"
+      val failFastReason = "Skipping test due to fail fast"
 
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Registering nested test '${nested}") }
@@ -226,26 +222,21 @@ internal class SpecExecutor2(
          val nestedTestCase = Materializer(engineContext.configuration)
             .materialize(nested, testCase)
 
-         if (skipRemaining) {
+         // if a previous test has failed and this test is marked as fail fast, it will be ignored
 
-            logger.log { Pair(testCase.name.name, failFast) }
-            engineContext.listener.testIgnored(nestedTestCase, failFast)
+         val failFast = nestedTestCase.config.failfast ||
+            nestedTestCase.spec.failfast == true ||
+            engineContext.configuration.projectWideFailFast
+
+         if (failFast && results.hasErrorOrFailure()) {
+
+            logger.log { Pair(testCase.name.name, failFastReason) }
+            engineContext.listener.testIgnored(nestedTestCase, failFastReason)
             TestExtensions(engineContext.configuration.registry)
-               .ignoredTestListenersInvocation(nestedTestCase, failFast)
+               .ignoredTestListenersInvocation(nestedTestCase, failFastReason)
 
          } else {
-
-            val result = executeTest(nestedTestCase, specContext)
-
-            // if running this nested test results in an error, and fail fast is configured
-            // we won't launch anymore nested tests
-            if (result.isErrorOrFailure) {
-               if (testCase.config.failfast || engineContext.configuration.projectWideFailFast) {
-                  logger.log { Pair(testCase.name.name, "Test failed - setting skipRemaining = true") }
-                  skipRemaining = true
-                  parentScope?.skipRemaining = true
-               }
-            }
+            executeTest(nestedTestCase, specContext)
          }
       }
    }

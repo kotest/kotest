@@ -161,6 +161,10 @@ abstract class Spec : TestConfiguration() {
    @JsName("isolation_mode_js")
    var isolationMode: IsolationMode? = null
 
+   /**
+    * Marks all tests in this spec as fail fast.
+    * So any test failure will fail any remaining tests in this spec, at any nested level
+    */
    var failfast: Boolean? = null
 
    var retries: Int? = null

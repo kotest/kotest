@@ -37,6 +37,13 @@ class TestResults {
    }
 
    /**
+    * Returns true if any test has failed.
+    */
+   fun hasErrorOrFailure(): Boolean {
+      return results.values.any { it?.isErrorOrFailure == true  }
+   }
+
+   /**
     * Returns true if for a given test case, all started child tests have been completed.
     */
    fun isSubtreeComplete(testCase: TestCase): Boolean {
