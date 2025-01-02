@@ -16,14 +16,14 @@ import java.util.Properties
 @JVMOnly
 internal object KotestPropertiesLoader {
 
-   private const val DefaultKotestPropertiesFilename = "/kotest.properties"
+   private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
 
    /**
     * Returns the filename to use for kotest system properties. Allows the filename
     * to be overriden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
-      syspropOrEnv(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
+      syspropOrEnv(KotestEngineProperties.propertiesFilename) ?: DEFAULT_KOTEST_PROPERTIES_FILENAME
 
    /**
     * Loads system props from the given [filename].
