@@ -221,14 +221,14 @@ internal class SpecExecutor2(
       val failFast = "Skipping test due to fail fast"
 
       override suspend fun registerTestCase(nested: NestedTest) {
-         logger.log { Pair(testCase.name.testName, "Registering nested test '${nested}") }
+         logger.log { Pair(testCase.name.name, "Registering nested test '${nested}") }
 
          val nestedTestCase = Materializer(engineContext.configuration)
             .materialize(nested, testCase)
 
          if (skipRemaining) {
 
-            logger.log { Pair(testCase.name.testName, failFast) }
+            logger.log { Pair(testCase.name.name, failFast) }
             engineContext.listener.testIgnored(nestedTestCase, failFast)
             TestExtensions(engineContext.configuration.registry)
                .ignoredTestListenersInvocation(nestedTestCase, failFast)
@@ -241,7 +241,7 @@ internal class SpecExecutor2(
             // we won't launch anymore nested tests
             if (result.isErrorOrFailure) {
                if (testCase.config.failfast || engineContext.configuration.projectWideFailFast) {
-                  logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
+                  logger.log { Pair(testCase.name.name, "Test failed - setting skipRemaining = true") }
                   skipRemaining = true
                   parentScope?.skipRemaining = true
                }
