@@ -56,6 +56,7 @@ internal class SpecExecutor2(
     */
    suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "Materializing tests") }
+
       // for the primary spec that is passed in, we need to run the instance pipeline,
       // then register all the root tests. These root tests will either execute in the
       // same instance (SingleInstance mode), or in a fresh instance (InstancePerRoot mode).
@@ -124,7 +125,9 @@ internal class SpecExecutor2(
       }
    }
 
-   // we use the execution mode to determine how many tests to run concurrently
+   /**
+    * Returns how many root tests should be launched concurrently.
+    */
    private fun concurrency(spec: Spec): Int {
       val concurrency = testExecutionMode(spec).concurrency
       log { "Launching tests with $concurrency max concurrency" }
@@ -184,7 +187,8 @@ internal class SpecExecutor2(
    }
 
    /**
-    * Resolves the [TestExecutionMode] for the given spec.
+    * Resolves the [TestExecutionMode] for the given spec, first checking spec level config,
+    * before using project level default.
     */
    private fun testExecutionMode(spec: Spec): TestExecutionMode {
       return spec.testExecutionMode ?: engineContext.configuration.testExecutionMode
