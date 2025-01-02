@@ -45,7 +45,7 @@
 //         val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()
 //         val threads = testCase.spec.threads ?: testCase.spec.threads() ?: 1
 //
-//         logger.log { Pair(testCase.name.testName, "userFactory=$userFactory; threads=$threads") }
+//         logger.log { Pair(testCase.name.name, "userFactory=$userFactory; threads=$threads") }
 //
 //         val (factory, factoryIsEphemeral) = when {
 //            userFactory != null -> Pair(userFactory, false)
@@ -54,7 +54,7 @@
 //         }
 //
 //         try {
-//            logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $factory") }
+//            logger.log { Pair(testCase.name.name, "Switching dispatcher using factory $factory") }
 //            factory.withDispatcher(testCase) {
 //               test(testCase, scope.withCoroutineContext(coroutineContext))
 //            }

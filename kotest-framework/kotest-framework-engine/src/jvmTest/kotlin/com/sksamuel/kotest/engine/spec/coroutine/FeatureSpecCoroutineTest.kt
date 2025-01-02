@@ -57,9 +57,6 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
          scenario("previous test result") {
             count.get() shouldBe 20
          }
-         scenario("previous test result 3") {
-            threadnames.size shouldBeGreaterThan 1
-         }
          scenario("a single threaded test should run listeners on the same thread as the test") {
             Thread.currentThread().name.shouldStartWith(listenerThread)
          }

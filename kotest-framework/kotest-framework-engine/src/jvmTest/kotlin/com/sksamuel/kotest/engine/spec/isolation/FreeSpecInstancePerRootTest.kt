@@ -22,7 +22,7 @@ class FreeSpecInstancePerRootTest : FreeSpec() {
       }
 
       afterTest {
-         tests.add(it.a.name.testName)
+         tests.add(it.a.name.name)
       }
 
       isolationMode = IsolationMode.InstancePerRoot
