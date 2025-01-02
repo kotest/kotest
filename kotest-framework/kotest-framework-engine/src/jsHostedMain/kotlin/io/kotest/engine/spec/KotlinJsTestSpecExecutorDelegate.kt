@@ -23,6 +23,7 @@ import kotlin.coroutines.coroutineContext
 /**
  * A [SpecExecutorDelegate] running tests via the Kotlin test infra for JS-hosted targets.
  */
+@Suppress("DEPRECATION")
 @ExperimentalKotest
 internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineContext) : SpecExecutorDelegate {
 
