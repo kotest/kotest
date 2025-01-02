@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.DescribeSpec
 @EnabledIf(LinuxCondition::class)
 class ReusedNameTest : DescribeSpec({
 
-   isolationMode = IsolationMode.InstancePerRoot
+   isolationMode = IsolationMode.InstancePerLeaf
 
    describe("repeating container description") {
       it("x") {

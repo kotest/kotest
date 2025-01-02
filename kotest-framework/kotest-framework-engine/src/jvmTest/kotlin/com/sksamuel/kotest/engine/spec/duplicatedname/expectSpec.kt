@@ -24,4 +24,5 @@ abstract class ExpectSpecDuplicateTest(iso: IsolationMode) : ExpectSpec() {
 }
 
 class ExpectSpecSingleInstanceDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.SingleInstance)
-class ExpectSpecInstancePerRootDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerRoot)
+class ExpectSpecInstancePerLeafDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerLeaf)
+class ExpectSpecInstancePerTestDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerTest)

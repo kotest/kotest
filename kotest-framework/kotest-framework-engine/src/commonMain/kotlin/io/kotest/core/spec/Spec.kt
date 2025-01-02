@@ -6,7 +6,6 @@ import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -136,33 +135,49 @@ abstract class Spec : TestConfiguration() {
    open fun assertionMode(): AssertionMode? = null
 
    /**
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    *
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
+    */
+   open fun threads(): Int? = null
+
+   /**
     * Sets the number of tests that will be launched concurrently.
     *
     * Each test is launched into its own coroutine. This parameter determines how many test
     * coroutines are launched concurrently inside of this spec.
     *
-    * Setting this parameter to [TestExecutionMode.Concurrent] will result in all tests of this spec
+    * Setting this parameter to [ProjectConfiguration.MaxConcurrency] will result in all tests of this spec
     * being launched concurrently.
+    *
+    * Note: This value does not change the number of threads used by the test engine. By default
+    * the engine will create a single thread. To change that see [ProjectConfiguration.parallelism]. In addition,
+    * all tests inside a spec will use the same dispatcher to ensure callbacks operate on the same thread.
+    * To change that behavior, see [dispatcherAffinity].
     */
    @ExperimentalKotest
-   var testExecutionMode: TestExecutionMode? = null
+   open fun concurrency(): Int? = null
 
-//   /**
-//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-//    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-//    * the execution thread. To change this, set this value to false. This value can also be
-//    * set globally in [ProjectConfiguration.dispatcherAffinity].
-//    *
-//    * When this value is false, the framework is free to assign different dispatchers to different
-//    * root tests (nested tests always run in the same thread as their parent test).
-//    *
-//    * Note: Setting this value alone will not increase the number of threads used. For that,
-//    * see [ProjectConfiguration.parallelism].
-//    */
-//   @ExperimentalKotest
-//   open fun dispatcherAffinity(): Boolean? = null
+   /**
+    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
+    * set globally in [ProjectConfiguration.dispatcherAffinity].
+    *
+    * When this value is false, the framework is free to assign different dispatchers to different
+    * root tests (nested tests always run in the same thread as their parent test).
+    *
+    * Note: Setting this value alone will not increase the number of threads used. For that,
+    * see [ProjectConfiguration.parallelism].
+    */
+   @ExperimentalKotest
+   open fun dispatcherAffinity(): Boolean? = null
 
-//   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
+   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
 
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
@@ -180,21 +195,39 @@ abstract class Spec : TestConfiguration() {
    var retries: Int? = null
 
    var retryDelay: Duration? = null
-//
-//   /**
-//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-//    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-//    * the execution thread. To change this, set this value to false. This value can also be
-//    * set globally in [ProjectConfiguration.dispatcherAffinity].
-//    *
-//    * When this value is false, the framework is free to assign different dispatchers to different
-//    * root tests (nested tests always run in the same thread as their parent test).
-//    *
-//    * Note: This setting has no effect unless the number of threads is increased; see [ProjectConfiguration.parallelism].
-//    */
-//   @ExperimentalKotest
-//   @JsName("dispatcherAffinity_js")
-//   var dispatcherAffinity: Boolean? = null
+
+   /**
+    * Sets the number of tests that will be launched concurrently.
+    *
+    * Each test is launched into its own coroutine. This parameter determines how many test
+    * coroutines are launched concurrently inside this spec.
+    *
+    * Setting this parameter to [ProjectConfiguration.MaxConcurrency] will result in all tests of this spec
+    * being launched concurrently.
+    *
+    * Note: This value does not change the number of threads used by the test engine. By default
+    * the engine will create a single thread. To change that see [ProjectConfiguration.parallelism]. In addition,
+    * all tests inside a spec will use the same dispatcher to ensure callbacks operate on the same thread.
+    * To change that behavior, see [dispatcherAffinity].
+    */
+   @ExperimentalKotest
+   @JsName("concurrency_js")
+   var concurrency: Int? = null
+
+   /**
+    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
+    * set globally in [ProjectConfiguration.dispatcherAffinity].
+    *
+    * When this value is false, the framework is free to assign different dispatchers to different
+    * root tests (nested tests always run in the same thread as their parent test).
+    *
+    * Note: This setting has no effect unless the number of threads is increased; see [ProjectConfiguration.parallelism].
+    */
+   @ExperimentalKotest
+   @JsName("dispatcherAffinity_js")
+   var dispatcherAffinity: Boolean? = null
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
@@ -234,9 +267,9 @@ abstract class Spec : TestConfiguration() {
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
-//   @JsName("coroutineDispatcherFactory_js")
-//   @ExperimentalKotest
-//   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
+   @JsName("coroutineDispatcherFactory_js")
+   @ExperimentalKotest
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    var coroutineTestScope: Boolean? = null
 
@@ -246,6 +279,18 @@ abstract class Spec : TestConfiguration() {
     */
    @KotestInternal
    var nonDeterministicTestVirtualTimeEnabled: Boolean = false
+
+   /**
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    *
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
+    */
+   @JsName("threads_var")
+   var threads: Int? = null
 
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.

@@ -8,7 +8,8 @@ import java.util.concurrent.locks.ReentrantLock
 
 class WithLocksNestedSingleInstanceTest : FunSpec({
 
-   isolationMode = IsolationMode.InstancePerRoot
+   isolationMode = IsolationMode.SingleInstance
+   threads = 3
 
    val lock = ReentrantLock()
 

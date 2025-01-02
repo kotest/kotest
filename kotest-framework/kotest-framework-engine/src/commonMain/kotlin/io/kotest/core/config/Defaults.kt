@@ -1,6 +1,5 @@
 package io.kotest.core.config
 
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -22,11 +21,10 @@ object Defaults {
    val defaultRetryDelayFn: ((TestCase, Int) -> Duration)? = null
 
    const val invocations: Int = 1
-//   const val threads = 1
+   const val threads = 1
    const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
    const val ignorePrivateClasses: Boolean = false
-   val testExecutionMode = TestExecutionMode.Sequential
 
    val assertionMode: AssertionMode = AssertionMode.None
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
@@ -37,7 +35,6 @@ object Defaults {
    val severity: TestCaseSeverityLevel = TestCaseSeverityLevel.NORMAL
 
    const val coroutineDebugProbes: Boolean = false
-//   const val testCoroutineDispatcher: Boolean = false
    const val coroutineTestScope: Boolean = false
    const val blockingTest: Boolean = false
 
@@ -47,7 +44,7 @@ object Defaults {
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
-//   const val parallelism: Int = 1
+   const val parallelism: Int = 1
 
    const val defaultTimeoutMillis = 10 * 60 * 1000L
    const val defaultInvocationTimeoutMillis = 10 * 60 * 1000L
@@ -62,8 +59,8 @@ object Defaults {
    val defaultTestNameCase: TestNameCase = TestNameCase.AsIs
    val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
-//   const val concurrentTests = ProjectConfiguration.Sequential
-//   const val dispatcherAffinity = true
+   const val concurrentTests = ProjectConfiguration.Sequential
+   const val dispatcherAffinity = true
 
    const val allowOutOfOrderCallbacks = false
 }

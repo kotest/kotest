@@ -39,7 +39,7 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
       // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
       // which declares a single level of `test`s.
       kotlinJsTestFramework.suite(TestNameEscaper.escape(spec::class.bestName()), ignored = false) {
-         materializer.roots(spec).forEach { testCase ->
+         materializer.materialize(spec).forEach { testCase ->
             kotlinJsTestFramework.test(
                TestNameEscaper.escape(formatter.format(testCase)),
                ignored = testCase.isEnabledInternal(context.configuration).isDisabled

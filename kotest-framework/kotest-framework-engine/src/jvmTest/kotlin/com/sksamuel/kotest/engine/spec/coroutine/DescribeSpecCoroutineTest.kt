@@ -13,7 +13,7 @@ class DescribeSpecCoroutineTest : DescribeSpec() {
       describe("a") {
          it("b") {
             launch {
-               delay(2)
+               delay(100)
             }
          }
       }

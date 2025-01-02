@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.concurrency.use
 import io.kotest.core.project.TestSuite

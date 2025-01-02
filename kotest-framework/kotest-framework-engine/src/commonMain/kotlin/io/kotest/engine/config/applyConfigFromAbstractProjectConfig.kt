@@ -28,11 +28,11 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.randomOrderSeed?.let { configuration.randomOrderSeed = it }
 
    // concurrency
-//   config.parallelism?.let { configuration.parallelism = it }
-//   config.concurrentTests?.let { configuration.concurrentTests = it }
-//   config.concurrentSpecs?.let { configuration.concurrentSpecs = it }
+   config.parallelism?.let { configuration.parallelism = it }
+   config.concurrentTests?.let { configuration.concurrentTests = it }
+   config.concurrentSpecs?.let { configuration.concurrentSpecs = it }
    config.isolationMode?.let { configuration.isolationMode = it }
-//   config.dispatcherAffinity?.let { configuration.dispatcherAffinity = it }
+   config.dispatcherAffinity?.let { configuration.dispatcherAffinity = it }
 
    // timeouts
    config.timeout?.let { configuration.timeout = it.inWholeMilliseconds }

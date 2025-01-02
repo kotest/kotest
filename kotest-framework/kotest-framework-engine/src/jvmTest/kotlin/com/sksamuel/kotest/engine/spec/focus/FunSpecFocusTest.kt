@@ -4,6 +4,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
+class ExpectFailure : RuntimeException()
+
 class FunSpecFocusTest : FunSpec() {
    init {
 

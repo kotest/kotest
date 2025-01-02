@@ -81,6 +81,10 @@ object KotestEngineProperties {
 
    const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
 
+   const val concurrentSpecs = "kotest.framework.spec.concurrent"
+
+   const val concurrentTests = "kotest.framework.test.concurrent"
+
    /**
     * Specify a fully qualified name to use for project config.
     * This class will be instantiated via reflection.

@@ -19,7 +19,6 @@ import kotlin.coroutines.coroutineContext
  * as the execution context for timeouts.
  */
 @ExperimentalKotest
-@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal class DefaultSpecExecutorDelegate(
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val engineContext: EngineContext
@@ -30,7 +29,7 @@ internal class DefaultSpecExecutorDelegate(
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
       val specContext = SpecContext.create()
-      materializer.roots(spec)
+      materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val scope = DuplicateNameHandlingTestScope(

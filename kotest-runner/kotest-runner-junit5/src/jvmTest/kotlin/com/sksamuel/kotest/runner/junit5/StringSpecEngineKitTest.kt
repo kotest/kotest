@@ -442,12 +442,12 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
-   test("exception in beforeSpec with isolation mode") {
+   test("exception in beforeSpec with isolation mode instance per leaf") {
       val fullyQualifiedTestClassName =
-         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerRoot"
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerLeaf"
       EngineTestKit
          .engine("kotest")
-         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerRoot::class.java))
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerLeaf::class.java))
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
@@ -655,8 +655,7 @@ private class StringSpecExceptionInInit : StringSpec({
    throw RuntimeException("kapow")
 })
 
-private class
-StringSpecExceptionInBeforeSpecForInstancePerRoot: StringSpec({
+private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
    "a failing test" {
       1 shouldBe 2
    }
@@ -665,7 +664,7 @@ StringSpecExceptionInBeforeSpecForInstancePerRoot: StringSpec({
       1 shouldBe 1
    }
 }) {
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
    override suspend fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")

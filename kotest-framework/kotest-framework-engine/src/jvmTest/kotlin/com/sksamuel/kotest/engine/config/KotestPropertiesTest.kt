@@ -30,6 +30,6 @@ class KotestPropertiesTest : FunSpec() {
 
 private class C : FunSpec({
    test("a") {
-      this.configuration.timeout shouldBe 123
+      this.configuration.parallelism shouldBe 15
    }
 })

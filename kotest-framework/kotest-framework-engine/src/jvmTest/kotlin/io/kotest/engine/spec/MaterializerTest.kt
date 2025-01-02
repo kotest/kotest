@@ -44,6 +44,7 @@ class MaterializerTest : FunSpec({
          config = ResolvedTestConfig(
             enabled = { Enabled.enabled },
             invocations = 3075,
+            threads = 8051,
             timeout = 10.seconds,
             invocationTimeout = 10.seconds,
             tags = setOf(),
@@ -72,7 +73,7 @@ class MaterializerTest : FunSpec({
          type = TestType.Container,
          source = sourceRef(),
       )
-      Materializer(ProjectConfiguration()).name(nested, parent).name.name shouldBe "- prefixes are swallowed"
+      Materializer(ProjectConfiguration()).materialize(nested, parent).name.name shouldBe "- prefixes are swallowed"
    }
 
 

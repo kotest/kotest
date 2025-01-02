@@ -41,7 +41,8 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
      spec: Spec,
    ): ResolvedTestConfig {
       return ResolvedTestConfig(
-         enabled = enabledIf(xdisabled == true, testConfig, spec),
+         enabled = enabledIf(xdisabled ?: false, testConfig, spec),
+         threads = threads(testConfig, spec.defaultTestConfig),
          invocations = invocations(testConfig, spec.defaultTestConfig),
          timeout = timeout(testConfig, parent, spec),
          invocationTimeout = invocationTimeout(testConfig, parent, spec),
@@ -149,6 +150,12 @@ internal class TestConfigResolver(private val projectConf: ProjectConfiguration)
       return testConfig?.invocations
          ?: specTestConfig?.invocations
          ?: projectConf.invocations
+   }
+
+   fun threads(testConfig: TestConfig?, specTestConfig: DefaultTestConfig?): Int {
+      return testConfig?.threads
+         ?: specTestConfig?.threads
+         ?: projectConf.threads
    }
 
    fun tags(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Set<Tag> {

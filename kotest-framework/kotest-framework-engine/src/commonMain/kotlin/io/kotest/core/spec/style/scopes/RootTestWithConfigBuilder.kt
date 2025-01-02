@@ -19,6 +19,7 @@ class RootTestWithConfigBuilder(
    fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
+      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -41,6 +42,7 @@ class RootTestWithConfigBuilder(
          invocationTimeout = invocationTimeout,
          enabledIf = enabledIf,
          invocations = invocations,
+         threads = threads,
          severity = severity,
          enabledOrReasonIf = enabledOrReasonIf,
          coroutineDebugProbes = coroutineDebugProbes,

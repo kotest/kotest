@@ -15,7 +15,7 @@ class AfterSpecTest : FunSpec() {
       }
    }
 
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
    companion object {
       private val counter = AtomicInteger(0)

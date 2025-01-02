@@ -24,4 +24,5 @@ abstract class ShouldSpecDuplicateNameTest(iso: IsolationMode) : ShouldSpec() {
 }
 
 class ShouldSpecSingleInstanceDuplicateNameTest : ShouldSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class ShouldSpecInstancePerRootDuplicateNameTest : ShouldSpecDuplicateNameTest(IsolationMode.InstancePerRoot)
+class ShouldSpecInstancePerLeafDuplicateNameTest : ShouldSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
+class ShouldSpecInstancePerTestDuplicateNameTest : ShouldSpecDuplicateNameTest(IsolationMode.InstancePerTest)

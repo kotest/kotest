@@ -84,6 +84,9 @@ class JUnitTestEngineListener(
 
    private val startTimes = mutableMapOf<Descriptor, Long>()
 
+//    the root tests are our entry point when outputting results
+//   private val rootTests = mutableListOf<TestCase>()
+
    private var failOnIgnoredTests = false
 
    private val results = mutableMapOf<Descriptor, TestResult>()
@@ -231,6 +234,7 @@ class JUnitTestEngineListener(
       // Therefore, our workaround is to just add the execution time into the test name.
 
       logger.log { Pair(testCase.name.name, "test started") }
+//      if (testCase.parent != null) rootTests.add(testCase)
 
       // start tracking the time for this test
       startTimes[testCase.descriptor] = System.currentTimeMillis()
@@ -238,6 +242,12 @@ class JUnitTestEngineListener(
       // if this test has a parent, we can mark it as executing now, because it's definitely not a leaf
       if (testCase.parent != null)
          startParents(testCase)
+
+//      when (testCase.type) {
+//         TestType.Container -> startTestIfNotStarted(testCase, TestDescriptor.Type.CONTAINER)
+//         TestType.Test -> startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
+//         TestType.Dynamic -> Unit
+//      }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {

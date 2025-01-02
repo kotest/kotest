@@ -3,6 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
@@ -10,7 +11,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.TestConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TestNameEscaper
@@ -22,7 +22,7 @@ import io.kotest.engine.test.names.TestNameEscaper
 class Materializer(private val configuration: ProjectConfiguration) {
 
    /**
-    * Materializes the root tests from a [Spec] and any [TestFactory]s into
+    * Materializes [RootTest]s from a [Spec] and any [TestFactory]s into
     * [TestCase]s by resolving config at runtime using the supplied project configuration
     * and using spec defaults.
     *
@@ -32,7 +32,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
     * Will adjust names to be unique based on the duplicateTestNameMode setting in either
     * the spec or project configuration.
     */
-   fun roots(spec: Spec): List<TestCase> {
+   fun materialize(spec: Spec): List<TestCase> {
 
       val duplicateTestNameMode = spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode
       val handler = DuplicateTestNameHandler(duplicateTestNameMode)
@@ -75,7 +75,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
    /**
     * Materializes a [NestedTest] into a runtime [TestCase] by attaching it to the given parent.
     */
-   fun nested(nested: NestedTest, parent: TestCase): TestCase {
+   fun materialize(nested: NestedTest, parent: TestCase): TestCase {
 
       // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
       // then it will remove the common prefix from the child, to workaround this, we will add a dash at the

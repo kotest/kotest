@@ -49,7 +49,7 @@ internal class TestInvocationInterceptor(
          coroutineScope {
             replay(
                testCase.config.invocations,
-               1,
+               testCase.config.threads
             )
             { runBeforeTestAfter(testCase, scope, it, test) }
          }

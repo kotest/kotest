@@ -72,12 +72,10 @@ internal class SpecExecutor(
 /**
  * A platform specific specialization of [SpecExecutor] logic.
  */
-@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
-@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal expect fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,

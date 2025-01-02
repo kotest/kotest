@@ -29,6 +29,7 @@ import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TestPathContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
+import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
 import kotlin.time.Duration
@@ -68,7 +69,7 @@ internal class TestCaseExecutor(
          TestFinishedInterceptor(listener, context.configuration.registry),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,
-//         if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
+         if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(context.configuration),
          BeforeSpecListenerInterceptor(context.configuration.registry, specContext),

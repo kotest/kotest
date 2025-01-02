@@ -27,7 +27,7 @@ import kotlin.reflect.KType
  *
  * class MyTest: FunSpec() {
  *    init {
- *       isolationMode = IsolationMode.InstancePerRoot
+ *       isolationMode = IsolationMode.InstancePerLeaf
  *
  *       context("my data test") {
  *           withData(

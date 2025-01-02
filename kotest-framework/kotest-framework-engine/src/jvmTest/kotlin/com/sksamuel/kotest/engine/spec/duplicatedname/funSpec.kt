@@ -24,5 +24,6 @@ abstract class FunSpecDuplicateNameTest(iso: IsolationMode) : FunSpec() {
 }
 
 class FunSpecSingleInstanceDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class FunSpecInstancePerRootDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerRoot)
+class FunSpecInstancePerLeafDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
+class FunSpecInstancePerTestDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerTest)
 

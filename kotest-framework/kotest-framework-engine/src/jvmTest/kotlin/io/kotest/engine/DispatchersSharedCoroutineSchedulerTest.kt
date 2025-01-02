@@ -10,7 +10,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalCoroutinesApi::class)
 class DispatchersSharedCoroutineSchedulerTest : WordSpec({
    coroutineTestScope = true
-   isolationMode = IsolationMode.InstancePerRoot
+   isolationMode = IsolationMode.InstancePerLeaf
 
    "outer test scope, delay 1_000 ms" should {
       val outerTestCoroutineScheduler = testCoroutineScheduler
