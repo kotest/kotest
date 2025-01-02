@@ -2,17 +2,17 @@ package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.core.platform
+import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.runtimeTagExpression
-import io.kotest.core.Logger
-import io.kotest.engine.interceptors.NextEngineInterceptor
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -55,7 +55,7 @@ class TestEngine(private val config: TestEngineConfig) {
       val innerExecute = NextEngineInterceptor { context ->
          val scheduler = when (platform) {
             Platform.JVM -> ConcurrentTestSuiteScheduler(
-               config.configuration.concurrentSpecs ?: config.configuration.parallelism,
+               1, // todo
                context,
             )
 

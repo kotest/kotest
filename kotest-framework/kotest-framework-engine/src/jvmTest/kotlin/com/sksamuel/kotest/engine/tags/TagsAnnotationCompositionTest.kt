@@ -25,7 +25,7 @@ class TagsAnnotationCompositionTest : FunSpec() {
          val conf = ProjectConfiguration()
          conf.registry.add(ext)
 
-         Materializer(conf).materialize(MyCompositeAnnotationTest())
+         Materializer(conf).roots(MyCompositeAnnotationTest())
             .filter { it.isEnabledInternal(conf).isEnabled }
             .map { it.name.name }
             .toSet() shouldBe setOf("a")

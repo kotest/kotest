@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.concurrency
 
 import io.kotest.core.annotation.DoNotParallelize

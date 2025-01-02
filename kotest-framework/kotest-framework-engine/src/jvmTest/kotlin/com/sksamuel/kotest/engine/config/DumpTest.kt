@@ -61,9 +61,9 @@ class DumpTest : FunSpec({
 
    test("dump should include default isolation mode") {
       ProjectConfiguration().apply {
-         isolationMode = IsolationMode.InstancePerLeaf
+         isolationMode = IsolationMode.InstancePerRoot
       }.createConfigSummary().apply {
-         this.shouldInclude("Default isolation mode: InstancePerLeaf")
+         this.shouldInclude("Default isolation mode: InstancePerRoot")
       }
    }
 

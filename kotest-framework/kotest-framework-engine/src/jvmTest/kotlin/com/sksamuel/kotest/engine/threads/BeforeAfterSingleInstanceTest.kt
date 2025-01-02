@@ -13,7 +13,7 @@ private val afterSpecCounter = AtomicInteger(0)
 class SpecThreadBeforeAfterSingleInstanceTest : FunSpec({
 
    isolationMode = IsolationMode.SingleInstance
-   threads = 3
+//   threads = 3
 
    beforeSpec {
       beforeSpecCounter.getAndIncrement()

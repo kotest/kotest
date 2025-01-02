@@ -24,5 +24,4 @@ abstract class FeatureSpecDuplicateNameTest(iso: IsolationMode) : FeatureSpec() 
 }
 
 class FeatureSpecSingleInstanceDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class FeatureSpecInstancePerLeafDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class FeatureSpecInstancePerTestDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class FeatureSpecInstancePerRootDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerRoot)

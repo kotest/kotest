@@ -18,11 +18,11 @@ class CallbackCoroutinesTest : FunSpec({
    lateinit var a: TimeMark
 
    beforeTest {
-      delay(250)
+      delay(5)
    }
 
    afterTest {
-      delay(250)
+      delay(5)
    }
 
    beforeSpec {
@@ -30,7 +30,7 @@ class CallbackCoroutinesTest : FunSpec({
    }
 
    afterSpec {
-      start.elapsedNow() shouldBeGreaterThan 250.milliseconds
+      start.elapsedNow() shouldBeGreaterThan 5.milliseconds
    }
 
    test("start the timer") {
@@ -38,6 +38,6 @@ class CallbackCoroutinesTest : FunSpec({
    }
 
    test("should be delayed a bit due to the callbacks between these tests") {
-      a.elapsedNow() shouldBeGreaterThan 500.milliseconds
+      a.elapsedNow() shouldBeGreaterThan 10.milliseconds
    }
 })

@@ -19,7 +19,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 20
+         counter.get() shouldBe 17
       }
 
       should("a test disabled by an enabled flag").config(enabled = false) {
@@ -31,10 +31,6 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
       }
 
       should("a test with multiple invocations").config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      should("a test with multiple threads").config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 

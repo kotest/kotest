@@ -33,7 +33,7 @@ internal class InOrderTestScope(
 
    override suspend fun registerTestCase(nested: NestedTest) {
       logger.log { Pair(testCase.name.name, "Nested test case discovered $nested") }
-      val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
+      val nestedTestCase = Materializer(context.configuration).nested(nested, testCase)
 
       if (failed && (testCase.config.failfast || context.configuration.projectWideFailFast)) {
          logger.log { Pair(null, "A previous nested test failed and failfast is enabled - will mark this as ignored") }

@@ -24,7 +24,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 21
+         counter.get() shouldBe 18
       }
 
       test("a test disabled by an enabled flag").config(enabled = false) {
@@ -36,10 +36,6 @@ class FunSpecConfigSyntaxTest : FunSpec() {
       }
 
       test("a test with multiple invocations").config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      test("a test with multiple threads").config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 

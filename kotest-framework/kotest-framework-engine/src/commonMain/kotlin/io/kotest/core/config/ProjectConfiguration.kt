@@ -1,8 +1,6 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package io.kotest.core.config
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -15,7 +13,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
-import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * This class defines project wide settings that are used when executing tests.
@@ -24,14 +21,6 @@ import kotlinx.coroutines.CoroutineDispatcher
  * will override the value here.
  */
 class ProjectConfiguration {
-
-   companion object {
-      @ExperimentalKotest
-      const val Sequential = 1
-
-      @ExperimentalKotest
-      const val MaxConcurrency = Int.MAX_VALUE
-   }
 
    /**
     * Returns the [ExtensionRegistry] that contains all extensions registered through
@@ -88,95 +77,95 @@ class ProjectConfiguration {
     */
    var assertionMode: AssertionMode = Defaults.assertionMode
 
-   /**
-    * The parallelism factor determines how many threads are used to execute specs and tests.
-    *
-    * By default, a single threaded [CoroutineDispatcher] is used for all tests.
-    *
-    * Increasing this value to k > 1, means that k dispatchers are created, allowing different
-    * specs to execute on different dispatchers (each backed by a separate thread).
-    *
-    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change that, specify [dispatcherAffinity] globally or per spec.
-    *
-    * An alternative way to set this value is via system property kotest.framework.parallelism
-    * which will always (if defined) take priority over the value here.
-    *
-    * Note: For backwards compatibility, setting this value to k will implicitly set
-    * [ProjectConfiguration.concurrentSpecs] to the k unless that value has also been set.
-    *
-    * Defaults to [Defaults.parallelism].
-    */
-   var parallelism: Int = Defaults.parallelism
+//   /**
+//    * The parallelism factor determines how many threads are used to execute specs and tests.
+//    *
+//    * By default, a single threaded [CoroutineDispatcher] is used for all tests.
+//    *
+//    * Increasing this value to k > 1, means that k dispatchers are created, allowing different
+//    * specs to execute on different dispatchers (each backed by a separate thread).
+//    *
+//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
+//    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
+//    * to the execution thread. To change that, specify [dispatcherAffinity] globally or per spec.
+//    *
+//    * An alternative way to set this value is via system property kotest.framework.parallelism
+//    * which will always (if defined) take priority over the value here.
+//    *
+//    * Note: For backwards compatibility, setting this value to k will implicitly set
+//    * [ProjectConfiguration.concurrentSpecs] to the k unless that value has also been set.
+//    *
+//    * Defaults to [Defaults.parallelism].
+//    */
+//   var parallelism: Int = Defaults.parallelism
 
-   /**
-    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-    * the execution thread. To change this, set this value to false.
-    *
-    * When this value is false, the framework is free to assign different dispatchers to different
-    * root tests (nested tests always run in the same thread as their parent test).
-    *
-    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
-    *
-    * Defaults to [Defaults.dispatcherAffinity].
-    */
-   @ExperimentalKotest
-   var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
+//   /**
+//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
+//    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+//    * the execution thread. To change this, set this value to false.
+//    *
+//    * When this value is false, the framework is free to assign different dispatchers to different
+//    * root tests (nested tests always run in the same thread as their parent test).
+//    *
+//    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
+//    *
+//    * Defaults to [Defaults.dispatcherAffinity].
+//    */
+//   @ExperimentalKotest
+//   var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
 
-   /**
-    * Each spec is launched into its own coroutine. By default, the test engine waits for that
-    * coroutine to finish before launching the next spec. By setting [ProjectConfiguration.concurrentSpecs]
-    * to a value higher than 1, multiple specs will be launched at the same time.
-    *
-    * For example, setting this value to 5 will result in 5 specs running concurrently. Once
-    * one of those specs completes, another will be launched (if any are remaining), and so on.
-    *
-    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all specs being launched together.
-    *
-    * The maximum number of coroutines that can be launched at any time is given
-    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
-    *
-    * Tests inside each spec will continue to be launched sequentially. To change that
-    * see [ProjectConfiguration.concurrentTests].
-    *
-    * Note: This value does not change the number of threads used by the test engine. If a test uses a
-    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [ProjectConfiguration.parallelism].
-    *
-    * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
-    * [io.kotest.core.annotation.Isolate] annotation. That annotation ensures that a spec never runs concurrently
-    * with any other regardless of the setting here.
-    */
-   @ExperimentalKotest
-   var concurrentSpecs: Int? = null
+//   /**
+//    * Each spec is launched into its own coroutine. By default, the test engine waits for that
+//    * coroutine to finish before launching the next spec. By setting [ProjectConfiguration.concurrentSpecs]
+//    * to a value higher than 1, multiple specs will be launched at the same time.
+//    *
+//    * For example, setting this value to 5 will result in 5 specs running concurrently. Once
+//    * one of those specs completes, another will be launched (if any are remaining), and so on.
+//    *
+//    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all specs being launched together.
+//    *
+//    * The maximum number of coroutines that can be launched at any time is given
+//    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
+//    *
+//    * Tests inside each spec will continue to be launched sequentially. To change that
+//    * see [ProjectConfiguration.concurrentTests].
+//    *
+//    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+//    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+//    * blocked. See [ProjectConfiguration.parallelism].
+//    *
+//    * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
+//    * [io.kotest.core.annotation.Isolate] annotation. That annotation ensures that a spec never runs concurrently
+//    * with any other regardless of the setting here.
+//    */
+//   @ExperimentalKotest
+//   var concurrentSpecs: Int? = null
 
-   /**
-    * Each root test is launched into its own coroutine. By default, the test engine waits
-    * for that coroutine to finish before launching the next test of the same spec. By setting
-    * [ProjectConfiguration.concurrentTests] to a value higher than 1, multiple tests will be launched
-    * at the same time.
-    *
-    * For example, setting this value to 5 will result in at most 5 tests running concurrently per spec.
-    * Once one of those tests completes, another will be launched (if there are further tests in the spec),
-    * and so on.
-    *
-    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all tests of a spec being
-    * launched together when the spec is instantiated
-    *
-    * Setting this value will result in tests inside a spec executing concurrently, but will not change
-    * how many specs are launched concurrently. For that, see [ProjectConfiguration.concurrentSpecs].
-    *
-    * The maximum number of coroutines that can be launched at any time is given
-    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
-    *
-    * Note: This value does not change the number of threads used by the test engine. If a test uses a
-    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [ProjectConfiguration.parallelism].
-    */
-   @ExperimentalKotest
-   var concurrentTests: Int = Defaults.concurrentTests
+//   /**
+//    * Each root test is launched into its own coroutine. By default, the test engine waits
+//    * for that coroutine to finish before launching the next test of the same spec. By setting
+//    * [ProjectConfiguration.concurrentTests] to a value higher than 1, multiple tests will be launched
+//    * at the same time.
+//    *
+//    * For example, setting this value to 5 will result in at most 5 tests running concurrently per spec.
+//    * Once one of those tests completes, another will be launched (if there are further tests in the spec),
+//    * and so on.
+//    *
+//    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all tests of a spec being
+//    * launched together when the spec is instantiated
+//    *
+//    * Setting this value will result in tests inside a spec executing concurrently, but will not change
+//    * how many specs are launched concurrently. For that, see [ProjectConfiguration.concurrentSpecs].
+//    *
+//    * The maximum number of coroutines that can be launched at any time is given
+//    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
+//    *
+//    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+//    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+//    * blocked. See [ProjectConfiguration.parallelism].
+//    */
+//   @ExperimentalKotest
+//   var concurrentTests: Int = Defaults.concurrentTests
 
    /**
     * Returns the timeout for the execution of a test case in milliseconds.
@@ -203,10 +192,12 @@ class ProjectConfiguration {
     */
    var invocations: Int = Defaults.invocations
 
-   /**
-    * Default number of threads when not specified in any other place.
-    */
-   var threads: Int = Defaults.threads
+//   /**
+//    * Default number of threads when not specified in any other place.
+//    */
+//   var threads: Int = Defaults.threads
+
+   var testExecutionMode: TestExecutionMode = Defaults.testExecutionMode
 
    /**
     * A timeout that is applied to the overall project if not null,

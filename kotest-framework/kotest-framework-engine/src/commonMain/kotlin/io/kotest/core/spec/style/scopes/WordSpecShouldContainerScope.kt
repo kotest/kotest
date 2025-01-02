@@ -48,7 +48,6 @@ class WordSpecShouldContainerScope(
       ).config(
          enabled = enabled,
          invocations = invocations,
-         threads = threads,
          tags = tags,
          timeout = timeout,
          extensions = extensions,

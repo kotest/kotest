@@ -37,10 +37,6 @@ class DumpConfigInterceptorTest : FunSpec({
          DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output() shouldBe """
             |~~~ Kotest Configuration ~~~
-            |-> Parallelization factor: 1
-            |-> Concurrent specs: null
-            |-> Global concurrent tests: 1
-            |-> Dispatcher affinity: true
             |-> Coroutine debug probe: false
             |-> Spec execution order: Lexicographic
             |-> Default test execution order: Sequential
