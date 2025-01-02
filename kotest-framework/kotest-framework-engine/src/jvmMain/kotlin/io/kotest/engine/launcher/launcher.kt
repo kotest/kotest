@@ -4,7 +4,6 @@ package io.kotest.engine.launcher
 //import io.kotest.framework.discovery.DiscoveryRequest
 //import io.kotest.framework.discovery.DiscoveryResult
 //import io.kotest.framework.discovery.DiscoverySelector
-import io.kotest.common.KotestInternal
 import io.kotest.core.TagExpression
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
@@ -15,7 +14,6 @@ import kotlin.reflect.KClass
  * Creates a [TestEngineLauncher] to be used to launch the test engine.
  */
 @Suppress("UNCHECKED_CAST")
-@KotestInternal
 internal fun setupLauncher(
    args: LauncherArgs,
    listener: TestEngineListener,

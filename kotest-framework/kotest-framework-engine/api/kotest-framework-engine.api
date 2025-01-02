@@ -1020,10 +1020,11 @@ public final class io/kotest/core/config/Defaults {
 	public final fun getDefaultTestNameCase ()Lio/kotest/core/names/TestNameCase;
 	public final fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public final fun getSPEC_EXECUTION_MODE ()Lio/kotest/engine/concurrency/SpecExecutionMode$Sequential;
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getSpecExecutionOrder ()Lio/kotest/core/spec/SpecExecutionOrder;
+	public final fun getTEST_EXECUTION_MODE ()Lio/kotest/engine/concurrency/TestExecutionMode$Sequential;
 	public final fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
-	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode$Sequential;
 }
 
 public final class io/kotest/core/config/EmptyExtensionRegistry : io/kotest/core/config/ExtensionRegistry {
@@ -1126,6 +1127,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getRetryDelayFn ()Lkotlin/jvm/functions/Function2;
 	public final fun getRetryFn ()Lkotlin/jvm/functions/Function1;
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
+	public final fun getSpecExecutionMode ()Lio/kotest/engine/concurrency/SpecExecutionMode;
 	public final fun getSpecExecutionOrder ()Lio/kotest/core/spec/SpecExecutionOrder;
 	public final fun getSpecFailureFilePath ()Ljava/lang/String;
 	public final fun getTagInheritance ()Z
@@ -1166,6 +1168,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setRetryDelayFn (Lkotlin/jvm/functions/Function2;)V
 	public final fun setRetryFn (Lkotlin/jvm/functions/Function1;)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
+	public final fun setSpecExecutionMode (Lio/kotest/engine/concurrency/SpecExecutionMode;)V
 	public final fun setSpecExecutionOrder (Lio/kotest/core/spec/SpecExecutionOrder;)V
 	public final fun setSpecFailureFilePath (Ljava/lang/String;)V
 	public final fun setTagInheritance (Z)V
@@ -3524,6 +3527,36 @@ public final class io/kotest/engine/concurrency/NoopCoroutineDispatcherFactory :
 
 public final class io/kotest/engine/concurrency/ReplayKt {
 	public static final fun replay (IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
+	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getConcurrency ()I
+}
+
+public final class io/kotest/engine/concurrency/SpecExecutionMode$Concurrent : io/kotest/engine/concurrency/SpecExecutionMode {
+	public static final field INSTANCE Lio/kotest/engine/concurrency/SpecExecutionMode$Concurrent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/concurrency/SpecExecutionMode$LimitedConcurrency : io/kotest/engine/concurrency/SpecExecutionMode {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lio/kotest/engine/concurrency/SpecExecutionMode$LimitedConcurrency;
+	public static synthetic fun copy$default (Lio/kotest/engine/concurrency/SpecExecutionMode$LimitedConcurrency;IILjava/lang/Object;)Lio/kotest/engine/concurrency/SpecExecutionMode$LimitedConcurrency;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMax ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/concurrency/SpecExecutionMode$Sequential : io/kotest/engine/concurrency/SpecExecutionMode {
+	public static final field INSTANCE Lio/kotest/engine/concurrency/SpecExecutionMode$Sequential;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class io/kotest/engine/concurrency/TestExecutionMode {
