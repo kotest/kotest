@@ -86,7 +86,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
       val scope = CoroutineScope(specCoroutineContext + CoroutineName("after-spec-scope"))
       val errors = extensionsOf<AfterSpecListener>(spec).mapNotNull { ext ->
-         runCatching { scope.launch { ext.afterSpec(spec) } }
+         runCatching { withContext(scope) { ext.afterSpec(spec) } }
             .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
       }
 
