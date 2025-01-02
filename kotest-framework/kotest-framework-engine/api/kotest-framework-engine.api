@@ -1972,6 +1972,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setTimeout (Ljava/lang/Long;)V
 	public fun tags ()Ljava/util/Set;
 	public fun testCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
+	public fun testExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public fun timeout ()Ljava/lang/Long;
 }
 
