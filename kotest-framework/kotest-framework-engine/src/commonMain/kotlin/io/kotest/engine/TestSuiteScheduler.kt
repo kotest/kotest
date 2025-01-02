@@ -127,4 +127,4 @@ internal fun KClass<*>.isIsolate(): Boolean =
  * Returns true if this class is annotated with the annotation used to indicate
  * this spec should always run concurrently regardless of config.
  */
-internal fun KClass<*>.isParallel() = hasAnnotation<Parallel>()
+internal fun KClass<*>.isParallel() = hasAnnotation<Parallel>(IncludingAnnotations, IncludingSuperclasses)
