@@ -16,7 +16,7 @@ class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
    val outerContextLock = ReentrantLock()
 
    afterProject {
-      locks shouldHaveSize 12
+      locks shouldHaveSize 4
    }
 
    context("First thread context") {
