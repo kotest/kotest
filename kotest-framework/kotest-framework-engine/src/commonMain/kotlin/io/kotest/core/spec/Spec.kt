@@ -148,6 +148,7 @@ abstract class Spec : TestConfiguration() {
     * allows the test engine to spool up a new thread just for that test.
     */
    @ExperimentalKotest
+   @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
    @ExperimentalKotest
