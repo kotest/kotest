@@ -953,11 +953,11 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getRetryDelay-FghU774 ()Lkotlin/time/Duration;
 	public fun getRetryDelayFn ()Lkotlin/jvm/functions/Function2;
 	public fun getRetryFn ()Lkotlin/jvm/functions/Function1;
-	public final fun getSpecExecutionMode ()Lio/kotest/engine/concurrency/SpecExecutionMode;
+	public fun getSpecExecutionMode ()Lio/kotest/engine/concurrency/SpecExecutionMode;
 	public fun getSpecExecutionOrder ()Lio/kotest/core/spec/SpecExecutionOrder;
 	public fun getTagInheritance ()Ljava/lang/Boolean;
 	public fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
-	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
+	public fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public fun getTestNameAppendTags ()Ljava/lang/Boolean;
 	public fun getTestNameCase ()Lio/kotest/core/names/TestNameCase;
 	public fun getTestNameRemoveWhitespace ()Ljava/lang/Boolean;
@@ -973,8 +973,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 	public fun setRetryDelayFn (Lkotlin/jvm/functions/Function2;)V
 	public fun setRetryFn (Lkotlin/jvm/functions/Function1;)V
-	public final fun setSpecExecutionMode (Lio/kotest/engine/concurrency/SpecExecutionMode;)V
-	public final fun setTestExecutionMode (Lio/kotest/engine/concurrency/TestExecutionMode;)V
 }
 
 public final class io/kotest/core/config/DefaultExtensionRegistry : io/kotest/core/config/ExtensionRegistry {
@@ -2208,7 +2206,7 @@ public abstract class io/kotest/core/spec/style/FreeSpec : io/kotest/core/spec/D
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
-	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
+	public fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
@@ -2223,7 +2221,7 @@ public final class io/kotest/core/spec/style/FreeSpecTestFactoryConfiguration : 
 	public fun <init> ()V
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
-	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
+	public fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
@@ -2599,7 +2597,7 @@ public final class io/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder
 public abstract interface class io/kotest/core/spec/style/scopes/FreeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public abstract fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public abstract fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
-	public abstract fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
+	public abstract fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public abstract fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public abstract fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public abstract fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
@@ -2609,8 +2607,8 @@ public abstract interface class io/kotest/core/spec/style/scopes/FreeSpecRootSco
 public final class io/kotest/core/spec/style/scopes/FreeSpecRootScope$DefaultImpls {
 	public static fun config (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public static fun config (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
-	public static fun config-rDtbm-Q (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
-	public static synthetic fun config-rDtbm-Q$default (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static fun config-0Nu1UfI (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun config-0Nu1UfI$default (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static fun config-s0vPEsQ (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public static synthetic fun config-s0vPEsQ$default (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public static fun invoke (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2775,8 +2773,8 @@ public final class io/kotest/core/spec/style/scopes/WordSpecRootScope$DefaultImp
 
 public final class io/kotest/core/spec/style/scopes/WordSpecShouldContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
-	public final fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun config-s0vPEsQ$default (Lio/kotest/core/spec/style/scopes/WordSpecShouldContainerScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun config-V--OhEU (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun config-V--OhEU$default (Lio/kotest/core/spec/style/scopes/WordSpecShouldContainerScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -4034,6 +4032,7 @@ public final class io/kotest/engine/spec/TestResults {
 	public fun <init> ()V
 	public final fun children (Lio/kotest/core/test/TestCase;)Ljava/util/Set;
 	public final fun completed (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;)V
+	public final fun hasErrorOrFailure ()Z
 	public final fun isStarted (Lio/kotest/core/test/TestCase;)Z
 	public final fun isSubtreeComplete (Lio/kotest/core/test/TestCase;)Z
 	public final fun roots ()Ljava/util/Map;
