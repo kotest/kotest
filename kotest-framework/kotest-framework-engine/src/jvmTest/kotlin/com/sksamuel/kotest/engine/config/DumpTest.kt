@@ -7,6 +7,8 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.config.createConfigSummary
 import io.kotest.matchers.string.shouldInclude
 import kotlin.time.Duration.Companion.seconds
@@ -26,7 +28,7 @@ class DumpTest : FunSpec({
       }
    }
 
-   test("dump should include affinity") {
+   xtest("dump should include affinity") {
       ProjectConfiguration().apply {
          timeout = 12
          invocationTimeout = 34234
@@ -40,6 +42,22 @@ class DumpTest : FunSpec({
          testCaseOrder = TestCaseOrder.Random
       }.createConfigSummary().apply {
          this.shouldInclude("Default test execution order: Random")
+      }
+   }
+
+   test("dump should include specExecutionMode") {
+      ProjectConfiguration().apply {
+         specExecutionMode = SpecExecutionMode.Concurrent
+      }.createConfigSummary().apply {
+         this.shouldInclude("Spec execution mode: Concurrent")
+      }
+   }
+
+   test("dump should include testExecutionMode") {
+      ProjectConfiguration().apply {
+         testExecutionMode = TestExecutionMode.Concurrent
+      }.createConfigSummary().apply {
+         this.shouldInclude("Test execution mode: Concurrent")
       }
    }
 

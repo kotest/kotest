@@ -35,8 +35,10 @@ class DumpConfigInterceptorTest : FunSpec({
       ) { propValue ->
          System.setProperty(property, propValue)
          DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
-         sysOutListener.output() shouldBe """
+         sysOutListener.output().trim() shouldBe """
             |~~~ Kotest Configuration ~~~
+            |-> Spec execution mode: Sequential
+            |-> Test execution mode: Sequential
             |-> Coroutine debug probe: false
             |-> Spec execution order: Lexicographic
             |-> Default test execution order: Sequential
@@ -51,9 +53,7 @@ class DumpConfigInterceptorTest : FunSpec({
             |-> Remove test name whitespace: false
             |-> Append tags to test names: false
             |-> ${"Tags: "}
-            |
-            |
-         """.trimMargin()
+         """.trimMargin().trim()
          // "Tags: " escaped to avoid formatter trimming whitespace at end of line which exists in actual output.
       }
 

@@ -1,8 +1,9 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.ConcurrentHashMap
@@ -13,6 +14,7 @@ private val objects = ConcurrentHashMap.newKeySet<ReentrantLock>()
 class WithLocksInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot
+   testExecutionMode = TestExecutionMode.Concurrent
 
    val lock = ReentrantLock()
 

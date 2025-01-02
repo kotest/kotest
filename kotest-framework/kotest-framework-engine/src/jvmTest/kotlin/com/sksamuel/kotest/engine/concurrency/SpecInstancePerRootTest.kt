@@ -1,18 +1,19 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlin.concurrent.getOrSet
 
 private val externalMultipleThreadCounter = PersistentThreadLocal<Int>()
 
-class SpecThreadInstancePerRootTest : FunSpec({
+class SpecInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot
-//   threads = 3
+   testExecutionMode = TestExecutionMode.Concurrent
 
    val internalThreadCounter = PersistentThreadLocal<Int>()
 

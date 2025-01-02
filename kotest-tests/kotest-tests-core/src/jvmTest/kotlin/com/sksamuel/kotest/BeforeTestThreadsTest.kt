@@ -28,7 +28,7 @@ class BeforeTestThreadsTest : FunSpec() {
    }
 
    init {
-      test("when threads == 1 listeners should run on the same thread as the test") {
+      test("listeners should run on the same thread as the test") {
          println("greetings " + Thread.currentThread().name)
          ThreadLocalHolder().greeting shouldBe "test"
       }

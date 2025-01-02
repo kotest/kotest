@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import java.util.concurrent.ConcurrentHashMap
 

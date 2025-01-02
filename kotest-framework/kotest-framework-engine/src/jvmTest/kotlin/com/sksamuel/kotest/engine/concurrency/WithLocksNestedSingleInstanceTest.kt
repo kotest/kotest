@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode

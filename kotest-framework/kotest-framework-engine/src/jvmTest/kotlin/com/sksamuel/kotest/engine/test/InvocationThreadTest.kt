@@ -11,27 +11,17 @@ class InvocationThreadTest : FunSpec({
 
    val singleThreadSingleInvocationCallCount = AtomicInteger(0)
    val singleThreadMultipleInvocationCallCount = AtomicInteger(0)
-//   val multipleThreadMultipleInvocationCallCount = AtomicInteger(0)
-//   val multipleThreadMultipleInvocationThreadIds = ConcurrentHashMap<Long, Unit>() // use as concurrent set
 
    afterSpec {
       singleThreadSingleInvocationCallCount.get() shouldBe 1
       singleThreadMultipleInvocationCallCount.get() shouldBe 5
-//      multipleThreadMultipleInvocationCallCount.get() shouldBe 3
-//      multipleThreadMultipleInvocationThreadIds.size shouldBeGreaterThan 1
    }
 
-   test("single thread / single invocation").config(invocations = 1) {
+   test("single invocation").config(invocations = 1) {
       singleThreadSingleInvocationCallCount.incrementAndGet()
    }
 
-   test("single thread / multiple invocations").config(invocations = 5) {
+   test("multiple invocations").config(invocations = 5) {
       singleThreadMultipleInvocationCallCount.incrementAndGet()
    }
-
-//   test("multiple threads / multiple invocations").config(invocations = 3, threads = 3) {
-//      multipleThreadMultipleInvocationCallCount.incrementAndGet()
-//      multipleThreadMultipleInvocationThreadIds[Thread.currentThread().id] = Unit
-//      provokeThreadSwitch()
-//   }
 })

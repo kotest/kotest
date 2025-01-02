@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
@@ -12,7 +12,6 @@ private val externalMultipleThreadCounter = PersistentThreadLocal<Int>()
 class InstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot
-//   threads = 3
 
    val multipleThreadCounter =
       PersistentThreadLocal<Int>()

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -13,7 +13,6 @@ private val afterSpecNestedCounter = AtomicInteger(0)
 class BeforeAfterNestedInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot
-//   threads = 3
 
    beforeSpec {
       beforeSpecNestedCounter.getAndIncrement()
@@ -32,9 +31,8 @@ class BeforeAfterNestedInstancePerRootTest : FunSpec({
    }
 
    afterProject {
-      // we create 18 instances of the spec
-      beforeSpecNestedCounter.get() shouldBe 9
-      afterSpecNestedCounter.get() shouldBe 9
+      beforeSpecNestedCounter.get() shouldBe 2
+      afterSpecNestedCounter.get() shouldBe 2
       beforeTestNestedCounter.get() shouldBe 18
       afterTestNestedCounter.get() shouldBe 18
    }

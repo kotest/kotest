@@ -1,7 +1,8 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
@@ -12,7 +13,7 @@ private val counterBeforeTestConcurrent = AtomicInteger(0)
 class SpecThreadBeforeTestConcurrentSingleInstanceTest : FunSpec({
 
    isolationMode = IsolationMode.SingleInstance
-//   threads = 3
+   testExecutionMode = TestExecutionMode.Concurrent
 
    val lock = ReentrantLock()
 

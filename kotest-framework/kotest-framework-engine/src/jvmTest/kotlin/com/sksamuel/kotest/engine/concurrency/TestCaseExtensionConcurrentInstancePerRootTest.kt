@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.threads
+package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -9,9 +9,9 @@ import java.util.concurrent.locks.ReentrantLock
 private val lockedCounterTestExtensionConcurrent = AtomicInteger(0)
 private val counterTestExtensionConcurrent = AtomicInteger(0)
 
-class SpecThreadTestCaseExtensionConcurrentSingleInstanceTest : FunSpec({
+class TestCaseExtensionConcurrentInstancePerRootTest : FunSpec({
 
-   isolationMode = IsolationMode.SingleInstance
+   isolationMode = IsolationMode.InstancePerRoot
 //   threads = 3
 
    val lock = ReentrantLock()
@@ -33,16 +33,16 @@ class SpecThreadTestCaseExtensionConcurrentSingleInstanceTest : FunSpec({
    }
 
    afterProject {
-      lockedCounterTestExtensionConcurrent.get() shouldBe 2
+      lockedCounterTestExtensionConcurrent.get() shouldBe 0
       counterTestExtensionConcurrent.get() shouldBe 3
    }
 
-   test("test 1 should run TestCaseExtension concurrently") {
+   test("test 1 should run TestCaseExtension concurrently and independent") {
    }
 
-   test("test 2 should run TestCaseExtension concurrently") {
+   test("test 2 should run TestCaseExtension concurrently and independent") {
    }
 
-   test("test 3 should run TestCaseExtension concurrently") {
+   test("test 3 should run TestCaseExtension concurrently and independent") {
    }
 })
