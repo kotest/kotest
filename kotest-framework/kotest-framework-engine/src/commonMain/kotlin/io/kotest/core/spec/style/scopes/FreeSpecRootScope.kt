@@ -2,7 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -55,7 +54,6 @@ interface FreeSpecRootScope : RootScope {
          invocationTimeout = invocationTimeout,
          enabledIf = enabledIf,
          invocations = invocations,
-         threads = threads,
          severity = severity,
          failfast = failfast,
          blockingTest = blockingTest,
@@ -102,7 +100,6 @@ interface FreeSpecRootScope : RootScope {
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -122,7 +119,6 @@ interface FreeSpecRootScope : RootScope {
          invocationTimeout = invocationTimeout,
          enabledIf = enabledIf,
          invocations = invocations,
-         threads = threads,
          severity = severity,
          failfast = failfast,
          blockingTest = blockingTest,

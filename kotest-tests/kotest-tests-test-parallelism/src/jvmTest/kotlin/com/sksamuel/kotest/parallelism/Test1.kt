@@ -2,7 +2,6 @@ package com.sksamuel.kotest.parallelism
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.provided.ProjectConfig.parallelism
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.sync.Semaphore
@@ -48,17 +47,17 @@ class Spec10 : FunSpec({ include(factory(this::class.simpleName!!)) })
 object Leases {
    var maxLeasesUsed = 0
 
-   val sema = Semaphore(parallelism)
+   val semaphore = Semaphore(10)
 
    fun acquire() {
-      synchronized(sema) {
-         sema.tryAcquire()
-         val leasesAcquired = parallelism - sema.availablePermits
+      synchronized(semaphore) {
+         semaphore.tryAcquire()
+         val leasesAcquired = 10 - semaphore.availablePermits
          maxLeasesUsed = maxOf(maxLeasesUsed, leasesAcquired)
       }
    }
 
    fun release() {
-      sema.release()
+      semaphore.release()
    }
 }

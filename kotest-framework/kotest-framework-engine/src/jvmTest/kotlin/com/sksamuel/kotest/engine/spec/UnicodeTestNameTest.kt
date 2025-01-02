@@ -9,7 +9,7 @@ import java.lang.Integer.sum
 
 @EnabledIf(LinuxCondition::class)
 class UnicodeTestNameTest : BehaviorSpec({
-   isolationMode = IsolationMode.InstancePerLeaf
+   isolationMode = IsolationMode.InstancePerRoot
 
    Given("코테스트 코테스트 코테스트") {
       And("A가 1이고 B가 2일 때") {

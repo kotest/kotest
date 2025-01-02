@@ -21,9 +21,6 @@ class WordSpecExample : WordSpec() {
             }
             "support removal".config(enabled = false) {
             }
-            "support threads".config(invocations = 6, threads = 2) {
-
-            }
          }
       }
    }

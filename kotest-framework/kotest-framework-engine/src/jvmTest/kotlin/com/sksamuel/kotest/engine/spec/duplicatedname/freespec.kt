@@ -35,5 +35,4 @@ abstract class FreeSpecDuplicateNameTest(iso: IsolationMode) : FreeSpec() {
 }
 
 class FreeSpecSingleInstanceDuplicateNameTest : FreeSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class FreeSpecInstancePerLeafDuplicateNameTest : FreeSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class FreeSpecInstancePerTestDuplicateNameTest : FreeSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class FreeSpecInstancePerRootDuplicateNameTest : FreeSpecDuplicateNameTest(IsolationMode.InstancePerRoot)

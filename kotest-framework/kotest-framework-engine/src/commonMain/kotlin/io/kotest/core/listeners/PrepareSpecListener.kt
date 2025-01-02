@@ -19,12 +19,9 @@ interface PrepareSpecListener : Extension {
     * Called once per [Spec], when the engine is preparing to
     * execute the tests for that spec.
     *
-    * Regardless of how many times the spec is instantiated,
-    * for example, if
-    * [InstancePerTest][io.kotest.core.spec.IsolationMode.InstancePerTest]
-    * or
-    * [InstancePerLeaf][io.kotest.core.spec.IsolationMode.InstancePerLeaf]
-    * isolation modes are used, this callback will only be invoked once.
+    * Regardless of how many times the spec is instantiated, for example, if
+    * [io.kotest.core.spec.IsolationMode.InstancePerRoot] isolation mode is used,
+    * this callback will only be invoked once.
     *
     * @param kclass the [Spec] class
     */

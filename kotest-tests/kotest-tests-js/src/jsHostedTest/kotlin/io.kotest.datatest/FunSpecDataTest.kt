@@ -34,8 +34,8 @@ class FunSpecDataTest : FunSpec() {
          PythagTriple(6, 8, 10),
       ) { (a, b, c) ->
          a * a + b * b shouldBe c * c
-         if (a == 3) this.testCase.name.testName shouldBe "For pythag triple: 3^2 * 4^2 = 5^2"
-         if (a == 6) this.testCase.name.testName shouldBe "For pythag triple: 6^2 * 8^2 = 10^2"
+         if (a == 3) this.testCase.name.name shouldBe "For pythag triple: 3^2 * 4^2 = 5^2"
+         if (a == 6) this.testCase.name.name shouldBe "For pythag triple: 6^2 * 8^2 = 10^2"
       }
 
       // map of names
@@ -46,8 +46,8 @@ class FunSpecDataTest : FunSpec() {
          )
       ) { a ->
          a % 2 shouldBe 0
-         if (a == 2) this.testCase.name.testName shouldBe "foo"
-         if (a == 4) this.testCase.name.testName shouldBe "bar"
+         if (a == 2) this.testCase.name.name shouldBe "foo"
+         if (a == 4) this.testCase.name.name shouldBe "bar"
       }
    }
 }

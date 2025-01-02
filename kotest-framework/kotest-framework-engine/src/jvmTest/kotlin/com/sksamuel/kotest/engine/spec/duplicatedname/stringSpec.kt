@@ -14,5 +14,4 @@ abstract class StringSpecDuplicateNameTest(iso: IsolationMode) : StringSpec() {
 }
 
 class StringSpecSingleInstanceDuplicateNameTest : StringSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class StringSpecInstancePerLeafDuplicateNameTest : StringSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class StringSpecInstancePerTestDuplicateNameTest : StringSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class StringSpecInstancePerRootDuplicateNameTest : StringSpecDuplicateNameTest(IsolationMode.InstancePerRoot)

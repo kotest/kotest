@@ -23,8 +23,6 @@ data class ResolvedTestConfig(
 
    val invocations: Int,
 
-   val threads: Int,
-
    /**
     * The timeout for a test case and all it's invocations. For example, if this value was set to 800ms,
     * and invocations was 1 (which is the default and typical value), then that single invocation has
@@ -101,14 +99,12 @@ data class ResolvedTestConfig(
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
-      require(threads > 0) { "Number of threads must be greater than 0" }
    }
 
    companion object {
       val default = ResolvedTestConfig(
          { Enabled.enabled },
          invocations = 1,
-         threads = 1,
          coroutineDebugProbes = false,
          coroutineTestScope = false,
          assertionMode = AssertionMode.None,

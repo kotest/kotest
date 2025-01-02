@@ -58,7 +58,7 @@ class SpecExtensionTest : FunSpec() {
          conf.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(SpecInterceptInstancePerTest::class)
+            .withClasses(SpecInterceptInstancePerRoot::class)
             .withConfiguration(conf)
             .launch()
 
@@ -77,7 +77,7 @@ class SpecExtensionTest : FunSpec() {
          val collecting = CollectingTestEngineListener()
 
          TestEngineLauncher(collecting)
-            .withClasses(SpecInterceptInstancePerTest::class)
+            .withClasses(SpecInterceptInstancePerRoot::class)
             .withConfiguration(conf)
             .launch()
 
@@ -110,9 +110,9 @@ private class SpecInterceptSingleInstance : FunSpec() {
 }
 
 
-private class SpecInterceptInstancePerTest : FunSpec() {
+private class SpecInterceptInstancePerRoot : FunSpec() {
    init {
-      isolationMode = IsolationMode.InstancePerTest
+      isolationMode = IsolationMode.InstancePerRoot
       test("a") {}
       test("b") {}
    }
@@ -129,7 +129,7 @@ private object BrokenExtension: MountableExtension<Unit, Unit>, BeforeSpecListen
 
 
 private class BrokenSpec: DescribeSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
 
    install(BrokenExtension)
 

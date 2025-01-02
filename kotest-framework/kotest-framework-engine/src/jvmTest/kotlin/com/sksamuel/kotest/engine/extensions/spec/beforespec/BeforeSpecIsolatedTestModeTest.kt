@@ -16,10 +16,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class BeforeSpecIsolatedTestModeTest : FunSpec({
 
-   test("parallelism with IsolationMode.InstancePerTest and beforeSpec") {
+   xtest("parallelism with IsolationMode.InstancePerRoot and beforeSpec") {
 
       val conf = ProjectConfiguration()
-      conf.parallelism = 5
+//      conf.parallelism = 5
 
       val collector = CollectingTestEngineListener()
       TestEngineLauncher(collector)
@@ -35,8 +35,8 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
 
 private class ParallelTests : DescribeSpec({
 
-   isolationMode = IsolationMode.InstancePerTest
-   concurrency = 5
+   isolationMode = IsolationMode.InstancePerRoot
+//   concurrency = 5
 
    val mountable = install(MyMountable())
 

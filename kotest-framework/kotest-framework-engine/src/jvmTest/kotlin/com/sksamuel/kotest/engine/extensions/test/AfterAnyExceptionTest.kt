@@ -25,7 +25,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 private class BehaviorSpecWithAfterTestError : BehaviorSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -38,7 +38,7 @@ private class BehaviorSpecWithAfterTestError : BehaviorSpec({
 })
 
 private class FunSpecWithAfterTestError : FunSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -46,7 +46,7 @@ private class FunSpecWithAfterTestError : FunSpec({
 })
 
 private class StringSpecWithAfterTestError : StringSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -54,7 +54,7 @@ private class StringSpecWithAfterTestError : StringSpec({
 })
 
 private class ShouldSpecWithAfterTestError : ShouldSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -62,14 +62,14 @@ private class ShouldSpecWithAfterTestError : ShouldSpec({
 })
 
 private class DescribeSpecWithAfterTestError : DescribeSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
 })
 
 private class FeatureSpecWithAfterTestError : FeatureSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -79,14 +79,14 @@ private class FeatureSpecWithAfterTestError : FeatureSpec({
 })
 
 private class ExpectSpecWithAfterTestError : ExpectSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
 })
 
 private class FreeSpecWithAfterTestError : FreeSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }
@@ -94,7 +94,7 @@ private class FreeSpecWithAfterTestError : FreeSpec({
 })
 
 private class WordSpecWithAfterTestError : WordSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    afterTest {
       error("boom")
    }

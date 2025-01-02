@@ -1,18 +1,16 @@
 package io.kotest.engine
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.core.platform
+import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.runtimeTagExpression
-import io.kotest.core.Logger
-import io.kotest.engine.interceptors.NextEngineInterceptor
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -48,22 +46,11 @@ class TestEngine(private val config: TestEngineConfig) {
     * It is recommended that this method is not invoked, but instead the engine
     * is launched via the [TestEngineLauncher].
     */
-   @OptIn(KotestInternal::class, ExperimentalKotest::class)
    internal suspend fun execute(suite: TestSuite): EngineResult {
-      logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
+      logger.log { Pair(null, "Initiating test suite with ${suite.specs.size} specs") }
 
       val innerExecute = NextEngineInterceptor { context ->
-         val scheduler = when (platform) {
-            Platform.JVM -> ConcurrentTestSuiteScheduler(
-               config.configuration.concurrentSpecs ?: config.configuration.parallelism,
-               context,
-            )
-
-            Platform.JS,
-            Platform.Native,
-            Platform.WasmJs -> SequentialTestSuiteScheduler(context)
-         }
-         scheduler.schedule(context.suite)
+         TestSuiteScheduler(context).schedule(context.suite)
       }
 
       logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }

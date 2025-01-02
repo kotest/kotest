@@ -11,7 +11,7 @@ class TimeoutTest : FunSpec() {
 
       aroundTest { (tc, fn) ->
          val result = fn(tc)
-         if (tc.name.testName == "JS engine should capture timeouts" && result.isErrorOrFailure)
+         if (tc.name.name == "JS engine should capture timeouts" && result.isErrorOrFailure)
             TestResult.Success(0.milliseconds)
          else
             result

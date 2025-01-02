@@ -66,7 +66,7 @@ class BlockHoundSpecTest : FunSpec({
       shouldNotThrow<BlockingOperationError> { blockInNonBlockingContext() }
    }
 
-   test("parallelism").config(invocations = 2, threads = 2) {
+   test("with blocking thread").config(invocations = 2, blockingTest = true) {
       shouldThrow<BlockingOperationError> {
          withContext(Dispatchers.Default) {
             @Suppress("BlockingMethodInNonBlockingContext")

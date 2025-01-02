@@ -10,11 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @EnabledIf(LinuxCondition::class)
 class BeforeSpecRunsExactlyOnce : FunSpec() {
+
    companion object {
       private val beforeSpecRan = AtomicBoolean()
    }
-
-   override fun concurrency(): Int = 10
 
    override suspend fun beforeSpec(spec: Spec) {
       if (beforeSpecRan.get()) error("boom")

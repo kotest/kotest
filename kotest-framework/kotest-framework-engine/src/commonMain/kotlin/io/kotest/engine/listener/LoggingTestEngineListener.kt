@@ -1,9 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.listener
 
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.spec.SpecExecutorDelegate
-import io.kotest.core.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

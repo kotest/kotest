@@ -24,7 +24,6 @@ class TestWithConfigBuilder(
    suspend fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -46,7 +45,6 @@ class TestWithConfigBuilder(
          timeout = timeout,
          invocationTimeout = invocationTimeout,
          invocations = invocations,
-         threads = threads,
          severity = severity,
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,

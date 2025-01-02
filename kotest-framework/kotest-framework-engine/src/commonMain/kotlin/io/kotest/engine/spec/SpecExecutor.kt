@@ -27,6 +27,7 @@ internal class SpecExecutor(
    private val context: EngineContext,
 ) {
 
+   @Suppress("DEPRECATION")
    private val logger = Logger(SpecExecutorDelegate::class)
    private val pipeline = SpecRefInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.configuration.registry)
@@ -47,6 +48,7 @@ internal class SpecExecutor(
 
    private suspend fun executeInDelegate(spec: Spec): Result<Map<TestCase, TestResult>> {
       return try {
+         @Suppress("DEPRECATION")
          val delegate = createSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
          logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
          Result.success(delegate.execute(spec))
@@ -72,10 +74,13 @@ internal class SpecExecutor(
 /**
  * A platform specific specialization of [SpecExecutor] logic.
  */
+@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
+@Suppress("DEPRECATION")
+@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal expect fun createSpecExecutorDelegate(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,

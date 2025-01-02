@@ -20,7 +20,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 22
+         counter.get() shouldBe 19
       }
 
       "a test disabled by an enabled flag".config(enabled = false) {
@@ -32,10 +32,6 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
       }
 
       "a test with multiple invocations".config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      "a test with multiple threads".config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 

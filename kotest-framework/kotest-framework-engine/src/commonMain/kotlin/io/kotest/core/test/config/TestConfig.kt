@@ -22,7 +22,6 @@ data class TestConfig(
    val enabledOrReasonIf: EnabledOrReasonIf? = null,
 
    val invocations: Int? = null,
-   val threads: Int? = null,
 
    /**
     * The timeout for a test case and all it's invocations. For example, if this value was set to 800ms,
@@ -79,8 +78,6 @@ data class TestConfig(
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }
-      require(threads == null || threads > 0) { "Number of threads must be greater than 0" }
-      require((threads ?: 0) <= (invocations ?: 1)) { "Number of threads must be <= number of invocations" }
       require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
       require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
       require(timeout == null || invocationTimeout == null || invocationTimeout <= timeout) {

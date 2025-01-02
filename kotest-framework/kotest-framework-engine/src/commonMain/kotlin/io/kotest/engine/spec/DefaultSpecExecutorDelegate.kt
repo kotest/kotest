@@ -18,7 +18,9 @@ import kotlin.coroutines.coroutineContext
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
  * as the execution context for timeouts.
  */
+@Suppress("DEPRECATION")
 @ExperimentalKotest
+@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal class DefaultSpecExecutorDelegate(
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val engineContext: EngineContext

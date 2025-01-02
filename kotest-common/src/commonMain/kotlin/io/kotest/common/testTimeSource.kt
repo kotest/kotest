@@ -1,11 +1,11 @@
 package io.kotest.common
 
+import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.time.TimeSource
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 
 /**
  * Returns the [TimeSource] used in tests.
@@ -32,7 +32,6 @@ val CoroutineContext.testCoroutineSchedulerOrNull: TestCoroutineScheduler?
 suspend fun nonDeterministicTestTimeSource(): TimeSource =
    coroutineContext.nonDeterministicTestCoroutineSchedulerOrNull?.timeSource ?: TimeSource.Monotonic
 
-@KotestInternal
 private val CoroutineContext.nonDeterministicTestCoroutineSchedulerOrNull: TestCoroutineScheduler?
    get() = if (this[NonDeterministicTestVirtualTimeEnabled] != null) testCoroutineSchedulerOrNull else null
 
