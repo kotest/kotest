@@ -455,23 +455,27 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest",
                fullyQualifiedTestClassName,
                "a failing test",
+               "a passing test",
                "Before Spec Error"
             )
             skipped().shouldBeEmpty()
             failed().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
                fullyQualifiedTestClassName,
             )
             succeeded().shouldHaveNames("Kotest")
             finished().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
                fullyQualifiedTestClassName,
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
             )
          }

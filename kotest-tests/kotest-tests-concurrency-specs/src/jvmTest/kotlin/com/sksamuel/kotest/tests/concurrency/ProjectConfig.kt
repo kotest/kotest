@@ -1,9 +1,8 @@
 package com.sksamuel.kotest.tests.concurrency
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.testTimeSource
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.matchers.comparables.shouldBeLessThan
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
@@ -12,8 +11,7 @@ class ProjectConfig : AbstractProjectConfig() {
 
    private lateinit var start: TimeMark
 
-   @ExperimentalKotest
-   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
+   override val specExecutionMode: SpecExecutionMode = SpecExecutionMode.Concurrent
 
    override suspend fun beforeProject() {
       start = testTimeSource().markNow()

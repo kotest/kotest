@@ -150,6 +150,9 @@ abstract class Spec : TestConfiguration() {
    @ExperimentalKotest
    var testExecutionMode: TestExecutionMode? = null
 
+   @ExperimentalKotest
+   open fun testExecutionMode(): TestExecutionMode? = null
+
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
     */

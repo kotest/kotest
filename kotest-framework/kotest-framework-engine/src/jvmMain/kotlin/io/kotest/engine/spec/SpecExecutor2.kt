@@ -191,7 +191,7 @@ internal class SpecExecutor2(
     * before using project level default.
     */
    private fun testExecutionMode(spec: Spec): TestExecutionMode {
-      return spec.testExecutionMode ?: engineContext.configuration.testExecutionMode
+      return spec.testExecutionMode ?: spec.testExecutionMode() ?: engineContext.configuration.testExecutionMode
    }
 
    /**
