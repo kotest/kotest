@@ -110,21 +110,21 @@ internal class TestSuiteScheduler(
       Platform.WasmJs -> 1
     }
   }
-
-  /**
-   * Returns true if this class is annotated with either of the annotations used to indicate
-   * this spec should not run concurrently regardless of config.
-   *
-   * Those annotations are [DoNotParallelize] and [Isolate].
-   */
-  @Suppress("DEPRECATION")
-  private fun KClass<*>.isIsolate(): Boolean =
-    hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
-        || hasAnnotation<Isolate>(IncludingAnnotations, IncludingSuperclasses)
-
-  /**
-   * Returns true if this class is annotated with the annotation used to indicate
-   * this spec should always run concurrently regardless of config.
-   */
-  private fun KClass<*>.isParallel() = hasAnnotation<Parallel>()
 }
+
+/**
+ * Returns true if this class is annotated with either of the annotations used to indicate
+ * this spec should not run concurrently regardless of config.
+ *
+ * Those annotations are [DoNotParallelize] and [Isolate].
+ */
+@Suppress("DEPRECATION")
+internal fun KClass<*>.isIsolate(): Boolean =
+  hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
+      || hasAnnotation<Isolate>(IncludingAnnotations, IncludingSuperclasses)
+
+/**
+ * Returns true if this class is annotated with the annotation used to indicate
+ * this spec should always run concurrently regardless of config.
+ */
+internal fun KClass<*>.isParallel() = hasAnnotation<Parallel>()

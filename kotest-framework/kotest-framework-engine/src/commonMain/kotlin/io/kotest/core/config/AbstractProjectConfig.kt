@@ -100,7 +100,7 @@ abstract class AbstractProjectConfig {
     * blocked. If you are using blocking calls in a test, setting [blockingTest] on that test's config
     * allows the test engine to spool up a new thread just for that test.
     */
-   var testExecutionMode: TestExecutionMode? = null
+   open val testExecutionMode: TestExecutionMode? = null
 
    /**
     * Each spec is launched into its own coroutine. By default, the test engine waits for all
@@ -121,7 +121,7 @@ abstract class AbstractProjectConfig {
     * [io.kotest.core.annotation.Isolate] annotation on that class. This annotation ensures that a spec
     * never runs concurrently regardless of any settings here.
     */
-   var specExecutionMode: SpecExecutionMode? = null
+   open val specExecutionMode: SpecExecutionMode? = null
 
    /**
     * When set to true, failed specs are written to a file called spec_failures.
