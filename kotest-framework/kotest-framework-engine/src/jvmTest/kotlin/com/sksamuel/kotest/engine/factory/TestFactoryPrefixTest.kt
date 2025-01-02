@@ -16,6 +16,6 @@ class TestFactoryPrefixTest : FunSpec({
 
 private fun factory() = funSpec {
    test("a") {
-      names.add(this.testCase.name.testName)
+      names.add(this.testCase.name.name)
    }
 }

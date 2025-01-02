@@ -50,7 +50,7 @@ internal class TestCaseExecutor(
    private val logger = Logger(TestCaseExecutor::class)
 
    suspend fun execute(testCase: TestCase, testScope: TestScope, specContext: SpecContext): TestResult {
-      logger.log { Pair(testCase.name.testName, "Executing test with scope $testScope") }
+      logger.log { Pair(testCase.name.name, "Executing test with scope $testScope") }
 
       val timeMark = TimeSource.Monotonic.markNow()
 
@@ -95,7 +95,7 @@ internal class TestCaseExecutor(
       )
 
       val innerExecute = NextTestExecutionInterceptor { tc, scope ->
-         logger.log { Pair(testCase.name.testName, "Executing test") }
+         logger.log { Pair(testCase.name.name, "Executing test") }
          tc.test(scope)
          try {
             TestResult.Success(timeMark.elapsedNow())

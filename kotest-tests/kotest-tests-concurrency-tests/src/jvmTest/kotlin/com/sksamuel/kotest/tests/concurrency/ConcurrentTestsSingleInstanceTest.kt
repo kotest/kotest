@@ -30,11 +30,11 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.testName
+      befores += testCase.name.name
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.testName
+      afters += testCase.name.name
    }
 
    override suspend fun beforeSpec(spec: Spec) {

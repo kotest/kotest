@@ -20,13 +20,13 @@ class DuplicateNameHandlingTestScope(
 
    // in the single instance runner we execute each nested test as soon as they are registered
    override suspend fun registerTestCase(nested: NestedTest) {
-      logger.log { Pair(testCase.name.testName, "Nested test case discovered $nested") }
+      logger.log { Pair(testCase.name.name, "Nested test case discovered $nested") }
       val withOverrideName = when (val uniqueName = handler.handle(nested.name)) {
          null -> nested
-         else -> nested.copy(name = nested.name.copy(testName = uniqueName))
+         else -> nested.copy(name = nested.name.copy(name = uniqueName))
       }
-      logger.log { Pair(testCase.name.testName, "Name with override: ${withOverrideName.name}") }
-      logger.log { Pair(testCase.name.testName, "Delegating registration to $delegate") }
+      logger.log { Pair(testCase.name.name, "Name with override: ${withOverrideName.name}") }
+      logger.log { Pair(testCase.name.name, "Delegating registration to $delegate") }
       delegate.registerTestCase(withOverrideName)
    }
 }

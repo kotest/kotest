@@ -1728,33 +1728,51 @@ public final class io/kotest/core/names/DuplicateTestNameMode : java/lang/Enum {
 }
 
 public final class io/kotest/core/names/TestName {
-	public static final field Companion Lio/kotest/core/names/TestName$Companion;
-	public fun <init> (Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;)V
+	public fun <init> (Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;Z)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Z
 	public final fun component3 ()Z
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/lang/String;
 	public final fun component6 ()Z
-	public final fun component7 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;)Lio/kotest/core/names/TestName;
-	public static synthetic fun copy$default (Lio/kotest/core/names/TestName;Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILjava/lang/Object;)Lio/kotest/core/names/TestName;
+	public final fun copy (Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestName;
+	public static synthetic fun copy$default (Lio/kotest/core/names/TestName;Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Lio/kotest/core/names/TestName;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBang ()Z
 	public final fun getDefaultAffixes ()Z
 	public final fun getFocus ()Z
-	public final fun getOriginalName ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
 	public final fun getPrefix ()Ljava/lang/String;
 	public final fun getSuffix ()Ljava/lang/String;
-	public final fun getTestName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/core/names/TestName$Companion {
-	public final fun invoke (Ljava/lang/String;)Lio/kotest/core/names/TestName;
-	public final fun invoke (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestName;
-	public final fun invoke (Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestName;
+public final class io/kotest/core/names/TestNameBuilder {
+	public static final field Companion Lio/kotest/core/names/TestNameBuilder$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V
+	public final fun build ()Lio/kotest/core/names/TestName;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lio/kotest/core/names/TestNameBuilder;
+	public static synthetic fun copy$default (Lio/kotest/core/names/TestNameBuilder;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Lio/kotest/core/names/TestNameBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultAffixes ()Z
+	public final fun getPrefix ()Ljava/lang/String;
+	public final fun getRawname ()Ljava/lang/String;
+	public final fun getSuffix ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun removeAllExtraWhitespaces (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public final fun withDefaultAffixes ()Lio/kotest/core/names/TestNameBuilder;
+	public final fun withPrefix (Ljava/lang/String;)Lio/kotest/core/names/TestNameBuilder;
+	public final fun withSuffix (Ljava/lang/String;)Lio/kotest/core/names/TestNameBuilder;
+}
+
+public final class io/kotest/core/names/TestNameBuilder$Companion {
+	public final fun builder (Ljava/lang/String;)Lio/kotest/core/names/TestNameBuilder;
 }
 
 public final class io/kotest/core/names/TestNameCase : java/lang/Enum {
@@ -2750,9 +2768,9 @@ public abstract class io/kotest/core/spec/style/scopes/TerminalScope : io/kotest
 public final class io/kotest/core/spec/style/scopes/TestDslState {
 	public static final field INSTANCE Lio/kotest/core/spec/style/scopes/TestDslState;
 	public final fun checkState ()V
-	public final fun clear (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun clear (Lio/kotest/core/names/TestName;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun startTest (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun startTest (Lio/kotest/core/names/TestName;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {

@@ -27,7 +27,7 @@ class TagsAnnotationCompositionTest : FunSpec() {
 
          Materializer(conf).materialize(MyCompositeAnnotationTest())
             .filter { it.isEnabledInternal(conf).isEnabled }
-            .map { it.name.testName }
+            .map { it.name.name }
             .toSet() shouldBe setOf("a")
       }
    }

@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -42,7 +42,7 @@ class WordSpecShouldContainerScope(
       test: suspend TestScope.() -> Unit
    ) {
       TestWithConfigBuilder(
-         TestName(this),
+         TestNameBuilder.builder(this).build(),
          context = this@WordSpecShouldContainerScope,
          xdisabled = false,
       ).config(
@@ -61,6 +61,6 @@ class WordSpecShouldContainerScope(
    }
 
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
-      registerTest(TestName(this), false, null) { WordSpecTerminalScope(this).test() }
+      registerTest(TestNameBuilder.builder(this).build(), false, null) { WordSpecTerminalScope(this).test() }
    }
 }

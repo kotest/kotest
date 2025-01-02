@@ -367,3 +367,4 @@ class ProjectConfiguration {
 
    var retryDelayFn: ((TestCase, Int) -> Duration)? = Defaults.defaultRetryDelayFn
 }
+

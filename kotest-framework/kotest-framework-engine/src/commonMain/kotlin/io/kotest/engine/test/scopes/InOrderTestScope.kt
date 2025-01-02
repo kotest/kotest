@@ -32,7 +32,7 @@ internal class InOrderTestScope(
    private val testExtensions = TestExtensions(context.configuration.registry)
 
    override suspend fun registerTestCase(nested: NestedTest) {
-      logger.log { Pair(testCase.name.testName, "Nested test case discovered $nested") }
+      logger.log { Pair(testCase.name.name, "Nested test case discovered $nested") }
       val nestedTestCase = Materializer(context.configuration).materialize(nested, testCase)
 
       if (failed && (testCase.config.failfast || context.configuration.projectWideFailFast)) {
@@ -53,7 +53,7 @@ internal class InOrderTestScope(
       specContext: SpecContext,
       coroutineContext: CoroutineContext,
    ): TestResult {
-      logger.log { Pair(testCase.name.testName, "running test") }
+      logger.log { Pair(testCase.name.name, "running test") }
       return TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
          coroutineDispatcherFactory,

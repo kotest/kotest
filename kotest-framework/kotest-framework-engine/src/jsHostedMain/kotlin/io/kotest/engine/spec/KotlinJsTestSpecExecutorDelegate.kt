@@ -10,7 +10,7 @@ import io.kotest.engine.kotlinJsTestFramework
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.interceptors.testNameEscape
+import io.kotest.engine.test.names.TestNameEscaper
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
@@ -38,10 +38,10 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
       val specContext = SpecContext.create()
       // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
       // which declares a single level of `test`s.
-      kotlinJsTestFramework.suite(testNameEscape(spec::class.bestName()), ignored = false) {
+      kotlinJsTestFramework.suite(TestNameEscaper.escape(spec::class.bestName()), ignored = false) {
          materializer.materialize(spec).forEach { testCase ->
             kotlinJsTestFramework.test(
-               testNameEscape(formatter.format(testCase)),
+               TestNameEscaper.escape(formatter.format(testCase)),
                ignored = testCase.isEnabledInternal(context.configuration).isDisabled
             ) {
                // We rely on JS Promise to interact with the JS test framework. We cannot use callbacks here

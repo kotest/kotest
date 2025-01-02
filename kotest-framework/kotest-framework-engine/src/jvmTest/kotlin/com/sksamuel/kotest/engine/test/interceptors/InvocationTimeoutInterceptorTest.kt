@@ -4,13 +4,13 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import kotlinx.coroutines.delay
@@ -23,7 +23,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
 
          val tc = TestCase(
             InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+            TestNameBuilder.builder("foo").build(),
             InvocationCountCheckInterceptorTest(),
             {},
             sourceRef(),

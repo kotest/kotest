@@ -6,19 +6,19 @@ import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe
@@ -30,7 +30,7 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return false if the test is disabled in config" {
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -54,7 +54,7 @@ class IsEnabledTest : StringSpec() {
          c.registry.add(ext)
 
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -77,7 +77,7 @@ class IsEnabledTest : StringSpec() {
          c.registry.add(ext)
 
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -101,7 +101,7 @@ class IsEnabledTest : StringSpec() {
 
          val mytag = NamedTag("mytag")
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -123,7 +123,7 @@ class IsEnabledTest : StringSpec() {
 
          val mytag = NamedTag("mytag")
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -136,7 +136,7 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return false if the test name begins with a !" {
          val test = TestCase(
-            name = TestName("!foo"),
+            name = TestNameBuilder.builder("!foo").build(),
             descriptor = IsEnabledTest::class.toDescriptor().append("!foo"),
             spec = this@IsEnabledTest,
             parent = null,
@@ -149,7 +149,7 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
          val test = TestCase(
-            name = TestName("foo"),
+            name =  TestNameBuilder.builder("foo").build(),
             descriptor = IsEnabledWithFocusTest::class.toDescriptor().append("foo"),
             spec = IsEnabledWithFocusTest(),
             parent = null,
@@ -162,7 +162,7 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return true if the test is focused and top level" {
          val test = TestCase(
-            name = TestName("f:foo"),
+            name = TestNameBuilder.builder("f:foo").build(),
             descriptor = IsEnabledWithFocusTest::class.toDescriptor().append("f:foo"),
             spec = IsEnabledWithFocusTest(),
             parent = null,
@@ -175,7 +175,7 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return true if not top level even if spec has top level focused tests" {
          val test = TestCase(
-            name = TestName("f:my test"),
+            name = TestNameBuilder.builder("f:my test").build(),
             descriptor = IsEnabledWithFocusTest::class.toDescriptor().append("f:my test").append("foo"),
             spec = IsEnabledWithFocusTest(),
             parent = null,
@@ -198,7 +198,7 @@ class IsEnabledTest : StringSpec() {
          c.registry.add(filter)
 
          TestCase(
-            name = TestName("f"),
+            name = TestNameBuilder.builder("f").build(),
             descriptor = SomeTestClass::class.toDescriptor().append("f"),
             spec = SomeTestClass(),
             parent = null,
@@ -208,7 +208,7 @@ class IsEnabledTest : StringSpec() {
          ).isEnabledInternal(c).isEnabled shouldBe true
 
          TestCase(
-            name = TestName("g"),
+            name = TestNameBuilder.builder("g").build(),
             descriptor = SomeTestClass::class.toDescriptor().append("g"),
             spec = SomeTestClass(),
             parent = null,
@@ -233,7 +233,7 @@ class IsEnabledTest : StringSpec() {
 
          // this should be disabled because the extension says it is, even though it's normally enabled
          TestCase(
-            name = TestName("enabled"),
+            name = TestNameBuilder.builder("enabled").build(),
             descriptor = SomeTestClass::class.toDescriptor().append("enabled"),
             spec = SomeTestClass(),
             parent = null,
@@ -243,7 +243,7 @@ class IsEnabledTest : StringSpec() {
          ).isEnabled(c).isEnabled shouldBe false
 
          TestCase(
-            name = TestName("activateme"),
+            name = TestNameBuilder.builder("activateme").build(),
             descriptor = SomeTestClass::class.toDescriptor().append("activateme"),
             spec = SomeTestClass(),
             parent = null,

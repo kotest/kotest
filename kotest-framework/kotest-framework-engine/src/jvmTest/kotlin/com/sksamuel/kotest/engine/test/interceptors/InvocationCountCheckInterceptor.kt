@@ -3,13 +3,13 @@ package com.sksamuel.kotest.engine.test.interceptors
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -24,7 +24,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should invoke downstream if invocation count == 1 for containers") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+               TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),
@@ -44,7 +44,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should invoke downstream if invocation count > 1 for tests") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+               TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),
@@ -64,7 +64,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
          it("should error if invocation count > 1 for containers") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+               TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),

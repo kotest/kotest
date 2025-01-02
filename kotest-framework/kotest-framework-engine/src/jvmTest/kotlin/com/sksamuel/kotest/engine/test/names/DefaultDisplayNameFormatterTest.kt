@@ -11,14 +11,14 @@ import io.kotest.core.annotation.Tags
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.extensions.system.captureStandardOut
@@ -39,7 +39,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          conf.displayFullTestPath = true
          val tc1 = TestCase(
             SpecWithDisplayName::class.toDescriptor().append("test"),
-            TestName("test"),
+            TestNameBuilder.builder("test").build(),
             SpecWithDisplayName(),
             {},
             sourceRef(),
@@ -47,7 +47,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          )
          val tc2 = TestCase(
             SpecWithDisplayName::class.toDescriptor().append("test2"),
-            TestName("test2"),
+         TestNameBuilder.builder("test2").build(),
             SpecWithDisplayName(),
             {},
             sourceRef(),
@@ -63,7 +63,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             SpecWithDisplayName::class.toDescriptor().append("test"),
-            TestName("test"),
+            TestNameBuilder.builder("test").build(),
             SpecWithDisplayName(),
             {},
             sourceRef(),
@@ -77,7 +77,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("!test"),
-            name = TestName("!test"),
+            name = TestNameBuilder.builder("!test").build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
@@ -92,7 +92,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
-            name = TestName("f:test"),
+            name = TestNameBuilder.builder("f:test").build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
@@ -107,7 +107,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
-            name = TestName("prefix", "foo", null, true),
+            name = TestNameBuilder.builder("foo").withPrefix("prefix").withDefaultAffixes().build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
@@ -122,7 +122,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
-            name = TestName("prefix", "foo", null, false),
+            name = TestNameBuilder.builder("foo").withPrefix("prefix").build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
@@ -139,7 +139,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
-            name = TestName(null, "foo", "suffix", true),
+            name = TestNameBuilder.builder("foo").withSuffix("suffix").withDefaultAffixes().build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
@@ -154,7 +154,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val tc = TestCase(
             descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
-            name = TestName(null, "foo", "suffix", false),
+            name = TestNameBuilder.builder("foo").withSuffix("suffix").build(),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),

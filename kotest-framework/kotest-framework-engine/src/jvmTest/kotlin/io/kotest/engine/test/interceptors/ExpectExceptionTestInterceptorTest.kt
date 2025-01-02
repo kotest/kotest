@@ -1,8 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.ExpectFailureException
@@ -10,6 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.runIf
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import java.io.IOException
@@ -25,7 +25,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
    test("ExpectExceptionTestInterceptor should adjust ExpectFailureException to Ignored") {
       val tc = TestCase(
          ExpectExceptionTestInterceptorTest::class.toDescriptor().append("a"),
-         TestName("a"),
+          TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
          sourceRef(),
@@ -39,7 +39,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
    test("ExpectExceptionTestInterceptor should not adjust exceptions that are not ExpectFailureException") {
       val tc = TestCase(
          ExpectExceptionTestInterceptorTest::class.toDescriptor().append("a"),
-         TestName("a"),
+         TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
          sourceRef(),
@@ -53,7 +53,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
    test("ExpectExceptionTestInterceptor should not adjust AssertionErrors") {
       val tc = TestCase(
          ExpectExceptionTestInterceptorTest::class.toDescriptor().append("a"),
-         TestName("a"),
+          TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
          sourceRef(),

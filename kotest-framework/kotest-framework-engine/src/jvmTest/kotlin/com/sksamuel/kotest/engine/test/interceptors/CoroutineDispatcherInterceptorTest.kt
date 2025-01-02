@@ -4,13 +4,13 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.string.shouldStartWith
@@ -28,7 +28,7 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
          it("should dispatch to coroutineDispatcher") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-               TestName("foo"),
+               TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),

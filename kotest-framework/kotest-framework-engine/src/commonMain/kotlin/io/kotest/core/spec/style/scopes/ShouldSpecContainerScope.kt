@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -35,7 +35,7 @@ class ShouldSpecContainerScope(
 
    private suspend fun context(name: String, xdisabled: Boolean, test: suspend ShouldSpecContainerScope.() -> Unit) {
       registerContainer(
-         name = TestName(name),
+         name = TestNameBuilder.builder(name).build(),
          disabled = xdisabled,
          config = null,
       ) { ShouldSpecContainerScope(this).test() }
@@ -43,22 +43,24 @@ class ShouldSpecContainerScope(
 
    @ExperimentalKotest
    fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerWithConfigBuilder(TestName(name), this, false) { ShouldSpecContainerScope(it) }
+      return ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, false) { ShouldSpecContainerScope(it) }
    }
 
    @ExperimentalKotest
    fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerWithConfigBuilder(TestName(name), this, true) { ShouldSpecContainerScope(it) }
+      return ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, true) { ShouldSpecContainerScope(it) }
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
-      return TestWithConfigBuilder(TestName("should ", name, false), this, false)
+      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(testName, this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(name)
-      return TestWithConfigBuilder(TestName("should ", name, false), this, true)
+      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(testName, this, true)
    }
 
    suspend fun should(name: String, test: suspend TestScope.() -> Unit) {
@@ -70,6 +72,6 @@ class ShouldSpecContainerScope(
    }
 
    private suspend fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestName("should ", name, true), disabled = xdisabled, config = null, test = test)
+      registerTest(name = TestNameBuilder.builder(name).withPrefix("should ").build(), disabled = xdisabled, config = null, test = test)
    }
 }

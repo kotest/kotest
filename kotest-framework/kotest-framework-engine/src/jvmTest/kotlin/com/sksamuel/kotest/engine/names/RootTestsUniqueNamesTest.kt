@@ -5,8 +5,8 @@ import io.kotest.matchers.shouldBe
 
 class RootTestsUniqueNamesTest : FunSpec() {
    init {
-      test("foo") { this.testCase.name.testName shouldBe "foo" }
-      test("bar") { this.testCase.name.testName shouldBe "bar" }
-      test("bar") { this.testCase.name.testName shouldBe "(1) bar" }
+      test("foo") { this.testCase.name.name shouldBe "foo" }
+      test("bar") { this.testCase.name.name shouldBe "bar" }
+      test("bar") { this.testCase.name.name shouldBe "(1) bar" }
    }
 }

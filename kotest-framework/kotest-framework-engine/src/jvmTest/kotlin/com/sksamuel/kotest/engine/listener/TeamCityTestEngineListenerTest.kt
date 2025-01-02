@@ -7,14 +7,14 @@ import io.kotest.assertions.print.Printed
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -29,7 +29,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
 
       val a = TestCase(
          TeamCityTestEngineListenerTest::class.toDescriptor().append("a"),
-         TestName("a"),
+         TestNameBuilder.builder("a").build(),
          this@TeamCityTestEngineListenerTest,
          { },
          SourceRef.ClassSource("foo.bar.Test", 12),
@@ -41,14 +41,14 @@ class TeamCityTestEngineListenerTest : FunSpec() {
 
       val b = a.copy(
          parent = a,
-         name = TestName("b"),
+         name = TestNameBuilder.builder("b").build(),
          descriptor = a.descriptor.append("b"),
          source = SourceRef.ClassSource("foo.bar.Test", 17),
       )
 
       val c = b.copy(
          parent = b,
-         name = TestName("c"),
+         name =  TestNameBuilder.builder("c").build(),
          descriptor = b.descriptor.append("c"),
          type = TestType.Test,
          source = SourceRef.ClassSource("foo.bar.Test", 33),

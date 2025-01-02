@@ -9,6 +9,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.project.TestSuite
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -38,7 +39,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    val tc1 = TestCase(
       MySpec::class.toDescriptor().append("foo"),
-      TestName("foo"),
+      TestNameBuilder.builder("foo").build(),
       MySpec(),
       {},
       sourceRef(),
@@ -47,7 +48,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    val tc2 = TestCase(
       tc1.descriptor.append("bar"),
-      TestName("bar"),
+      TestNameBuilder.builder("bar").build(),
       tc1.spec,
       {},
       sourceRef(),
@@ -57,7 +58,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    val tc3 = TestCase(
       MySpec2::class.toDescriptor().append("baz"),
-      TestName("baz"),
+      TestNameBuilder.builder("baz").build(),
       MySpec2(),
       {},
       sourceRef(),

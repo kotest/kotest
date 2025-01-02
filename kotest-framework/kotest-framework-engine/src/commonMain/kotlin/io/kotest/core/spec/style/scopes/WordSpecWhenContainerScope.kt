@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -19,7 +20,7 @@ class WordSpecWhenContainerScope(
 
    private suspend fun `when`(name: String, xdisabled: Boolean, test: suspend WordSpecWhenContainerScope.() -> Unit) {
       registerContainer(
-         name = TestName(null, name, " when", true),
+         name = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
          disabled = xdisabled,
          config = null,
       ) { WordSpecWhenContainerScope(this).test() }
@@ -43,7 +44,7 @@ class WordSpecWhenContainerScope(
       xdisabled: Boolean
    ) {
       registerContainer(
-         name = TestName(null, name, " should", true),
+         name = TestNameBuilder.builder(name).withSuffix(" should").withDefaultAffixes().build(),
          disabled = xdisabled,
          config = null
       ) { WordSpecShouldContainerScope(this).test() }

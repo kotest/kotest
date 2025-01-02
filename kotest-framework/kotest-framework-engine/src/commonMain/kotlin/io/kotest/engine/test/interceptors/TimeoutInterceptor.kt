@@ -43,7 +43,7 @@ internal class TimeoutInterceptor(
       // This timeout applies to the test itself. If the test has multiple invocations, then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, because 3 x 300 > 800.
-      logger.log { Pair(testCase.name.testName, "Switching context to add timeout $timeout") }
+      logger.log { Pair(testCase.name.name, "Switching context to add timeout $timeout") }
 
       return try {
          withAppropriateTimeout(timeout) {
@@ -51,8 +51,8 @@ internal class TimeoutInterceptor(
          }
       } catch (t: CancellationException) {
          if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {
-            logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
-            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName, t))
+            logger.log { Pair(testCase.name.name, "Caught timeout $t") }
+            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.name, t))
          } else {
             throw t
          }

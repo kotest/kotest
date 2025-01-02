@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.core.descriptors.append
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -17,7 +18,7 @@ class TestCaseParentsTest : FunSpec() {
 
          val tc1 = TestCase(
             TestCaseParentsTest::class.toDescriptor().append("foo"),
-            TestName("foo"),
+            TestNameBuilder.builder("foo").build(),
             TestCaseParentsTest(),
             {},
             sourceRef(),
@@ -26,7 +27,7 @@ class TestCaseParentsTest : FunSpec() {
 
          val tc2 = TestCase(
             TestCaseParentsTest::class.toDescriptor().append("foo").append("bar"),
-            TestName("bar"),
+            TestNameBuilder.builder("bar").build(),
             TestCaseParentsTest(),
             {},
             sourceRef(),
@@ -36,7 +37,7 @@ class TestCaseParentsTest : FunSpec() {
 
          val tc3 = TestCase(
             TestCaseParentsTest::class.toDescriptor().append("foo").append("bar").append("baz"),
-            TestName("baz"),
+            TestNameBuilder.builder("baz").build(),
             TestCaseParentsTest(),
             {},
             sourceRef(),

@@ -27,7 +27,7 @@ class ExcludeTagExtensionTest : FunSpec() {
 
          val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
-               fail(testCase.name.testName + " should not run")
+               fail(testCase.name.name + " should not run")
             }
          }
 

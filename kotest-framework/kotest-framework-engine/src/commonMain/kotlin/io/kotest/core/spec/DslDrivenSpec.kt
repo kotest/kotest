@@ -37,7 +37,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    }
 
    override fun add(test: RootTest) {
-      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.testName}")
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
       rootTests = rootTests + test
    }
 
@@ -63,7 +63,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    fun include(prefix: String, factory: TestFactory) {
       val renamed = factory.tests.map { test ->
-         val name = test.name.copy(testName = prefix + " " + test.name.testName)
+         val name = test.name.copy(name = prefix + " " + test.name.name)
          test.copy(name = name)
       }
       include(factory.copy(tests = renamed))

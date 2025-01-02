@@ -191,10 +191,10 @@ data class DescriptorId(
 }
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
-   TestDescriptor(this, DescriptorId(name.testName))
+   TestDescriptor(this, DescriptorId(name.name))
 
 fun TestDescriptor.append(name: TestName): TestDescriptor =
-   this.append(name.testName)
+   this.append(name.name)
 
 fun Descriptor.append(name: String): TestDescriptor =
    TestDescriptor(this, DescriptorId(name))

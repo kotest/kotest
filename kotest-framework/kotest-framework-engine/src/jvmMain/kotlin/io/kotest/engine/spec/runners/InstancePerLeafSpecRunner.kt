@@ -134,14 +134,14 @@ internal class InstancePerLeafSpecRunner(
          logger.log {
             Pair(
                spec::class.bestName(),
-               "Searching root '${root.name.testName}' for '${test.name.testName}'"
+               "Searching root '${root.name.name}' for '${test.name.name}'"
             )
          }
          locateAndRunRoot(root, test, specContext)
       }
 
    private suspend fun locateAndRunRoot(test: TestCase, target: TestCase, specContext: SpecContext): TestResult {
-      logger.log { Pair(test.name.testName, "Executing test in search of target '${target.name.testName}'") }
+      logger.log { Pair(test.name.name, "Executing test in search of target '${target.name.name}'") }
 
       return coroutineScope {
          val context = object : TestScope {
@@ -183,20 +183,20 @@ internal class InstancePerLeafSpecRunner(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
                   if (started.add(testCase.descriptor)) {
-                     logger.log { Pair(test.name.testName, "Notifying test started '${testCase.name.testName}'") }
+                     logger.log { Pair(test.name.name, "Notifying test started '${testCase.name.name}'") }
                      listener.testStarted(testCase)
                   }
                }
 
                override suspend fun testIgnored(testCase: TestCase, reason: String?) {
                   if (ignored.add(testCase.descriptor))
-                     logger.log { Pair(test.name.testName, "Notifying test ignored '${testCase.name.testName}'") }
+                     logger.log { Pair(test.name.name, "Notifying test ignored '${testCase.name.name}'") }
                   listener.testIgnored(testCase, reason)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                   if (!queue.any { it.testCase.descriptor.isDescendentOf(testCase.descriptor) }) {
-                     logger.log { Pair(test.name.testName, "Notifying test finished '${testCase.name.testName}'") }
+                     logger.log { Pair(test.name.name, "Notifying test finished '${testCase.name.name}'") }
                      listener.testFinished(testCase, result)
                   }
                }

@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.test.TestScope
 
 /**
@@ -40,7 +40,7 @@ interface ShouldSpecRootScope : RootScope {
 
    private fun context(name: String, disabled: Boolean, test: suspend ShouldSpecContainerScope.() -> Unit) {
       addContainer(
-         testName = TestName("context ", name, false),
+         testName = TestNameBuilder.builder(name).withPrefix("context ").build(),
          disabled = disabled,
          config = null
       ) { ShouldSpecContainerScope(this).test() }
@@ -50,23 +50,31 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top level context scope accepting config to the spec.
     */
    fun context(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         xdisabled = false,
+         context = this
+      ) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a disabled top level context scope accepting config to the spec.
     */
    fun xcontext(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         xdisabled = true,
+         context = this
+      ) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied
     * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
    fun should(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = TestName("should ", name, true), xdisabled = false)
+      RootTestWithConfigBuilder(context = this, name = TestNameBuilder.builder(name).withPrefix("should ").build(), xdisabled = false)
 
    fun xshould(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = TestName("should ", name, true), xdisabled = true)
+      RootTestWithConfigBuilder(context = this, name = TestNameBuilder.builder(name).withPrefix("should ").build(), xdisabled = true)
 
    /**
     * Adds a top level test, with the given name and test function, with default test config.
@@ -80,6 +88,11 @@ interface ShouldSpecRootScope : RootScope {
    }
 
    private fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      addTest(testName = TestName("should ", name, false), disabled = xdisabled, config = null, test = test)
+      addTest(
+         testName = TestNameBuilder.builder(name).withPrefix("should ").build(),
+         disabled = xdisabled,
+         config = null,
+         test = test
+      )
    }
 }

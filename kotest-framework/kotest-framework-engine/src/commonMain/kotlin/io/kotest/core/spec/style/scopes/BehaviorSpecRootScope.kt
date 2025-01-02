@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -35,9 +35,9 @@ interface BehaviorSpecRootScope : RootScope {
 
    fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       addContainer(
-         TestName("Given: ", name, true),
+         testName = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          disabled = xdisabled,
-         null
+         config = null
       ) { BehaviorSpecGivenContainerScope(this).test() }
    }
 
@@ -64,9 +64,9 @@ interface BehaviorSpecRootScope : RootScope {
 
    fun addContext(name: String, xdisabled: Boolean, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       addContainer(
-         TestName("Context: ", name, true),
+         testName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
          disabled = xdisabled,
-         null
+         config = null
       ) { BehaviorSpecContextContainerScope(this).test() }
    }
 }

@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
@@ -27,7 +27,11 @@ class BehaviorSpecContextContainerScope(
       xdisabled: Boolean,
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
    ) {
-      registerContainer(name = TestName("Given: ", name, true), disabled = xdisabled, config = null) {
+      registerContainer(
+         name = TestNameBuilder.builder(name).withPrefix("Given: ").build(),
+         disabled = xdisabled,
+         config = null
+      ) {
          BehaviorSpecGivenContainerScope(this).test()
       }
    }
@@ -37,7 +41,11 @@ class BehaviorSpecContextContainerScope(
       xdisabled: Boolean,
       test: suspend BehaviorSpecContextContainerScope.() -> Unit,
    ) {
-      registerContainer(name = TestName("Context: ", name, true), disabled = xdisabled, config = null) {
+      registerContainer(
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         disabled = xdisabled,
+         config = null
+      ) {
          BehaviorSpecContextContainerScope(this).test()
       }
    }

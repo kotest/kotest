@@ -36,17 +36,17 @@ class DefaultDisplayNameFormatter(
 
       val displayName = if (prefix.isBlank()) {
          when (configuration.testNameCase) {
-            TestNameCase.Sentence -> testCase.name.testName.capital() + suffix
-            TestNameCase.InitialLowercase -> testCase.name.testName.uncapitalize() + suffix
-            TestNameCase.Lowercase -> testCase.name.testName.lowercase() + suffix
-            else -> testCase.name.testName + suffix
+            TestNameCase.Sentence -> testCase.name.name.capital() + suffix
+            TestNameCase.InitialLowercase -> testCase.name.name.uncapitalize() + suffix
+            TestNameCase.Lowercase -> testCase.name.name.lowercase() + suffix
+            else -> testCase.name.name + suffix
          }
       } else {
          when (configuration.testNameCase) {
-            TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.testName.uncapitalize()}$suffix"
-            TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.testName.uncapitalize()}$suffix"
-            TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.testName.lowercase()}$suffix"
-            else -> "$prefix${testCase.name.testName}$suffix"
+            TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.name.uncapitalize()}$suffix"
+            TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.name.uncapitalize()}$suffix"
+            TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.name.lowercase()}$suffix"
+            else -> "$prefix${testCase.name.name}$suffix"
          }
       }
 

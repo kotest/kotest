@@ -17,7 +17,7 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    var errors = false
 
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
-   fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
+   fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.name }[testname]
 
    override suspend fun specFinished(kclass: KClass<*>, result: TestResult) = withLock {
       specs[kclass] = result
@@ -30,13 +30,13 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?): Unit = withLock {
       tests[testCase.toKey()] = TestResult.Ignored(reason)
-      names.add(testCase.name.testName)
+      names.add(testCase.name.name)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult): Unit = withLock {
       tests[testCase.toKey()] = result
       if (result.isFailure || result.isError) errors = true
-      names.add(testCase.name.testName)
+      names.add(testCase.name.name)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) = withLock {

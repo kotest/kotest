@@ -22,7 +22,7 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
 
    override fun isEnabled(testCase: TestCase): Enabled {
       val filter = syspropOrEnv(KotestEngineProperties.filterTests) ?: ""
-      logger.log { Pair(testCase.name.testName, "Filter tests syspropOrEnv=$filter") }
+      logger.log { Pair(testCase.name.name, "Filter tests syspropOrEnv=$filter") }
 
       val excluded = filter
          .propertyToRegexes()
@@ -30,7 +30,7 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
          .filterIsInstance<TestFilterResult.Exclude>()
          .firstOrNull()
 
-      logger.log { Pair(testCase.name.testName, "excluded = $excluded") }
+      logger.log { Pair(testCase.name.name, "excluded = $excluded") }
       return if (excluded == null) Enabled.enabled else Enabled.disabled(excluded.reason)
    }
 }

@@ -21,7 +21,7 @@ class ExpectSpecMultiLineTest : ExpectSpec() {
     1
     """
       ) {
-         names.add(this.testCase.name.testName)
+         names.add(this.testCase.name.name)
       }
 
       context("context") {
@@ -32,7 +32,7 @@ class ExpectSpecMultiLineTest : ExpectSpec() {
     2
     """
          ) {
-            names.add(this.testCase.name.testName)
+            names.add(this.testCase.name.name)
 
          }
       }

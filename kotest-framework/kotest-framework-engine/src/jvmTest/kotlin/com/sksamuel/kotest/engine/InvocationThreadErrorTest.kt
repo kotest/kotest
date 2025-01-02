@@ -16,7 +16,7 @@ class InvocationThreadErrorTest : FunSpec({
       TestEngineLauncher(listener)
          .withClasses(InvocationErrorsTests::class)
          .launch()
-      listener.tests.keys.map { it.name.testName } shouldBe setOf(
+      listener.tests.keys.map { it.name.name } shouldBe setOf(
          "multiple invocations",
          "multiple invocations on multiple threads"
       )

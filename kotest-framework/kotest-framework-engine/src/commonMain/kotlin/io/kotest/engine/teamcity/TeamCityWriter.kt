@@ -36,7 +36,7 @@ internal class TeamCityWriter(
     * For a [TestCase] will output the "test started" message.
     */
    internal fun outputTestStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "startTest ${testCase.descriptor.path().value}") }
+      logger.log { Pair(testCase.name.name, "startTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -104,7 +104,7 @@ internal class TeamCityWriter(
     * For a given [TestCase] will output the "test finished" message.
     */
    internal fun outputTestFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "finishTest ${testCase.descriptor.path().value}") }
+      logger.log { Pair(testCase.name.name, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -129,7 +129,7 @@ internal class TeamCityWriter(
     * For a given [TestCase] will output the "test suite started" message.
     */
    internal fun outputTestSuiteStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "startTestSuite ${testCase.descriptor.path().value}") }
+      logger.log { Pair(testCase.name.name, "startTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testSuiteStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
@@ -143,7 +143,7 @@ internal class TeamCityWriter(
     * For a given [TestCase] will output the "test suite finished" message.
     */
    internal fun outputTestSuiteFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "finishTestSuite ${testCase.descriptor.path().value}") }
+      logger.log { Pair(testCase.name.name, "finishTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)

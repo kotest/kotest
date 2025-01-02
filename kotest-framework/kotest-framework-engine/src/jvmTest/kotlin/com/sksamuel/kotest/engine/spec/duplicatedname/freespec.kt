@@ -9,26 +9,26 @@ abstract class FreeSpecDuplicateNameTest(iso: IsolationMode) : FreeSpec() {
       isolationMode = iso
 
       "foo" { }
-      "foo" { this.testCase.name.testName shouldBe "(1) foo" }
-      "foo" { this.testCase.name.testName shouldBe "(2) foo" }
+      "foo" { this.testCase.name.name shouldBe "(1) foo" }
+      "foo" { this.testCase.name.name shouldBe "(2) foo" }
 
       "woo" - {
          "goo" { }
          "goo" {
-            this.testCase.name.testName shouldBe "(1) goo"
+            this.testCase.name.name shouldBe "(1) goo"
          }
          "goo" {
-            this.testCase.name.testName shouldBe "(2) goo"
+            this.testCase.name.name shouldBe "(2) goo"
          }
       }
 
       "woo" - {
-         this.testCase.name.testName shouldBe "(1) woo"
+         this.testCase.name.name shouldBe "(1) woo"
          "a" { }
       }
 
       "woo" - {
-         this.testCase.name.testName shouldBe "(2) woo"
+         this.testCase.name.name shouldBe "(2) woo"
          "a" { }
       }
    }

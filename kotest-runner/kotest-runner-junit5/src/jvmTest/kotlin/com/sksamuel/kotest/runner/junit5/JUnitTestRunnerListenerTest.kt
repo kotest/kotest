@@ -4,13 +4,13 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.createTestResult
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
@@ -53,7 +53,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
 
          val test1 = TestCase(
             JUnitTestRunnerListenerTest::class.toDescriptor().append("test1"),
-            TestName("test1"),
+            TestNameBuilder.builder("test1").build(),
             JUnitTestRunnerListenerTest(),
             { },
             sourceRef(),
@@ -63,7 +63,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
 
          val test2 = TestCase(
             test1.descriptor.append("test2"),
-            TestName("test2"),
+            TestNameBuilder.builder("test2").build(),
             JUnitTestRunnerListenerTest(),
             { },
             sourceRef(),

@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.names.TestName
+import io.kotest.core.names.TestNameBuilder
 
 interface WordSpecRootScope : RootScope {
 
@@ -14,7 +14,7 @@ interface WordSpecRootScope : RootScope {
 
    private fun should(name: String, xdisabled: Boolean, test: suspend WordSpecShouldContainerScope.() -> Unit) {
       addContainer(
-         testName = TestName(null, name, " should", true),
+         testName = TestNameBuilder.builder(name).withSuffix(" should").withDefaultAffixes().build(),
          disabled = xdisabled,
          config = null,
       ) { WordSpecShouldContainerScope(this).test() }
@@ -29,7 +29,7 @@ interface WordSpecRootScope : RootScope {
 
    private fun `when`(name: String, xdisabled: Boolean, test: suspend WordSpecWhenContainerScope.() -> Unit) {
       addContainer(
-         testName = TestName(null, name, " when", true),
+         testName = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
          disabled = xdisabled,
          config = null,
       ) { WordSpecWhenContainerScope(this).test() }
