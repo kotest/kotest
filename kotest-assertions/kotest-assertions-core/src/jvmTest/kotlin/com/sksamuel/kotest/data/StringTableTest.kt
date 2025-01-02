@@ -210,8 +210,8 @@ a      | b      | c
    }
 
    context("file.writeTable - validation") {
-      test("Table file must have a .table extension") {
-         shouldThrowMessage(testCase.name.name) {
+      test("Table file must have a table extension") {
+         shouldThrowMessage("Table file must have a .table extension") {
             val fileMissingTableExtension = tempfile()
             fileMissingTableExtension.writeTable(usersTable.headers, emptyList())
          }
