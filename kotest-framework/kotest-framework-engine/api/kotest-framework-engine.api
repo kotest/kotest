@@ -932,12 +932,8 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun extensions ()Ljava/util/List;
 	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
-	public fun getConcurrentSpecs ()Ljava/lang/Integer;
-	public fun getConcurrentTests ()Ljava/lang/Integer;
 	public fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
-	public fun getDisableTestNestedJarScanning ()Ljava/lang/Boolean;
-	public fun getDiscoveryClasspathFallbackEnabled ()Ljava/lang/Boolean;
 	public fun getDispatcherAffinity ()Ljava/lang/Boolean;
 	public fun getDisplayFullTestPath ()Ljava/lang/Boolean;
 	public fun getDisplaySpecIfNoActiveTests ()Ljava/lang/Boolean;
@@ -950,7 +946,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getInvocationTimeout ()Ljava/lang/Long;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
 	public fun getLogLevel ()Lio/kotest/core/config/LogLevel;
-	public fun getParallelism ()Ljava/lang/Integer;
 	public fun getProjectTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getProjectWideFailFast ()Ljava/lang/Boolean;
 	public fun getRandomOrderSeed ()Ljava/lang/Long;
@@ -958,17 +953,17 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getRetryDelay-FghU774 ()Lkotlin/time/Duration;
 	public fun getRetryDelayFn ()Lkotlin/jvm/functions/Function2;
 	public fun getRetryFn ()Lkotlin/jvm/functions/Function1;
+	public final fun getSpecExecutionMode ()Lio/kotest/engine/concurrency/SpecExecutionMode;
 	public fun getSpecExecutionOrder ()Lio/kotest/core/spec/SpecExecutionOrder;
 	public fun getTagInheritance ()Ljava/lang/Boolean;
 	public fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
+	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public fun getTestNameAppendTags ()Ljava/lang/Boolean;
 	public fun getTestNameCase ()Lio/kotest/core/names/TestNameCase;
 	public fun getTestNameRemoveWhitespace ()Ljava/lang/Boolean;
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
-	public fun setDisableTestNestedJarScanning (Ljava/lang/Boolean;)V
-	public fun setDiscoveryClasspathFallbackEnabled (Ljava/lang/Boolean;)V
 	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
@@ -978,6 +973,8 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 	public fun setRetryDelayFn (Lkotlin/jvm/functions/Function2;)V
 	public fun setRetryFn (Lkotlin/jvm/functions/Function1;)V
+	public final fun setSpecExecutionMode (Lio/kotest/engine/concurrency/SpecExecutionMode;)V
+	public final fun setTestExecutionMode (Lio/kotest/engine/concurrency/TestExecutionMode;)V
 }
 
 public final class io/kotest/core/config/DefaultExtensionRegistry : io/kotest/core/config/ExtensionRegistry {

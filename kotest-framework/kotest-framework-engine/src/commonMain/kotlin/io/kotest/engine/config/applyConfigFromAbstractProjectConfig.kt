@@ -28,10 +28,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.randomOrderSeed?.let { configuration.randomOrderSeed = it }
 
    // concurrency
-//   config.parallelism?.let { configuration.parallelism = it }
-//   config.concurrentTests?.let { configuration.concurrentTests = it }
-//   config.concurrentSpecs?.let { configuration.concurrentSpecs = it }
    config.isolationMode?.let { configuration.isolationMode = it }
+   config.specExecutionMode?.let { configuration.specExecutionMode = it }
+   config.testExecutionMode?.let { configuration.testExecutionMode = it }
 //   config.dispatcherAffinity?.let { configuration.dispatcherAffinity = it }
 
    // timeouts
@@ -40,8 +39,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.projectTimeout?.let { configuration.projectTimeout = it }
 
    // discovery
-   config.discoveryClasspathFallbackEnabled?.let { configuration.discoveryClasspathFallbackEnabled = it }
-   config.disableTestNestedJarScanning?.let { configuration.disableTestNestedJarScanning = it }
    config.ignorePrivateClasses?.let { configuration.ignorePrivateClasses = it }
 
    // retries

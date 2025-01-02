@@ -18,6 +18,7 @@ class TestResults {
    private val results = ConcurrentHashMap<TestCase, TestResult?>()
 
    fun toMap(): Map<TestCase, TestResult> {
+      @Suppress("UNCHECKED_CAST")
       return results.toMap() as Map<TestCase, TestResult>
    }
 

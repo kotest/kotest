@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.spec
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
