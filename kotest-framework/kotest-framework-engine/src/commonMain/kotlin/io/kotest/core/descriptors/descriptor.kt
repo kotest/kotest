@@ -50,14 +50,14 @@ sealed interface Descriptor {
     *
     * @param includeSpec if true then the spec name is included in the path.
     */
-   fun path(includeSpec: Boolean = true): TestPath = when (this) {
-      is SpecDescriptor -> if (includeSpec) TestPath(this.id.value) else error("Cannot call path on spec with includeSpec=false")
+   fun path(includeSpec: Boolean = true): io.kotest.common.TestPath = when (this) {
+      is SpecDescriptor -> if (includeSpec) io.kotest.common.TestPath(this.id.value) else error("Cannot call path on spec with includeSpec=false")
       is TestDescriptor -> when (this.parent) {
          is SpecDescriptor -> when (includeSpec) {
-            true -> TestPath(this.parent.id.value + SpecDelimiter + this.id.value)
-            false -> TestPath(this.id.value)
+            true -> io.kotest.common.TestPath(this.parent.id.value + SpecDelimiter + this.id.value)
+            false -> io.kotest.common.TestPath(this.id.value)
          }
-         is TestDescriptor -> TestPath(this.parent.path(includeSpec).value + TestDelimiter + this.id.value)
+         is TestDescriptor -> io.kotest.common.TestPath(this.parent.path(includeSpec).value + TestDelimiter + this.id.value)
       }
    }
 
