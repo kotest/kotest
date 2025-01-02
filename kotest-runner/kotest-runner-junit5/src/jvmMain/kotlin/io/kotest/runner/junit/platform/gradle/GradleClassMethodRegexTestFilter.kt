@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.TestPath
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.TestPath
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.Logger

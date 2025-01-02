@@ -1,8 +1,8 @@
 package io.kotest.extensions.allure
 
+import io.kotest.common.TestPath
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.TestPath
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
