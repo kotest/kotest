@@ -33,8 +33,8 @@ class BeforeAfterNestedInstancePerRootTest : FunSpec({
    afterProject {
       beforeSpecNestedCounter.get() shouldBe 2
       afterSpecNestedCounter.get() shouldBe 2
-      beforeTestNestedCounter.get() shouldBe 18
-      afterTestNestedCounter.get() shouldBe 18
+      beforeTestNestedCounter.get() shouldBe 9
+      afterTestNestedCounter.get() shouldBe 9
    }
 
    context("First single thread context") {

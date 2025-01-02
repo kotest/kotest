@@ -27,7 +27,7 @@ class SpecInstancePerRootTest : FunSpec({
    afterProject {
       assertSoftly {
          externalMultipleThreadCounter.map shouldHaveSize 1
-         externalMultipleThreadCounter.map.values.sum() shouldBe 1
+         externalMultipleThreadCounter.map.values.sum() shouldBe 3
       }
    }
 

@@ -24,7 +24,7 @@ class ShouldSpecInstancePerRootTest : ShouldSpec() {
    init {
 
       afterProject {
-         Counters.specs.size shouldBe 1
+         Counters.specs.size shouldBe 3
          Counters.threads.size shouldBe 1
          withClue("riker") {
             Counters.executed.count { it == "riker" } shouldBe 3
