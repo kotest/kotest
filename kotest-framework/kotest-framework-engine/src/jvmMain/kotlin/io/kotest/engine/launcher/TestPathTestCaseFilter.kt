@@ -57,7 +57,7 @@ class TestPathTestCaseFilter(
       val testOnDescriptorPath = targetPrefix.prefixesWithWildcardMatch(descriptorPrefix)
       return when {
          onTestFilterPath || testOnDescriptorPath -> TestFilterResult.Include
-         else -> TestFilterResult.Exclude("Excluded by test path filter: '$testPath'")
+         else -> TestFilterResult.Exclude("Excluded by test path filter: '${testPath.value}'")
       }
    }
 }
