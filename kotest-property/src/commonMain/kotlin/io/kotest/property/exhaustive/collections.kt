@@ -21,3 +21,40 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 
    return perms(list, length).exhaustive()
 }
+
+/*
+*  Returns an [Exhaustive] which provides all the samples of elements from the given list.
+* For instance:
+* Exhaustive.Companion.samples(listOf("a", "b")).values shouldContainExactlyInAnyOrder
+* listOf(
+*   listOf("a"),
+*   listOf("b"),
+*   listOf("a", "b"),
+* )
+ */
+fun <A> Exhaustive.Companion.samples(list: List<A>): Exhaustive<List<A>> {
+   require(list.isNotEmpty()) { "List should not be empty." }
+   return sampleIndexes(list.size)
+      .filter { it.isNotEmpty() }
+      .map { indexes -> indexes.map { list[it] } }
+      .toList()
+      .exhaustive()
+}
+
+internal fun sampleIndexes(size: Int): Sequence<List<Int>> = sequence {
+   require(size > 0) { "Size should be positive, was: $size"}
+   val elementsIncluded = MutableList(size) { true }
+   val allIndexes = (0 until size).toList()
+   yield(allIndexes)
+   while(elementsIncluded.any { it }) {
+      for (index in 0 until size) {
+         if (elementsIncluded[index]) {
+            elementsIncluded[index] = false
+            yield(allIndexes.filterIndexed { i, _ -> elementsIncluded[i] })
+            break
+         } else {
+            elementsIncluded[index] = true
+         }
+      }
+   }
+}
