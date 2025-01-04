@@ -22,6 +22,11 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
    return perms(list, length).exhaustive()
 }
 
+fun <A> Exhaustive.Companion.samples(list: List<A>): Exhaustive<List<A>> {
+   require(list.isNotEmpty()) { "List should not be empty." }
+   return sampleIndexes(list.size).map { indexes -> indexes.map { list[it] } }.toList().exhaustive()
+}
+
 internal fun sampleIndexes(size: Int): Sequence<List<Int>> = sequence {
    require(size > 0) { "Size should be positive, was: $size"}
    val elementsIncluded = MutableList(size) { true }
