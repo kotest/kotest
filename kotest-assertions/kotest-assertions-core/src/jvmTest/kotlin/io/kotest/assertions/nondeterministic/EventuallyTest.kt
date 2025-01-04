@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class EventuallyTest : FunSpec() {
 
    init {
