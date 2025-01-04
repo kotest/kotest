@@ -24,7 +24,7 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 
 fun <A> Exhaustive.Companion.samples(list: List<A>): Exhaustive<List<A>> {
    require(list.isNotEmpty()) { "List should not be empty." }
-   return sampleIndexes(list.size).map { indexes -> indexes.map { list[it] } }.toList().exhaustive()
+   return sampleIndexes(list.size).filter { it.isNotEmpty() } .map { indexes -> indexes.map { list[it] } }.toList().exhaustive()
 }
 
 internal fun sampleIndexes(size: Int): Sequence<List<Int>> = sequence {
