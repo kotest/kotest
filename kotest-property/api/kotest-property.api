@@ -1389,6 +1389,7 @@ public final class io/kotest/property/exhaustive/CollectionsKt {
 	public static final fun collection (Lio/kotest/property/Exhaustive$Companion;Ljava/util/Collection;)Lio/kotest/property/Exhaustive;
 	public static final fun permutations (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;I)Lio/kotest/property/Exhaustive;
 	public static synthetic fun permutations$default (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;IILjava/lang/Object;)Lio/kotest/property/Exhaustive;
+	public static final fun samples (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;)Lio/kotest/property/Exhaustive;
 }
 
 public final class io/kotest/property/exhaustive/ExhaustiveKt {
