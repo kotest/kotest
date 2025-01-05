@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
 import io.kotest.core.log
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.syspropOrEnv
 import java.util.Properties
 

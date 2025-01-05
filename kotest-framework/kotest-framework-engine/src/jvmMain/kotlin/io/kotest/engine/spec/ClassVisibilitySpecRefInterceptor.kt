@@ -3,7 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor

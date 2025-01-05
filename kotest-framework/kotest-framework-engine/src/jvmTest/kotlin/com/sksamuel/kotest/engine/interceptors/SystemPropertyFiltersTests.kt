@@ -9,7 +9,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.extensions.system.withSystemProperties
 import io.kotest.matchers.collections.shouldContainExactly

@@ -1,10 +1,11 @@
 package io.kotest.engine.test.status
 
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.log
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.sysprop
 
 /**
@@ -15,7 +16,7 @@ import io.kotest.mpp.sysprop
  *
  * Note: If no minimum severity level is specified, then this extension has no effect.
  */
-internal object SeverityLevelEnabledExtension : TestEnabledExtension {
+internal class SeverityLevelEnabledExtension(private val conf: ProjectConfiguration) : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
       // if min level is not defined, then we always allow through

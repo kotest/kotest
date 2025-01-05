@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.engine.config
 
 object KotestEngineProperties {
 

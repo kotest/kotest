@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 

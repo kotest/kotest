@@ -12,8 +12,10 @@ import kotlin.time.Duration
 
 /**
  * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
- * This config is not resolved, and will be converted to a [ResolvedTestConfig] once
- * resolved at runtime.
+ * Values specified here are the ultimate source of truth for configuration.
+ *
+ * Anything not specified here will bubble up to parent configurations following the runtime
+ * resolution rules.
  */
 data class TestConfig(
 

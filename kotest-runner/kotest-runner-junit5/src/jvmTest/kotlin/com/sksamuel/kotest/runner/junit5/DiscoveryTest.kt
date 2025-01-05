@@ -5,7 +5,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryFilter
 import io.kotest.framework.discovery.DiscoveryRequest

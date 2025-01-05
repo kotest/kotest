@@ -1,7 +1,7 @@
 package io.kotest.core.source
 
 import io.kotest.core.spec.Spec
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf

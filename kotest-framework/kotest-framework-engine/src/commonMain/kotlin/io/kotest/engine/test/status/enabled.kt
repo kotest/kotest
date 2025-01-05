@@ -37,7 +37,7 @@ internal fun TestCase.isEnabledInternal(conf: ProjectConfiguration): Enabled {
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,
-      SeverityLevelEnabledExtension,
+      SeverityLevelEnabledExtension(conf),
    )
 
    return extensions.fold(Enabled.enabled) { acc, ext -> if (acc.isEnabled) ext.isEnabled(this) else acc }

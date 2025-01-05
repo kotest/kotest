@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.log
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.instantiateOrObject
 import org.jetbrains.annotations.ApiStatus.Internal
 import kotlin.reflect.KClass

@@ -5,7 +5,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.sysprop
 import io.kotest.mpp.syspropOrEnv
 import kotlin.time.Duration

@@ -11,7 +11,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.core.Logger
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv

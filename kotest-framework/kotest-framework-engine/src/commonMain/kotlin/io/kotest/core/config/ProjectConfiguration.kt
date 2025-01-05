@@ -51,6 +51,8 @@ class ProjectConfiguration {
     */
    var specFailureFilePath: String = Defaults.specFailureFilePath
 
+   var testSeverity: TestCaseSeverityLevel? = Defaults.TEST_CASE_SEVERITY_LEVEL
+
    /**
     * If true, then all test cases are implicitly wrapped in an [io.kotest.assertions.assertSoftly] call.
     *
@@ -170,7 +172,7 @@ class ProjectConfiguration {
    /**
     * Sets the default [TestCaseSeverityLevel] for any test which doesn't override.
     */
-   var severity: TestCaseSeverityLevel = Defaults.severity
+   var severity: TestCaseSeverityLevel = Defaults.TEST_CASE_SEVERITY_LEVEL
 
    var coroutineTestScope: Boolean = Defaults.coroutineTestScope
 
@@ -285,6 +287,10 @@ class ProjectConfiguration {
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
    var displayFullTestPath: Boolean = sysprop(KotestEngineProperties.displayFullTestPath, Defaults.displayFullTestPath)
+   /**
+    * true if the test name should be the full name including parent names
+    */
+   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
