@@ -43,7 +43,7 @@ internal fun assertionMode(): AssertionMode? =
    sysprop(KotestEngineProperties.assertionMode)?.let { AssertionMode.valueOf(it) }
 
 internal fun timeout(): Long? =
-   sysprop(KotestEngineProperties.timeout)?.toLong()
+   sysprop(KotestEngineProperties.TIMEOUT)?.toLong()
 
 internal fun invocationTimeout(): Long? =
    sysprop(KotestEngineProperties.invocationTimeout)?.toLong()

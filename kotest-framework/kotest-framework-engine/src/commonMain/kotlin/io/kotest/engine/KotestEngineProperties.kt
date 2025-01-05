@@ -51,14 +51,9 @@ object KotestEngineProperties {
    const val assertionMode = "kotest.framework.assertion.mode"
 
    /**
-    * The default parallelism for specs.
-    */
-   const val parallelism = "kotest.framework.parallelism"
-
-   /**
     * The default timeout for test cases.
     */
-   const val timeout = "kotest.framework.timeout"
+   const val TIMEOUT = "kotest.framework.timeout"
 
    /**
     * The default timeout for the entire test suite.
