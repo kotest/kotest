@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContain
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -197,23 +198,31 @@ class EventuallyTest : FunSpec() {
          }
       }
 
-      test("do not retry after OutOfMemoryError and StackOverflowError") {
-         mapOf(
-            "OutOfMemoryError" to OutOfMemoryError(),
-            "StackOverflowError" to StackOverflowError(),
-         ).entries.forEach { (name, error) ->
-            var count = 0
-            val thrown = shouldThrow<Error> {
-               testEventually(1.seconds) {
-                  count++
-                  throw error
-               }
+      test("do not retry after OutOfMemoryError") {
+         var count = 0
+         val thrown = shouldThrow<Error> {
+            testEventually(1.seconds) {
+               count++
+               throw OutOfMemoryError()
             }
-            assertSoftly {
-               thrown::class shouldBe AssertionError::class
-               thrown.message shouldContain name
-               count shouldBe 1
+         }
+         assertSoftly {
+            thrown.shouldBeInstanceOf<OutOfMemoryError>()
+            count shouldBe 1
+         }
+      }
+
+      test("do not retry after StackOverflowError") {
+         var count = 0
+         val thrown = shouldThrow<Error> {
+            testEventually(1.seconds) {
+               count++
+               throw StackOverflowError()
             }
+         }
+         assertSoftly {
+            thrown.shouldBeInstanceOf<StackOverflowError>()
+            count shouldBe 1
          }
       }
 
