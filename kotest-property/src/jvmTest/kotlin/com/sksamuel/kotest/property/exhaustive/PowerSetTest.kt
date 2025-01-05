@@ -6,32 +6,32 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Exhaustive
-import io.kotest.property.exhaustive.samples
+import io.kotest.property.exhaustive.powerSet
 
 @EnabledIf(LinuxCondition::class)
-class SamplesTest: StringSpec() {
+class PowerSetTest: StringSpec() {
    init {
-      "samples should blow up if list is empty" {
+      "powerSet should blow up if list is empty" {
          shouldThrow<IllegalArgumentException> {
-            Exhaustive.Companion.samples(listOf<Int>())
+            Exhaustive.Companion.powerSet(listOf<Int>())
          }
       }
-      "samples should process list of one element" {
-         Exhaustive.Companion.samples(listOf("a")).values shouldContainExactlyInAnyOrder
+      "powerSet should process list of one element" {
+         Exhaustive.Companion.powerSet(listOf("a")).values shouldContainExactlyInAnyOrder
             listOf(
                listOf("a"),
             )
       }
-      "samples should process list of two elements" {
-         Exhaustive.Companion.samples(listOf("a", "b")).values shouldContainExactlyInAnyOrder
+      "powerSet should process list of two elements" {
+         Exhaustive.Companion.powerSet(listOf("a", "b")).values shouldContainExactlyInAnyOrder
             listOf(
                listOf("a"),
                listOf("b"),
                listOf("a", "b"),
             )
       }
-      "samples should process list of three elements" {
-         Exhaustive.Companion.samples(listOf("a", "b", "c")).values shouldContainExactlyInAnyOrder
+      "powerSet should process list of three elements" {
+         Exhaustive.Companion.powerSet(listOf("a", "b", "c")).values shouldContainExactlyInAnyOrder
             listOf(
                listOf("a"),
                listOf("b"),

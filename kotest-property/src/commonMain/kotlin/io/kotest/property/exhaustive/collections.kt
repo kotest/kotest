@@ -32,16 +32,16 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 *   listOf("a", "b"),
 * )
  */
-fun <A> Exhaustive.Companion.samples(list: List<A>): Exhaustive<List<A>> {
+fun <A> Exhaustive.Companion.powerSet(list: List<A>): Exhaustive<List<A>> {
    require(list.isNotEmpty()) { "List should not be empty." }
-   return sampleIndexes(list.size)
+   return powerSetIndexes(list.size)
       .filter { it.isNotEmpty() }
       .map { indexes -> indexes.map { list[it] } }
       .toList()
       .exhaustive()
 }
 
-internal fun sampleIndexes(size: Int): Sequence<List<Int>> = sequence {
+internal fun powerSetIndexes(size: Int): Sequence<List<Int>> = sequence {
    require(size > 0) { "Size should be positive, was: $size"}
    val elementsIncluded = MutableList(size) { true }
    val allIndexes = (0 until size).toList()
