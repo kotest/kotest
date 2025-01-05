@@ -4,7 +4,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.kotlinJsTestFramework
 import io.kotest.engine.spec.interceptor.SpecContext
@@ -51,7 +50,7 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
                // type for asynchronous invocations. See `KotlinJsTestFramework` for details.
                @OptIn(DelicateCoroutinesApi::class)
                GlobalScope.testFunctionPromise {
-                  TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, context)
+                  TestCaseExecutor(NoopTestCaseExecutionListener, context)
                      .execute(testCase, TerminalTestScope(testCase, cc), specContext)
                      .errorOrNull?.let { throw it }
                }

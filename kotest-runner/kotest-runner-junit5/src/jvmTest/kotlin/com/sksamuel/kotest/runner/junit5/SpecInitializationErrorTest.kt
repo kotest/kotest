@@ -6,7 +6,6 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.testSpecExecutor
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
@@ -33,7 +32,6 @@ class SpecInitializationErrorTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
 
       testSpecExecutor(
-         NoopCoroutineDispatcherFactory,
          EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener),
          SpecRef.Reference(SpecWithInstanceFieldError::class)
       )
@@ -71,7 +69,6 @@ class SpecInitializationErrorTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
 
       testSpecExecutor(
-         NoopCoroutineDispatcherFactory,
          EngineContext(ProjectConfiguration(), Platform.JVM).mergeListener(listener),
          SpecRef.Reference(SpecWithInitError::class)
       )
