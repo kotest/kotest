@@ -29,7 +29,7 @@ import kotlin.io.path.name
 @Isolate
 class KotestMultiplatformCompilerGradlePluginSpec : ShouldSpec({
    setOf(
-      "2.0.20",
+      "2.1.0",
    ).forEach { kotlinVersion ->
       context("when the project targets Kotlin version $kotlinVersion") {
 
