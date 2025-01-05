@@ -4,19 +4,19 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.property.exhaustive.sampleIndexes
+import io.kotest.property.exhaustive.powerSetIndexes
 
 @EnabledIf(LinuxCondition::class)
-class SampleIndexesTest: StringSpec() {
+class PowerSetIndexesTest: StringSpec() {
    init {
       "should work for one element" {
-         sampleIndexes(1).toList() shouldContainExactlyInAnyOrder listOf(
+         powerSetIndexes(1).toList() shouldContainExactlyInAnyOrder listOf(
             listOf(),
             listOf(0),
          )
       }
        "should work for two elements" {
-          sampleIndexes(2).toList() shouldContainExactlyInAnyOrder listOf(
+          powerSetIndexes(2).toList() shouldContainExactlyInAnyOrder listOf(
              listOf(),
              listOf(0),
              listOf(1),
@@ -24,7 +24,7 @@ class SampleIndexesTest: StringSpec() {
           )
        }
       "should work for three elements" {
-         sampleIndexes(3).toList() shouldContainExactlyInAnyOrder listOf(
+         powerSetIndexes(3).toList() shouldContainExactlyInAnyOrder listOf(
             listOf(),
             listOf(0),
             listOf(1),
@@ -36,7 +36,7 @@ class SampleIndexesTest: StringSpec() {
          )
       }
       "should work for four elements" {
-         sampleIndexes(4).toList() shouldContainExactlyInAnyOrder listOf(
+         powerSetIndexes(4).toList() shouldContainExactlyInAnyOrder listOf(
             listOf(),
             listOf(0),
             listOf(1),
