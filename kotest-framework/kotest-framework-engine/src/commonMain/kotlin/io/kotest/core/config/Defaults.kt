@@ -62,7 +62,5 @@ object Defaults {
    val defaultTestNameCase: TestNameCase = TestNameCase.AsIs
    val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
-//   const val dispatcherAffinity = true
-
    const val allowOutOfOrderCallbacks = false
 }

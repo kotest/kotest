@@ -31,7 +31,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.isolationMode?.let { configuration.isolationMode = it }
    config.specExecutionMode?.let { configuration.specExecutionMode = it }
    config.testExecutionMode?.let { configuration.testExecutionMode = it }
-//   config.dispatcherAffinity?.let { configuration.dispatcherAffinity = it }
 
    // timeouts
    config.timeout?.let { configuration.timeout = it.inWholeMilliseconds }

@@ -28,15 +28,6 @@ class DumpTest : FunSpec({
       }
    }
 
-   xtest("dump should include affinity") {
-      ProjectConfiguration().apply {
-         timeout = 12
-         invocationTimeout = 34234
-      }.createConfigSummary().apply {
-         this.shouldInclude("Dispatcher affinity: true")
-      }
-   }
-
    test("dump should include test order") {
       ProjectConfiguration().apply {
          testCaseOrder = TestCaseOrder.Random

@@ -921,7 +921,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
-	public fun getDispatcherAffinity ()Ljava/lang/Boolean;
 	public fun getDisplayFullTestPath ()Ljava/lang/Boolean;
 	public fun getDisplaySpecIfNoActiveTests ()Ljava/lang/Boolean;
 	public fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
@@ -951,7 +950,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
-	public fun setDispatcherAffinity (Ljava/lang/Boolean;)V
 	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
 	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
