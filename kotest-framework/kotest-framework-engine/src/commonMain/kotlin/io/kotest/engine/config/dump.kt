@@ -8,10 +8,8 @@ internal fun ProjectConfiguration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
-   sb.buildOutput("Parallelization factor", parallelism.toString())
-   sb.buildOutput("Concurrent specs", concurrentSpecs.toString())
-   sb.buildOutput("Global concurrent tests", concurrentTests.toString())
-   sb.buildOutput("Dispatcher affinity", dispatcherAffinity.toString())
+   sb.buildOutput("Spec execution mode", specExecutionMode::class.simpleName)
+   sb.buildOutput("Test execution mode", testExecutionMode::class.simpleName)
 
    sb.buildOutput("Coroutine debug probe", coroutineDebugProbes.toString())
 

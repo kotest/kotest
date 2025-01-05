@@ -1,7 +1,6 @@
 package io.kotest.engine.test.scopes
 
 import io.kotest.core.Logger
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -23,7 +22,6 @@ internal class InOrderTestScope(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext,
    private val mode: DuplicateTestNameMode,
-   private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) : TestScope {
 
@@ -56,7 +54,6 @@ internal class InOrderTestScope(
       logger.log { Pair(testCase.name.name, "running test") }
       return TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
-         coroutineDispatcherFactory,
          context,
       ).execute(
          testCase,
@@ -65,7 +62,6 @@ internal class InOrderTestScope(
             specContext,
             coroutineContext,
             mode,
-            coroutineDispatcherFactory,
             context,
          ),
          specContext,

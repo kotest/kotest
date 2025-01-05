@@ -16,7 +16,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -25,7 +24,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 private class BehaviorSpecWithBeforeTestError : BehaviorSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
 
    beforeTest {
       error("boom")
@@ -39,7 +38,7 @@ private class BehaviorSpecWithBeforeTestError : BehaviorSpec({
 })
 
 private class FunSpecWithBeforeTestError : FunSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
 
    beforeTest {
       error("boom")
@@ -48,7 +47,7 @@ private class FunSpecWithBeforeTestError : FunSpec({
 })
 
 private class StringSpecWithBeforeTestError : StringSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
 
    beforeTest {
       error("boom")
@@ -57,7 +56,7 @@ private class StringSpecWithBeforeTestError : StringSpec({
 })
 
 private class ShouldSpecWithBeforeTestError : ShouldSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
@@ -65,14 +64,14 @@ private class ShouldSpecWithBeforeTestError : ShouldSpec({
 })
 
 private class DescribeSpecWithBeforeTestError : DescribeSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
 })
 
 private class FeatureSpecWithBeforeTestError : FeatureSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
@@ -82,14 +81,14 @@ private class FeatureSpecWithBeforeTestError : FeatureSpec({
 })
 
 private class ExpectSpecWithBeforeTestError : ExpectSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
 })
 
 private class FreeSpecWithBeforeTestError : FreeSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
@@ -97,7 +96,7 @@ private class FreeSpecWithBeforeTestError : FreeSpec({
 })
 
 private class WordSpecWithBeforeTestError : WordSpec({
-   isolationMode = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerRoot
    beforeTest {
       error("boom")
    }
@@ -121,7 +120,6 @@ class BeforeAnyExceptionTest : WordSpec({
    "an exception in before test" should {
       "fail the test for behavior spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(BehaviorSpecWithBeforeTestError::class)
@@ -130,7 +128,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for feature spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(FeatureSpecWithBeforeTestError::class)
@@ -139,7 +136,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for word spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(WordSpecWithBeforeTestError::class)
@@ -148,7 +144,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for should spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(ShouldSpecWithBeforeTestError::class)
@@ -157,7 +152,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for string spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(StringSpecWithBeforeTestError::class)
@@ -166,7 +160,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for describe spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(DescribeSpecWithBeforeTestError::class)
@@ -175,7 +168,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for free spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(FreeSpecWithBeforeTestError::class)
@@ -184,7 +176,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for fun spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(FunSpecWithBeforeTestError::class)
@@ -193,7 +184,6 @@ class BeforeAnyExceptionTest : WordSpec({
       }
       "fail the test for expect spec" {
          val executor = SpecExecutor(
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM).withListener(listener)
          )
          executor.execute(ExpectSpecWithBeforeTestError::class)

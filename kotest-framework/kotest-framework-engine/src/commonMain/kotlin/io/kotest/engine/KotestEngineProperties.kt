@@ -51,14 +51,9 @@ object KotestEngineProperties {
    const val assertionMode = "kotest.framework.assertion.mode"
 
    /**
-    * The default parallelism for specs.
-    */
-   const val parallelism = "kotest.framework.parallelism"
-
-   /**
     * The default timeout for test cases.
     */
-   const val timeout = "kotest.framework.timeout"
+   const val TIMEOUT = "kotest.framework.timeout"
 
    /**
     * The default timeout for the entire test suite.
@@ -80,10 +75,6 @@ object KotestEngineProperties {
    const val discoveryClasspathFallbackEnabled = "kotest.framework.discovery.classpath.fallback.enabled"
 
    const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
-
-   const val concurrentSpecs = "kotest.framework.spec.concurrent"
-
-   const val concurrentTests = "kotest.framework.test.concurrent"
 
    /**
     * Specify a fully qualified name to use for project config.

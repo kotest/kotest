@@ -43,9 +43,6 @@ object SystemExitListener : TestListener {
  *
  * To use this, override `extensions`() in your [Spec] class.
  *
- * Note: This extension is only suitable for use if parallelism is
- * set to 1 (the default) otherwise a race condition could occur.
- *
  * If you want to change the security manager for the entire
  * project, then use the alternative [SystemExitListener]
  */

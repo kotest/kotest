@@ -3,7 +3,6 @@ package io.kotest.engine.spec
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
@@ -11,6 +10,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.TestConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TestNameEscaper
@@ -22,7 +22,7 @@ import io.kotest.engine.test.names.TestNameEscaper
 class Materializer(private val configuration: ProjectConfiguration) {
 
    /**
-    * Materializes [RootTest]s from a [Spec] and any [TestFactory]s into
+    * Materializes the root tests from a [Spec] and any [TestFactory]s into
     * [TestCase]s by resolving config at runtime using the supplied project configuration
     * and using spec defaults.
     *

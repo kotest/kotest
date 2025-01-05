@@ -31,7 +31,6 @@ class WordSpecShouldContainerScope(
    suspend fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -48,7 +47,6 @@ class WordSpecShouldContainerScope(
       ).config(
          enabled = enabled,
          invocations = invocations,
-         threads = threads,
          tags = tags,
          timeout = timeout,
          extensions = extensions,

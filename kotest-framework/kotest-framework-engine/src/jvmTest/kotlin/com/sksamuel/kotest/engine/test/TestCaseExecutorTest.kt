@@ -9,7 +9,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
@@ -50,7 +49,7 @@ class TestCaseExecutorTest : FunSpec({
             result.isSuccess shouldBe true
          }
       }
-      val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      val executor = TestCaseExecutor(listener, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.name == "a" }
       executor.execute(testCase, context(testCase), SpecContext.create()).isSuccess shouldBe true
       started shouldBe true
@@ -71,7 +70,7 @@ class TestCaseExecutorTest : FunSpec({
             result.isError shouldBe true
          }
       }
-      val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      val executor = TestCaseExecutor(listener, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.name == "b" }
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
@@ -85,7 +84,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(ProjectConfiguration(), Platform.JVM))
       val spec = BeforeTest()
       val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
@@ -97,7 +96,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(ProjectConfiguration(), Platform.JVM))
       val spec = AfterTest()
       val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
@@ -116,7 +115,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(BeforeTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
@@ -137,7 +136,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(ProjectConfiguration(), Platform.JVM))
       val testCase = Materializer(ProjectConfiguration()).materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true

@@ -23,9 +23,6 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
 
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
-   parallelism()?.let { configuration.parallelism = it }
-   concurrentTests()?.let { configuration.concurrentTests = it }
-   concurrentSpecs()?.let { configuration.concurrentSpecs = it }
    timeout()?.let { configuration.timeout = it }
    invocationTimeout()?.let { configuration.invocationTimeout = it }
    allowMultilineTestName()?.let { configuration.removeTestNameWhitespace = it }
@@ -45,11 +42,8 @@ internal fun isolationMode(): IsolationMode? =
 internal fun assertionMode(): AssertionMode? =
    sysprop(KotestEngineProperties.assertionMode)?.let { AssertionMode.valueOf(it) }
 
-internal fun parallelism(): Int? =
-   sysprop(KotestEngineProperties.parallelism)?.toInt()
-
 internal fun timeout(): Long? =
-   sysprop(KotestEngineProperties.timeout)?.toLong()
+   sysprop(KotestEngineProperties.TIMEOUT)?.toLong()
 
 internal fun invocationTimeout(): Long? =
    sysprop(KotestEngineProperties.invocationTimeout)?.toLong()
@@ -62,12 +56,6 @@ internal fun discoveryClasspathScanningEnabled(): Boolean? =
 
 internal fun disableTestNestedJarScanning(): Boolean? =
    sysprop(KotestEngineProperties.disableTestNestedJarScanning)?.toBoolean()
-
-internal fun concurrentSpecs(): Int? =
-   sysprop(KotestEngineProperties.concurrentSpecs)?.toInt()
-
-internal fun concurrentTests(): Int? =
-   sysprop(KotestEngineProperties.concurrentTests)?.toInt()
 
 internal fun globalAssertSoftly(): Boolean? =
    sysprop(KotestEngineProperties.globalAssertSoftly)?.let { it.uppercase() == "TRUE" }

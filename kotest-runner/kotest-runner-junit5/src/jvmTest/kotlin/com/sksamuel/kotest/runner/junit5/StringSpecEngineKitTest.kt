@@ -442,12 +442,12 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
-   test("exception in beforeSpec with isolation mode instance per leaf") {
+   test("exception in beforeSpec with isolation mode") {
       val fullyQualifiedTestClassName =
-         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerLeaf"
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerRoot"
       EngineTestKit
          .engine("kotest")
-         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerLeaf::class.java))
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerRoot::class.java))
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
@@ -455,23 +455,27 @@ class StringSpecEngineKitTest : FunSpec({
                "Kotest",
                fullyQualifiedTestClassName,
                "a failing test",
+               "a passing test",
                "Before Spec Error"
             )
             skipped().shouldBeEmpty()
             failed().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
                fullyQualifiedTestClassName,
             )
             succeeded().shouldHaveNames("Kotest")
             finished().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
                fullyQualifiedTestClassName,
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
                "a failing test",
+               "a passing test",
                "Before Spec Error",
             )
          }
@@ -655,7 +659,8 @@ private class StringSpecExceptionInInit : StringSpec({
    throw RuntimeException("kapow")
 })
 
-private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
+private class
+StringSpecExceptionInBeforeSpecForInstancePerRoot: StringSpec({
    "a failing test" {
       1 shouldBe 2
    }
@@ -664,7 +669,7 @@ private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
       1 shouldBe 1
    }
 }) {
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
 
    override suspend fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")

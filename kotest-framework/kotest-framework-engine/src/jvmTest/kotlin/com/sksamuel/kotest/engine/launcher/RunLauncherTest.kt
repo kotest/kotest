@@ -111,7 +111,7 @@
 //      testStarted.add(testCase)
 //   }
 //   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-//      testFinished.add(testCase.name.testName)
+//      testFinished.add(testCase.name.name)
 //      super.testFinished(testCase, result)
 //   }
 //}

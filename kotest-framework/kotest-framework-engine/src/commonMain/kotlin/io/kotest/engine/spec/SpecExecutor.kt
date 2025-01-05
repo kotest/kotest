@@ -1,18 +1,16 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.engine.flatMap
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.Logger
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
-import io.kotest.core.Logger
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -23,10 +21,10 @@ import kotlin.reflect.KClass
  * of the reference, then executes the spec instance via a [SpecExecutorDelegate].
  */
 internal class SpecExecutor(
-   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) {
 
+   @Suppress("DEPRECATION")
    private val logger = Logger(SpecExecutorDelegate::class)
    private val pipeline = SpecRefInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.configuration.registry)
@@ -47,7 +45,8 @@ internal class SpecExecutor(
 
    private suspend fun executeInDelegate(spec: Spec): Result<Map<TestCase, TestResult>> {
       return try {
-         val delegate = createSpecExecutorDelegate(defaultCoroutineDispatcherFactory, context)
+         @Suppress("DEPRECATION")
+         val delegate = createSpecExecutorDelegate(context)
          logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
          Result.success(delegate.execute(spec))
       } catch (t: Throwable) {
@@ -72,12 +71,14 @@ internal class SpecExecutor(
 /**
  * A platform specific specialization of [SpecExecutor] logic.
  */
+@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
+@Suppress("DEPRECATION")
+@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal expect fun createSpecExecutorDelegate(
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): SpecExecutorDelegate
 
@@ -87,9 +88,8 @@ internal expect fun createSpecExecutorDelegate(
  */
 @KotestInternal
 suspend fun testSpecExecutor(
-   dispatcherFactory: NoopCoroutineDispatcherFactory,
    context: EngineContext,
    ref: SpecRef.Reference
 ) {
-   SpecExecutor(dispatcherFactory, context).execute(ref)
+   SpecExecutor(context).execute(ref)
 }

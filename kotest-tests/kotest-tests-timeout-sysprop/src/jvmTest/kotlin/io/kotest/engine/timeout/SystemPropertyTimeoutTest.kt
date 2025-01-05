@@ -15,7 +15,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
    init {
 
       test("system properties can be used for test timeouts") {
-         withSystemProperty(KotestEngineProperties.timeout, "500") {
+         withSystemProperty(KotestEngineProperties.TIMEOUT, "500") {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher(collector)
                .withClasses(TimeoutTest::class)

@@ -5,8 +5,6 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
@@ -24,6 +22,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
+import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import kotlin.js.JsName
 import kotlin.time.Duration
 
@@ -135,49 +135,24 @@ abstract class Spec : TestConfiguration() {
    open fun assertionMode(): AssertionMode? = null
 
    /**
-    * Sets the number of threads that will be used for executing root tests in this spec.
+    * Each test is launched into its own coroutine. By default, the test engine waits for that
+    * test to finish before launching the next test. By setting [testExecutionMode]
+    * to [TestExecutionMode.Concurrent] all root tests will be launched at the same time.
     *
-    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
-    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
-    * is also set, then that will have precedence.
+    * Setting this value to [TestExecutionMode.LimitedConcurrency] allows you to specify how
+    * many root tests should be launched concurrently.
     *
-    * This setting is JVM only.
-    */
-   open fun threads(): Int? = null
-
-   /**
-    * Sets the number of tests that will be launched concurrently.
-    *
-    * Each test is launched into its own coroutine. This parameter determines how many test
-    * coroutines are launched concurrently inside of this spec.
-    *
-    * Setting this parameter to [ProjectConfiguration.MaxConcurrency] will result in all tests of this spec
-    * being launched concurrently.
-    *
-    * Note: This value does not change the number of threads used by the test engine. By default
-    * the engine will create a single thread. To change that see [ProjectConfiguration.parallelism]. In addition,
-    * all tests inside a spec will use the same dispatcher to ensure callbacks operate on the same thread.
-    * To change that behavior, see [dispatcherAffinity].
+    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+    * blocked. If you are using blocking calls in a test, setting [blockingTest] on that test's config
+    * allows the test engine to spool up a new thread just for that test.
     */
    @ExperimentalKotest
-   open fun concurrency(): Int? = null
+   open fun testExecutionMode(): TestExecutionMode? = null
 
-   /**
-    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-    * the execution thread. To change this, set this value to false. This value can also be
-    * set globally in [ProjectConfiguration.dispatcherAffinity].
-    *
-    * When this value is false, the framework is free to assign different dispatchers to different
-    * root tests (nested tests always run in the same thread as their parent test).
-    *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [ProjectConfiguration.parallelism].
-    */
    @ExperimentalKotest
-   open fun dispatcherAffinity(): Boolean? = null
-
-   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
+   @JsName("testExecutionMode_js")
+   var testExecutionMode: TestExecutionMode? = null
 
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
@@ -190,44 +165,15 @@ abstract class Spec : TestConfiguration() {
    @JsName("isolation_mode_js")
    var isolationMode: IsolationMode? = null
 
+   /**
+    * Marks all tests in this spec as fail fast.
+    * So any test failure will fail any remaining tests in this spec, at any nested level
+    */
    var failfast: Boolean? = null
 
    var retries: Int? = null
 
    var retryDelay: Duration? = null
-
-   /**
-    * Sets the number of tests that will be launched concurrently.
-    *
-    * Each test is launched into its own coroutine. This parameter determines how many test
-    * coroutines are launched concurrently inside this spec.
-    *
-    * Setting this parameter to [ProjectConfiguration.MaxConcurrency] will result in all tests of this spec
-    * being launched concurrently.
-    *
-    * Note: This value does not change the number of threads used by the test engine. By default
-    * the engine will create a single thread. To change that see [ProjectConfiguration.parallelism]. In addition,
-    * all tests inside a spec will use the same dispatcher to ensure callbacks operate on the same thread.
-    * To change that behavior, see [dispatcherAffinity].
-    */
-   @ExperimentalKotest
-   @JsName("concurrency_js")
-   var concurrency: Int? = null
-
-   /**
-    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-    * the execution thread. To change this, set this value to false. This value can also be
-    * set globally in [ProjectConfiguration.dispatcherAffinity].
-    *
-    * When this value is false, the framework is free to assign different dispatchers to different
-    * root tests (nested tests always run in the same thread as their parent test).
-    *
-    * Note: This setting has no effect unless the number of threads is increased; see [ProjectConfiguration.parallelism].
-    */
-   @ExperimentalKotest
-   @JsName("dispatcherAffinity_js")
-   var dispatcherAffinity: Boolean? = null
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
@@ -267,8 +213,9 @@ abstract class Spec : TestConfiguration() {
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
+   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
+
    @JsName("coroutineDispatcherFactory_js")
-   @ExperimentalKotest
    var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    var coroutineTestScope: Boolean? = null
@@ -279,18 +226,6 @@ abstract class Spec : TestConfiguration() {
     */
    @KotestInternal
    var nonDeterministicTestVirtualTimeEnabled: Boolean = false
-
-   /**
-    * Sets the number of threads that will be used for executing root tests in this spec.
-    *
-    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
-    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
-    * is also set, then that will have precedence.
-    *
-    * This setting is JVM only.
-    */
-   @JsName("threads_var")
-   var threads: Int? = null
 
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.

@@ -11,6 +11,7 @@ import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
 import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
@@ -60,9 +61,11 @@ internal class SpecInterceptorPipeline(
             configuration.registry
          ) else null,
          EngineContextInterceptor(this.context),
+         ConfigurationInContextSpecInterceptor(configuration),
+         // the dispatcher factory should run before before/after callbacks so they are executed in the right context
+         CoroutineDispatcherFactorySpecInterceptor(configuration),
          ProjectContextInterceptor(this.context.toProjectContext()),
          SpecExtensionInterceptor(configuration.registry),
-         ConfigurationInContextSpecInterceptor(configuration),
          InlineTagSpecInterceptor(listener, configuration),
          BeforeSpecFailureInterceptor(specContext),
          AfterSpecListenerInterceptor(specContext, configuration.registry),

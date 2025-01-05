@@ -17,8 +17,7 @@ interface BeforeSpecListener : Extension {
     * case of exceptions, then consider using the [io.kotest.engine.spec.interceptor.SpecInterceptor].
     *
     * If a spec is instantiated multiple times - for example, if
-    * [io.kotest.core.spec.IsolationMode.InstancePerTest] or
-    * [io.kotest.core.spec.IsolationMode.InstancePerLeaf] isolation modes are used,
+    * [io.kotest.core.spec.IsolationMode.InstancePerRoot] isolation mode is used,
     * then this callback will be invoked for each instance created,
     *
     * This callback should be used if you need to perform setup

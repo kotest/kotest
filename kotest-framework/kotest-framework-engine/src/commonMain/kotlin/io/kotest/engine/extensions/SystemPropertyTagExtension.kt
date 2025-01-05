@@ -27,6 +27,8 @@ object SystemPropertyTagExtension : TagExtension {
       val excludedTags = readTagsProperty(KotestEngineProperties.excludeTags)
       val expression = syspropOrEnv(KotestEngineProperties.tagExpression)
 
-      return if (expression == null) TagExpression(includedTags.toSet(), excludedTags.toSet()) else TagExpression(expression)
+      return if (expression == null) TagExpression(includedTags.toSet(), excludedTags.toSet()) else TagExpression(
+         expression
+      )
    }
 }

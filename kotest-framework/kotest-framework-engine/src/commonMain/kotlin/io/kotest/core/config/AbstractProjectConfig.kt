@@ -1,8 +1,6 @@
 package io.kotest.core.config
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -11,6 +9,8 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.engine.concurrency.TestExecutionMode
 import kotlin.time.Duration
 
 /**
@@ -66,6 +66,9 @@ abstract class AbstractProjectConfig {
     */
    open val invocationTimeout: Long? = null
 
+   /**
+    * Set this to true and all specs will be set to fail fast, unless overriden in the spec itself.
+    */
    open var projectWideFailFast: Boolean? = null
 
    /**
@@ -79,29 +82,46 @@ abstract class AbstractProjectConfig {
     */
    open val logLevel: LogLevel? = null
 
-   /**
-    * The parallelism factor determines how many threads are used to launch tests.
-    *
-    * The tests inside the same spec are always executed using the same thread, to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky
-    * in regard to the execution thread.
-    *
-    * Increasing this value to `k > 1`, means that `k` threads are created, allowing different
-    * specs to execute on different threads. For `n` specs, if you set this value to `k`, then
-    * on average, each thread will service `n/k` specs.
-    *
-    * An alternative way to enable this is the system property `kotest.framework.parallelism`
-    * which will always (if defined) take priority over the value here.
-    *
-    * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [concurrentSpecs] to [ProjectConfiguration.MaxConcurrency] unless that option has been explicitly
-    * set to another value.
-    *
-    * Note: JVM ONLY
-    */
-   open val parallelism: Int? = null
-
    open val coroutineTestScope: Boolean? = null
+
+   /**
+    * Each test is launched into its own coroutine. By default, the test engine waits for that
+    * test to finish before launching the next test. By setting [testExecutionMode]
+    * to [TestExecutionMode.Concurrent] all root tests will be launched at the same time.
+    *
+    * Setting this value to [TestExecutionMode.LimitedConcurrency] allows you to specify how
+    * many root tests should be launched concurrently.
+    *
+    * Specs themselves will continue to be launched sequentially. To change that
+    * see [specExecutionMode].
+    *
+    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+    * blocked. If you are using blocking calls in a test, setting [blockingTest] on that test's config
+    * allows the test engine to spool up a new thread just for that test.
+    */
+   open val testExecutionMode: TestExecutionMode? = null
+
+   /**
+    * Each spec is launched into its own coroutine. By default, the test engine waits for all
+    * tests in that spec to finish before launching the next spec. By setting [specExecutionMode]
+    * to [SpecExecutionMode.Concurrent] all specs will be launched at the same time.
+    *
+    * Setting this value to [SpecExecutionMode.LimitedConcurrency] allows you to specify how
+    * many specs should be launched concurrently.
+    *
+    * Tests inside each spec will continue to be launched sequentially. To change that
+    * see [testExecutionMode].
+    *
+    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+    * blocked. If you are using blocking calls in a test, set [blockingTest] to true on that test's config.
+    *
+    * Note: Concurrency can be enabled and individual specs can still run in isolation by using the
+    * [io.kotest.core.annotation.Isolate] annotation on that class. This annotation ensures that a spec
+    * never runs concurrently regardless of any settings here.
+    */
+   open val specExecutionMode: SpecExecutionMode? = null
 
    /**
     * When set to true, failed specs are written to a file called spec_failures.
@@ -151,14 +171,6 @@ abstract class AbstractProjectConfig {
     * if no tests were executed.
     */
    open val failOnEmptyTestSuite: Boolean? = null
-
-   @ExperimentalKotest
-   // Note: JVM ONLY
-   open val concurrentSpecs: Int? = null
-
-   @ExperimentalKotest
-   // Note: JVM ONLY
-   open val concurrentTests: Int? = null
 
    /**
     * Override this value to set a global [AssertionMode].
@@ -224,25 +236,9 @@ abstract class AbstractProjectConfig {
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
 
-   open var dispatcherAffinity: Boolean? = null
-
    open var displayFullTestPath: Boolean? = null
 
    open var allowOutOfOrderCallbacks: Boolean? = null
-
-   /**
-    * Set to true if you wish to enable classpath scanning for test discovery if no selectors are present.
-    *
-    * Note: JVM ONLY
-    */
-   open var discoveryClasspathFallbackEnabled: Boolean? = null
-
-   /**
-    * Set to false if you wish to allow nested jar scanning for tests.
-    *
-    * Note: JVM ONLY
-    */
-   open var disableTestNestedJarScanning: Boolean? = null
 
    /**
     * If set to false then private spec classes will be ignored by the test engine.

@@ -44,7 +44,6 @@ class MaterializerTest : FunSpec({
          config = ResolvedTestConfig(
             enabled = { Enabled.enabled },
             invocations = 3075,
-            threads = 8051,
             timeout = 10.seconds,
             invocationTimeout = 10.seconds,
             tags = setOf(),

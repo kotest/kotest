@@ -11,7 +11,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
@@ -48,7 +47,6 @@ class TestTimeoutTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM),
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
@@ -75,7 +73,6 @@ class TestTimeoutTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            NoopCoroutineDispatcherFactory,
             EngineContext(ProjectConfiguration(), Platform.JVM),
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
