@@ -34,7 +34,7 @@ internal class EnabledIfInterceptor(
          .annotation<EnabledIf>(IncludingAnnotations, IncludingSuperclasses)
          ?.enabledIf
          ?.newInstanceNoArgConstructor()
-         ?.enabled(ref.kclass) ?: true
+         ?.enabled(ref.kclass) == true
 
       return if (enabled) {
          next.invoke(ref)

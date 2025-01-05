@@ -13,7 +13,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -22,12 +22,12 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 @EnabledIf(LinuxCondition::class)
-class CoroutineDispatcherInterceptorTest : DescribeSpec() {
+class CoroutineDispatcherFactoryTestInterceptor : DescribeSpec() {
    init {
-      describe("CoroutineDispatcherInterceptor") {
-         it("should dispatch to coroutineDispatcher") {
+      describe("CoroutineDispatcherFactoryTest") {
+         it("should dispatch to coroutineDispatcher for the per test override") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
                TestNameBuilder.builder("foo").build(),
@@ -39,21 +39,22 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
 
             val factory = object : CoroutineDispatcherFactory {
                override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
-                 return f()
-               }
-               @OptIn(DelicateCoroutinesApi::class)
-               override suspend fun <T> withDispatcher(spec: Spec, f: suspend () -> T): T {
                   return newSingleThreadContext("foo").use { dispatcher ->
                      withContext(dispatcher) {
                         f()
                      }
                   }
                }
+
+               @OptIn(DelicateCoroutinesApi::class)
+               override suspend fun <T> withDispatcher(spec: Spec, f: suspend () -> T): T {
+                  return f()
+               }
             }
 
             val conf = ProjectConfiguration()
             conf.coroutineDispatcherFactory = factory
-            CoroutineDispatcherFactoryInterceptor(conf).intercept(
+            CoroutineDispatcherFactoryTestInterceptor(conf).intercept(
                tc,
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->

@@ -6,7 +6,7 @@ import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -66,7 +66,8 @@ internal class TestCaseExecutor(
          TestFinishedInterceptor(listener, context.configuration.registry),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,
-         CoroutineDispatcherFactoryInterceptor(context.configuration),
+         // the dispatcher factory should run before before/after callbacks so they are executed in the right context
+         CoroutineDispatcherFactoryTestInterceptor(context.configuration),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(context.configuration),
          BeforeSpecListenerInterceptor(context.configuration.registry, specContext),

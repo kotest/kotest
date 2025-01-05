@@ -14,12 +14,14 @@ import kotlin.coroutines.coroutineContext
  * Switches execution onto a dispatcher provided by a [io.kotest.engine.coroutines.CoroutineDispatcherFactory].
  *
  * If the coroutine is an instance of [TestDispatcher] then the coroutine will not be changed.
+ *
+ * Note: This interceptor should run before before/after callbacks so they are executed in the right context.
  */
-internal class CoroutineDispatcherFactoryInterceptor(
+internal class CoroutineDispatcherFactoryTestInterceptor(
    private val configuration: ProjectConfiguration,
 ) : TestExecutionInterceptor {
 
-   private val logger = Logger(CoroutineDispatcherFactoryInterceptor::class)
+   private val logger = Logger(CoroutineDispatcherFactoryTestInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
