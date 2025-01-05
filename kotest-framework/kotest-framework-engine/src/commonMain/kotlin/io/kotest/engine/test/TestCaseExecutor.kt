@@ -2,12 +2,11 @@ package io.kotest.engine.test
 
 import io.kotest.core.Logger
 import io.kotest.core.Platform
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -42,7 +41,6 @@ import kotlin.time.TimeSource
  */
 internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
    private val context: EngineContext,
 ) {
 
@@ -68,7 +66,7 @@ internal class TestCaseExecutor(
          TestFinishedInterceptor(listener, context.configuration.registry),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,
-//         if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
+         CoroutineDispatcherFactoryInterceptor(context.configuration),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(context.configuration),
          BeforeSpecListenerInterceptor(context.configuration.registry, specContext),

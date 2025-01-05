@@ -5,7 +5,6 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
-import io.kotest.core.config.Defaults
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
@@ -24,6 +23,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import kotlin.js.JsName
 import kotlin.time.Duration
 
@@ -174,21 +174,6 @@ abstract class Spec : TestConfiguration() {
    var retries: Int? = null
 
    var retryDelay: Duration? = null
-//
-//   /**
-//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-//    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-//    * the execution thread. To change this, set this value to false. This value can also be
-//    * set globally in [ProjectConfiguration.dispatcherAffinity].
-//    *
-//    * When this value is false, the framework is free to assign different dispatchers to different
-//    * root tests (nested tests always run in the same thread as their parent test).
-//    *
-//    * Note: This setting has no effect unless the number of threads is increased; see [ProjectConfiguration.parallelism].
-//    */
-//   @ExperimentalKotest
-//   @JsName("dispatcherAffinity_js")
-//   var dispatcherAffinity: Boolean? = null
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
@@ -228,9 +213,10 @@ abstract class Spec : TestConfiguration() {
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
-//   @JsName("coroutineDispatcherFactory_js")
-//   @ExperimentalKotest
-//   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
+   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
+
+   @JsName("coroutineDispatcherFactory_js")
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    var coroutineTestScope: Boolean? = null
 

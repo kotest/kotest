@@ -7,12 +7,10 @@ import io.kotest.core.Platform
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.core.concurrency.use
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
@@ -34,82 +32,80 @@ import kotlin.reflect.KClass
  * annotations to ensure those specs are never/always scheduled concurrently.
  */
 internal class TestSuiteScheduler(
-  private val context: EngineContext,
+   private val context: EngineContext,
 ) {
 
-  private val logger = Logger(TestSuiteScheduler::class)
+   private val logger = Logger(TestSuiteScheduler::class)
 
-  suspend fun schedule(suite: TestSuite): EngineResult {
-    logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
+   suspend fun schedule(suite: TestSuite): EngineResult {
+      logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
 
-    val isolated = suite.specs.filter { it.kclass.isIsolate() }
-    logger.log { Pair(null, "Isolated spec count: ${isolated.size}") }
-    schedule(isolated, 1)
-    logger.log { Pair(null, "Isolated specs have completed") }
+      val isolated = suite.specs.filter { it.kclass.isIsolate() }
+      logger.log { Pair(null, "Isolated spec count: ${isolated.size}") }
+      schedule(isolated, 1)
+      logger.log { Pair(null, "Isolated specs have completed") }
 
-    val parallel = suite.specs.filter { it.kclass.isParallel() }
-    logger.log { Pair(null, "Parallelized spec count: ${parallel.size}") }
-    schedule(parallel, Int.MAX_VALUE)
-    logger.log { Pair(null, "Parallelized specs have completed") }
+      val parallel = suite.specs.filter { it.kclass.isParallel() }
+      logger.log { Pair(null, "Parallelized spec count: ${parallel.size}") }
+      schedule(parallel, Int.MAX_VALUE)
+      logger.log { Pair(null, "Parallelized specs have completed") }
 
-    val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
-    logger.log { Pair(null, "Remaining spec count: ${default.size}") }
-    schedule(default, concurrency(context.configuration))
-    logger.log { Pair(null, "Remaining specs have completed") }
+      val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
+      logger.log { Pair(null, "Remaining spec count: ${default.size}") }
+      schedule(default, concurrency(context.configuration))
+      logger.log { Pair(null, "Remaining specs have completed") }
 
-    return EngineResult(emptyList())
-  }
+      return EngineResult(emptyList())
+   }
 
-  private suspend fun schedule(
-    specs: List<SpecRef>,
-    concurrency: Int,
-  ) {
+   private suspend fun schedule(
+      specs: List<SpecRef>,
+      concurrency: Int,
+   ) {
 
-    val semaphore = Semaphore(concurrency)
-    logger.log { Pair(null, "Scheduling using concurrency: $concurrency") }
+      val semaphore = Semaphore(concurrency)
+      logger.log { Pair(null, "Scheduling using concurrency: $concurrency") }
 
-    defaultCoroutineDispatcherFactory(context.configuration).use { coroutineDispatcherFactory ->
       coroutineScope { // we don't want this function to return until all specs are completed
-        val collector = CollectingTestEngineListener()
-        specs.map { ref ->
-          logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
-          launch {
-            semaphore.withPermit {
-              logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
+         val collector = CollectingTestEngineListener()
+         specs.map { ref ->
+            logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
+            launch {
+               semaphore.withPermit {
+                  logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
 
-              if (context.configuration.projectWideFailFast && collector.errors) {
-                context.listener.specIgnored(ref.kclass, null)
-              } else {
-                try {
-                  val executor = SpecExecutor(coroutineDispatcherFactory, context.mergeListener(collector))
-                  logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
-                  executor.execute(ref)
-                } catch (t: Throwable) {
-                  logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
-                  throw t
-                }
-              }
+                  if (context.configuration.projectWideFailFast && collector.errors) {
+                     context.listener.specIgnored(ref.kclass, null)
+                  } else {
+                     try {
+                        val executor = SpecExecutor(context.mergeListener(collector))
+                        logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
+                        executor.execute(ref)
+                     } catch (t: Throwable) {
+                        logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
+                        throw t
+                     }
+                  }
+               }
+               logger.log { Pair(ref.kclass.bestName(), "Released permit") }
             }
-            logger.log { Pair(ref.kclass.bestName(), "Released permit") }
-          }
-        }
+         }
       }
-    }
-  }
+   }
 
-  /**
-   * Returns the max concurrent specs to execute.
-   * On non-JVM platforms, this will always be 1, otherwise the value
-   * of [io.kotest.engine.concurrency.SpecExecutionMode] from project configuration is used.
-   */
-  private fun concurrency(configuration: ProjectConfiguration): Int {
-    return when (platform) {
-      Platform.JVM -> configuration.specExecutionMode.concurrency
-      Platform.JS,
-      Platform.Native,
-      Platform.WasmJs -> 1
-    }
-  }
+   /**
+    * Returns the max concurrent specs to execute.
+    * On non-JVM platforms, this will always be 1, otherwise the value
+    * of [io.kotest.engine.concurrency.SpecExecutionMode] from project configuration is used.
+    */
+   private fun concurrency(configuration: ProjectConfiguration): Int {
+      return when (platform) {
+         Platform.JVM -> configuration.specExecutionMode.concurrency
+         Platform.JS,
+         Platform.Native,
+         Platform.WasmJs -> 1
+      }
+   }
 }
 
 /**
@@ -120,7 +116,7 @@ internal class TestSuiteScheduler(
  */
 @Suppress("DEPRECATION")
 internal fun KClass<*>.isIsolate(): Boolean =
-  hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
+   hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
       || hasAnnotation<Isolate>(IncludingAnnotations, IncludingSuperclasses)
 
 /**

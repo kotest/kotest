@@ -11,7 +11,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
@@ -158,7 +157,6 @@ internal class SpecExecutor2(
 
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(engineContext.listener),
-         NoopCoroutineDispatcherFactory,
          engineContext,
       )
 

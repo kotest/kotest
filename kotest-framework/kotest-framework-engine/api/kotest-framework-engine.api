@@ -912,19 +912,6 @@ public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kot
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
-public abstract interface class io/kotest/core/concurrency/CoroutineDispatcherFactory {
-	public abstract fun close ()V
-	public abstract fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/core/concurrency/CoroutineDispatcherFactory$DefaultImpls {
-	public static fun close (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;)V
-}
-
-public final class io/kotest/core/concurrency/CoroutineDispatcherFactoryKt {
-	public static final fun use (Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
 public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun <init> ()V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1094,6 +1081,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public final fun getBlockingTest ()Z
 	public final fun getCoroutineDebugProbes ()Z
+	public final fun getCoroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public final fun getCoroutineTestScope ()Z
 	public final fun getDisableTestNestedJarScanning ()Z
 	public final fun getDiscoveryClasspathFallbackEnabled ()Z
@@ -1136,6 +1124,7 @@ public final class io/kotest/core/config/ProjectConfiguration {
 	public final fun setAssertionMode (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setBlockingTest (Z)V
 	public final fun setCoroutineDebugProbes (Z)V
+	public final fun setCoroutineDispatcherFactory (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;)V
 	public final fun setCoroutineTestScope (Z)V
 	public final fun setDisableTestNestedJarScanning (Z)V
 	public final fun setDiscoveryClasspathFallbackEnabled (Z)V
@@ -1937,9 +1926,11 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
+	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun extensions ()Ljava/util/List;
 	public final fun getBlockingTest ()Ljava/lang/Boolean;
 	public final fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
+	public final fun getCoroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public final fun getCoroutineTestScope ()Ljava/lang/Boolean;
 	public final fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public final fun getFailfast ()Ljava/lang/Boolean;
@@ -1958,6 +1949,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public abstract fun rootTests ()Ljava/util/List;
 	public final fun setBlockingTest (Ljava/lang/Boolean;)V
 	public final fun setCoroutineDebugProbes (Ljava/lang/Boolean;)V
+	public final fun setCoroutineDispatcherFactory (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;)V
 	public final fun setCoroutineTestScope (Ljava/lang/Boolean;)V
 	public final fun setDuplicateTestNameMode (Lio/kotest/core/names/DuplicateTestNameMode;)V
 	public final fun setFailfast (Ljava/lang/Boolean;)V
@@ -3503,24 +3495,6 @@ public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
 	public static final fun createAtomicBoolean (Z)Lio/kotest/engine/atomic/AtomicBoolean;
 }
 
-public final class io/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory {
-	public static final field INSTANCE Lio/kotest/engine/concurrency/DedicatedThreadCoroutineDispatcherFactory;
-	public fun close ()V
-	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/concurrency/FixedThreadCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory, java/io/Closeable {
-	public fun <init> (IZ)V
-	public fun close ()V
-	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/concurrency/NoopCoroutineDispatcherFactory : io/kotest/core/concurrency/CoroutineDispatcherFactory {
-	public static final field INSTANCE Lio/kotest/engine/concurrency/NoopCoroutineDispatcherFactory;
-	public fun close ()V
-	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/concurrency/ReplayKt {
 	public static final fun replay (IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -3627,6 +3601,20 @@ public final class io/kotest/engine/coroutines/BackgroundScopeKt {
 	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
 }
 
+public abstract interface class io/kotest/engine/coroutines/CoroutineDispatcherFactory {
+	public abstract fun close ()V
+	public abstract fun withDispatcher (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/coroutines/CoroutineDispatcherFactory$DefaultImpls {
+	public static fun close (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;)V
+}
+
+public final class io/kotest/engine/coroutines/CoroutineDispatcherFactoryKt {
+	public static final fun use (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
 public final class io/kotest/engine/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
 	public static final field Companion Lio/kotest/engine/coroutines/TestScopeElement$Companion;
 	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
@@ -3643,6 +3631,13 @@ public final class io/kotest/engine/coroutines/TestScopeElement$Companion : kotl
 
 public final class io/kotest/engine/coroutines/TestScopeElementKt {
 	public static final fun getCoroutineTestScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestScope;
+}
+
+public final class io/kotest/engine/coroutines/ThreadPerSpecCoroutineContextFactory : io/kotest/engine/coroutines/CoroutineDispatcherFactory {
+	public static final field INSTANCE Lio/kotest/engine/coroutines/ThreadPerSpecCoroutineContextFactory;
+	public fun close ()V
+	public fun withDispatcher (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/descriptors/KclassesKt {
@@ -3993,7 +3988,7 @@ public final class io/kotest/engine/spec/Sorters_jvmKt {
 }
 
 public final class io/kotest/engine/spec/SpecExecutorKt {
-	public static final fun testSpecExecutor (Lio/kotest/engine/concurrency/NoopCoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun testSpecExecutor (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
@@ -4448,7 +4443,7 @@ public final class io/kotest/engine/test/scopes/RegistrationKt {
 }
 
 public final class io/kotest/engine/test/scopes/ScopesKt {
-	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lio/kotest/engine/spec/interceptor/SpecContext;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/core/concurrency/CoroutineDispatcherFactory;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
+	public static final fun createSingleInstanceTestScope (Lio/kotest/core/test/TestCase;Lio/kotest/engine/spec/interceptor/SpecContext;Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/names/DuplicateTestNameMode;Lio/kotest/engine/interceptors/EngineContext;)Lio/kotest/core/test/TestScope;
 }
 
 public final class io/kotest/engine/test/scopes/TerminalTestScope : io/kotest/core/test/TestScope {

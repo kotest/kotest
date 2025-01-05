@@ -1,6 +1,5 @@
 package io.kotest.core.config
 
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -13,6 +12,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import kotlin.time.Duration
 
 /**
@@ -78,21 +79,6 @@ class ProjectConfiguration {
     */
    var assertionMode: AssertionMode = Defaults.assertionMode
 
-//   /**
-//    * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-//    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
-//    * the execution thread. To change this, set this value to false.
-//    *
-//    * When this value is false, the framework is free to assign different dispatchers to different
-//    * root tests (nested tests always run in the same thread as their parent test).
-//    *
-//    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
-//    *
-//    * Defaults to [Defaults.dispatcherAffinity].
-//    */
-//   @ExperimentalKotest
-//   var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
-
    /**
     * Returns the timeout for the execution of a test case in milliseconds.
     *
@@ -156,6 +142,8 @@ class ProjectConfiguration {
     * never runs concurrently regardless of any settings here.
     */
    var specExecutionMode: SpecExecutionMode = Defaults.SPEC_EXECUTION_MODE
+
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    /**
     * A timeout that is applied to the overall project if not null,
