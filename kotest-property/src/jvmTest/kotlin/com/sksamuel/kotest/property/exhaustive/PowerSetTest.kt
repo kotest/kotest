@@ -19,12 +19,14 @@ class PowerSetTest: StringSpec() {
       "powerSet should process list of one element" {
          Exhaustive.Companion.powerSet(listOf("a")).values shouldContainExactlyInAnyOrder
             listOf(
+               listOf(),
                listOf("a"),
             )
       }
       "powerSet should process list of two elements" {
          Exhaustive.Companion.powerSet(listOf("a", "b")).values shouldContainExactlyInAnyOrder
             listOf(
+               listOf(),
                listOf("a"),
                listOf("b"),
                listOf("a", "b"),
@@ -33,6 +35,7 @@ class PowerSetTest: StringSpec() {
       "powerSet should process list of three elements" {
          Exhaustive.Companion.powerSet(listOf("a", "b", "c")).values shouldContainExactlyInAnyOrder
             listOf(
+               listOf(),
                listOf("a"),
                listOf("b"),
                listOf("c"),

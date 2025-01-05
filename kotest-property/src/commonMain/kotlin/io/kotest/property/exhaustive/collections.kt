@@ -35,7 +35,6 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 fun <A> Exhaustive.Companion.powerSet(list: List<A>): Exhaustive<List<A>> {
    require(list.isNotEmpty()) { "List should not be empty." }
    return powerSetIndexes(list.size)
-      .filter { it.isNotEmpty() }
       .map { indexes -> indexes.map { list[it] } }
       .toList()
       .exhaustive()
