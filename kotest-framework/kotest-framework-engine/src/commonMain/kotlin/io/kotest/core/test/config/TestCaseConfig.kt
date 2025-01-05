@@ -15,7 +15,7 @@ import kotlin.time.Duration
  * [DefaultTestConfig] is a data class that allows for the configuration of a test case to be easily shared.
  *
  * Each of these values can be overridden on a per-test basis, but if you wish to have a common set of defaults
- * that are shared across several tests, then you can create an instance of this class and pass it to each
+ * that are shared across several tests, then you can create an instance of this class and declare it in each
  * of the specs that you wish to share the configuration.
  *
  * Inside individual tests, you can override these values by using the DSL functions on the test case.
