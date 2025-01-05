@@ -3,8 +3,8 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.EmptyExtensionRegistry
-import io.kotest.core.config.FixedExtensionRegistry
+import io.kotest.engine.config.EmptyExtensionRegistry
+import io.kotest.engine.config.FixedExtensionRegistry
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec

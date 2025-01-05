@@ -1,4 +1,4 @@
-package io.kotest.core.config
+package io.kotest.engine.config
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.Extension

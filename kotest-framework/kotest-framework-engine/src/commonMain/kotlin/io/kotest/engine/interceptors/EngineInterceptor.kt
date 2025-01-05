@@ -7,6 +7,8 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -38,6 +40,8 @@ data class EngineContext(
   val listener: TestEngineListener,
   val tags: TagExpression,
   val configuration: ProjectConfiguration,
+  val projectConfigResolver: ProjectConfigResolver,
+  val specConfigResolver: SpecConfigResolver,
   val platform: Platform,
   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {

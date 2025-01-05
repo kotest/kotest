@@ -1,6 +1,6 @@
 package io.kotest.engine.test
 
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
@@ -41,7 +41,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
          testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
-         testCase.config.extensions // extensions coming from the test config block itself
+         (testCase.config.extensions ?: emptyList()) // extensions coming from the test config block itself
    }
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {

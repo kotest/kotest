@@ -1,6 +1,6 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

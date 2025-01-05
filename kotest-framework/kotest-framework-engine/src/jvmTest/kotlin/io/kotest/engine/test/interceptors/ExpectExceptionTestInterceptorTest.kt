@@ -25,7 +25,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
    test("ExpectExceptionTestInterceptor should adjust ExpectFailureException to Ignored") {
       val tc = TestCase(
          ExpectExceptionTestInterceptorTest::class.toDescriptor().append("a"),
-          TestNameBuilder.builder("a").build(),
+         TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
          sourceRef(),
@@ -53,7 +53,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
    test("ExpectExceptionTestInterceptor should not adjust AssertionErrors") {
       val tc = TestCase(
          ExpectExceptionTestInterceptorTest::class.toDescriptor().append("a"),
-          TestNameBuilder.builder("a").build(),
+         TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
          sourceRef(),

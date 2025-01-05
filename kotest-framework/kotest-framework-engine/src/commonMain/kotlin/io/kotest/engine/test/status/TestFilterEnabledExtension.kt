@@ -1,6 +1,6 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.Enabled

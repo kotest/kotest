@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope

@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.Extension

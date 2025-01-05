@@ -20,6 +20,8 @@ import kotlin.time.Duration
  *
  * Inside individual tests, you can override these values by using the DSL functions on the test case.
  *
+ * Any configuration values not specified at the test case level, the spec level, or the default spec level
+ * bubble up to the project level configuration.
  */
 data class DefaultTestConfig(
    val timeout: Duration? = null,

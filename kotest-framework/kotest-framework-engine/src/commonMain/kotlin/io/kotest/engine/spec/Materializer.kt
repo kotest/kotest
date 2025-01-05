@@ -1,7 +1,6 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
@@ -10,8 +9,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.engine.test.TestConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TestNameEscaper
 
@@ -19,7 +18,9 @@ import io.kotest.engine.test.names.TestNameEscaper
  * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
  */
 @KotestInternal
-class Materializer(private val configuration: ProjectConfiguration) {
+class Materializer(
+   private val specConfigResolver: SpecConfigResolver,
+) {
 
    /**
     * Materializes the root tests from a [Spec] and any [TestFactory]s into
@@ -34,7 +35,7 @@ class Materializer(private val configuration: ProjectConfiguration) {
     */
    fun materialize(spec: Spec): List<TestCase> {
 
-      val duplicateTestNameMode = spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode
+      val duplicateTestNameMode = specConfigResolver.duplicateTestNameMode(spec)
       val handler = DuplicateTestNameHandler(duplicateTestNameMode)
 
       val tests = spec.rootTests().map { rootTest ->
@@ -55,17 +56,18 @@ class Materializer(private val configuration: ProjectConfiguration) {
             type = rootTest.type,
             source = rootTest.source,
             test = rootTest.test,
-            config = TestConfigResolver(configuration).resolve(
-               testConfig = rootTest.config,
-               xdisabled = rootTest.disabled,
-               parent = null,
-               spec = spec,
-            ),
+            config = rootTest.config,
+//            config = TestConfigResolver(configuration).resolve(
+//               testConfig = rootTest.config,
+//               xdisabled = rootTest.disabled,
+//               parent = null,
+//               spec = spec,
+//            ),
             factoryId = rootTest.factoryId,
          )
       }
 
-      return when (testCaseOrder(spec)) {
+      return when (specConfigResolver.testCaseOrder(spec)) {
          TestCaseOrder.Sequential -> tests
          TestCaseOrder.Random -> tests.shuffled()
          TestCaseOrder.Lexicographic -> tests.sortedBy { it.name.name }
@@ -93,12 +95,13 @@ class Materializer(private val configuration: ProjectConfiguration) {
          test = nested.test,
          source = nested.source,
          type = nested.type,
-         config = TestConfigResolver(configuration).resolve(
-            testConfig = nested.config,
-            xdisabled = nested.disabled,
-            parent = parent,
-            spec = parent.spec,
-         ),
+         config = nested.config,
+//         config = TestConfigResolver(configuration).resolve(
+//            testConfig = nested.config,
+//            xdisabled = nested.disabled,
+//            parent = parent,
+//            spec = parent.spec,
+//         ),
          factoryId = parent.factoryId,
          parent = parent,
       )
@@ -111,15 +114,5 @@ class Materializer(private val configuration: ProjectConfiguration) {
          else -> name.name
       }
       return name.copy(name = TestNameEscaper.escape(resolvedName))
-   }
-
-   /**
-    * Returns the [TestCaseOrder] applicable for this spec.
-    *
-    * If the spec has a [TestCaseOrder] set, either directly or via a shared default test config,
-    * then that is used, otherwise the project default is used.
-    */
-   private fun testCaseOrder(spec: Spec): TestCaseOrder {
-      return spec.testCaseOrder() ?: spec.testOrder ?: spec.defaultTestConfig?.testOrder ?: configuration.testCaseOrder
    }
 }

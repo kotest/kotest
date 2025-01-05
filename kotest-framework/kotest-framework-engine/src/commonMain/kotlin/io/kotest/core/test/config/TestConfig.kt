@@ -80,8 +80,8 @@ data class TestConfig(
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }
-      require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
-      require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
+      require(timeout?.isPositive() != false) { "Timeout must be positive" }
+      require(invocationTimeout?.isPositive() != false) { "Invocation timeout must be positive" }
       require(timeout == null || invocationTimeout == null || invocationTimeout <= timeout) {
          "Invocation timeout must not exceed the test case timeout: " +
             "$invocationTimeout (invocationTimeout) > $timeout (timeout)"

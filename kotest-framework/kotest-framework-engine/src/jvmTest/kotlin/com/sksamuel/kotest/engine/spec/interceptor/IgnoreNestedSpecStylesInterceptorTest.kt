@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.EmptyExtensionRegistry
+import io.kotest.engine.config.EmptyExtensionRegistry
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec

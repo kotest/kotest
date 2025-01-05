@@ -53,7 +53,7 @@ data class TestCase(
    // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
    // config values specified directly on the test itself
-   val config: TestConfig,
+   val config: TestConfig? = null,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null
@@ -81,7 +81,7 @@ fun TestCase.parents(): List<TestCase> {
 /** Returns timeout to be used depending on the [TestType]. */
 val TestCase.timeout: Duration
    get() = when (type) {
-      TestType.Container -> config.timeout ?: TODO() // todo must resolve this
+      TestType.Container -> config?.timeout ?: TODO() // todo must resolve this
       else -> TODO() // todo must resolve this
       // minOf(config.invocationTimeout, config.timeout)
    }

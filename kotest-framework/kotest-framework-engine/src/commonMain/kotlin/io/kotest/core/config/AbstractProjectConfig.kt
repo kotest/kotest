@@ -9,8 +9,10 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.config.Defaults
 import kotlin.time.Duration
 
 /**
@@ -64,7 +66,7 @@ abstract class AbstractProjectConfig {
     * Tests which define their own timeout will override this.
     * The value here is in millis
     */
-   open val invocationTimeout: Long? = null
+   open val invocationTimeout: Duration? = null
 
    /**
     * Set this to true and all specs will be set to fail fast, unless overriden in the spec itself.
@@ -265,6 +267,10 @@ abstract class AbstractProjectConfig {
     * Similar to [retryDelay] but allows a function to determine the delay based on the number of retries.
     */
    open var retryDelayFn: ((TestCase, Int) -> Duration)? = null
+
+   open val minimumRuntimeTestCaseSeverityLevel: TestCaseSeverityLevel? = null
+
+   open val severity: TestCaseSeverityLevel? = null
 
    /**
     * Executed before the first test of the project, but after the

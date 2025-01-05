@@ -14,6 +14,9 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.config.DefaultExtensionRegistry
+import io.kotest.engine.config.Defaults
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.mpp.sysprop
 import kotlin.time.Duration
@@ -27,7 +30,7 @@ import kotlin.time.Duration
 class ProjectConfiguration {
 
    /**
-    * Returns the [ExtensionRegistry] that contains all extensions registered through
+    * Returns the [io.kotest.engine.config.ExtensionRegistry] that contains all extensions registered through
     * this configuration instance.
     */
    val registry: ExtensionRegistry = DefaultExtensionRegistry()
@@ -36,7 +39,7 @@ class ProjectConfiguration {
     * If enabled, then all failing spec names will be written to a "failure file".
     * This file can then be used by [SpecExecutionOrder.FailureFirst].
     *
-    * Defaults to [Defaults.writeSpecFailureFile].
+    * Defaults to [io.kotest.engine.config.Defaults.writeSpecFailureFile].
     *
     * Note: Only has an effect on JVM.
     */
@@ -51,7 +54,14 @@ class ProjectConfiguration {
     */
    var specFailureFilePath: String = Defaults.specFailureFilePath
 
-   var testSeverity: TestCaseSeverityLevel? = Defaults.TEST_CASE_SEVERITY_LEVEL
+   /**
+    * Specifies the minimum severity level for test cases to be executed.
+    * If a test has a severity level lower than this value, it will not be executed.
+    *
+    * Eg, if the minimum runtime level is NORMAL and a test is defined with TRIVIAL, then that TRIVIAL
+    * test case would not be executed.
+    */
+   var minimumRuntimeTestCaseSeverityLevel: TestCaseSeverityLevel? = null
 
    /**
     * If true, then all test cases are implicitly wrapped in an [io.kotest.assertions.assertSoftly] call.
@@ -81,7 +91,7 @@ class ProjectConfiguration {
    /**
     * Returns the default assertion mode.
     */
-   var assertionMode: AssertionMode = Defaults.assertionMode
+   var assertionMode: AssertionMode = Defaults.ASSERTION_MODE
 
    /**
     * Returns the timeout for the execution of a test case in milliseconds.
@@ -90,18 +100,18 @@ class ProjectConfiguration {
     *
     * This value is used if a timeout is not specified in the test case itself.
     *
-    * Defaults to [Defaults.defaultTimeoutMillis].
+    * Defaults to [Defaults.DEFAULT_TIMEOUT_MILLIS].
     */
-   var timeout: Long = Defaults.defaultTimeoutMillis
+   var timeout: Long = Defaults.DEFAULT_TIMEOUT_MILLIS
 
    /**
     * Returns the timeout for any single invocation of a test.
     *
     * This value is used if a timeout is not specified in the test case itself.
     *
-    * Defaults to [Defaults.defaultInvocationTimeoutMillis].
+    * Defaults to [Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS].
     */
-   var invocationTimeout: Long = Defaults.defaultInvocationTimeoutMillis
+   var invocationTimeout: Long = Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS
 
    /**
     * Default number of invocations when not specified in any other place.
@@ -163,11 +173,11 @@ class ProjectConfiguration {
    /**
     * Sets the default [failfast] for any test which doesn't override.
     */
-   var failfast: Boolean = Defaults.failfast
+   var failfast: Boolean = Defaults.FAILFAST
 
    var projectWideFailFast: Boolean = Defaults.projectWideFailFast
 
-   var blockingTest: Boolean = Defaults.blockingTest
+   var blockingTest: Boolean = Defaults.BLOCKING_TEST
 
    /**
     * Sets the default [TestCaseSeverityLevel] for any test which doesn't override.
@@ -184,9 +194,9 @@ class ProjectConfiguration {
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     *
-    * Defaults to [Defaults.coroutineDebugProbes]
+    * Defaults to [Defaults.COROUTINE_DEBUG_PROBES]
     */
-   var coroutineDebugProbes: Boolean = Defaults.coroutineDebugProbes
+   var coroutineDebugProbes: Boolean = Defaults.COROUTINE_DEBUG_PROBES
 
    /**
     * Some specs have DSLs that include prefix or suffix words in the test name.
@@ -236,9 +246,9 @@ class ProjectConfiguration {
     *
     * This value is used if a value is not specified in the spec itself.
     *
-    * Default to [Defaults.isolationMode]
+    * Default to [Defaults.ISOLATION_MODE]
     */
-   var isolationMode: IsolationMode = Defaults.isolationMode
+   var isolationMode: IsolationMode = Defaults.ISOLATION_MODE
 
    /**
     * Controls the ordering of root test cases in each spec.
@@ -247,9 +257,9 @@ class ProjectConfiguration {
     *
     * This value is used if a value is not specified in the spec itself.
     *
-    * Defaults to [Defaults.testCaseOrder]
+    * Defaults to [Defaults.TEST_CASE_ORDER]
     */
-   var testCaseOrder: TestCaseOrder = Defaults.testCaseOrder
+   var testCaseOrder: TestCaseOrder = Defaults.TEST_CASE_ORDER
 
    /**
     * Returns the sort order to use when executing specs.
@@ -282,15 +292,15 @@ class ProjectConfiguration {
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
     *
-    * Defaults to [Defaults.duplicateTestNameMode]
+    * Defaults to [Defaults.DUPLICATE_TEST_NAME_MODE]
     */
-   var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
+   var duplicateTestNameMode: DuplicateTestNameMode = Defaults.DUPLICATE_TEST_NAME_MODE
 
    var displayFullTestPath: Boolean = sysprop(KotestEngineProperties.displayFullTestPath, Defaults.displayFullTestPath)
    /**
     * true if the test name should be the full name including parent names
     */
-   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+   var displayFullTestPath: Boolean = Defaults.DISPLAY_FULL_TEST_PATH
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 

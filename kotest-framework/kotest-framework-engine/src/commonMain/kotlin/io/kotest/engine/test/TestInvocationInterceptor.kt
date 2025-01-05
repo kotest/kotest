@@ -1,11 +1,12 @@
 package io.kotest.engine.test
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.replay
+import io.kotest.engine.config.ExtensionRegistry
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 import kotlinx.coroutines.coroutineScope
@@ -13,10 +14,14 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
+/**
+ * Invokes downstream interceptors one or more times depending on the invocation count in test config.
+ */
 internal class TestInvocationInterceptor(
-  registry: ExtensionRegistry,
-  private val timeMark: TimeMark,
-  private val invocationInterceptors: List<TestExecutionInterceptor>,
+   registry: ExtensionRegistry,
+   private val timeMark: TimeMark,
+   private val invocationInterceptors: List<TestExecutionInterceptor>,
+   private val testConfigResolver: TestConfigResolver,
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)
@@ -25,7 +30,7 @@ internal class TestInvocationInterceptor(
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: NextTestExecutionInterceptor
+      test: NextTestExecutionInterceptor,
    ): TestResult {
       return try {
          invokeWithRetry(testCase, scope, test, 0)
@@ -47,26 +52,22 @@ internal class TestInvocationInterceptor(
          // we wrap in a coroutine scope so that we wait for any user-launched coroutines to finish,
          // and so we can grab any exceptions they throw
          coroutineScope {
-            replay(
-               testCase.config.invocations,
-               1,
-            )
-            { runBeforeTestAfter(testCase, scope, it, test) }
+            replay(testConfigResolver.invocations(testCase)) {
+               runBeforeTestAfter(testCase, scope, it, test)
+            }
          }
       } catch (t: Throwable) {
          if (shouldRetry(attemptedRetries, testCase)) {
-            delay(retryDelay(testCase, attemptedRetries))
+            delay(retryDelay(testCase))
             invokeWithRetry(testCase, scope, test, attemptedRetries + 1)
          } else throw t
       }
    }
 
-   private fun retryDelay(testCase: TestCase, attemptedRetries: Int): Duration {
-      val retryDelay = testCase.config.retryDelay
-      val retryDelayFn = testCase.config.retryDelayFn
+   private fun retryDelay(testCase: TestCase): Duration {
+      val retryDelay = testConfigResolver.retryDelay(testCase)
       return when {
          retryDelay != null -> retryDelay
-         retryDelayFn != null -> retryDelayFn(testCase, attemptedRetries)
          else -> Duration.ZERO
       }
    }
@@ -75,11 +76,9 @@ internal class TestInvocationInterceptor(
       attemptedRetries: Int,
       testCase: TestCase,
    ): Boolean {
-      val retries = testCase.config.retries
-      val retryFn = testCase.config.retryFn
+      val retries = testConfigResolver.retries(testCase)
       return when {
          retries != null -> attemptedRetries < retries
-         retryFn != null -> attemptedRetries < retryFn(testCase)
          else -> false
       }
    }

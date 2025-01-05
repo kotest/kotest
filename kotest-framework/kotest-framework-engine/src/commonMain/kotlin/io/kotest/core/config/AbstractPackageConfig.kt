@@ -35,7 +35,7 @@ abstract class AbstractPackageConfig {
     * Sets the order of root [TestCase]s in this spec.
     * If this function returns a null value, then the project default will be used.
     */
-   open val testOrder: TestCaseOrder? = null
+   open val testCaseOrder: TestCaseOrder? = null
 
    /**
     * Returns the timeout to be used by each test case. This value is overridden by a timeout

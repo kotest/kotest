@@ -1,10 +1,9 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameCase
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.timeout
 import kotlin.time.Duration
 
@@ -12,28 +11,32 @@ import kotlin.time.Duration
  * The [ProjectConfigResolver] is responsible for returning the runtime value to use for a given
  * configuration setting based on the various sources of configuration.
  *
- * For example, a test name case can be specified
+ * This class handles settings that should only be configured at the project level,
+ * such as spec execution order, or minimum severity level at runtime.
+ *
+ * For spec level equivalent, see [SpecConfigResolver].
+ *
+ *  Order of precedence for each setting from highest priority to lowest:
+ *
+ * - project level defaults from [io.kotest.core.config.ProjectConfiguration]
+ * - system property overrides
+ * - kotest defaults
  */
 class ProjectConfigResolver(
-   private val configuration: ProjectConfiguration,
+   private val configs: List<AbstractProjectConfig>,
+   private val systemPropertyConfiguration: SystemPropertyConfiguration,
 ) {
 
    fun timeout(testCase: TestCase): Duration {
       return testCase.timeout
    }
 
-   fun testSeverity() {
-      return configuration.testSeverity
-   }
-
    /**
-    * Returns the [TestCaseOrder] applicable for this spec.
-    *
-    * If the spec has a [TestCaseOrder] set, either directly or via a shared default test config,
-    * then that is used, otherwise the project default is used.
+    * Returns the minimum severity level for tests to be executed.
     */
-   fun testCaseOrder(spec: Spec): TestCaseOrder {
-      return spec.testCaseOrder() ?: spec.testOrder ?: spec.defaultTestConfig?.testOrder ?: configuration.testCaseOrder
+   fun minimumRuntimeTestSeverityLevel(): TestCaseSeverityLevel? {
+      return configs.firstNotNullOfOrNull { it.minimumRuntimeTestCaseSeverityLevel }
+         ?: systemPropertyConfiguration.minimumRuntimeTestCaseSeverityLevel()
    }
 
    /**

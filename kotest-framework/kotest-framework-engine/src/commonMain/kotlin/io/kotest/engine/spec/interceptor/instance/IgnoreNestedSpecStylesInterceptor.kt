@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.engine.flatMap
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec

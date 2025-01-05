@@ -1,6 +1,6 @@
 package io.kotest.runner.junit4
 
-import io.kotest.core.config.EmptyExtensionRegistry
+import io.kotest.engine.config.EmptyExtensionRegistry
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher

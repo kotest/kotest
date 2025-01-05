@@ -1,4 +1,4 @@
-package io.kotest.core.config
+package io.kotest.engine.config
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
@@ -30,18 +30,23 @@ object Defaults {
    val TEST_EXECUTION_MODE = TestExecutionMode.Sequential
    val SPEC_EXECUTION_MODE = SpecExecutionMode.Sequential
 
-   val assertionMode: AssertionMode = AssertionMode.None
-   val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
-   val isolationMode: IsolationMode = IsolationMode.SingleInstance
-   val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
-   const val displayFullTestPath: Boolean = false
+   val ASSERTION_MODE: AssertionMode = AssertionMode.None
+
+   val TEST_CASE_ORDER: TestCaseOrder = TestCaseOrder.Sequential
+
+   val ISOLATION_MODE: IsolationMode = IsolationMode.SingleInstance
+   val DUPLICATE_TEST_NAME_MODE: DuplicateTestNameMode = DuplicateTestNameMode.Warn
+
+   const val DISPLAY_FULL_TEST_PATH: Boolean = false
 
    val TEST_CASE_SEVERITY_LEVEL: TestCaseSeverityLevel = TestCaseSeverityLevel.NORMAL
 
-   const val coroutineDebugProbes: Boolean = false
-//   const val testCoroutineDispatcher: Boolean = false
+   const val COROUTINE_DEBUG_PROBES: Boolean = false
+
+   //   const val testCoroutineDispatcher: Boolean = false
    const val coroutineTestScope: Boolean = false
-   const val blockingTest: Boolean = false
+
+   const val BLOCKING_TEST: Boolean = false
 
    const val displaySpecIfNoActiveTests: Boolean = true
 
@@ -49,11 +54,11 @@ object Defaults {
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
-   const val defaultTimeoutMillis = 10 * 60 * 1000L
-   const val defaultInvocationTimeoutMillis = 10 * 60 * 1000L
+   const val DEFAULT_TIMEOUT_MILLIS = 10 * 60 * 1000L
+   const val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10 * 60 * 1000L
 
    const val failOnIgnoredTests: Boolean = false
-   const val failfast: Boolean = false
+   const val FAILFAST: Boolean = false
    const val projectWideFailFast: Boolean = false
    val defaultIncludeTestScopeAffixes: Boolean? = null
    const val writeSpecFailureFile = false
