@@ -907,6 +907,10 @@ public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
+public final class io/kotest/core/annotation/enabledif/OsKt {
+	public static final fun osName ()Ljava/lang/String;
+}
+
 public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
@@ -3392,6 +3396,7 @@ public final class io/kotest/engine/InterceptorsKt {
 
 public final class io/kotest/engine/KotestEngineProperties {
 	public static final field INSTANCE Lio/kotest/engine/KotestEngineProperties;
+	public static final field TIMEOUT Ljava/lang/String;
 	public static final field allowMultilineTestName Ljava/lang/String;
 	public static final field assertionMode Ljava/lang/String;
 	public static final field configurationClassNames Ljava/lang/String;
@@ -3410,14 +3415,12 @@ public final class io/kotest/engine/KotestEngineProperties {
 	public static final field invocationTimeout Ljava/lang/String;
 	public static final field isolationMode Ljava/lang/String;
 	public static final field logLevel Ljava/lang/String;
-	public static final field parallelism Ljava/lang/String;
 	public static final field projectTimeout Ljava/lang/String;
 	public static final field propertiesFilename Ljava/lang/String;
 	public static final field tagExpression Ljava/lang/String;
 	public static final field tagInheritance Ljava/lang/String;
 	public static final field testNameAppendTags Ljava/lang/String;
 	public static final field testSeverity Ljava/lang/String;
-	public static final field timeout Ljava/lang/String;
 }
 
 public final class io/kotest/engine/ReflectionKt {
