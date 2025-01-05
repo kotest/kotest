@@ -30,7 +30,8 @@ kotlin {
          group("common") {
             group("jsHosted") {
                withJs()
-               withWasmJs() // FIXME with Kotlin 2.0.0: KT-63417 – to be split into `withWasmJs` and `withWasmWasi`
+               withWasmJs()
+               withWasmWasi()
             }
          }
       }
