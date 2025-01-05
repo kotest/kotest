@@ -4,7 +4,7 @@ import io.kotest.core.annotation.EnabledCondition
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
-fun osName() = System.getProperty("os.name").lowercase()
+private fun osName() = System.getProperty("os.name").lowercase()
 
 class MacCondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("mac")
