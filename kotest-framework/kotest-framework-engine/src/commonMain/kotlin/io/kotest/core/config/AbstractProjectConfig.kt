@@ -236,8 +236,6 @@ abstract class AbstractProjectConfig {
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
 
-   open var dispatcherAffinity: Boolean? = null
-
    open var displayFullTestPath: Boolean? = null
 
    open var allowOutOfOrderCallbacks: Boolean? = null
