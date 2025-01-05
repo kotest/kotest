@@ -23,10 +23,11 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 }
 
 /*
-*  Returns an [Exhaustive] which provides all the samples of elements from the given list.
+*  Returns an [Exhaustive] which provides all the subsets of elements from the given list, aka the power set.
 * For instance:
 * Exhaustive.Companion.samples(listOf("a", "b")).values shouldContainExactlyInAnyOrder
 * listOf(
+*   listOf(),
 *   listOf("a"),
 *   listOf("b"),
 *   listOf("a", "b"),
