@@ -143,7 +143,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
 
    /**
     * Converts this into an [Arb] where the generated values of the returned arb
-    * are choosen randomly from the values provided by this exhausive.
+    * are chosen randomly from the values provided by this exhaustive.
     */
    fun toArb(): Arb<A> = Arb.of(values)
 
