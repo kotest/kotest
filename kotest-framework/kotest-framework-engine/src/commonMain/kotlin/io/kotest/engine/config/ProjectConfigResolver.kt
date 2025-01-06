@@ -4,11 +4,13 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
 import io.kotest.core.config.asProjectExtension
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
+import kotlin.time.Duration
 
 /**
  * The [ProjectConfigResolver] is responsible for returning the runtime value to use for a given
@@ -42,6 +44,10 @@ class ProjectConfigResolver(
    fun logLevel(): LogLevel {
       return config?.logLevel
          ?: Defaults.LOG_LEVEL
+   }
+
+   fun randomOrderSeed(): Long? {
+      return config?.randomOrderSeed
    }
 
    /**
@@ -93,6 +99,9 @@ class ProjectConfigResolver(
       return config?.testNameAppendTags ?: Defaults.TEST_NAME_APPEND_TAGS
    }
 
+   /**
+    * Returns the spec execution order to use, unless overridden by registered [SpecExecutionOrderExtension]s.
+    */
    fun specExecutionOrder(): SpecExecutionOrder {
       return config?.specExecutionOrder ?: Defaults.SPEC_EXECUTION_ORDER
    }
@@ -125,5 +134,10 @@ class ProjectConfigResolver(
     */
    fun extensions(): List<Extension> {
       return (config?.extensions() ?: emptyList()) + listOfNotNull(config?.asProjectExtension())
+   }
+
+   fun projectTimeout(): Duration? {
+      return config?.projectTimeout
+         ?: systemPropertyConfiguration.projectTimeout()
    }
 }

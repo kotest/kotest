@@ -4,7 +4,8 @@ import io.kotest.engine.EngineResult
 import io.kotest.engine.extensions.ProjectExtensions
 
 /**
- * An [EngineInterceptor] that invokes any before and after project listeners.
+ * An [EngineInterceptor] that invokes any [io.kotest.core.listeners.BeforeProjectListener]
+ * and [io.kotest.core.listeners.AfterProjectListener] instances.
  */
 internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
