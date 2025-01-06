@@ -282,7 +282,7 @@ class ProjectConfiguration {
     */
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
-   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+   var displayFullTestPath: Boolean = sysprop(KotestEngineProperties.displayFullTestPath, Defaults.displayFullTestPath)
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 
