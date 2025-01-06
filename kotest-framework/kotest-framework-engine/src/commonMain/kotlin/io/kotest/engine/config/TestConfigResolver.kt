@@ -169,7 +169,7 @@ internal class TestConfigResolver(
          testCase.spec.tags() +
          testCase.spec.appliedTags() +
          (testCase.spec.defaultTestConfig?.tags ?: emptySet()) +
-         testCase.spec::class.tags(projectConfig.tagInheritance == true)
+         testCase.spec::class.tags(projectConfig?.tagInheritance == true)
    }
 
    fun enabled(testCase: TestCase): EnabledOrReasonIf {
@@ -178,7 +178,7 @@ internal class TestConfigResolver(
       val testEnabledOrReasonIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledOrReasonIf }
       val specEnabledIf = testCase.spec.defaultTestConfig?.enabledIf
       val specEnabledOrReasonIf = testCase.spec.defaultTestConfig?.enabledOrReasonIf
-      val projectEnabledOrReasonIf = projectConfig.enabledOrReasonIf
+      val projectEnabledOrReasonIf = projectConfig?.enabledOrReasonIf
       return { testCase ->
          when {
             // if xdisabled we always override any other enabled/disabled flags

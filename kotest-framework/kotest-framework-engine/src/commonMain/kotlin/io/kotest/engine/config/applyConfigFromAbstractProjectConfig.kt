@@ -34,7 +34,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // timeouts
    config.timeout?.let { configuration.timeout = it.inWholeMilliseconds }
-   config.invocationTimeout?.let { configuration.invocationTimeout = it }
    config.projectTimeout?.let { configuration.projectTimeout = it }
 
    // discovery
@@ -42,12 +41,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // retries
    config.retries?.let { configuration.retries = it }
-   config.retryFn?.let { configuration.retryFn = it }
    config.retryDelay?.let { configuration.retryDelay = it }
-   config.retryDelayFn?.let { configuration.retryDelayFn = it }
 
    // test names
-   config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
    config.testNameRemoveWhitespace?.let { configuration.removeTestNameWhitespace = it }
    config.testNameAppendTags?.let { configuration.testNameAppendTags = it }
    config.duplicateTestNameMode?.let { configuration.duplicateTestNameMode = it }

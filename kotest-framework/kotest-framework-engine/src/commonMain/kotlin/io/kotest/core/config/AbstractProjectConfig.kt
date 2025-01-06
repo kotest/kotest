@@ -181,31 +181,6 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Some specs have DSLs that include "prefix" words in the test name.
-    * For example, when using [io.kotest.core.spec.style.ExpectSpec] like this:
-    *
-    * ```
-    * expect("this test 1") {
-    *   feature("this test 2") {
-    *   }
-    * }
-    * ```
-    *
-    * Will result in:
-    * ```text
-    * Expect: this test 1
-    *   Feature: this test 2
-    * ```
-    * From 4.2, this feature can be disabled by setting this value to false.
-    * Then the output of the previous test would be:
-    * ```text
-    * this test 1
-    *   this test 2
-    * ```
-    */
-   open val includeTestScopePrefixes: Boolean? = null
-
-   /**
     * The casing of test names can be adjusted using different strategies. It affects test
     * prefixes (I.e.: Given, When, Then) and test titles.
     *
