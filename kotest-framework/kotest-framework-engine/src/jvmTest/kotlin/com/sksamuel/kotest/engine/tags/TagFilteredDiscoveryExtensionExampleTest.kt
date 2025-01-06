@@ -10,12 +10,13 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.booleans.shouldBeFalse
 
 @EnabledIf(LinuxCondition::class)
 class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
    companion object {
-      val ext = TagExtension { io.kotest.core.TagExpression(emptySet(), setOf(NamedTag("SpecExcluded"))) }
+      val ext = TagExtension { TagExpression(emptySet(), setOf(NamedTag("SpecExcluded"))) }
    }
 
    init {

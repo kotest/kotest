@@ -28,7 +28,6 @@ internal class SpecRefInterceptorPipeline(
 
    private val logger = Logger(SpecInterceptorPipeline::class)
    private val listener = context.listener
-   private val configuration = context.configuration
 
    /**
     * Executes all [SpecRefInterceptor]s in turn, returning a result, which will be
@@ -64,7 +63,6 @@ internal class SpecRefInterceptorPipeline(
          if (platform == Platform.JVM) RequiresTagInterceptor(
             listener,
             configuration,
-            configuration.registry
          ) else null,
          SpecRefExtensionInterceptor(configuration.registry),
          SpecStartedInterceptor(listener),

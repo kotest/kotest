@@ -2,7 +2,10 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.asProjectExtension
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestNameCase
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
@@ -79,6 +82,10 @@ class ProjectConfigResolver(
       return config?.projectWideFailFast ?: Defaults.PROJECT_WIDE_FAIL_FAST
    }
 
+   fun failOnEmptyTestSuite(): Boolean {
+      return config?.failOnEmptyTestSuite ?: Defaults.FAIL_ON_EMPTY_TEST_SUITE
+   }
+
    /**
     * Returns true if tags specified on a test should be included in the test name output.
     */
@@ -86,10 +93,37 @@ class ProjectConfigResolver(
       return config?.testNameAppendTags ?: Defaults.TEST_NAME_APPEND_TAGS
    }
 
+   fun specExecutionOrder(): SpecExecutionOrder {
+      return config?.specExecutionOrder ?: Defaults.SPEC_EXECUTION_ORDER
+   }
+
+   fun specFailureFilePath(): String {
+      return config?.specFailureFilePath ?: Defaults.SPEC_FAILURE_FILE_PATH
+   }
+
+   fun writeSpecFailureFile(): Boolean {
+      return config?.writeSpecFailureFile ?: Defaults.WRITE_SPEC_FAILURE_FILE
+   }
+
    /**
     * Returns true if the test name should be the full name including parent names.
     */
    fun displayFullTestPath(): Boolean {
       return config?.displayFullTestPath ?: Defaults.DISPLAY_FULL_TEST_PATH
+   }
+
+   fun allowOutOfOrderCallbacks(): Boolean {
+      return config?.allowOutOfOrderCallbacks ?: Defaults.ALLOW_OUT_OF_ORDER_CALLBACKS
+   }
+
+   /**
+    * Returns any extensions defined at the project level in [AbstractProjectConfig].
+    *
+    * That is extensions defined using the [AbstractProjectConfig.beforeProject] and
+    * [AbstractProjectConfig.afterProject] functions as well as any extensions defined
+    * by overriding the [AbstractProjectConfig.extensions] method.
+    */
+   fun extensions(): List<Extension> {
+      return (config?.extensions() ?: emptyList()) + listOfNotNull(config?.asProjectExtension())
    }
 }

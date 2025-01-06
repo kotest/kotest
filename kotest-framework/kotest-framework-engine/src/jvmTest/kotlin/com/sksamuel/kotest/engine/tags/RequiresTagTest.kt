@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.annotation.enabledif.LinuxCondition

@@ -22,8 +22,6 @@ object Defaults {
 
    const val INVOCATIONS: Int = 1
 
-   const val discoveryClasspathFallbackEnabled: Boolean = false
-   const val disableTestNestedJarScanning: Boolean = true
    const val IGNORE_PRIVATE_CLASSES: Boolean = false
 
    val LOG_LEVEL = LogLevel.Off
@@ -52,7 +50,7 @@ object Defaults {
 
    const val FAIL_ON_EMPTY_TEST_SUITE = false
 
-   const val specFailureFilePath: String = "./.kotest/spec_failures"
+   const val SPEC_FAILURE_FILE_PATH = "./.kotest/spec_failures"
 
    const val DEFAULT_TIMEOUT_MILLIS = 10 * 60 * 1000L
    const val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10 * 60 * 1000L
@@ -64,13 +62,14 @@ object Defaults {
    const val PROJECT_WIDE_FAIL_FAST: Boolean = false
    const val FAILFAST: Boolean = false
 
-   const val projectWideFailFast: Boolean = false
    val defaultIncludeTestScopeAffixes: Boolean? = null
-   const val writeSpecFailureFile = false
+
+   const val WRITE_SPEC_FAILURE_FILE = false
    const val GLOBAL_ASSERT_SOFTLY = false
 
    val TEST_NAME_CASE: TestNameCase = TestNameCase.AsIs
-   val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
-   const val allowOutOfOrderCallbacks = false
+   val SPEC_EXECUTION_ORDER = SpecExecutionOrder.Lexicographic
+
+   const val ALLOW_OUT_OF_ORDER_CALLBACKS = false
 }

@@ -13,7 +13,7 @@ internal object ProjectListenerEngineInterceptor : EngineInterceptor {
       execute: NextEngineInterceptor
    ): EngineResult {
 
-      val extensions = ProjectExtensions(context.configuration.registry)
+      val extensions = ProjectExtensions(context.projectConfigResolver.extensions())
       val beforeErrors = extensions.beforeProject()
 
       // if we have errors in the before project listeners, we'll not execute tests,

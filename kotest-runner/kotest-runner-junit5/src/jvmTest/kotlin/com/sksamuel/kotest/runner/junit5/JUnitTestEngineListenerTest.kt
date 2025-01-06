@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.Platform
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.enabledif.LinuxCondition

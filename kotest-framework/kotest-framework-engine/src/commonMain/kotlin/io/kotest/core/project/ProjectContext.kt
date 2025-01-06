@@ -1,6 +1,6 @@
 package io.kotest.core.project
 
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.TestScope
 import kotlin.coroutines.AbstractCoroutineContextElement

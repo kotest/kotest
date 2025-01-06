@@ -3,7 +3,6 @@ package io.kotest.engine.config
 import io.kotest.core.Tag
 import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.asProjectExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
@@ -16,19 +15,6 @@ import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-
-//internal class TestConfigResolverBuilder {
-//
-//   fun builder() {
-//
-//   }
-//
-//   fun build(): TestConfigResolver {
-//      return TestConfigResolver(
-//
-//      )
-//   }
-//}
 
 /**
  * A [TestConfigResolver] is responsible for returning the runtime value to use for a given
@@ -135,11 +121,13 @@ internal class TestConfigResolver(
          ?: Defaults.BLOCKING_TEST
    }
 
+   /**
+    * Returns any extensions applicable to this [TestCase].
+    */
    fun extensions(testCase: TestCase): List<Extension> {
       return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
          testCase.spec.extensions() +
-         (projectConfig?.extensions() ?: emptyList()) +
-         listOfNotNull(projectConfig?.asProjectExtension())
+         (projectConfig?.extensions() ?: emptyList())
    }
 
    fun timeout(testCase: TestCase): Duration {
@@ -177,7 +165,7 @@ internal class TestConfigResolver(
    }
 
    fun coroutineDispatcherFactory(testCase: TestCase): CoroutineDispatcherFactory? {
-         return testCase.spec.coroutineDispatcherFactory
+      return testCase.spec.coroutineDispatcherFactory
          ?: testCase.spec.coroutineDispatcherFactory()
          ?: projectConfig?.coroutineDispatcherFactory
    }

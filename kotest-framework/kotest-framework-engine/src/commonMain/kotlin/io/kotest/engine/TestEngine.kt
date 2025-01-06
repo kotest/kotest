@@ -3,9 +3,10 @@ package io.kotest.engine
 import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.Platform
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.NextEngineInterceptor
@@ -61,7 +62,17 @@ class TestEngine(private val config: TestEngineConfig) {
       val tags: TagExpression = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.projectConfig, config.platform, mutableMapOf()))
+      return execute(
+         EngineContext(
+            suite = suite,
+            listener = config.listener,
+            tags = tags,
+            projectConfig = config.projectConfig,
+            projectConfigResolver = ProjectConfigResolver(config.projectConfig),
+            platform = config.platform,
+            state = mutableMapOf()
+         )
+      )
    }
 }
 

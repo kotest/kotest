@@ -2,11 +2,12 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.Platform
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -32,12 +33,16 @@ fun interface NextEngineInterceptor {
    suspend operator fun invoke(context: EngineContext): EngineResult
 }
 
+/**
+ * Internal state used by the engine.
+ */
 @KotestInternal
 data class EngineContext(
   val suite: TestSuite,
   val listener: TestEngineListener,
   val tags: TagExpression,
   val projectConfig: AbstractProjectConfig?,
+  val projectConfigResolver: ProjectConfigResolver,
   val platform: Platform,
   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
@@ -47,6 +52,7 @@ data class EngineContext(
       NoopTestEngineListener,
       TagExpression.Empty,
       projectConfig,
+      ProjectConfigResolver(projectConfig),
       platform,
       mutableMapOf(),
    )
@@ -57,6 +63,7 @@ data class EngineContext(
          NoopTestEngineListener,
          TagExpression.Empty,
          null,
+         ProjectConfigResolver(null),
          Platform.JVM,
          mutableMapOf(),
       )
@@ -71,6 +78,7 @@ data class EngineContext(
          CompositeTestEngineListener(listOf(this.listener, listener)),
          tags,
          projectConfig,
+         projectConfigResolver,
          platform,
          state,
       )
@@ -82,6 +90,7 @@ data class EngineContext(
          listener,
          tags,
          projectConfig,
+         projectConfigResolver,
          platform,
          state,
       )
@@ -93,6 +102,7 @@ data class EngineContext(
          listener,
          tags,
          projectConfig,
+         projectConfigResolver,
          platform,
          state,
       )
@@ -104,6 +114,7 @@ data class EngineContext(
          listener,
          tags,
          projectConfig,
+         projectConfigResolver,
          platform,
          state,
       )
@@ -115,6 +126,7 @@ data class EngineContext(
          listener,
          tags,
          projectConfig,
+         projectConfigResolver,
          platform,
          state,
       )
@@ -131,6 +143,7 @@ internal fun ProjectContext.toEngineContext(
       context.listener,
       tags,
       projectConfig,
+      ProjectConfigResolver(projectConfig),
       platform,
       state,
    )

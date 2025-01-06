@@ -1,11 +1,11 @@
 package io.kotest.engine.spec
 
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.instantiateOrObject
 import io.kotest.engine.mapError
 import io.kotest.mpp.annotation
@@ -23,7 +23,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */
-class SpecInstantiator(private val registry: ExtensionRegistry) {
+internal class SpecInstantiator(private val registry: ExtensionRegistry) {
 
    suspend fun <T : Spec> createAndInitializeSpec(
       kclass: KClass<T>,

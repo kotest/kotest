@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.NamedTag
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Tags
 import io.kotest.core.annotation.enabledif.LinuxCondition

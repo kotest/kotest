@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.test.names
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate

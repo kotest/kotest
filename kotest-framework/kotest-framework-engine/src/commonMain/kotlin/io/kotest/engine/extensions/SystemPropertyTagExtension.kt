@@ -2,7 +2,7 @@ package io.kotest.engine.extensions
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.extensions.TagExtension
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.syspropOrEnv

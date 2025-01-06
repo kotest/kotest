@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.RuntimeTagExpressionExtension

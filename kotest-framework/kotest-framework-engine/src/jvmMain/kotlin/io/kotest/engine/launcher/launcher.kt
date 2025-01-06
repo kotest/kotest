@@ -4,7 +4,7 @@ package io.kotest.engine.launcher
 //import io.kotest.framework.discovery.DiscoveryRequest
 //import io.kotest.framework.discovery.DiscoveryResult
 //import io.kotest.framework.discovery.DiscoverySelector
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
