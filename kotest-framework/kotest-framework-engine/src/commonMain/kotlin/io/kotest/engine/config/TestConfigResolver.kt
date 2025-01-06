@@ -3,6 +3,7 @@ package io.kotest.engine.config
 import io.kotest.core.Tag
 import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.config.asProjectExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
@@ -134,8 +135,10 @@ internal class TestConfigResolver(
    }
 
    fun extensions(testCase: TestCase): List<Extension> {
-      return (testConfig?.extensions ?: emptyList()) +
-         (parent?.config?.extensions ?: emptyList())
+      return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
+         testCase.spec.extensions() +
+         (projectConfig?.extensions() ?: emptyList()) +
+         listOfNotNull(projectConfig?.asProjectExtension())
    }
 
    fun timeout(testCase: TestCase): Duration {

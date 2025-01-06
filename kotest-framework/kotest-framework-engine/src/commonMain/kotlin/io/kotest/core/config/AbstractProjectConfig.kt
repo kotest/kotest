@@ -1,6 +1,9 @@
 package io.kotest.core.config
 
 import io.kotest.core.extensions.Extension
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -282,4 +285,21 @@ abstract class AbstractProjectConfig {
     * [ProjectListener.afterProject] methods.
     */
    open suspend fun afterProject() {}
+}
+
+/**
+ * The [AbstractProjectConfig] allows us to define project lifecycle methods, which we
+ * wrap into a [BeforeProjectListener] and [AfterProjectListener] here.
+ */
+fun AbstractProjectConfig.asProjectExtension(): ProjectListener {
+   return object : ProjectListener {
+
+      override suspend fun beforeProject() {
+         beforeProject()
+      }
+
+      override suspend fun afterProject() {
+         afterProject()
+      }
+   }
 }
