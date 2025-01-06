@@ -7,7 +7,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCase
+import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
@@ -248,29 +248,53 @@ abstract class AbstractProjectConfig {
    open var ignorePrivateClasses: Boolean? = null
 
    /**
+    * Some specs have DSLs that include prefix or suffix words in the test name.
+    *
+    * If this method returns true, then test names include those prefix and suffix names
+    * in reports and the IDE.
+    *
+    * For example, when using ExpectSpec like this:
+    *
+    * ```
+    * expect("this test 1") {
+    *   feature("this test 2") {
+    *   }
+    * }
+    * ```
+    *
+    * If prefixes are enabled, the output would be:
+    *
+    * ```text
+    * Expect: this test 1
+    *   Feature: this test 2
+    * ```
+    *
+    * And if disabled, the output would be:
+    *
+    * ```text
+    * this test 1
+    *    test this 2
+    * ```
+    *
+    * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
+    */
+   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+
+   /**
     * If set, then this is the maximum number of times we will retry a test if it fails.
     */
    open var retries: Int? = Defaults.defaultRetries
-
-   /**
-    * Similar to [retries] but allows a function to determine if we should retry based on the test case and
-    * attempted retries so far.
-    */
-   open var retryFn: ((TestCase) -> Int)? = Defaults.defaultRetriesFn
 
    /**
     * If set, then this is the delay between retries.
     */
    open var retryDelay: Duration? = null
 
-   /**
-    * Similar to [retryDelay] but allows a function to determine the delay based on the number of retries.
-    */
-   open var retryDelayFn: ((TestCase, Int) -> Duration)? = null
-
    open val minimumRuntimeTestCaseSeverityLevel: TestCaseSeverityLevel? = null
 
    open val severity: TestCaseSeverityLevel? = null
+
+   open val enabledOrReasonIf: EnabledOrReasonIf? = null
 
    /**
     * Executed before the first test of the project, but after the

@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
-import io.kotest.core.source.SourceRef
 import io.kotest.core.names.TestName
+import io.kotest.core.source.SourceRef
 import io.kotest.core.test.config.TestConfig
 
 /**
@@ -10,7 +10,6 @@ import io.kotest.core.test.config.TestConfig
  */
 data class NestedTest(
    val name: TestName,
-   val disabled: Boolean,
    val config: TestConfig?, // can be null if the test does not specify config
    val type: TestType,
    val source: SourceRef,

@@ -3,12 +3,10 @@ package io.kotest.core.config
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.KotestEngineProperties
@@ -66,9 +64,9 @@ class ProjectConfiguration {
    /**
     * If true, then all test cases are implicitly wrapped in an [io.kotest.assertions.assertSoftly] call.
     *
-    * Defaults to [Defaults.globalAssertSoftly].
+    * Defaults to [Defaults.GLOBAL_ASSERT_SOFTLY].
     */
-   var globalAssertSoftly: Boolean = Defaults.globalAssertSoftly
+   var globalAssertSoftly: Boolean = Defaults.GLOBAL_ASSERT_SOFTLY
 
    /**
     * The casing of test names can be adjusted using different strategies. It affects test
@@ -76,17 +74,17 @@ class ProjectConfiguration {
     *
     * This setting's options are defined in [TestNameCase].
     *
-    * Defaults to [Defaults.defaultTestNameCase]
+    * Defaults to [Defaults.TEST_NAME_CASE]
     */
-   var testNameCase: TestNameCase = Defaults.defaultTestNameCase
+   var testNameCase: TestNameCase = Defaults.TEST_NAME_CASE
 
    /**
     * If true, then the test execution will fail if any test is set to ignore.
     * If false, then ignored tests are outputted as normal.
     *
-    * Defaults to [Defaults.failOnIgnoredTests].
+    * Defaults to [Defaults.FAIL_ON_IGNORED_TESTS].
     */
-   var failOnIgnoredTests: Boolean = Defaults.failOnIgnoredTests
+   var failOnIgnoredTests: Boolean = Defaults.FAIL_ON_IGNORED_TESTS
 
    /**
     * Returns the default assertion mode.
@@ -116,7 +114,7 @@ class ProjectConfiguration {
    /**
     * Default number of invocations when not specified in any other place.
     */
-   var invocations: Int = Defaults.invocations
+   var invocations: Int = Defaults.INVOCATIONS
 
    /**
     * Each test is launched into its own coroutine. By default, the test engine waits for that
@@ -184,7 +182,7 @@ class ProjectConfiguration {
     */
    var severity: TestCaseSeverityLevel = Defaults.TEST_CASE_SEVERITY_LEVEL
 
-   var coroutineTestScope: Boolean = Defaults.coroutineTestScope
+   var coroutineTestScope: Boolean = Defaults.COROUTINE_TEST_SCOPE
 
    /**
     * If set to true, then will cause the test suite to fail if there were no executed tests.
@@ -199,47 +197,14 @@ class ProjectConfiguration {
    var coroutineDebugProbes: Boolean = Defaults.COROUTINE_DEBUG_PROBES
 
    /**
-    * Some specs have DSLs that include prefix or suffix words in the test name.
-    *
-    * If this method returns true, then test names include those prefix and suffix names
-    * in reports and the IDE.
-    *
-    * For example, when using ExpectSpec like this:
-    *
-    * ```
-    * expect("this test 1") {
-    *   feature("this test 2") {
-    *   }
-    * }
-    * ```
-    *
-    * If prefixes are enabled, the output would be:
-    *
-    * ```text
-    * Expect: this test 1
-    *   Feature: this test 2
-    * ```
-    *
-    * And if disabled, the output would be:
-    *
-    * ```text
-    * this test 1
-    *    test this 2
-    * ```
-    *
-    * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
-    */
-   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
-
-   /**
     * Set to false and if a spec has no active tests (all disabled due to config or tags say)
     * then the spec itself will not appear as a node in output.
     *
-    * Defaults to [Defaults.displaySpecIfNoActiveTests]
+    * Defaults to [Defaults.DISPLAY_SPEC_IF_NO_ACTIVE_TESTS]
     *
     * Note: This only works for JUnit and IntelliJ runners.
     */
-   var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
+   var displaySpecIfNoActiveTests: Boolean = Defaults.DISPLAY_SPEC_IF_NO_ACTIVE_TESTS
 
    /**
     * Controls the default [IsolationMode] that each spec will execute in.
@@ -316,10 +281,6 @@ class ProjectConfiguration {
 
    var retries: Int? = Defaults.defaultRetries
 
-   var retryFn: ((TestCase) -> Int)? = Defaults.defaultRetriesFn
-
    var retryDelay: Duration? = Defaults.defaultRetryDelay
-
-   var retryDelayFn: ((TestCase, Int) -> Duration)? = Defaults.defaultRetryDelayFn
 }
 

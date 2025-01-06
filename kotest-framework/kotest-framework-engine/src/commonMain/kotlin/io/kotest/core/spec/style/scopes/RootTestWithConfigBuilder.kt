@@ -35,7 +35,7 @@ class RootTestWithConfigBuilder(
    ) {
       val config = TestConfig(
          enabled = enabled,
-         tags = tags,
+         tags = tags ?: emptySet(),
          extensions = extensions,
          timeout = timeout,
          invocationTimeout = invocationTimeout,

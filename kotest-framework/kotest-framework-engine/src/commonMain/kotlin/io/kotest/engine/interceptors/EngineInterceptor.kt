@@ -3,6 +3,7 @@ package io.kotest.engine.interceptors
 import io.kotest.common.KotestInternal
 import io.kotest.core.Platform
 import io.kotest.core.TagExpression
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
@@ -40,6 +41,7 @@ data class EngineContext(
   val listener: TestEngineListener,
   val tags: TagExpression,
   val configuration: ProjectConfiguration,
+  val projectConfig: AbstractProjectConfig,
   val projectConfigResolver: ProjectConfigResolver,
   val specConfigResolver: SpecConfigResolver,
   val platform: Platform,

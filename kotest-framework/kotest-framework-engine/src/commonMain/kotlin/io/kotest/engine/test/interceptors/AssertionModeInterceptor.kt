@@ -7,13 +7,14 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.TestConfigResolver
 import kotlin.time.Duration
 
 /**
  * Wraps the test function checking for assertion mode,
  * only if the test is a [TestType.Test].
  */
-internal object AssertionModeInterceptor : TestExecutionInterceptor {
+internal class AssertionModeInterceptor(private val testConfigResolver: TestConfigResolver) : TestExecutionInterceptor {
 
    override suspend fun intercept(
       testCase: TestCase,
@@ -22,7 +23,9 @@ internal object AssertionModeInterceptor : TestExecutionInterceptor {
    ): TestResult {
 
       if (testCase.type != TestType.Test) return test(testCase, scope)
-      if (testCase.config.assertionMode == AssertionMode.None) return test(testCase, scope)
+
+      val assertionMode = testConfigResolver.assertionMode(testCase)
+      if (assertionMode == AssertionMode.None) return test(testCase, scope)
 
       val warningMessage = "Test '${testCase.name.name}' did not invoke any assertions"
       assertionCounter.reset()
@@ -31,14 +34,18 @@ internal object AssertionModeInterceptor : TestExecutionInterceptor {
       return when {
          // if we had an error anyway, we don't bother with this check
          result.isErrorOrFailure -> result
+
          // if we had assertions we're good
          assertionCounter.getAndReset() > 0 -> result
-         testCase.config.assertionMode == AssertionMode.Error ->
+
+         assertionMode == AssertionMode.Error ->
             TestResult.Failure(Duration.Companion.ZERO, ZeroAssertionsError(warningMessage))
-         testCase.config.assertionMode == AssertionMode.Warn -> {
+
+         assertionMode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")
             result
          }
+
          else -> result
       }
    }

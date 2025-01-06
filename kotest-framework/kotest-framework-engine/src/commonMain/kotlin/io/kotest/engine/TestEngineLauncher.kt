@@ -10,7 +10,7 @@ import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.loadProjectConfigsFromClassname
+import io.kotest.engine.config.loadProjectConfigFromClassname
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -203,7 +203,7 @@ class TestEngineLauncher(
 
       val configuration = if (configurationIsInitialized) projectConfiguration else {
          ConfigManager.initialize(projectConfiguration) {
-            configs + loadProjectConfigsFromClassname()
+            configs + loadProjectConfigFromClassname()
          }
       }
 

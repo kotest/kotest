@@ -2,6 +2,7 @@ package io.kotest.core.config
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.time.Duration
@@ -32,6 +33,15 @@ abstract class AbstractPackageConfig {
    open val isolationMode: IsolationMode? = null
 
    /**
+    * Sets the [AssertionMode] to be used by test cases in this spec. This value is overridden
+    * by a value specified on a [TestCase] itself or in a spec.
+    *
+    * If this value returns null, and the test case does not define a value, then the project
+    * default is used.
+    */
+   open val assertionMode: AssertionMode? = null
+
+   /**
     * Sets the order of root [TestCase]s in this spec.
     * If this function returns a null value, then the project default will be used.
     */
@@ -57,12 +67,18 @@ abstract class AbstractPackageConfig {
 
    open val failfast: Boolean? = null
 
+   // if set to > 0, then the test will be retried this many times in the event of a failure
+   // if left to null, then the default provided by a spec or the project config will be used
+   open val retries: Int? = null
+
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     *
     * This value overrides the global configuration value.
     */
    open val coroutineDebugProbes: Boolean? = null
+
+   open val coroutineTestScope: Boolean? = null
 
    /**
     * Controls what to do when a duplicated test name is discovered.
@@ -71,4 +87,9 @@ abstract class AbstractPackageConfig {
     * If not specified, then defaults to the global setting.
     */
    open val duplicateTestNameMode: DuplicateTestNameMode? = null
+
+   /**
+    * Whether soft assertion mode should be applied for all tests in the specs of this package.
+    */
+   open val assertSoftly: Boolean? = null
 }

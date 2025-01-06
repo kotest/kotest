@@ -98,6 +98,8 @@ object KotestEngineProperties {
     * */
    const val globalAssertSoftly = "kotest.framework.assertion.globalassertsoftly"
 
+   const val coroutineDebugProbes = "kotest.framework.coroutine.debug.probes"
+
    /**
     * Appends all tags associated with a test case to its display name.
     * */

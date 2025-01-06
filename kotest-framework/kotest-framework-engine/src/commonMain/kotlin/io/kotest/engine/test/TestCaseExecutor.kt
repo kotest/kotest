@@ -6,6 +6,7 @@ import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -15,11 +16,13 @@ import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestIntercep
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
+import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
+import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
@@ -28,7 +31,6 @@ import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.testInterceptorsForPlatform
-import kotlin.time.Duration
 import kotlin.time.TimeSource
 
 /**
@@ -48,14 +50,15 @@ internal class TestCaseExecutor(
       logger.log { Pair(testCase.name.name, "Executing test with scope $testScope") }
 
       val timeMark = TimeSource.Monotonic.markNow()
+      val testConfigResolver = TestConfigResolver(context.projectConfig)
 
       // JS platforms require extra care when runTest is used, so skip it for now.
       // Issue: https://github.com/kotest/kotest/issues/4077
       val useCoroutineTestScope = when (platform) {
-         Platform.JVM, Platform.Native -> TODO() // testCase.config?.coroutineTestScope
-         Platform.JS, Platform.WasmJs -> TODO() // if (testCase.config.coroutineTestScope) {
-//            error("Configuration 'coroutineTestScope' is unsupported on $platform")
-//         } else false
+         Platform.JVM, Platform.Native -> testConfigResolver.coroutineTestScope(testCase)
+         Platform.JS, Platform.WasmJs -> if (testConfigResolver.coroutineTestScope(testCase)) {
+            error("Configuration 'coroutineTestScope' is unsupported on $platform")
+         } else false
       }
 
       val interceptors = listOfNotNull(
@@ -71,11 +74,11 @@ internal class TestCaseExecutor(
          BeforeSpecListenerInterceptor(context.configuration.registry, specContext),
          TestCaseExtensionInterceptor(context.configuration.registry),
          LifecycleInterceptor(listener, timeMark, context.configuration.registry),
-         AssertionModeInterceptor,
-         SoftAssertInterceptor(),
+         AssertionModeInterceptor(testConfigResolver),
+         SoftAssertInterceptor(testConfigResolver),
          CoroutineLoggingInterceptor(context.configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(context.configuration, timeMark) else null,
-         TimeoutInterceptor(timeMark),
+         TimeoutInterceptor(timeMark, testConfigResolver),
          ExpectExceptionTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
@@ -83,21 +86,18 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
-              TODO()// if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
-               //if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
-            )
+               if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
+               if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
+            ),
+            testConfigResolver
          ),
-         CoroutineDebugProbeInterceptor,
+         CoroutineDebugProbeInterceptor(testConfigResolver),
       )
 
       val innerExecute = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
          tc.test(scope)
-         try {
-            TestResult.Success(timeMark.elapsedNow())
-         } catch (e: Throwable) {
-            TestResult.Success(Duration.ZERO) // workaround for kotlin 1.5
-         }
+         TestResult.Success(timeMark.elapsedNow())
       }
 
       return interceptors.foldRight(innerExecute) { ext, fn ->

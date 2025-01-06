@@ -5,7 +5,6 @@ import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.core.test.isFocused
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 
@@ -20,24 +19,24 @@ class FocusBangTest : FreeSpec() {
                test = {},
                type = TestType.Test,
             )
-            test.isFocused() shouldBe true
+            test.name.focus shouldBe true
          }
          "should not be focused when nested" {
             val test = TestCase(
-               name =  TestNameBuilder.builder("f: b").build(),
+               name = TestNameBuilder.builder("f: b").build(),
                descriptor = FocusBangTest::class.toDescriptor().append("f: b"),
                spec = this@FocusBangTest,
                test = {},
                type = TestType.Test,
                parent = TestCase(
-                  name =  TestNameBuilder.builder("a").build(),
+                  name = TestNameBuilder.builder("a").build(),
                   descriptor = FocusBangTest::class.toDescriptor().append("f: a"),
                   spec = this@FocusBangTest,
                   test = {},
                   type = TestType.Test,
                )
             )
-            test.isFocused() shouldBe false
+            test.name.focus shouldBe false
          }
       }
 
@@ -50,7 +49,7 @@ class FocusBangTest : FreeSpec() {
                test = {},
                type = TestType.Test,
             )
-            test.isFocused() shouldBe false
+            test.name.focus shouldBe false
          }
       }
    }

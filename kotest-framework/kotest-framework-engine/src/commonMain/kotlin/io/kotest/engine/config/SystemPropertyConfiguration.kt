@@ -11,7 +11,7 @@ import kotlin.time.Duration
  *
  * Note: This function will return a no-op on non-JVM targets.
  */
-internal expect fun getSystemPropertyConfiguration(): SystemPropertyConfiguration
+internal expect fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration
 
 interface SystemPropertyConfiguration {
    fun isolationMode(): IsolationMode?
@@ -27,6 +27,7 @@ interface SystemPropertyConfiguration {
    fun duplicateTestNameMode(): DuplicateTestNameMode?
    fun projectTimeout(): Duration?
    fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel?
+   fun coroutineDebugProbes(): Boolean?
 }
 
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
@@ -43,4 +44,5 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun duplicateTestNameMode(): DuplicateTestNameMode? = null
    override fun projectTimeout(): Duration? = null
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? = null
+   override fun coroutineDebugProbes(): Boolean? = null
 }

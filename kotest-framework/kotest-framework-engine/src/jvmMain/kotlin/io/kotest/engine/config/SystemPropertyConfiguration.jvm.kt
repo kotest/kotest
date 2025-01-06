@@ -9,7 +9,7 @@ import io.kotest.mpp.syspropOrEnv
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-internal actual fun getSystemPropertyConfiguration(): SystemPropertyConfiguration =
+internal actual fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration =
    JvmSystemPropertyConfiguration
 
 /**
@@ -59,4 +59,7 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
       return sysprop(KotestEngineProperties.testSeverity)
          ?.let { TestCaseSeverityLevel.valueOf(it) }
    }
+
+   override fun coroutineDebugProbes(): Boolean? =
+      syspropOrEnv(KotestEngineProperties.coroutineDebugProbes)?.let { it.uppercase() == "TRUE" }
 }

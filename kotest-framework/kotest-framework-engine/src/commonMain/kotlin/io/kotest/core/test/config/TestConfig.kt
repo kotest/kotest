@@ -45,7 +45,7 @@ data class TestConfig(
     * [Tag]s that are applied to this test case, in addition to any tags declared on
     * the containing spec or parent tests.
     */
-   val tags: Set<Tag>? = null,
+   val tags: Set<Tag> = emptySet(),
 
    val extensions: List<TestCaseExtension>? = null,
 

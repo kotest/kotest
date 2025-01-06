@@ -2,11 +2,12 @@ package io.kotest.engine.test.names
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.names.DisplayNameFormatter
 import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
@@ -21,33 +22,35 @@ import kotlin.reflect.KClass
  * It takes into account [TestNameCase] settings.
  */
 class DefaultDisplayNameFormatter(
-   private val resolver: ProjectConfigResolver,
+   projectConfig: AbstractProjectConfig?,
 ) : DisplayNameFormatter {
 
-   @Suppress("unused")
-   constructor() : this(ProjectConfigResolver(ProjectConfiguration()))
+   constructor() : this(null)
+
+   private val projectConfigResolver = ProjectConfigResolver(projectConfig)
+   private val testConfigResolver = TestConfigResolver(projectConfig)
 
    override fun format(testCase: TestCase): String {
 
-      val prefix = when (resolver.includeTestScopeAffixes(testCase)) {
+      val prefix = when (projectConfigResolver.includeTestScopeAffixes(testCase)) {
          true -> testCase.name.prefix ?: ""
          false -> ""
       }
 
-      val suffix = when (resolver.includeTestScopeAffixes(testCase)) {
+      val suffix = when (projectConfigResolver.includeTestScopeAffixes(testCase)) {
          true -> testCase.name.suffix ?: ""
          false -> ""
       }
 
       val displayName = if (prefix.isBlank()) {
-         when (resolver.testNameCase()) {
+         when (projectConfigResolver.testNameCase()) {
             TestNameCase.Sentence -> testCase.name.name.capital() + suffix
             TestNameCase.InitialLowercase -> testCase.name.name.uncapitalize() + suffix
             TestNameCase.Lowercase -> testCase.name.name.lowercase() + suffix
             else -> testCase.name.name + suffix
          }
       } else {
-         when (resolver.testNameCase()) {
+         when (projectConfigResolver.testNameCase()) {
             TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.name.uncapitalize()}$suffix"
             TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.name.uncapitalize()}$suffix"
             TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.name.lowercase()}$suffix"
@@ -55,7 +58,7 @@ class DefaultDisplayNameFormatter(
          }
       }
 
-      val name = if (resolver.testNameAppendTags()) {
+      val name = if (projectConfigResolver.testNameAppendTags()) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
@@ -63,7 +66,7 @@ class DefaultDisplayNameFormatter(
 
       return when (val parent = testCase.parent) {
          null -> name
-         else -> if (resolver.displayFullTestPath()) format(parent) + " " + name else name
+         else -> if (projectConfigResolver.displayFullTestPath()) format(parent) + " " + name else name
       }
    }
 
@@ -85,7 +88,7 @@ class DefaultDisplayNameFormatter(
    }
 
    private fun appendTagsInDisplayName(testCase: TestCase, displayName: String): String {
-      val tagNames = TODO() // get tags from config testCase.config.tags.joinToString(", ")
+      val tagNames = testConfigResolver.tags(testCase).joinToString(", ")
       return if (tagNames.isBlank()) {
          displayName
       } else {

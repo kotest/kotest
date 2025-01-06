@@ -1,6 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tag
+import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
@@ -13,6 +14,19 @@ import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+
+//internal class TestConfigResolverBuilder {
+//
+//   fun builder() {
+//
+//   }
+//
+//   fun build(): TestConfigResolver {
+//      return TestConfigResolver(
+//
+//      )
+//   }
+//}
 
 /**
  * A [TestConfigResolver] is responsible for returning the runtime value to use for a given
@@ -31,19 +45,21 @@ import kotlin.time.Duration.Companion.milliseconds
  * - kotest defaults
  */
 internal class TestConfigResolver(
-   private val projectConfig: AbstractProjectConfig,
-   private val systemPropertyConfiguration: SystemPropertyConfiguration,
+   private val projectConfig: AbstractProjectConfig?,
 ) {
 
-   private val disabledByEnabledIf = Enabled.Companion.disabled("Disabled by enabledIf flag in config")
-   private val disabledByEnabled = Enabled.Companion.disabled("Disabled by enabled flag in config")
-   private val disabledByXMethod = Enabled.Companion.disabled("Disabled by xmethod")
+   private val disabledByEnabledIf = Enabled.disabled("Disabled by enabledIf flag in config")
+   private val disabledByTestConfig = Enabled.disabled("Disabled by enabled flag in config")
+   private val disabledByXMethod = Enabled.disabled("Disabled by xmethod")
+
+   private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 
    fun retries(testCase: TestCase): Int? {
       return testConfigs(testCase).firstNotNullOfOrNull { it.retries }
          ?: testCase.spec.retries
          ?: testCase.spec.defaultTestConfig?.retries
-         ?: projectConfig.retries
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.retries }
+         ?: projectConfig?.retries
          ?: Defaults.defaultRetries
    }
 
@@ -51,65 +67,73 @@ internal class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.retryDelay }
          ?: testCase.spec.retryDelay
          ?: testCase.spec.defaultTestConfig?.retryDelay
-         ?: projectConfig.retryDelay
+         ?: projectConfig?.retryDelay
    }
 
-   private fun failfast(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.failfast
-         ?: parent?.config?.failfast
-         ?: spec.failfast
-         ?: spec.defaultTestConfig?.failfast
-         ?: projectConfig.projectWideFailFast
+   fun failfast(testCase: TestCase): Boolean {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.failfast }
+         ?: testCase.spec.failfast
+         ?: testCase.spec.defaultTestConfig?.failfast
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.failfast }
+         ?: projectConfig?.projectWideFailFast
          ?: Defaults.FAILFAST
    }
 
-   fun assertSoftly(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.assertSoftly ?: parent?.config?.assertSoftly ?: spec.assertSoftly
-      ?: projectConfig.globalAssertSoftly
+   fun assertSoftly(testCase: TestCase): Boolean {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.assertSoftly }
+         ?: testCase.spec.assertSoftly
+         ?: testCase.spec.defaultTestConfig?.assertSoftly
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertSoftly }
+         ?: projectConfig?.globalAssertSoftly
+         ?: systemPropertyConfiguration.globalAssertSoftly()
+         ?: Defaults.GLOBAL_ASSERT_SOFTLY
    }
 
    fun severity(testCase: TestCase): TestCaseSeverityLevel {
       return testConfigs(testCase).firstNotNullOfOrNull { it.severity }
          ?: testCase.spec.severity
          ?: testCase.spec.defaultTestConfig?.severity
-         ?: projectConfig.severity
+         ?: projectConfig?.severity
          ?: Defaults.TEST_CASE_SEVERITY_LEVEL
    }
 
-   private fun assertionMode(testConfig: TestConfig?, parent: TestCase?, spec: Spec): AssertionMode {
-      return testConfig?.assertionMode
-         ?: parent?.config?.assertionMode
-         ?: spec.assertions
-         ?: spec.assertionMode()
-         ?: projectConfig.assertionMode
+   fun assertionMode(testCase: TestCase): AssertionMode {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.assertionMode }
+         ?: testCase.spec.assertionMode()
+         ?: testCase.spec.defaultTestConfig?.assertionMode
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertionMode }
+         ?: projectConfig?.assertionMode
+         ?: systemPropertyConfiguration.assertionMode()
+         ?: Defaults.ASSERTION_MODE
    }
 
-   private fun coroutineDebugProbes(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.coroutineDebugProbes
-         ?: parent?.config?.coroutineDebugProbes
-         ?: spec.coroutineDebugProbes
-         ?: spec.defaultTestConfig?.coroutineDebugProbes
-         ?: projectConfig.coroutineDebugProbes
+   fun coroutineDebugProbes(testCase: TestCase): Boolean {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.coroutineDebugProbes }
+         ?: testCase.spec.coroutineDebugProbes
+         ?: testCase.spec.defaultTestConfig?.coroutineDebugProbes
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineDebugProbes }
+         ?: projectConfig?.coroutineDebugProbes
+         ?: systemPropertyConfiguration.coroutineDebugProbes()
          ?: Defaults.COROUTINE_DEBUG_PROBES
    }
 
-   fun coroutineTestScope(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.coroutineTestScope
-         ?: parent?.config?.coroutineTestScope
-         ?: spec.coroutineTestScope
-         ?: spec.defaultTestConfig?.coroutineTestScope
-         ?: projectConfig.coroutineTestScope
+   fun coroutineTestScope(testCase: TestCase): Boolean {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.coroutineTestScope }
+         ?: testCase.spec.coroutineTestScope
+         ?: testCase.spec.defaultTestConfig?.coroutineTestScope
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineTestScope }
+         ?: projectConfig?.coroutineTestScope
+         ?: Defaults.COROUTINE_TEST_SCOPE
    }
 
-   fun blockingTest(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Boolean {
-      return testConfig?.blockingTest
-         ?: parent?.config?.blockingTest
-         ?: spec.blockingTest
-         ?: spec.defaultTestConfig?.blockingTest
-         ?: projectConfig.blockingTest
+   fun blockingTest(testCase: TestCase): Boolean {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.blockingTest }
+         ?: testCase.spec.blockingTest
+         ?: testCase.spec.defaultTestConfig?.blockingTest
+         ?: Defaults.BLOCKING_TEST
    }
 
-   fun extensions(testConfig: TestConfig?, parent: TestCase?): List<Extension> {
+   fun extensions(testCase: TestCase): List<Extension> {
       return (testConfig?.extensions ?: emptyList()) +
          (parent?.config?.extensions ?: emptyList())
    }
@@ -119,7 +143,8 @@ internal class TestConfigResolver(
          ?: testCase.spec.timeout?.milliseconds
          ?: testCase.spec.timeout()?.milliseconds
          ?: testCase.spec.defaultTestConfig?.timeout
-         ?: projectConfig.timeout
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
+         ?: projectConfig?.timeout
          ?: Defaults.DEFAULT_TIMEOUT_MILLIS.milliseconds
    }
 
@@ -128,42 +153,41 @@ internal class TestConfigResolver(
          ?: testCase.spec.invocationTimeout?.milliseconds
          ?: testCase.spec.invocationTimeout()?.milliseconds
          ?: testCase.spec.defaultTestConfig?.invocationTimeout
-         ?: projectConfig.invocationTimeout
+         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
+         ?: projectConfig?.invocationTimeout
          ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS.milliseconds
    }
 
    fun invocations(testCase: TestCase): Int {
       return testConfigs(testCase).firstNotNullOfOrNull { it.invocations }
          ?: testCase.spec.defaultTestConfig?.invocations
-         ?: projectConfig.invocations
+         ?: Defaults.INVOCATIONS
    }
 
-   fun tags(testConfig: TestConfig?, parent: TestCase?, spec: Spec): Set<Tag> {
-      return (testConfig?.tags ?: emptySet()) +
-         (parent?.config?.tags ?: emptySet()) +
-         spec.tags() +
-         spec.appliedTags() +
-         (spec.defaultTestConfig?.tags ?: emptySet()) +
-         spec::class.tags(projectConfig.tagInheritance)
+   fun tags(testCase: TestCase): Set<Tag> {
+      return testConfigs(testCase).flatMap { it.tags }.toSet() +
+         testCase.spec.tags() +
+         testCase.spec.appliedTags() +
+         (testCase.spec.defaultTestConfig?.tags ?: emptySet()) +
+         testCase.spec::class.tags(projectConfig.tagInheritance == true)
    }
 
-   private fun enabledIf(xdisabled: Boolean, testConfig: TestConfig?, spec: Spec): EnabledOrReasonIf {
-      val testEnabledIf = testConfig?.enabledIf
-      val testEnabledOrReasonIf = testConfig?.enabledOrReasonIf
-      val specEnabledIf = spec.defaultTestConfig?.enabledIf
-      val specEnabledOrReasonIf = spec.defaultTestConfig?.enabledOrReasonIf
-      val projectEnabledIf = projectConfig.enabledIf
+   private fun enabled(testCase: TestCase): EnabledOrReasonIf {
+      val disabledByTestConfig = testConfigs(testCase).any { it.enabled == false }
+      val testEnabledIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledIf }
+      val testEnabledOrReasonIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledOrReasonIf }
+      val specEnabledIf = testCase.spec.defaultTestConfig?.enabledIf
+      val specEnabledOrReasonIf = testCase.spec.defaultTestConfig?.enabledOrReasonIf
       val projectEnabledOrReasonIf = projectConfig.enabledOrReasonIf
       return { testCase ->
          when {
             // if xdisabled we always override any other enabled/disabled flags
             xdisabled -> disabledByXMethod
-            testConfig?.enabled == false -> disabledByEnabled
+            disabledByTestConfig == false -> this@TestConfigResolver.disabledByTestConfig
             testEnabledIf != null -> if (testEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
             testEnabledOrReasonIf != null -> testEnabledOrReasonIf.invoke(testCase)
             specEnabledIf != null -> if (specEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
             specEnabledOrReasonIf != null -> specEnabledOrReasonIf.invoke(testCase)
-            projectEnabledIf != null -> if (projectEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
             projectEnabledOrReasonIf != null -> projectEnabledOrReasonIf.invoke(testCase)
             else -> Enabled.Companion.enabled
          }
@@ -171,12 +195,16 @@ internal class TestConfigResolver(
    }
 
    /**
-    * Returns the [TestConfig]s for each test in the hierarchy, with most specific first,
-    * including this test itself.
+    * Returns the [TestConfig]s for each [TestCase] in the hierarchy, with the most specific first,
+    * including this test itself, with the root test last.
     */
    private fun testConfigs(testCase: TestCase): List<TestConfig> {
       val parent = testCase.parent
       val config = listOfNotNull(testCase.config)
       return if (parent == null) config else config + testConfigs(parent)
+   }
+
+   private fun packageConfigs(spec: Spec): List<AbstractPackageConfig> {
+      return PackageConfigLoader.configs(spec)
    }
 }

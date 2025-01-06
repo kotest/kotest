@@ -4,8 +4,6 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.timeout
-import kotlin.time.Duration
 
 /**
  * The [ProjectConfigResolver] is responsible for returning the runtime value to use for a given
@@ -23,19 +21,16 @@ import kotlin.time.Duration
  * - kotest defaults
  */
 class ProjectConfigResolver(
-   private val configs: List<AbstractProjectConfig>,
-   private val systemPropertyConfiguration: SystemPropertyConfiguration,
+   private val config: AbstractProjectConfig?,
 ) {
 
-   fun timeout(testCase: TestCase): Duration {
-      return testCase.timeout
-   }
+   private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 
    /**
     * Returns the minimum severity level for tests to be executed.
     */
    fun minimumRuntimeTestSeverityLevel(): TestCaseSeverityLevel? {
-      return configs.firstNotNullOfOrNull { it.minimumRuntimeTestCaseSeverityLevel }
+      return config?.minimumRuntimeTestCaseSeverityLevel
          ?: systemPropertyConfiguration.minimumRuntimeTestCaseSeverityLevel()
    }
 
@@ -45,7 +40,7 @@ class ProjectConfigResolver(
     * setting specifies if those should be included in the displayed test name.
     */
    fun includeTestScopeAffixes(testCase: TestCase): Boolean {
-      return configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes
+      return config?.includeTestScopeAffixes ?: testCase.name.defaultAffixes
    }
 
    /**
@@ -53,20 +48,20 @@ class ProjectConfigResolver(
     * This setting is only settable at the global level.
     */
    fun testNameCase(): TestNameCase {
-      return configuration.testNameCase
+      return config?.testNameCase ?: Defaults.TEST_NAME_CASE
    }
 
    /**
     * Returns true if tags specified on a test should be included in the test name output.
     */
    fun testNameAppendTags(): Boolean {
-      return configuration.testNameAppendTags
+      return config?.testNameAppendTags ?: Defaults.TEST_NAME_APPEND_TAGS
    }
 
    /**
     * Returns true if the test name should be the full name including parent names.
     */
    fun displayFullTestPath(): Boolean {
-      return configuration.displayFullTestPath
+      return config?.displayFullTestPath ?: Defaults.DISPLAY_FULL_TEST_PATH
    }
 }

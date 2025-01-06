@@ -12,6 +12,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.config.SpecConfigResolver
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
@@ -64,7 +66,7 @@ internal class SpecExecutor2(
       return withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          val specContext = SpecContext.create()
          runInstancePipeline(spec, specContext) {
-            val tests = Materializer(engineContext.configuration).materialize(spec).withIndex().toList()
+            val tests = Materializer(SpecConfigResolver(engineContext.projectConfig)).materialize(spec).withIndex().toList()
             enqueueRootTests(spec, tests, specContext)
          }
       }
@@ -116,7 +118,7 @@ internal class SpecExecutor2(
          // we switch to a new coroutine for each spec instance
          withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
             runInstancePipeline(spec, specContext) {
-               val test = Materializer(engineContext.configuration).materialize(spec).first { it.descriptor == target }
+               val test = Materializer(SpecConfigResolver(engineContext.projectConfig)).materialize(spec).first { it.descriptor == target }
                val result = executeTest(testCase = test, specContext = specContext)
                Result.success(mapOf(test to result))
             }
@@ -217,14 +219,11 @@ internal class SpecExecutor2(
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Registering nested test '${nested}") }
 
-         val nestedTestCase = Materializer(engineContext.configuration)
+         val nestedTestCase = Materializer(SpecConfigResolver(engineContext.projectConfig))
             .materialize(nested, testCase)
 
          // if a previous test has failed and this test is marked as fail fast, it will be ignored
-
-         val failFast = nestedTestCase.config.failfast ||
-            nestedTestCase.spec.failfast == true ||
-            engineContext.configuration.projectWideFailFast
+         val failFast = TestConfigResolver(engineContext.projectConfig).failfast(nestedTestCase)
 
          if (failFast && results.hasErrorOrFailure()) {
 

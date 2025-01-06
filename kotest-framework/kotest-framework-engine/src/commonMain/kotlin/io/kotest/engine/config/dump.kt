@@ -30,7 +30,6 @@ internal fun ProjectConfiguration.createConfigSummary(): String {
    sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
    sb.buildOutput("Fail on empty test suite", failOnEmptyTestSuite.toString())
 
-
    sb.buildOutput("Duplicate test name mode", duplicateTestNameMode.name)
 
    if (includeTestScopeAffixes != null)
@@ -59,8 +58,8 @@ private fun StringBuilder.buildOutput(key: String, value: String? = null, indent
    if (indentation == 0) {
       append("-> ")
    } else {
-      for (i in 0 until indentation) {
-         append("  ")
+      (0 until indentation).forEach { i ->
+        append("  ")
       }
       append("- ")
    }

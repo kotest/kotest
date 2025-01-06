@@ -11,13 +11,13 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
-  private val name: TestName,
-  private val context: ContainerScope,
-  private val xdisabled: Boolean,
+   private val name: TestName,
+   private val context: ContainerScope,
+   private val xdisabled: Boolean,
 ) {
 
    suspend fun config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-     TestDslState.clear(name)
+      TestDslState.clear(name)
       context.registerTest(name, xdisabled, config, test)
    }
 
@@ -35,12 +35,12 @@ class TestWithConfigBuilder(
       coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit
    ) {
-     TestDslState.clear(name)
+      TestDslState.clear(name)
       val config = TestConfig(
          enabled = enabled,
          enabledIf = enabledIf,
          enabledOrReasonIf = enabledOrReasonIf,
-         tags = tags,
+         tags = tags ?: emptySet(),
          extensions = extensions,
          timeout = timeout,
          invocationTimeout = invocationTimeout,

@@ -164,6 +164,9 @@ abstract class Spec : TestConfiguration() {
     */
    open fun assertionMode(): AssertionMode? = null
 
+   @JsName("assertionMode_js")
+   var assertionMode: AssertionMode? = null
+
    /**
     * Each test is launched into its own coroutine. By default, the test engine waits for that
     * test to finish before launching the next test. By setting [testExecutionMode]
@@ -239,6 +242,14 @@ abstract class Spec : TestConfiguration() {
     * This value overrides the global configuration value.
     */
    var coroutineDebugProbes: Boolean? = null
+
+   /**
+    * Controls what to do when a duplicated test name is discovered.
+    * See possible settings in [DuplicateTestNameMode].
+    *
+    * If not specified, then defaults to the global setting.
+    */
+   open fun duplicateTestNameMode(): DuplicateTestNameMode? = null
 
    /**
     * Controls what to do when a duplicated test name is discovered.

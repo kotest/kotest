@@ -61,13 +61,6 @@ data class TestCase(
 )
 
 /**
- * Returns `true` if this test is focused.
- *
- * A focused test case is one which is defined at the top level and has a `f:` prefix
- */
-fun TestCase.isFocused() = this.parent == null && name.focus
-
-/**
  * Returns `true` if this descriptor represents a root test case.
  *
  * A root test case is one which is defined at the top level in a spec.

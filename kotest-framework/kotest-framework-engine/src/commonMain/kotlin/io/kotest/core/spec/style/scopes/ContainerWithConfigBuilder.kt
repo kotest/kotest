@@ -31,7 +31,7 @@ class ContainerWithConfigBuilder<T>(
          enabled = enabled,
          enabledIf = enabledIf,
          enabledOrReasonIf = enabledOrReasonIf,
-         tags = tags,
+         tags = tags ?: emptySet(),
          timeout = timeout,
          failfast = failfast,
          blockingTest = blockingTest,

@@ -1,9 +1,10 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.tags.runtimeTagExpression
 
@@ -11,7 +12,7 @@ import io.kotest.engine.tags.runtimeTagExpression
  * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
  * from [isEnabledInternal] or any registered [EnabledExtension]s.
  */
-suspend fun TestCase.isEnabled(conf: ProjectConfiguration): Enabled {
+suspend fun TestCase.isEnabled(conf: AbstractProjectConfig): Enabled {
    val internal = isEnabledInternal(conf)
    return if (!internal.isEnabled) {
       internal
@@ -28,16 +29,18 @@ suspend fun TestCase.isEnabled(conf: ProjectConfiguration): Enabled {
 /**
  * Determines enabled status by using [TestEnabledExtension]s.
  */
-internal fun TestCase.isEnabledInternal(conf: ProjectConfiguration): Enabled {
+internal fun TestCase.isEnabledInternal(conf: AbstractProjectConfig): Enabled {
+
+   val testConfigResolver = TestConfigResolver(conf)
 
    val extensions = listOf(
-      TestConfigEnabledExtension,
-      TagsEnabledExtension(conf.runtimeTagExpression()),
+      TestConfigEnabledExtension(testConfigResolver),
+      TagsEnabledExtension(conf.runtimeTagExpression(), testConfigResolver),
       TestFilterEnabledExtension(conf.registry),
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,
-      SeverityLevelEnabledExtension(conf),
+      SeverityLevelEnabledExtension(testConfigResolver),
    )
 
    return extensions.fold(Enabled.enabled) { acc, ext -> if (acc.isEnabled) ext.isEnabled(this) else acc }

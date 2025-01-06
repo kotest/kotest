@@ -26,7 +26,8 @@ import kotlin.time.Duration
 data class DefaultTestConfig(
    val timeout: Duration? = null,
    val invocationTimeout: Duration? = null,
-   val invocations: Int = 1,
+   val invocations: Int? = null,
+   val assertSoftly: Boolean? = null,
    val tags: Set<Tag> = emptySet(),
    val severity: TestCaseSeverityLevel? = null,
    val enabledIf: EnabledIf = { true },

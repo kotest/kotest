@@ -118,7 +118,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    ): FreeSpecContextConfigBuilder {
       val config = TestConfig(
          enabled = enabled,
-         tags = tags,
+         tags = tags ?: emptySet(),
          extensions = extensions,
          timeout = timeout,
          invocationTimeout = invocationTimeout,

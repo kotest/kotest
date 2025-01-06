@@ -11,10 +11,10 @@ import kotlin.time.Duration
 
 @ExperimentalKotest
 class RootContainerWithConfigBuilder<T>(
-  private val name: TestName,
-  private val xdisabled: Boolean,
-  private val context: RootScope,
-  val contextFn: (TestScope) -> T
+   private val name: TestName,
+   private val xdisabled: Boolean,
+   private val context: RootScope,
+   val contextFn: (TestScope) -> T
 ) {
 
    @ExperimentalKotest
@@ -41,7 +41,7 @@ class RootContainerWithConfigBuilder<T>(
          enabled = enabled,
          enabledIf = enabledIf,
          enabledOrReasonIf = enabledOrReasonIf,
-         tags = tags,
+         tags = tags ?: emptySet(),
          timeout = timeout,
          failfast = failfast,
          blockingTest = blockingTest,

@@ -1,6 +1,5 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.Spec
@@ -25,10 +24,10 @@ import io.kotest.core.test.TestCaseOrder
  * - kotest defaults
  */
 class SpecConfigResolver(
-   private val packageConfigs: List<AbstractPackageConfig>,
    private val projectConfig: AbstractProjectConfig,
-   private val systemPropertyConfiguration: SystemPropertyConfiguration,
 ) {
+
+   private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 
    /**
     * Returns the [TestCaseOrder] applicable for the root tests in this spec.
@@ -37,7 +36,7 @@ class SpecConfigResolver(
       return spec.testOrder
          ?: spec.testCaseOrder()
          ?: spec.defaultTestConfig?.testOrder
-         ?: packageConfigs.firstNotNullOfOrNull { it.testCaseOrder }
+         ?: PackageConfigLoader.configs(spec).firstNotNullOfOrNull { it.testCaseOrder }
          ?: projectConfig.testCaseOrder
          ?: Defaults.TEST_CASE_ORDER
    }
@@ -47,8 +46,9 @@ class SpecConfigResolver(
     */
    fun duplicateTestNameMode(spec: Spec): DuplicateTestNameMode {
       return spec.duplicateTestNameMode
+         ?: spec.duplicateTestNameMode()
          ?: spec.defaultTestConfig?.duplicateTestNameMode
-         ?: packageConfigs.firstNotNullOfOrNull { it.duplicateTestNameMode }
+         ?: PackageConfigLoader.configs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
          ?: projectConfig.duplicateTestNameMode
          ?: systemPropertyConfiguration.duplicateTestNameMode()
          ?: Defaults.DUPLICATE_TEST_NAME_MODE
