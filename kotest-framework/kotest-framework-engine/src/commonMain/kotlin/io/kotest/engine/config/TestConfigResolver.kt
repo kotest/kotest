@@ -172,7 +172,7 @@ internal class TestConfigResolver(
          testCase.spec::class.tags(projectConfig.tagInheritance == true)
    }
 
-   private fun enabled(testCase: TestCase): EnabledOrReasonIf {
+   fun enabled(testCase: TestCase): EnabledOrReasonIf {
       val disabledByTestConfig = testConfigs(testCase).any { it.enabled == false }
       val testEnabledIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledIf }
       val testEnabledOrReasonIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledOrReasonIf }

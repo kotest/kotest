@@ -1,57 +1,51 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.engine.tags.runtimeTagExpression
-import io.kotest.mpp.bestName
+import io.kotest.core.config.AbstractProjectConfig
 
-internal fun ProjectConfiguration.createConfigSummary(): String {
+internal fun createConfigSummary(projectConfig: AbstractProjectConfig): String {
 
    val sb = StringBuilder()
 
-   sb.buildOutput("Spec execution mode", specExecutionMode::class.simpleName)
-   sb.buildOutput("Test execution mode", testExecutionMode::class.simpleName)
+   projectConfig.specExecutionMode?.let { sb.buildOutput("Spec execution mode", it::class.simpleName) }
+   projectConfig.testExecutionMode?.let { sb.buildOutput("Test execution mode", it::class.simpleName) }
 
-   sb.buildOutput("Coroutine debug probe", coroutineDebugProbes.toString())
+   projectConfig.coroutineDebugProbes?.let { sb.buildOutput("Coroutine debug probe", it.toString()) }
+   projectConfig.specExecutionOrder?.let { sb.buildOutput("Spec execution order", it.name) }
+   projectConfig.testCaseOrder?.let { sb.buildOutput("Test case order", it.name) }
 
-   sb.buildOutput("Spec execution order", specExecutionOrder.name)
-   sb.buildOutput("Default test execution order", testCaseOrder.name)
+   projectConfig.timeout?.let { sb.buildOutput("Default test timeout", it.toString() + "ms") }
+   projectConfig.invocationTimeout?.let { sb.buildOutput("Default test invocation timeout", it.toString() + "ms") }
 
-   sb.buildOutput("Default test timeout", timeout.toString() + "ms")
-   sb.buildOutput("Default test invocation timeout", invocationTimeout.toString() + "ms")
-   if (projectTimeout != null)
-      sb.buildOutput("Overall project timeout", projectTimeout.toString() + "ms")
-   sb.buildOutput("Default isolation mode", isolationMode.name)
-   sb.buildOutput("Global soft assertions", globalAssertSoftly.toString())
-   sb.buildOutput("Write spec failure file", writeSpecFailureFile.toString())
-   if (writeSpecFailureFile) {
-      sb.buildOutput("Spec failure file path",
-         specFailureFilePath.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
-   }
-   sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
-   sb.buildOutput("Fail on empty test suite", failOnEmptyTestSuite.toString())
+   projectConfig.projectTimeout?.let { sb.buildOutput("Project timeout", it.toString() + "ms") }
+   projectConfig.isolationMode?.let { sb.buildOutput("Default isolation mode", it.name) }
 
-   sb.buildOutput("Duplicate test name mode", duplicateTestNameMode.name)
+   projectConfig.globalAssertSoftly?.let { sb.buildOutput("Global soft assertions", it.toString()) }
+   projectConfig.writeSpecFailureFile?.let { sb.buildOutput("Write spec failure file", it.toString()) }
 
-   if (includeTestScopeAffixes != null)
-      sb.buildOutput("Include test scope affixes", includeTestScopeAffixes.toString())
+   projectConfig.failOnIgnoredTests?.let { sb.buildOutput("Fail on ignored tests", it.toString()) }
+   projectConfig.failOnEmptyTestSuite?.let { sb.buildOutput("Fail on empty test suite", it.toString()) }
 
-   sb.buildOutput("Remove test name whitespace", removeTestNameWhitespace.toString())
-   sb.buildOutput("Append tags to test names", testNameAppendTags.toString())
+   projectConfig.duplicateTestNameMode?.let { sb.buildOutput("Duplicate test name mode", it.name) }
 
-   if (registry.isNotEmpty()) {
-      sb.buildOutput("Extensions")
-      registry.all().map(::mapClassName).forEach {
-         sb.buildOutput(it, indentation = 1)
-      }
-   }
+   projectConfig.includeTestScopeAffixes?.let { sb.buildOutput("Include test scope affixes", it.toString()) }
 
-   runtimeTagExpression().expression.let { sb.buildOutput("Tags", it) }
+//   projectConfig.includeTestScopeAffixes?.let { sb.buildOutput("Remove test name whitespace", it.toString()) }
+   projectConfig.testNameAppendTags?.let { sb.buildOutput("Append tags to test names", it.toString()) }
+
+//   if (registry.isNotEmpty()) {
+//      sb.buildOutput("Extensions")
+//      registry.all().map(::mapClassName).forEach {
+//         sb.buildOutput(it, indentation = 1)
+//      }
+//   }
+
+//   runtimeTagExpression().expression.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }
 
-fun ProjectConfiguration.dumpProjectConfig() {
+fun dumpProjectConfig(conf: AbstractProjectConfig) {
    println("~~~ Kotest Configuration ~~~")
-   println(createConfigSummary())
+   println(createConfigSummary(conf))
 }
 
 private fun StringBuilder.buildOutput(key: String, value: String? = null, indentation: Int = 0) {
@@ -59,7 +53,7 @@ private fun StringBuilder.buildOutput(key: String, value: String? = null, indent
       append("-> ")
    } else {
       (0 until indentation).forEach { i ->
-        append("  ")
+         append("  ")
       }
       append("- ")
    }
@@ -67,5 +61,3 @@ private fun StringBuilder.buildOutput(key: String, value: String? = null, indent
    value?.let { append(": $it") }
    append("\n")
 }
-
-private fun mapClassName(any: Any) = any::class.bestName()

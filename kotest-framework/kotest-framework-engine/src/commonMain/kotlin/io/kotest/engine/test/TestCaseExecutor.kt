@@ -65,7 +65,7 @@ internal class TestCaseExecutor(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
          TestFinishedInterceptor(listener, context.configuration.registry),
-         InvocationCountCheckInterceptor,
+         InvocationCountCheckInterceptor(testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.configuration),
@@ -77,7 +77,9 @@ internal class TestCaseExecutor(
          AssertionModeInterceptor(testConfigResolver),
          SoftAssertInterceptor(testConfigResolver),
          CoroutineLoggingInterceptor(context.configuration),
-         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(context.configuration, timeMark) else null,
+         if (platform == Platform.JVM)
+            blockedThreadTimeoutInterceptor(context.configuration, timeMark, testConfigResolver)
+         else null,
          TimeoutInterceptor(timeMark, testConfigResolver),
          ExpectExceptionTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),

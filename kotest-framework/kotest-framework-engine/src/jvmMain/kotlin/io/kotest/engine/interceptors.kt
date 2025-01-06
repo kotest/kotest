@@ -1,6 +1,6 @@
 package io.kotest.engine
 
-import io.kotest.engine.interceptors.DumpConfigInterceptor
+import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.MarkAbortedExceptionsAsSkippedTestInterceptor
@@ -24,7 +24,7 @@ actual fun testEngineInterceptors(): List<EngineInterceptor> {
       ProjectTimeoutEngineInterceptor,
       EmptyTestSuiteInterceptor,
       WriteFailuresInterceptor,
-      DumpConfigInterceptor,
+      DumpProjectConfigInterceptor,
       TestEngineInitializedInterceptor,
    )
 }

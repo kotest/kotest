@@ -6,7 +6,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.DumpConfigInterceptor
+import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.extensions.system.SystemOutWireListener
 import io.kotest.matchers.shouldBe
@@ -34,7 +34,7 @@ class DumpConfigInterceptorTest : FunSpec({
          "True",
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().trim() shouldBe """
             |~~~ Kotest Configuration ~~~
             |-> Spec execution mode: Sequential
@@ -58,7 +58,7 @@ class DumpConfigInterceptorTest : FunSpec({
       }
 
       test("No property set, dumps nothing") {
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
 
@@ -69,7 +69,7 @@ class DumpConfigInterceptorTest : FunSpec({
          "Anything really"
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
    }
