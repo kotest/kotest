@@ -1,6 +1,6 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.engine.config.ExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

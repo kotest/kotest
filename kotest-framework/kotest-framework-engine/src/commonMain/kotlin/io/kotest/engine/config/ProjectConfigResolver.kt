@@ -1,16 +1,18 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.config.LogLevel
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.concurrency.SpecExecutionMode
 
 /**
  * The [ProjectConfigResolver] is responsible for returning the runtime value to use for a given
  * configuration setting based on the various sources of configuration.
  *
  * This class handles settings that should only be configured at the project level,
- * such as spec execution order, or minimum severity level at runtime.
+ * such as spec execution mode, or minimum test severity level.
  *
  * For spec level equivalent, see [SpecConfigResolver].
  *
@@ -34,6 +36,21 @@ class ProjectConfigResolver(
          ?: systemPropertyConfiguration.minimumRuntimeTestCaseSeverityLevel()
    }
 
+   fun logLevel(): LogLevel {
+      return config?.logLevel
+         ?: Defaults.LOG_LEVEL
+   }
+
+   /**
+    * If returns false then private spec classes will be ignored by the test engine.
+    * Defaults to false.
+    */
+   fun ignorePrivateClasses(): Boolean {
+      return config?.ignorePrivateClasses
+         ?: systemPropertyConfiguration.ignorePrivateClasses()
+         ?: Defaults.IGNORE_PRIVATE_CLASSES
+   }
+
    /**
     * Returns true if the test style affixes should be included in the test name.
     * For example, some spec styles add prefixes or suffixes to the test name, and this
@@ -43,12 +60,23 @@ class ProjectConfigResolver(
       return config?.includeTestScopeAffixes ?: testCase.name.defaultAffixes
    }
 
+   fun specExecutionMode(): SpecExecutionMode {
+      return config?.specExecutionMode ?: Defaults.SPEC_EXECUTION_MODE
+   }
+
    /**
     * Returns the [TestNameCase] to use when outputing test names.
     * This setting is only settable at the global level.
     */
    fun testNameCase(): TestNameCase {
       return config?.testNameCase ?: Defaults.TEST_NAME_CASE
+   }
+
+   /**
+    * Set this to true to skip all remaining tests if any test fails.
+    */
+   fun projectWideFailFast(): Boolean {
+      return config?.projectWideFailFast ?: Defaults.PROJECT_WIDE_FAIL_FAST
    }
 
    /**

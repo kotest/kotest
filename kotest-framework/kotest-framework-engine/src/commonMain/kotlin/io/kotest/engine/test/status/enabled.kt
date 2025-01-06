@@ -12,8 +12,8 @@ import io.kotest.engine.tags.runtimeTagExpression
  * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
  * from [isEnabledInternal] or any registered [EnabledExtension]s.
  */
-suspend fun TestCase.isEnabled(conf: AbstractProjectConfig): Enabled {
-   val internal = isEnabledInternal(conf)
+internal suspend fun TestCase.isEnabled(testConfigResolver: TestConfigResolver): Enabled {
+   val internal = isEnabledInternal(testConfigResolver)
    return if (!internal.isEnabled) {
       internal
    } else {
@@ -29,7 +29,7 @@ suspend fun TestCase.isEnabled(conf: AbstractProjectConfig): Enabled {
 /**
  * Determines enabled status by using [TestEnabledExtension]s.
  */
-internal fun TestCase.isEnabledInternal(conf: AbstractProjectConfig): Enabled {
+internal fun TestCase.isEnabledInternal(testConfigResolver: TestConfigResolver): Enabled {
 
    val testConfigResolver = TestConfigResolver(conf)
 

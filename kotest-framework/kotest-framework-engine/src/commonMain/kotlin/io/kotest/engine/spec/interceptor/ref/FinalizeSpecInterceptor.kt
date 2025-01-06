@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.engine.config.ExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase

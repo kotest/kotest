@@ -6,6 +6,7 @@ import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
@@ -51,6 +52,7 @@ internal class TestCaseExecutor(
 
       val timeMark = TimeSource.Monotonic.markNow()
       val testConfigResolver = TestConfigResolver(context.projectConfig)
+      val projectConfigResolver = ProjectConfigResolver(context.projectConfig)
 
       // JS platforms require extra care when runTest is used, so skip it for now.
       // Issue: https://github.com/kotest/kotest/issues/4077
@@ -68,17 +70,17 @@ internal class TestCaseExecutor(
          InvocationCountCheckInterceptor(testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
-         CoroutineDispatcherFactoryTestInterceptor(context.configuration),
+         CoroutineDispatcherFactoryTestInterceptor(testConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestEnabledCheckInterceptor(context.configuration),
+         TestEnabledCheckInterceptor(testConfigResolver),
          BeforeSpecListenerInterceptor(context.configuration.registry, specContext),
          TestCaseExtensionInterceptor(context.configuration.registry),
          LifecycleInterceptor(listener, timeMark, context.configuration.registry),
          AssertionModeInterceptor(testConfigResolver),
          SoftAssertInterceptor(testConfigResolver),
-         CoroutineLoggingInterceptor(context.configuration),
+         CoroutineLoggingInterceptor(projectConfigResolver),
          if (platform == Platform.JVM)
-            blockedThreadTimeoutInterceptor(context.configuration, timeMark, testConfigResolver)
+            blockedThreadTimeoutInterceptor(timeMark, testConfigResolver)
          else null,
          TimeoutInterceptor(timeMark, testConfigResolver),
          ExpectExceptionTestInterceptor,

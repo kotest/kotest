@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.engine.config.DefaultExtensionRegistry
+import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.Extension

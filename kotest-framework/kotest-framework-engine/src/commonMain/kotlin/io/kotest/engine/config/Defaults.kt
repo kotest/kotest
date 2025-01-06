@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -14,7 +15,7 @@ import kotlin.time.Duration
 object Defaults {
 
    // by default, we do not retry tests
-   val defaultRetries: Int? = null
+   val DEFAULT_RETRIES: Int? = null
 
    // by default, tests are retried immediately
    val defaultRetryDelay: Duration? = null
@@ -23,7 +24,9 @@ object Defaults {
 
    const val discoveryClasspathFallbackEnabled: Boolean = false
    const val disableTestNestedJarScanning: Boolean = true
-   const val ignorePrivateClasses: Boolean = false
+   const val IGNORE_PRIVATE_CLASSES: Boolean = false
+
+   val LOG_LEVEL = LogLevel.Off
 
    val TEST_EXECUTION_MODE = TestExecutionMode.Sequential
    val SPEC_EXECUTION_MODE = SpecExecutionMode.Sequential
@@ -58,6 +61,7 @@ object Defaults {
 
    const val TEST_NAME_APPEND_TAGS: Boolean = false
 
+   const val PROJECT_WIDE_FAIL_FAST: Boolean = false
    const val FAILFAST: Boolean = false
 
    const val projectWideFailFast: Boolean = false

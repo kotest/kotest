@@ -7,10 +7,11 @@ import io.kotest.core.Platform
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
@@ -52,7 +53,7 @@ internal class TestSuiteScheduler(
 
       val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
       logger.log { Pair(null, "Remaining spec count: ${default.size}") }
-      schedule(default, concurrency(context.configuration))
+      schedule(default, concurrency(context.projectConfig))
       logger.log { Pair(null, "Remaining specs have completed") }
 
       return EngineResult(emptyList())
@@ -63,18 +64,20 @@ internal class TestSuiteScheduler(
       concurrency: Int,
    ) {
 
+      val projectConfigResolver = ProjectConfigResolver(context.projectConfig)
+      val collector = CollectingTestEngineListener()
+
       val semaphore = Semaphore(concurrency)
       logger.log { Pair(null, "Scheduling using concurrency: $concurrency") }
 
       coroutineScope { // we don't want this function to return until all specs are completed
-         val collector = CollectingTestEngineListener()
          specs.map { ref ->
             logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
             launch {
                semaphore.withPermit {
                   logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
-
-                  if (context.configuration.projectWideFailFast && collector.errors) {
+                  if (projectConfigResolver.projectWideFailFast() && collector.errors) {
+                     logger.log { Pair(ref.kclass.bestName(), "Project wide fail fast is active, skipping spec") }
                      context.listener.specIgnored(ref.kclass, null)
                   } else {
                      try {
@@ -98,9 +101,9 @@ internal class TestSuiteScheduler(
     * On non-JVM platforms, this will always be 1, otherwise the value
     * of [io.kotest.engine.concurrency.SpecExecutionMode] from project configuration is used.
     */
-   private fun concurrency(configuration: ProjectConfiguration): Int {
+   private fun concurrency(projectConfig: AbstractProjectConfig?): Int {
       return when (platform) {
-         Platform.JVM -> configuration.specExecutionMode.concurrency
+         Platform.JVM -> ProjectConfigResolver(projectConfig).specExecutionMode().concurrency
          Platform.JS,
          Platform.Native,
          Platform.WasmJs -> 1

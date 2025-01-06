@@ -1,22 +1,21 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.engine.EngineResult
+import io.kotest.engine.config.AbstractProjectConfigWriter
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.mpp.syspropOrEnv
 
 /**
  * Outputs the resolved project configuration to the console.
  */
-internal class DumpProjectConfigInterceptor(private val conf: AbstractProjectConfig) : EngineInterceptor {
+internal class DumpProjectConfigInterceptor() : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: NextEngineInterceptor
+      execute: NextEngineInterceptor,
    ): EngineResult {
       if (syspropEnabled()) {
-         dumpProjectConfig(conf)
+         AbstractProjectConfigWriter.dumpProjectConfigIfNotNull(context.projectConfig)
       }
       return execute(context)
    }

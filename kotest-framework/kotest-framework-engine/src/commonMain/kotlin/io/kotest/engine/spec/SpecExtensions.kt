@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.Logger
-import io.kotest.engine.config.ExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener

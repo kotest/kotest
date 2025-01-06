@@ -28,6 +28,7 @@ interface SystemPropertyConfiguration {
    fun projectTimeout(): Duration?
    fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel?
    fun coroutineDebugProbes(): Boolean?
+   fun ignorePrivateClasses(): Boolean?
 }
 
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
@@ -45,4 +46,5 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun projectTimeout(): Duration? = null
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? = null
    override fun coroutineDebugProbes(): Boolean? = null
+   override fun ignorePrivateClasses(): Boolean? = null
 }

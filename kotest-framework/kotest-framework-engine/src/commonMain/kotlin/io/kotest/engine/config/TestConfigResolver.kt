@@ -12,6 +12,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.config.TestConfig
+import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -61,7 +62,7 @@ internal class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.retries
          ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.retries }
          ?: projectConfig?.retries
-         ?: Defaults.defaultRetries
+         ?: Defaults.DEFAULT_RETRIES
    }
 
    fun retryDelay(testCase: TestCase): Duration? {
@@ -175,6 +176,12 @@ internal class TestConfigResolver(
          testCase.spec::class.tags(projectConfig?.tagInheritance == true)
    }
 
+   fun coroutineDispatcherFactory(testCase: TestCase): CoroutineDispatcherFactory? {
+         return testCase.spec.coroutineDispatcherFactory
+         ?: testCase.spec.coroutineDispatcherFactory()
+         ?: projectConfig?.coroutineDispatcherFactory
+   }
+
    fun enabled(testCase: TestCase): EnabledOrReasonIf {
       val disabledByTestConfig = testConfigs(testCase).any { it.enabled == false }
       val testEnabledIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledIf }
@@ -210,4 +217,5 @@ internal class TestConfigResolver(
    private fun packageConfigs(spec: Spec): List<AbstractPackageConfig> {
       return PackageConfigLoader.configs(spec)
    }
+
 }

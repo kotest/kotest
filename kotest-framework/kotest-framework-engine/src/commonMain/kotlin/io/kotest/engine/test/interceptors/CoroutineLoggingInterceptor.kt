@@ -1,20 +1,22 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestLogger
 import io.kotest.engine.test.logging.TestScopeLoggingCoroutineContextElement
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.core.Logger
 import kotlinx.coroutines.withContext
 
 @ExperimentalKotest
-internal class CoroutineLoggingInterceptor(private val configuration: ProjectConfiguration) : TestExecutionInterceptor {
+internal class CoroutineLoggingInterceptor(
+   private val projectConfigResolver: ProjectConfigResolver
+) : TestExecutionInterceptor {
 
    private val logger = Logger(CoroutineLoggingInterceptor::class)
 
@@ -23,20 +25,24 @@ internal class CoroutineLoggingInterceptor(private val configuration: ProjectCon
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
+
       val extensions = TestExtensions(configuration.registry).logExtensions(testCase)
+      val logLevel = projectConfigResolver.logLevel()
+
       return when {
-         configuration.logLevel.isDisabled() || extensions.isEmpty() -> {
+         logLevel.isDisabled() || extensions.isEmpty() -> {
             logger.log { Pair(testCase.name.name, "Test logging is disabled (exts = $extensions)") }
             test(testCase, scope)
          }
+
          else -> {
-            val logger = TestLogger(configuration.logLevel)
+            val logger = TestLogger(logLevel)
             withContext(TestScopeLoggingCoroutineContextElement(logger)) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
             }.apply {
                extensions.map { SerialLogExtension(it) }.forEach { extension ->
                   runCatching {
-                     extension.handleLogs(testCase, logger.logs.filter { it.level >= configuration.logLevel })
+                     extension.handleLogs(testCase, logger.logs.filter { it.level >= logLevel })
                   }
                }
             }

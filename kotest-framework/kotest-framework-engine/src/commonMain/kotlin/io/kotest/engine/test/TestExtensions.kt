@@ -1,6 +1,6 @@
 package io.kotest.engine.test
 
-import io.kotest.engine.config.ExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener

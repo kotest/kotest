@@ -47,6 +47,9 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun tagInheritance(): Boolean? =
       syspropOrEnv(KotestEngineProperties.tagInheritance)?.let { it.uppercase() == "TRUE" }
 
+   override fun ignorePrivateClasses(): Boolean? =
+      syspropOrEnv(KotestEngineProperties.ignorePrivateClasses)?.let { it.uppercase() == "TRUE" }
+
    override fun duplicateTestNameMode(): DuplicateTestNameMode? =
       sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 

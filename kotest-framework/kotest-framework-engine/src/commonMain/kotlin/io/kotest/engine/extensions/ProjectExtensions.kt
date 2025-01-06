@@ -1,7 +1,6 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.Logger
-import io.kotest.engine.config.ExtensionRegistry
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 

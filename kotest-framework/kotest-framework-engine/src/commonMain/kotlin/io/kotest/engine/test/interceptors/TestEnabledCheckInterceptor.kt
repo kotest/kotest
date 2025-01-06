@@ -1,10 +1,10 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.status.isEnabled
 
 /**
@@ -15,7 +15,9 @@ import io.kotest.engine.test.status.isEnabled
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-internal class TestEnabledCheckInterceptor(private val conf: AbstractProjectConfig) : TestExecutionInterceptor {
+internal class TestEnabledCheckInterceptor(
+   private val testConfigResolver: TestConfigResolver
+) : TestExecutionInterceptor {
 
    private val logger = Logger(TestEnabledCheckInterceptor::class)
 
@@ -24,12 +26,13 @@ internal class TestEnabledCheckInterceptor(private val conf: AbstractProjectConf
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      val enabled = testCase.isEnabled(conf)
+      val enabled = testCase.isEnabled(testConfigResolver)
       return when (enabled.isEnabled) {
          true -> {
             logger.log { Pair(testCase.name.name, "Test is enabled") }
             test(testCase, scope)
          }
+
          false -> {
             logger.log { Pair(testCase.name.name, "Test is disabled: ${enabled.reason}") }
             TestResult.Ignored(enabled)

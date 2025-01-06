@@ -4,13 +4,12 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.TagExpression
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.tags.runtimeTagExpression
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -27,7 +26,7 @@ data class EngineResult(val errors: List<Throwable>) {
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
-   val configuration: ProjectConfiguration,
+   val projectConfig: AbstractProjectConfig?,
    val explicitTags: TagExpression?,
    val platform: Platform,
 )
@@ -59,10 +58,10 @@ class TestEngine(private val config: TestEngineConfig) {
          NextEngineInterceptor { context -> extension.intercept(context, next) }
       }
 
-      val tags = config.configuration.runtimeTagExpression()
+      val tags: TagExpression = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform, mutableMapOf()))
+      return execute(EngineContext(suite, config.listener, tags, config.projectConfig, config.platform, mutableMapOf()))
    }
 }
 

@@ -1,10 +1,10 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
@@ -18,7 +18,7 @@ import kotlin.coroutines.coroutineContext
  * Note: This interceptor should run before before/after callbacks so they are executed in the right context.
  */
 internal class CoroutineDispatcherFactoryTestInterceptor(
-   private val configuration: ProjectConfiguration,
+   private val testConfigResolver: TestConfigResolver,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(CoroutineDispatcherFactoryTestInterceptor::class)
@@ -35,10 +35,7 @@ internal class CoroutineDispatcherFactoryTestInterceptor(
          test(testCase, scope)
       } else {
 
-         val userFactory = testCase.spec.coroutineDispatcherFactory
-            ?: testCase.spec.coroutineDispatcherFactory()
-            ?: configuration.coroutineDispatcherFactory
-
+         val userFactory = testConfigResolver.coroutineDispatcherFactory(testCase)
          if (userFactory == null) {
             logger.log { Pair(testCase.name.name, "No CoroutineDispatcherFactory set") }
             test(testCase, scope)
