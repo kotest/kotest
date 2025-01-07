@@ -28,7 +28,7 @@ class TeamCityTestEngineListener(
 
    private val logger = Logger(TeamCityTestEngineListener::class)
 
-   private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default(ProjectConfiguration()))
+   private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default())
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -56,7 +56,7 @@ class TeamCityTestEngineListener(
    override suspend fun engineInitialized(context: EngineContext) {
       writer = TeamCityWriter(
          prefix,
-         getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
+         getFallbackDisplayNameFormatter(context.projectConfigResolver, context.testConfigResolver)
       )
    }
 
