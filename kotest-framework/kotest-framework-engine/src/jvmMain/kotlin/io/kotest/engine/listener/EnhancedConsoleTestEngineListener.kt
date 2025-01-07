@@ -1,7 +1,6 @@
 package io.kotest.engine.listener
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
