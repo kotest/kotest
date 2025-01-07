@@ -50,6 +50,8 @@ object Defaults {
 
    const val FAIL_ON_EMPTY_TEST_SUITE = false
 
+   const val TAG_INHERITANCE = false
+
    const val SPEC_FAILURE_FILE_PATH = "./.kotest/spec_failures"
 
    const val DEFAULT_TIMEOUT_MILLIS = 10 * 60 * 1000L

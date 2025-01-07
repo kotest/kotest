@@ -15,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 @ExperimentalKotest
 internal class CoroutineLoggingInterceptor(
-   private val projectConfigResolver: ProjectConfigResolver
+   private val projectConfigResolver: ProjectConfigResolver,
+   private val testExtensions: TestExtensions,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(CoroutineLoggingInterceptor::class)
@@ -26,7 +27,7 @@ internal class CoroutineLoggingInterceptor(
       test: NextTestExecutionInterceptor
    ): TestResult {
 
-      val extensions = TestExtensions(configuration.registry).logExtensions(testCase)
+      val extensions = testExtensions.logExtensions(testCase)
       val logLevel = projectConfigResolver.logLevel()
 
       return when {

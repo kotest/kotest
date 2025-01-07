@@ -29,9 +29,6 @@ internal class SpecInstantiator(private val registry: ExtensionRegistry) {
       kclass: KClass<T>,
    ): Result<Spec> {
       return objectOrInstantiateClass(kclass)
-         .onSuccess { spec ->
-            spec.globalExtensions().forEach { registry.add(it) }
-         }
    }
 
    private suspend fun objectOrInstantiateClass(kclass: KClass<out Spec>): Result<Spec> {

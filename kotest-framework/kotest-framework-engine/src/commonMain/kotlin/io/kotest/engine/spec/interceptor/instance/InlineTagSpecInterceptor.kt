@@ -1,18 +1,18 @@
 package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.engine.flatMap
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.flatMap
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
+import io.kotest.engine.tags.TagExpressionBuilder
 import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
-import io.kotest.engine.tags.runtimeTagExpression
 
 /**
  * A [SpecInterceptor] that skips this [Spec] if it contains inline tags which don't satisfy
@@ -20,7 +20,7 @@ import io.kotest.engine.tags.runtimeTagExpression
  */
 internal class InlineTagSpecInterceptor(
    private val listener: TestEngineListener,
-   private val projectConfiguration: ProjectConfiguration,
+   private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecInterceptor {
 
    private val extensions = SpecExtensions(projectConfiguration.registry)
@@ -30,8 +30,7 @@ internal class InlineTagSpecInterceptor(
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val allTags = spec.tags() + spec.appliedTags()
-      val potentiallyActive = TagExpressionResult.Exclude != projectConfiguration
-         .runtimeTagExpression()
+      val potentiallyActive = TagExpressionResult.Exclude != TagExpressionBuilder.build(projectConfigResolver)
          .parse()
          .isPotentiallyActive(allTags)
 

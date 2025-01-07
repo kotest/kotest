@@ -27,7 +27,7 @@ internal class SpecExecutor(
    @Suppress("DEPRECATION")
    private val logger = Logger(SpecExecutorDelegate::class)
    private val pipeline = SpecRefInterceptorPipeline(context)
-   private val extensions = SpecExtensions(context.configuration.registry)
+   private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
 
    suspend fun execute(kclass: KClass<out Spec>) {
       execute(SpecRef.Reference(kclass))
@@ -62,7 +62,7 @@ internal class SpecExecutor(
     * After this method is called the spec is sealed.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
-      ref.instance(context.configuration.registry)
+      ref.instance(context.registry)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }

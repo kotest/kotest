@@ -1,7 +1,6 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -9,13 +8,12 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 
 internal class TestFinishedInterceptor(
-  private val listener: TestCaseExecutionListener,
-  registry: ExtensionRegistry,
+   private val listener: TestCaseExecutionListener,
+   private val testExtensions: TestExtensions,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(TestFinishedInterceptor::class)
 
-   private val testExtensions = TestExtensions(registry)
 
    override suspend fun intercept(
       testCase: TestCase,

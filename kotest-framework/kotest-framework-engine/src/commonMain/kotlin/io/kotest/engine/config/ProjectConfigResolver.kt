@@ -10,6 +10,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.engine.extensions.ExtensionRegistry
 import kotlin.time.Duration
 
 /**
@@ -29,6 +30,7 @@ import kotlin.time.Duration
  */
 class ProjectConfigResolver(
    private val config: AbstractProjectConfig?,
+   private val registry: ExtensionRegistry,
 ) {
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
@@ -48,6 +50,12 @@ class ProjectConfigResolver(
 
    fun randomOrderSeed(): Long? {
       return config?.randomOrderSeed
+   }
+
+   fun tagInheritance(): Boolean {
+      return config?.tagInheritance
+         ?: systemPropertyConfiguration.tagInheritance()
+         ?: Defaults.TAG_INHERITANCE
    }
 
    /**
@@ -126,14 +134,18 @@ class ProjectConfigResolver(
    }
 
    /**
-    * Returns any extensions defined at the project level in [AbstractProjectConfig].
+    * Returns any extensions defined at the project level.
     *
     * That is extensions defined using the [AbstractProjectConfig.beforeProject] and
     * [AbstractProjectConfig.afterProject] functions as well as any extensions defined
     * by overriding the [AbstractProjectConfig.extensions] method.
+    *
+    * It also includes any extensions registered globally in the [ExtensionRegistry].
     */
    fun extensions(): List<Extension> {
-      return (config?.extensions() ?: emptyList()) + listOfNotNull(config?.asProjectExtension())
+      return (config?.extensions() ?: emptyList()) +
+         listOfNotNull(config?.asProjectExtension()) +
+         registry.all()
    }
 
    fun projectTimeout(): Duration? {

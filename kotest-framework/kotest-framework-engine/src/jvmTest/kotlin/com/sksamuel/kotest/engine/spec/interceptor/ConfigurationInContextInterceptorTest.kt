@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
-import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.ProjectConfigResolverSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import kotlin.coroutines.coroutineContext
@@ -26,7 +26,7 @@ class ConfigurationInContextInterceptorTest : FunSpec() {
 
       test("config should be injected into the test context") {
          var fired = false
-         ConfigurationInContextSpecInterceptor(c).intercept(DummySpec(), object:NextSpecInterceptor {
+         ProjectConfigResolverSpecInterceptor(c).intercept(DummySpec(), object:NextSpecInterceptor {
             override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
                testConfig()
                fired = true

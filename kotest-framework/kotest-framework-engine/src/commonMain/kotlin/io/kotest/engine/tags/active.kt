@@ -1,20 +1,20 @@
 package io.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
+import io.kotest.engine.config.ProjectConfigResolver
 import kotlin.reflect.KClass
 
 /**
  * Returns true if the given [Spec] class could contain an active test based on further tags.
  * Returns false if the spec has been explicitly excluded and should not be instantiated.
  */
-fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>, conf: ProjectConfiguration): TagExpressionResult {
+fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>, projectConfigResolver: ProjectConfigResolver): TagExpressionResult {
    // nothing is excluded if the expression is null
    if (this == null) return TagExpressionResult.Include
 
    // if the class is not tagged then it is not excluded
-   val tags = kclass.tags(conf.tagInheritance)
+   val tags = kclass.tags(projectConfigResolver.tagInheritance())
    if (tags.isEmpty()) return TagExpressionResult.Inconclusive
 
    return isPotentiallyActive(tags.toSet())

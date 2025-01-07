@@ -33,12 +33,12 @@ internal class DefaultSpecExecutorDelegate(
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val scope = DuplicateNameHandlingTestScope(
-               engineContext.configuration.duplicateTestNameMode,
+               engineContext.specConfigResolver.duplicateTestNameMode(spec),
                InOrderTestScope(
                   specContext,
                   testCase,
                   coroutineContext,
-                  engineContext.configuration.duplicateTestNameMode,
+                  engineContext.specConfigResolver.duplicateTestNameMode(spec),
                   engineContext,
                )
             )

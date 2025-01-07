@@ -1,6 +1,5 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -19,7 +18,7 @@ import kotlin.time.Duration.Companion.seconds
  * we must defer execution until after the test blocks have been registered (if any).
  */
 internal class BeforeSpecListenerInterceptor(
-  private val registry: ExtensionRegistry,
+  private val specExtensions: SpecExtensions,
   private val specContext: SpecContext,
 ) : TestExecutionInterceptor {
 
@@ -35,7 +34,7 @@ internal class BeforeSpecListenerInterceptor(
       )
 
       return if (shouldRun) {
-         SpecExtensions(registry)
+         specExtensions
             .beforeSpec(testCase.spec)
             .fold(
                {

@@ -5,13 +5,14 @@ import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.config.TestConfig
-import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,8 +33,9 @@ import kotlin.time.Duration.Companion.milliseconds
  * - system property overrides
  * - kotest defaults
  */
-internal class TestConfigResolver(
+class TestConfigResolver(
    private val projectConfig: AbstractProjectConfig?,
+   private val registry: ExtensionRegistry,
 ) {
 
    private val disabledByEnabledIf = Enabled.disabled("Disabled by enabledIf flag in config")
@@ -121,15 +123,6 @@ internal class TestConfigResolver(
          ?: Defaults.BLOCKING_TEST
    }
 
-   /**
-    * Returns any extensions applicable to this [TestCase].
-    */
-   fun extensions(testCase: TestCase): List<Extension> {
-      return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
-         testCase.spec.extensions() +
-         (projectConfig?.extensions() ?: emptyList())
-   }
-
    fun timeout(testCase: TestCase): Duration {
       return testConfigs(testCase).firstNotNullOfOrNull { it.timeout }
          ?: testCase.spec.timeout?.milliseconds
@@ -164,12 +157,6 @@ internal class TestConfigResolver(
          testCase.spec::class.tags(projectConfig?.tagInheritance == true)
    }
 
-   fun coroutineDispatcherFactory(testCase: TestCase): CoroutineDispatcherFactory? {
-      return testCase.spec.coroutineDispatcherFactory
-         ?: testCase.spec.coroutineDispatcherFactory()
-         ?: projectConfig?.coroutineDispatcherFactory
-   }
-
    fun enabled(testCase: TestCase): EnabledOrReasonIf {
       val disabledByTestConfig = testConfigs(testCase).any { it.enabled == false }
       val testEnabledIf = testConfigs(testCase).firstNotNullOfOrNull { it.enabledIf }
@@ -190,6 +177,21 @@ internal class TestConfigResolver(
             else -> Enabled.Companion.enabled
          }
       }
+   }
+
+   /**
+    * Returns all [Extension]s applicable to the given [TestCase]. This includes extensions
+    * included in test case config, those at the spec level, those from project config, and
+    * globally registered extensions in the [ExtensionRegistry].
+    */
+   fun extensions(testCase: TestCase): List<Extension> {
+      return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
+         (testCase.config?.extensions ?: emptyList()) + // extensions coming from the test config block itself
+         testCase.spec.extensions() + // overriding the extensions function in the spec
+         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
+         testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
+         (projectConfig?.extensions() ?: emptyList()) + // extensions defined at the project level
+         registry.all()
    }
 
    /**

@@ -11,7 +11,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.flatMap
@@ -82,7 +81,7 @@ internal class SpecExecutor2(
          rootTests.forEach { (index, root) ->
             launch {
                semaphore.withPermit {
-                  when (isolationMode(spec)) {
+                  when (engineContext.projectConfigResolver.isolationMode(spec)) {
                      // in SingleInstance mode, we can just launch the test directly on the primary spec instance
                      IsolationMode.SingleInstance -> {
                         executeTest(testCase = root, specContext = specContext)
@@ -163,7 +162,7 @@ internal class SpecExecutor2(
       )
 
       val scope = DuplicateNameHandlingTestScope(
-         engineContext.configuration.duplicateTestNameMode,
+         engineContext.projectConfigResolver.duplicateTestNameMode,
          SpecExecutor2TestScope(testCase, specContext, coroutineContext),
       )
 
@@ -184,21 +183,6 @@ internal class SpecExecutor2(
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
-   }
-
-   /**
-    * Resolves the [TestExecutionMode] for the given spec, first checking spec level config,
-    * before using project level default.
-    */
-   private fun testExecutionMode(spec: Spec): TestExecutionMode {
-      return spec.testExecutionMode ?: spec.testExecutionMode() ?: engineContext.configuration.testExecutionMode
-   }
-
-   /**
-    * Resolves the [IsolationMode] for the given spec.
-    */
-   private fun isolationMode(spec: Spec): IsolationMode {
-      return spec.isolationMode() ?: spec.isolationMode ?: engineContext.configuration.isolationMode
    }
 
    /**

@@ -2,7 +2,14 @@ package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
 
-internal interface ExtensionRegistry {
+/**
+ * An [ExtensionRegistry] is a collection of [Extension]s that can be added to or removed from.
+ *
+ * This is used to manage extensions that are added via annotations and other mechanisms that are
+ * not added programatically eg through a spec itself, or project config.
+ *
+ */
+interface ExtensionRegistry {
    fun all(): List<Extension>
    fun add(extension: Extension)
    fun remove(extension: Extension)
@@ -11,7 +18,7 @@ internal interface ExtensionRegistry {
    fun isNotEmpty(): Boolean
 }
 
-internal class DefaultExtensionRegistry : ExtensionRegistry {
+class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Extension>()
 
@@ -27,46 +34,6 @@ internal class DefaultExtensionRegistry : ExtensionRegistry {
 
    override fun clear() {
       extensions.clear()
-   }
-
-   override fun isEmpty(): Boolean = extensions.isEmpty()
-   override fun isNotEmpty(): Boolean = extensions.isNotEmpty()
-}
-
-internal object EmptyExtensionRegistry : ExtensionRegistry {
-
-   override fun all(): List<Extension> = emptyList()
-
-   override fun add(extension: Extension) {
-      throw UnsupportedOperationException()
-   }
-
-   override fun remove(extension: Extension) {
-      throw UnsupportedOperationException()
-   }
-
-   override fun clear() {
-      throw UnsupportedOperationException()
-   }
-
-   override fun isEmpty(): Boolean = true
-   override fun isNotEmpty(): Boolean = false
-}
-
-internal class FixedExtensionRegistry(private vararg val extensions: Extension) : ExtensionRegistry {
-
-   override fun all(): List<Extension> = extensions.toList()
-
-   override fun add(extension: Extension) {
-      throw UnsupportedOperationException()
-   }
-
-   override fun remove(extension: Extension) {
-      throw UnsupportedOperationException()
-   }
-
-   override fun clear() {
-      throw UnsupportedOperationException()
    }
 
    override fun isEmpty(): Boolean = extensions.isEmpty()

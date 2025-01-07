@@ -4,11 +4,13 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.flatMap
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.tags.TagExpressionBuilder
 import io.kotest.engine.tags.TagExpressionResult
 import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
@@ -19,15 +21,15 @@ import io.kotest.engine.tags.parse
  */
 internal class TagsInterceptor(
    private val listener: TestEngineListener,
+   private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(conf.registry)
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
-      val potentiallyActive = TagExpressionResult.Exclude != conf
-         .runtimeTagExpression()
+      val potentiallyActive = TagExpressionResult.Exclude != TagExpressionBuilder.build(projectConfigResolver)
          .parse()
-         .isPotentiallyActive(ref.kclass, conf)
+         .isPotentiallyActive(ref.kclass, projectConfigResolver)
 
       return if (potentiallyActive) {
          next.invoke(ref)

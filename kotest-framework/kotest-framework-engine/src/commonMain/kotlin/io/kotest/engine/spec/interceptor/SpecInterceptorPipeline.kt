@@ -10,11 +10,11 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
-import io.kotest.engine.spec.interceptor.instance.ConfigurationInContextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.ProjectConfigResolverSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.SpecExtensionInterceptor
 import io.kotest.mpp.bestName
@@ -28,7 +28,6 @@ internal class SpecInterceptorPipeline(
 
    private val logger = Logger(SpecInterceptorPipeline::class)
    private val listener = context.listener
-   private val configuration = context.configuration
 
    /**
     * Executes all [SpecInterceptor]s in turn, returning a result, which will be
@@ -56,19 +55,16 @@ internal class SpecInterceptorPipeline(
 
    private fun createPipeline(specContext: SpecContext): List<SpecInterceptor> {
       return listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(
-            listener,
-            configuration.registry
-         ) else null,
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.specExtensions()) else null,
          EngineContextInterceptor(this.context),
-         ConfigurationInContextSpecInterceptor(configuration),
+         ProjectConfigResolverSpecInterceptor(context.projectConfigResolver),
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
-         CoroutineDispatcherFactorySpecInterceptor(configuration),
+         CoroutineDispatcherFactorySpecInterceptor(context.specConfigResolver),
          ProjectContextInterceptor(this.context.toProjectContext()),
-         SpecExtensionInterceptor(configuration.registry),
-         InlineTagSpecInterceptor(listener, configuration),
+         SpecExtensionInterceptor(context.specExtensions()),
+         InlineTagSpecInterceptor(listener, context.projectConfigResolver),
          BeforeSpecFailureInterceptor(specContext),
-         AfterSpecListenerInterceptor(specContext, configuration.registry),
+         AfterSpecListenerInterceptor(specContext, context.specExtensions()),
       )
    }
 }

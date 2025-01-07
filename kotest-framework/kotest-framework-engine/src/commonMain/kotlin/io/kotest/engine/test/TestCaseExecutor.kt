@@ -6,8 +6,6 @@ import io.kotest.core.platform
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -51,14 +49,12 @@ internal class TestCaseExecutor(
       logger.log { Pair(testCase.name.name, "Executing test with scope $testScope") }
 
       val timeMark = TimeSource.Monotonic.markNow()
-      val testConfigResolver = TestConfigResolver(context.projectConfig)
-      val projectConfigResolver = ProjectConfigResolver(context.projectConfig)
 
       // JS platforms require extra care when runTest is used, so skip it for now.
       // Issue: https://github.com/kotest/kotest/issues/4077
       val useCoroutineTestScope = when (platform) {
-         Platform.JVM, Platform.Native -> testConfigResolver.coroutineTestScope(testCase)
-         Platform.JS, Platform.WasmJs -> if (testConfigResolver.coroutineTestScope(testCase)) {
+         Platform.JVM, Platform.Native -> context.testConfigResolver.coroutineTestScope(testCase)
+         Platform.JS, Platform.WasmJs -> if (context.testConfigResolver.coroutineTestScope(testCase)) {
             error("Configuration 'coroutineTestScope' is unsupported on $platform")
          } else false
       }
@@ -66,15 +62,15 @@ internal class TestCaseExecutor(
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
-         TestFinishedInterceptor(listener, context.configuration.registry),
-         InvocationCountCheckInterceptor(testConfigResolver),
+         TestFinishedInterceptor(listener,  context.testExtensions()),
+         InvocationCountCheckInterceptor( context.testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
-         CoroutineDispatcherFactoryTestInterceptor(testConfigResolver),
+         CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestEnabledCheckInterceptor(testConfigResolver),
-         BeforeSpecListenerInterceptor(context.configuration.registry, specContext),
-         TestCaseExtensionInterceptor(context.configuration.registry),
+         TestEnabledCheckInterceptor( context.testConfigResolver),
+         BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
+         TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.configuration.registry),
          AssertionModeInterceptor(testConfigResolver),
          SoftAssertInterceptor(testConfigResolver),

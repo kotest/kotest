@@ -1,9 +1,16 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.engine.extensions.ExtensionRegistry
 
 /**
  * The [SpecConfigResolver] is responsible for returning the runtime value to use for a given
@@ -24,10 +31,32 @@ import io.kotest.core.test.TestCaseOrder
  * - kotest defaults
  */
 class SpecConfigResolver(
-   private val projectConfig: AbstractProjectConfig,
+   private val projectConfig: AbstractProjectConfig?,
+   private val registry: ExtensionRegistry,
 ) {
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
+
+   /**
+    * Resolves the [TestExecutionMode] for the given spec, first checking spec level config,
+    * before using project level default.
+    */
+   private fun testExecutionMode(spec: Spec): TestExecutionMode {
+      return spec.testExecutionMode
+         ?: spec.testExecutionMode()
+         ?: projectConfig?.testExecutionMode
+         ?: Defaults.TEST_EXECUTION_MODE
+   }
+
+   /**
+    * Resolves the [IsolationMode] for the given spec.
+    */
+   private fun isolationMode(spec: Spec): IsolationMode {
+      return spec.isolationMode()
+         ?: spec.isolationMode
+         ?: projectConfig?.isolationMode
+         ?: Defaults.ISOLATION_MODE
+   }
 
    /**
     * Returns the [TestCaseOrder] applicable for the root tests in this spec.
@@ -36,8 +65,8 @@ class SpecConfigResolver(
       return spec.testOrder
          ?: spec.testCaseOrder()
          ?: spec.defaultTestConfig?.testOrder
-         ?: PackageConfigLoader.configs(spec).firstNotNullOfOrNull { it.testCaseOrder }
-         ?: projectConfig.testCaseOrder
+         ?: packageConfigs(spec).firstNotNullOfOrNull { it.testCaseOrder }
+         ?: projectConfig?.testCaseOrder
          ?: Defaults.TEST_CASE_ORDER
    }
 
@@ -48,9 +77,32 @@ class SpecConfigResolver(
       return spec.duplicateTestNameMode
          ?: spec.duplicateTestNameMode()
          ?: spec.defaultTestConfig?.duplicateTestNameMode
-         ?: PackageConfigLoader.configs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
-         ?: projectConfig.duplicateTestNameMode
+         ?: packageConfigs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
+         ?: projectConfig?.duplicateTestNameMode
          ?: systemPropertyConfiguration.duplicateTestNameMode()
          ?: Defaults.DUPLICATE_TEST_NAME_MODE
+   }
+
+   fun coroutineDispatcherFactory(spec: Spec): CoroutineDispatcherFactory? {
+      return spec.coroutineDispatcherFactory
+         ?: spec.coroutineDispatcherFactory()
+         ?: projectConfig?.coroutineDispatcherFactory
+   }
+
+   /**
+    * Returns all [Extension]s applicable to a [Spec]. This includes extensions via
+    * function overrides, those registered explicitly in the spec as part of the DSL,
+    * and project wide extensions from configuration.
+    */
+   fun extensions(spec: Spec): List<Extension> {
+      return spec.extensions() + // overriding the extensions function in the spec
+         spec.functionOverrideCallbacks() + // dsl
+         spec.registeredExtensions() + // added to the spec via register
+         (projectConfig?.extensions() ?: emptyList()) + // extensions defined at the project level
+         registry.all() // globals
+   }
+
+   private fun packageConfigs(spec: Spec): List<AbstractPackageConfig> {
+      return PackageConfigLoader.configs(spec)
    }
 }

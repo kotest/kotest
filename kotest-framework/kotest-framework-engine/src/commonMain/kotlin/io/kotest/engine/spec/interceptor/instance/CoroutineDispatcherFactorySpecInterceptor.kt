@@ -1,10 +1,10 @@
 package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import io.kotest.mpp.bestName
@@ -20,7 +20,7 @@ import kotlin.coroutines.coroutineContext
  * Note: This interceptor should run before before/after callbacks so they are executed in the right context.
  */
 internal class CoroutineDispatcherFactorySpecInterceptor(
-   private val configuration: ProjectConfiguration,
+   private val specConfigResolver: SpecConfigResolver,
 ) : SpecInterceptor {
 
    private val logger = Logger(CoroutineDispatcherFactorySpecInterceptor::class)
@@ -33,10 +33,7 @@ internal class CoroutineDispatcherFactorySpecInterceptor(
          next.invoke(spec)
       } else {
 
-         val userFactory = spec.coroutineDispatcherFactory
-            ?: spec.coroutineDispatcherFactory()
-            ?: configuration.coroutineDispatcherFactory
-
+         val userFactory = specConfigResolver.coroutineDispatcherFactory(spec)
          if (userFactory == null) {
             logger.log { Pair(spec::class.bestName(), "No CoroutineDispatcherFactory set") }
             next.invoke(spec)

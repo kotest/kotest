@@ -2,15 +2,21 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.Platform
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
 import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.SpecConfigResolver
+import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.extensions.DefaultExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.TestExtensions
 
 /**
  * Internal pipeline that intercepts calls to the engine.
@@ -38,34 +44,51 @@ fun interface NextEngineInterceptor {
  */
 @KotestInternal
 data class EngineContext(
-  val suite: TestSuite,
-  val listener: TestEngineListener,
-  val tags: TagExpression,
-  val projectConfig: AbstractProjectConfig?,
-  val projectConfigResolver: ProjectConfigResolver,
-  val platform: Platform,
-  val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
+   val suite: TestSuite,
+   val listener: TestEngineListener,
+   val tags: TagExpression,
+   val registry: ExtensionRegistry,
+   val projectConfig: AbstractProjectConfig?,
+   val projectConfigResolver: ProjectConfigResolver,
+   val specConfigResolver: SpecConfigResolver,
+   val testConfigResolver: TestConfigResolver,
+   val platform: Platform,
+   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
-   constructor(projectConfig: AbstractProjectConfig, platform: Platform) : this(
-      TestSuite.empty,
-      NoopTestEngineListener,
-      TagExpression.Empty,
-      projectConfig,
-      ProjectConfigResolver(projectConfig),
-      platform,
-      mutableMapOf(),
-   )
+   internal fun specExtensions() = SpecExtensions(specConfigResolver, projectConfigResolver)
+   internal fun testExtensions() = TestExtensions(testConfigResolver)
 
    companion object {
+
+      operator fun invoke(projectConfig: AbstractProjectConfig, platform: Platform): EngineContext {
+         val registry = DefaultExtensionRegistry()
+         return EngineContext(
+            suite = TestSuite.empty,
+            listener = NoopTestEngineListener,
+            tags = TagExpression.Empty,
+            registry = registry,
+            projectConfig = projectConfig,
+            specConfigResolver = SpecConfigResolver(projectConfig, registry),
+            testConfigResolver = TestConfigResolver(projectConfig, registry),
+            projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
+            platform = platform,
+            state = mutableMapOf(),
+         )
+      }
+
+      private val registry = DefaultExtensionRegistry()
       val empty = EngineContext(
-         TestSuite.empty,
-         NoopTestEngineListener,
-         TagExpression.Empty,
-         null,
-         ProjectConfigResolver(null),
-         Platform.JVM,
-         mutableMapOf(),
+         suite = TestSuite.empty,
+         listener = NoopTestEngineListener,
+         tags = TagExpression.Empty,
+         registry = registry,
+         projectConfig = null,
+         specConfigResolver = SpecConfigResolver(null, registry),
+         testConfigResolver = TestConfigResolver(null, registry),
+         projectConfigResolver = ProjectConfigResolver(null, registry),
+         platform = Platform.JVM,
+         state = mutableMapOf(),
       )
    }
 
@@ -74,25 +97,31 @@ data class EngineContext(
     */
    fun mergeListener(listener: TestEngineListener): EngineContext {
       return EngineContext(
-         suite,
-         CompositeTestEngineListener(listOf(this.listener, listener)),
-         tags,
-         projectConfig,
-         projectConfigResolver,
-         platform,
-         state,
+         suite = suite,
+         listener = CompositeTestEngineListener(listOf(this.listener, listener)),
+         tags = tags,
+         registry = registry,
+         projectConfig = projectConfig,
+         projectConfigResolver = projectConfigResolver,
+         specConfigResolver = specConfigResolver,
+         testConfigResolver = testConfigResolver,
+         platform = platform,
+         state = state,
       )
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
       return EngineContext(
-         suite,
-         listener,
-         tags,
-         projectConfig,
-         projectConfigResolver,
-         platform,
-         state,
+         suite = suite,
+         listener = listener,
+         tags = tags,
+         registry = registry,
+         projectConfig = projectConfig,
+         projectConfigResolver = projectConfigResolver,
+         specConfigResolver = specConfigResolver,
+         testConfigResolver = testConfigResolver,
+         platform = platform,
+         state = state,
       )
    }
 
@@ -101,8 +130,11 @@ data class EngineContext(
          suite,
          listener,
          tags,
+         registry,
          projectConfig,
-         projectConfigResolver,
+         projectConfigResolver = projectConfigResolver,
+         specConfigResolver = specConfigResolver,
+         testConfigResolver = testConfigResolver,
          platform,
          state,
       )
@@ -113,8 +145,11 @@ data class EngineContext(
          suite,
          listener,
          tags,
+         registry,
          projectConfig,
-         projectConfigResolver,
+         projectConfigResolver = projectConfigResolver,
+         specConfigResolver = specConfigResolver,
+         testConfigResolver = testConfigResolver,
          platform,
          state,
       )
@@ -125,8 +160,11 @@ data class EngineContext(
          suite,
          listener,
          tags,
+         registry,
          projectConfig,
-         projectConfigResolver,
+         projectConfigResolver = projectConfigResolver,
+         specConfigResolver = specConfigResolver,
+         testConfigResolver = testConfigResolver,
          platform,
          state,
       )
@@ -142,8 +180,11 @@ internal fun ProjectContext.toEngineContext(
       suite,
       context.listener,
       tags,
+      context.registry,
       projectConfig,
-      ProjectConfigResolver(projectConfig),
+      ProjectConfigResolver(projectConfig, context.registry),
+      SpecConfigResolver(projectConfig, context.registry),
+      TestConfigResolver(projectConfig, context.registry),
       platform,
       state,
    )

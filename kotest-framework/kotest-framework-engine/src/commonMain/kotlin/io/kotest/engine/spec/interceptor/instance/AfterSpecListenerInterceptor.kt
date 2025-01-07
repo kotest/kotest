@@ -1,6 +1,5 @@
 package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -19,8 +18,8 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
  * are before spec listeners that have not been invoked.
  */
 internal class AfterSpecListenerInterceptor(
-  private val specContext: SpecContext,
-  private val registry: ExtensionRegistry,
+   private val specContext: SpecContext,
+   private val specExtensions: SpecExtensions,
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
@@ -31,7 +30,7 @@ internal class AfterSpecListenerInterceptor(
 
       return next.invoke(spec).flatMap { results ->
          if (specContext.beforeSpecInvoked.get()) {
-            SpecExtensions(registry)
+            specExtensions
                .afterSpec(spec)
                .map { results }
          } else {
