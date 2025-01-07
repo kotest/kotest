@@ -6,6 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.tags.TagExpressionBuilder
 
 /**
  * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
@@ -39,7 +40,7 @@ internal fun TestCase.isEnabledInternal(
 
    val extensions = listOf(
       TestConfigEnabledExtension(testConfigResolver),
-      TagsEnabledExtension(conf.runtimeTagExpression(), testConfigResolver),
+      TagsEnabledExtension(TagExpressionBuilder.build(projectConfigResolver), testConfigResolver),
       TestFilterEnabledExtension(projectConfigResolver),
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,

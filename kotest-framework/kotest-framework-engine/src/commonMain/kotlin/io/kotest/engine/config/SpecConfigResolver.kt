@@ -41,7 +41,7 @@ class SpecConfigResolver(
     * Resolves the [TestExecutionMode] for the given spec, first checking spec level config,
     * before using project level default.
     */
-   private fun testExecutionMode(spec: Spec): TestExecutionMode {
+   fun testExecutionMode(spec: Spec): TestExecutionMode {
       return spec.testExecutionMode
          ?: spec.testExecutionMode()
          ?: projectConfig?.testExecutionMode
@@ -51,7 +51,7 @@ class SpecConfigResolver(
    /**
     * Resolves the [IsolationMode] for the given spec.
     */
-   private fun isolationMode(spec: Spec): IsolationMode {
+   fun isolationMode(spec: Spec): IsolationMode {
       return spec.isolationMode()
          ?: spec.isolationMode
          ?: projectConfig?.isolationMode
