@@ -24,7 +24,7 @@ import kotlin.time.Duration
  *
  *  Order of precedence for each setting from highest priority to lowest:
  *
- * - project level defaults from [io.kotest.core.config.ProjectConfiguration]
+ * - project level defaults from [io.kotest.core.config.AbstractProjectConfig]
  * - system property overrides
  * - kotest defaults
  */

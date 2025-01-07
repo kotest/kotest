@@ -3,14 +3,13 @@ package io.kotest.engine
 import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.Platform
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
-import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.tags.TagExpression
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -68,9 +67,7 @@ class TestEngine(private val config: TestEngineConfig) {
             listener = config.listener,
             tags = tags,
             projectConfig = config.projectConfig,
-            projectConfigResolver = ProjectConfigResolver(config.projectConfig),
             platform = config.platform,
-            state = mutableMapOf()
          )
       )
    }

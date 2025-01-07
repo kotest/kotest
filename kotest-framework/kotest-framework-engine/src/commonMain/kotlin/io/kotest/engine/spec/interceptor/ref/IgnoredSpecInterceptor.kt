@@ -1,16 +1,15 @@
 package io.kotest.engine.spec.interceptor.ref
 
-import io.kotest.engine.flatMap
+import io.kotest.core.Logger
 import io.kotest.core.annotation.Ignored
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.flatMap
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.core.Logger
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import io.kotest.mpp.hasAnnotation
@@ -22,12 +21,11 @@ import io.kotest.mpp.hasAnnotation
  * Note: annotations are only available on the JVM.
  */
 internal class IgnoredSpecInterceptor(
-  private val listener: TestEngineListener,
-  registry: ExtensionRegistry,
+   private val listener: TestEngineListener,
+   private val specExtensions: SpecExtensions,
 ) : SpecRefInterceptor {
 
    private val logger = Logger(IgnoredSpecInterceptor::class)
-   private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
@@ -43,7 +41,7 @@ internal class IgnoredSpecInterceptor(
          }
 
          runCatching { listener.specIgnored(ref.kclass, reason) }
-            .flatMap { extensions.ignored(ref.kclass, reason) }
+            .flatMap { specExtensions.ignored(ref.kclass, reason) }
             .map { emptyMap() }
       } else {
          next.invoke(ref)

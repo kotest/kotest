@@ -6,7 +6,6 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.flatMap
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
@@ -23,8 +22,8 @@ import io.kotest.mpp.annotation
  */
 internal class RequiresTagInterceptor(
    private val listener: TestEngineListener,
-   private val registry: ExtensionRegistry,
    private val projectConfigResolver: ProjectConfigResolver,
+   private val specExtensions: SpecExtensions,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
@@ -37,7 +36,7 @@ internal class RequiresTagInterceptor(
                next.invoke(ref)
             } else {
                runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresTag") }
-                  .flatMap { SpecExtensions(registry).ignored(ref.kclass, "Disabled by @RequiresTag") }
+                  .flatMap { specExtensions.ignored(ref.kclass, "Disabled by @RequiresTag") }
                   .map { emptyMap() }
             }
          }

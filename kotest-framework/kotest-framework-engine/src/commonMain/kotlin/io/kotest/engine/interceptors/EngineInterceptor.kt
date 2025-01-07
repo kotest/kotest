@@ -77,6 +77,28 @@ data class EngineContext(
          )
       }
 
+      operator fun invoke(
+         suite: TestSuite,
+         listener: TestEngineListener,
+         tags: TagExpression,
+         projectConfig: AbstractProjectConfig?,
+         platform: Platform,
+      ): EngineContext {
+         val registry = DefaultExtensionRegistry()
+         return EngineContext(
+            suite = suite,
+            listener = listener,
+            tags = tags,
+            registry = registry,
+            projectConfig = projectConfig,
+            specConfigResolver = SpecConfigResolver(projectConfig, registry),
+            testConfigResolver = TestConfigResolver(projectConfig, registry),
+            projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
+            platform = platform,
+            state = mutableMapOf(),
+         )
+      }
+
       private val registry = DefaultExtensionRegistry()
       val empty = EngineContext(
          suite = TestSuite.empty,

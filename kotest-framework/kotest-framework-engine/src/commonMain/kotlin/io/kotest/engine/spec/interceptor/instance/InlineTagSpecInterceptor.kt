@@ -21,9 +21,8 @@ import io.kotest.engine.tags.parse
 internal class InlineTagSpecInterceptor(
    private val listener: TestEngineListener,
    private val projectConfigResolver: ProjectConfigResolver,
+   private val specExtensions: SpecExtensions,
 ) : SpecInterceptor {
-
-   private val extensions = SpecExtensions(projectConfiguration.registry)
 
    override suspend fun intercept(
       spec: Spec,
@@ -37,7 +36,7 @@ internal class InlineTagSpecInterceptor(
       return if (potentiallyActive) next.invoke(spec) else {
          val reason = "Ignored due to tags in spec: ${allTags.joinToString(", ")}"
          runCatching { listener.specIgnored(spec::class, reason) }
-            .flatMap { extensions.ignored(spec::class, reason) }
+            .flatMap { specExtensions.ignored(spec::class, reason) }
             .map { emptyMap() }
       }
    }

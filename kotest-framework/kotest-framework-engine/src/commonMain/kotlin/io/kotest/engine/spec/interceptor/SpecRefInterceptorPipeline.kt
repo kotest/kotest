@@ -54,22 +54,21 @@ internal class SpecRefInterceptorPipeline(
 
    private fun createCommonInterceptors(): List<SpecRefInterceptor> {
       return listOfNotNull(
-         RequiresPlatformInterceptor(listener, context, configuration.registry),
-         if (platform == Platform.JVM) EnabledIfInterceptor(listener, configuration.registry) else null,
-         IgnoredSpecInterceptor(listener, configuration.registry),
-         SpecFilterInterceptor(listener, configuration.registry),
+         RequiresPlatformInterceptor(listener, context),
+         if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
+         IgnoredSpecInterceptor(listener, context.specExtensions()),
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.registry) else null,
+         SpecFilterInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          SystemPropertySpecFilterInterceptor(listener, context.specExtensions()),
          TagsInterceptor(listener, context.projectConfigResolver),
-         if (platform == Platform.JVM) RequiresTagInterceptor(
-            listener,
-            configuration,
-         ) else null,
-         SpecRefExtensionInterceptor(configuration.registry),
+         if (platform == Platform.JVM)
+            RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
+         else null,
+         SpecRefExtensionInterceptor(context.projectConfigResolver),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(configuration.registry) else null,
-         PrepareSpecInterceptor(configuration.registry),
-         FinalizeSpecInterceptor(configuration.registry),
+         PrepareSpecInterceptor(context.specExtensions()),
+         FinalizeSpecInterceptor(context.specExtensions()),
       )
    }
 }
