@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
@@ -39,6 +40,7 @@ import kotlin.time.Duration
  * }
  * ```
  */
+@KotestInternal
 data class TestCase(
    // parseable, stable, consistent identifier for this test element
    val descriptor: Descriptor.TestDescriptor,
