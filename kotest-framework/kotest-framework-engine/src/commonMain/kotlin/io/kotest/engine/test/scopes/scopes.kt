@@ -35,7 +35,7 @@ fun createSingleInstanceTestScope(
    context: EngineContext,
 ): TestScope {
    return DuplicateNameHandlingTestScope(
-      testCase.spec.duplicateTestNameMode ?: context.configuration.duplicateTestNameMode,
+      context.specConfigResolver.duplicateTestNameMode(testCase.spec),
       InOrderTestScope(
          specContext,
          testCase,

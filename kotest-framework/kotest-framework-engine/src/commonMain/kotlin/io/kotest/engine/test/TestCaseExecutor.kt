@@ -62,13 +62,13 @@ internal class TestCaseExecutor(
       val interceptors = listOfNotNull(
          TestPathContextInterceptor,
          TestNameContextInterceptor,
-         TestFinishedInterceptor(listener,  context.testExtensions()),
-         InvocationCountCheckInterceptor( context.testConfigResolver),
+         TestFinishedInterceptor(listener, context.testExtensions()),
+         InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestEnabledCheckInterceptor( context.testConfigResolver),
+         TestEnabledCheckInterceptor(context.projectConfigResolver, context.specConfigResolver, context.testConfigResolver),
          BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),
