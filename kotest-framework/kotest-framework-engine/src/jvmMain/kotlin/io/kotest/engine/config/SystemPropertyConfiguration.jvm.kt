@@ -50,6 +50,9 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun ignorePrivateClasses(): Boolean? =
       syspropOrEnv(KotestEngineProperties.ignorePrivateClasses)?.let { it.uppercase() == "TRUE" }
 
+   override fun displayFullTestPath(): Boolean? =
+      syspropOrEnv(KotestEngineProperties.displayFullTestPath)?.let { it.uppercase() == "TRUE" }
+
    override fun duplicateTestNameMode(): DuplicateTestNameMode? =
       sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 

@@ -8,4 +8,4 @@ actual fun loadPackageConfig(packageName: String): AbstractPackageConfig? = null
 
 actual fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration = NoopSystemPropertyConfiguration
 
-internal actual fun loadPlatformDefaultExtensions(): List<Extension> = listOf(SystemPropertyTagExtension)
+actual fun loadPlatformDefaultExtensions(): List<Extension> = listOf(SystemPropertyTagExtension)

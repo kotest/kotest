@@ -29,6 +29,7 @@ interface SystemPropertyConfiguration {
    fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel?
    fun coroutineDebugProbes(): Boolean?
    fun ignorePrivateClasses(): Boolean?
+   fun displayFullTestPath(): Boolean?
 }
 
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
@@ -47,4 +48,5 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? = null
    override fun coroutineDebugProbes(): Boolean? = null
    override fun ignorePrivateClasses(): Boolean? = null
+   override fun displayFullTestPath(): Boolean? = null
 }

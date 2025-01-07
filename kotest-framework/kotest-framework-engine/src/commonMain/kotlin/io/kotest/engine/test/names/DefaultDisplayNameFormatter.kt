@@ -2,7 +2,6 @@ package io.kotest.engine.test.names
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.platform
 import io.kotest.core.test.TestCase
@@ -22,13 +21,9 @@ import kotlin.reflect.KClass
  * It takes into account [TestNameCase] settings.
  */
 class DefaultDisplayNameFormatter(
-   projectConfig: AbstractProjectConfig?,
+   private val projectConfigResolver: ProjectConfigResolver,
+   private val testConfigResolver: TestConfigResolver,
 ) : DisplayNameFormatter {
-
-   constructor() : this(null)
-
-   private val projectConfigResolver = ProjectConfigResolver(projectConfig)
-   private val testConfigResolver = TestConfigResolver(projectConfig)
 
    override fun format(testCase: TestCase): String {
 

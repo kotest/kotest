@@ -73,7 +73,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
 
    override suspend fun engineInitialized(context: EngineContext) {
 
-      formatter = getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
+      formatter = getFallbackDisplayNameFormatter(context.projectConfigResolver, context.testConfigResolver)
 
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
