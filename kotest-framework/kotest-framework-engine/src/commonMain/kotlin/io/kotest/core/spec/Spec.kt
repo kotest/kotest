@@ -257,6 +257,7 @@ abstract class Spec : TestConfiguration() {
     *
     * If not specified, then defaults to the global setting.
     */
+   @JsName("duplicateTestNameMode_js")
    var duplicateTestNameMode: DuplicateTestNameMode? = null
 
    /**
