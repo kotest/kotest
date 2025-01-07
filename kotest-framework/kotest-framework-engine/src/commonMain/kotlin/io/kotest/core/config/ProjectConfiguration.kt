@@ -11,9 +11,11 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.KotestEngineProperties
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.mpp.sysprop
 import kotlin.time.Duration
 
 /**
@@ -282,7 +284,7 @@ class ProjectConfiguration {
     */
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
-   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+   var displayFullTestPath: Boolean = sysprop(KotestEngineProperties.displayFullTestPath, Defaults.displayFullTestPath)
 
    var allowOutOfOrderCallbacks: Boolean = Defaults.allowOutOfOrderCallbacks
 

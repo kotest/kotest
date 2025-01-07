@@ -76,6 +76,8 @@ object KotestEngineProperties {
 
    const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
 
+   const val displayFullTestPath = "kotest.framework.testname.display.full.path"
+
    /**
     * Specify a fully qualified name to use for project config.
     * This class will be instantiated via reflection.

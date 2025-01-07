@@ -3398,6 +3398,7 @@ public final class io/kotest/engine/KotestEngineProperties {
 	public static final field disableSourceRef Ljava/lang/String;
 	public static final field disableTestNestedJarScanning Ljava/lang/String;
 	public static final field discoveryClasspathFallbackEnabled Ljava/lang/String;
+	public static final field displayFullTestPath Ljava/lang/String;
 	public static final field dumpConfig Ljava/lang/String;
 	public static final field duplicateTestNameMode Ljava/lang/String;
 	public static final field excludeTags Ljava/lang/String;
