@@ -62,7 +62,7 @@ internal class SpecInterceptorPipeline(
          CoroutineDispatcherFactorySpecInterceptor(context.specConfigResolver),
          ProjectContextInterceptor(this.context.toProjectContext()),
          SpecExtensionInterceptor(context.specExtensions()),
-         InlineTagSpecInterceptor(listener, context.projectConfigResolver),
+         InlineTagSpecInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          BeforeSpecFailureInterceptor(specContext),
          AfterSpecListenerInterceptor(specContext, context.specExtensions()),
       )

@@ -22,9 +22,8 @@ import io.kotest.engine.tags.parse
 internal class TagsInterceptor(
    private val listener: TestEngineListener,
    private val projectConfigResolver: ProjectConfigResolver,
+   private val specExtensions: SpecExtensions,
 ) : SpecRefInterceptor {
-
-   private val extensions = SpecExtensions(conf.registry)
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       val potentiallyActive = TagExpressionResult.Exclude != TagExpressionBuilder.build(projectConfigResolver)
@@ -35,7 +34,7 @@ internal class TagsInterceptor(
          next.invoke(ref)
       } else {
          runCatching { listener.specIgnored(ref.kclass, null) }
-            .flatMap { extensions.ignored(ref.kclass, "Skipped by tags") }
+            .flatMap { specExtensions.ignored(ref.kclass, "Skipped by tags") }
             .map { emptyMap() }
       }
    }

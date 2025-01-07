@@ -14,7 +14,9 @@ import kotlin.time.Duration
  * Wraps the test function checking for assertion mode,
  * only if the test is a [TestType.Test].
  */
-internal class AssertionModeInterceptor(private val testConfigResolver: TestConfigResolver) : TestExecutionInterceptor {
+internal class AssertionModeInterceptor(
+   private val testConfigResolver: TestConfigResolver,
+) : TestExecutionInterceptor {
 
    override suspend fun intercept(
       testCase: TestCase,

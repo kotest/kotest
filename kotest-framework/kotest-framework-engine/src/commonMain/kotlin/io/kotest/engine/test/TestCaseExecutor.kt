@@ -71,27 +71,27 @@ internal class TestCaseExecutor(
          TestEnabledCheckInterceptor( context.testConfigResolver),
          BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
-         LifecycleInterceptor(listener, timeMark, context.configuration.registry),
-         AssertionModeInterceptor(testConfigResolver),
-         SoftAssertInterceptor(testConfigResolver),
-         CoroutineLoggingInterceptor(projectConfigResolver),
+         LifecycleInterceptor(listener, timeMark, context.testExtensions()),
+         AssertionModeInterceptor(context.testConfigResolver),
+         SoftAssertInterceptor(context.testConfigResolver),
+         CoroutineLoggingInterceptor(context.projectConfigResolver, context.testExtensions()),
          if (platform == Platform.JVM)
-            blockedThreadTimeoutInterceptor(timeMark, testConfigResolver)
+            blockedThreadTimeoutInterceptor(timeMark, context.testConfigResolver)
          else null,
-         TimeoutInterceptor(timeMark, testConfigResolver),
+         TimeoutInterceptor(timeMark, context.testConfigResolver),
          ExpectExceptionTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
-            context.configuration.registry,
             timeMark,
             listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
                if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
                if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
             ),
-            testConfigResolver
+            context.testConfigResolver,
+            context.testExtensions()
          ),
-         CoroutineDebugProbeInterceptor(testConfigResolver),
+         CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
 
       val innerExecute = NextTestExecutionInterceptor { tc, scope ->

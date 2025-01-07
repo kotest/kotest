@@ -5,7 +5,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.replay
-import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
@@ -18,13 +17,12 @@ import kotlin.time.TimeMark
  * Invokes downstream interceptors one or more times depending on the invocation count in test config.
  */
 internal class TestInvocationInterceptor(
-   registry: ExtensionRegistry,
    private val timeMark: TimeMark,
    private val invocationInterceptors: List<TestExecutionInterceptor>,
    private val testConfigResolver: TestConfigResolver,
+   private val testExtensions: TestExtensions,
 ) : TestExecutionInterceptor {
 
-   private val extensions = TestExtensions(registry)
    private val logger = Logger(TestInvocationInterceptor::class)
 
    override suspend fun intercept(
@@ -91,10 +89,10 @@ internal class TestInvocationInterceptor(
    ) {
       val executeWithBeforeAfter = NextTestExecutionInterceptor { tc, sc ->
          try {
-            extensions.beforeInvocation(tc, times)
+            testExtensions.beforeInvocation(tc, times)
             test(tc, sc)
          } finally {
-            extensions.afterInvocation(tc, times)
+            testExtensions.afterInvocation(tc, times)
          }
       }
 

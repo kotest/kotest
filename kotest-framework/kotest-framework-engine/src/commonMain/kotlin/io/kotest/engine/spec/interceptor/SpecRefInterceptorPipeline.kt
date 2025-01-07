@@ -60,7 +60,7 @@ internal class SpecRefInterceptorPipeline(
          if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.registry) else null,
          SpecFilterInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          SystemPropertySpecFilterInterceptor(listener, context.specExtensions()),
-         TagsInterceptor(listener, context.projectConfigResolver),
+         TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          if (platform == Platform.JVM)
             RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
          else null,
