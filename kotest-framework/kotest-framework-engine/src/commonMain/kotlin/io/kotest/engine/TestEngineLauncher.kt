@@ -11,6 +11,9 @@ import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.loadProjectConfigFromReflection
+import io.kotest.engine.extensions.DefaultExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
@@ -33,17 +36,12 @@ class TestEngineLauncher(
    private val config: AbstractProjectConfig?,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
+   private val registry: ExtensionRegistry,
 ) {
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(
-      Platform.JVM,
-      NoopTestEngineListener,
-      null,
-      emptyList(),
-      null,
-   )
+   constructor() : this(NoopTestEngineListener)
 
    constructor(listener: TestEngineListener) : this(
       Platform.JVM,
@@ -51,6 +49,7 @@ class TestEngineLauncher(
       null,
       emptyList(),
       null,
+      DefaultExtensionRegistry(),
    )
 
    /**
@@ -70,6 +69,7 @@ class TestEngineLauncher(
          config = config,
          refs = refs,
          tagExpression = tagExpression,
+         registry = registry,
       )
    }
 
@@ -80,6 +80,7 @@ class TestEngineLauncher(
          config = config,
          refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
+         registry = registry,
       )
    }
 
@@ -91,6 +92,7 @@ class TestEngineLauncher(
          config = config,
          refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
+         registry = registry,
       )
    }
 
@@ -104,6 +106,7 @@ class TestEngineLauncher(
          config = projectConfig,
          refs = refs,
          tagExpression = tagExpression,
+         registry = registry,
       )
    }
 
@@ -124,20 +127,21 @@ class TestEngineLauncher(
          config = config,
          refs = refs,
          tagExpression = expression,
+         registry = registry,
       )
    }
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
     */
-   fun withExtensions(vararg extensions: Extension): TestEngineLauncher = withExtensions(extensions.toList())
+   fun withExtensions(vararg extensions: Extension): TestEngineLauncher =
+      withExtensions(extensions.toList())
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
     */
    fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
-      TODO()
-//      extensions.forEach { projectConfiguration.registry.add(it) }
+      extensions.forEach { registry.add(it) }
       return this
    }
 
@@ -153,13 +157,14 @@ class TestEngineLauncher(
          config = config,
          refs = refs,
          tagExpression = tagExpression,
+         registry = registry,
       )
    }
 
    fun toConfig(): TestEngineConfig {
 
       // if the engine was configured with explicit tags, we register those via a tag extension
-//      tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
+      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
@@ -171,6 +176,7 @@ class TestEngineLauncher(
          projectConfig = config,
          tagExpression,
          platform,
+         registry,
       )
    }
 

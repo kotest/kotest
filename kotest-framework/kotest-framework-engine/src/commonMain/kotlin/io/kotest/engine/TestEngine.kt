@@ -5,6 +5,7 @@ import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.NextEngineInterceptor
@@ -29,6 +30,7 @@ data class TestEngineConfig(
    val projectConfig: AbstractProjectConfig?,
    val explicitTags: TagExpression?,
    val platform: Platform,
+   val registry: ExtensionRegistry,
 )
 
 /**
@@ -59,12 +61,13 @@ class TestEngine(private val config: TestEngineConfig) {
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
       return execute(
-         EngineContext(
+         EngineContext.invoke(
             suite = suite,
             listener = config.listener,
             tags = tags,
             projectConfig = config.projectConfig,
             platform = config.platform,
+            registry = config.registry,
          )
       )
    }

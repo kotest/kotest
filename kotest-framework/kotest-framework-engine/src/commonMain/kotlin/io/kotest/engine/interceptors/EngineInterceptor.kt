@@ -83,8 +83,8 @@ data class EngineContext(
          tags: TagExpression,
          projectConfig: AbstractProjectConfig?,
          platform: Platform,
+         registry: ExtensionRegistry,
       ): EngineContext {
-         val registry = DefaultExtensionRegistry()
          return EngineContext(
             suite = suite,
             listener = listener,
