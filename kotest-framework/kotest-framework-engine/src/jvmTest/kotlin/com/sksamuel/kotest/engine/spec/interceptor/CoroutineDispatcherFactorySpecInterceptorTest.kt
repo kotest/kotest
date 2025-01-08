@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase

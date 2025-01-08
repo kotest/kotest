@@ -32,11 +32,12 @@ import io.kotest.engine.extensions.ExtensionRegistry
  * - kotest defaults
  */
 class SpecConfigResolver(
-   private val projectConfig: AbstractProjectConfig?,
+   private val config: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
 ) {
 
-   constructor() : this(null, EmptyExtensionRegistry)
+   constructor() : this(null)
+   constructor(config: AbstractProjectConfig?) : this(config, EmptyExtensionRegistry)
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 
@@ -47,7 +48,7 @@ class SpecConfigResolver(
    fun testExecutionMode(spec: Spec): TestExecutionMode {
       return spec.testExecutionMode
          ?: spec.testExecutionMode()
-         ?: projectConfig?.testExecutionMode
+         ?: config?.testExecutionMode
          ?: Defaults.TEST_EXECUTION_MODE
    }
 
@@ -57,7 +58,7 @@ class SpecConfigResolver(
    fun isolationMode(spec: Spec): IsolationMode {
       return spec.isolationMode()
          ?: spec.isolationMode
-         ?: projectConfig?.isolationMode
+         ?: config?.isolationMode
          ?: Defaults.ISOLATION_MODE
    }
 
@@ -69,7 +70,7 @@ class SpecConfigResolver(
          ?: spec.testCaseOrder()
          ?: spec.defaultTestConfig?.testOrder
          ?: packageConfigs(spec).firstNotNullOfOrNull { it.testCaseOrder }
-         ?: projectConfig?.testCaseOrder
+         ?: config?.testCaseOrder
          ?: Defaults.TEST_CASE_ORDER
    }
 
@@ -81,7 +82,7 @@ class SpecConfigResolver(
          ?: spec.duplicateTestNameMode()
          ?: spec.defaultTestConfig?.duplicateTestNameMode
          ?: packageConfigs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
-         ?: projectConfig?.duplicateTestNameMode
+         ?: config?.duplicateTestNameMode
          ?: systemPropertyConfiguration.duplicateTestNameMode()
          ?: Defaults.DUPLICATE_TEST_NAME_MODE
    }
@@ -89,7 +90,7 @@ class SpecConfigResolver(
    fun coroutineDispatcherFactory(spec: Spec): CoroutineDispatcherFactory? {
       return spec.coroutineDispatcherFactory
          ?: spec.coroutineDispatcherFactory()
-         ?: projectConfig?.coroutineDispatcherFactory
+         ?: config?.coroutineDispatcherFactory
    }
 
    /**
@@ -101,7 +102,7 @@ class SpecConfigResolver(
       return spec.extensions() + // overriding the extensions function in the spec
          spec.functionOverrideCallbacks() + // dsl
          spec.registeredExtensions() + // added to the spec via register
-         (projectConfig?.extensions() ?: emptyList()) + // extensions defined at the project level
+         (config?.extensions() ?: emptyList()) + // extensions defined at the project level
          registry.all() // globals
    }
 

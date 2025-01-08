@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -24,8 +24,9 @@ class AfterSpecListenerTest : FunSpec() {
 
          counter.set(0)
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyAfterSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(MyAfterSpecListener)
+         }
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
@@ -51,8 +52,9 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should NOT be triggered for a spec without defined tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyAfterSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(MyAfterSpecListener)
+         }
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -65,8 +67,9 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should NOT be triggered for a spec without active tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyAfterSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(MyAfterSpecListener)
+         }
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)

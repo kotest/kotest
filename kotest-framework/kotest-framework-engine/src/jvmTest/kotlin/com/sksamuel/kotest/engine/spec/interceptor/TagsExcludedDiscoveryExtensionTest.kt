@@ -5,7 +5,6 @@ import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Tags
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.ExpectSpec

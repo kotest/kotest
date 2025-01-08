@@ -1,7 +1,8 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
@@ -30,8 +31,9 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(projectListener)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(projectListener)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)

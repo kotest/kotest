@@ -39,7 +39,8 @@ class TestConfigResolver(
    private val registry: ExtensionRegistry,
 ) {
 
-   constructor() : this(null, EmptyExtensionRegistry)
+   constructor() : this(null)
+   constructor(config: AbstractProjectConfig?) : this(config, EmptyExtensionRegistry)
 
    private val disabledByEnabledIf = Enabled.disabled("Disabled by enabledIf flag in config")
    private val disabledByTestConfig = Enabled.disabled("Disabled by enabled flag in config")
