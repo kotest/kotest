@@ -1,5 +1,5 @@
 public final class io/kotest/framework/discovery/Discovery {
-	public fun <init> (Lio/kotest/core/config/ProjectConfiguration;)V
+	public fun <init> ()V
 	public final fun discover (Lio/kotest/framework/discovery/DiscoveryRequest;)Lio/kotest/framework/discovery/DiscoveryResult;
 }
 
