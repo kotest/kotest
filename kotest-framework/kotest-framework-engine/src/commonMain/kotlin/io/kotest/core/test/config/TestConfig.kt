@@ -4,6 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
@@ -86,5 +87,13 @@ data class TestConfig(
          "Invocation timeout must not exceed the test case timeout: " +
             "$invocationTimeout (invocationTimeout) > $timeout (timeout)"
       }
+   }
+
+   /**
+    * Returns a copy of this [io.kotest.core.test.config.TestConfig] with an enabledIf that
+    * returns disabled due to an xmethod override.
+    */
+   fun withXDisabled(): TestConfig {
+      return copy(enabledOrReasonIf = { Enabled.disabled("Disabled by xmethod") })
    }
 }

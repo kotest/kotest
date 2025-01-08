@@ -54,6 +54,7 @@ interface ContainerScope : TestScope {
       registerTestCase(
          NestedTest(
             name = name,
+            disabled = disabled,
             config = config?.copy(enabledOrReasonIf = { Enabled.disabledByXMethod })
                ?: TestConfig(enabledOrReasonIf = { Enabled.disabledByXMethod }),
             test = test,

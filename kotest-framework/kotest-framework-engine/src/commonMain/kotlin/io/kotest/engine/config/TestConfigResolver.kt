@@ -40,7 +40,6 @@ class TestConfigResolver(
 
    private val disabledByEnabledIf = Enabled.disabled("Disabled by enabledIf flag in config")
    private val disabledByTestConfig = Enabled.disabled("Disabled by enabled flag in config")
-   private val disabledByXMethod = Enabled.disabled("Disabled by xmethod")
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 
@@ -166,8 +165,6 @@ class TestConfigResolver(
       val projectEnabledOrReasonIf = projectConfig?.enabledOrReasonIf
       return { testCase ->
          when {
-            // if xdisabled we always override any other enabled/disabled flags
-            xdisabled -> disabledByXMethod
             disabledByTestConfig == false -> this@TestConfigResolver.disabledByTestConfig
             testEnabledIf != null -> if (testEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
             testEnabledOrReasonIf != null -> testEnabledOrReasonIf.invoke(testCase)

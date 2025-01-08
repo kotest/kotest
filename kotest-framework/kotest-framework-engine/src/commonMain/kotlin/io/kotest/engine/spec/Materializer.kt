@@ -49,6 +49,8 @@ class Materializer(
          // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
          val resolvedName = resolvedName(uniqueTestName, null)
 
+         val config = if (rootTest.disabled == true) rootTest.config?.withXDisabled() else rootTest.config
+
          TestCase(
             descriptor = spec::class.toDescriptor().append(resolvedName),
             name = resolvedName,
@@ -56,13 +58,7 @@ class Materializer(
             type = rootTest.type,
             source = rootTest.source,
             test = rootTest.test,
-            config = rootTest.config,
-//            config = TestConfigResolver(configuration).resolve(
-//               testConfig = rootTest.config,
-//               xdisabled = rootTest.disabled,
-//               parent = null,
-//               spec = spec,
-//            ),
+            config = config,
             factoryId = rootTest.factoryId,
          )
       }
@@ -87,6 +83,7 @@ class Materializer(
 
       // Note: teamcity listeners (aka intellij, etc) have an issue with a period in the name.
       // Therefore, we must escape all names as the test is registered.
+      val config = if (nested.disabled == true) nested.config?.withXDisabled() else nested.config
 
       return TestCase(
          descriptor = parent.descriptor.append(resolvedName),
@@ -96,12 +93,6 @@ class Materializer(
          source = nested.source,
          type = nested.type,
          config = nested.config,
-//         config = TestConfigResolver(configuration).resolve(
-//            testConfig = nested.config,
-//            xdisabled = nested.disabled,
-//            parent = parent,
-//            spec = parent.spec,
-//         ),
          factoryId = parent.factoryId,
          parent = parent,
       )
