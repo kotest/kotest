@@ -16,5 +16,4 @@ internal expect fun loadPlatformDefaultExtensions(): List<Extension>
  *
  * Only applies on the JVM.
  */
-@JVMOnly
-internal expect fun loadProjectConfigFromClassname(): AbstractProjectConfig?
+internal expect fun loadProjectConfigFromReflection(): AbstractProjectConfig?

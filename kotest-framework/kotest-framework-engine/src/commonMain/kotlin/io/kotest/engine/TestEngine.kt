@@ -41,9 +41,6 @@ class TestEngine(private val config: TestEngineConfig) {
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
-    *
-    * It is recommended that this method is not invoked, but instead the engine
-    * is launched via the [TestEngineLauncher].
     */
    internal suspend fun execute(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Initiating test suite with ${suite.specs.size} specs") }
@@ -58,7 +55,7 @@ class TestEngine(private val config: TestEngineConfig) {
          NextEngineInterceptor { context -> extension.intercept(context, next) }
       }
 
-      val tags: TagExpression = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
+      val tags = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
       return execute(

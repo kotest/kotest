@@ -6,7 +6,7 @@ import io.kotest.core.extensions.Extension
 
 internal actual fun loadPlatformDefaultExtensions(): List<Extension> = emptyList()
 
-internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = null
+internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = null
 
 internal actual fun loadPackageConfig(packageName: String): AbstractPackageConfig? = null
 

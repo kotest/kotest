@@ -30,13 +30,11 @@ data class DiscoveryResult(
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
  */
-class Discovery(
-) {
+class Discovery {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // filter functions
-   //private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }

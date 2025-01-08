@@ -5,14 +5,17 @@ import io.kotest.core.log
 import io.kotest.engine.instantiateOrObject
 import kotlin.reflect.KClass
 
-internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = ProjectConfigLoader.load()
+internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = ProjectConfigLoader.detect()
 
-internal object ProjectConfigLoader {
+object ProjectConfigLoader {
 
    const val DEFAULT_CONFIG_FQN = "io.kotest.provided.ProjectConfig"
 
+   /**
+    * Returns an [AbstractProjectConfig] instance if one is found on the classpath and loaded by reflection.
+    */
    @Suppress("UNCHECKED_CAST")
-   fun load(): AbstractProjectConfig? {
+   fun detect(): AbstractProjectConfig? {
       val fqn = fqn()
       log { "Loading project configs from fqn: $fqn" }
       val kclass = runCatching { Class.forName(fqn).kotlin }.getOrNull() ?: return null

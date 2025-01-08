@@ -1,11 +1,9 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.loadProjectConfigsJVM
+import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
@@ -58,6 +56,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
+      val config = ProjectConfigLoader.detect()
+
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
             JUnitTestEngineListener(
@@ -65,15 +65,15 @@ class KotestJunitPlatformTestEngine : TestEngine {
                   request.engineExecutionListener
                ),
                root = root,
-               formatter = FallbackDisplayNameFormatter.default(root.configuration)
+               formatter = FallbackDisplayNameFormatter.default(config)
             )
          )
       )
 
       TestEngineLauncher(listener)
-         .withInitializedConfiguration(root.configuration)
          .withExtensions(root.testFilters)
          .withClasses(root.classes)
+         .withProjectConfig(config)
          .launch()
    }
 
@@ -91,22 +91,19 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
    ): KotestEngineDescriptor {
+
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
       logger.log { request.string() }
-
-      val configuration = ConfigManager.initialize(ProjectConfiguration()) {
-         loadProjectConfigsJVM()
-      }
 
       // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
       if (!isKotest)
-         return createEmptyEngineDescriptor(uniqueId, configuration)
+         return createEmptyEngineDescriptor(uniqueId)
 
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
       val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-         val discovery = Discovery(configuration)
+         val discovery = Discovery()
          val result = discovery.discover(discoveryRequest)
 
          if (result.specs.isNotEmpty()) {
@@ -115,7 +112,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
                .map { it.trim() }
                .filter { it.isNotBlank() }
                .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
-               .forEach { configuration.registry.add(it) }
+               .forEach { TODO() } // configuration.registry.add(it) }
          }
 
          val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
@@ -123,13 +120,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
          createEngineDescriptor(
             uniqueId,
-            configuration,
             result.specs,
             gradleClassMethodTestFilter,
             result.error,
          )
       } else {
-         createEmptyEngineDescriptor(uniqueId, configuration)
+         createEmptyEngineDescriptor(uniqueId)
       }
 
       logger.log { "JUnit discovery completed [descriptor=$descriptor]" }
@@ -139,8 +135,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    // a method selector is passed by intellij to run just a single method inside a test file
    // this happens for example, when trying to run a junit test alongside kotest tests,
-   // and kotest will then run all other tests.
-   // therefore, no detected selectors and the presence of a MethodSelector or UniqueIdSelector means we must run no tests in KT.
+   // therefore, if we have a MethodSelector or UniqueIdSelector and nothing else, then we must run no tests in KT.
    private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest): Boolean {
 
       if (discoveryRequest.selectors.isNotEmpty()) {

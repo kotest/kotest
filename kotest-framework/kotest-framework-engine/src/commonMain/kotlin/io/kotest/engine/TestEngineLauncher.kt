@@ -2,17 +2,19 @@
 
 package io.kotest.engine
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.Logger
 import io.kotest.core.Platform
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
+import io.kotest.engine.config.loadProjectConfigFromReflection
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.tags.TagExpression
 import kotlin.reflect.KClass
 
 /**
@@ -50,14 +52,14 @@ class TestEngineLauncher(
    )
 
    /**
-    * Convenience function to be called by the native code gen to set up the TeamCity listener.
+    * Convenience function to be called by the compiler plugin to set up the TeamCity listener.
     */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
    }
 
    /**
-    * Replace the listener with the given value.
+    * Sets the [TestEngineListener] to be notified of [TestEngine] events.
     */
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
@@ -91,7 +93,7 @@ class TestEngineLauncher(
    }
 
    /**
-    * Sets a [AbstractProjectConfig] that was detected by the compiler plugin.
+    * Sets a [AbstractProjectConfig] that was detected by the compiler plugin or loaded programmatically.
     */
    fun withProjectConfig(projectConfig: AbstractProjectConfig?): TestEngineLauncher {
       return TestEngineLauncher(
@@ -101,6 +103,16 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = tagExpression,
       )
+   }
+
+   /**
+    * Sets a [AbstractProjectConfig] that was detected by reflection on the JVM.
+    * This is a no-op on non-JVM platforms.
+    */
+   @JVMOnly
+   fun withDetectedProjectConfig(): TestEngineLauncher {
+      val config = loadProjectConfigFromReflection()
+      return withProjectConfig(config)
    }
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
