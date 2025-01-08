@@ -10,6 +10,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import kotlin.time.Duration
 
@@ -32,6 +33,8 @@ class ProjectConfigResolver(
    private val config: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
 ) {
+
+   constructor() : this(null, EmptyExtensionRegistry)
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 

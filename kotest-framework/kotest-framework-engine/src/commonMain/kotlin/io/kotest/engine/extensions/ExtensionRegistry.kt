@@ -39,3 +39,21 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    override fun isEmpty(): Boolean = extensions.isEmpty()
    override fun isNotEmpty(): Boolean = extensions.isNotEmpty()
 }
+
+object EmptyExtensionRegistry : ExtensionRegistry {
+
+   override fun all(): List<Extension> = emptyList()
+
+   override fun add(extension: Extension) {
+      throw UnsupportedOperationException("Cannot add to an empty extension registry")
+   }
+
+   override fun remove(extension: Extension) {
+   }
+
+   override fun clear() {
+   }
+
+   override fun isEmpty(): Boolean = true
+   override fun isNotEmpty(): Boolean = false
+}

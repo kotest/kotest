@@ -12,6 +12,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.config.TestConfig
+import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
@@ -37,6 +38,8 @@ class TestConfigResolver(
    private val projectConfig: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
 ) {
+
+   constructor() : this(null, EmptyExtensionRegistry)
 
    private val disabledByEnabledIf = Enabled.disabled("Disabled by enabledIf flag in config")
    private val disabledByTestConfig = Enabled.disabled("Disabled by enabled flag in config")

@@ -1,10 +1,11 @@
 package io.kotest.extensions.allure
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.TestPath
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
@@ -27,9 +28,10 @@ class AllureWriter {
    }
 
    private val formatter = FallbackDisplayNameFormatter(
-      DefaultDisplayNameFormatter(ProjectConfiguration().apply {
-         includeTestScopeAffixes = true
-      })
+      fallback = DefaultDisplayNameFormatter(
+         projectConfigResolver = ProjectConfigResolver(),
+         testConfigResolver = TestConfigResolver()
+      )
    )
 
    /**
