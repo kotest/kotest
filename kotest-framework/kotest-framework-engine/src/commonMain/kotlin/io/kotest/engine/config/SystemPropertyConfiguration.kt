@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
@@ -30,6 +31,7 @@ interface SystemPropertyConfiguration {
    fun coroutineDebugProbes(): Boolean?
    fun ignorePrivateClasses(): Boolean?
    fun displayFullTestPath(): Boolean?
+   fun logLevel(): LogLevel?
 }
 
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
@@ -49,4 +51,5 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun coroutineDebugProbes(): Boolean? = null
    override fun ignorePrivateClasses(): Boolean? = null
    override fun displayFullTestPath(): Boolean? = null
+   override fun logLevel(): LogLevel? = null
 }

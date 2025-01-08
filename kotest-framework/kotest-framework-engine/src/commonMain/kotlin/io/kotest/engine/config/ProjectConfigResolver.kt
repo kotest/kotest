@@ -49,6 +49,7 @@ class ProjectConfigResolver(
 
    fun logLevel(): LogLevel {
       return config?.logLevel
+         ?: systemPropertyConfiguration.logLevel()
          ?: Defaults.LOG_LEVEL
    }
 

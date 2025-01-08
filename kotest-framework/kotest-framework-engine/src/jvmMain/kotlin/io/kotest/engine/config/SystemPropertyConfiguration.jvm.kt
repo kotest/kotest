@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
@@ -59,6 +60,10 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun projectTimeout(): Duration? {
       val d = sysprop(KotestEngineProperties.projectTimeout)?.toLong() ?: return null
       return d.milliseconds
+   }
+
+   override fun logLevel(): LogLevel? {
+      return sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
    }
 
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? {
