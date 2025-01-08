@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
@@ -22,8 +22,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener)
+      }
+
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -44,9 +46,9 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener1)
-      c.registry.add(listener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener1, listener2)
+      }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -62,8 +64,9 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener)
+      }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -84,9 +87,9 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener1)
-      c.registry.add(listener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener1, listener2)
+      }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -106,9 +109,9 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener1)
-      c.registry.add(listener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener1, listener2)
+      }
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -126,9 +129,9 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = ProjectConfiguration()
-      c.registry.add(listener1)
-      c.registry.add(listener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(listener1, listener2)
+      }
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }

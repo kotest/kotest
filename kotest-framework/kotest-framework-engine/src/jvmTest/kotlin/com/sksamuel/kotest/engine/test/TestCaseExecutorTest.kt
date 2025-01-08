@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.test
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
