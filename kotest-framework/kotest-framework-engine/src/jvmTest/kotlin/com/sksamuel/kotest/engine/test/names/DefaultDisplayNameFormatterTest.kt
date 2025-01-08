@@ -17,6 +17,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.IncludeTestScopeAffixes
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
@@ -140,7 +141,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
          val c = object : AbstractProjectConfig() {
-            override val includeTestScopeAffixes = true
+            override val includeTestScopeAffixes = IncludeTestScopeAffixes.ALWAYS
          }
          DefaultDisplayNameFormatter(ProjectConfigResolver(c), TestConfigResolver(c)).format(tc) shouldBe "prefixfoo"
       }
@@ -173,7 +174,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          )
 
          val c = object : AbstractProjectConfig() {
-            override val includeTestScopeAffixes = true
+            override val includeTestScopeAffixes = IncludeTestScopeAffixes.ALWAYS
          }
          DefaultDisplayNameFormatter(ProjectConfigResolver(c), TestConfigResolver(c)).format(tc) shouldBe "foosuffix"
       }

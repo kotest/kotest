@@ -68,7 +68,7 @@ object Defaults {
 
    const val FAILFAST: Boolean = false
 
-   const val DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES: Boolean = false
+   val DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES = IncludeTestScopeAffixes.STYLE_DEFAULT
 
    const val WRITE_SPEC_FAILURE_FILE = false
 
@@ -79,4 +79,10 @@ object Defaults {
    val SPEC_EXECUTION_ORDER = SpecExecutionOrder.Lexicographic
 
    const val ALLOW_OUT_OF_ORDER_CALLBACKS = false
+}
+
+enum class IncludeTestScopeAffixes {
+   STYLE_DEFAULT,
+   NEVER,
+   ALWAYS,
 }

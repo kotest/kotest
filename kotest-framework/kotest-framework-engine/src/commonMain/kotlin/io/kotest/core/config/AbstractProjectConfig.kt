@@ -17,6 +17,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.config.Defaults
+import io.kotest.engine.config.IncludeTestScopeAffixes
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import kotlin.time.Duration
 
@@ -289,7 +290,7 @@ abstract class AbstractProjectConfig {
     *
     * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
     */
-   open val includeTestScopeAffixes: Boolean? = null
+   open val includeTestScopeAffixes: IncludeTestScopeAffixes? = null
 
    /**
     * If set, then this is the maximum number of times we will retry a test if it fails.

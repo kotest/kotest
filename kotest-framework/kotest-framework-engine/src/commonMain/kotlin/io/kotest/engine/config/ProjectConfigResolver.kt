@@ -80,8 +80,11 @@ class ProjectConfigResolver(
     */
    fun includeTestScopeAffixes(testCase: TestCase): Boolean {
       val include = config?.includeTestScopeAffixes ?: Defaults.DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES
-      return include && testCase.name.defaultAffixes
-
+      return when (include) {
+         IncludeTestScopeAffixes.STYLE_DEFAULT -> testCase.name.defaultAffixes
+         IncludeTestScopeAffixes.NEVER -> false
+         IncludeTestScopeAffixes.ALWAYS -> true
+      }
    }
 
    fun specExecutionMode(): SpecExecutionMode {
