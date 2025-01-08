@@ -9,6 +9,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.names.DuplicateTestNameHandler
@@ -51,7 +52,9 @@ class Materializer(
          // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
          val resolvedName = resolvedName(uniqueTestName, null)
 
-         val config = if (rootTest.disabled == true) rootTest.config?.withXDisabled() else rootTest.config
+         val config = if (rootTest.disabled == true)
+            (rootTest.config ?: TestConfig()).withXDisabled()
+         else rootTest.config
 
          TestCase(
             descriptor = spec::class.toDescriptor().append(resolvedName),
@@ -83,9 +86,9 @@ class Materializer(
       // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
       val resolvedName = resolvedName(nested.name, parent.name)
 
-      // Note: teamcity listeners (aka intellij, etc) have an issue with a period in the name.
-      // Therefore, we must escape all names as the test is registered.
-      val config = if (nested.disabled == true) nested.config?.withXDisabled() else nested.config
+      val config = if (nested.disabled == true)
+         (nested.config ?: TestConfig()).withXDisabled()
+      else nested.config
 
       return TestCase(
          descriptor = parent.descriptor.append(resolvedName),
@@ -94,7 +97,7 @@ class Materializer(
          test = nested.test,
          source = nested.source,
          type = nested.type,
-         config = nested.config,
+         config = config,
          factoryId = parent.factoryId,
          parent = parent,
       )
