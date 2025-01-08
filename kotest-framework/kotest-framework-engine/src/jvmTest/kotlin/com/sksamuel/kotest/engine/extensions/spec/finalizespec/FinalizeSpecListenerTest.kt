@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -38,10 +38,9 @@ class FinalizeSpecTest : FunSpec() {
    init {
       test("finalize spec listeners should be fired") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(FinalizeSpecTestListener1())
-         c.registry.add(FinalizeSpecTestListener2())
-
+         val c = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(FinalizeSpecTestListener1(), FinalizeSpecTestListener2())
+         }
          counter.set(0)
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(FinalizeSpec::class)

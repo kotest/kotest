@@ -67,9 +67,9 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(projectListener1)
-      c.registry.add(projectListener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(projectListener1, projectListener2)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)

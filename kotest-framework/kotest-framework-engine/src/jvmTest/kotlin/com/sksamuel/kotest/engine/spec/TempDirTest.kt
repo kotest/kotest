@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.spec
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -19,7 +18,6 @@ class TempDirTest : FunSpec({
    test("temp directory should be removed after the spec is completed") {
       val collector = CollectingTestEngineListener()
       TestEngineLauncher(collector)
-         .withProjectConfig(ProjectConfiguration())
          .withClasses(TempDirPassSpec::class)
          .launch()
 
@@ -31,7 +29,6 @@ class TempDirTest : FunSpec({
 
    test("temp dir should be kept after the spec is completed because of keepOnFailure") {
       TestEngineLauncher(NoopTestEngineListener)
-         .withProjectConfig(ProjectConfiguration())
          .withClasses(TempDirFailSpec::class)
          .launch()
       dir2!!.shouldExist()

@@ -52,7 +52,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "",
             KotestEngineProperties.filterTests to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(13)
    }
 
@@ -62,7 +62,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "*DistantFutureSciFiTests",
             KotestEngineProperties.filterTests to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(7)
    }
 
@@ -72,7 +72,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "*FutureSciFiTests",
             KotestEngineProperties.filterTests to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(9)
    }
 
@@ -83,7 +83,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "*NearFutureSciFiTests",
             KotestEngineProperties.filterTests to "Daedalus*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(1)
    }
@@ -95,7 +95,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "",
             KotestEngineProperties.filterTests to "trek tests*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(3)
    }
@@ -107,7 +107,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "com.sksamuel.kotest.engine.interceptors.filters1.*",
             KotestEngineProperties.filterTests to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(2)
    }
@@ -119,7 +119,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "",
             KotestEngineProperties.filterTests to "expanse tests*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(4)
    }
@@ -131,7 +131,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "",
             KotestEngineProperties.filterTests to "*anse tes*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(4)
    }
@@ -143,7 +143,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.filterSpecs to "",
             KotestEngineProperties.filterTests to "*BC-304"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).withProjectConfig(ProjectConfiguration()).launch() }
+      ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
       numberOfTestsRunShouldBe(2)
       executed.shouldContainExactly("Daedalus BC-304", "Odyssey BC-304")

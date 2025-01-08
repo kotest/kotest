@@ -24,7 +24,7 @@ actual fun testEngineInterceptors(): List<EngineInterceptor> {
       ProjectTimeoutEngineInterceptor,
       EmptyTestSuiteInterceptor,
       WriteFailuresInterceptor,
-      DumpProjectConfigInterceptor(),
+      DumpProjectConfigInterceptor,
       TestEngineInitializedInterceptor,
    )
 }

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
@@ -23,10 +23,12 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
    init {
 
       test("should error on empty test suite") {
-         val conf = ProjectConfiguration()
-         conf.failOnEmptyTestSuite = true
-         val result =
-            EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withConfiguration(conf)) { EngineResult.empty }
+         val c = object : AbstractProjectConfig() {
+            override val failOnEmptyTestSuite = true
+         }
+         val result = EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+            EngineResult.empty
+         }
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(1)
       }
 
@@ -41,10 +43,11 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
             TestType.Test
          )
 
-         val conf = ProjectConfiguration()
-         conf.failOnEmptyTestSuite = true
+         val c = object : AbstractProjectConfig() {
+            override val failOnEmptyTestSuite = true
+         }
          val result = EmptyTestSuiteInterceptor.intercept(
-            EngineContext.empty.withConfiguration(conf)
+            EngineContext.empty.withConfiguration(c)
          ) {
             it.listener.testFinished(tc, TestResult.Success(Duration.ZERO))
             EngineResult.empty

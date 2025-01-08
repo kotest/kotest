@@ -93,8 +93,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(ext)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(ext)
+      }
+
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
          tags = it.tags
          EngineResult.empty

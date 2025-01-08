@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
@@ -28,12 +28,13 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(object : ProjectListener {
-         override suspend fun beforeProject() {
-            error("OOOFF")
-         }
-      })
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(object : ProjectListener {
+            override suspend fun beforeProject() {
+               error("OOOFF")
+            }
+         })
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec3::class)
@@ -67,9 +68,9 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(projectListener1)
-      c.registry.add(projectListener2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(projectListener1, projectListener2)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec3::class)

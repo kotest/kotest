@@ -22,7 +22,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
                   is TestResult.Error, is TestResult.Failure -> TestResult.Success(0.milliseconds)
                   else -> AssertionError("boom").toTestResult(0.milliseconds)
                }
-            "test3" -> execute(testCase.copy(config = testCase.config.copy(enabled = { Enabled.disabled })))
+            "test3" -> execute(testCase.copy(config = testCase.config?.copy(enabledOrReasonIf = { Enabled.disabled })))
             else -> execute(testCase)
          }
       }

@@ -8,7 +8,7 @@ import io.kotest.mpp.syspropOrEnv
 /**
  * Outputs the resolved project configuration to the console.
  */
-internal class DumpProjectConfigInterceptor() : EngineInterceptor {
+internal object DumpProjectConfigInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,

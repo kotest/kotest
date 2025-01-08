@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.project.ProjectContext
-import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -41,9 +41,9 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(ext1)
-      c.registry.add(ext2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(ext1, ext2)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(PassingProjectTest::class)
