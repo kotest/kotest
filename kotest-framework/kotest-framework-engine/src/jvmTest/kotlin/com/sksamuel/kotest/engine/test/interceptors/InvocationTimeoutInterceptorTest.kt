@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
@@ -31,7 +32,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
          )
 
          shouldThrowAny {
-            InvocationTimeoutInterceptor.intercept(
+            InvocationTimeoutInterceptor(TestConfigResolver()).intercept(
                tc.copy(config = tc.config?.copy(invocationTimeout = 1.milliseconds)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->
