@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.assertions.withClue
 import io.kotest.common.testTimeSource
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.DefaultTestConfig
@@ -36,7 +35,6 @@ class RetryTests : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(InnerRetryTest::class)
-            .withProjectConfig(ProjectConfiguration())
             .async()
 
          checkResults(collector, 4)
@@ -47,7 +45,6 @@ class RetryTests : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(InnerRetryWithSpecDefaultTest::class)
-            .withProjectConfig(ProjectConfiguration())
             .async()
 
          checkResults(collector, 1)
@@ -123,7 +120,7 @@ private class InnerRetryWithSpecDefaultTest : DescribeSpec() {
          count = 0
       }
 
-      defaultTestConfig = DefaultTestConfig(retryFn = { 2 }, retryDelayFn = { _, _ -> 20.milliseconds })
+      defaultTestConfig = DefaultTestConfig(retries = 2, retryDelay = 20.milliseconds)
 
       describe("tests should use default test config when test/spec fields are not specified") {
          if (count < 2) {

@@ -1,14 +1,15 @@
 package com.sksamuel.kotest.engine.interceptors
 
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
+import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxCondition::class)
@@ -33,9 +34,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(ext1)
-      c.registry.add(ext2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(ext1, ext2)
+      }
+
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) { EngineResult.empty }
 
       fired1 shouldBe true
@@ -58,9 +60,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(ext1)
-      c.registry.add(ext2)
+      val c = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(ext1, ext2)
+      }
+
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          fired = true
          EngineResult.empty

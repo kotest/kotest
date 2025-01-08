@@ -1,15 +1,15 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.tags.TagExpression
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
@@ -21,9 +21,11 @@ class TagExtensionTest : StringSpec() {
       "tag extensions should be used when calculating runtime tags" {
 
          withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
-            val c = ProjectConfiguration().apply {
-               registry.add(TagExtension { TagExpression(setOf(TagA), setOf(TagB)) })
-               registry.add(SpecifiedTagsTagExtension(TagExpression("!SpecExcluded")))
+            val c = object : AbstractProjectConfig() {
+               override fun extensions() = listOf(
+                  TagExtension { TagExpression(setOf(TagA), setOf(TagB)) },
+                  SpecifiedTagsTagExtension(TagExpression("!SpecExcluded"))
+               )
             }
 
             val collector = CollectingTestEngineListener()

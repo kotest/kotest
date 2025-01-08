@@ -2,10 +2,12 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
@@ -35,10 +37,10 @@ class CoroutineDispatcherFactorySpecInterceptorTest : DescribeSpec() {
                   }
                }
             }
-
-            val conf = ProjectConfiguration()
-            conf.coroutineDispatcherFactory = factory
-            CoroutineDispatcherFactorySpecInterceptor(conf).intercept(
+            val c = object : AbstractProjectConfig() {
+               override val coroutineDispatcherFactory = factory
+            }
+            CoroutineDispatcherFactorySpecInterceptor(SpecConfigResolver(c)).intercept(
                this@CoroutineDispatcherFactorySpecInterceptorTest,
                object : NextSpecInterceptor {
                   override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {

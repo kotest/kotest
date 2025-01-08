@@ -5,7 +5,6 @@ import com.sksamuel.kotest.engine.interceptors.filters2.FooTests
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope

@@ -10,6 +10,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
@@ -69,7 +70,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
          override fun extensions() = listOf(ext)
       }
 
-      EnabledIfInterceptor(NoopTestEngineListener, SpecConfigResolver(c))
+      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver()))
          .intercept(
             SpecRef.Reference(MyDisabledSpec::class),
             object : NextSpecRefInterceptor {

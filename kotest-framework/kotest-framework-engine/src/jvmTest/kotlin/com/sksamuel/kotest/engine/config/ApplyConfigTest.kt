@@ -2,11 +2,8 @@ package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.engine.config.applyConfigFromProjectConfig
-import io.kotest.engine.config.applyConfigFromSystemProperties
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.withEnvironment
 import io.kotest.extensions.system.withSystemProperty

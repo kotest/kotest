@@ -32,7 +32,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
 
          shouldThrowAny {
             InvocationTimeoutInterceptor.intercept(
-               tc.copy(config = tc.config.copy(invocationTimeout = 1.milliseconds)),
+               tc.copy(config = tc.config?.copy(invocationTimeout = 1.milliseconds)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->
                delay(10000)

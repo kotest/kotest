@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
@@ -31,8 +32,8 @@ class TimeoutInterceptorTest : FunSpec() {
             TestType.Test,
          )
 
-         TimeoutInterceptor(testTimeSource().markNow()).intercept(
-            tc.copy(config = tc.config.copy(timeout = 1.milliseconds)),
+         TimeoutInterceptor(testTimeSource().markNow(), TestConfigResolver()).intercept(
+            tc.copy(config = tc.config?.copy(timeout = 1.milliseconds)),
             NoopTestScope(tc, coroutineContext)
          ) { _, _ ->
             delay(10000)

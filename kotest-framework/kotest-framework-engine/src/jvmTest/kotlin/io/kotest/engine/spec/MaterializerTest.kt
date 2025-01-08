@@ -1,6 +1,5 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.names.TestName
@@ -13,7 +12,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
@@ -41,8 +40,8 @@ class MaterializerTest : FunSpec({
          test = {},
          source = sourceRef(),
          type = TestType.Test,
-         config = ResolvedTestConfig(
-            enabled = { Enabled.enabled },
+         config = TestConfig(
+            enabledOrReasonIf = { Enabled.enabled },
             invocations = 3075,
             timeout = 10.seconds,
             invocationTimeout = 10.seconds,
@@ -56,9 +55,7 @@ class MaterializerTest : FunSpec({
             coroutineTestScope = false,
             blockingTest = false,
             retries = null,
-            retryFn = null,
             retryDelay = null,
-            retryDelayFn = null,
          ),
          factoryId = null,
          parent = null,
