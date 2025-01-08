@@ -1,16 +1,18 @@
 package io.kotest.extensions.junitxml
 
 import io.kotest.common.testTimeSource
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.extensions.junitxml.JunitXmlReporter.Companion.defaultOutputDir
 import org.jdom2.Document
 import org.jdom2.Element
 import org.jdom2.output.Format
@@ -98,14 +100,14 @@ class JunitXmlReporter(
       private val hostname: String? by lazy {
          try {
             InetAddress.getLocalHost().hostName
-         } catch (e: UnknownHostException) {
+         } catch (_: UnknownHostException) {
             null
          }
       }
    }
 
    private val formatter: FallbackDisplayNameFormatter =
-      getFallbackDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
+      getFallbackDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
 
    /** Record the start of each spec, so the duration of each can be measured. */
    private val marks: ConcurrentHashMap<KClass<out Spec>, TimeMark> =
