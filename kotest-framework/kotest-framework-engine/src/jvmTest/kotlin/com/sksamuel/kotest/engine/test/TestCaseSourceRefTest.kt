@@ -15,7 +15,7 @@ import kotlin.time.measureTime
 class TestCaseSourceRefTest : FunSpec() {
    init {
       test("source ref should include file name and line number") {
-         val tests = Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest())
+         val tests = Materializer().materialize(MySpecForTestCaseSourceRefTest())
          tests.map { it.source }.shouldContainExactly(
             ClassSource("com.sksamuel.kotest.engine.test.MySpecForTestCaseSourceRefTest", 14),
             ClassSource("com.sksamuel.kotest.engine.test.MySpecForTestCaseSourceRefTest", 17),
@@ -25,7 +25,7 @@ class TestCaseSourceRefTest : FunSpec() {
       test("source ref should be performant").config(timeout = 240.seconds) {
          val duration = measureTime {
             repeat(100_000) {
-               Materializer(ProjectConfiguration()).materialize(MySpecForTestCaseSourceRefTest()).first().source
+               Materializer().materialize(MySpecForTestCaseSourceRefTest()).first().source
             }
          }
          duration shouldBeLessThan 240.seconds

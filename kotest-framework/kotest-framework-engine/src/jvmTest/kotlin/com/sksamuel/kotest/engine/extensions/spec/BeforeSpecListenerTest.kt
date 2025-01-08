@@ -34,7 +34,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -50,7 +50,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecOverrideMethodTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -66,7 +66,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecInlineTest::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -106,7 +106,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecByReturningExtensionsTest::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -122,7 +122,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecNoTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -135,7 +135,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecErrorNoTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -148,7 +148,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecDisabledOnlyTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0

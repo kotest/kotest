@@ -25,7 +25,7 @@ class AfterProjectDslTest : FunSpec({
 
       TestEngineLauncher(NoopTestEngineListener)
          .withClasses(DummySpec6::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       fired shouldBe true

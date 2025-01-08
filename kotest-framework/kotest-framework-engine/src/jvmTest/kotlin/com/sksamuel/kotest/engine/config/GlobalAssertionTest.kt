@@ -52,7 +52,7 @@ class GlobalAssertionTest : FunSpec({
       projectConfiguration.globalAssertSoftly = true
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(projectConfiguration)
          .withClasses(ShouldThrowSoftlyTest::class)
          .launch()
 
@@ -69,7 +69,7 @@ class GlobalAssertionTest : FunSpec({
       projectConfiguration.globalAssertSoftly = true
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(projectConfiguration)
          .withClasses(FooTest::class)
          .launch()
 
@@ -84,7 +84,7 @@ class GlobalAssertionTest : FunSpec({
       projectConfiguration.globalAssertSoftly = true
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(projectConfiguration)
          .withClasses(FooTest::class)
          .launch()
 

@@ -13,7 +13,7 @@ class ProjectWideFailFastTest : FunSpec() {
       c.projectWideFailFast = true
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .withClasses(A::class, B::class)
          .launch()
       listener.result("a")!!.isError.shouldBeTrue()

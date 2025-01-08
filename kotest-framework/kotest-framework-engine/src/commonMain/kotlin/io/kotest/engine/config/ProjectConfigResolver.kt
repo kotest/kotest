@@ -34,7 +34,8 @@ class ProjectConfigResolver(
    private val registry: ExtensionRegistry,
 ) {
 
-   constructor() : this(null, EmptyExtensionRegistry)
+   constructor() : this(null)
+   constructor(config: AbstractProjectConfig?) : this(config, EmptyExtensionRegistry)
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 

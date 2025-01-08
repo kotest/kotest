@@ -3,14 +3,17 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.engine.extensions.EmptyExtensionRegistry
-import io.kotest.engine.extensions.FixedExtensionRegistry
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.SpecConfigResolver
+import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -21,7 +24,7 @@ class IgnoredSpecInterceptorTest : FunSpec({
 
    test("IgnoredSpecInterceptor should pass any class not annotated with @Ignored") {
       var fired = false
-      IgnoredSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
+      IgnoredSpecInterceptor(NoopTestEngineListener, SpecExtensions())
          .intercept(SpecRef.Reference(NotIgnoredSpec::class), object : NextSpecRefInterceptor {
             override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                fired = true
@@ -32,7 +35,7 @@ class IgnoredSpecInterceptorTest : FunSpec({
    }
 
    test("IgnoredSpecInterceptor should skip any spec annotated with @Ignored") {
-      IgnoredSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
+      IgnoredSpecInterceptor(NoopTestEngineListener, SpecExtensions())
          .intercept(SpecRef.Reference(MyIgnoredSpec::class), object : NextSpecRefInterceptor {
             override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                error("boom")
@@ -42,12 +45,15 @@ class IgnoredSpecInterceptorTest : FunSpec({
 
    test("IgnoredSpecInterceptor should fire listeners on skip") {
       var fired = false
-      val ext = object : IgnoredSpecListener {
-         override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
-            fired = true
-         }
+      val p = object : AbstractProjectConfig() {
+         override fun extensions() = listOf(object : IgnoredSpecListener {
+            override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
+               fired = true
+            }
+         })
       }
-      IgnoredSpecInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
+      val c = SpecConfigResolver(p, EmptyExtensionRegistry)
+      IgnoredSpecInterceptor(NoopTestEngineListener, SpecExtensions(c, ProjectConfigResolver()))
          .intercept(SpecRef.Reference(MyIgnoredSpec::class), object : NextSpecRefInterceptor {
             override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                error("boom")

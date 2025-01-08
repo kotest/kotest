@@ -16,7 +16,7 @@ class DefaultFqnConfigClassTest : FunSpec() {
          val projectConfiguration = ProjectConfiguration()
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
-            .withConfiguration(projectConfiguration)
+            .withProjectConfig(projectConfiguration)
             .withClasses(BarTest::class)
             .launch()
          collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 2ms"

@@ -23,7 +23,7 @@ class CoroutineDebugTest : FunSpec() {
          val output = captureStandardOut {
             TestEngineLauncher(NoopTestEngineListener)
                .withClasses(Wibble::class)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .launch()
                .errors.shouldBeEmpty()
          }

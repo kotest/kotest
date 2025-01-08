@@ -30,7 +30,7 @@ class GlobalTimeoutTest : FunSpec() {
 
             TestEngineLauncher(collector)
                .withClasses(TestTimeouts::class)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .launch()
 
             collector.names.shouldContainExactly("blocked", "suspend")

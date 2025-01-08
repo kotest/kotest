@@ -22,6 +22,8 @@ class Materializer(
    private val specConfigResolver: SpecConfigResolver,
 ) {
 
+   constructor() : this(SpecConfigResolver())
+
    /**
     * Materializes the root tests from a [Spec] and any [TestFactory]s into
     * [TestCase]s by resolving config at runtime using the supplied project configuration

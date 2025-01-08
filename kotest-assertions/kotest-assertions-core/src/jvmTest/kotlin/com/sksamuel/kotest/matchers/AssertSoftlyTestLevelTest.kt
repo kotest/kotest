@@ -15,7 +15,7 @@ class AssertSoftlyTestLevelTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(AssertSoftlyAtTestLevel::class)
-            .withConfiguration(ProjectConfiguration())
+            .withProjectConfig(ProjectConfiguration())
             .launch()
          listener.tests.size shouldBe 2
          listener.errors shouldBe true

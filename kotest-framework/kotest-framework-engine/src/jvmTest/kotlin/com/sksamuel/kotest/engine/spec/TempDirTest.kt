@@ -19,7 +19,7 @@ class TempDirTest : FunSpec({
    test("temp directory should be removed after the spec is completed") {
       val collector = CollectingTestEngineListener()
       TestEngineLauncher(collector)
-         .withConfiguration(ProjectConfiguration())
+         .withProjectConfig(ProjectConfiguration())
          .withClasses(TempDirPassSpec::class)
          .launch()
 
@@ -31,7 +31,7 @@ class TempDirTest : FunSpec({
 
    test("temp dir should be kept after the spec is completed because of keepOnFailure") {
       TestEngineLauncher(NoopTestEngineListener)
-         .withConfiguration(ProjectConfiguration())
+         .withProjectConfig(ProjectConfiguration())
          .withClasses(TempDirFailSpec::class)
          .launch()
       dir2!!.shouldExist()

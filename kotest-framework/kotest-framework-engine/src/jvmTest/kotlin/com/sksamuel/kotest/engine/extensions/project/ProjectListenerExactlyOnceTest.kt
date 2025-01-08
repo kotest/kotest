@@ -49,7 +49,7 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
 
             TestEngineLauncher(NoopTestEngineListener)
                .withClasses(MyTest1::class, MyTest2::class)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .launch()
 
             TestProjectListener.beforeAll shouldBe 1

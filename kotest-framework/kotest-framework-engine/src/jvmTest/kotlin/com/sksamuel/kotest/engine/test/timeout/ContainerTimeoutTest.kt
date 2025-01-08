@@ -29,7 +29,7 @@ class ContainerTimeoutTest : FunSpec() {
             }
 
             TestEngineLauncher(collector)
-               .withConfiguration(config)
+               .withProjectConfig(config)
                .withClasses(NestedTimeout::class)
                .launch()
 

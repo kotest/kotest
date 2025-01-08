@@ -30,7 +30,7 @@ class AfterSpecListenerTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyPopulatedSpec2::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          collector.specs.size shouldBe 1
@@ -57,7 +57,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -71,7 +71,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(NoActiveTestsSpec2::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0

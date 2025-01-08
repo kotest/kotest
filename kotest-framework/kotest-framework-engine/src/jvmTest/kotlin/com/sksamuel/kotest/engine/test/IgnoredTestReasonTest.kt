@@ -33,7 +33,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyFunSpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "wibble"
       }

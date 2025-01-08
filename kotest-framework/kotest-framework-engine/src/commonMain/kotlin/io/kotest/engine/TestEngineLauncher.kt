@@ -139,16 +139,6 @@ class TestEngineLauncher(
       return this
    }
 
-   fun withConfiguration(configuration: AbstractProjectConfig?): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = tagExpression,
-      )
-   }
-
    fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
    fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs).withTeamCityListener()
    fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)

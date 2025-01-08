@@ -53,7 +53,7 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyAnnotatedSpec3::class)
-            .withConfiguration(ProjectConfiguration())
+            .withProjectConfig(ProjectConfiguration())
             .launch()
 
          // if apply extension was not applied, it would fail to intercept the failing test

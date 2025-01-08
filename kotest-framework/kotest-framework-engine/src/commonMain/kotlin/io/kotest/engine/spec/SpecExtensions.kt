@@ -29,6 +29,8 @@ internal class SpecExtensions(
    private val projectConfigResolver: ProjectConfigResolver,
 ) {
 
+   constructor() : this(SpecConfigResolver(), ProjectConfigResolver())
+
    private val logger = Logger(SpecExtensions::class)
 
    /**

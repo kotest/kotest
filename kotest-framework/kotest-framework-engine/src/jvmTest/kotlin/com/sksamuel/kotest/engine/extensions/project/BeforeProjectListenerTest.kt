@@ -26,7 +26,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       TestEngineLauncher(NoopTestEngineListener)
          .withClasses(DummySpec5::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       fired shouldBe true
@@ -45,7 +45,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       TestEngineLauncher(NoopTestEngineListener)
          .withClasses(DummySpec5::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       fired shouldBe true

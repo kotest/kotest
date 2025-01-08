@@ -23,7 +23,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
       "Spec marked with excluded tag should not be run" {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
-            .withConfiguration(ProjectConfiguration().apply { registry.add(ext) })
+            .withProjectConfig(ProjectConfiguration().apply { registry.add(ext) })
             .withClasses(ShouldBeExcluded::class)
             .launch()
 

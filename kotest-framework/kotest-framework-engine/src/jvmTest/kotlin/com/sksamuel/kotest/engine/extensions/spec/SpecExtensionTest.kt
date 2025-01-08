@@ -38,7 +38,7 @@ class SpecExtensionTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptSingleInstance::class)
-            .withConfiguration(conf)
+            .withProjectConfig(conf)
             .launch()
 
          count shouldBe 1
@@ -59,7 +59,7 @@ class SpecExtensionTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptInstancePerRoot::class)
-            .withConfiguration(conf)
+            .withProjectConfig(conf)
             .launch()
 
          count shouldBe 2
@@ -78,7 +78,7 @@ class SpecExtensionTest : FunSpec() {
 
          TestEngineLauncher(collecting)
             .withClasses(SpecInterceptInstancePerRoot::class)
-            .withConfiguration(conf)
+            .withProjectConfig(conf)
             .launch()
 
          collecting.tests.shouldBeEmpty()

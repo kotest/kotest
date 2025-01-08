@@ -2,14 +2,16 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -20,14 +22,15 @@ import kotlin.reflect.KClass
 class SpecFilterInterceptorTest : FunSpec() {
    init {
       test("spec filter's should filter tests") {
-         val c = ProjectConfiguration()
-         c.registry.add(object : SpecFilter {
-            override fun filter(kclass: KClass<*>): SpecFilterResult {
-               return if (kclass.simpleName == "FooSpec") SpecFilterResult.Exclude("foo") else SpecFilterResult.Include
-            }
-         })
+         val p = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(object : SpecFilter {
+               override fun filter(kclass: KClass<*>): SpecFilterResult {
+                  return if (kclass.simpleName == "FooSpec") SpecFilterResult.Exclude("foo") else SpecFilterResult.Include
+               }
+            })
+         }
          var fired = false
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry)
+         SpecFilterInterceptor(NoopTestEngineListener, ProjectConfigResolver(p), SpecExtensions())
             .intercept(
                SpecRef.Reference(FooSpec::class),
                object : NextSpecRefInterceptor {
@@ -38,7 +41,7 @@ class SpecFilterInterceptorTest : FunSpec() {
                })
          fired.shouldBeFalse()
 
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry)
+         SpecFilterInterceptor(NoopTestEngineListener, ProjectConfigResolver(p), SpecExtensions())
             .intercept(
                SpecRef.Reference(BarSpec::class),
                object : NextSpecRefInterceptor {

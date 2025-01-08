@@ -24,7 +24,7 @@ class ProjectTimeoutTest : FunSpec({
       // each test takes 25, but 3 tests, so we should easily hit project limit
       val result = TestEngineLauncher(NoopTestEngineListener)
          .withClasses(ProjectTimeoutSampleSpec::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }

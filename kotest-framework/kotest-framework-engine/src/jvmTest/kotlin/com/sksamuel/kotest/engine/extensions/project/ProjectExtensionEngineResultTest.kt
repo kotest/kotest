@@ -47,7 +47,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
       TestEngineLauncher(listener)
          .withClasses(PassingProjectTest::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")

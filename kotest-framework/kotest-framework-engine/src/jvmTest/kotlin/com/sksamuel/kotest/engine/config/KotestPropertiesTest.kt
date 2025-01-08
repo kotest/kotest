@@ -18,7 +18,7 @@ class KotestPropertiesTest : FunSpec() {
             val c = ProjectConfiguration()
             val listener = CollectingTestEngineListener()
             TestEngineLauncher(listener)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .withClasses(C::class)
                .launch()
             listener.names shouldBe listOf("a")

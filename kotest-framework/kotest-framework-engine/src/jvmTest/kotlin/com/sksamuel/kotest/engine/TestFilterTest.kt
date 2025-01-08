@@ -32,7 +32,7 @@ class TestFilterTest : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(SillySpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          collector.result("foo") shouldBe TestResult.Ignored("foo is excluded by test filter(s): get outta here!")

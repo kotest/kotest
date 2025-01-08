@@ -38,7 +38,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          c.registry.add(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
             .errors.shouldBeEmpty()
       }
@@ -48,7 +48,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          c.registry.add(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
             .errors.shouldBeEmpty()
       }
@@ -58,7 +58,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          c.registry.add(FooTagExtension)
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithListenerAndTag::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
          counter.get() shouldBe 0
       }

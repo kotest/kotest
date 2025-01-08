@@ -36,7 +36,7 @@ class RetryTests : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(InnerRetryTest::class)
-            .withConfiguration(ProjectConfiguration())
+            .withProjectConfig(ProjectConfiguration())
             .async()
 
          checkResults(collector, 4)
@@ -47,7 +47,7 @@ class RetryTests : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(InnerRetryWithSpecDefaultTest::class)
-            .withConfiguration(ProjectConfiguration())
+            .withProjectConfig(ProjectConfiguration())
             .async()
 
          checkResults(collector, 1)

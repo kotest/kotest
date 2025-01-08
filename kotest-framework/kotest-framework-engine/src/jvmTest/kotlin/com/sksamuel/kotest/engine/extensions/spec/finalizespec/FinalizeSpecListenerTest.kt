@@ -45,7 +45,7 @@ class FinalizeSpecTest : FunSpec() {
          counter.set(0)
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(FinalizeSpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get().shouldBe(2)

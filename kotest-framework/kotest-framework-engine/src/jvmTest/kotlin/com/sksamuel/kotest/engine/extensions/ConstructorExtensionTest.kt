@@ -24,7 +24,7 @@ class ConstructorExtensionTest : FunSpec() {
 
          TestEngineLauncher(collector)
             .withClasses(DummySpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          // the extension was applied then the instantiation will fail

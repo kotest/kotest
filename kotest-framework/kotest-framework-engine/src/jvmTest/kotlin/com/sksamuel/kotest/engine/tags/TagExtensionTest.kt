@@ -29,7 +29,7 @@ class TagExtensionTest : StringSpec() {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher(collector)
                .withClasses(TestWithTags::class)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .launch()
 
             collector.tests.mapKeys { it.key.name.name }.mapValues { it.value.reasonOrNull } shouldBe

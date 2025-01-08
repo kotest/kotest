@@ -176,7 +176,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          val report = captureStandardOut {
             TestEngineLauncher(collector)
-               .withConfiguration(configuration)
+               .withProjectConfig(configuration)
                .withClasses(TaggedSpec::class)
                .withTagExpression(TagExpression.Empty)
                .launch()

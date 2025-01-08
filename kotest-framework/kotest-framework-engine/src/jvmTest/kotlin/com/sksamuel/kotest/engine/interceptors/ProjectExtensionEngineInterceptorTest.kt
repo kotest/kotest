@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.interceptors
 import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.style.FunSpec

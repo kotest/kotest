@@ -37,7 +37,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec3::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       errors shouldHaveSize 1
@@ -73,7 +73,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec3::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       errors shouldHaveSize 2

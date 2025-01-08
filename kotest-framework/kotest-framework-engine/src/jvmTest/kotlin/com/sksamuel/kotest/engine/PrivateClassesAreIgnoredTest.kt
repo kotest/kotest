@@ -25,7 +25,7 @@ class PrivateClassesIngoreOptionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(PrivateClassesAreIgnoredTest::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
          listener.errors shouldBe false
          listener.tests.size shouldBe 0
