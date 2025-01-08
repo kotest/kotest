@@ -85,8 +85,8 @@ internal class TestCaseExecutor(
             timeMark,
             listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
-               if (!useCoroutineTestScope) InvocationTimeoutInterceptor else null,
-               if (useCoroutineTestScope) TestCoroutineInterceptor() else null,
+               if (!useCoroutineTestScope) InvocationTimeoutInterceptor(context.testConfigResolver) else null,
+               if (useCoroutineTestScope) TestCoroutineInterceptor(context.testConfigResolver) else null,
             ),
             context.testConfigResolver,
             context.testExtensions()
