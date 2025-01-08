@@ -28,12 +28,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
    private val logger = Logger(KotestJunitPlatformTestEngine::class)
 
    companion object {
-      internal const val ENGINE_ID = "kotest"
+      const val ENGINE_ID = "kotest"
+      const val GROUP_ID = "io.kotest"
    }
 
    override fun getId(): String = ENGINE_ID
 
-   override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
+   override fun getGroupId(): Optional<String> = Optional.of(GROUP_ID)
 
    override fun execute(request: ExecutionRequest) {
       logger.log {

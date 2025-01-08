@@ -20,7 +20,6 @@ import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.KotestTestScope
-import io.kotest.core.test.Enabled
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -55,8 +54,7 @@ interface ContainerScope : TestScope {
          NestedTest(
             name = name,
             disabled = disabled,
-            config = config?.copy(enabledOrReasonIf = { Enabled.disabledByXMethod })
-               ?: TestConfig(enabledOrReasonIf = { Enabled.disabledByXMethod }),
+            config = config,
             test = test,
             type = type,
             source = sourceRef(),
