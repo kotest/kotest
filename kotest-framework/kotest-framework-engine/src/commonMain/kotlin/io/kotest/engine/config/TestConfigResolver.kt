@@ -169,7 +169,7 @@ class TestConfigResolver(
       val projectEnabledOrReasonIf = projectConfig?.enabledOrReasonIf
       return { testCase ->
          when {
-            disabledByTestConfig == false -> this@TestConfigResolver.disabledByTestConfig
+            disabledByTestConfig == true -> this@TestConfigResolver.disabledByTestConfig
             testEnabledIf != null -> if (testEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
             testEnabledOrReasonIf != null -> testEnabledOrReasonIf.invoke(testCase)
             specEnabledIf != null -> if (specEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf

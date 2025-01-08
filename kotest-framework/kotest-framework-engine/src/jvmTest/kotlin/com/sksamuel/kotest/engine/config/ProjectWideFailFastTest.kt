@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
 class ProjectWideFailFastTest : FunSpec() {
@@ -19,7 +20,7 @@ class ProjectWideFailFastTest : FunSpec() {
          .withProjectConfig(c)
          .withClasses(A::class, B::class)
          .launch()
-      listener.result("a")!!.isError.shouldBeTrue()
+      listener.result("a").shouldNotBeNull().isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")
    }
 }

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
-import com.sksamuel.kotest.engine.active.IgnoredTestsTest
+import com.sksamuel.kotest.engine.active.EnabledTestConfigFlagTest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
@@ -31,7 +31,7 @@ class SpecSortEngineInterceptorTest : FunSpec({
          EngineContext.empty.withConfiguration(p).withTestSuite(
             TestSuite(
                listOf(
-                  SpecRef.Reference(IgnoredTestsTest::class),
+                  SpecRef.Reference(EnabledTestConfigFlagTest::class),
                   SpecRef.Reference(BangDisableFunSpec::class),
                   SpecRef.Reference(FocusTest::class),
                )
@@ -41,6 +41,6 @@ class SpecSortEngineInterceptorTest : FunSpec({
          sorted = it.suite.specs
          EngineResult(emptyList())
       }
-      sorted.map { it.kclass } shouldBe listOf(BangDisableFunSpec::class, FocusTest::class, IgnoredTestsTest::class)
+      sorted.map { it.kclass } shouldBe listOf(BangDisableFunSpec::class, FocusTest::class, EnabledTestConfigFlagTest::class)
    }
 })
