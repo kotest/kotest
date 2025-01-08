@@ -12,8 +12,10 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.loadProjectConfigFromReflection
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import kotlin.reflect.KClass
 
@@ -155,30 +157,22 @@ class TestEngineLauncher(
    }
 
    fun toConfig(): TestEngineConfig {
-      TODO()
-//      // if the engine was configured with explicit tags, we register those via a tag extension
-//      tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
-//
-//      val configuration = if (configurationIsInitialized) projectConfiguration else {
-//         ConfigManager.initialize(projectConfiguration) {
-//            config + loadProjectConfigFromClassname()
-//         }
-//      }
-//
-//      return TestEngineConfig(
-//         listener = ThreadSafeTestEngineListener(
-//            PinnedSpecTestEngineListener(
-//               listener
-//            )
-//         ),
-//         interceptors = testEngineInterceptors(),
-//         configuration = configuration,
-//         tagExpression,
-//         platform,
-//      )
-   }
 
-   fun testSuite(): TestSuite = TestSuite(refs)
+      // if the engine was configured with explicit tags, we register those via a tag extension
+//      tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
+
+      return TestEngineConfig(
+         listener = ThreadSafeTestEngineListener(
+            PinnedSpecTestEngineListener(
+               listener
+            )
+         ),
+         interceptors = testEngineInterceptors(),
+         projectConfig = config,
+         tagExpression,
+         platform,
+      )
+   }
 
    /**
     * Launch the [TestEngine] in an existing coroutine without blocking.
@@ -186,7 +180,7 @@ class TestEngineLauncher(
    suspend fun async(): EngineResult {
       logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
-      return engine.execute(testSuite())
+      return engine.execute(TestSuite(refs))
    }
 
    /**
@@ -197,7 +191,7 @@ class TestEngineLauncher(
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
-         engine.execute(testSuite())
+         engine.execute(TestSuite(refs))
       }
    }
 
@@ -209,7 +203,7 @@ class TestEngineLauncher(
       logger.log { "Launching Test Engine in Javascript promise" }
       runPromise {
          val engine = TestEngine(toConfig())
-         engine.execute(testSuite())
+         engine.execute(TestSuite(refs))
       }
    }
 }
