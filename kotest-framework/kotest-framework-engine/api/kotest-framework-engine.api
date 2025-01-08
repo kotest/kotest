@@ -923,7 +923,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public final fun getFailfast ()Z
 	public fun getGlobalAssertSoftly ()Ljava/lang/Boolean;
 	public fun getIgnorePrivateClasses ()Ljava/lang/Boolean;
-	public final fun getIncludeTestScopeAffixes ()Ljava/lang/Boolean;
+	public fun getIncludeTestScopeAffixes ()Ljava/lang/Boolean;
 	public fun getInvocationTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getInvocations ()Ljava/lang/Integer;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
@@ -948,12 +948,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
-	public fun setDisplayFullTestPath (Ljava/lang/Boolean;)V
 	public final fun setFailfast (Z)V
-	public fun setIgnorePrivateClasses (Ljava/lang/Boolean;)V
-	public final fun setIncludeTestScopeAffixes (Ljava/lang/Boolean;)V
-	public fun setProjectWideFailFast (Ljava/lang/Boolean;)V
-	public fun setRandomOrderSeed (Ljava/lang/Long;)V
 	public fun setRetries (Ljava/lang/Integer;)V
 	public fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 }
@@ -3222,7 +3217,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun toConfig ()Lio/kotest/engine/TestEngineConfig;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withConfiguration (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withDetectedProjectConfig ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
@@ -3324,6 +3318,7 @@ public final class io/kotest/engine/config/Defaults {
 	public static final field BLOCKING_TEST Z
 	public static final field COROUTINE_DEBUG_PROBES Z
 	public static final field COROUTINE_TEST_SCOPE Z
+	public static final field DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES Z
 	public static final field DEFAULT_INVOCATION_TIMEOUT_MILLIS J
 	public static final field DEFAULT_TIMEOUT_MILLIS J
 	public static final field DISPLAY_FULL_TEST_PATH Z
@@ -3343,7 +3338,6 @@ public final class io/kotest/engine/config/Defaults {
 	public final fun getASSERTION_MODE ()Lio/kotest/core/test/AssertionMode;
 	public final fun getDEFAULT_RETRIES ()Ljava/lang/Integer;
 	public final fun getDUPLICATE_TEST_NAME_MODE ()Lio/kotest/core/names/DuplicateTestNameMode;
-	public final fun getDefaultIncludeTestScopeAffixes ()Ljava/lang/Boolean;
 	public final fun getDefaultRetryDelay-FghU774 ()Lkotlin/time/Duration;
 	public final fun getISOLATION_MODE ()Lio/kotest/core/spec/IsolationMode;
 	public final fun getLOG_LEVEL ()Lio/kotest/core/config/LogLevel$Off;
@@ -3399,6 +3393,7 @@ public final class io/kotest/engine/config/NoopSystemPropertyConfiguration : io/
 	public fun ignorePrivateClasses ()Ljava/lang/Boolean;
 	public fun invocationTimeout ()Ljava/lang/Long;
 	public fun isolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public fun logLevel ()Lio/kotest/core/config/LogLevel;
 	public fun minimumRuntimeTestCaseSeverityLevel ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public fun projectTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun tagInheritance ()Ljava/lang/Boolean;
@@ -3420,6 +3415,7 @@ public final class io/kotest/engine/config/ProjectConfigLoader {
 
 public final class io/kotest/engine/config/ProjectConfigResolver {
 	public fun <init> ()V
+	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;)V
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun allowOutOfOrderCallbacks ()Z
 	public final fun displayFullTestPath ()Z
@@ -3464,6 +3460,7 @@ public final class io/kotest/engine/config/ProjectConfigResolverContextElementKt
 
 public final class io/kotest/engine/config/SpecConfigResolver {
 	public fun <init> ()V
+	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;)V
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun coroutineDispatcherFactory (Lio/kotest/core/spec/Spec;)Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public final fun duplicateTestNameMode (Lio/kotest/core/spec/Spec;)Lio/kotest/core/names/DuplicateTestNameMode;
@@ -3485,6 +3482,7 @@ public abstract interface class io/kotest/engine/config/SystemPropertyConfigurat
 	public abstract fun ignorePrivateClasses ()Ljava/lang/Boolean;
 	public abstract fun invocationTimeout ()Ljava/lang/Long;
 	public abstract fun isolationMode ()Lio/kotest/core/spec/IsolationMode;
+	public abstract fun logLevel ()Lio/kotest/core/config/LogLevel;
 	public abstract fun minimumRuntimeTestCaseSeverityLevel ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public abstract fun projectTimeout-FghU774 ()Lkotlin/time/Duration;
 	public abstract fun tagInheritance ()Ljava/lang/Boolean;
@@ -3494,6 +3492,7 @@ public abstract interface class io/kotest/engine/config/SystemPropertyConfigurat
 
 public final class io/kotest/engine/config/TestConfigResolver {
 	public fun <init> ()V
+	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;)V
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun assertSoftly (Lio/kotest/core/test/TestCase;)Z
 	public final fun assertionMode (Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/AssertionMode;
@@ -3920,6 +3919,7 @@ public abstract interface class io/kotest/engine/names/WithDataTestName {
 }
 
 public final class io/kotest/engine/spec/Materializer {
+	public fun <init> ()V
 	public fun <init> (Lio/kotest/engine/config/SpecConfigResolver;)V
 	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
@@ -4319,6 +4319,7 @@ public final class io/kotest/engine/test/logging/TestLogger {
 }
 
 public final class io/kotest/engine/test/names/DefaultDisplayNameFormatter : io/kotest/engine/names/DisplayNameFormatter {
+	public fun <init> ()V
 	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;Lio/kotest/engine/config/TestConfigResolver;)V
 	public fun format (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
 	public fun format (Lkotlin/reflect/KClass;)Ljava/lang/String;
