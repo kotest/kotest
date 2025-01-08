@@ -4,7 +4,6 @@ package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.syspropOrEnv
@@ -32,7 +31,6 @@ data class DiscoveryResult(
  * Scans for tests as specified by a [DiscoveryRequest].
  */
 class Discovery(
-   private val configuration: ProjectConfiguration,
 ) {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
@@ -75,7 +73,7 @@ class Discovery(
 
       log { "[Discovery] Starting spec discovery" }
 
-      if (request.selectors.isEmpty() && !configuration.discoveryClasspathFallbackEnabled) {
+      if (request.selectors.isEmpty()) {// && !configuration.discoveryClasspathFallbackEnabled) {
          log { "[Discovery] no specs discovered: no selectors provided and classpath fallback is disabled" }
          return@runCatching DiscoveryResult(emptyList(), emptyList(), null)
       }
@@ -151,11 +149,11 @@ class Discovery(
          .enableExternalClasses()
          .ignoreClassVisibility()
 
-      if (configuration.disableTestNestedJarScanning) {
-         log { "[Discovery] Nested jar scanning is disabled" }
-         cg.disableNestedJarScanning()
-         cg.disableModuleScanning()
-      }
+//      if (configuration.disableTestNestedJarScanning) {
+//         log { "[Discovery] Nested jar scanning is disabled" }
+//         cg.disableNestedJarScanning()
+//         cg.disableModuleScanning()
+//      }
 
       // do not change this to use reject as it will break clients using older versions of classgraph
       @Suppress("DEPRECATION")
