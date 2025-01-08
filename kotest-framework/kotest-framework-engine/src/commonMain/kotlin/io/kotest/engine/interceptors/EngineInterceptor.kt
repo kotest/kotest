@@ -61,7 +61,7 @@ data class EngineContext(
 
    companion object {
 
-      operator fun invoke(projectConfig: AbstractProjectConfig, platform: Platform): EngineContext {
+      operator fun invoke(projectConfig: AbstractProjectConfig?, platform: Platform): EngineContext {
          val registry = DefaultExtensionRegistry()
          return EngineContext(
             suite = TestSuite.empty,

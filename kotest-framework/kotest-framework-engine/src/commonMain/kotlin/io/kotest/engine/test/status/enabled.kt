@@ -10,7 +10,7 @@ import io.kotest.engine.tags.TagExpressionBuilder
 
 /**
  * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
- * from [isEnabledInternal] or any registered [EnabledExtension]s.
+ * from internal [TestEnabledExtension] or any public [EnabledExtension]s.
  */
 internal suspend fun TestCase.isEnabled(
    projectConfigResolver: ProjectConfigResolver,
@@ -35,7 +35,7 @@ internal suspend fun TestCase.isEnabled(
  */
 internal fun TestCase.isEnabledInternal(
    projectConfigResolver: ProjectConfigResolver,
-   testConfigResolver: TestConfigResolver
+   testConfigResolver: TestConfigResolver,
 ): Enabled {
 
    val extensions = listOf(

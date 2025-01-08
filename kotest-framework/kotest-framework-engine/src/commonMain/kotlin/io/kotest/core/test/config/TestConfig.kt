@@ -1,7 +1,7 @@
 package io.kotest.core.test.config
 
 import io.kotest.core.Tag
-import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
@@ -48,7 +48,7 @@ data class TestConfig(
     */
    val tags: Set<Tag> = emptySet(),
 
-   val extensions: List<TestCaseExtension>? = null,
+   val extensions: List<Extension>? = null,
 
    val severity: TestCaseSeverityLevel? = null,
 

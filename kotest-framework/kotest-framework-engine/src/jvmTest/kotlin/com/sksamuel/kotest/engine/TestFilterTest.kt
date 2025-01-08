@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
@@ -26,8 +27,9 @@ class TestFilterTest : FunSpec() {
          }
 
          val collector = CollectingTestEngineListener()
-         val c = ProjectConfiguration()
-         c.registry.add(filter)
+         val c = object : AbstractProjectConfig() {
+            override fun extensions() = listOf(filter)
+         }
 
          TestEngineLauncher(collector)
             .withClasses(SillySpec::class)

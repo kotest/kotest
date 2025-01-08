@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.projectContext
 import io.kotest.core.spec.Spec
@@ -20,7 +19,7 @@ import kotlin.coroutines.coroutineContext
 class ProjectContextInterceptorTest : FunSpec() {
    init {
 
-      val c = ProjectContext(ProjectConfiguration())
+      val c = ProjectContext(null)
       var fired = false
       val next = object : NextSpecInterceptor {
          override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
