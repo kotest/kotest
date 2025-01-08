@@ -3223,6 +3223,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withConfiguration (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withDetectedProjectConfig ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
@@ -3409,6 +3410,12 @@ public final class io/kotest/engine/config/PackageConfigLoader {
 	public static final field INSTANCE Lio/kotest/engine/config/PackageConfigLoader;
 	public final fun configs (Lio/kotest/core/spec/Spec;)Ljava/util/List;
 	public final fun configs (Ljava/lang/String;)Ljava/util/List;
+}
+
+public final class io/kotest/engine/config/ProjectConfigLoader {
+	public static final field DEFAULT_CONFIG_FQN Ljava/lang/String;
+	public static final field INSTANCE Lio/kotest/engine/config/ProjectConfigLoader;
+	public final fun detect ()Lio/kotest/core/config/AbstractProjectConfig;
 }
 
 public final class io/kotest/engine/config/ProjectConfigResolver {
