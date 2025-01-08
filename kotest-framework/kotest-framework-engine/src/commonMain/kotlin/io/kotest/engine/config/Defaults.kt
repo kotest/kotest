@@ -27,6 +27,7 @@ object Defaults {
    val LOG_LEVEL = LogLevel.Off
 
    val TEST_EXECUTION_MODE = TestExecutionMode.Sequential
+
    val SPEC_EXECUTION_MODE = SpecExecutionMode.Sequential
 
    val ASSERTION_MODE: AssertionMode = AssertionMode.None
@@ -34,6 +35,7 @@ object Defaults {
    val TEST_CASE_ORDER: TestCaseOrder = TestCaseOrder.Sequential
 
    val ISOLATION_MODE: IsolationMode = IsolationMode.SingleInstance
+
    val DUPLICATE_TEST_NAME_MODE: DuplicateTestNameMode = DuplicateTestNameMode.Warn
 
    const val DISPLAY_FULL_TEST_PATH: Boolean = false
@@ -55,6 +57,7 @@ object Defaults {
    const val SPEC_FAILURE_FILE_PATH = "./.kotest/spec_failures"
 
    const val DEFAULT_TIMEOUT_MILLIS = 10 * 60 * 1000L
+
    const val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10 * 60 * 1000L
 
    const val FAIL_ON_IGNORED_TESTS: Boolean = false
@@ -62,11 +65,13 @@ object Defaults {
    const val TEST_NAME_APPEND_TAGS: Boolean = false
 
    const val PROJECT_WIDE_FAIL_FAST: Boolean = false
+
    const val FAILFAST: Boolean = false
 
    val defaultIncludeTestScopeAffixes: Boolean? = null
 
    const val WRITE_SPEC_FAILURE_FILE = false
+
    const val GLOBAL_ASSERT_SOFTLY = false
 
    val TEST_NAME_CASE: TestNameCase = TestNameCase.AsIs

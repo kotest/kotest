@@ -97,7 +97,7 @@ class JUnitTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       logger.log { "Engine initialized with context $context" }
-      failOnIgnoredTests = context.configuration.failOnIgnoredTests
+      failOnIgnoredTests = context.projectConfigResolver.failOnIgnoredTests()
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

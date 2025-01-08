@@ -104,6 +104,14 @@ class ProjectConfigResolver(
    }
 
    /**
+    * If true, then the test execution will fail if any test is set to ignore.
+    * If false, then ignored tests are outputted as normal.
+    */
+   fun failOnIgnoredTests(): Boolean {
+      return config?.failOnIgnoredTests ?: Defaults.FAIL_ON_IGNORED_TESTS
+   }
+
+   /**
     * Returns true if tags specified on a test should be included in the test name output.
     */
    fun testNameAppendTags(): Boolean {

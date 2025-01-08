@@ -3418,6 +3418,7 @@ public final class io/kotest/engine/config/ProjectConfigResolver {
 	public final fun displayFullTestPath ()Z
 	public final fun extensions ()Ljava/util/List;
 	public final fun failOnEmptyTestSuite ()Z
+	public final fun failOnIgnoredTests ()Z
 	public final fun ignorePrivateClasses ()Z
 	public final fun includeTestScopeAffixes (Lio/kotest/core/test/TestCase;)Z
 	public final fun logLevel ()Lio/kotest/core/config/LogLevel;
@@ -3455,6 +3456,7 @@ public final class io/kotest/engine/config/ProjectConfigResolverContextElementKt
 }
 
 public final class io/kotest/engine/config/SpecConfigResolver {
+	public fun <init> ()V
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun coroutineDispatcherFactory (Lio/kotest/core/spec/Spec;)Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public final fun duplicateTestNameMode (Lio/kotest/core/spec/Spec;)Lio/kotest/core/names/DuplicateTestNameMode;
@@ -3937,6 +3939,11 @@ public final class io/kotest/engine/spec/SpecExecutorKt {
 
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+}
+
+public final class io/kotest/engine/spec/SpecInstantiator {
+	public fun <init> (Lio/kotest/engine/extensions/ExtensionRegistry;)V
+	public final fun createAndInitializeSpec-gIAlu-s (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/engine/spec/SpecSorter {
