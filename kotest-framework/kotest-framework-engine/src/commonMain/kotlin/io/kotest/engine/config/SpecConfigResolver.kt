@@ -10,6 +10,7 @@ import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 
 /**
@@ -34,6 +35,8 @@ class SpecConfigResolver(
    private val projectConfig: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
 ) {
+
+   constructor() : this(null, EmptyExtensionRegistry)
 
    private val systemPropertyConfiguration = loadSystemPropertyConfiguration()
 

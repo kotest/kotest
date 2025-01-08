@@ -23,7 +23,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */
-internal class SpecInstantiator(private val registry: ExtensionRegistry) {
+class SpecInstantiator(private val registry: ExtensionRegistry) {
 
    suspend fun <T : Spec> createAndInitializeSpec(
       kclass: KClass<T>,
