@@ -79,7 +79,9 @@ class ProjectConfigResolver(
     * setting specifies if those should be included in the displayed test name.
     */
    fun includeTestScopeAffixes(testCase: TestCase): Boolean {
-      return config?.includeTestScopeAffixes ?: testCase.name.defaultAffixes
+      val include = config?.includeTestScopeAffixes ?: Defaults.DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES
+      return include && testCase.name.defaultAffixes
+
    }
 
    fun specExecutionMode(): SpecExecutionMode {

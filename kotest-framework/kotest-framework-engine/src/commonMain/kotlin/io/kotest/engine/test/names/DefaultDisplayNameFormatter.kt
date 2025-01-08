@@ -25,6 +25,8 @@ class DefaultDisplayNameFormatter(
    private val testConfigResolver: TestConfigResolver,
 ) : DisplayNameFormatter {
 
+   constructor() : this(ProjectConfigResolver(), TestConfigResolver())
+
    override fun format(testCase: TestCase): String {
 
       val prefix = when (projectConfigResolver.includeTestScopeAffixes(testCase)) {

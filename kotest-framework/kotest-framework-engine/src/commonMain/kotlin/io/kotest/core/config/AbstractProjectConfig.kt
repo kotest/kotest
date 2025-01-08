@@ -237,7 +237,7 @@ abstract class AbstractProjectConfig {
    /**
     * Returns true if the test name should be the full name including parent names.
     */
-   open var displayFullTestPath: Boolean? = null
+   open val displayFullTestPath: Boolean? = null
 
    open var allowOutOfOrderCallbacks: Boolean? = null
 
@@ -289,7 +289,7 @@ abstract class AbstractProjectConfig {
     *
     * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
     */
-   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+   open val includeTestScopeAffixes: Boolean? = null
 
    /**
     * If set, then this is the maximum number of times we will retry a test if it fails.

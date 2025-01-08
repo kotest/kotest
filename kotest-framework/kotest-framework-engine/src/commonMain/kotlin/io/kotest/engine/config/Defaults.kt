@@ -68,7 +68,7 @@ object Defaults {
 
    const val FAILFAST: Boolean = false
 
-   val defaultIncludeTestScopeAffixes: Boolean? = null
+   const val DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES: Boolean = false
 
    const val WRITE_SPEC_FAILURE_FILE = false
 

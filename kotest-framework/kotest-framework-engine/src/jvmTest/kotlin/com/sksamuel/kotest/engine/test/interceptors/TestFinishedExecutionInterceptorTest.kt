@@ -2,8 +2,9 @@ package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.engine.extensions.FixedExtensionRegistry
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
+import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
@@ -13,6 +14,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.AbstractTestCaseExecutionListener
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.shouldBe
@@ -25,7 +27,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
    test("should notify of test finishes") {
       val tc = TestCase(
          TestFinishedExecutionInterceptorTest::class.toDescriptor().append("foo"),
-          TestNameBuilder.builder("foo").build(),
+         TestNameBuilder.builder("foo").build(),
          TestFinishedExecutionInterceptorTest(),
          {},
          sourceRef(),
@@ -73,7 +75,12 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             this.reason = reason
          }
       }
-      TestFinishedInterceptor(testCaseExecutionListener, FixedExtensionRegistry(ignoredTestListener)).intercept(
+
+      val c = object : AbstractProjectConfig() {
+         override fun extensions(): List<Extension> = listOf(ignoredTestListener)
+      }
+
+      TestFinishedInterceptor(testCaseExecutionListener, TestExtensions(TestConfigResolver(c))).intercept(
          tc,
          context
       ) { _, _ -> TestResult.Ignored("wobble") }
