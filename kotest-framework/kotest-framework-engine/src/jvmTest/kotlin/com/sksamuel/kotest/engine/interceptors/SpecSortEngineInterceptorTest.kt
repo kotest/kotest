@@ -6,7 +6,7 @@ import com.sksamuel.kotest.engine.active.IgnoredTestsTest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
@@ -22,12 +22,13 @@ class SpecSortEngineInterceptorTest : FunSpec({
 
    test("should sort classes") {
 
-      val c = ProjectConfiguration()
-      c.specExecutionOrder = SpecExecutionOrder.Lexicographic
+      val p = object : AbstractProjectConfig() {
+         override val specExecutionOrder = SpecExecutionOrder.Lexicographic
+      }
 
       var sorted = emptyList<SpecRef>()
       SpecSortEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c).withTestSuite(
+         EngineContext.empty.withConfiguration(p).withTestSuite(
             TestSuite(
                listOf(
                   SpecRef.Reference(IgnoredTestsTest::class),

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult

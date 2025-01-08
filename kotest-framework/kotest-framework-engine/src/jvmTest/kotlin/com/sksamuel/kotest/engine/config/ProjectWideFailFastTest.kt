@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.config
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -9,8 +9,11 @@ import io.kotest.matchers.shouldBe
 
 class ProjectWideFailFastTest : FunSpec() {
    init {
-      val c = ProjectConfiguration()
-      c.projectWideFailFast = true
+
+      val c = object : AbstractProjectConfig() {
+         override val projectWideFailFast = true
+      }
+
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
          .withProjectConfig(c)

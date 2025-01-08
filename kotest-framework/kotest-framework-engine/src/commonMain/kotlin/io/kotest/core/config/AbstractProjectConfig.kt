@@ -90,7 +90,7 @@ abstract class AbstractProjectConfig {
     * Set this to true and all specs will be set to fail fast, unless overriden in the spec itself.
     * Note: If you just want to skip the remaining tests in a spec on failure, see [failfast].
     */
-   open var projectWideFailFast: Boolean? = null
+   open val projectWideFailFast: Boolean? = null
 
    /**
     * Sets the default [failfast] for any test which doesn't override.
@@ -244,7 +244,7 @@ abstract class AbstractProjectConfig {
    /**
     * If set to false then private spec classes will be ignored by the test engine.
     */
-   open var ignorePrivateClasses: Boolean? = null
+   open val ignorePrivateClasses: Boolean? = null
 
    /**
     * Sets a global [EnabledIf] function that will be applied to all tests, unless overridden in

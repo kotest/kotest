@@ -11,7 +11,7 @@ internal object AbstractProjectConfigWriter {
       }
    }
 
-   private fun createConfigSummary(projectConfig: AbstractProjectConfig): String {
+   internal fun createConfigSummary(projectConfig: AbstractProjectConfig): String {
 
       val sb = StringBuilder()
 

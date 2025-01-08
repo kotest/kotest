@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.engine.tags.TagExpression
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.EnabledExtension
