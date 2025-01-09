@@ -54,6 +54,9 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun displayFullTestPath(): Boolean? =
       syspropOrEnv(KotestEngineProperties.displayFullTestPath)?.let { it.uppercase() == "TRUE" }
 
+   override fun dumpConfig(): Boolean? =
+      syspropOrEnv(KotestEngineProperties.dumpConfig)?.let { it.uppercase() == "TRUE" }
+
    override fun duplicateTestNameMode(): DuplicateTestNameMode? =
       sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 

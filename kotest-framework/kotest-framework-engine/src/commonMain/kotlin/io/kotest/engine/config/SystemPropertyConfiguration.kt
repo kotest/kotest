@@ -32,6 +32,7 @@ interface SystemPropertyConfiguration {
    fun ignorePrivateClasses(): Boolean?
    fun displayFullTestPath(): Boolean?
    fun logLevel(): LogLevel?
+   fun dumpConfig(): Boolean?
 }
 
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
@@ -52,4 +53,5 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun ignorePrivateClasses(): Boolean? = null
    override fun displayFullTestPath(): Boolean? = null
    override fun logLevel(): LogLevel? = null
+   override fun dumpConfig(): Boolean? = null
 }

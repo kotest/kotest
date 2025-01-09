@@ -4,11 +4,9 @@ import io.kotest.core.config.AbstractProjectConfig
 
 internal object AbstractProjectConfigWriter {
 
-   fun dumpProjectConfigIfNotNull(conf: AbstractProjectConfig?) {
-      if (conf != null) {
-         println("~~~ Kotest Configuration ~~~")
-         println(createConfigSummary(conf))
-      }
+   fun dumpProjectConfig(projectConfig: AbstractProjectConfig) {
+      println("~~~ Kotest Configuration ~~~")
+      println(createConfigSummary(projectConfig))
    }
 
    internal fun createConfigSummary(projectConfig: AbstractProjectConfig): String {
@@ -38,7 +36,7 @@ internal object AbstractProjectConfigWriter {
 
       projectConfig.includeTestScopeAffixes?.let { sb.buildOutput("Include test scope affixes", it.toString()) }
 
-//   projectConfig.includeTestScopeAffixes?.let { sb.buildOutput("Remove test name whitespace", it.toString()) }
+      projectConfig.removeTestNameWhitespace?.let { sb.buildOutput("Remove test name whitespace", it.toString()) }
       projectConfig.testNameAppendTags?.let { sb.buildOutput("Append tags to test names", it.toString()) }
 
 //   if (registry.isNotEmpty()) {

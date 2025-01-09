@@ -70,7 +70,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
          override fun extensions() = listOf(ext)
       }
 
-      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver()))
+      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver(c)))
          .intercept(
             SpecRef.Reference(MyDisabledSpec::class),
             object : NextSpecRefInterceptor {
@@ -78,6 +78,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
                   error("boom")
                }
             })
+
       fired.shouldBeTrue()
    }
 })

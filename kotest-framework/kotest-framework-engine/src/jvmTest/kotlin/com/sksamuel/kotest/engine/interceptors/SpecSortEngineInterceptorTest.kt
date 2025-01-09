@@ -41,6 +41,10 @@ class SpecSortEngineInterceptorTest : FunSpec({
          sorted = it.suite.specs
          EngineResult(emptyList())
       }
-      sorted.map { it.kclass } shouldBe listOf(BangDisableFunSpec::class, FocusTest::class, EnabledTestConfigFlagTest::class)
+      sorted.map { it.kclass } shouldBe listOf(
+         BangDisableFunSpec::class,
+         EnabledTestConfigFlagTest::class,
+         FocusTest::class,
+      )
    }
 })

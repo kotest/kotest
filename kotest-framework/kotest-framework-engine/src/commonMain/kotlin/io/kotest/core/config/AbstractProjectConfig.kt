@@ -113,6 +113,8 @@ abstract class AbstractProjectConfig {
 
    open val coroutineTestScope: Boolean? = null
 
+   open val dumpConfig: Boolean? = null
+
    /**
     * Each test is launched into its own coroutine. By default, the test engine waits for that
     * test to finish before launching the next test. By setting [testExecutionMode]

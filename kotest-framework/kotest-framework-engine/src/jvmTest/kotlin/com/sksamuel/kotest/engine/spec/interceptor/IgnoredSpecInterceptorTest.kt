@@ -53,7 +53,7 @@ class IgnoredSpecInterceptorTest : FunSpec({
          })
       }
       val c = SpecConfigResolver(p, EmptyExtensionRegistry)
-      IgnoredSpecInterceptor(NoopTestEngineListener, SpecExtensions(c, ProjectConfigResolver()))
+      IgnoredSpecInterceptor(NoopTestEngineListener, SpecExtensions(c, ProjectConfigResolver(p)))
          .intercept(SpecRef.Reference(MyIgnoredSpec::class), object : NextSpecRefInterceptor {
             override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                error("boom")

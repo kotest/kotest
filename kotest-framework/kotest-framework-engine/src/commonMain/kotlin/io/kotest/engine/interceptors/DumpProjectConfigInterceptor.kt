@@ -2,8 +2,6 @@ package io.kotest.engine.interceptors
 
 import io.kotest.engine.EngineResult
 import io.kotest.engine.config.AbstractProjectConfigWriter
-import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.mpp.syspropOrEnv
 
 /**
  * Outputs the resolved project configuration to the console.
@@ -14,13 +12,11 @@ internal object DumpProjectConfigInterceptor : EngineInterceptor {
       context: EngineContext,
       execute: NextEngineInterceptor,
    ): EngineResult {
-      if (syspropEnabled()) {
-         AbstractProjectConfigWriter.dumpProjectConfigIfNotNull(context.projectConfig)
+      if (context.projectConfigResolver.dumpConfig()) {
+         val config = context.projectConfig
+         if (config != null)
+            AbstractProjectConfigWriter.dumpProjectConfig(config)
       }
       return execute(context)
    }
-
-   private fun syspropEnabled() =
-      syspropOrEnv(KotestEngineProperties.dumpConfig).toBoolean()
-
 }

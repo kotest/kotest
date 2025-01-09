@@ -14,6 +14,8 @@ import kotlin.time.Duration
 
 object Defaults {
 
+   const val DUMP_CONFIG = false
+
    // by default, we do not retry tests
    val DEFAULT_RETRIES: Int? = null
 

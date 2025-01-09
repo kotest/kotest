@@ -170,4 +170,10 @@ class ProjectConfigResolver(
       return config?.projectTimeout
          ?: systemPropertyConfiguration.projectTimeout()
    }
+
+   fun dumpConfig(): Boolean {
+      return config?.dumpConfig
+         ?: systemPropertyConfiguration.dumpConfig()
+         ?: Defaults.DUMP_CONFIG
+   }
 }
