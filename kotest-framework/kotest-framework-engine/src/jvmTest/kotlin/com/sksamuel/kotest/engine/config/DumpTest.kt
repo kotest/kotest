@@ -11,7 +11,6 @@ import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.config.AbstractProjectConfigWriter
 import io.kotest.matchers.string.shouldInclude
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -22,7 +21,7 @@ class DumpTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val timeout = 12.milliseconds
          override val projectTimeout = 44444.seconds
-         override val invocationTimeout = 34234.hours
+         override val invocationTimeout = 34234.milliseconds
       }
       AbstractProjectConfigWriter.createConfigSummary(c).apply {
          this.shouldInclude("Default test timeout: 12ms")

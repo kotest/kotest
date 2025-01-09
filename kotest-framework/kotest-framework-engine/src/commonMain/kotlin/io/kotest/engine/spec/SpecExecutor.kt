@@ -62,7 +62,7 @@ internal class SpecExecutor(
     * After this method is called the spec is sealed.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
-      ref.instance(context.registry)
+      ref.instance(context.projectConfigResolver)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }

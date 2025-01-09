@@ -175,7 +175,7 @@ internal class SpecExecutor2(
     * After this method is called the spec is sealed so no further configuration or root tests can be added.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> {
-      return ref.instance(engineContext.registry)
+      return ref.instance(engineContext.projectConfigResolver)
          .onFailure { engineContext.specExtensions().specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> engineContext.specExtensions().specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
