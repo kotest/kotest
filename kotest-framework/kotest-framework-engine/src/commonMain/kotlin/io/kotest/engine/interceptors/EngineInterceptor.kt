@@ -171,9 +171,9 @@ data class EngineContext(
          tags,
          registry,
          projectConfig,
-         projectConfigResolver = projectConfigResolver,
-         specConfigResolver = specConfigResolver,
-         testConfigResolver = testConfigResolver,
+         projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
+         specConfigResolver = SpecConfigResolver(projectConfig, registry),
+         testConfigResolver = TestConfigResolver(projectConfig, registry),
          platform,
          state,
       )

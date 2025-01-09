@@ -166,6 +166,10 @@ class ProjectConfigResolver(
          registry.all()
    }
 
+   inline fun <reified T : Extension> extensionsOf(): List<T> {
+      return extensions().filterIsInstance<T>()
+   }
+
    fun projectTimeout(): Duration? {
       return config?.projectTimeout
          ?: systemPropertyConfiguration.projectTimeout()
