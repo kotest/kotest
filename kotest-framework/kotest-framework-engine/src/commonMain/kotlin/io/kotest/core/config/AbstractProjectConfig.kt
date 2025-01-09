@@ -356,11 +356,11 @@ fun AbstractProjectConfig.asProjectExtension(): ProjectListener {
    return object : ProjectListener {
 
       override suspend fun beforeProject() {
-         beforeProject()
+         this@asProjectExtension.beforeProject()
       }
 
       override suspend fun afterProject() {
-         afterProject()
+         this@asProjectExtension.afterProject()
       }
    }
 }

@@ -99,11 +99,11 @@ class TestEngineLauncher(
    /**
     * Sets a [AbstractProjectConfig] that was detected by the compiler plugin or loaded programmatically.
     */
-   fun withProjectConfig(projectConfig: AbstractProjectConfig?): TestEngineLauncher {
+   fun withProjectConfig(config: AbstractProjectConfig?): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         config = projectConfig,
+         config = config,
          refs = refs,
          tagExpression = tagExpression,
          registry = registry,

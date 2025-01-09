@@ -11,6 +11,7 @@ import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
+import io.kotest.engine.extensions.ProjectExtensions
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -58,6 +59,7 @@ data class EngineContext(
 
    internal fun specExtensions() = SpecExtensions(specConfigResolver, projectConfigResolver)
    internal fun testExtensions() = TestExtensions(testConfigResolver)
+   internal fun projectExtensions() = ProjectExtensions(projectConfigResolver)
 
    companion object {
 

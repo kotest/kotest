@@ -1,16 +1,16 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.Logger
-import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
+import io.kotest.engine.config.ProjectConfigResolver
 
-internal class ProjectExtensions(private val extensions: List<Extension>) {
+internal class ProjectExtensions(private val projectConfigResolver: ProjectConfigResolver) {
 
    private val logger = Logger(ProjectExtensions::class)
 
    suspend fun beforeProject(): List<ExtensionException.BeforeProjectException> {
-      val ext = extensions.filterIsInstance<BeforeProjectListener>()
+      val ext = projectConfigResolver.extensions().filterIsInstance<BeforeProjectListener>()
       logger.log { Pair(null, "Invoking ${ext.size} BeforeProjectListeners") }
       return ext.mapNotNull {
          try {
@@ -23,7 +23,7 @@ internal class ProjectExtensions(private val extensions: List<Extension>) {
    }
 
    suspend fun afterProject(): List<ExtensionException.AfterProjectException> {
-      val ext = extensions.filterIsInstance<AfterProjectListener>()
+      val ext = projectConfigResolver.extensions().filterIsInstance<AfterProjectListener>()
       logger.log { Pair(null, "Invoking ${ext.size} AfterProjectListeners") }
       return ext.mapNotNull {
          try {
