@@ -2,10 +2,317 @@ package io.kotest.matchers.collections
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.sequences.beLargerThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+// region Primitive Type Matchers
+
+/**
+ * Asserts that the size of this [ByteArray] is larger than the size of [other].
+ *
+ * Verifies that the current [ByteArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [ByteArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * byteArrayOf(1, 2, 3) shouldBeLargerThan byteArrayOf(1, 2)    // Assertion passes
+ * byteArrayOf(1) shouldBeLargerThan byteArrayOf(1, 2, 3)      // Assertion fails
+ * ```
+ *
+ * @see ByteArray.shouldNotBeLargerThan
+ */
+infix fun ByteArray.shouldBeLargerThan(other: ByteArray): ByteArray = apply {
+   asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [ByteArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [ByteArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [ByteArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * byteArrayOf(1) shouldNotBeLargerThan byteArrayOf(1, 2, 3)    // Assertion passes
+ * byteArrayOf(1, 2, 3) shouldNotBeLargerThan byteArrayOf(1, 2) // Assertion fails
+ * ```
+ *
+ * @see ByteArray.shouldBeLargerThan
+ */
+infix fun ByteArray.shouldNotBeLargerThan(other: ByteArray): ByteArray = apply {
+   asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [IntArray] is larger than the size of [other].
+ *
+ * Verifies that the current [IntArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [IntArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * intArrayOf(1, 2, 3) shouldBeLargerThan intArrayOf(1, 2)    // Assertion passes
+ * intArrayOf(1) shouldBeLargerThan intArrayOf(1, 2, 3)      // Assertion fails
+ * ```
+ *
+ * @see IntArray.shouldNotBeLargerThan
+ */
+infix fun IntArray.shouldBeLargerThan(other: IntArray): IntArray = apply {
+   asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [IntArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [IntArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [IntArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * intArrayOf(1) shouldNotBeLargerThan intArrayOf(1, 2, 3)    // Assertion passes
+ * intArrayOf(1, 2, 3) shouldNotBeLargerThan intArrayOf(1, 2) // Assertion fails
+ * ```
+ *
+ * @see IntArray.shouldBeLargerThan
+ */
+infix fun IntArray.shouldNotBeLargerThan(other: IntArray): IntArray = apply {
+   asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [ShortArray] is larger than the size of [other].
+ *
+ * Verifies that the current [ShortArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [ShortArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * shortArrayOf(1, 2, 3) shouldBeLargerThan shortArrayOf(1, 2)    // Assertion passes
+ * shortArrayOf(1) shouldBeLargerThan shortArrayOf(1, 2, 3)      // Assertion fails
+ * ```
+ *
+ * @see ShortArray.shouldNotBeLargerThan
+ */
+infix fun ShortArray.shouldBeLargerThan(other: ShortArray): ShortArray = apply {
+   asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [ShortArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [ShortArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [ShortArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * shortArrayOf(1) shouldNotBeLargerThan shortArrayOf(1, 2, 3)    // Assertion passes
+ * shortArrayOf(1, 2, 3) shouldNotBeLargerThan shortArrayOf(1, 2) // Assertion fails
+ * ```
+ *
+ * @see ShortArray.shouldBeLargerThan
+ */
+infix fun ShortArray.shouldNotBeLargerThan(other: ShortArray): ShortArray = apply {
+   asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [LongArray] is larger than the size of [other].
+ *
+ * Verifies that the current [LongArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [LongArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * longArrayOf(1, 2, 3) shouldBeLargerThan longArrayOf(1, 2)    // Assertion passes
+ * longArrayOf(1) shouldBeLargerThan longArrayOf(1, 2, 3)      // Assertion fails
+ * ```
+ *
+ * @see LongArray.shouldNotBeLargerThan
+ */
+infix fun LongArray.shouldBeLargerThan(other: LongArray): LongArray = apply {
+   asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [LongArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [LongArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [LongArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * longArrayOf(1) shouldNotBeLargerThan longArrayOf(1, 2, 3)    // Assertion passes
+ * longArrayOf(1, 2, 3) shouldNotBeLargerThan longArrayOf(1, 2) // Assertion fails
+ * ```
+ *
+ * @see LongArray.shouldBeLargerThan
+ */
+infix fun LongArray.shouldNotBeLargerThan(other: LongArray): LongArray = apply {
+   asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [FloatArray] is larger than the size of [other].
+ *
+ * Verifies that the current [FloatArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [FloatArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * floatArrayOf(1.1f, 2.2f, 3.3f) shouldBeLargerThan floatArrayOf(1.1f, 2.2f)    // Assertion passes
+ * floatArrayOf(1.1f) shouldBeLargerThan floatArrayOf(1.1f, 2.2f, 3.3f)        // Assertion fails
+ * ```
+ *
+ * @see FloatArray.shouldNotBeLargerThan
+ */
+infix fun FloatArray.shouldBeLargerThan(other: FloatArray): FloatArray = apply {
+   this.asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [FloatArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [FloatArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [FloatArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * floatArrayOf(1.1f) shouldNotBeLargerThan floatArrayOf(1.1f, 2.2f, 3.3f)    // Assertion passes
+ * floatArrayOf(1.1f, 2.2f, 3.3f) shouldNotBeLargerThan floatArrayOf(1.1f, 2.2f) // Assertion fails
+ * ```
+ *
+ * @see FloatArray.shouldBeLargerThan
+ */
+infix fun FloatArray.shouldNotBeLargerThan(other: FloatArray): FloatArray = apply {
+   this.asList() shouldNotBeLargerThan other.asList()
+}
+
+
+/**
+ * Asserts that the size of this [DoubleArray] is larger than the size of [other].
+ *
+ * Verifies that the current [DoubleArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [DoubleArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * doubleArrayOf(1.1, 2.2, 3.3) shouldBeLargerThan doubleArrayOf(1.1, 2.2)    // Assertion passes
+ * doubleArrayOf(1.1) shouldBeLargerThan doubleArrayOf(1.1, 2.2, 3.3)        // Assertion fails
+ * ```
+ *
+ * @see DoubleArray.shouldNotBeLargerThan
+ */
+infix fun DoubleArray.shouldBeLargerThan(other: DoubleArray): DoubleArray = apply {
+   this.asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [DoubleArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [DoubleArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [DoubleArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * doubleArrayOf(1.1) shouldNotBeLargerThan doubleArrayOf(1.1, 2.2, 3.3)    // Assertion passes
+ * doubleArrayOf(1.1, 2.2, 3.3) shouldNotBeLargerThan doubleArrayOf(1.1, 2.2) // Assertion fails
+ * ```
+ *
+ * @see DoubleArray.shouldBeLargerThan
+ */
+infix fun DoubleArray.shouldNotBeLargerThan(other: DoubleArray): DoubleArray = apply {
+   this.asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [CharArray] is larger than the size of [other].
+ *
+ * Verifies that the current [CharArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [CharArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * charArrayOf('a', 'b', 'c') shouldBeLargerThan charArrayOf('a', 'b')    // Assertion passes
+ * charArrayOf('a') shouldBeLargerThan charArrayOf('a', 'b', 'c')        // Assertion fails
+ * ```
+ *
+ * @see CharArray.shouldNotBeLargerThan
+ */
+infix fun CharArray.shouldBeLargerThan(other: CharArray): CharArray = apply {
+   this.asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [CharArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [CharArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [CharArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * charArrayOf('a') shouldNotBeLargerThan charArrayOf('a', 'b', 'c')    // Assertion passes
+ * charArrayOf('a', 'b', 'c') shouldNotBeLargerThan charArrayOf('a', 'b') // Assertion fails
+ * ```
+ *
+ * @see CharArray.shouldBeLargerThan
+ */
+infix fun CharArray.shouldNotBeLargerThan(other: CharArray): CharArray = apply {
+   this.asList() shouldNotBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [BooleanArray] is larger than the size of [other].
+ *
+ * Verifies that the current [BooleanArray] has more elements than the specified [other] array.
+ *
+ * Opposite of [BooleanArray.shouldNotBeLargerThan].
+ *
+ * Example:
+ * ```
+ * booleanArrayOf(true, false, true) shouldBeLargerThan booleanArrayOf(true, false)    // Assertion passes
+ * booleanArrayOf(true) shouldBeLargerThan booleanArrayOf(true, false, true)          // Assertion fails
+ * ```
+ *
+ * @see BooleanArray.shouldNotBeLargerThan
+ */
+infix fun BooleanArray.shouldBeLargerThan(other: BooleanArray): BooleanArray = apply {
+   this.asList() shouldBeLargerThan other.asList()
+}
+
+/**
+ * Asserts that the size of this [BooleanArray] is NOT larger than the size of [other].
+ *
+ * Verifies that the current [BooleanArray] does not have more elements than the specified [other] array.
+ *
+ * Opposite of [BooleanArray.shouldBeLargerThan].
+ *
+ * Example:
+ * ```
+ * booleanArrayOf(true) shouldNotBeLargerThan booleanArrayOf(true, false, true)    // Assertion passes
+ * booleanArrayOf(true, false, true) shouldNotBeLargerThan booleanArrayOf(true, false) // Assertion fails
+ * ```
+ *
+ * @see BooleanArray.shouldBeLargerThan
+ */
+infix fun BooleanArray.shouldNotBeLargerThan(other: BooleanArray): BooleanArray = apply {
+   this.asList() shouldNotBeLargerThan other.asList()
+}
+
+// endregion
 
 /**
  * Asserts that this [Iterable] is larger than [other].
