@@ -593,12 +593,27 @@ public final class io/kotest/matchers/collections/InorderKt {
 }
 
 public final class io/kotest/matchers/collections/LargerKt {
-	public static final fun beLargerThan (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun beLargerThan (Ljava/lang/Iterable;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeLargerThan (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeLargerThan (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/lang/Iterable;
-	public static final fun shouldBeLargerThan (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
-	public static final fun shouldBeLargerThan ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
+	public static final fun shouldBeLargerThan ([B[B)[B
+	public static final fun shouldBeLargerThan ([C[C)[C
+	public static final fun shouldBeLargerThan ([D[D)[D
+	public static final fun shouldBeLargerThan ([F[F)[F
+	public static final fun shouldBeLargerThan ([I[I)[I
+	public static final fun shouldBeLargerThan ([J[J)[J
 	public static final fun shouldBeLargerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeLargerThan ([S[S)[S
+	public static final fun shouldBeLargerThan ([Z[Z)[Z
+	public static final fun shouldNotBeLargerThan (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeLargerThan ([B[B)[B
+	public static final fun shouldNotBeLargerThan ([C[C)[C
+	public static final fun shouldNotBeLargerThan ([D[D)[D
+	public static final fun shouldNotBeLargerThan ([F[F)[F
+	public static final fun shouldNotBeLargerThan ([I[I)[I
+	public static final fun shouldNotBeLargerThan ([J[J)[J
+	public static final fun shouldNotBeLargerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeLargerThan ([S[S)[S
+	public static final fun shouldNotBeLargerThan ([Z[Z)[Z
 }
 
 public final class io/kotest/matchers/collections/MatchersKt {
