@@ -15,10 +15,11 @@ import io.kotest.matchers.shouldNot
  *
  * Opposite of [ByteArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * byteArrayOf(1, 2) shouldBeSmallerThan byteArrayOf(1, 2, 3)    // Assertion passes
  * byteArrayOf(1, 2, 3) shouldBeSmallerThan byteArrayOf(1, 2)    // Assertion fails
+ * byteArrayOf(1, 2) shouldBeSmallerThan byteArrayOf(3, 4)       // Assertion fails
  * ```
  *
  * @see ByteArray.shouldNotBeSmallerThan
@@ -35,10 +36,11 @@ infix fun ByteArray.shouldBeSmallerThan(other: ByteArray): ByteArray = apply {
  *
  * Opposite of [ByteArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * byteArrayOf(1, 2, 3) shouldNotBeSmallerThan byteArrayOf(1, 2)    // Assertion passes
  * byteArrayOf(1, 2) shouldNotBeSmallerThan byteArrayOf(1, 2, 3)    // Assertion fails
+ * byteArrayOf(1) shouldNotBeSmallerThan byteArrayOf(4)             // Assertion passes
  * ```
  *
  * @see ByteArray.shouldBeSmallerThan
@@ -46,8 +48,6 @@ infix fun ByteArray.shouldBeSmallerThan(other: ByteArray): ByteArray = apply {
 infix fun ByteArray.shouldNotBeSmallerThan(other: ByteArray): ByteArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
-
-// IntArray Matchers
 
 /**
  * Asserts that this [IntArray] is smaller than [other].
@@ -57,10 +57,11 @@ infix fun ByteArray.shouldNotBeSmallerThan(other: ByteArray): ByteArray = apply 
  *
  * Opposite of [IntArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * intArrayOf(1, 2) shouldBeSmallerThan intArrayOf(1, 2, 3)    // Assertion passes
  * intArrayOf(1, 2, 3) shouldBeSmallerThan intArrayOf(1, 2)    // Assertion fails
+ * intArrayOf(1) shouldBeSmallerThan intArrayOf(2)             // Assertion fails
  * ```
  *
  * @see IntArray.shouldNotBeSmallerThan
@@ -77,10 +78,11 @@ infix fun IntArray.shouldBeSmallerThan(other: IntArray): IntArray = apply {
  *
  * Opposite of [IntArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * intArrayOf(1, 2, 3) shouldNotBeSmallerThan intArrayOf(1, 2)    // Assertion passes
  * intArrayOf(1, 2) shouldNotBeSmallerThan intArrayOf(1, 2, 3)    // Assertion fails
+ * intArrayOf(1, 2) shouldNotBeSmallerThan intArrayOf(1, 2)       // Assertion passes
  * ```
  *
  * @see IntArray.shouldBeSmallerThan
@@ -88,8 +90,6 @@ infix fun IntArray.shouldBeSmallerThan(other: IntArray): IntArray = apply {
 infix fun IntArray.shouldNotBeSmallerThan(other: IntArray): IntArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
-
-// ShortArray Matchers
 
 /**
  * Asserts that this [ShortArray] is smaller than [other].
@@ -99,10 +99,11 @@ infix fun IntArray.shouldNotBeSmallerThan(other: IntArray): IntArray = apply {
  *
  * Opposite of [ShortArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * shortArrayOf(1, 2) shouldBeSmallerThan shortArrayOf(1, 2, 3)    // Assertion passes
  * shortArrayOf(1, 2, 3) shouldBeSmallerThan shortArrayOf(1, 2)    // Assertion fails
+ * shortArrayOf(1) shouldBeSmallerThan shortArrayOf(2)             // Assertion fails
  * ```
  *
  * @see ShortArray.shouldNotBeSmallerThan
@@ -114,15 +115,16 @@ infix fun ShortArray.shouldBeSmallerThan(other: ShortArray): ShortArray = apply 
 /**
  * Asserts that this [ShortArray] is NOT smaller than [other].
  *
- * Compares the sizes of two [ShortArray]s and verifies that the current array contains at least as many elements as
- * the specified [other] array.
+ * Compares the sizes of two [ShortArray]s and verifies that the current array contains at least as many elements as the
+ * specified [other] array.
  *
  * Opposite of [ShortArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * shortArrayOf(1, 2, 3) shouldNotBeSmallerThan shortArrayOf(1, 2)    // Assertion passes
  * shortArrayOf(1, 2) shouldNotBeSmallerThan shortArrayOf(1, 2, 3)    // Assertion fails
+ * shortArrayOf(1) shouldNotBeSmallerThan shortArrayOf(2)             // Assertion passes
  * ```
  *
  * @see ShortArray.shouldBeSmallerThan
@@ -139,10 +141,11 @@ infix fun ShortArray.shouldNotBeSmallerThan(other: ShortArray): ShortArray = app
  *
  * Opposite of [LongArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * longArrayOf(1L, 2L) shouldBeSmallerThan longArrayOf(1L, 2L, 3L)    // Assertion passes
  * longArrayOf(1L, 2L, 3L) shouldBeSmallerThan longArrayOf(1L, 2L)    // Assertion fails
+ * longArrayOf(1L) shouldBeSmallerThan longArrayOf(2L)                // Assertion fails
  * ```
  *
  * @see LongArray.shouldNotBeSmallerThan
@@ -159,14 +162,16 @@ infix fun LongArray.shouldBeSmallerThan(other: LongArray): LongArray = apply {
  *
  * Opposite of [LongArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * longArrayOf(1L, 2L, 3L) shouldNotBeSmallerThan longArrayOf(1L, 2L)    // Assertion passes
  * longArrayOf(1L, 2L) shouldNotBeSmallerThan longArrayOf(1L, 2L, 3L)    // Assertion fails
+ * longArrayOf(1L) shouldNotBeSmallerThan longArrayOf(1L)                // Assertion passes
  * ```
  *
  * @see LongArray.shouldBeSmallerThan
  */
+
 infix fun LongArray.shouldNotBeSmallerThan(other: LongArray): LongArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -179,10 +184,11 @@ infix fun LongArray.shouldNotBeSmallerThan(other: LongArray): LongArray = apply 
  *
  * Opposite of [FloatArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * floatArrayOf(1.1f, 2.2f) shouldBeSmallerThan floatArrayOf(1.1f, 2.2f, 3.3f)    // Assertion passes
  * floatArrayOf(1.1f, 2.2f, 3.3f) shouldBeSmallerThan floatArrayOf(1.1f, 2.2f)    // Assertion fails
+ * floatArrayOf(1.0f) shouldBeSmallerThan floatArrayOf(1.0f)                      // Assertion fails
  * ```
  *
  * @see FloatArray.shouldNotBeSmallerThan
@@ -199,10 +205,11 @@ infix fun FloatArray.shouldBeSmallerThan(other: FloatArray): FloatArray = apply 
  *
  * Opposite of [FloatArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * floatArrayOf(1.1f, 2.2f, 3.3f) shouldNotBeSmallerThan floatArrayOf(1.1f, 2.2f)    // Assertion passes
  * floatArrayOf(1.1f, 2.2f) shouldNotBeSmallerThan floatArrayOf(1.1f, 2.2f, 3.3f)    // Assertion fails
+ * floatArrayOf(1.0f) shouldNotBeSmallerThan floatArrayOf(1.0f)                      // Assertion passes
  * ```
  *
  * @see FloatArray.shouldBeSmallerThan
@@ -219,10 +226,11 @@ infix fun FloatArray.shouldNotBeSmallerThan(other: FloatArray): FloatArray = app
  *
  * Opposite of [DoubleArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * doubleArrayOf(1.1, 2.2) shouldBeSmallerThan doubleArrayOf(1.1, 2.2, 3.3)    // Assertion passes
  * doubleArrayOf(1.1, 2.2, 3.3) shouldBeSmallerThan doubleArrayOf(1.1, 2.2)    // Assertion fails
+ * doubleArrayOf(1.0) shouldBeSmallerThan doubleArrayOf(1.1)                   // Assertion fails
  * ```
  *
  * @see DoubleArray.shouldNotBeSmallerThan
@@ -234,15 +242,16 @@ infix fun DoubleArray.shouldBeSmallerThan(other: DoubleArray): DoubleArray = app
 /**
  * Asserts that this [DoubleArray] is NOT smaller than [other].
  *
- * Compares the sizes of two [DoubleArray]s and verifies that the current array contains at least as many elements as
- * the specified [other] array.
+ * Compares the sizes of two [DoubleArray]s and verifies that the current array contains at least as many elements as the
+ * specified [other] array.
  *
  * Opposite of [DoubleArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * doubleArrayOf(1.1, 2.2, 3.3) shouldNotBeSmallerThan doubleArrayOf(1.1, 2.2)    // Assertion passes
  * doubleArrayOf(1.1, 2.2) shouldNotBeSmallerThan doubleArrayOf(1.1, 2.2, 3.3)    // Assertion fails
+ * doubleArrayOf(1.0) shouldNotBeSmallerThan doubleArrayOf(1.0)                   // Assertion passes
  * ```
  *
  * @see DoubleArray.shouldBeSmallerThan
@@ -259,10 +268,11 @@ infix fun DoubleArray.shouldNotBeSmallerThan(other: DoubleArray): DoubleArray = 
  *
  * Opposite of [CharArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * charArrayOf('a', 'b') shouldBeSmallerThan charArrayOf('a', 'b', 'c')    // Assertion passes
  * charArrayOf('a', 'b', 'c') shouldBeSmallerThan charArrayOf('a', 'b')    // Assertion fails
+ * charArrayOf('x') shouldBeSmallerThan charArrayOf('y')                   // Assertion fails
  * ```
  *
  * @see CharArray.shouldNotBeSmallerThan
@@ -279,10 +289,11 @@ infix fun CharArray.shouldBeSmallerThan(other: CharArray): CharArray = apply {
  *
  * Opposite of [CharArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * charArrayOf('a', 'b', 'c') shouldNotBeSmallerThan charArrayOf('a', 'b')    // Assertion passes
  * charArrayOf('a', 'b') shouldNotBeSmallerThan charArrayOf('a', 'b', 'c')    // Assertion fails
+ * charArrayOf('a') shouldNotBeSmallerThan charArrayOf('a')                   // Assertion passes
  * ```
  *
  * @see CharArray.shouldBeSmallerThan
@@ -299,10 +310,11 @@ infix fun CharArray.shouldNotBeSmallerThan(other: CharArray): CharArray = apply 
  *
  * Opposite of [BooleanArray.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * booleanArrayOf(true, false) shouldBeSmallerThan booleanArrayOf(true, false, true)    // Assertion passes
  * booleanArrayOf(true, false, true) shouldBeSmallerThan booleanArrayOf(true, false)    // Assertion fails
+ * booleanArrayOf(true) shouldBeSmallerThan booleanArrayOf(false)                       // Assertion fails
  * ```
  *
  * @see BooleanArray.shouldNotBeSmallerThan
@@ -319,10 +331,11 @@ infix fun BooleanArray.shouldBeSmallerThan(other: BooleanArray): BooleanArray = 
  *
  * Opposite of [BooleanArray.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * booleanArrayOf(true, false, true) shouldNotBeSmallerThan booleanArrayOf(true, false)    // Assertion passes
  * booleanArrayOf(true, false) shouldNotBeSmallerThan booleanArrayOf(true, false, true)    // Assertion fails
+ * booleanArrayOf(true) shouldNotBeSmallerThan booleanArrayOf(false)                       // Assertion passes
  * ```
  *
  * @see BooleanArray.shouldBeSmallerThan
@@ -342,10 +355,11 @@ infix fun BooleanArray.shouldNotBeSmallerThan(other: BooleanArray): BooleanArray
  *
  * Opposite of [Iterable.shouldNotBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * listOf(1, 2) shouldBeSmallerThan listOf(1, 2, 3)    // Assertion passes
  * listOf(1, 2, 3) shouldBeSmallerThan listOf(1, 2)    // Assertion fails
+ * listOf() shouldBeSmallerThan listOf(1)             // Assertion passes
  * ```
  *
  * @see Iterable.shouldNotBeSmallerThan
@@ -353,6 +367,7 @@ infix fun BooleanArray.shouldNotBeSmallerThan(other: BooleanArray): BooleanArray
 infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Iterable<U>): I = apply {
    toList() should beSmallerThan(other)
 }
+
 
 /**
  * Asserts that this [Array] is smaller than [other].
@@ -366,6 +381,7 @@ infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Iterable<U>): I =
  * ```
  * arrayOf(1, 2) shouldBeSmallerThan arrayOf(1, 2, 3)    // Assertion passes
  * arrayOf(1, 2, 3) shouldBeSmallerThan arrayOf(1, 2)    // Assertion fails
+ * arrayOf(1) shouldBeSmallerThan arrayOf(2)             // Assertion fails
  * ```
  *
  * @see Array.shouldNotBeSmallerThan
@@ -383,10 +399,11 @@ infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>): Array<T> = apply
  *
  * Opposite of [Iterable.shouldBeSmallerThan].
  *
- * Example:
+ * Examples:
  * ```
  * listOf(1, 2, 3) shouldNotBeSmallerThan listOf(1, 2)    // Assertion passes
  * listOf(1, 2) shouldNotBeSmallerThan listOf(1, 2, 3)    // Assertion fails
+ * listOf(1) shouldNotBeSmallerThan listOf(2)             // Assertion passes
  * ```
  *
  * @see Iterable.shouldBeSmallerThan
@@ -407,6 +424,7 @@ infix fun <T, U, I : Iterable<T>> I.shouldNotBeSmallerThan(other: Iterable<U>): 
  * ```
  * arrayOf(1, 2, 3) shouldNotBeSmallerThan arrayOf(1, 2)    // Assertion passes
  * arrayOf(1, 2) shouldNotBeSmallerThan arrayOf(1, 2, 3)    // Assertion fails
+ * arrayOf(1) shouldNotBeSmallerThan arrayOf(2)             // Assertion passses
  * ```
  *
  * @see Array.shouldBeSmallerThan
@@ -425,6 +443,7 @@ infix fun <T, U> Array<T>.shouldNotBeSmallerThan(other: Array<U>): Array<T> = ap
  * ```
  * listOf(1, 2) should beSmallerThan listOf(1, 2, 3)    // Assertion passes
  * listOf(1, 2, 3) should beSmallerThan listOf(1, 2)    // Assertion fails
+ * listOf(1) should beSmallerThan listOf(1)             // Assertion fails
  * ```
  *
  * @see Iterable.shouldBeSmallerThan
