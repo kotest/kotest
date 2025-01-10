@@ -2861,6 +2861,9 @@ public final class io/kotest/inspectors/InspectorAliasesKt {
 }
 
 public final class io/kotest/inspectors/InspectorsKt {
+	public static final fun filterMatching (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterMatching (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)Lkotlin/sequences/Sequence;
+	public static final fun filterMatching ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun forAll (Ljava/lang/CharSequence;Lkotlin/jvm/functions/Function1;)Ljava/lang/CharSequence;
 	public static final fun forAll (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
 	public static final fun forAll (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;

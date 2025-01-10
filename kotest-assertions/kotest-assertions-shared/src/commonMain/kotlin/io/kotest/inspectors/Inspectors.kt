@@ -213,6 +213,13 @@ inline fun <T, C : Collection<T>> C.filterMatching(f: (T) -> Unit): List<T> =
    filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
 
 /**
+ * Filters the [Collection], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T> Array<T>.filterMatching(f: (T) -> Unit): List<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
+
+/**
  * Filters the [Sequence], excluding all elements which fail the given assertion block [f]
  */
 @ExperimentalKotest
