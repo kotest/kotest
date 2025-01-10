@@ -187,7 +187,6 @@ class TestConfigResolver(
     */
    fun extensions(testCase: TestCase): List<Extension> {
       return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
-         (testCase.config?.extensions ?: emptyList()) + // extensions coming from the test config block itself
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
          testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
