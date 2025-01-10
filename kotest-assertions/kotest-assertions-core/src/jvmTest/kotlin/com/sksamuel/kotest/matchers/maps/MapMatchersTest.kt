@@ -155,11 +155,12 @@ class MapMatchersTest : WordSpec() {
             map shouldNotContain("lemon" to null)
          }
          "handle case of values with different types" {
-            val map = mapOf("apple" to BigDecimal("1.5"))
-            shouldThrow<AssertionError> {
-               map shouldContain("apple" to 1.5)
-            }.message.shouldContainInOrder(
-               "Map should contain mapping apple=1.5 but was apple=1.5"
+            val message = shouldThrow<AssertionError> {
+               mapOf("apple" to 1.5) shouldContain ("apple" to BigDecimal("1.5"))
+            }.message
+            message.shouldContainInOrder(
+               "Map should contain mapping apple=1.5 but was apple=1.5",
+               "Expected type java.math.BigDecimal, but was kotlin.Double",
             )
          }
       }

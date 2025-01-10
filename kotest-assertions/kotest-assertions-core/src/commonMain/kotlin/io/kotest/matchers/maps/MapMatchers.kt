@@ -109,7 +109,7 @@ fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V
       val possibleMatches = if(passed) "" else describePossibleMatches(key, v, value)
       return MatcherResult(
          passed,
-         { "Map should contain mapping $key=$v but was ${buildActualValue(value)}$possibleMatches" },
+         { "Map should contain mapping $key=$v but was ${buildActualValue(value)}${describeTypedMismatch(value[key], v)}$possibleMatches" },
          { "Map should not contain mapping $key=$v but was $value" }
       )
    }

@@ -22,7 +22,7 @@ fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
       )
       key in value.keys && value[key] != v -> MapContainResult(
          false,
-         "Map should contain mapping $key=$v but was ${buildActualValue(value)}"
+         "Map should contain mapping $key=$v but was ${buildActualValue(value)}${describeTypedMismatch(v, value[key])}"
       )
       else -> MapContainResult(true, "")
    }
