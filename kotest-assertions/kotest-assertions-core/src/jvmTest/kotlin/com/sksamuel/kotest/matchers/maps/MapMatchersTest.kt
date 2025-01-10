@@ -15,6 +15,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldStartWith
+import java.math.BigDecimal
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {
@@ -152,6 +153,15 @@ class MapMatchersTest : WordSpec() {
          "pass for key not in map and null value" {
             val map = mapOf("apple" to "green")
             map shouldNotContain("lemon" to null)
+         }
+         "handle case of values with different types" {
+            val message = shouldThrow<AssertionError> {
+               mapOf("apple" to 1.5) shouldContain ("apple" to BigDecimal("1.5"))
+            }.message
+            message.shouldContainInOrder(
+               "Map should contain mapping apple=1.5 but was apple=1.5",
+               "Expected type java.math.BigDecimal, but was kotlin.Double",
+            )
          }
       }
 
