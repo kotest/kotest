@@ -30,6 +30,15 @@ xs.forNone {
 }
 ```
 
+If you want to filter a collection to only elements that pass the assertions, you can use the `filterMatching` method:
+
+```kotlin
+xs.filterMatching {
+  it.shouldContain("x")
+  it.shouldStartWith("bb")
+}.shouldBeEmpty()
+```
+
 The full list of inspectors are:
 
 * `forAll` which asserts every element passes the assertions
@@ -42,6 +51,7 @@ The full list of inspectors are:
 * `forAny` which is an alias for `forAtLeastOne`
 * `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
 * `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
+* `filterMatching` which filters the collection to only include elements that pass the assertions
 
 
 
