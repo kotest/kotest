@@ -66,7 +66,7 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    }
 
    override fun logLevel(): LogLevel? {
-      return sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
+      return syspropOrEnv(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
    }
 
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? {
