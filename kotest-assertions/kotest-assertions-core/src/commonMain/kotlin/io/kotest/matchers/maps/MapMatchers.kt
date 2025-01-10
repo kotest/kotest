@@ -1,6 +1,7 @@
 package io.kotest.matchers.maps
 
 import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.describeTypedMismatch
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode
@@ -133,17 +134,6 @@ fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V
       prefix = "\nSimilar values found:\n"
    )
 
-}
-
-fun describeTypedMismatch(expected: Any?, actual: Any?): String {
-   val expectedType = expected?.let { it::class.qualifiedName } ?: return ""
-   val actualType = actual?.let { it::class.qualifiedName } ?: return ""
-   val expectedPrintValue = expected.print().value
-   val actualPrintValue = actual.print().value
-   return if(expectedPrintValue == actualPrintValue) {
-      "\nExpected type $expectedType, but was $actualType"
-   } else
-   ""
 }
 
 internal fun printIfNotEmpty(string: String, prefix: String = "", suffix: String = ""): String =
