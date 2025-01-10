@@ -115,6 +115,10 @@ public final class io/kotest/assertions/CounterKt {
 	public static final fun inc (Lio/kotest/assertions/AssertionCounter;I)V
 }
 
+public final class io/kotest/assertions/DescribeTypedMismatch_jvmKt {
+	public static final fun describeTypedMismatch (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/DiffLargeStringKt {
 	public static final fun diffLargeString (Ljava/lang/String;Ljava/lang/String;)Lkotlin/Pair;
 }
