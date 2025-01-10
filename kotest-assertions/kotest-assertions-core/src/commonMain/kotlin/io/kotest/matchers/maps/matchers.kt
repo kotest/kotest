@@ -1,5 +1,6 @@
 package io.kotest.matchers.maps
 
+import io.kotest.assertions.describeTypedMismatch
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should

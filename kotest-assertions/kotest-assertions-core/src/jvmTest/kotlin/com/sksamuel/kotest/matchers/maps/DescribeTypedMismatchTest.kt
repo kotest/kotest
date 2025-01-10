@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.matchers.maps
 
+import io.kotest.assertions.describeTypedMismatch
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.maps.describeTypedMismatch
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal
 
