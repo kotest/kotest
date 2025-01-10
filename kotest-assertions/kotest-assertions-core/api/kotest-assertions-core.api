@@ -1804,6 +1804,7 @@ public final class io/kotest/matchers/maps/MapMatchersKt {
 	public static final fun containAnyValues ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactly (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactly ([Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
+	public static final fun describeTypedMismatch (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
 	public static final fun haveKey (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveKeys ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
