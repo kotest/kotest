@@ -1,74 +1,61 @@
 package io.kotest.assertions.print
 
 object NullPrint : Print<Any?> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Any?): Printed = Printed("<null>")
+   override fun print(a: Any?, level: Int): Printed = "${indent(level)}<null>".printed()
 }
 
 object BooleanPrint : Print<Boolean> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Boolean): Printed = "$a".printed()
+   override fun print(a: Boolean, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object DoublePrint : Print<Double> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Double): Printed = a.toString().printed()
+   override fun print(a: Double, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 /**
  * Floats's are printed out as is, with the suffix f.
  */
 object FloatPrint : Print<Float> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Float): Printed = "${a}f".printed()
+   override fun print(a: Float, level: Int): Printed = "${indent(level)}${a}f".printed()
 }
 
 /**
  * Long's are printed out as is, with the suffix L.
  */
 object LongPrint : Print<Long> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Long): Printed = "${a}L".printed()
+   override fun print(a: Long, level: Int): Printed = "${indent(level)}${a}L".printed()
 }
 
 object IntPrint : Print<Int> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Int): Printed = a.toString().printed()
+   override fun print(a: Int, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object CharPrint : Print<Char> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Char): Printed = "'$a'".printed()
+   override fun print(a: Char, level: Int): Printed = "${indent(level)}'$a'".printed()
 }
 
 object ShortPrint : Print<Short> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Short): Printed = a.toString().printed()
+   override fun print(a: Short, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object BytePrint : Print<Byte> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Byte): Printed = a.toString().printed()
+   override fun print(a: Byte, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
-object UBytePrint: Print<UByte> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: UByte): Printed = "$a (UByte)".printed()
+object UBytePrint : Print<UByte> {
+   override fun print(a: UByte, level: Int): Printed = "${indent(level)}$a (UByte)".printed()
 }
 
-object UShortPrint: Print<UShort> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: UShort): Printed = "$a (UShort)".printed()
+object UShortPrint : Print<UShort> {
+   override fun print(a: UShort, level: Int): Printed = "${indent(level)}$a (UShort)".printed()
 }
 
-object UIntPrint: Print<UInt> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: UInt): Printed = "$a (UInt)".printed()
+object UIntPrint : Print<UInt> {
+   override fun print(a: UInt, level: Int): Printed = "${indent(level)}$a (UInt)".printed()
 }
 
-object ULongPrint: Print<ULong> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: ULong): Printed = "$a (ULong)".printed()
+object ULongPrint : Print<ULong> {
+   override fun print(a: ULong, level: Int): Printed = "${indent(level)}$a (ULong)".printed()
 }
 
 /**
@@ -76,32 +63,25 @@ object ULongPrint: Print<ULong> {
  * to object a [Printed] result.
  */
 object ToStringPrint : Print<Any> {
-   override fun print(a: Any, level: Int): Printed = a.toString().printed()
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Any): Printed = a.toString().printed()
+   override fun print(a: Any, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object LongRangePrint : Print<LongRange> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: LongRange): Printed = Printed(a.toString())
+   override fun print(a: LongRange, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object IntRangePrint : Print<IntRange> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: IntRange): Printed = Printed(a.toString())
+   override fun print(a: IntRange, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object CharRangePrint : Print<CharRange> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: CharRange): Printed = Printed(a.toString())
+   override fun print(a: CharRange, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object ULongRangePrint : Print<ULongRange> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: ULongRange): Printed = Printed(a.toString())
+   override fun print(a: ULongRange, level: Int): Printed = "${indent(level)}$a".printed()
 }
 
 object UIntRangePrint : Print<UIntRange> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: UIntRange): Printed = Printed(a.toString())
+   override fun print(a: UIntRange, level: Int): Printed = "${indent(level)}$a".printed()
 }

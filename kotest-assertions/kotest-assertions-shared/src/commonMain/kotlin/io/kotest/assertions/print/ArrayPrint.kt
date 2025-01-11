@@ -2,9 +2,6 @@ package io.kotest.assertions.print
 
 object ArrayPrint : Print<Any> {
 
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: Any): Printed = print(a, 0)
-
    @Suppress("UNCHECKED_CAST")
    override fun print(a: Any, level: Int): Printed = when (a) {
       is LongArray -> ListPrint<Long>().print(a.asList(), level)
