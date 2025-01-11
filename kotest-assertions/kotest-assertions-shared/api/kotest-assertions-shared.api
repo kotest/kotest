@@ -227,10 +227,6 @@ public final class io/kotest/assertions/FailuresKt {
 	public static synthetic fun failureWithTypeInformation$default (Lio/kotest/assertions/ExpectedWithType;Lio/kotest/assertions/ActualWithType;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/Throwable;
 }
 
-public final class io/kotest/assertions/InspectingKt {
-	public static final fun inspecting (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class io/kotest/assertions/IntellijFormatterKt {
 	public static final fun intellijFormatError (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/String;
 }
