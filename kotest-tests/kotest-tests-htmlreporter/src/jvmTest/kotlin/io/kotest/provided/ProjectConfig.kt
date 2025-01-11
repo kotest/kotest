@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package io.kotest.provided
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
@@ -10,13 +10,11 @@ class ProjectConfig : AbstractProjectConfig() {
 
    override val specExecutionOrder = SpecExecutionOrder.Annotated
 
-   override val extensions: List<Extension> {
-      return listOf(
-         JunitXmlReporter(
-            includeContainers = false,
-            useTestPathAsName = true
-         ),
-         HtmlReporter()
-      )
-   }
+   override val extensions: List<Extension> = listOf(
+     JunitXmlReporter(
+       includeContainers = false,
+       useTestPathAsName = true
+     ),
+     HtmlReporter()
+   )
 }
