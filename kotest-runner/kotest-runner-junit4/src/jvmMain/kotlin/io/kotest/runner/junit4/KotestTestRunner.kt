@@ -5,6 +5,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecInstantiator
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
@@ -27,7 +28,12 @@ class KotestTestRunner(
    }
 
    override fun getDescription(): Description {
-      val spec = runBlocking { SpecInstantiator(ProjectConfigResolver()).createAndInitializeSpec(kclass.kotlin).getOrThrow() }
+      val spec = runBlocking {
+         SpecInstantiator(
+            DefaultExtensionRegistry(),
+            ProjectConfigResolver()
+         ).createAndInitializeSpec(kclass.kotlin).getOrThrow()
+      }
       val desc = Description.createSuiteDescription(spec::class.java)
       Materializer(SpecConfigResolver()).materialize(spec).forEach { rootTest ->
          desc.addChild(

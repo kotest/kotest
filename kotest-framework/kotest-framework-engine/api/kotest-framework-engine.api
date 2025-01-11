@@ -1682,8 +1682,7 @@ public abstract class io/kotest/core/spec/CompositeSpec : io/kotest/core/spec/Sp
 public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Spec, io/kotest/core/spec/style/scopes/RootScope {
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/spec/RootTest;)V
-	public final fun afterProject (Lkotlin/jvm/functions/Function0;)V
-	public fun globalExtensions ()Ljava/util/List;
+	public final fun afterProject (Lkotlin/jvm/functions/Function1;)V
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 	public final fun include (Ljava/lang/String;Lio/kotest/core/factory/TestFactory;)V
 	public fun rootTests ()Ljava/util/List;
@@ -1772,7 +1771,6 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public final fun getTestOrder ()Lio/kotest/core/test/TestCaseOrder;
 	public final fun getTimeout ()Ljava/lang/Long;
-	public abstract fun globalExtensions ()Ljava/util/List;
 	public fun invocationTimeout ()Ljava/lang/Long;
 	public fun isolationMode ()Lio/kotest/core/spec/IsolationMode;
 	public abstract fun rootTests ()Ljava/util/List;
@@ -1855,7 +1853,6 @@ public abstract class io/kotest/core/spec/style/AnnotationSpec : io/kotest/core/
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun globalExtensions ()Ljava/util/List;
 	public fun rootTests ()Ljava/util/List;
 }
 
@@ -3968,7 +3965,7 @@ public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/
 }
 
 public final class io/kotest/engine/spec/SpecInstantiator {
-	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;)V
+	public fun <init> (Lio/kotest/engine/extensions/ExtensionRegistry;Lio/kotest/engine/config/ProjectConfigResolver;)V
 	public final fun createAndInitializeSpec-gIAlu-s (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
