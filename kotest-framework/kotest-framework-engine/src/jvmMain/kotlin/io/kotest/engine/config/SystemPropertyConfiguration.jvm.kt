@@ -24,11 +24,11 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun assertionMode(): AssertionMode? =
       sysprop(KotestEngineProperties.assertionMode)?.let { AssertionMode.valueOf(it) }
 
-   override fun timeout(): Long? =
-      sysprop(KotestEngineProperties.TIMEOUT)?.toLong()
+   override fun timeout(): Duration? =
+      sysprop(KotestEngineProperties.TIMEOUT)?.toLong()?.milliseconds
 
-   override fun invocationTimeout(): Long? =
-      sysprop(KotestEngineProperties.invocationTimeout)?.toLong()
+   override fun invocationTimeout(): Duration? =
+      sysprop(KotestEngineProperties.INVOCATION_TIMEOUT)?.toLong()?.milliseconds
 
    override fun allowMultilineTestName(): Boolean? =
       sysprop(KotestEngineProperties.allowMultilineTestName)?.let { it.uppercase() == "TRUE" }
@@ -61,7 +61,7 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
       sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 
    override fun projectTimeout(): Duration? {
-      val d = sysprop(KotestEngineProperties.projectTimeout)?.toLong() ?: return null
+      val d = sysprop(KotestEngineProperties.PROJECT_TIMEOUT)?.toLong() ?: return null
       return d.milliseconds
    }
 

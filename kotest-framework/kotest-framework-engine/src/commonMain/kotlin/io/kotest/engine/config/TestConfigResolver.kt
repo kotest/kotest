@@ -133,6 +133,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.timeout
          ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
          ?: projectConfig?.timeout
+         ?: systemPropertyConfiguration.timeout()
          ?: Defaults.DEFAULT_TIMEOUT
    }
 
@@ -143,6 +144,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.invocationTimeout
          ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
          ?: projectConfig?.invocationTimeout
+         ?: systemPropertyConfiguration.invocationTimeout()
          ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS
    }
 

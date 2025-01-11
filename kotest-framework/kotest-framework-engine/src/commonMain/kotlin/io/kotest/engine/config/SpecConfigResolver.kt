@@ -59,6 +59,7 @@ class SpecConfigResolver(
       return spec.isolationMode()
          ?: spec.isolationMode
          ?: config?.isolationMode
+         ?: systemPropertyConfiguration.isolationMode()
          ?: Defaults.ISOLATION_MODE
    }
 

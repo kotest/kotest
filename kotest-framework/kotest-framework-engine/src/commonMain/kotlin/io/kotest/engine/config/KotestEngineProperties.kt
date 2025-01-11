@@ -58,14 +58,14 @@ object KotestEngineProperties {
    /**
     * The default timeout for the entire test suite.
     */
-   const val projectTimeout = "kotest.framework.projecttimeout"
+   const val PROJECT_TIMEOUT = "kotest.framework.projecttimeout"
 
    const val logLevel = "kotest.framework.loglevel"
 
    /**
     * The default timeout for each invocation of a test case.
     */
-   const val invocationTimeout = "kotest.framework.invocation.timeout"
+   const val INVOCATION_TIMEOUT = "kotest.framework.invocation.timeout"
 
    /**
     * Use classpath scanning for test discovery if no selectors are present (defaults to "false").

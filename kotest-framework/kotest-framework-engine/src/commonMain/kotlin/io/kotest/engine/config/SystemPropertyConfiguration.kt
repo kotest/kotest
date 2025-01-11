@@ -17,8 +17,9 @@ internal expect fun loadSystemPropertyConfiguration(): SystemPropertyConfigurati
 interface SystemPropertyConfiguration {
    fun isolationMode(): IsolationMode?
    fun assertionMode(): AssertionMode?
-   fun timeout(): Long?
-   fun invocationTimeout(): Long?
+   fun timeout(): Duration?
+   fun invocationTimeout(): Duration?
+   fun projectTimeout(): Duration?
    fun allowMultilineTestName(): Boolean?
    fun discoveryClasspathScanningEnabled(): Boolean?
    fun disableTestNestedJarScanning(): Boolean?
@@ -26,7 +27,6 @@ interface SystemPropertyConfiguration {
    fun testNameAppendTags(): Boolean?
    fun tagInheritance(): Boolean?
    fun duplicateTestNameMode(): DuplicateTestNameMode?
-   fun projectTimeout(): Duration?
    fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel?
    fun coroutineDebugProbes(): Boolean?
    fun ignorePrivateClasses(): Boolean?
@@ -38,8 +38,9 @@ interface SystemPropertyConfiguration {
 object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun isolationMode(): IsolationMode? = null
    override fun assertionMode(): AssertionMode? = null
-   override fun timeout(): Long? = null
-   override fun invocationTimeout(): Long? = null
+   override fun timeout(): Duration? = null
+   override fun invocationTimeout(): Duration? = null
+   override fun projectTimeout(): Duration? = null
    override fun allowMultilineTestName(): Boolean? = null
    override fun discoveryClasspathScanningEnabled(): Boolean? = null
    override fun disableTestNestedJarScanning(): Boolean? = null
@@ -47,7 +48,6 @@ object NoopSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun testNameAppendTags(): Boolean? = null
    override fun tagInheritance(): Boolean? = null
    override fun duplicateTestNameMode(): DuplicateTestNameMode? = null
-   override fun projectTimeout(): Duration? = null
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? = null
    override fun coroutineDebugProbes(): Boolean? = null
    override fun ignorePrivateClasses(): Boolean? = null
