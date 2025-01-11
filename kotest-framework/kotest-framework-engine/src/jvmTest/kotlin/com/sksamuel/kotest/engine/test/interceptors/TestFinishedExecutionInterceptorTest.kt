@@ -78,7 +78,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions(): List<Extension> = listOf(ignoredTestListener)
+         override val extensions: List<Extension> = listOf(ignoredTestListener)
       }
 
       TestFinishedInterceptor(testCaseExecutionListener, TestExtensions(TestConfigResolver(c))).intercept(

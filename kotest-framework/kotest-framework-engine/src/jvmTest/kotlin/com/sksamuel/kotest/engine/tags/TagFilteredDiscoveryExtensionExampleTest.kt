@@ -24,7 +24,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
       "Spec marked with excluded tag should not be run" {
          val collector = CollectingTestEngineListener()
          val c = object : AbstractProjectConfig() {
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
          TestEngineLauncher(collector)
             .withProjectConfig(c)

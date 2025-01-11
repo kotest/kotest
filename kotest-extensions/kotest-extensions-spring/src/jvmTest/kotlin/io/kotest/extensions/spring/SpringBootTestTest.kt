@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest(classes = [Components::class])
 class SpringBootTestTest : FunSpec() {
 
-   override fun extensions() = listOf(SpringExtension())
+   override val extensions = listOf(SpringExtension())
 
     @Autowired
     lateinit var userService: UserService

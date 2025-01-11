@@ -49,7 +49,7 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Extension] instances.
     */
-   open fun extensions(): List<Extension> = emptyList()
+   open val extensions: List<Extension> = emptyList()
 
    /**
     * Override this function and return an instance of [SpecExecutionOrder] which will

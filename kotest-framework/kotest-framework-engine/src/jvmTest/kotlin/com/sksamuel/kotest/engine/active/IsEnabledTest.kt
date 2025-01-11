@@ -57,7 +57,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          val test = TestCase(
@@ -81,7 +81,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          val test = TestCase(
@@ -105,7 +105,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          val mytag = NamedTag("mytag")
@@ -128,7 +128,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          val mytag = NamedTag("mytag")
@@ -205,7 +205,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(filter)
+            override val extensions = listOf(filter)
          }
 
          TestCase(
@@ -240,7 +240,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          // this should be disabled because the extension says it is, even though it's normally enabled

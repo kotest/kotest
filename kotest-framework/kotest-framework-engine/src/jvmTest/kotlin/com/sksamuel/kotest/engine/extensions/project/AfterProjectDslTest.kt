@@ -17,7 +17,7 @@ class AfterProjectDslTest : FunSpec({
       var fired = false
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(object : ProjectListener {
+         override val extensions = listOf(object : ProjectListener {
             override suspend fun afterProject() {
                fired = true
             }

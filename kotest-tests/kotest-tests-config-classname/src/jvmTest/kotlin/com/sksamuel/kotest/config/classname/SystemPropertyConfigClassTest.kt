@@ -62,14 +62,14 @@ object MyExtension : TestListener {
 }
 
 class Config1 : AbstractProjectConfig() {
-   override fun extensions(): List<Extension> = listOf(MyExtension)
+   override val extensions: List<Extension> = listOf(MyExtension)
    override suspend fun beforeProject() {
       beforeAll.incrementAndGet()
    }
 }
 
 class Config2 : AbstractProjectConfig() {
-   override fun extensions(): List<Extension> = listOf(MyExtension)
+   override val extensions: List<Extension> = listOf(MyExtension)
    override suspend fun beforeProject() {
       beforeAll.incrementAndGet()
    }

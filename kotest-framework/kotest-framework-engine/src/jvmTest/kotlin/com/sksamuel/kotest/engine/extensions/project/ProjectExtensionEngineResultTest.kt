@@ -42,7 +42,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(ext1, ext2)
+         override val extensions = listOf(ext1, ext2)
       }
 
       TestEngineLauncher(listener)

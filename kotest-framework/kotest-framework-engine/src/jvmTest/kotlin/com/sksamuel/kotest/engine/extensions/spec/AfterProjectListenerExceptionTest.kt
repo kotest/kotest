@@ -32,7 +32,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(projectListener)
+         override val extensions = listOf(projectListener)
       }
 
       TestEngineLauncher(listener)
@@ -68,7 +68,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(projectListener1, projectListener2)
+         override val extensions = listOf(projectListener1, projectListener2)
       }
 
       TestEngineLauncher(listener)

@@ -35,7 +35,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(ext1, ext2)
+         override val extensions = listOf(ext1, ext2)
       }
 
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) { EngineResult.empty }
@@ -61,7 +61,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(ext1, ext2)
+         override val extensions = listOf(ext1, ext2)
       }
 
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
@@ -94,7 +94,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(ext)
+         override val extensions = listOf(ext)
       }
 
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withProjectConfig(c)) {

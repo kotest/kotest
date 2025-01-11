@@ -39,7 +39,7 @@ class FinalizeSpecTest : FunSpec() {
       test("finalize spec listeners should be fired") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(FinalizeSpecTestListener1(), FinalizeSpecTestListener2())
+            override val extensions = listOf(FinalizeSpecTestListener1(), FinalizeSpecTestListener2())
          }
          counter.set(0)
          TestEngineLauncher(NoopTestEngineListener)

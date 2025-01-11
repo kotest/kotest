@@ -35,7 +35,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExtension" {
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
+            override val extensions = listOf(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          }
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
@@ -46,7 +46,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExpressionExtension" {
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
+            override val extensions = listOf(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          }
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
@@ -57,7 +57,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 
       "tags defined in spec should stop listeners firing" {
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(FooTagExtension)
+            override val extensions = listOf(FooTagExtension)
          }
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithListenerAndTag::class)

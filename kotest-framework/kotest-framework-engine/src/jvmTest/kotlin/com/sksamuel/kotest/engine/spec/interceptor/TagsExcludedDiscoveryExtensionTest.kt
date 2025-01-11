@@ -29,7 +29,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded")).exclude(NamedTag("SpecExcluded"))
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(SpecifiedTagsTagExtension(tags))
+            override val extensions = listOf(SpecifiedTagsTagExtension(tags))
          }
 
          // will be excluded explicitly
@@ -67,7 +67,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded"))
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(SpecifiedTagsTagExtension(tags))
+            override val extensions = listOf(SpecifiedTagsTagExtension(tags))
          }
 
          var executed = false
@@ -105,7 +105,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.exclude(NamedTag("SpecExcluded"))
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(SpecifiedTagsTagExtension(tags))
+            override val extensions = listOf(SpecifiedTagsTagExtension(tags))
          }
 
          TagsInterceptor(NoopTestEngineListener, ProjectConfigResolver(c), SpecExtensions())

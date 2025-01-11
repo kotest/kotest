@@ -25,7 +25,7 @@ class AfterSpecListenerTest : FunSpec() {
          counter.set(0)
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyAfterSpecListener)
+            override val extensions = listOf(MyAfterSpecListener)
          }
 
          val collector = CollectingTestEngineListener()
@@ -53,7 +53,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("AfterSpecListener's should NOT be triggered for a spec without defined tests") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyAfterSpecListener)
+            override val extensions = listOf(MyAfterSpecListener)
          }
          counter.set(0)
 
@@ -68,7 +68,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("AfterSpecListener's should NOT be triggered for a spec without active tests") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyAfterSpecListener)
+            override val extensions = listOf(MyAfterSpecListener)
          }
          counter.set(0)
 
@@ -110,7 +110,7 @@ private object MyAfterSpecListener : AfterSpecListener {
 private class MyEmptySpec2 : FunSpec()
 
 private class MyErrorSpec2 : FunSpec() {
-   override fun extensions(): List<Extension> {
+   override val extensions: List<Extension> {
       return listOf(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             error("zapp!")
@@ -124,7 +124,7 @@ private class MyErrorSpec2 : FunSpec() {
 }
 
 private class NoActiveTestsSpec2 : FunSpec() {
-   override fun extensions(): List<Extension> {
+   override val extensions: List<Extension> {
       return listOf(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             error("zapp!")
@@ -145,7 +145,7 @@ private class MyPopulatedSpec2 : FunSpec() {
       counter.incrementAndGet()
    }
 
-   override fun extensions(): List<Extension> {
+   override val extensions: List<Extension> {
       return listOf(
          MyAfterSpecListener,
          object : TestListener {

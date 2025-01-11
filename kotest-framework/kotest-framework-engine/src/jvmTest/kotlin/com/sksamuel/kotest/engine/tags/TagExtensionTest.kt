@@ -22,7 +22,7 @@ class TagExtensionTest : StringSpec() {
 
          withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
             val c = object : AbstractProjectConfig() {
-               override fun extensions() = listOf(
+               override val extensions = listOf(
                   TagExtension { TagExpression(setOf(TagA), setOf(TagB)) },
                   SpecifiedTagsTagExtension(TagExpression("!SpecExcluded"))
                )

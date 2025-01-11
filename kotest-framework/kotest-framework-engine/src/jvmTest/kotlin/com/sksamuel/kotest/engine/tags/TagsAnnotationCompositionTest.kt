@@ -27,7 +27,7 @@ class TagsAnnotationCompositionTest : FunSpec() {
          val ext = TagExtension { TagExpression.include(Foo) }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          Materializer(SpecConfigResolver(c)).materialize(MyCompositeAnnotationTest())

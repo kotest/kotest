@@ -11,7 +11,7 @@ class ProjectConfig : AbstractProjectConfig() {
 
    override val specExecutionOrder = SpecExecutionOrder.Annotated
 
-   override fun extensions(): List<Extension> {
+   override val extensions: List<Extension> {
       return listOf(
          JunitXmlReporter(
             includeContainers = false,

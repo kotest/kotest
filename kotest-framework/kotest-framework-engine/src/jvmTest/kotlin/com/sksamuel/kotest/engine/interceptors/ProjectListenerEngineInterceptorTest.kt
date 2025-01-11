@@ -23,7 +23,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener)
+         override val extensions = listOf(listener)
       }
 
       ProjectListenerEngineInterceptor.intercept(
@@ -47,7 +47,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener1, listener2)
+         override val extensions = listOf(listener1, listener2)
       }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withProjectConfig(c)
@@ -65,7 +65,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener)
+         override val extensions = listOf(listener)
       }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withProjectConfig(c)
@@ -88,7 +88,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener1, listener2)
+         override val extensions = listOf(listener1, listener2)
       }
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withProjectConfig(c)
@@ -110,7 +110,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener1, listener2)
+         override val extensions = listOf(listener1, listener2)
       }
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withProjectConfig(c)
@@ -130,7 +130,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(listener1, listener2)
+         override val extensions = listOf(listener1, listener2)
       }
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withProjectConfig(c)

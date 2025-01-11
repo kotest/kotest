@@ -23,7 +23,7 @@ class SpecFilterInterceptorTest : FunSpec() {
    init {
       test("spec filter's should filter tests") {
          val p = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(object : SpecFilter {
+            override val extensions = listOf(object : SpecFilter {
                override fun filter(kclass: KClass<*>): SpecFilterResult {
                   return if (kclass.simpleName == "FooSpec") SpecFilterResult.Exclude("foo") else SpecFilterResult.Include
                }

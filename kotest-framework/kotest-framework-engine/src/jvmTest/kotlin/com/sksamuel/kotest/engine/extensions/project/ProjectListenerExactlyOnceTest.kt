@@ -44,7 +44,7 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
          "run beforeAll/afterAll once" {
 
             val c = object : AbstractProjectConfig() {
-               override fun extensions() = listOf(TestProjectListener, TestBeforeProjectListener)
+               override val extensions = listOf(TestProjectListener, TestBeforeProjectListener)
             }
 
             TestEngineLauncher(NoopTestEngineListener)

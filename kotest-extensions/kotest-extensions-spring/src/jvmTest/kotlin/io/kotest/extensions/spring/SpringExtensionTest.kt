@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [Components::class])
 class SpringExtensionTest : WordSpec() {
 
-   override fun extensions() = listOf(SpringExtension())
+   override val extensions = listOf(SpringExtension())
 
    @Autowired
    private lateinit var service: UserService

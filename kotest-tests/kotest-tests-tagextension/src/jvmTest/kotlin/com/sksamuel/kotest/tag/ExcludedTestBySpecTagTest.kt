@@ -14,7 +14,7 @@ object ExcludeTagExtension : TagExtension {
 }
 
 class ProjectConfig : AbstractProjectConfig() {
-   override fun extensions() = listOf(ExcludeTagExtension)
+   override val extensions = listOf(ExcludeTagExtension)
 }
 
 /**

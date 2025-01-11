@@ -29,7 +29,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener registered in project config should be triggered for a spec with tests") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(MyBeforeSpecListener)
          }
 
          val listener = CollectingTestEngineListener()
@@ -110,7 +110,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec without tests") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(MyBeforeSpecListener)
          }
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -124,7 +124,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec without tests and handle errors in the listener") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(MyBeforeSpecListener)
          }
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -138,7 +138,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec with only ignored tests") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(MyBeforeSpecListener)
          }
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -237,7 +237,7 @@ private class BeforeSpecInlineOrderDescribeSpecTest : DescribeSpec() {
 
 private class BeforeSpecByReturningExtensionsTest : FunSpec() {
 
-   override fun extensions(): List<Extension> {
+   override val extensions: List<Extension> {
       return listOf(MyBeforeSpecListener)
    }
 

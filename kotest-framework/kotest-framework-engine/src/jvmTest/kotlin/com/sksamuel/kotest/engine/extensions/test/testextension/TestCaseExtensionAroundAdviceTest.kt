@@ -28,7 +28,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       }
    }
 
-   override fun extensions() = listOf(MyExt)
+   override val extensions = listOf(MyExt)
 
    init {
 

@@ -29,7 +29,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(object : ProjectListener {
+         override val extensions = listOf(object : ProjectListener {
             override suspend fun beforeProject() {
                error("OOOFF")
             }
@@ -69,7 +69,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(projectListener1, projectListener2)
+         override val extensions = listOf(projectListener1, projectListener2)
       }
 
       TestEngineLauncher(listener)

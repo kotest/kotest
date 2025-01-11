@@ -33,7 +33,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ExcludeTagExtension)
+            override val extensions = listOf(ExcludeTagExtension)
          }
 
          TestEngineLauncher(listener)

@@ -91,7 +91,7 @@ class AllureWriter {
          is TestResult.Success -> Status.PASSED
       }
 
-      val uuid = uuids[testCase.descriptor.path()] ?: "Unknown test ${testCase.descriptor}"
+      val uuid = uuids[testCase.descriptor.path()] ?: "Unknown test ${testCase.descriptor.path().value}"
       val details = ResultsUtils.getStatusDetails(result.errorOrNull)
 
       allure.stopTestCase(uuid)

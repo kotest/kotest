@@ -30,7 +30,7 @@ class IgnoredTestReasonTest : FunSpec() {
             override suspend fun isEnabled(descriptor: Descriptor): Enabled = Enabled.disabled("wibble")
          }
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)

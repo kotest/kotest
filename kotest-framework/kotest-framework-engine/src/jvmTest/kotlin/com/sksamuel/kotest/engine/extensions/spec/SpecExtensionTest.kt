@@ -34,7 +34,7 @@ class SpecExtensionTest : FunSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -56,7 +56,7 @@ class SpecExtensionTest : FunSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -74,7 +74,7 @@ class SpecExtensionTest : FunSpec() {
          }
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ext)
+            override val extensions = listOf(ext)
          }
 
          val collecting = CollectingTestEngineListener()

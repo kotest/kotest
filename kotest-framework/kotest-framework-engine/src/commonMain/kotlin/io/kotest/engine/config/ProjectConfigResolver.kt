@@ -161,7 +161,7 @@ class ProjectConfigResolver(
     * It also includes any extensions registered globally in the [ExtensionRegistry].
     */
    fun extensions(): List<Extension> {
-      return (config?.extensions() ?: emptyList()) +
+      return (config?.extensions ?: emptyList()) +
          listOfNotNull(config?.asProjectExtension()) +
          registry.all()
    }

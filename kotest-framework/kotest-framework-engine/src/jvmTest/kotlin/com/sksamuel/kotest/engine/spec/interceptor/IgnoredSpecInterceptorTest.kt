@@ -46,7 +46,7 @@ class IgnoredSpecInterceptorTest : FunSpec({
    test("IgnoredSpecInterceptor should fire listeners on skip") {
       var fired = false
       val p = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(object : IgnoredSpecListener {
+         override val extensions = listOf(object : IgnoredSpecListener {
             override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
                fired = true
             }

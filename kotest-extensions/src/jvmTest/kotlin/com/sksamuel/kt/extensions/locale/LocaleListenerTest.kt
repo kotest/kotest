@@ -13,7 +13,7 @@ class LocaleListenerTest : FunSpec() {
    private val default = Locale.getDefault()
    private val ltl = LocaleTestListener(Locale.FRANCE)
 
-   override fun extensions(): List<Extension> = listOf(ltl)
+   override val extensions: List<Extension> = listOf(ltl)
 
    init {
       test("LocaleTestListener should set locale") {

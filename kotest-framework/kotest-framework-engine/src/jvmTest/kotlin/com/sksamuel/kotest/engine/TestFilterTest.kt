@@ -28,7 +28,7 @@ class TestFilterTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(filter)
+            override val extensions = listOf(filter)
          }
 
          TestEngineLauncher(collector)

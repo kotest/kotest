@@ -18,7 +18,7 @@ class PostInstantiationExtensionTest : FunSpec() {
       test("post instantiation extensions should be triggered") {
 
          val p = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(MyPostInstantiationExtension)
+            override val extensions = listOf(MyPostInstantiationExtension)
          }
 
          TestEngineLauncher(NoopTestEngineListener)

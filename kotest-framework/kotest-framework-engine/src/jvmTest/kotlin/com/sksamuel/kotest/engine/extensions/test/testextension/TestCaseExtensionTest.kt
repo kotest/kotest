@@ -33,7 +33,7 @@ object TestCaseExtensionAdder : TestCaseExtension {
 @EnabledIf(LinuxCondition::class)
 class TestCaseExtensionTest : WordSpec() {
 
-   override fun extensions() = listOf(TestCaseExtensionAdder)
+   override val extensions = listOf(TestCaseExtensionAdder)
 
    init {
 

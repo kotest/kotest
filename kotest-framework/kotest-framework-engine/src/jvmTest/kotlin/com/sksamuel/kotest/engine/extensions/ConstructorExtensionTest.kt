@@ -19,7 +19,7 @@ class ConstructorExtensionTest : FunSpec() {
       test("constructor extension should be applied") {
 
          val c = object : AbstractProjectConfig() {
-            override fun extensions() = listOf(ErroringConstructorExtension())
+            override val extensions = listOf(ErroringConstructorExtension())
          }
 
          val collector = CollectingTestEngineListener()

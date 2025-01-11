@@ -17,7 +17,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
 
    override fun assertionMode() = AssertionMode.Error
 
-   override fun extensions(): List<Extension> = listOf(
+   override val extensions: List<Extension> = listOf(
       object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
             return when (testCase.name.name) {

@@ -31,7 +31,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
@@ -45,7 +45,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          // all tests should be filtered out because of the @Tags
@@ -60,7 +60,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          // linux is included for all, and we're using an 'or'
@@ -75,7 +75,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          // linux should be included for all, but then postgres tests excluded as well
@@ -90,7 +90,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          // Mysql tests should be excluded
@@ -105,7 +105,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val c = object : AbstractProjectConfig() {
             override val testCaseOrder = TestCaseOrder.Random
-            override fun extensions(): List<Extension> = listOf(ext)
+            override val extensions: List<Extension> = listOf(ext)
          }
 
          // Mysql tests should be excluded
@@ -126,7 +126,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             val c = object : AbstractProjectConfig() {
                override val testCaseOrder = TestCaseOrder.Random
                override val tagInheritance = inheritanceEnabled
-               override fun extensions(): List<Extension> = listOf(ext)
+               override val extensions: List<Extension> = listOf(ext)
             }
 
             Materializer(SpecConfigResolver(c)).materialize(InheritingTest())

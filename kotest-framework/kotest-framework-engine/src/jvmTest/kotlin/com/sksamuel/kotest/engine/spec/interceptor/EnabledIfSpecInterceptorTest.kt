@@ -67,7 +67,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
          }
       }
       val c = object : AbstractProjectConfig() {
-         override fun extensions() = listOf(ext)
+         override val extensions = listOf(ext)
       }
 
       EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver(c)))
