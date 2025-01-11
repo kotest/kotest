@@ -83,7 +83,7 @@ abstract class Spec : TestConfiguration() {
     * If you wish to register an extension for all specs then register the extension
     * with project config.
     */
-   open fun extensions(): List<Extension> = emptyList()
+   open val extensions: List<Extension> = emptyList()
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.

@@ -110,13 +110,11 @@ private object MyAfterSpecListener : AfterSpecListener {
 private class MyEmptySpec2 : FunSpec()
 
 private class MyErrorSpec2 : FunSpec() {
-   override val extensions: List<Extension> {
-      return listOf(object : AfterSpecListener {
-         override suspend fun afterSpec(spec: Spec) {
-            error("zapp!")
-         }
-      })
-   }
+   override val extensions: List<Extension> = listOf(object : AfterSpecListener {
+      override suspend fun afterSpec(spec: Spec) {
+         error("zapp!")
+      }
+   })
 
    init {
       test("foo") {}
@@ -124,13 +122,11 @@ private class MyErrorSpec2 : FunSpec() {
 }
 
 private class NoActiveTestsSpec2 : FunSpec() {
-   override val extensions: List<Extension> {
-      return listOf(object : AfterSpecListener {
-         override suspend fun afterSpec(spec: Spec) {
-            error("zapp!")
-         }
-      })
-   }
+   override val extensions: List<Extension> = listOf(object : AfterSpecListener {
+      override suspend fun afterSpec(spec: Spec) {
+         error("zapp!")
+      }
+   })
 
    init {
       xtest("foo1") {}
@@ -145,16 +141,14 @@ private class MyPopulatedSpec2 : FunSpec() {
       counter.incrementAndGet()
    }
 
-   override val extensions: List<Extension> {
-      return listOf(
-         MyAfterSpecListener,
-         object : TestListener {
-            override suspend fun afterSpec(spec: Spec) {
-               counter.incrementAndGet()
-            }
+   override val extensions: List<Extension> = listOf(
+      MyAfterSpecListener,
+      object : TestListener {
+         override suspend fun afterSpec(spec: Spec) {
+            counter.incrementAndGet()
          }
-      )
-   }
+      }
+   )
 
    init {
 

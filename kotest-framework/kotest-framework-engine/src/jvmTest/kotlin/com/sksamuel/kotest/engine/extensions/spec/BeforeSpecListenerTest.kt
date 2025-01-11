@@ -237,9 +237,7 @@ private class BeforeSpecInlineOrderDescribeSpecTest : DescribeSpec() {
 
 private class BeforeSpecByReturningExtensionsTest : FunSpec() {
 
-   override val extensions: List<Extension> {
-      return listOf(MyBeforeSpecListener)
-   }
+   override val extensions: List<Extension> = listOf(MyBeforeSpecListener)
 
    init {
       test("foo1") {}
