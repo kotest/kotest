@@ -25,8 +25,8 @@ class DumpTest : FunSpec({
       }
       AbstractProjectConfigWriter.createConfigSummary(c).apply {
          this.shouldInclude("Default test timeout: 12ms")
-         this.shouldInclude("Default test invocation timeout: 34234ms")
-         this.shouldInclude("Overall project timeout: 12h 20m 44sms")
+         this.shouldInclude("Default test invocation timeout: 34.234s")
+         this.shouldInclude("Project timeout: 12h 20m 44s")
       }
    }
 
@@ -35,7 +35,7 @@ class DumpTest : FunSpec({
          override val testCaseOrder = TestCaseOrder.Random
       }
       AbstractProjectConfigWriter.createConfigSummary(c).apply {
-         this.shouldInclude("Default test execution order: Random")
+         this.shouldInclude("Test case order: Random")
       }
    }
 

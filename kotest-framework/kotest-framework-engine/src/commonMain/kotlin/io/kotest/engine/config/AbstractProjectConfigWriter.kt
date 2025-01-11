@@ -20,10 +20,10 @@ internal object AbstractProjectConfigWriter {
       projectConfig.specExecutionOrder?.let { sb.buildOutput("Spec execution order", it.name) }
       projectConfig.testCaseOrder?.let { sb.buildOutput("Test case order", it.name) }
 
-      projectConfig.timeout?.let { sb.buildOutput("Default test timeout", it.toString() + "ms") }
-      projectConfig.invocationTimeout?.let { sb.buildOutput("Default test invocation timeout", it.toString() + "ms") }
+      projectConfig.timeout?.let { sb.buildOutput("Default test timeout", it.toString()) }
+      projectConfig.invocationTimeout?.let { sb.buildOutput("Default test invocation timeout", it.toString()) }
 
-      projectConfig.projectTimeout?.let { sb.buildOutput("Project timeout", it.toString() + "ms") }
+      projectConfig.projectTimeout?.let { sb.buildOutput("Project timeout", it.toString()) }
       projectConfig.isolationMode?.let { sb.buildOutput("Default isolation mode", it.name) }
 
       projectConfig.globalAssertSoftly?.let { sb.buildOutput("Global soft assertions", it.toString()) }

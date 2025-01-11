@@ -6,9 +6,7 @@ import io.kotest.core.source.SourceRef.ClassSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.comparables.shouldBeLessThan
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.measureTime
 
 @EnabledIf(LinuxCondition::class)
 class TestCaseSourceRefTest : FunSpec() {
@@ -21,13 +19,10 @@ class TestCaseSourceRefTest : FunSpec() {
          )
       }
 
-      test("source ref should be performant").config(timeout = 240.seconds) {
-         val duration = measureTime {
-            repeat(100_000) {
-               Materializer().materialize(MySpecForTestCaseSourceRefTest()).first().source
-            }
+      test("source ref should be performant").config(timeout = 10.seconds) {
+         repeat(5_000) {
+            Materializer().materialize(MySpecForTestCaseSourceRefTest()).first().source
          }
-         duration shouldBeLessThan 240.seconds
       }
    }
 }

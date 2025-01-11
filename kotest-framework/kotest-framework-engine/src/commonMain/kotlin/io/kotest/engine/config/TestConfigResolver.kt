@@ -133,7 +133,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.timeout
          ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
          ?: projectConfig?.timeout
-         ?: Defaults.DEFAULT_TIMEOUT_MILLIS.milliseconds
+         ?: Defaults.DEFAULT_TIMEOUT
    }
 
    fun invocationTimeout(testCase: TestCase): Duration {
@@ -143,7 +143,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.invocationTimeout
          ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
          ?: projectConfig?.invocationTimeout
-         ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS.milliseconds
+         ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS
    }
 
    fun invocations(testCase: TestCase): Int {

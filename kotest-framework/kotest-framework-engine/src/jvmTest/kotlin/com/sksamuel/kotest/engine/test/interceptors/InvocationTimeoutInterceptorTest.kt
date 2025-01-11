@@ -24,12 +24,12 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
       test("InvocationTimeoutInterceptor should error after timeout") {
 
          val tc = TestCase(
-            InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-            TestNameBuilder.builder("foo").build(),
-            InvocationCountCheckInterceptorTest(),
-            {},
-            sourceRef(),
-            TestType.Test,
+            descriptor = InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
+            name = TestNameBuilder.builder("foo").build(),
+            spec = InvocationCountCheckInterceptorTest(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
          )
 
          shouldThrowAny {

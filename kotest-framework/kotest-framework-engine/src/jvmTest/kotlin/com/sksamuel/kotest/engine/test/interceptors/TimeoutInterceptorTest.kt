@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
@@ -24,16 +25,16 @@ class TimeoutInterceptorTest : FunSpec() {
       test("TimeoutInterceptor should return an error timeout") {
 
          val tc = TestCase(
-            InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
-            TestNameBuilder.builder("foo").build(),
-            InvocationCountCheckInterceptorTest(),
-            {},
-            sourceRef(),
-            TestType.Test,
+            descriptor = InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
+            name = TestNameBuilder.builder("foo").build(),
+            spec = InvocationCountCheckInterceptorTest(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
          )
 
          TimeoutInterceptor(testTimeSource().markNow(), TestConfigResolver()).intercept(
-            tc.copy(config = tc.config?.copy(timeout = 1.milliseconds)),
+            tc.copy(config = TestConfig(timeout = 1.milliseconds)),
             NoopTestScope(tc, coroutineContext)
          ) { _, _ ->
             delay(10000)

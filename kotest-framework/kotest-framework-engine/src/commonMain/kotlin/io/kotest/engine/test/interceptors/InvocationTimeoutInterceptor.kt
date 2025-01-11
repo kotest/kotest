@@ -27,7 +27,7 @@ internal class InvocationTimeoutInterceptor(private val testConfigResolver: Test
          test(testCase, scope)
       } else {
 
-         val timeout = testConfigResolver.timeout(testCase)
+         val timeout = testConfigResolver.invocationTimeout(testCase)
          logger.log { Pair(testCase.name.name, "Switching context to add invocationTimeout $timeout") }
 
          try {

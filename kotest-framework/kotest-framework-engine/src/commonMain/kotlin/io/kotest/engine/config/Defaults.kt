@@ -11,6 +11,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 object Defaults {
 
@@ -58,9 +59,9 @@ object Defaults {
 
    const val SPEC_FAILURE_FILE_PATH = "./.kotest/spec_failures"
 
-   const val DEFAULT_TIMEOUT_MILLIS = 10 * 60 * 1000L
+   val DEFAULT_TIMEOUT = 10.minutes
 
-   const val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10 * 60 * 1000L
+   val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10.minutes
 
    const val FAIL_ON_IGNORED_TESTS: Boolean = false
 
