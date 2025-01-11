@@ -28,7 +28,7 @@ class SpecSortEngineInterceptorTest : FunSpec({
 
       var sorted = emptyList<SpecRef>()
       SpecSortEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(p).withTestSuite(
+         EngineContext.empty.withProjectConfig(p).withTestSuite(
             TestSuite(
                listOf(
                   SpecRef.Reference(EnabledTestConfigFlagTest::class),

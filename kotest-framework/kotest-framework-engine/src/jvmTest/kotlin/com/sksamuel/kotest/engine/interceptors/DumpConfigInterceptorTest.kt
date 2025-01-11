@@ -2,6 +2,8 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.EngineResult
@@ -24,7 +26,10 @@ class DumpConfigInterceptorTest : FunSpec({
    }
 
    context("Uses system property `$property` correctly") {
-      val engineContext = EngineContext.empty
+      val engineContext = EngineContext.empty.withProjectConfig(object : AbstractProjectConfig() {
+         override val globalAssertSoftly = true
+         override val specExecutionOrder = SpecExecutionOrder.Annotated
+      })
 
       withData(
          "true",
@@ -35,22 +40,8 @@ class DumpConfigInterceptorTest : FunSpec({
          DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().trim() shouldBe """
             |~~~ Kotest Configuration ~~~
-            |-> Spec execution mode: Sequential
-            |-> Test execution mode: Sequential
-            |-> Coroutine debug probe: false
-            |-> Spec execution order: Lexicographic
-            |-> Default test execution order: Sequential
-            |-> Default test timeout: 600000ms
-            |-> Default test invocation timeout: 600000ms
-            |-> Default isolation mode: SingleInstance
-            |-> Global soft assertions: false
-            |-> Write spec failure file: false
-            |-> Fail on ignored tests: false
-            |-> Fail on empty test suite: false
-            |-> Duplicate test name mode: Warn
-            |-> Remove test name whitespace: false
-            |-> Append tags to test names: false
-            |-> ${"Tags: "}
+            |-> Spec execution order: Annotated
+            |-> Global soft assertions: true
          """.trimMargin().trim()
          // "Tags: " escaped to avoid formatter trimming whitespace at end of line which exists in actual output.
       }

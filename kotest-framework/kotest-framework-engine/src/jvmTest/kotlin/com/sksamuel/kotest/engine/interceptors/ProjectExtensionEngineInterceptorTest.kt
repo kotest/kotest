@@ -38,7 +38,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) { EngineResult.empty }
+      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) { EngineResult.empty }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -64,7 +64,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
          fired = true
          EngineResult.empty
       }
@@ -97,7 +97,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(ext)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
+      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withProjectConfig(c)) {
          tags = it.tags
          EngineResult.empty
       }

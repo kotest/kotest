@@ -24,11 +24,13 @@ internal class InvocationCountCheckInterceptor(
    ): TestResult {
       logger.log { Pair(testCase.name.name, "Checking that invocation count is 1 for containers") }
       return when {
-         testCase.type == TestType.Test || testConfigResolver.invocations(testCase) <= 1 -> test(testCase, scope)
-         else -> TestResult.Error(
-            Duration.ZERO,
-            Exception("Cannot execute multiple invocations in parent tests")
-         )
+         testCase.type == TestType.Container && testConfigResolver.invocations(testCase) > 1 ->
+            TestResult.Error(
+               Duration.ZERO,
+               Exception("Cannot execute multiple invocations in container tests")
+            )
+
+         else -> test(testCase, scope)
       }
    }
 }

@@ -20,7 +20,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 1.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
          delay(1000)
          EngineResult.empty
       }
@@ -32,7 +32,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 100000.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
          delay(1)
          EngineResult.empty
       }

@@ -26,7 +26,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val failOnEmptyTestSuite = true
          }
-         val result = EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+         val result = EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
             EngineResult.empty
          }
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(1)
@@ -47,7 +47,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
             override val failOnEmptyTestSuite = true
          }
          val result = EmptyTestSuiteInterceptor.intercept(
-            EngineContext.empty.withConfiguration(c)
+            EngineContext.empty.withProjectConfig(c)
          ) {
             it.listener.testFinished(tc, TestResult.Success(Duration.ZERO))
             EngineResult.empty

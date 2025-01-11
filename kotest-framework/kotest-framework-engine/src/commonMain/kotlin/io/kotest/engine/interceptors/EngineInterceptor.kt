@@ -164,7 +164,7 @@ data class EngineContext(
       )
    }
 
-   fun withConfiguration(projectConfig: AbstractProjectConfig?): EngineContext {
+   fun withProjectConfig(projectConfig: AbstractProjectConfig?): EngineContext {
       return EngineContext(
          suite,
          listener,

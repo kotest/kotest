@@ -27,7 +27,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       }
 
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -50,7 +50,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(listener1, listener2)
       }
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -68,7 +68,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(listener)
       }
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -91,7 +91,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(listener1, listener2)
       }
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -113,7 +113,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(listener1, listener2)
       }
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
    }
@@ -133,7 +133,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override fun extensions() = listOf(listener1, listener2)
       }
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfig(c)
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.AfterProjectException>().size shouldBe 2
    }
