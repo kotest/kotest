@@ -809,12 +809,27 @@ public final class io/kotest/matchers/collections/SizeKt {
 }
 
 public final class io/kotest/matchers/collections/SmallerKt {
-	public static final fun beSmallerThan (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun beSmallerThan (Ljava/lang/Iterable;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeSmallerThan (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
-	public static final fun shouldBeSmallerThan (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/lang/Iterable;
-	public static final fun shouldBeSmallerThan (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
-	public static final fun shouldBeSmallerThan ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
+	public static final fun shouldBeSmallerThan ([B[B)[B
+	public static final fun shouldBeSmallerThan ([C[C)[C
+	public static final fun shouldBeSmallerThan ([D[D)[D
+	public static final fun shouldBeSmallerThan ([F[F)[F
+	public static final fun shouldBeSmallerThan ([I[I)[I
+	public static final fun shouldBeSmallerThan ([J[J)[J
 	public static final fun shouldBeSmallerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldBeSmallerThan ([S[S)[S
+	public static final fun shouldBeSmallerThan ([Z[Z)[Z
+	public static final fun shouldNotBeSmallerThan (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeSmallerThan ([B[B)[B
+	public static final fun shouldNotBeSmallerThan ([C[C)[C
+	public static final fun shouldNotBeSmallerThan ([D[D)[D
+	public static final fun shouldNotBeSmallerThan ([F[F)[F
+	public static final fun shouldNotBeSmallerThan ([I[I)[I
+	public static final fun shouldNotBeSmallerThan ([J[J)[J
+	public static final fun shouldNotBeSmallerThan ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotBeSmallerThan ([S[S)[S
+	public static final fun shouldNotBeSmallerThan ([Z[Z)[Z
 }
 
 public final class io/kotest/matchers/collections/SortedDescKt {
