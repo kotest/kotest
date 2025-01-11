@@ -17,7 +17,7 @@ class PackageConfigTest : FunSpec() {
             .withClasses(BarTest::class)
             .launch()
          // if the package config isn't picked up, this test won't timeout
-         collector.result("bar")?.errorOrNull?.message shouldBe "Timed out waiting for 2 ms"
+         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 2ms"
       }
    }
 }
