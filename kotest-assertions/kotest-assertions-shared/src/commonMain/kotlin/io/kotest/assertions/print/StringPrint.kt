@@ -14,8 +14,7 @@ object StringPrint : Print<String> {
       else -> a.printed()
    }
 
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: String): Printed = when {
+   override fun print(a: String, level: Int): Printed = when {
       a == "" -> "<empty string>".printed()
       a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
       else -> a.wrap().printed()

@@ -4,6 +4,5 @@ import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 object KClassPrint: Print<KClass<*>> {
-   @Deprecated(PRINT_DEPRECATION_MSG)
-   override fun print(a: KClass<*>): Printed = a.bestName().printed()
+   override fun print(a: KClass<*>, level: Int): Printed = a.bestName().printed()
 }
