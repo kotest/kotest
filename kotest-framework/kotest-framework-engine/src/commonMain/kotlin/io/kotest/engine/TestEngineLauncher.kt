@@ -166,6 +166,9 @@ class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
+      // if config was not set, we'll try to load from reflection
+      val resolvedConfig = config ?: loadProjectConfigFromReflection()
+
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -173,7 +176,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         projectConfig = config,
+         projectConfig = resolvedConfig,
          tagExpression,
          platform,
          registry,

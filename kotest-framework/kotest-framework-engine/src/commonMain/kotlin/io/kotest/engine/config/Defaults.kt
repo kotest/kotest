@@ -23,9 +23,9 @@ object Defaults {
    // by default, tests are retried immediately
    val defaultRetryDelay: Duration? = null
 
-   const val INVOCATIONS: Int = 1
+   const val INVOCATIONS = 1
 
-   const val IGNORE_PRIVATE_CLASSES: Boolean = false
+   const val IGNORE_PRIVATE_CLASSES = false
 
    val LOG_LEVEL = LogLevel.Off
 
@@ -33,25 +33,25 @@ object Defaults {
 
    val SPEC_EXECUTION_MODE = SpecExecutionMode.Sequential
 
-   val ASSERTION_MODE: AssertionMode = AssertionMode.None
+   val ASSERTION_MODE = AssertionMode.None
 
-   val TEST_CASE_ORDER: TestCaseOrder = TestCaseOrder.Sequential
+   val TEST_CASE_ORDER = TestCaseOrder.Sequential
 
-   val ISOLATION_MODE: IsolationMode = IsolationMode.SingleInstance
+   val ISOLATION_MODE = IsolationMode.SingleInstance
 
-   val DUPLICATE_TEST_NAME_MODE: DuplicateTestNameMode = DuplicateTestNameMode.Warn
+   val DUPLICATE_TEST_NAME_MODE = DuplicateTestNameMode.Warn
 
-   const val DISPLAY_FULL_TEST_PATH: Boolean = false
+   const val DISPLAY_FULL_TEST_PATH = false
 
-   val TEST_CASE_SEVERITY_LEVEL: TestCaseSeverityLevel = TestCaseSeverityLevel.NORMAL
+   val TEST_CASE_SEVERITY_LEVEL = TestCaseSeverityLevel.NORMAL
 
-   const val COROUTINE_DEBUG_PROBES: Boolean = false
+   const val COROUTINE_DEBUG_PROBES = false
 
-   const val COROUTINE_TEST_SCOPE: Boolean = false
+   const val COROUTINE_TEST_SCOPE = false
 
-   const val BLOCKING_TEST: Boolean = false
+   const val BLOCKING_TEST = false
 
-   const val DISPLAY_SPEC_IF_NO_ACTIVE_TESTS: Boolean = true
+   const val DISPLAY_SPEC_IF_NO_ACTIVE_TESTS = true
 
    const val FAIL_ON_EMPTY_TEST_SUITE = false
 
@@ -63,13 +63,13 @@ object Defaults {
 
    val DEFAULT_INVOCATION_TIMEOUT_MILLIS = 10.minutes
 
-   const val FAIL_ON_IGNORED_TESTS: Boolean = false
+   const val FAIL_ON_IGNORED_TESTS = false
 
-   const val TEST_NAME_APPEND_TAGS: Boolean = false
+   const val TEST_NAME_APPEND_TAGS = false
 
-   const val PROJECT_WIDE_FAIL_FAST: Boolean = false
+   const val PROJECT_WIDE_FAIL_FAST = false
 
-   const val FAILFAST: Boolean = false
+   const val FAILFAST = false
 
    val DEFAULT_INCLUDE_TEST_SCOPE_AFFIXES = IncludeTestScopeAffixes.STYLE_DEFAULT
 
@@ -77,7 +77,7 @@ object Defaults {
 
    const val GLOBAL_ASSERT_SOFTLY = false
 
-   val TEST_NAME_CASE: TestNameCase = TestNameCase.AsIs
+   val TEST_NAME_CASE = TestNameCase.AsIs
 
    val SPEC_EXECUTION_ORDER = SpecExecutionOrder.Lexicographic
 
