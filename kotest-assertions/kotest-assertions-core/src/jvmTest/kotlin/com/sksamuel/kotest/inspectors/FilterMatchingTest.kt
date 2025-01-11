@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.filterMatching
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.ints.shouldBeEven
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.sequences.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -45,6 +46,12 @@ class FilterMatchingTest : FunSpec({
             .shouldBeInstanceOf<Sequence<Int>>()
             .shouldContainExactly(2)
       }
+   }
+
+   test("Filtering all elements should return empty list") {
+      listOf("foo", "bar").filterMatching {
+         it shouldBe "baz"
+      } shouldBe emptyList()
    }
 
    test("Filtering sequences should be done lazily").config(invocationTimeout = 1.seconds) {
