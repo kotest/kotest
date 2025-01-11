@@ -900,6 +900,7 @@ public abstract class io/kotest/core/config/AbstractPackageConfig {
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
 	public fun getRetries ()Ljava/lang/Integer;
 	public fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
+	public fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 }
 
@@ -3239,10 +3240,6 @@ public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
 	public static final fun createAtomicBoolean (Z)Lio/kotest/engine/atomic/AtomicBoolean;
 }
 
-public final class io/kotest/engine/concurrency/ReplayKt {
-	public static final fun replay (ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
 	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getConcurrency ()I
@@ -3305,10 +3302,6 @@ public final class io/kotest/engine/concurrency/TestExecutionMode$Sequential : i
 
 public final class io/kotest/engine/config/ConfigManager_jvmKt {
 	public static final fun loadPlatformDefaultExtensions ()Ljava/util/List;
-}
-
-public final class io/kotest/engine/config/Configs_jvmKt {
-	public static final fun loadPackageConfig (Ljava/lang/String;)Lio/kotest/core/config/AbstractPackageConfig;
 }
 
 public final class io/kotest/engine/config/Defaults {
@@ -3408,12 +3401,6 @@ public final class io/kotest/engine/config/NoopSystemPropertyConfiguration : io/
 	public fun tagInheritance ()Ljava/lang/Boolean;
 	public fun testNameAppendTags ()Ljava/lang/Boolean;
 	public fun timeout-FghU774 ()Lkotlin/time/Duration;
-}
-
-public final class io/kotest/engine/config/PackageConfigLoader {
-	public static final field INSTANCE Lio/kotest/engine/config/PackageConfigLoader;
-	public final fun configs (Lio/kotest/core/spec/Spec;)Ljava/util/List;
-	public final fun configs (Ljava/lang/String;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/config/ProjectConfigLoader {

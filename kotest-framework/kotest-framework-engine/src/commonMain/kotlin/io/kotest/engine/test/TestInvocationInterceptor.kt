@@ -4,7 +4,6 @@ import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.replay
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
@@ -50,7 +49,7 @@ internal class TestInvocationInterceptor(
          // we wrap in a coroutine scope so that we wait for any user-launched coroutines to finish,
          // and so we can grab any exceptions they throw
          coroutineScope {
-            replay(testConfigResolver.invocations(testCase)) {
+            repeat(testConfigResolver.invocations(testCase)) {
                runBeforeTestAfter(testCase, scope, it, test)
             }
          }
