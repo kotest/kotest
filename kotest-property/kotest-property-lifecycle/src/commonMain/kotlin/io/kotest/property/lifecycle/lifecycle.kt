@@ -29,7 +29,7 @@ interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
 }
 
 fun Spec.beforeProperty(f: suspend () -> Unit) {
-   extension(object : BeforeAndAfterPropertyTestInterceptExtension {
+   this@beforeProperty.extension(object : BeforeAndAfterPropertyTestInterceptExtension {
       override suspend fun beforeProperty() {
          f()
       }
@@ -39,7 +39,7 @@ fun Spec.beforeProperty(f: suspend () -> Unit) {
 }
 
 fun Spec.afterProperty(f: suspend () -> Unit) {
-   extension(object : BeforeAndAfterPropertyTestInterceptExtension {
+   this@afterProperty.extension(object : BeforeAndAfterPropertyTestInterceptExtension {
       override suspend fun beforeProperty() {}
       override suspend fun afterProperty() {
          f()

@@ -29,7 +29,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          }
       })
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "c"
          }
@@ -39,7 +39,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "d"
       }
 
-      register(
+      extensions(
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                order += "e"
@@ -52,7 +52,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          }
       )
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "g"
          }
@@ -68,7 +68,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          }
       })
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "j"
          }

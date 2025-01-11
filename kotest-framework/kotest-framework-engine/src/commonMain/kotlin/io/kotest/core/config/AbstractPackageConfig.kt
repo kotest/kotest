@@ -1,5 +1,6 @@
 package io.kotest.core.config
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
@@ -111,4 +112,9 @@ abstract class AbstractPackageConfig {
     * on that test's config allows the test engine to spool up a new thread just for that test.
     */
    open val testExecutionMode: TestExecutionMode? = null
+
+   /**
+    * List of package wide [Extension] instances.
+    */
+   open val extensions: List<Extension> = emptyList()
 }

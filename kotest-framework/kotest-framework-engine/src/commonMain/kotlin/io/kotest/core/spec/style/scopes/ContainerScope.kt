@@ -85,7 +85,7 @@ interface ContainerScope : TestScope {
    }
 
    private fun appendExtension(listener: Extension) {
-      testCase.spec.register(listener)
+      testCase.spec.extension(listener)
    }
 
    /**

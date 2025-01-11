@@ -23,7 +23,7 @@ class BeforeSpecTest : FunSpec() {
 
    init {
 
-      register(listener)
+      extension(listener)
 
       afterProject {
          counter.get() shouldBe 4

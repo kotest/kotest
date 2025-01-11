@@ -1,7 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.TestScope
@@ -32,7 +30,6 @@ interface FunSpecRootScope : RootScope {
          config = null
       ) { FunSpecContainerScope(this).test() }
 
-   @ExperimentalKotest
    fun context(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("context ").build(),
@@ -40,7 +37,6 @@ interface FunSpecRootScope : RootScope {
          context = this
       ) { FunSpecContainerScope(it) }
 
-   @ExperimentalKotest
    fun xcontext(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("context ").build(),

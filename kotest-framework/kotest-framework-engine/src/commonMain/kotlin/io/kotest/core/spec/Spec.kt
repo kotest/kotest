@@ -8,6 +8,7 @@ import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
@@ -187,10 +188,14 @@ abstract class Spec : TestConfiguration() {
    @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
+   protected val afterProjectListeners = mutableListOf<AfterProjectListener>()
+
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
     */
-   internal abstract fun projectExtensions(): List<Extension>
+   internal fun projectExtensions(): List<Extension> {
+      return afterProjectListeners.toList()
+   }
 
    @JsName("severity_js")
    var severity: TestCaseSeverityLevel? = null
@@ -288,7 +293,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      extension(object : BeforeTestListener {
+      this@Spec.extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
@@ -322,7 +327,7 @@ abstract class Spec : TestConfiguration() {
     * The spec instance is provided as a parameter.
     */
    override fun afterSpec(f: AfterSpec) {
-      register(object : AfterSpecListener {
+      extension(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)
                f(spec)

@@ -124,9 +124,9 @@ internal class TestExtensions(
    ): TestResult {
 
       val execute = testConfigResolver.extensions(testCase).filterIsInstance<TestCaseExtension>()
-         .foldRight(inner) { extension, execute ->
+         .fold(inner) { execute, ext ->
             NextTestExecutionInterceptor { tc, ctx ->
-               extension.intercept(tc) {
+               ext.intercept(tc) {
                   // the user's intercept method is free to change the context of the coroutine
                   // to support this, we should switch the context used by the test case context
                   execute(it, ctx.withCoroutineContext(coroutineContext))
