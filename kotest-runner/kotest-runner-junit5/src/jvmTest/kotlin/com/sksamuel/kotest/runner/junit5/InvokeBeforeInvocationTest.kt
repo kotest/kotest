@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -11,7 +12,7 @@ import org.junit.platform.testkit.engine.EngineTestKit
 class InvokeBeforeInvocationTest : FunSpec({
    test("should execute all beforeInvocation blocks") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(BeforeInvocationExample::class.java))
          .configurationParameter("allow_private", "true")
          .execute()

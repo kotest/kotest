@@ -5,6 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 import kotlin.time.Duration.Companion.seconds
@@ -14,7 +15,7 @@ class PerformanceTest : FunSpec() {
    init {
       test("performance of multiple tests").config(timeout = 90.seconds) {
          EngineTestKit
-            .engine("kotest")
+            .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(DiscoverySelectors.selectClass(ManyTests::class.java))
             .configurationParameter("allow_private", "true")
             .execute()

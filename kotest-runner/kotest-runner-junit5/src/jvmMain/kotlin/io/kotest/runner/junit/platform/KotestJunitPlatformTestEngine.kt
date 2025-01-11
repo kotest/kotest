@@ -29,6 +29,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    companion object {
       const val ENGINE_ID = "kotest"
+      const val ENGINE_NAME = "Kotest"
       const val GROUP_ID = "io.kotest"
    }
 
@@ -73,6 +74,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       TestEngineLauncher(listener)
          .withExtensions(root.testFilters)
+         .withExtensions(root.extensions)
          .withClasses(root.classes)
          .withProjectConfig(config)
          .launch()
@@ -107,14 +109,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val discovery = Discovery()
          val result = discovery.discover(discoveryRequest)
 
-         if (result.specs.isNotEmpty()) {
+         val extensions = if (result.specs.isNotEmpty()) {
             request.configurationParameters.get("kotest.extensions").orElseGet { "" }
                .split(',')
                .map { it.trim() }
                .filter { it.isNotBlank() }
                .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
-               .forEach { TODO() } // configuration.registry.add(it) }
-         }
+         } else emptyList()
 
          val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
          val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
@@ -124,6 +125,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
             result.specs,
             gradleClassMethodTestFilter,
             result.error,
+            extensions,
          )
       } else {
          createEmptyEngineDescriptor(uniqueId)

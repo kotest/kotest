@@ -2,12 +2,13 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
 class InvokeAfterInvocationTest : FunSpec({
    test("should execute all afterInvocation blocks") {
-      EngineTestKit.engine("kotest")
+      EngineTestKit.engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(AfterInvocationExample::class.java))
          .configurationParameter("allow_private", "true")
          .execute()

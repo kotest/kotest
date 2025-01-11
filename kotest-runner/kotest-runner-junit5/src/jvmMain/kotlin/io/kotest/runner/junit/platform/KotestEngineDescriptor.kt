@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
@@ -10,20 +11,19 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
 
-private const val ENGINE_NAME = "kotest"
-
 class KotestEngineDescriptor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
    val testFilters: List<TestFilter>,
+   val extensions: List<Extension>, // extensions can be added via junit configuration parameters
    val error: Throwable?, // an error during discovery
-) : EngineDescriptor(id, ENGINE_NAME) {
+) : EngineDescriptor(id, KotestJunitPlatformTestEngine.ENGINE_NAME) {
    // Only reports dynamic children (see ExtensionExceptionExtractor) if there are no test classes to run.
    override fun mayRegisterTests(): Boolean = classes.isEmpty()
 }
 
 internal fun createEmptyEngineDescriptor(id: UniqueId): KotestEngineDescriptor {
-   return KotestEngineDescriptor(id, emptyList(), emptyList(), null)
+   return KotestEngineDescriptor(id, emptyList(), emptyList(), emptyList(), null)
 }
 
 internal fun createEngineDescriptor(
@@ -31,13 +31,15 @@ internal fun createEngineDescriptor(
    specs: List<KClass<out Spec>>,
    gradleClassMethodTestFilter: GradleClassMethodRegexTestFilter?,
    error: Throwable?,
+   extensions: List<Extension>, // extensions can be added via junit configuration parameters
 ): KotestEngineDescriptor {
 
    val engine = KotestEngineDescriptor(
-      uniqueId,
-      specs,
-      listOfNotNull(gradleClassMethodTestFilter),
-      error
+      id = uniqueId,
+      classes = specs,
+      testFilters = listOfNotNull(gradleClassMethodTestFilter),
+      extensions = extensions,
+      error = error,
    )
 
    val formatter = FallbackDisplayNameFormatter.default()

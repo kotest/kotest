@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -25,25 +26,25 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    test("a BeforeProjectListenerException should add marker test using listener name") {
 
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
          .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
                "Before Project Error"
             )
             aborted().shouldBeEmpty()
             skipped().shouldBeEmpty()
             failed().shouldHaveNames("Before Project Error")
             succeeded().shouldHaveNames(
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "Before Project Error",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
                "Before Project Error"
@@ -54,7 +55,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    test("multiple BeforeProjectListenerException's should add multiple marker tests") {
 
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
          .configurationParameter(
@@ -64,7 +65,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
                "Before Project Error",
                "Before Project Error_1"
             )
@@ -72,12 +73,12 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
             skipped().shouldBeEmpty()
             failed().shouldHaveNames("Before Project Error", "Before Project Error_1")
             succeeded().shouldHaveNames(
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "Before Project Error",
                "Before Project Error_1",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
                "Before Project Error",
