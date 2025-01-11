@@ -114,7 +114,8 @@ internal class SpecExecutor2(
          // we switch to a new coroutine for each spec instance
          withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
             runInstancePipeline(spec, specContext) {
-               val test = Materializer(engineContext.specConfigResolver).materialize(spec).first { it.descriptor == target }
+               val test =
+                  Materializer(engineContext.specConfigResolver).materialize(spec).first { it.descriptor == target }
                val result = executeTest(testCase = test, specContext = specContext)
                Result.success(mapOf(test to result))
             }
@@ -175,7 +176,7 @@ internal class SpecExecutor2(
     * After this method is called the spec is sealed so no further configuration or root tests can be added.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> {
-      return ref.instance(engineContext.projectConfigResolver)
+      return ref.instance(engineContext.registry, engineContext.projectConfigResolver)
          .onFailure { engineContext.specExtensions().specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> engineContext.specExtensions().specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }

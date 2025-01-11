@@ -90,7 +90,7 @@ abstract class AnnotationSpec : Spec() {
       return tests + nested
    }
 
-   override fun globalExtensions(): List<Extension> {
+   override fun projectExtensions(): List<Extension> {
       return emptyList()
    }
 

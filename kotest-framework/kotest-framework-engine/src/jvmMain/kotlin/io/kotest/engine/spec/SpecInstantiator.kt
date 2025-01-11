@@ -6,6 +6,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.instantiateOrObject
 import io.kotest.engine.mapError
 import io.kotest.mpp.annotation
@@ -23,7 +24,10 @@ import kotlin.reflect.full.isSubclassOf
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */
-class SpecInstantiator(private val projectConfigResolver: ProjectConfigResolver) {
+class SpecInstantiator(
+   private val registry: ExtensionRegistry,
+   private val projectConfigResolver: ProjectConfigResolver
+) {
 
    suspend fun <T : Spec> createAndInitializeSpec(
       kclass: KClass<T>,
@@ -46,6 +50,9 @@ class SpecInstantiator(private val projectConfigResolver: ProjectConfigResolver)
             ?: instantiateOrObject(kclass)
                .mapError { SpecInstantiationException("Could not create instance of $kclass", it) }
                .getOrThrow()
+
+         // any spec level project extensions should now be added
+         spec.projectExtensions().forEach { registry.add(it) }
 
          postInstantiationExtensions(kclass)
             .fold(spec) { acc, ext -> ext.instantiated(acc) }

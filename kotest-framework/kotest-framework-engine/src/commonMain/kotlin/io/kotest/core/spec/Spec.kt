@@ -190,7 +190,7 @@ abstract class Spec : TestConfiguration() {
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
     */
-   abstract fun globalExtensions(): List<Extension>
+   internal abstract fun projectExtensions(): List<Extension>
 
    @JsName("severity_js")
    var severity: TestCaseSeverityLevel? = null

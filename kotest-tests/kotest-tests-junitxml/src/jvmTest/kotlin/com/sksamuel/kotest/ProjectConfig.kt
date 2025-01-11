@@ -11,20 +11,18 @@ class ProjectConfig : AbstractProjectConfig() {
 
    override val specExecutionOrder = SpecExecutionOrder.Annotated
 
-   override val extensions: List<Extension> {
-      return listOf(
-         JunitXmlReporter(
-            includeContainers = false,
-            useTestPathAsName = true,
-            outputDir = taskTestResultsDir.resolve("without_containers"),
-         ),
-         JunitXmlReporter(
-            includeContainers = true,
-            useTestPathAsName = false,
-            outputDir = taskTestResultsDir.resolve("with_containers"),
-         )
+   override val extensions: List<Extension> = listOf(
+      JunitXmlReporter(
+         includeContainers = false,
+         useTestPathAsName = true,
+         outputDir = taskTestResultsDir.resolve("without_containers"),
+      ),
+      JunitXmlReporter(
+         includeContainers = true,
+         useTestPathAsName = false,
+         outputDir = taskTestResultsDir.resolve("with_containers"),
       )
-   }
+   )
 
    companion object {
       internal val taskTestResultsDir: Path by lazy {
