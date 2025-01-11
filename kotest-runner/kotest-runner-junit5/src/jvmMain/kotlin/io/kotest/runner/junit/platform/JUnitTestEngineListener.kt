@@ -339,7 +339,7 @@ class JUnitTestEngineListener(
 
    private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
       kclass.qualifiedName,
-      id.segments.filter { it.type == Segment.Test.value }.map { it.value }.joinToString("/")
+      id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
    )
 
    /**

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kt.extensions.system
 
 import io.kotest.core.test.TestCase
