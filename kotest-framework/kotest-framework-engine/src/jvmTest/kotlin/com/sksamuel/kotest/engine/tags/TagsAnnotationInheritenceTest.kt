@@ -117,6 +117,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       context("Inheritance of @Tags") {
          withData(
+            nameFn = { "inheritanceEnabled=${it.first}, expectedTests=${it.second}" },
             true to setOf("a"),
             false to setOf()
          ) { (inheritanceEnabled, expectedTests) ->
@@ -124,7 +125,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
             val c = object : AbstractProjectConfig() {
                override val testCaseOrder = TestCaseOrder.Random
-               override val tagInheritance = true
+               override val tagInheritance = inheritanceEnabled
                override fun extensions(): List<Extension> = listOf(ext)
             }
 
