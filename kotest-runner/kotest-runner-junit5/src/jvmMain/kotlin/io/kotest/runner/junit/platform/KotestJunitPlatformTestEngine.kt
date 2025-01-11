@@ -98,9 +98,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
       logger.log { request.string() }
 
-      // if we are excluded from the engines then we say goodnight according to junit rules
-      val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
-      if (!isKotest)
+      // if we are excluded from the engines then we do not run discovery
+      val includeKotest = request.engineFilters().all { it.toPredicate().test(this) }
+      if (!includeKotest)
          return createEmptyEngineDescriptor(uniqueId)
 
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
@@ -136,9 +136,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return descriptor
    }
 
-   // a method selector is passed by intellij to run just a single method inside a test file
-   // this happens for example, when trying to run a junit test alongside kotest tests,
-   // therefore, if we have a MethodSelector or UniqueIdSelector and nothing else, then we must run no tests in KT.
+   /**
+    * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
+    * This happens when trying to run Junit tests from intellij because they are method based.
+    * Kotest does not use method selectors, so if we have one, then we know its the junit plugin
+    * and not kotest, so we should skip running the engine.
+    */
    private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest): Boolean {
 
       if (discoveryRequest.selectors.isNotEmpty()) {

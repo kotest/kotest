@@ -82,12 +82,18 @@ internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(engineId: UniqueId)
    return DiscoveryRequest(selectors, filters)
 }
 
+/**
+ * If this [EngineDiscoveryRequest] is a [LauncherDiscoveryRequest] then returns any [EngineFilter]s.
+ */
 internal fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
-   is LauncherDiscoveryRequest -> engineFilters.toList()
+   is LauncherDiscoveryRequest -> engineFilters
    else -> emptyList()
 }
 
+/**
+ * If this [EngineDiscoveryRequest] is a [LauncherDiscoveryRequest] then returns any [PostDiscoveryFilter]s.
+ */
 internal fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
-   is LauncherDiscoveryRequest -> postDiscoveryFilters.toList()
+   is LauncherDiscoveryRequest -> postDiscoveryFilters
    else -> emptyList()
 }
