@@ -55,7 +55,6 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun afterInvocation (Lkotlin/jvm/functions/Function3;)V
 	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
-	public final fun appliedTags ()Ljava/util/Set;
 	public final fun aroundTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun autoClose (Ljava/lang/AutoCloseable;)Ljava/lang/AutoCloseable;
 	public final fun autoClose (Lkotlin/Lazy;)Lkotlin/Lazy;
@@ -72,17 +71,10 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun getAssertSoftly ()Ljava/lang/Boolean;
 	public final fun getAssertions ()Lio/kotest/core/test/AssertionMode;
 	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
-	public final fun prependExtension (Lio/kotest/core/extensions/Extension;)V
-	public final fun prependExtensions (Ljava/util/List;)V
-	public final fun register (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
-	public final fun register (Ljava/util/List;)V
-	public final fun register ([Lio/kotest/core/extensions/Extension;)V
 	public final fun registeredAutoCloseables ()Ljava/util/List;
-	public final fun registeredExtensions ()Ljava/util/List;
 	public final fun setAssertSoftly (Ljava/lang/Boolean;)V
 	public final fun setAssertions (Lio/kotest/core/test/AssertionMode;)V
 	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/DefaultTestConfig;)V
-	public final fun setParentConfiguration (Lio/kotest/core/TestConfiguration;)V
 	public fun tags ([Lio/kotest/core/Tag;)V
 }
 
@@ -895,6 +887,7 @@ public abstract class io/kotest/core/config/AbstractPackageConfig {
 	public fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
 	public fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
+	public fun getExtensions ()Ljava/util/List;
 	public fun getFailfast ()Ljava/lang/Boolean;
 	public fun getInvocationTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
@@ -1755,6 +1748,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
+	protected final fun getAfterProjectListeners ()Ljava/util/List;
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public final fun getBlockingTest ()Ljava/lang/Boolean;
 	public final fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
