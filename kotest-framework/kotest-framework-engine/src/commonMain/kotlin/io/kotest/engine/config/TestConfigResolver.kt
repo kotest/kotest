@@ -1,10 +1,8 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tag
-import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
@@ -51,7 +49,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.retries }
          ?: testCase.spec.retries
          ?: testCase.spec.defaultTestConfig?.retries
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.retries }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.retries }
          ?: projectConfig?.retries
          ?: Defaults.DEFAULT_RETRIES
    }
@@ -67,7 +65,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.failfast }
          ?: testCase.spec.failfast
          ?: testCase.spec.defaultTestConfig?.failfast
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.failfast }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.failfast }
          ?: projectConfig?.projectWideFailFast
          ?: Defaults.FAILFAST
    }
@@ -76,7 +74,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.assertSoftly }
          ?: testCase.spec.assertSoftly
          ?: testCase.spec.defaultTestConfig?.assertSoftly
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertSoftly }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertSoftly }
          ?: projectConfig?.globalAssertSoftly
          ?: systemPropertyConfiguration.globalAssertSoftly()
          ?: Defaults.GLOBAL_ASSERT_SOFTLY
@@ -94,7 +92,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.assertionMode }
          ?: testCase.spec.assertionMode()
          ?: testCase.spec.defaultTestConfig?.assertionMode
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertionMode }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertionMode }
          ?: projectConfig?.assertionMode
          ?: systemPropertyConfiguration.assertionMode()
          ?: Defaults.ASSERTION_MODE
@@ -104,7 +102,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.coroutineDebugProbes }
          ?: testCase.spec.coroutineDebugProbes
          ?: testCase.spec.defaultTestConfig?.coroutineDebugProbes
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineDebugProbes }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineDebugProbes }
          ?: projectConfig?.coroutineDebugProbes
          ?: systemPropertyConfiguration.coroutineDebugProbes()
          ?: Defaults.COROUTINE_DEBUG_PROBES
@@ -114,7 +112,7 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.coroutineTestScope }
          ?: testCase.spec.coroutineTestScope
          ?: testCase.spec.defaultTestConfig?.coroutineTestScope
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineTestScope }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineTestScope }
          ?: projectConfig?.coroutineTestScope
          ?: Defaults.COROUTINE_TEST_SCOPE
    }
@@ -131,7 +129,7 @@ class TestConfigResolver(
          ?: testCase.spec.timeout?.milliseconds
          ?: testCase.spec.timeout()?.milliseconds
          ?: testCase.spec.defaultTestConfig?.timeout
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
          ?: projectConfig?.timeout
          ?: systemPropertyConfiguration.timeout()
          ?: Defaults.DEFAULT_TIMEOUT
@@ -142,7 +140,7 @@ class TestConfigResolver(
          ?: testCase.spec.invocationTimeout?.milliseconds
          ?: testCase.spec.invocationTimeout()?.milliseconds
          ?: testCase.spec.defaultTestConfig?.invocationTimeout
-         ?: packageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
          ?: projectConfig?.invocationTimeout
          ?: systemPropertyConfiguration.invocationTimeout()
          ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS
@@ -205,9 +203,4 @@ class TestConfigResolver(
       val config = listOfNotNull(testCase.config)
       return if (parent == null) config else config + testConfigs(parent)
    }
-
-   private fun packageConfigs(spec: Spec): List<AbstractPackageConfig> {
-      return PackageConfigLoader.configs(spec)
-   }
-
 }

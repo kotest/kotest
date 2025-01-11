@@ -1,6 +1,5 @@
 package io.kotest.engine.config
 
-import io.kotest.common.JVMOnly
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 

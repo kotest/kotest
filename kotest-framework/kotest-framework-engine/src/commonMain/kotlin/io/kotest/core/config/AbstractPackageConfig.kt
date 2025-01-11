@@ -5,6 +5,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.concurrency.TestExecutionMode
 import kotlin.time.Duration
 
 /**
@@ -92,4 +93,22 @@ abstract class AbstractPackageConfig {
     * Whether soft assertion mode should be applied for all tests in the specs of this package.
     */
    open val assertSoftly: Boolean? = null
+
+   /**
+    * Each test is launched into its own coroutine. By default, the test engine waits for that
+    * test to finish before launching the next test. By setting [testExecutionMode]
+    * to [TestExecutionMode.Concurrent] all root tests will be launched at the same time.
+    *
+    * Setting this value to [TestExecutionMode.LimitedConcurrency] allows you to specify how
+    * many root tests should be launched concurrently.
+    *
+    * Specs themselves will continue to be launched sequentially. To change that
+    * see [specExecutionMode].
+    *
+    * Note: This value does not change the number of threads used by the test engine. If a test uses a
+    * blocking method, then that thread cannot be utilized by another coroutine while the thread is
+    * blocked. If you are using blocking calls in a test, setting [io.kotest.core.test.config.TestConfig.blockingTest]
+    * on that test's config allows the test engine to spool up a new thread just for that test.
+    */
+   open val testExecutionMode: TestExecutionMode? = null
 }

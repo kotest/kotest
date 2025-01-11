@@ -1,6 +1,5 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
@@ -32,7 +31,7 @@ import io.kotest.engine.extensions.ExtensionRegistry
  * - kotest defaults
  */
 class SpecConfigResolver(
-   private val config: AbstractProjectConfig?,
+   private val projectConfig: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
 ) {
 
@@ -48,7 +47,8 @@ class SpecConfigResolver(
    fun testExecutionMode(spec: Spec): TestExecutionMode {
       return spec.testExecutionMode
          ?: spec.testExecutionMode()
-         ?: config?.testExecutionMode
+         ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.testExecutionMode }
+         ?: projectConfig?.testExecutionMode
          ?: Defaults.TEST_EXECUTION_MODE
    }
 
@@ -58,7 +58,8 @@ class SpecConfigResolver(
    fun isolationMode(spec: Spec): IsolationMode {
       return spec.isolationMode()
          ?: spec.isolationMode
-         ?: config?.isolationMode
+         ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.isolationMode }
+         ?: projectConfig?.isolationMode
          ?: systemPropertyConfiguration.isolationMode()
          ?: Defaults.ISOLATION_MODE
    }
@@ -70,8 +71,8 @@ class SpecConfigResolver(
       return spec.testOrder
          ?: spec.testCaseOrder()
          ?: spec.defaultTestConfig?.testOrder
-         ?: packageConfigs(spec).firstNotNullOfOrNull { it.testCaseOrder }
-         ?: config?.testCaseOrder
+         ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.testCaseOrder }
+         ?: projectConfig?.testCaseOrder
          ?: Defaults.TEST_CASE_ORDER
    }
 
@@ -82,8 +83,8 @@ class SpecConfigResolver(
       return spec.duplicateTestNameMode
          ?: spec.duplicateTestNameMode()
          ?: spec.defaultTestConfig?.duplicateTestNameMode
-         ?: packageConfigs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
-         ?: config?.duplicateTestNameMode
+         ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
+         ?: projectConfig?.duplicateTestNameMode
          ?: systemPropertyConfiguration.duplicateTestNameMode()
          ?: Defaults.DUPLICATE_TEST_NAME_MODE
    }
@@ -91,7 +92,7 @@ class SpecConfigResolver(
    fun coroutineDispatcherFactory(spec: Spec): CoroutineDispatcherFactory? {
       return spec.coroutineDispatcherFactory
          ?: spec.coroutineDispatcherFactory()
-         ?: config?.coroutineDispatcherFactory
+         ?: projectConfig?.coroutineDispatcherFactory
    }
 
    /**
@@ -103,11 +104,7 @@ class SpecConfigResolver(
       return spec.extensions + // overriding the extensions function in the spec
          spec.functionOverrideCallbacks() + // dsl
          spec.registeredExtensions() + // added to the spec via register
-         (config?.extensions ?: emptyList()) + // extensions defined at the project level
+         (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
          registry.all() // globals
-   }
-
-   private fun packageConfigs(spec: Spec): List<AbstractPackageConfig> {
-      return PackageConfigLoader.configs(spec)
    }
 }

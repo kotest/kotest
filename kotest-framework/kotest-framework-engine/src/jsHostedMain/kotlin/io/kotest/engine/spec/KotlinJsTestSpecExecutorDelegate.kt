@@ -28,8 +28,8 @@ import kotlin.coroutines.coroutineContext
 internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineContext) : SpecExecutorDelegate {
 
    private val formatter = getFallbackDisplayNameFormatter(
-      context.configuration.registry,
-      context.configuration,
+      context.projectConfigResolver,
+      context.testConfigResolver,
    )
 
    private val materializer = Materializer(SpecConfigResolver(context.projectConfig))
@@ -43,7 +43,10 @@ internal class KotlinJsTestSpecExecutorDelegate(private val context: EngineConte
          materializer.materialize(spec).forEach { testCase ->
             kotlinJsTestFramework.test(
                TestNameEscaper.escape(formatter.format(testCase)),
-               ignored = testCase.isEnabledInternal(context.projectConfig).isDisabled
+               ignored = testCase.isEnabledInternal(
+                  context.projectConfigResolver,
+                  context.testConfigResolver
+               ).isDisabled
             ) {
                // We rely on JS Promise to interact with the JS test framework. We cannot use callbacks here
                // because we pass our function through the Kotlin/JS test infra via its interface `FrameworkAdapter`,
