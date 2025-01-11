@@ -34,17 +34,25 @@ interface FunSpecRootScope : RootScope {
 
    @ExperimentalKotest
    fun context(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestNameBuilder.builder(name).withPrefix("context ").build(), false, this) { FunSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         xdisabled = false,
+         context = this
+      ) { FunSpecContainerScope(it) }
 
    @ExperimentalKotest
    fun xcontext(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestNameBuilder.builder(name).withPrefix("context ").build(), true, this) { FunSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         xdisabled = true,
+         context = this
+      ) { FunSpecContainerScope(it) }
 
    /**
     * Adds a [RootTest], with the given name and config taken from the config builder.
     */
    fun test(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(this, TestNameBuilder.builder(name).build(), xdisabled = false)
+      RootTestWithConfigBuilder(context = this, name = TestNameBuilder.builder(name).build(), xdisabled = false)
 
    /**
     * Adds a [RootTest], with the given name and default config.
@@ -64,5 +72,5 @@ interface FunSpecRootScope : RootScope {
     * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
     */
    fun xtest(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(this, TestNameBuilder.builder(name).build(), xdisabled = true)
+      RootTestWithConfigBuilder(context = this, name = TestNameBuilder.builder(name).build(), xdisabled = true)
 }
