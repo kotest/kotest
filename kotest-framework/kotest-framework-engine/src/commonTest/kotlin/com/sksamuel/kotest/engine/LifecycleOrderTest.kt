@@ -27,10 +27,10 @@ class LifecycleOrderTest : FunSpec() {
             Triple("engine", Type.SPEC, Phase.ENTRY),
             Triple("engine", Type.TEST_CASE, Phase.ENTRY), // this is foo
             Triple("engine", Type.TEST_CASE, Phase.EXIT), // this is foo
-            Triple("test-config", Type.TEST_CASE, Phase.ENTRY), // this is bar, extension from config
             Triple("engine", Type.TEST_CASE, Phase.ENTRY),  // this is bar
-            Triple("engine", Type.TEST_CASE, Phase.EXIT), // this is bar
+            Triple("test-config", Type.TEST_CASE, Phase.ENTRY), // this is bar, extension from config
             Triple("test-config", Type.TEST_CASE, Phase.EXIT), // this is bar, extension from config
+            Triple("engine", Type.TEST_CASE, Phase.EXIT), // this is bar
             Triple("engine", Type.SPEC, Phase.EXIT),
             Triple("engine", Type.PROJECT, Phase.EXIT),
          )
