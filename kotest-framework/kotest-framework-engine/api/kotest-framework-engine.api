@@ -915,7 +915,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getExtensions ()Ljava/util/List;
 	public fun getFailOnEmptyTestSuite ()Ljava/lang/Boolean;
 	public fun getFailOnIgnoredTests ()Ljava/lang/Boolean;
-	public final fun getFailfast ()Z
+	public fun getFailfast ()Z
 	public fun getGlobalAssertSoftly ()Ljava/lang/Boolean;
 	public fun getIgnorePrivateClasses ()Ljava/lang/Boolean;
 	public fun getIncludeTestScopeAffixes ()Lio/kotest/engine/config/IncludeTestScopeAffixes;
@@ -943,7 +943,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
-	public final fun setFailfast (Z)V
 	public fun setRetries (Ljava/lang/Integer;)V
 	public fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 }

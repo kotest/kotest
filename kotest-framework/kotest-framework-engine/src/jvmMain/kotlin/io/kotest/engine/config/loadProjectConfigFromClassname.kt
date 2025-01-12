@@ -5,8 +5,6 @@ import io.kotest.core.log
 import io.kotest.engine.instantiateOrObject
 import kotlin.reflect.KClass
 
-internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = ProjectConfigLoader.detect()
-
 object ProjectConfigLoader {
 
    const val DEFAULT_CONFIG_FQN = "io.kotest.provided.ProjectConfig"
