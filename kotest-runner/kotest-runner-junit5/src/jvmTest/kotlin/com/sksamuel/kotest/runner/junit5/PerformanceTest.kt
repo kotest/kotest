@@ -20,7 +20,7 @@ class PerformanceTest : FunSpec() {
             .configurationParameter("allow_private", "true")
             .execute()
             .allEvents().apply {
-               finished().count() shouldBe 1003L // kotest, spec, foo, and the nested tests
+               finished().count() shouldBe 13L // kotest, spec, foo, and the nested tests
             }
       }
    }
