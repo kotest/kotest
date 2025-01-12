@@ -3293,10 +3293,6 @@ public final class io/kotest/engine/concurrency/TestExecutionMode$Sequential : i
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/engine/config/ConfigManager_jvmKt {
-	public static final fun loadPlatformDefaultExtensions ()Ljava/util/List;
-}
-
 public final class io/kotest/engine/config/Defaults {
 	public static final field ALLOW_OUT_OF_ORDER_CALLBACKS Z
 	public static final field BLOCKING_TEST Z
