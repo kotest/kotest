@@ -4,6 +4,7 @@ import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.PackageConfigLoader.loadPackageConfig
 import io.kotest.engine.instantiateOrObject
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A [PackageConfigLoader] is responsible for locating concrete implementations of [io.kotest.core.config.AbstractPackageConfig]
@@ -14,23 +15,41 @@ import io.kotest.engine.instantiateOrObject
  */
 internal object PackageConfigLoader {
 
-   // we don't need to re-run reflection for the same packages
-   private val cache = mutableMapOf<String, AbstractPackageConfig?>()
+   sealed interface CachedConfig {
 
-   fun configs(spec: Spec): List<AbstractPackageConfig> {
-      val fqn = spec::class.qualifiedName ?: return emptyList()
-      if (!fqn.contains(".")) return emptyList()
-      val packageName = fqn.substringBeforeLast(".")
-      return configs(packageName)
+      val config: AbstractPackageConfig?
+
+      object Null : CachedConfig {
+         override val config: AbstractPackageConfig? = null
+      }
+
+      data class Config(override val config: AbstractPackageConfig) : CachedConfig
    }
 
-   private fun configs(packageName: String): List<AbstractPackageConfig> {
-      val config = cache.getOrPut(packageName) { loadPackageConfig(packageName) }
-      val configs = listOfNotNull(config)
-      if (packageName.contains(".")) {
-         val parentPackageName = packageName.substringBeforeLast(".")
-         return configs + configs(parentPackageName)
-      } else return configs
+   // we don't need to re-run reflection for the same packages
+   // ConcurrentHashMap doesn't allow null values, so we use a special value to indicate null
+   internal val cache = ConcurrentHashMap<String, CachedConfig>()
+
+   fun configs(spec: Spec): List<AbstractPackageConfig> {
+      return configs(spec::class.java.`package`.name)
+   }
+
+   internal fun configs(packageName: String): List<AbstractPackageConfig> {
+      return packages(packageName).mapNotNull { cachedPackageConfig(it) }
+   }
+
+   private fun cachedPackageConfig(packageName: String): AbstractPackageConfig? {
+      return cache.getOrPut(packageName) {
+         val config = loadPackageConfig(packageName)
+         if (config == null) CachedConfig.Null else CachedConfig.Config(config)
+      }.config
+   }
+
+   internal fun packages(packageName: String): List<String> {
+      return if (packageName.contains('.'))
+         listOf(packageName) + packages(packageName.substringBeforeLast("."))
+      else
+         listOf(packageName)
    }
 
    private fun loadPackageConfig(packageName: String): AbstractPackageConfig? {
