@@ -343,23 +343,6 @@ class JUnitTestEngineListener(
    )
 
    /**
-    * Registers a placeholder test which we can use to attach lifecycle errors.
-    * The test is registered with the engine parent.
-    * See [ExtensionExceptionExtractor].
-    */
-   private fun createAndRegisterDummySpec(name: String): TestDescriptor {
-
-      val unique = UniqueNames.unique(name, dummies) { s, k -> "${s}_$k" } ?: name
-      dummies.add(unique)
-
-      val descriptor =
-         createSpecTestDescriptor(root, Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique)
-      root.addChild(descriptor)
-      listener.dynamicTestRegistered(descriptor)
-      return descriptor
-   }
-
-   /**
     * Registers placeholder specs and marks them as failed for each throwable.
     * See [ExtensionExceptionExtractor].
     */
@@ -370,5 +353,21 @@ class JUnitTestEngineListener(
          listener.executionStarted(container)
          listener.executionFinished(container, TestExecutionResult.failed(cause))
       }
+   }
+
+   /**
+    * Registers a placeholder test which we can use to attach lifecycle errors.
+    * The test is registered with the engine parent.
+    * See [ExtensionExceptionExtractor].
+    */
+   private fun createAndRegisterDummySpec(name: String): TestDescriptor {
+
+      val unique = UniqueNames.unique(name, dummies) { s, k -> "${s}_$k" } ?: name
+      dummies.add(unique)
+
+      val descriptor = createSpecTestDescriptor(root, Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique)
+      root.addChild(descriptor)
+      listener.dynamicTestRegistered(descriptor)
+      return descriptor
    }
 }
