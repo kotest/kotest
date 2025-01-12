@@ -33,7 +33,7 @@ object ExtensionExceptionExtractor {
             is ExtensionException.BeforeContainerException -> "Before Container Error"
             is ExtensionException.BeforeEachException -> "Before Each Error"
             is ExtensionException.BeforeInvocationException -> "Before Invocation Error"
-            is ExtensionException.BeforeProjectException -> "Before Project Error}"
+            is ExtensionException.BeforeProjectException -> "Before Project Error"
             is ExtensionException.BeforeSpecException -> "Before Spec Error"
             is ExtensionException.FinalizeSpecException -> "Finalize Spec Error"
             is ExtensionException.IgnoredSpecException -> "Ignored Spec Error"
