@@ -10,6 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.mpp.bestName
 import org.junit.platform.engine.EngineExecutionListener
@@ -22,7 +23,7 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
- * Notifies JUnit Platform of test statuses via a [EngineExecutionListener].
+ * A Kotest [TestEngineListener] that forwards notifications to a JUnit Platform [EngineExecutionListener].
  *
  * This is not thread safe and should only be invoked by one spec at a time.
  *
@@ -97,7 +98,7 @@ class JUnitTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       logger.log { "Engine initialized with context $context" }
-      failOnIgnoredTests = context.configuration.failOnIgnoredTests
+      failOnIgnoredTests = context.projectConfigResolver.failOnIgnoredTests()
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
@@ -306,7 +307,8 @@ class JUnitTestEngineListener(
          val testDescriptor = createTestTestDescriptorWithMethodSource(testCase, type)
 
          // must attach to the parent, which we know will have been created prior, either spec or parent test
-         val p = descriptors[testCase.descriptor.parent] ?: error("No descriptor found: ${testCase.descriptor.parent.id.value}")
+         val p = descriptors[testCase.descriptor.parent]
+            ?: error("No descriptor found: ${testCase.descriptor.parent.id.value}")
          p.addChild(testDescriptor)
          descriptors[testCase.descriptor] = testDescriptor
 
@@ -321,7 +323,7 @@ class JUnitTestEngineListener(
       }
    }
 
-   private fun createTestTestDescriptorWithMethodSource(testCase: TestCase, type: TestDescriptor.Type) : TestDescriptor {
+   private fun createTestTestDescriptorWithMethodSource(testCase: TestCase, type: TestDescriptor.Type): TestDescriptor {
       val id = root.deriveTestUniqueId(testCase.descriptor)
       val testDescriptor = createTestTestDescriptor(
          id = id,
@@ -335,8 +337,10 @@ class JUnitTestEngineListener(
       return testDescriptor
    }
 
-   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource
-      = MethodSource.from(kclass.qualifiedName, id.segments.filter { it.type == Segment.Test.value }.map { it.value }.joinToString("/"))
+   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
+      kclass.qualifiedName,
+      id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
+   )
 
    /**
     * Registers a placeholder test which we can use to attach lifecycle errors.

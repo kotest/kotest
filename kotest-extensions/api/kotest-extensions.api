@@ -171,37 +171,6 @@ public final class io/kotest/extensions/system/OverrideMode$SetOrOverride : io/k
 	public fun override (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
 }
 
-public abstract class io/kotest/extensions/system/SecurityManagerListener {
-	public fun <init> (Ljava/lang/SecurityManager;)V
-	protected final fun changeSecurityManager ()V
-	protected final fun getSecurityManager ()Ljava/lang/SecurityManager;
-	protected final fun resetSecurityManager ()V
-}
-
-public final class io/kotest/extensions/system/SecurityManagerProjectListener : io/kotest/extensions/system/SecurityManagerListener, io/kotest/core/listeners/ProjectListener {
-	public fun <init> (Ljava/lang/SecurityManager;)V
-	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/extensions/system/SecurityManagerTestListener : io/kotest/extensions/system/SecurityManagerListener, io/kotest/core/listeners/TestListener {
-	public fun <init> (Ljava/lang/SecurityManager;)V
-	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/extensions/system/SpecSystemExitListener : io/kotest/core/listeners/TestListener {
 	public static final field INSTANCE Lio/kotest/extensions/system/SpecSystemExitListener;
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

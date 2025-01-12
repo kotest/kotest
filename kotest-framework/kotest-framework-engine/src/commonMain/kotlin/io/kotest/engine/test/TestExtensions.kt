@@ -1,6 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
@@ -12,12 +11,12 @@ import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.IgnoredTestListener
-import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.collect
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
@@ -29,23 +28,12 @@ import kotlin.coroutines.coroutineContext
 /**
  * Used to invoke [Extension]s on tests.
  */
-internal class TestExtensions(private val registry: ExtensionRegistry) {
-
-   /**
-    * Returns all [Extension]s applicable to a [TestCase]. This includes extensions
-    * included in test case config, those at the spec level, and project wide from
-    * the registry.
-    */
-   fun extensions(testCase: TestCase): List<Extension> {
-      return registry.all() + // globals
-         testCase.spec.extensions() + // overriding the extensions function in the spec
-         testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
-         testCase.spec.registeredExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
-         testCase.config.extensions // extensions coming from the test config block itself
-   }
+internal class TestExtensions(
+   private val testConfigResolver: TestConfigResolver,
+) {
 
    suspend fun beforeInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
-      val extensions = extensions(testCase).filterIsInstance<BeforeInvocationListener>()
+      val extensions = testConfigResolver.extensions(testCase).filterIsInstance<BeforeInvocationListener>()
       return extensions.map {
          runCatching {
             it.beforeInvocation(testCase, invocation)
@@ -54,7 +42,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
    }
 
    suspend fun afterInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
-      val extensions = extensions(testCase).filterIsInstance<AfterInvocationListener>()
+      val extensions = testConfigResolver.extensions(testCase).filterIsInstance<AfterInvocationListener>()
       return extensions.map {
          runCatching {
             it.afterInvocation(testCase, invocation)
@@ -68,9 +56,9 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     */
    suspend fun beforeTestBeforeAnyBeforeContainer(testCase: TestCase): Result<TestCase> {
 
-      val bt = extensions(testCase).filterIsInstance<BeforeTestListener>()
-      val bc = extensions(testCase).filterIsInstance<BeforeContainerListener>()
-      val be = extensions(testCase).filterIsInstance<BeforeEachListener>()
+      val bt = testConfigResolver.extensions(testCase).filterIsInstance<BeforeTestListener>()
+      val bc = testConfigResolver.extensions(testCase).filterIsInstance<BeforeContainerListener>()
+      val be = testConfigResolver.extensions(testCase).filterIsInstance<BeforeEachListener>()
 
       val errors = bc.mapNotNull {
          runCatching {
@@ -100,9 +88,9 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     */
    suspend fun afterTestAfterAnyAfterContainer(testCase: TestCase, result: TestResult): Result<TestResult> {
 
-      val at = extensions(testCase).filterIsInstance<AfterTestListener>()
-      val ac = extensions(testCase).filterIsInstance<AfterContainerListener>()
-      val ae = extensions(testCase).filterIsInstance<AfterEachListener>()
+      val at = testConfigResolver.extensions(testCase).filterIsInstance<AfterTestListener>()
+      val ac = testConfigResolver.extensions(testCase).filterIsInstance<AfterContainerListener>()
+      val ae = testConfigResolver.extensions(testCase).filterIsInstance<AfterEachListener>()
 
       val errors = at.mapNotNull {
          runCatching {
@@ -135,10 +123,10 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       inner: NextTestExecutionInterceptor,
    ): TestResult {
 
-      val execute = extensions(testCase).filterIsInstance<TestCaseExtension>()
-         .foldRight(inner) { extension, execute ->
+      val execute = testConfigResolver.extensions(testCase).filterIsInstance<TestCaseExtension>()
+         .fold(inner) { execute, ext ->
             NextTestExecutionInterceptor { tc, ctx ->
-               extension.intercept(tc) {
+               ext.intercept(tc) {
                   // the user's intercept method is free to change the context of the coroutine
                   // to support this, we should switch the context used by the test case context
                   execute(it, ctx.withCoroutineContext(coroutineContext))
@@ -149,15 +137,18 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       return execute(testCase, context)
    }
 
+   /**
+    * Returns the [LogExtension]s applicable to this [TestCase].
+    */
    fun logExtensions(testCase: TestCase): List<LogExtension> {
-      return extensions(testCase).filterIsInstance<LogExtension>()
+      return testConfigResolver.extensions(testCase).filterIsInstance<LogExtension>()
    }
 
    /**
-    * Invokes all [IgnoredTestListener]s for this test.
+    * Executes all [IgnoredTestListener]s for this [TestCase].
     */
    suspend fun ignoredTestListenersInvocation(testCase: TestCase, reason: String?) {
-      extensions(testCase).filterIsInstance<IgnoredTestListener>()
+      testConfigResolver.extensions(testCase).filterIsInstance<IgnoredTestListener>()
          .forEach { it.ignoredTest(testCase, reason) }
    }
 }

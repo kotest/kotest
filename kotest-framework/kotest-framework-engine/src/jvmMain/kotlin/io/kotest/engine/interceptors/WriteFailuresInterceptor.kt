@@ -21,14 +21,14 @@ internal object WriteFailuresInterceptor : EngineInterceptor {
       context: EngineContext,
       execute: NextEngineInterceptor
    ): EngineResult {
-      return if (context.configuration.writeSpecFailureFile) {
+      return if (context.projectConfigResolver.writeSpecFailureFile()) {
          val collector = CollectingTestEngineListener()
          val result = execute(context.mergeListener(collector))
          val failedSpecs = collector.tests
             .filterValues { it.isErrorOrFailure }
             .map { it.key.specClass }
             .toSet()
-         writeSpecFailures(failedSpecs, context.configuration.specFailureFilePath)
+         writeSpecFailures(failedSpecs, context.projectConfigResolver.specFailureFilePath())
          result
       } else {
          execute(context)

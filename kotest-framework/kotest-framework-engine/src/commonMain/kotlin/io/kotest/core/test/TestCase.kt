@@ -1,13 +1,13 @@
 package io.kotest.core.test
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.config.ResolvedTestConfig
-import kotlin.time.Duration
+import io.kotest.core.test.config.TestConfig
 
 /**
  * A [TestCase] describes a test lambda at runtime.
@@ -39,6 +39,7 @@ import kotlin.time.Duration
  * }
  * ```
  */
+@KotestInternal
 data class TestCase(
    // parseable, stable, consistent identifier for this test element
    val descriptor: Descriptor.TestDescriptor,
@@ -52,20 +53,13 @@ data class TestCase(
    val source: SourceRef = sourceRef(),
    // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
-   // resolved config at runtime for this test
-   val config: ResolvedTestConfig = ResolvedTestConfig.default,
+   // config values specified directly on the test itself
+   val config: TestConfig? = null,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
 )
-
-/**
- * Returns `true` if this test is focused.
- *
- * A focused test case is one which is defined at the top level and has a `f:` prefix
- */
-fun TestCase.isFocused() = this.parent == null && name.focus
 
 /**
  * Returns `true` if this descriptor represents a root test case.
@@ -77,10 +71,3 @@ fun TestCase.isRootTest() = this.parent == null
 fun TestCase.parents(): List<TestCase> {
    return if (parent == null) emptyList() else parent.parents() + parent
 }
-
-/** Returns timeout to be used depending on the [TestType]. */
-val TestCase.timeout: Duration
-   get() = when (type) {
-      TestType.Container -> config.timeout
-      else -> minOf(config.invocationTimeout, config.timeout)
-   }

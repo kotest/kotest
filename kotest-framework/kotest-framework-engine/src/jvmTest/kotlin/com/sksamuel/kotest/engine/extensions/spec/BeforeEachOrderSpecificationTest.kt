@@ -17,20 +17,18 @@ class BeforeEachOrderSpecificationTest : FunSpec() {
       order.add("fn_override")
    }
 
-   override fun extensions(): List<Extension> {
-      return listOf(
-         object : BeforeEachListener {
-            override suspend fun beforeEach(testCase: TestCase) {
-               order.add("extension1")
-            }
-         },
-         object : BeforeEachListener {
-            override suspend fun beforeEach(testCase: TestCase) {
-               order.add("extension2")
-            }
-         },
-      )
-   }
+   override val extensions: List<Extension> = listOf(
+      object : BeforeEachListener {
+         override suspend fun beforeEach(testCase: TestCase) {
+            order.add("extension1")
+         }
+      },
+      object : BeforeEachListener {
+         override suspend fun beforeEach(testCase: TestCase) {
+            order.add("extension2")
+         }
+      },
+   )
 
    init {
 

@@ -93,15 +93,17 @@ abstract class Transformer(
                )
             )
             withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
-               withPlatform.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
-                  withConfig.putValueArgument(
-                     0,
-                     irVararg(
-                        pluginContext.irBuiltIns.stringType,
-                        configs.map { irCall(it.constructors.first()) }
+               val config = configs.firstOrNull()
+               if (config != null) {
+                  withPlatform.dispatchReceiver = irCall(withProjectConfigFn).also { withConfig ->
+                     withConfig.putValueArgument(
+                        0,
+                        irCall(config.constructors.first()),
                      )
-                  )
-                  withConfig.dispatchReceiver = constructorGenerator()
+                     withConfig.dispatchReceiver = constructorGenerator()
+                  }
+               } else {
+                  withPlatform.dispatchReceiver = constructorGenerator()
                }
             }
          }
@@ -127,8 +129,8 @@ abstract class Transformer(
          ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
    }
 
-   private val withConfigFn: IrSimpleFunctionSymbol by lazy {
-      launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
+   private val withProjectConfigFn: IrSimpleFunctionSymbol by lazy {
+      launcherClass.getSimpleFunction(EntryPoint.WITH_PROJECT_CONFIG_METHOD_NAME)
+         ?: error("Cannot find function ${EntryPoint.WITH_PROJECT_CONFIG_METHOD_NAME}")
    }
 }

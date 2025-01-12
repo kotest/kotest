@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.matchers
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +14,6 @@ class AssertSoftlyTestLevelTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(AssertSoftlyAtTestLevel::class)
-            .withConfiguration(ProjectConfiguration())
             .launch()
          listener.tests.size shouldBe 2
          listener.errors shouldBe true

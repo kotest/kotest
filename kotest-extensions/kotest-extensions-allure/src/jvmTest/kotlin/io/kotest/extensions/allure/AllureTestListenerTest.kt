@@ -22,7 +22,7 @@ class AllureTestListenerTest : WordSpec() {
 
    private val allure = AllureTestReporter()
 
-   override fun extensions(): List<Extension> = listOf(allure)
+   override val extensions: List<Extension> = listOf(allure)
 
    init {
       "allure test listener" should {

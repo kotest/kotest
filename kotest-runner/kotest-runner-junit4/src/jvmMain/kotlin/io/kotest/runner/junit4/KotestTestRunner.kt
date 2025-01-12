@@ -1,9 +1,11 @@
 package io.kotest.runner.junit4
 
-import io.kotest.core.config.EmptyExtensionRegistry
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.SpecConfigResolver
+import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecInstantiator
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
@@ -16,7 +18,7 @@ class KotestTestRunner(
    private val kclass: Class<out Spec>
 ) : Runner() {
 
-   private val formatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private val formatter = DefaultDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
 
    override fun run(notifier: RunNotifier) {
       runBlocking {
@@ -26,9 +28,14 @@ class KotestTestRunner(
    }
 
    override fun getDescription(): Description {
-      val spec = runBlocking { SpecInstantiator(EmptyExtensionRegistry).createAndInitializeSpec(kclass.kotlin).getOrThrow() }
+      val spec = runBlocking {
+         SpecInstantiator(
+            DefaultExtensionRegistry(),
+            ProjectConfigResolver()
+         ).createAndInitializeSpec(kclass.kotlin).getOrThrow()
+      }
       val desc = Description.createSuiteDescription(spec::class.java)
-      Materializer(ProjectConfiguration()).materialize(spec).forEach { rootTest ->
+      Materializer(SpecConfigResolver()).materialize(spec).forEach { rootTest ->
          desc.addChild(
             describeTestCase(
                rootTest,

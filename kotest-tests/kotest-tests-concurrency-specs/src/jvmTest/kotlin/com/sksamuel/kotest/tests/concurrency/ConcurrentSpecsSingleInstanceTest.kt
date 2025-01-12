@@ -8,8 +8,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import io.kotest.provided.start
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 // asserts that specs can be executed concurrently safely
 @EnabledIf(LinuxCondition::class)
@@ -35,6 +39,16 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
    }
 
    init {
+      beforeSpec {
+         // we need to reference the start variable so its initialized
+         println(start.elapsedNow().inWholeMilliseconds)
+      }
+      afterProject {
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
+         val duration = start.elapsedNow()
+         duration shouldBeLessThan 2.seconds
+      }
       test("a") {
          delay(500)
       }
@@ -67,6 +81,12 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
    }
 
    init {
+      afterProject {
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
+         val duration = start.elapsedNow()
+         duration shouldBeLessThan 2.seconds
+      }
       test("a") {
          delay(500)
       }
@@ -99,6 +119,12 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
    }
 
    init {
+      afterProject {
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
+         val duration = start.elapsedNow()
+         duration shouldBeLessThan 2.seconds
+      }
       test("a") {
          delay(500)
       }
@@ -131,6 +157,12 @@ class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
    }
 
    init {
+      afterProject {
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
+         val duration = start.elapsedNow()
+         duration shouldBeLessThan 2.seconds
+      }
       test("a") {
          delay(500)
       }
@@ -138,3 +170,5 @@ class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
       }
    }
 }
+
+

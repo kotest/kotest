@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.test.timeout
 import io.kotest.assertions.asClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.datatest.withData
@@ -12,6 +12,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
 
 @EnabledIf(LinuxCondition::class)
 class GlobalTimeoutTest : FunSpec() {
@@ -22,15 +23,16 @@ class GlobalTimeoutTest : FunSpec() {
             first = false,
             second = true,
          ) { enableCoroutineTestScope ->
-            val c = ProjectConfiguration().apply {
-               timeout = 100
-               coroutineTestScope = enableCoroutineTestScope
+
+            val c = object : AbstractProjectConfig() {
+               override val timeout = 100.milliseconds
+               override val coroutineTestScope = enableCoroutineTestScope
             }
             val collector = CollectingTestEngineListener()
 
             TestEngineLauncher(collector)
                .withClasses(TestTimeouts::class)
-               .withConfiguration(c)
+               .withProjectConfig(c)
                .launch()
 
             collector.names.shouldContainExactly("blocked", "suspend")

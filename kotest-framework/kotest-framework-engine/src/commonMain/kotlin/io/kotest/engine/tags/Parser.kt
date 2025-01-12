@@ -1,13 +1,11 @@
 package io.kotest.engine.tags
 
-import io.kotest.core.TagExpression
-
-fun TagExpression.parse(): Expression? {
+internal fun TagExpression.parse(): Expression? {
    val expr = this.expression
    return if (expr.isBlank()) null else Parser.from(expr).expression()
 }
 
-class Parser(private val tokens: List<Token>) {
+internal class Parser(private val tokens: List<Token>) {
 
    companion object {
       fun from(input: String) = Parser(Lexer(input).lex())

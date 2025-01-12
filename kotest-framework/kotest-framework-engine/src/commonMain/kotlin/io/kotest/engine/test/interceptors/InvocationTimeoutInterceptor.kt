@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.core.test.timeout
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeoutOrNull
@@ -13,7 +13,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 /**
  * Installs an invocation timeout.
  */
-internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
+internal class InvocationTimeoutInterceptor(private val testConfigResolver: TestConfigResolver) : TestExecutionInterceptor {
 
    private val logger = Logger(this::class)
 
@@ -27,7 +27,7 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
          test(testCase, scope)
       } else {
 
-         val timeout = testCase.timeout
+         val timeout = testConfigResolver.invocationTimeout(testCase)
          logger.log { Pair(testCase.name.name, "Switching context to add invocationTimeout $timeout") }
 
          try {

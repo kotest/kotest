@@ -21,10 +21,10 @@ import kotlin.coroutines.coroutineContext
 @ExperimentalKotest
 @Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
 internal class DefaultSpecExecutorDelegate(
-   private val engineContext: EngineContext
+   private val engineContext: EngineContext,
 ) : SpecExecutorDelegate {
 
-   private val materializer = Materializer(engineContext.configuration)
+   private val materializer = Materializer(engineContext.specConfigResolver)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
@@ -33,12 +33,12 @@ internal class DefaultSpecExecutorDelegate(
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val scope = DuplicateNameHandlingTestScope(
-               engineContext.configuration.duplicateTestNameMode,
+               engineContext.specConfigResolver.duplicateTestNameMode(spec),
                InOrderTestScope(
                   specContext,
                   testCase,
                   coroutineContext,
-                  engineContext.configuration.duplicateTestNameMode,
+                  engineContext.specConfigResolver.duplicateTestNameMode(spec),
                   engineContext,
                )
             )

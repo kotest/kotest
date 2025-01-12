@@ -73,16 +73,7 @@ abstract class TestConfiguration {
    var assertSoftly: Boolean? = null
 
    /**
-    * Register a single [Extension] of type T return that listener.
-    */
-   fun <T : Extension> register(extension: T): T {
-      register(listOf(extension))
-      return extension
-   }
-
-   /**
     * Register a single [Extension] of type T and return that extension.
-    * Invoked after all existing extensions.
     */
    fun <T : Extension> extension(extension: T): T {
       extensions(extension)
@@ -92,44 +83,30 @@ abstract class TestConfiguration {
    /**
     * Registers one or more [Extension]s.
     */
-   fun register(vararg extensions: Extension) {
+   fun extensions(vararg extensions: Extension) {
       require(extensions.isNotEmpty()) { "Cannot register empty list of extensions" }
-      register(extensions.toList())
+      extensions(extensions.toList())
    }
 
    /**
-    * Register one or more [Extension]s to be invoked after all current extensions.
+    * Register one or more [Extension]s.
     */
-   fun register(extensions: List<Extension>) {
+   fun extensions(extensions: List<Extension>) {
       _extensions = _extensions + extensions
    }
 
    /**
-    * Register [Extension]s to be invoked before all current extensions.
+    * Register [Extension]s to be invoked any other extensions registered in the spec directly.
     */
-   fun prependExtension(extension: Extension) {
+   internal fun prependExtension(extension: Extension) {
       prependExtensions(listOf(extension))
    }
 
    /**
     * Register [Extension]s to be invoked before all current extensions.
     */
-   fun prependExtensions(extensions: List<Extension>) {
+   internal fun prependExtensions(extensions: List<Extension>) {
       _extensions = extensions + _extensions
-   }
-
-   /**
-    * Register multiple [Extension]s.
-    */
-   fun extensions(vararg extensions: Extension) {
-      register(extensions.toList())
-   }
-
-   /**
-    * Register multiple [Extension]s.
-    */
-   fun extensions(extensions: List<Extension>) {
-      register(extensions)
    }
 
    /**
@@ -142,7 +119,7 @@ abstract class TestConfiguration {
       _tags = _tags + tags.toSet()
    }
 
-   fun appliedTags() = _tags
+   internal fun appliedTags() = _tags
 
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
@@ -166,7 +143,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    open fun beforeTest(f: BeforeTest) {
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -180,7 +157,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    open fun afterTest(f: AfterTest) {
-      register(object : AfterTestListener {
+      extension(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -193,7 +170,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeContainer(f: BeforeContainer) {
-      register(object : BeforeContainerListener {
+      extension(object : BeforeContainerListener {
          override suspend fun beforeContainer(testCase: TestCase) {
             f(testCase)
          }
@@ -224,7 +201,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      extension(object : BeforeEachListener {
+      this@TestConfiguration.extension(object : BeforeEachListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -256,7 +233,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeAny(f: BeforeAny) {
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -270,7 +247,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed and invocation iteration is provided as the parameter.
     */
    fun beforeInvocation(f: BeforeInvocation) {
-      register(object : BeforeInvocationListener {
+      extension(object : BeforeInvocationListener {
          override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
             f(testCase, iteration)
          }
@@ -284,7 +261,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed and invocation iteration is provided as the parameter.
     */
    fun afterInvocation(f: AfterInvocation) {
-      register(object : AfterInvocationListener {
+      extension(object : AfterInvocationListener {
          override suspend fun afterInvocation(testCase: TestCase, iteration: Int) {
             f(testCase, iteration)
          }
@@ -315,7 +292,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun beforeSpec(f: BeforeSpec) {
-      register(object : BeforeSpecListener {
+      extension(object : BeforeSpecListener {
          override suspend fun beforeSpec(spec: Spec) {
             f(spec)
          }
@@ -326,7 +303,7 @@ abstract class TestConfiguration {
     * Register an extension callback
     */
    fun extension(f: TestCaseExtensionFn) {
-      extension(object : TestCaseExtension {
+      this@TestConfiguration.extension(object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult =
             f(Tuple2(testCase, execute))
       })
@@ -337,7 +314,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    open fun afterSpec(f: AfterSpec) {
-      register(object : AfterSpecListener {
+      extension(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             f(spec)
          }
@@ -345,7 +322,7 @@ abstract class TestConfiguration {
    }
 
    fun aroundTest(aroundTestFn: AroundTestFn) {
-      extension(object : TestCaseExtension {
+      this@TestConfiguration.extension(object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
             val f: suspend (TestCase) -> TestResult = { execute(it) }
             return aroundTestFn(Tuple2(testCase, f))
@@ -358,11 +335,11 @@ abstract class TestConfiguration {
    /**
     * Returns any [Extension] instances registered directly on this class.
     */
-   fun registeredExtensions(): List<Extension> {
+   internal fun specExtensions(): List<Extension> {
       return _extensions.toList()
    }
 
-   fun setParentConfiguration(configuration: TestConfiguration) {
+   internal fun setParentConfiguration(configuration: TestConfiguration) {
       _parentConfiguration = configuration
    }
 }

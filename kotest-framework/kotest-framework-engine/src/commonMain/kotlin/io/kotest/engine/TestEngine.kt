@@ -3,14 +3,14 @@ package io.kotest.engine
 import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.Platform
-import io.kotest.core.TagExpression
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.tags.runtimeTagExpression
+import io.kotest.engine.tags.TagExpression
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -27,9 +27,10 @@ data class EngineResult(val errors: List<Throwable>) {
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
-   val configuration: ProjectConfiguration,
+   val projectConfig: AbstractProjectConfig?,
    val explicitTags: TagExpression?,
    val platform: Platform,
+   val registry: ExtensionRegistry,
 )
 
 /**
@@ -42,9 +43,6 @@ class TestEngine(private val config: TestEngineConfig) {
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
-    *
-    * It is recommended that this method is not invoked, but instead the engine
-    * is launched via the [TestEngineLauncher].
     */
    internal suspend fun execute(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Initiating test suite with ${suite.specs.size} specs") }
@@ -59,10 +57,19 @@ class TestEngine(private val config: TestEngineConfig) {
          NextEngineInterceptor { context -> extension.intercept(context, next) }
       }
 
-      val tags = config.configuration.runtimeTagExpression()
+      val tags = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform, mutableMapOf()))
+      return execute(
+         EngineContext.invoke(
+            suite = suite,
+            listener = config.listener,
+            tags = tags,
+            projectConfig = config.projectConfig,
+            platform = config.platform,
+            registry = config.registry,
+         )
+      )
    }
 }
 

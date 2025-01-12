@@ -12,7 +12,7 @@ class SpecExtensionSingleInstanceTest : WordSpec() {
       var before = 0
       var after = 0
 
-      register(object : SpecExtension {
+      extension(object : SpecExtension {
          override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
             before++
             execute(spec)

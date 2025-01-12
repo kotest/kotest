@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -16,16 +16,17 @@ class AfterProjectDslTest : FunSpec({
 
       var fired = false
 
-      val c = ProjectConfiguration()
-      c.registry.add(object : ProjectListener {
-         override suspend fun afterProject() {
-            fired = true
-         }
-      })
+      val c = object : AbstractProjectConfig() {
+         override val extensions = listOf(object : ProjectListener {
+            override suspend fun afterProject() {
+               fired = true
+            }
+         })
+      }
 
       TestEngineLauncher(NoopTestEngineListener)
          .withClasses(DummySpec6::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       fired shouldBe true

@@ -3,7 +3,7 @@ package io.kotest.core.listeners
 import io.kotest.core.extensions.Extension
 
 /**
- * Brings together [BeforeProjectListener] and [AfterProjectListener]. Exists for historical reasons.
+ * Union of [BeforeProjectListener] and [AfterProjectListener].
  * Users can choose to extend this, or the constituent interfaces.
  */
 interface ProjectListener : BeforeProjectListener, AfterProjectListener

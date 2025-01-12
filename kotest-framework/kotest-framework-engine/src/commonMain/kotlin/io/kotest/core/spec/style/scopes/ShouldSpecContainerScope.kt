@@ -43,22 +43,30 @@ class ShouldSpecContainerScope(
 
    @ExperimentalKotest
    fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, false) { ShouldSpecContainerScope(it) }
+      return ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, false) {
+         ShouldSpecContainerScope(
+            it
+         )
+      }
    }
 
    @ExperimentalKotest
    fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), this, true) { ShouldSpecContainerScope(it) }
+      return ContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).build(),
+         this,
+         true
+      ) { ShouldSpecContainerScope(it) }
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      val testName = shouldName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(testName, this, false)
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("should ").build()
+      val testName = shouldName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(testName, this, true)
    }
@@ -71,7 +79,15 @@ class ShouldSpecContainerScope(
       should(name, true, test)
    }
 
+   private fun shouldName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
+
    private suspend fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestNameBuilder.builder(name).withPrefix("should ").build(), disabled = xdisabled, config = null, test = test)
+      registerTest(
+         name = shouldName(name),
+         disabled = xdisabled,
+         config = null,
+         test = test
+      )
    }
 }

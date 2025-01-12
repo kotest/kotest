@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
@@ -17,9 +17,10 @@ import kotlin.time.Duration.Companion.milliseconds
 class ProjectTimeoutEngineInterceptorTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {
-      val c = ProjectConfiguration()
-      c.projectTimeout = 1.milliseconds
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      val c = object : AbstractProjectConfig() {
+         override val projectTimeout = 1.milliseconds
+      }
+      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
          delay(1000)
          EngineResult.empty
       }
@@ -28,9 +29,10 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
    }
 
    test("should not return ProjectTimeoutException when project does not time out") {
-      val c = ProjectConfiguration()
-      c.projectTimeout = 100000.milliseconds
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      val c = object : AbstractProjectConfig() {
+         override val projectTimeout = 100000.milliseconds
+      }
+      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
          delay(1)
          EngineResult.empty
       }

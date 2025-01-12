@@ -73,7 +73,7 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
       mode = OverrideMode.SetOrOverride
    )
 
-   override fun extensions() = listOf(setl)
+   override val extensions = listOf(setl)
 
    override suspend fun beforeSpec(spec: Spec) {
       setEnvironmentMap(mapOf("dop" to "mop"))

@@ -2621,6 +2621,11 @@ public final class io/kotest/matchers/types/TypeMatchersKt {
 	public static final fun instanceOf (Lkotlin/reflect/KClass;)Lio/kotest/matchers/Matcher;
 }
 
+public final class io/kotest/matchers/types/jvmTypeMatchersKt {
+	public static final fun haveAnnotation (Ljava/lang/Class;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldHaveAnnotation (Ljava/lang/Class;Ljava/lang/Class;)V
+}
+
 public final class io/kotest/matchers/uri/MatchersKt {
 	public static final fun beOpaque ()Lio/kotest/matchers/Matcher;
 	public static final fun haveAuthority (Ljava/lang/String;)Lio/kotest/matchers/Matcher;

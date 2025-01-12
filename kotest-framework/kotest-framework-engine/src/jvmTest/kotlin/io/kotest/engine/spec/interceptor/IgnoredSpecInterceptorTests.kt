@@ -6,13 +6,13 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.datatest.withData
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
@@ -28,7 +28,7 @@ class IgnoredSpecInterceptorTests : FunSpec({
       ) { (expected, kclass) ->
 
          val listener = TestIgnoredSpecListener()
-         IgnoredSpecInterceptor(listener, EmptyExtensionRegistry)
+         IgnoredSpecInterceptor(listener, SpecExtensions())
             .intercept(SpecRef.Reference(kclass), object : NextSpecRefInterceptor {
                override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                   error("boom")

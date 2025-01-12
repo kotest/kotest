@@ -45,22 +45,26 @@ interface BehaviorSpecRootScope : RootScope {
     * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
     */
    @Suppress("FunctionName")
-   fun Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) = addContext(name, false, test)
+   fun Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xdisabled = false, test = test)
 
    /**
     * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) = addContext(name, false, test)
+   fun context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xdisabled = false, test = test)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun xcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) = addContext(name, true, test)
+   fun xcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xdisabled = true, test = test)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) = addContext(name, true, test)
+   fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xdisabled = true, test = test)
 
    fun addContext(name: String, xdisabled: Boolean, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       addContainer(

@@ -4,10 +4,11 @@ import kotlin.reflect.KClass
 
 /**
  * Use this annotation to register extensions on specs.
+ *
  * For example
  *
  * ```
- * @ApplyExtension(SpringExtensionFactory::class)
+ * @ApplyExtension(SpringExtension::class)
  * class MySpringSpec : FunSpec() { ... }
  * ```
  *

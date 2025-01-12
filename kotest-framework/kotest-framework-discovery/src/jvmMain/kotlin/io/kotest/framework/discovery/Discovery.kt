@@ -4,7 +4,6 @@ package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.syspropOrEnv
@@ -13,32 +12,28 @@ import kotlin.reflect.KClass
 import kotlin.time.measureTimedValue
 
 /**
- * Contains the results of a discovery request scan.
+ * Contains the results of a discovery scan.
  *
- * @specs these are classes which extend one of the spec types
- * @scripts these are kotlin scripts which may or may not contain tests
+ * @param specs these are classes which extend one of the spec classes
+ * @param error if an error occurred during discovery
  */
 data class DiscoveryResult(
    val specs: List<KClass<out Spec>>,
-   val scripts: List<KClass<*>>,
    val error: Throwable?, // this error is set if there was an exception during discovery
 ) {
    companion object {
-      fun error(t: Throwable): DiscoveryResult = DiscoveryResult(emptyList(), emptyList(), t)
+      fun error(t: Throwable): DiscoveryResult = DiscoveryResult(emptyList(), t)
    }
 }
 
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
  */
-class Discovery(
-   private val configuration: ProjectConfiguration,
-) {
+class Discovery {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // filter functions
-   //private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
@@ -75,9 +70,10 @@ class Discovery(
 
       log { "[Discovery] Starting spec discovery" }
 
-      if (request.selectors.isEmpty() && !configuration.discoveryClasspathFallbackEnabled) {
+      if (request.selectors.isEmpty()) {// && !configuration.discoveryClasspathFallbackEnabled) {
          log { "[Discovery] no specs discovered: no selectors provided and classpath fallback is disabled" }
-         return@runCatching DiscoveryResult(emptyList(), emptyList(), null)
+         error("ello")
+         return@runCatching DiscoveryResult(emptyList(), null)
       }
 
       val specsSelected = request.specsFromClassDiscoverySelectorsOnlyOrNull()
@@ -92,7 +88,7 @@ class Discovery(
 
       log { "[Discovery] ${specsAfterInitialFiltering.size} specs remain after initial filtering" }
 
-      DiscoveryResult(specsAfterInitialFiltering, emptyList(), null)
+      DiscoveryResult(specsAfterInitialFiltering, null)
    }
 
    /**
@@ -151,11 +147,11 @@ class Discovery(
          .enableExternalClasses()
          .ignoreClassVisibility()
 
-      if (configuration.disableTestNestedJarScanning) {
-         log { "[Discovery] Nested jar scanning is disabled" }
-         cg.disableNestedJarScanning()
-         cg.disableModuleScanning()
-      }
+//      if (configuration.disableTestNestedJarScanning) {
+//         log { "[Discovery] Nested jar scanning is disabled" }
+//         cg.disableNestedJarScanning()
+//         cg.disableModuleScanning()
+//      }
 
       // do not change this to use reject as it will break clients using older versions of classgraph
       @Suppress("DEPRECATION")

@@ -19,7 +19,7 @@ class IgnoredTestListenerTest : FunSpec({
       }
    }
 
-   register(ignoredTestListener)
+   extension(ignoredTestListener)
 
    test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()

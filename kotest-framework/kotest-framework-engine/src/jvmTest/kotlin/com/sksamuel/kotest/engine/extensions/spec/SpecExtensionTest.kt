@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.install
@@ -33,12 +33,13 @@ class SpecExtensionTest : FunSpec() {
             }
          }
 
-         val conf = ProjectConfiguration()
-         conf.registry.add(ext)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(ext)
+         }
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptSingleInstance::class)
-            .withConfiguration(conf)
+            .withProjectConfig(c)
             .launch()
 
          count shouldBe 1
@@ -54,12 +55,13 @@ class SpecExtensionTest : FunSpec() {
             }
          }
 
-         val conf = ProjectConfiguration()
-         conf.registry.add(ext)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(ext)
+         }
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptInstancePerRoot::class)
-            .withConfiguration(conf)
+            .withProjectConfig(c)
             .launch()
 
          count shouldBe 2
@@ -71,14 +73,15 @@ class SpecExtensionTest : FunSpec() {
             override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {}
          }
 
-         val conf = ProjectConfiguration()
-         conf.registry.add(ext)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(ext)
+         }
 
          val collecting = CollectingTestEngineListener()
 
          TestEngineLauncher(collecting)
             .withClasses(SpecInterceptInstancePerRoot::class)
-            .withConfiguration(conf)
+            .withProjectConfig(c)
             .launch()
 
          collecting.tests.shouldBeEmpty()

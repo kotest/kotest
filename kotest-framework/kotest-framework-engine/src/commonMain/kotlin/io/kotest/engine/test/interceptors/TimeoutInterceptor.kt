@@ -4,6 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,7 @@ import kotlin.time.TimeMark
  */
 internal class TimeoutInterceptor(
    private val mark: TimeMark,
+   private val testConfigResolver: TestConfigResolver,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(TimeoutInterceptor::class)
@@ -38,7 +40,8 @@ internal class TimeoutInterceptor(
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      val timeout = testCase.config.timeout
+
+      val timeout = testConfigResolver.timeout(testCase)
 
       // This timeout applies to the test itself. If the test has multiple invocations, then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,

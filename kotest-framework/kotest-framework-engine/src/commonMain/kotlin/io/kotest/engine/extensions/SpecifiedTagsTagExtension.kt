@@ -1,6 +1,6 @@
 package io.kotest.engine.extensions
 
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
 import io.kotest.core.extensions.TagExtension
 
 /**

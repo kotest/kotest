@@ -9,6 +9,8 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.TestConfig
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
@@ -31,8 +33,8 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestType.Container,
             )
             var fired = false
-            InvocationCountCheckInterceptor.intercept(
-               tc.copy(config = tc.config.copy(invocations = 1)),
+            InvocationCountCheckInterceptor(TestConfigResolver()).intercept(
+               tc.copy(config = tc.config?.copy(invocations = 1)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->
                fired = true
@@ -51,8 +53,8 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestType.Test,
             )
             var fired = false
-            InvocationCountCheckInterceptor.intercept(
-               tc.copy(config = tc.config.copy(invocations = 44)),
+            InvocationCountCheckInterceptor(TestConfigResolver()).intercept(
+               tc.copy(config = tc.config?.copy(invocations = 44)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->
                fired = true
@@ -71,8 +73,8 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestType.Container,
             )
 
-            InvocationCountCheckInterceptor.intercept(
-               tc.copy(config = tc.config.copy(invocations = 4)),
+            InvocationCountCheckInterceptor(TestConfigResolver()).intercept(
+               tc.copy(config = TestConfig(invocations = 4)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ -> TestResult.Success(0.milliseconds) }.isError shouldBe true
          }

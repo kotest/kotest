@@ -26,7 +26,7 @@ class TestCaseExtensionChainTest : StringSpec() {
       }
    }
 
-   override fun extensions() = listOf(MyExt1, MyExt2)
+   override val extensions = listOf(MyExt1, MyExt2)
 
    init {
       "test1" {

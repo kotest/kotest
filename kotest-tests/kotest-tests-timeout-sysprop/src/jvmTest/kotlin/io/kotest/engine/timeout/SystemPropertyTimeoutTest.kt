@@ -3,7 +3,7 @@ package io.kotest.engine.timeout
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineProperties
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.extensions.system.withSystemProperty
@@ -25,7 +25,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
       }
 
       test("system properties can be used for invocation timeouts") {
-         withSystemProperty(KotestEngineProperties.invocationTimeout, "10") {
+         withSystemProperty(KotestEngineProperties.INVOCATION_TIMEOUT, "10") {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher(collector)
                .withClasses(TimeoutTest::class)

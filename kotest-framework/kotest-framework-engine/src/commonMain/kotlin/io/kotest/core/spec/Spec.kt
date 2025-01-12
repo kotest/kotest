@@ -8,6 +8,7 @@ import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
@@ -83,7 +84,7 @@ abstract class Spec : TestConfiguration() {
     * If you wish to register an extension for all specs then register the extension
     * with project config.
     */
-   open fun extensions(): List<Extension> = listOf()
+   open val extensions: List<Extension> = emptyList()
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.
@@ -92,10 +93,23 @@ abstract class Spec : TestConfiguration() {
    open fun isolationMode(): IsolationMode? = null
 
    /**
-    * Sets the order of root [TestCase]s in this spec.
-    * If this function returns a null value, then the project default will be used.
+    * Sets the [IsolationMode] to be used by the test engine when running tests in this spec.
+    * If null, then the project default is used.
+    */
+   @JsName("isolation_mode_js")
+   var isolationMode: IsolationMode? = null
+
+   /**
+    * Sets the [TestCaseOrder] for root tests in this spec.
+    * If null, then the project default is used.
     */
    open fun testCaseOrder(): TestCaseOrder? = null
+
+   /**
+    * Sets the [TestCaseOrder] for root tests in this spec.
+    * If null, then the project default is used.
+    */
+   var testOrder: TestCaseOrder? = null
 
    /**
     * Returns the timeout to be used by each test case. This value is overridden by a timeout
@@ -107,13 +121,30 @@ abstract class Spec : TestConfiguration() {
    open fun timeout(): Long? = null
 
    /**
-    * Returns the invocation timeout to be used by each test case. This value is overridden by a
+    * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
+    * If this value is null, the project default will be used.
+    */
+   @JsName("timeout_var")
+   var timeout: Long? = null
+
+   /**
+    * Sets the invocation timeout to be used by each test case, in milliseconds. This value is overridden by a
     * value specified on a [TestCase] itself.
     *
     * If this value returns null, and the test case does not define an invocation timeout, then
     * the project default is used.
     */
    open fun invocationTimeout(): Long? = null
+
+   /**
+    * Sets the invocation timeout to be used by each test case, in milliseconds. This value is overridden by a
+    * value specified on a [TestCase] itself.
+    *
+    * If this value returns null, and the test case does not define an invocation timeout, then
+    * the project default is used.
+    */
+   @JsName("invocationTimeout_js")
+   var invocationTimeout: Long? = null
 
    /**
     * Any tags added here will be in applied to all [TestCase]s defined in this spec
@@ -133,6 +164,9 @@ abstract class Spec : TestConfiguration() {
     * default is used.
     */
    open fun assertionMode(): AssertionMode? = null
+
+   @JsName("assertionMode_js")
+   var assertionMode: AssertionMode? = null
 
    /**
     * Each test is launched into its own coroutine. By default, the test engine waits for that
@@ -154,16 +188,17 @@ abstract class Spec : TestConfiguration() {
    @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
+   protected val afterProjectListeners = mutableListOf<AfterProjectListener>()
+
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
     */
-   abstract fun globalExtensions(): List<Extension>
+   internal fun projectExtensions(): List<Extension> {
+      return afterProjectListeners.toList()
+   }
 
    @JsName("severity_js")
    var severity: TestCaseSeverityLevel? = null
-
-   @JsName("isolation_mode_js")
-   var isolationMode: IsolationMode? = null
 
    /**
     * Marks all tests in this spec as fail fast.
@@ -171,32 +206,16 @@ abstract class Spec : TestConfiguration() {
     */
    var failfast: Boolean? = null
 
+   // if set to > 0, then the test will be retried this many times in the event of a failure
+   // if left to null, then the default provided by the project config will be used
    var retries: Int? = null
 
    var retryDelay: Duration? = null
 
-   /**
-    * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
-    * If this value is null, the project default will be used.
-    */
-   @JsName("timeout_var")
-   var timeout: Long? = null
+   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
 
-   /**
-    * Sets a millisecond invocation timeout for each test case in this spec unless overridden in the test config itself.
-    * If this value is null, the project default will be used.
-    *
-    * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
-    * but only leaf tests (outermost tests).
-    */
-   @JsName("invocationTimeout_js")
-   var invocationTimeout: Long? = null
-
-   /**
-    * Sets the [TestCaseOrder] for root tests in this spec.
-    * If null, then the order is defined by the project default.
-    */
-   var testOrder: TestCaseOrder? = null
+   @JsName("coroutineDispatcherFactory_js")
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    /**
     * When set to true, execution will switch to a dedicated thread for each test
@@ -212,11 +231,6 @@ abstract class Spec : TestConfiguration() {
    @ExperimentalKotest
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
-
-   open fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
-
-   @JsName("coroutineDispatcherFactory_js")
-   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
    var coroutineTestScope: Boolean? = null
 
@@ -240,6 +254,15 @@ abstract class Spec : TestConfiguration() {
     *
     * If not specified, then defaults to the global setting.
     */
+   open fun duplicateTestNameMode(): DuplicateTestNameMode? = null
+
+   /**
+    * Controls what to do when a duplicated test name is discovered.
+    * See possible settings in [DuplicateTestNameMode].
+    *
+    * If not specified, then defaults to the global setting.
+    */
+   @JsName("duplicateTestNameMode_js")
    var duplicateTestNameMode: DuplicateTestNameMode? = null
 
    /**
@@ -270,7 +293,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      extension(object : BeforeTestListener {
+      this@Spec.extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
@@ -304,7 +327,7 @@ abstract class Spec : TestConfiguration() {
     * The spec instance is provided as a parameter.
     */
    override fun afterSpec(f: AfterSpec) {
-      register(object : AfterSpecListener {
+      extension(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)
                f(spec)
@@ -356,6 +379,6 @@ data class RootTest(
    val type: TestType,
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
-   val config: TestConfig?, // if specified by the test, may be null
+   val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
    val factoryId: FactoryId?, // if this root test was added from a factory
 )

@@ -48,7 +48,7 @@ interface FreeSpecRootScope : RootScope {
    ): FreeSpecContextConfigBuilder {
       val config = TestConfig(
          enabled = enabled,
-         tags = tags,
+         tags = tags ?: emptySet(),
          extensions = extensions,
          timeout = timeout,
          invocationTimeout = invocationTimeout,
@@ -113,7 +113,7 @@ interface FreeSpecRootScope : RootScope {
    ) {
       val config = TestConfig(
          enabled = enabled,
-         tags = tags,
+         tags = tags ?: emptySet(),
          extensions = extensions,
          timeout = timeout,
          invocationTimeout = invocationTimeout,
