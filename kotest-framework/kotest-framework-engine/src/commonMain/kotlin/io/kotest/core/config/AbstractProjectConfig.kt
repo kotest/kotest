@@ -98,7 +98,7 @@ abstract class AbstractProjectConfig {
     * Note: Setting this value will mean other tests in the same spec will fail fast, but other
     * specs will continue to run. To abort all remaining specs upon a test failure, see [projectWideFailFast]
     */
-   var failfast: Boolean = Defaults.FAILFAST
+   open val failfast: Boolean = Defaults.FAILFAST
 
    /**
     * A timeout that is applied to the overall project if not null,
@@ -166,7 +166,6 @@ abstract class AbstractProjectConfig {
 
    /**
     * Sets the seed that is used when randomizing specs and tests.
-    * Default is null, which will use the default random instance.
     */
    open val randomOrderSeed: Long? = null
 
@@ -208,7 +207,6 @@ abstract class AbstractProjectConfig {
 
    /**
     * Determines whether tags can be inherited from super types
-    * Default is false
     *
     * Note: JVM ONLY
     */
@@ -230,8 +228,6 @@ abstract class AbstractProjectConfig {
    /**
     * Set to false and if a spec has no active tests (all disabled due to config or tags say)
     * then the spec itself will not appear as a node in output.
-    *
-    * Defaults to [Defaults.DISPLAY_SPEC_IF_NO_ACTIVE_TESTS]
     *
     * Note: This only works for JUnit and IntelliJ runners.
     */
@@ -289,8 +285,6 @@ abstract class AbstractProjectConfig {
     * this test 1
     *    test this 2
     * ```
-    *
-    * Defaults to `null`, which is to let the [Spec] style determine whether to include affixes.
     */
    open val includeTestScopeAffixes: IncludeTestScopeAffixes? = null
 

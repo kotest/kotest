@@ -66,7 +66,7 @@ class TestConfigResolver(
          ?: testCase.spec.failfast
          ?: testCase.spec.defaultTestConfig?.failfast
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.failfast }
-         ?: projectConfig?.projectWideFailFast
+         ?: projectConfig?.failfast
          ?: Defaults.FAILFAST
    }
 
