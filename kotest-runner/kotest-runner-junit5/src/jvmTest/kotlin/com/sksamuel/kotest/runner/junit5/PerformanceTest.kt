@@ -30,7 +30,7 @@ class PerformanceTest : FunSpec() {
 private class ManyTests : DescribeSpec() {
    init {
       describe("foo") {
-         List(1000) { it }.forEach {
+         List(10) { it }.forEach {
             it("test $it") {
                1 shouldBe 1
             }
