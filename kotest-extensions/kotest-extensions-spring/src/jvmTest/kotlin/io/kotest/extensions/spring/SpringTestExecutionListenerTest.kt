@@ -18,7 +18,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
    @Autowired
    lateinit var userService: UserService
 
-   override fun extensions() = listOf(SpringExtension())
+   override val extensions = listOf(SpringExtension())
 
    init {
       test("Should autowire with spring listeners") {

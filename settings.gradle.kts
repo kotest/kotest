@@ -112,8 +112,8 @@ include(
 
    ":kotest-tests:kotest-tests-concurrency-tests",
    ":kotest-tests:kotest-tests-concurrency-specs",
-
    ":kotest-tests:kotest-tests-config-classname",
+   ":kotest-tests:kotest-tests-config-packages",
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",

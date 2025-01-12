@@ -13,7 +13,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.extensions.system.captureStandardOut
@@ -34,7 +33,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          { },
          SourceRef.ClassSource("foo.bar.Test", 12),
          TestType.Container,
-         ResolvedTestConfig.default,
+         null,
          null,
          null
       )

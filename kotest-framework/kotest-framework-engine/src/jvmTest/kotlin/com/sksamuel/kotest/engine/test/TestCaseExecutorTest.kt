@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.test
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -49,8 +48,8 @@ class TestCaseExecutorTest : FunSpec({
             result.isSuccess shouldBe true
          }
       }
-      val executor = TestCaseExecutor(listener, EngineContext(ProjectConfiguration(), Platform.JVM))
-      val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.name == "a" }
+      val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
+      val testCase = Materializer().materialize(Tests()).first { it.name.name == "a" }
       executor.execute(testCase, context(testCase), SpecContext.create()).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
@@ -70,8 +69,8 @@ class TestCaseExecutorTest : FunSpec({
             result.isError shouldBe true
          }
       }
-      val executor = TestCaseExecutor(listener, EngineContext(ProjectConfiguration(), Platform.JVM))
-      val testCase = Materializer(ProjectConfiguration()).materialize(Tests()).first { it.name.name == "b" }
+      val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
+      val testCase = Materializer().materialize(Tests()).first { it.name.name == "b" }
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
@@ -84,9 +83,9 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(null, Platform.JVM))
       val spec = BeforeTest()
-      val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
+      val testCase = Materializer().materialize(spec).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
       spec.before.shouldBeTrue()
    }
@@ -96,9 +95,9 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, EngineContext(ProjectConfiguration(), Platform.JVM))
+      }, EngineContext(null, Platform.JVM))
       val spec = AfterTest()
-      val testCase = Materializer(ProjectConfiguration()).materialize(spec).shuffled().first()
+      val testCase = Materializer().materialize(spec).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
       spec.after.shouldBeTrue()
    }
@@ -115,8 +114,8 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, EngineContext(ProjectConfiguration(), Platform.JVM))
-      val testCase = Materializer(ProjectConfiguration()).materialize(BeforeTestWithException()).shuffled().first()
+      }, EngineContext(null, Platform.JVM))
+      val testCase = Materializer().materialize(BeforeTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -136,8 +135,8 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, EngineContext(ProjectConfiguration(), Platform.JVM))
-      val testCase = Materializer(ProjectConfiguration()).materialize(AfterTestWithException()).shuffled().first()
+      }, EngineContext(null, Platform.JVM))
+      val testCase = Materializer().materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()

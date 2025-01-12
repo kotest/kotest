@@ -16,6 +16,6 @@ typealias AfterAny = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = suspend (Spec) -> Unit
 typealias AfterSpec = suspend (Spec) -> Unit
 typealias AfterInvocation = suspend (TestCase, Int) -> Unit
-typealias AfterProject = () -> Unit
+typealias AfterProject = suspend () -> Unit
 typealias TestCaseExtensionFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
 typealias AroundTestFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult

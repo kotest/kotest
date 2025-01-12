@@ -1,7 +1,6 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.Logger
-import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
@@ -12,9 +11,10 @@ import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.InstantiationListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
@@ -24,21 +24,14 @@ import kotlin.reflect.KClass
 /**
  * Used to invoke [Extension]s on specs.
  */
-internal class SpecExtensions(private val registry: ExtensionRegistry) {
+internal class SpecExtensions(
+   private val specConfigResolver: SpecConfigResolver,
+   private val projectConfigResolver: ProjectConfigResolver,
+) {
+
+   constructor() : this(SpecConfigResolver(), ProjectConfigResolver())
 
    private val logger = Logger(SpecExtensions::class)
-
-   /**
-    * Returns all [Extension]s applicable to a [Spec]. This includes extensions via
-    * function overrides, those registered explicitly in the spec as part of the DSL,
-    * and project wide extensions from configuration.
-    */
-   fun extensions(spec: Spec): List<Extension> {
-      return spec.extensions() + // overriding the extensions function in the spec
-         spec.functionOverrideCallbacks() + // dsl
-         spec.registeredExtensions() + // added to the spec via register
-         registry.all() // globals
-   }
 
    /**
     * Runs all the [BeforeSpecListener] for this [Spec]. All errors are caught and wrapped
@@ -48,7 +41,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
-      val errors = extensions(spec)
+      val errors = specConfigResolver.extensions(spec)
          .filterIsInstance<BeforeSpecListener>()
          .mapNotNull { ext ->
             runCatching { ext.beforeSpec(spec) }
@@ -78,7 +71,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
          }
       }
 
-      val errors = extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
+      val errors = specConfigResolver.extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
          runCatching { ext.afterSpec(spec) }
             .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
       }
@@ -92,17 +85,21 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
    suspend fun specInstantiated(spec: Spec) = runCatching {
       logger.log { Pair(spec::class.bestName(), "specInstantiated $spec") }
-      registry.all().filterIsInstance<InstantiationListener>().forEach { it.specInstantiated(spec) }
+      specConfigResolver.extensions(spec)
+         .filterIsInstance<InstantiationListener>()
+         .forEach { it.specInstantiated(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
       logger.log { Pair(kclass.bestName(), "specInstantiationError $t") }
-      registry.all().filterIsInstance<InstantiationErrorListener>().forEach { it.instantiationError(kclass, t) }
+      projectConfigResolver.extensions()
+         .filterIsInstance<InstantiationErrorListener>()
+         .forEach { it.instantiationError(kclass, t) }
    }
 
    suspend fun prepareSpec(kclass: KClass<out Spec>): Result<KClass<*>> {
 
-      val exts = registry.all().filterIsInstance<PrepareSpecListener>()
+      val exts = projectConfigResolver.extensions().filterIsInstance<PrepareSpecListener>()
       logger.log { Pair(kclass.bestName(), "prepareSpec (${exts.size})") }
 
       val errors = exts.mapNotNull {
@@ -123,7 +120,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       t: Throwable?
    ): Result<KClass<out Spec>> {
 
-      val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
+      val exts = projectConfigResolver.extensions().filterIsInstance<FinalizeSpecListener>()
       logger.log { Pair(kclass.bestName(), "finishSpec (${exts.size}) results:$results") }
 
       val errors = exts.mapNotNull {
@@ -140,7 +137,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T? {
 
-      val exts = extensions(spec).filterIsInstance<SpecExtension>()
+      val exts = specConfigResolver.extensions(spec).filterIsInstance<SpecExtension>()
       logger.log { Pair(spec::class.bestName(), "Intercepting spec with ${exts.size} spec extensions") }
 
       var result: T? = null
@@ -163,7 +160,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
     */
    suspend fun ignored(kclass: KClass<out Spec>, reason: String?): Result<KClass<out Spec>> {
 
-      val exts = registry.all().filterIsInstance<IgnoredSpecListener>()
+      val exts = projectConfigResolver.extensions().filterIsInstance<IgnoredSpecListener>()
       logger.log { Pair(kclass.bestName(), "ignored ${exts.size} extensions on $kclass") }
 
       val errors = exts.mapNotNull {

@@ -5,6 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -12,7 +13,7 @@ import org.junit.platform.testkit.engine.EngineTestKit
 class InvokeAllBeforeTest : FunSpec({
    test("should execute all beforeTest's blocks, even if we have some errors in it") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(ErrorInBeforeTest::class.java))
          .configurationParameter("allow_private", "true")
          .execute()

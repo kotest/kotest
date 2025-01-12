@@ -7,11 +7,12 @@ import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.config.TestConfigResolver
 
 /**
  * Executes the test with assertSoftly if [assertSoftly] is enabled for this test or container.
  */
-internal class SoftAssertInterceptor : TestExecutionInterceptor {
+internal class SoftAssertInterceptor(private val testConfigResolver: TestConfigResolver) : TestExecutionInterceptor {
 
    private val logger = Logger(SoftAssertInterceptor::class)
 
@@ -21,7 +22,7 @@ internal class SoftAssertInterceptor : TestExecutionInterceptor {
       test: NextTestExecutionInterceptor
    ): TestResult {
 
-      if (!testCase.config.assertSoftly) return test(testCase, scope)
+      if (!testConfigResolver.assertSoftly(testCase)) return test(testCase, scope)
 
       logger.log { Pair(testCase.name.name, "Invoking test with soft assert") }
       return assertSoftly {

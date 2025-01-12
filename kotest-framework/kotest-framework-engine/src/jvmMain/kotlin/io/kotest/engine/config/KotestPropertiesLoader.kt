@@ -2,7 +2,6 @@ package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
 import io.kotest.core.log
-import io.kotest.engine.KotestEngineProperties
 import io.kotest.mpp.syspropOrEnv
 import java.util.Properties
 
@@ -17,6 +16,15 @@ import java.util.Properties
 internal object KotestPropertiesLoader {
 
    private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
+
+   fun loadAndApplySystemPropsFile() {
+      val filename = systemPropsFilename()
+      log { "Loading kotest properties from $filename" }
+      loadSystemProps(filename).forEach { (key, value) ->
+         if (key != null && value != null)
+            System.setProperty(key.toString(), value.toString())
+      }
+   }
 
    /**
     * Returns the filename to use for kotest system properties. Allows the filename
@@ -39,12 +47,4 @@ internal object KotestPropertiesLoader {
       return props
    }
 
-   fun loadAndApplySystemPropsFile() {
-      val filename = systemPropsFilename()
-      log { "Loading kotest properties from $filename" }
-      loadSystemProps(filename).forEach { (key, value) ->
-         if (key != null && value != null)
-            System.setProperty(key.toString(), value.toString())
-      }
-   }
 }

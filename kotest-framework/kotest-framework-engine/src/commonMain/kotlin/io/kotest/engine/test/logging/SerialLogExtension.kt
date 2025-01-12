@@ -10,7 +10,7 @@ import kotlinx.coroutines.sync.withLock
  * that calls to [LogExtension.handleLogs] are invoked sequentially.
  */
 @ExperimentalKotest
-internal class SerialLogExtension constructor(private val logExtension: LogExtension) {
+internal class SerialLogExtension(private val logExtension: LogExtension) {
    private val mutex = Mutex()
 
    suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) = mutex.withLock {

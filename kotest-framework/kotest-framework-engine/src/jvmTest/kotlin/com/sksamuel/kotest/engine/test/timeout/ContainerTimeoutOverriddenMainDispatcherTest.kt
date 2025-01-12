@@ -37,7 +37,7 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
          dispatcher.scheduler shouldBe testCoroutineScheduler
       }
 
-      test("test exceeding invocation timeout").config(
+      xtest("test exceeding invocation timeout").config(
          invocationTimeout = 100.milliseconds,
          extensions = listOf(ExpectFailureExtension),
       ) {

@@ -11,14 +11,12 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.bestName
@@ -64,7 +62,7 @@ internal class SpecExecutor2(
       return withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          val specContext = SpecContext.create()
          runInstancePipeline(spec, specContext) {
-            val tests = Materializer(engineContext.configuration).materialize(spec).withIndex().toList()
+            val tests = Materializer(engineContext.specConfigResolver).materialize(spec).withIndex().toList()
             enqueueRootTests(spec, tests, specContext)
          }
       }
@@ -80,7 +78,7 @@ internal class SpecExecutor2(
          rootTests.forEach { (index, root) ->
             launch {
                semaphore.withPermit {
-                  when (isolationMode(spec)) {
+                  when (engineContext.specConfigResolver.isolationMode(spec)) {
                      // in SingleInstance mode, we can just launch the test directly on the primary spec instance
                      IsolationMode.SingleInstance -> {
                         executeTest(testCase = root, specContext = specContext)
@@ -116,7 +114,8 @@ internal class SpecExecutor2(
          // we switch to a new coroutine for each spec instance
          withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
             runInstancePipeline(spec, specContext) {
-               val test = Materializer(engineContext.configuration).materialize(spec).first { it.descriptor == target }
+               val test =
+                  Materializer(engineContext.specConfigResolver).materialize(spec).first { it.descriptor == target }
                val result = executeTest(testCase = test, specContext = specContext)
                Result.success(mapOf(test to result))
             }
@@ -128,7 +127,7 @@ internal class SpecExecutor2(
     * Returns how many root tests should be launched concurrently.
     */
    private fun concurrency(spec: Spec): Int {
-      val concurrency = testExecutionMode(spec).concurrency
+      val concurrency = engineContext.specConfigResolver.testExecutionMode(spec).concurrency
       log { "Launching tests with $concurrency max concurrency" }
       return concurrency
    }
@@ -161,7 +160,7 @@ internal class SpecExecutor2(
       )
 
       val scope = DuplicateNameHandlingTestScope(
-         engineContext.configuration.duplicateTestNameMode,
+         engineContext.specConfigResolver.duplicateTestNameMode(testCase.spec),
          SpecExecutor2TestScope(testCase, specContext, coroutineContext),
       )
 
@@ -177,26 +176,10 @@ internal class SpecExecutor2(
     * After this method is called the spec is sealed so no further configuration or root tests can be added.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> {
-      val extensions = SpecExtensions(engineContext.configuration.registry)
-      return ref.instance(engineContext.configuration.registry)
-         .onFailure { extensions.specInstantiationError(ref.kclass, it) }
-         .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
+      return ref.instance(engineContext.registry, engineContext.projectConfigResolver)
+         .onFailure { engineContext.specExtensions().specInstantiationError(ref.kclass, it) }
+         .flatMap { spec -> engineContext.specExtensions().specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
-   }
-
-   /**
-    * Resolves the [TestExecutionMode] for the given spec, first checking spec level config,
-    * before using project level default.
-    */
-   private fun testExecutionMode(spec: Spec): TestExecutionMode {
-      return spec.testExecutionMode ?: spec.testExecutionMode() ?: engineContext.configuration.testExecutionMode
-   }
-
-   /**
-    * Resolves the [IsolationMode] for the given spec.
-    */
-   private fun isolationMode(spec: Spec): IsolationMode {
-      return spec.isolationMode() ?: spec.isolationMode ?: engineContext.configuration.isolationMode
    }
 
    /**
@@ -206,31 +189,28 @@ internal class SpecExecutor2(
     */
    inner class SpecExecutor2TestScope(
       override val testCase: TestCase,
-      val specContext: SpecContext,
+      private val specContext: SpecContext,
       override val coroutineContext: CoroutineContext,
    ) : TestScope {
 
       private val logger = Logger(SpecExecutor2TestScope::class)
 
-      val failFastReason = "Skipping test due to fail fast"
+      private val failFastReason = "Skipping test due to fail fast"
 
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Registering nested test '${nested}") }
 
-         val nestedTestCase = Materializer(engineContext.configuration)
+         val nestedTestCase = Materializer(engineContext.specConfigResolver)
             .materialize(nested, testCase)
 
          // if a previous test has failed and this test is marked as fail fast, it will be ignored
-
-         val failFast = nestedTestCase.config.failfast ||
-            nestedTestCase.spec.failfast == true ||
-            engineContext.configuration.projectWideFailFast
+         val failFast = engineContext.testConfigResolver.failfast(nestedTestCase)
 
          if (failFast && results.hasErrorOrFailure()) {
 
             logger.log { Pair(testCase.name.name, failFastReason) }
             engineContext.listener.testIgnored(nestedTestCase, failFastReason)
-            TestExtensions(engineContext.configuration.registry)
+            engineContext.testExtensions()
                .ignoredTestListenersInvocation(nestedTestCase, failFastReason)
 
          } else {

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.extensions.spec.beforespec
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
@@ -18,13 +17,9 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
 
    xtest("parallelism with IsolationMode.InstancePerRoot and beforeSpec") {
 
-      val conf = ProjectConfiguration()
-//      conf.parallelism = 5
-
       val collector = CollectingTestEngineListener()
       TestEngineLauncher(collector)
          .withClasses(ParallelTests::class)
-         .withConfiguration(conf)
          .launch()
 
       collector.tests.values.size shouldBe 20

@@ -2,11 +2,11 @@ package com.sksamuel.kotest.engine.interceptors
 
 import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
-import com.sksamuel.kotest.engine.active.IgnoredTestsTest
+import com.sksamuel.kotest.engine.active.EnabledTestConfigFlagTest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
@@ -22,15 +22,16 @@ class SpecSortEngineInterceptorTest : FunSpec({
 
    test("should sort classes") {
 
-      val c = ProjectConfiguration()
-      c.specExecutionOrder = SpecExecutionOrder.Lexicographic
+      val p = object : AbstractProjectConfig() {
+         override val specExecutionOrder = SpecExecutionOrder.Lexicographic
+      }
 
       var sorted = emptyList<SpecRef>()
       SpecSortEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c).withTestSuite(
+         EngineContext.empty.withProjectConfig(p).withTestSuite(
             TestSuite(
                listOf(
-                  SpecRef.Reference(IgnoredTestsTest::class),
+                  SpecRef.Reference(EnabledTestConfigFlagTest::class),
                   SpecRef.Reference(BangDisableFunSpec::class),
                   SpecRef.Reference(FocusTest::class),
                )
@@ -40,6 +41,10 @@ class SpecSortEngineInterceptorTest : FunSpec({
          sorted = it.suite.specs
          EngineResult(emptyList())
       }
-      sorted.map { it.kclass } shouldBe listOf(BangDisableFunSpec::class, FocusTest::class, IgnoredTestsTest::class)
+      sorted.map { it.kclass } shouldBe listOf(
+         BangDisableFunSpec::class,
+         EnabledTestConfigFlagTest::class,
+         FocusTest::class,
+      )
    }
 })

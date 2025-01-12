@@ -19,7 +19,7 @@ class LateinitSpecExtensionStringSpecTest : StringSpec() {
       }
    }
 
-   override fun extensions() = listOf(Interceptor())
+   override val extensions = listOf(Interceptor())
 
    init {
       "Hello should equal to Hello" {

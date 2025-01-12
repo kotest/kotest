@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.config
 
 import io.kotest.assertions.throwables.shouldThrowSoftly
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -48,11 +48,12 @@ class GlobalAssertionTest : FunSpec({
 
    test("globalAssertSoftly should work for shouldThrowSoftly") {
       val collector = CollectingTestEngineListener()
-      val projectConfiguration = ProjectConfiguration()
-      projectConfiguration.globalAssertSoftly = true
+      val c = object : AbstractProjectConfig() {
+         override val globalAssertSoftly = true
+      }
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(c)
          .withClasses(ShouldThrowSoftlyTest::class)
          .launch()
 
@@ -65,11 +66,12 @@ class GlobalAssertionTest : FunSpec({
 
    test("globalAssertSoftly should work for property test and non property test") {
       val collector = CollectingTestEngineListener()
-      val projectConfiguration = ProjectConfiguration()
-      projectConfiguration.globalAssertSoftly = true
+      val c = object : AbstractProjectConfig() {
+         override val globalAssertSoftly = true
+      }
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(c)
          .withClasses(FooTest::class)
          .launch()
 
@@ -80,11 +82,12 @@ class GlobalAssertionTest : FunSpec({
 
    test("globalAssertSoftly should work for non property test") {
       val collector = CollectingTestEngineListener()
-      val projectConfiguration = ProjectConfiguration()
-      projectConfiguration.globalAssertSoftly = true
+      val c = object : AbstractProjectConfig() {
+         override val globalAssertSoftly = true
+      }
 
       TestEngineLauncher(collector)
-         .withConfiguration(projectConfiguration)
+         .withProjectConfig(c)
          .withClasses(FooTest::class)
          .launch()
 

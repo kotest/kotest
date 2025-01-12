@@ -1,9 +1,10 @@
 package io.kotest.core.test.config
 
 import io.kotest.core.Tag
-import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
@@ -12,8 +13,10 @@ import kotlin.time.Duration
 
 /**
  * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
- * This config is not resolved, and will be converted to a [ResolvedTestConfig] once
- * resolved at runtime.
+ * Values specified here are the ultimate source of truth for configuration.
+ *
+ * Anything not specified here will bubble up to parent configurations following the runtime
+ * resolution rules.
  */
 data class TestConfig(
 
@@ -43,9 +46,9 @@ data class TestConfig(
     * [Tag]s that are applied to this test case, in addition to any tags declared on
     * the containing spec or parent tests.
     */
-   val tags: Set<Tag>? = null,
+   val tags: Set<Tag> = emptySet(),
 
-   val extensions: List<TestCaseExtension>? = null,
+   val extensions: List<Extension>? = null,
 
    val severity: TestCaseSeverityLevel? = null,
 
@@ -78,11 +81,24 @@ data class TestConfig(
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }
-      require(timeout?.isPositive() ?: true) { "Timeout must be positive" }
-      require(invocationTimeout?.isPositive() ?: true) { "Invocation timeout must be positive" }
+      require(timeout?.isPositive() != false) { "Timeout must be positive" }
+      require(invocationTimeout?.isPositive() != false) { "Invocation timeout must be positive" }
       require(timeout == null || invocationTimeout == null || invocationTimeout <= timeout) {
          "Invocation timeout must not exceed the test case timeout: " +
             "$invocationTimeout (invocationTimeout) > $timeout (timeout)"
       }
+   }
+
+   /**
+    * Returns a copy of this [io.kotest.core.test.config.TestConfig] with an enabledIf that
+    * returns disabled due to an xmethod override. Calling this method will override
+    * any other enabled flags.
+    */
+   fun withXDisabled(): TestConfig {
+      return copy(
+         enabled = null,
+         enabledIf = null,
+         enabledOrReasonIf = { Enabled.disabled("Disabled by xmethod") }
+      )
    }
 }

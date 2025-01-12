@@ -9,7 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine.Companion.ENGINE_ID
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
@@ -24,17 +24,18 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecHappyPathSample::class.java),
          selectUniqueId(
-            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
+            UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+               .append(Segment.Spec.value, FeatureSpecHappyPathSample::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
-            .engine("kotest")
+            .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(selector)
             .configurationParameter("allow_private", "true")
             .execute()
             .allEvents().apply {
                started().shouldHaveNames(
-                  "Kotest",
+                  KotestJunitPlatformTestEngine.ENGINE_NAME,
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
                   "a", "b", "c", "d", "e", "f", "g", "h", "i",
                )
@@ -46,7 +47,7 @@ class FeatureSpecEngineKitTest : FunSpec({
                succeeded().shouldHaveNames(
                   "b", "d", "f", "e", "c", "a", "h",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
-                  "Kotest"
+                  KotestJunitPlatformTestEngine.ENGINE_NAME,
                )
                finished().shouldHaveNames(
                   "b", "d", "f", "g", "e", "c", "a", "i", "h",
@@ -63,10 +64,13 @@ class FeatureSpecEngineKitTest : FunSpec({
    test("verify engine events all errors path") {
       listOf(
          selectClass(FeatureSpecSample::class.java),
-         selectUniqueId(UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName))
+         selectUniqueId(
+            UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+               .append(Segment.Spec.value, FeatureSpecSample::class.qualifiedName)
+         )
       ).forAll { selector ->
          EngineTestKit
-            .engine("kotest")
+            .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(selector)
             .configurationParameter("allow_private", "true")
             .execute()
@@ -85,7 +89,7 @@ class FeatureSpecEngineKitTest : FunSpec({
                   "b",
                   "a",
                   "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
-                  "Kotest"
+                  KotestJunitPlatformTestEngine.ENGINE_NAME,
                )
                finished().shouldHaveNames(
                   "b",
@@ -106,11 +110,12 @@ class FeatureSpecEngineKitTest : FunSpec({
       listOf(
          selectClass(FeatureSpecWithZeroAssertions::class.java),
          selectUniqueId(
-            UniqueId.forEngine(ENGINE_ID).append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
+            UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+               .append(Segment.Spec.value, FeatureSpecWithZeroAssertions::class.qualifiedName)
          )
       ).forAll { selector ->
          EngineTestKit
-            .engine("kotest")
+            .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(selector)
             .configurationParameter("allow_private", "true")
             .execute()

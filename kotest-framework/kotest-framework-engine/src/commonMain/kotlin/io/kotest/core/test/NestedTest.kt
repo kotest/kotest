@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
-import io.kotest.core.source.SourceRef
 import io.kotest.core.names.TestName
+import io.kotest.core.source.SourceRef
 import io.kotest.core.test.config.TestConfig
 
 /**

@@ -39,7 +39,8 @@ fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
    override fun test(value: Comparable<T>) = invoke(
       value < x,
       { "$value should be < $x" },
-      { "$value should not be < $x" })
+      { "$value should not be < $x" }
+   )
 }
 
 /**
@@ -72,7 +73,8 @@ fun <T : Comparable<T>> beLessThanOrEqualTo(x: T) = object : Matcher<Comparable<
    override fun test(value: Comparable<T>) = invoke(
       value <= x,
       { "$value should be <= $x" },
-      { "$value should not be <= $x" })
+      { "$value should not be <= $x" }
+   )
 }
 
 /**
@@ -105,7 +107,8 @@ fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
    override fun test(value: Comparable<T>) = invoke(
       value > x,
       { "$value should be > $x" },
-      { "$value should not be > $x" })
+      { "$value should not be > $x" }
+   )
 }
 
 /**
@@ -138,7 +141,8 @@ fun <T : Comparable<T>> beGreaterThanOrEqualTo(x: T) = object : Matcher<Comparab
    override fun test(value: Comparable<T>) = invoke(
       value >= x,
       { "$value should be >= $x" },
-      { "$value should not be >= $x" })
+      { "$value should not be >= $x" }
+   )
 }
 
 /**

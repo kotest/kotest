@@ -3,6 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -10,13 +11,13 @@ class WordSpecEngineKitTest : FunSpec({
 
    test("verify engine stats") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(selectClass(WordSpecSample::class.java))
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "a container should",
                "fail a test",
@@ -57,7 +58,7 @@ class WordSpecEngineKitTest : FunSpec({
                "with a should container should",
                "a when container when",
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "fail a test",
@@ -77,7 +78,7 @@ class WordSpecEngineKitTest : FunSpec({
                "a when container when",
                "a failing container should",
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
                "a container should",

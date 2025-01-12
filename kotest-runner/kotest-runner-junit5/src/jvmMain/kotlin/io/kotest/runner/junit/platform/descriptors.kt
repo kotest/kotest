@@ -1,7 +1,6 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.test.TestCase
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -34,23 +33,6 @@ internal fun createSpecTestDescriptor(
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
       override fun mayRegisterTests(): Boolean = true
    }
-}
-
-/**
- * Creates a [TestDescriptor] for the given [testCase] using the given [displayName].
- * The id will be derived from the case test, and source from the containing spec.
- *
- * Test case descriptors can be either TEST or CONTAINER depending on if they contain nested tests.
- */
-internal fun createTestTestDescriptor(
-   engine: EngineDescriptor,
-   testCase: TestCase,
-   displayName: String,
-   type: TestDescriptor.Type,
-): TestDescriptor {
-   val id = engine.deriveTestUniqueId(testCase.descriptor)
-   val source = ClassSource.from(testCase.descriptor.spec().kclass.java)
-   return createTestTestDescriptor(id, displayName, type, source)
 }
 
 /**

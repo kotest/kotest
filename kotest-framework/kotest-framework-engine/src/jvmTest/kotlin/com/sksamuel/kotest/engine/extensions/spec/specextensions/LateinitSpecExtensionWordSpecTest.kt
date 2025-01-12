@@ -19,7 +19,7 @@ class LateinitSpecExtensionWordSpecTest : WordSpec() {
       }
    }
 
-   override fun extensions() = listOf(Interceptor())
+   override val extensions = listOf(Interceptor())
 
    init {
       "setting a late init var" should {

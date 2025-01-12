@@ -1,13 +1,12 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.EngineResult
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Wraps the [TestEngineListener] to listen for test events and returns an error
- * if there were no tests executed and [ProjectConfiguration.failOnEmptyTestSuite] is configured to be true.
+ * Wraps the [TestEngineListener] to listen for test events and returns an error if there were no
+ * tests executed and [io.kotest.core.config.AbstractProjectConfig.failOnEmptyTestSuite] is configured to be true.
  */
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
@@ -16,7 +15,7 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
       execute: NextEngineInterceptor
    ): EngineResult {
 
-      return when (context.configuration.failOnEmptyTestSuite) {
+      return when (context.projectConfigResolver.failOnEmptyTestSuite()) {
          true -> {
             val collector = CollectingTestEngineListener()
             val result = execute(context.mergeListener(collector))

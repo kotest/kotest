@@ -1,9 +1,8 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
-import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.spec.style.scopes.RootScope
 
 /**
@@ -18,8 +17,6 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    private var sealed = false
 
-   private val globalExtensions = mutableListOf<Extension>()
-
    /**
     * Marks that this spec has been instantiated and all root tests have been registered.
     * After this point, no further root tests are allowed to be defined.
@@ -30,10 +27,6 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    override fun rootTests(): List<RootTest> {
       return rootTests
-   }
-
-   override fun globalExtensions(): List<Extension> {
-      return globalExtensions.toList()
    }
 
    override fun add(test: RootTest) {
@@ -54,7 +47,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    fun include(factory: TestFactory) {
       factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
       factory.configuration.setParentConfiguration(this)
-      register(factory.extensions)
+      extensions(factory.extensions)
    }
 
    /**
@@ -72,11 +65,11 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    /**
     * Registers a callback that will execute after all specs have completed.
     *
-    * This is a convenience method for creating a [ProjectListener] and registering
+    * This is a convenience method for creating an [AfterProjectListener] and registering
     * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      globalExtensions.add(object : ProjectListener {
+      afterProjectListeners.add(object : AfterProjectListener {
          override suspend fun afterProject() {
             f()
          }

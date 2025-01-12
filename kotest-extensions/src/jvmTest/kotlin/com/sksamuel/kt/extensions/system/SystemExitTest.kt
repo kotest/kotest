@@ -9,7 +9,7 @@ import kotlin.system.exitProcess
 
 class SystemExitTest : StringSpec() {
 
-  override fun extensions() = listOf(SpecSystemExitListener)
+  override val extensions = listOf(SpecSystemExitListener)
 
   init {
 

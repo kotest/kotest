@@ -21,8 +21,8 @@ object EntryPoint {
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
 
-   // the method invoked to add configs on the launcher, must exist on TestEngineLauncher
-   const val WithConfigMethodName = "withProjectConfig"
+   // the method invoked to set config on the launcher, must exist on TestEngineLauncher
+   const val WITH_PROJECT_CONFIG_METHOD_NAME = "withProjectConfig"
 
    // the method invoked to set the team city listener, must exist on TestEngineLauncher
    const val WithTeamCityListenerMethodName = "withTeamCityListener"

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
@@ -17,14 +17,16 @@ class ConstructorExtensionTest : FunSpec() {
    init {
 
       test("constructor extension should be applied") {
-         val c = ProjectConfiguration()
-         c.registry.add(ErroringConstructorExtension())
+
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(ErroringConstructorExtension())
+         }
 
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher(collector)
             .withClasses(DummySpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          // the extension was applied then the instantiation will fail
@@ -63,6 +65,7 @@ class SpecialConstructorExtension : ConstructorExtension {
    }
 }
 
+@Suppress("unused")
 @ApplyExtension(SpecialConstructorExtension::class)
 private class FunkySpec(private val a: String) : FunSpec() {
    init {
