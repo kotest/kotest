@@ -58,6 +58,9 @@ include(
    // brings in the API dependency
    ":kotest-framework:kotest-framework-engine",
 
+   // contains dependency free implementations of the team city protocol so the framework modules can depend on it
+   ":kotest-framework:kotest-framework-teamcity",
+
    // a fat jar that includes everything needed to execute the engine as a standalone program
    ":kotest-framework:kotest-framework-standalone",
 
@@ -109,7 +112,6 @@ include(
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
    ":kotest-tests:kotest-tests-core",
-
    ":kotest-tests:kotest-tests-concurrency-tests",
    ":kotest-tests:kotest-tests-concurrency-specs",
    ":kotest-tests:kotest-tests-config-classname",

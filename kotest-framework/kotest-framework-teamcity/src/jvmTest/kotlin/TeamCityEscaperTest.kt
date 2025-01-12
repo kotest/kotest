@@ -1,8 +1,6 @@
-package com.sksamuel.kotest.engine.teamcity
-
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.teamcity.Escaper
 import io.kotest.matchers.shouldBe
+import io.kotest.framework.teamcity.Escaper
 
 class TeamCityEscaperTest : FunSpec() {
    init {

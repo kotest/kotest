@@ -1,8 +1,6 @@
-package com.sksamuel.kotest.engine.teamcity
-
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.matchers.shouldBe
+import io.kotest.framework.teamcity.TeamCityMessageBuilder
 import kotlin.time.Duration.Companion.milliseconds
 
 class TeamCityMessageBuilderTest : ShouldSpec({

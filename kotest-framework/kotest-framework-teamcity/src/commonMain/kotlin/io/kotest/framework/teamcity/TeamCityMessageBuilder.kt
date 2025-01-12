@@ -1,13 +1,14 @@
-package io.kotest.engine.teamcity
+package io.kotest.framework.teamcity
 
-import io.kotest.common.errors.ComparisonError
-import io.kotest.core.test.TestResult
 import kotlin.time.Duration
 
 /**
  * [TeamCityMessageBuilder] generates team city style strings that intellij parses for test results.
  *
  * Message format:
+ *
+ * Reporting tests:
+ * https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Tests
  *
  * https://www.jetbrains.com/help/teamcity/service-messages.html
  * https://confluence.jetbrains.com/display/TCD10/Build+Script+Interaction+with+TeamCity
@@ -34,47 +35,48 @@ class TeamCityMessageBuilder(
 ) {
 
    companion object {
-      const val TeamCityPrefix = "##teamcity"
 
-      fun testSuiteStarted(name: String): TeamCityMessageBuilder = testSuiteStarted(TeamCityPrefix, name)
+      const val TEAM_CITY_PREFIX = "##teamcity"
+
+      fun testSuiteStarted(name: String): TeamCityMessageBuilder = testSuiteStarted(TEAM_CITY_PREFIX, name)
       fun testSuiteStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testSuiteFinished(name: String): TeamCityMessageBuilder = testSuiteFinished(TeamCityPrefix, name)
+      fun testSuiteFinished(name: String): TeamCityMessageBuilder = testSuiteFinished(TEAM_CITY_PREFIX, name)
       fun testSuiteFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_FINISHED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStarted(name: String): TeamCityMessageBuilder = testStarted(TeamCityPrefix, name)
+      fun testStarted(name: String): TeamCityMessageBuilder = testStarted(TEAM_CITY_PREFIX, name)
       fun testStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testFinished(name: String): TeamCityMessageBuilder = testFinished(TeamCityPrefix, name)
+      fun testFinished(name: String): TeamCityMessageBuilder = testFinished(TEAM_CITY_PREFIX, name)
       fun testFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FINISHED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStdOut(name: String): TeamCityMessageBuilder = testStdOut(TeamCityPrefix, name)
+      fun testStdOut(name: String): TeamCityMessageBuilder = testStdOut(TEAM_CITY_PREFIX, name)
       fun testStdOut(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_OUT).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStdErr(name: String): TeamCityMessageBuilder = testStdErr(TeamCityPrefix, name)
+      fun testStdErr(name: String): TeamCityMessageBuilder = testStdErr(TEAM_CITY_PREFIX, name)
       fun testStdErr(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_ERR).addAttribute(Attributes.NAME, name)
       }
 
       // note it seems that not attaching a message renders test failed irrelevant
-      fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TeamCityPrefix, name)
+      fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TEAM_CITY_PREFIX, name)
 
       // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FAILED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testIgnored(name: String): TeamCityMessageBuilder = testIgnored(TeamCityPrefix, name)
+      fun testIgnored(name: String): TeamCityMessageBuilder = testIgnored(TEAM_CITY_PREFIX, name)
       fun testIgnored(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_IGNORED).addAttribute(Attributes.NAME, name)
       }
@@ -126,13 +128,18 @@ class TeamCityMessageBuilder(
    fun type(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TYPE, value.trim())
    fun actual(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ACTUAL, value.trim())
    fun expected(value: String): TeamCityMessageBuilder = addAttribute(Attributes.EXPECTED, value.trim())
-   fun result(value: TestResult): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value.name)
+   fun result(value: String): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value)
 
    fun locationHint(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
 
    // note it seems that not attaching a message renders test failed irrelevant
-   fun withException(error: Throwable?, showDetails: Boolean = true): TeamCityMessageBuilder {
+   fun withException(
+      error: Throwable?,
+      showDetails: Boolean,
+      actualValue: String?,
+      expectedValue: String?,
+   ): TeamCityMessageBuilder {
       if (error == null) return this
 
       val line1 = error.message?.trim()?.lines()?.firstOrNull()
@@ -142,14 +149,14 @@ class TeamCityMessageBuilder(
          // stackTraceToString fails if the error is created by a mocking framework, so we should catch
          val stacktrace = try {
             error.stackTraceToString()
-         } catch (e: Exception) {
+         } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
          details(escapeColons(stacktrace))
       }
 
-      when (error) {
-         is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
+      if (actualValue != null && expectedValue != null) {
+         type("comparisonFailure").actual(actualValue).expected(expectedValue)
       }
 
       return this
@@ -167,6 +174,13 @@ class TeamCityMessageBuilder(
       false -> value
    }
 
+   /**
+    * Sets the test duration in milliseconds to be reported in TeamCity UI.
+    * If omitted, the test duration will be calculated from the messages timestamps.
+    * If the timestamps are missing, then uses the actual time the messages were received on the server.
+    *
+    * Note: not sure if this is used by intellij
+    */
    fun duration(duration: Duration): TeamCityMessageBuilder =
       addAttribute(Attributes.DURATION, duration.inWholeMilliseconds.toString())
 
@@ -175,5 +189,6 @@ class TeamCityMessageBuilder(
     */
    fun build(): String = "$myText]"
 
+   // The timestamp format is yyyy-MM-dd'T'HH:mm:ss.SSSZ or yyyy-MM-dd'T'HH:mm:ss.SSS according to Java SimpleDateFormat syntax.
    fun timestamp(ts: String) = addAttribute(Attributes.TIMESTAMP, ts)
 }

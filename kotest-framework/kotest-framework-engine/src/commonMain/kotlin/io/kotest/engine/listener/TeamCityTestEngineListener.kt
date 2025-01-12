@@ -10,10 +10,10 @@ import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.framework.teamcity.TeamCityMessageBuilder
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
  */
 @KotestInternal
 class TeamCityTestEngineListener(
-   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
+   private val prefix: String = TeamCityMessageBuilder.TEAM_CITY_PREFIX,
    private val details: Boolean = true,
 ) : TestEngineListener {
 

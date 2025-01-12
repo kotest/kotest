@@ -1,9 +1,13 @@
-package io.kotest.engine.teamcity
+package io.kotest.framework.teamcity
+
+import kotlin.text.iterator
 
 /**
  * Escapes strings for use when writing team city service messages
+ * For escaped values, TeamCity uses a vertical bar | as an escape character
  *
- * See [Teamcity docs](https://www.jetbrains.com/help/teamcity/service-messages.html#Escaped+values)
+ * @see [Teamcity docs](https://www.jetbrains.com/help/teamcity/service-messages.html#Escaped+values)
+ * @see https://www.jetbrains.com/help/teamcity/6.5/build-script-interaction-with-teamcity.html?Build%2BScript%2BInteraction%2Bwith%2BTeamCity#BuildScriptInteractionwithTeamCity-servMsgsServiceMessages
  */
 object Escaper {
    fun escapeForTeamCity(str: String): String = StringBuilder(str.length).apply {

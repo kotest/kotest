@@ -9,9 +9,10 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(kotlin("reflect"))
+            api(projects.kotestAssertions.kotestAssertionsShared)
             api(projects.kotestCommon) // needs to be API so the domain objects are open
+            implementation(projects.kotestFramework.kotestFrameworkTeamcity) // for the team city parsers
 
             // used to install the debug probes for coroutines
             api(libs.kotlinx.coroutines.debug)

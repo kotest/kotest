@@ -1,0 +1,107 @@
+public final class io/kotest/framework/teamcity/Escaper {
+	public static final field INSTANCE Lio/kotest/framework/teamcity/Escaper;
+	public final fun escapeForTeamCity (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessage {
+	public fun <init> (Lio/kotest/framework/teamcity/TeamCityMessageType;Ljava/util/Map;)V
+	public final fun component1 ()Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lio/kotest/framework/teamcity/TeamCityMessageType;Ljava/util/Map;)Lio/kotest/framework/teamcity/TeamCityMessage;
+	public static synthetic fun copy$default (Lio/kotest/framework/teamcity/TeamCityMessage;Lio/kotest/framework/teamcity/TeamCityMessageType;Ljava/util/Map;ILjava/lang/Object;)Lio/kotest/framework/teamcity/TeamCityMessage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun get (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getProperties ()Ljava/util/Map;
+	public final fun getType ()Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageBuilder {
+	public static final field Companion Lio/kotest/framework/teamcity/TeamCityMessageBuilder$Companion;
+	public static final field TEAM_CITY_PREFIX Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun actual (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun addAttribute (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun build ()Ljava/lang/String;
+	public final fun details (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun duration-LRDsOJo (J)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun expected (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun id (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun locationHint (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun message (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun parent (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun result (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun timestamp (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun type (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun withException (Ljava/lang/Throwable;ZLjava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageBuilder$Attributes {
+	public static final field ACTUAL Ljava/lang/String;
+	public static final field DETAILS Ljava/lang/String;
+	public static final field DURATION Ljava/lang/String;
+	public static final field EXPECTED Ljava/lang/String;
+	public static final field ID Ljava/lang/String;
+	public static final field INSTANCE Lio/kotest/framework/teamcity/TeamCityMessageBuilder$Attributes;
+	public static final field LOCATION_HINT Ljava/lang/String;
+	public static final field MESSAGE Ljava/lang/String;
+	public static final field NAME Ljava/lang/String;
+	public static final field PARENT_ID Ljava/lang/String;
+	public static final field RESULT_STATUS Ljava/lang/String;
+	public static final field TIMESTAMP Ljava/lang/String;
+	public static final field TYPE Ljava/lang/String;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageBuilder$Companion {
+	public final fun testFailed (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testFailed (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testFinished (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testIgnored (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testIgnored (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStarted (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStdErr (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStdErr (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStdOut (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testStdOut (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testSuiteFinished (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testSuiteFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testSuiteStarted (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+	public final fun testSuiteStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageBuilder;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageBuilder$Messages {
+	public static final field INSTANCE Lio/kotest/framework/teamcity/TeamCityMessageBuilder$Messages;
+	public static final field TEST_FAILED Ljava/lang/String;
+	public static final field TEST_FINISHED Ljava/lang/String;
+	public static final field TEST_IGNORED Ljava/lang/String;
+	public static final field TEST_STARTED Ljava/lang/String;
+	public static final field TEST_STD_ERR Ljava/lang/String;
+	public static final field TEST_STD_OUT Ljava/lang/String;
+	public static final field TEST_SUITE_FINISHED Ljava/lang/String;
+	public static final field TEST_SUITE_STARTED Ljava/lang/String;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageParser {
+	public fun <init> ()V
+	public final fun parse (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessage;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageType : java/lang/Enum {
+	public static final field Companion Lio/kotest/framework/teamcity/TeamCityMessageType$Companion;
+	public static final field TestFinished Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public static final field TestStarted Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public static final field TestSuiteFinished Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public static final field TestSuiteStarted Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageType;
+	public static fun values ()[Lio/kotest/framework/teamcity/TeamCityMessageType;
+}
+
+public final class io/kotest/framework/teamcity/TeamCityMessageType$Companion {
+	public final fun fromWireName (Ljava/lang/String;)Lio/kotest/framework/teamcity/TeamCityMessageType;
+}
+
