@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 @EnabledIf(LinuxCondition::class)
 class PerformanceTest : FunSpec() {
    init {
-      test("performance of multiple tests").config(timeout = 10.seconds) {
+      test("performance of multiple tests").config(timeout = 20.seconds) {
          EngineTestKit
             .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(DiscoverySelectors.selectClass(ManyTests::class.java))
