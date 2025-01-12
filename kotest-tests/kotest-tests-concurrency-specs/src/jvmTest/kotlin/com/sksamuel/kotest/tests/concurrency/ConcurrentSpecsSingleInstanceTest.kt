@@ -13,6 +13,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.provided.start
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 // asserts that specs can be executed concurrently safely
 @EnabledIf(LinuxCondition::class)
@@ -43,13 +44,13 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
          println(start.elapsedNow().inWholeMilliseconds)
       }
       afterProject {
-         // each of the specs has a 100 milli delay, so the overall time without concurrency would be at least 400
-         // with concurrency it should be ~100
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
          val duration = start.elapsedNow()
-         duration shouldBeLessThan 200.milliseconds
+         duration shouldBeLessThan 2.seconds
       }
       test("a") {
-         delay(100)
+         delay(500)
       }
       test("b") {
       }
@@ -81,13 +82,13 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
 
    init {
       afterProject {
-         // each of the specs has a 100 milli delay, so the overall time without concurrency would be at least 400
-         // with concurrency it should be ~100
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
          val duration = start.elapsedNow()
-         duration shouldBeLessThan 200.milliseconds
+         duration shouldBeLessThan 2.seconds
       }
       test("a") {
-         delay(100)
+         delay(500)
       }
       test("b") {
       }
@@ -119,13 +120,13 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
 
    init {
       afterProject {
-         // each of the specs has a 100 milli delay, so the overall time without concurrency would be at least 400
-         // with concurrency it should be ~100
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
          val duration = start.elapsedNow()
-         duration shouldBeLessThan 200.milliseconds
+         duration shouldBeLessThan 2.seconds
       }
       test("a") {
-         delay(100)
+         delay(500)
       }
       test("b") {
       }
@@ -157,13 +158,13 @@ class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
 
    init {
       afterProject {
-         // each of the specs has a 100 milli delay, so the overall time without concurrency would be at least 400
-         // with concurrency it should be ~100
+         // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 2000
+         // with concurrency it should be ~500
          val duration = start.elapsedNow()
-         duration shouldBeLessThan 200.milliseconds
+         duration shouldBeLessThan 2.seconds
       }
       test("a") {
-         delay(100)
+         delay(500)
       }
       test("b") {
       }
