@@ -3592,7 +3592,8 @@ public final class io/kotest/engine/extensions/ExtensionException$AfterInvocatio
 }
 
 public final class io/kotest/engine/extensions/ExtensionException$AfterProjectException : io/kotest/engine/extensions/ExtensionException {
-	public fun <init> (Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;Lio/kotest/core/listeners/AfterProjectListener;)V
+	public final fun getListener ()Lio/kotest/core/listeners/AfterProjectListener;
 }
 
 public final class io/kotest/engine/extensions/ExtensionException$AfterSpecException : io/kotest/engine/extensions/ExtensionException {
@@ -3616,7 +3617,8 @@ public final class io/kotest/engine/extensions/ExtensionException$BeforeInvocati
 }
 
 public final class io/kotest/engine/extensions/ExtensionException$BeforeProjectException : io/kotest/engine/extensions/ExtensionException {
-	public fun <init> (Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;Lio/kotest/core/listeners/BeforeProjectListener;)V
+	public final fun getListener ()Lio/kotest/core/listeners/BeforeProjectListener;
 }
 
 public final class io/kotest/engine/extensions/ExtensionException$BeforeSpecException : io/kotest/engine/extensions/ExtensionException {

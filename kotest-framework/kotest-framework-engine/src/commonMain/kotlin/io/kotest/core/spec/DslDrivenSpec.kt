@@ -3,6 +3,7 @@ package io.kotest.core.spec
 import io.kotest.core.Tag
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.ContextAwareAfterProjectListener
 import io.kotest.core.spec.style.scopes.RootScope
 
 /**
@@ -69,11 +70,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      afterProjectListeners.add(object : AfterProjectListener {
-         override suspend fun afterProject() {
-            f()
-         }
-      })
+      afterProjectListeners.add(ContextAwareAfterProjectListener(this::class.simpleName, f))
    }
 }
 

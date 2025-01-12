@@ -1,5 +1,8 @@
 package io.kotest.engine.names
 
+import io.kotest.common.KotestInternal
+
+@KotestInternal
 object UniqueNames {
 
    /**
