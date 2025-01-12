@@ -1,6 +1,7 @@
 package io.kotest.inspectors
 
 import io.kotest.assertions.failure
+import io.kotest.common.ExperimentalKotest
 
 inline fun <K, V, C : Map<K, V>> C.forAllValues(fn: (V) -> Unit): C = apply { values.forAll(fn) }
 inline fun <K, V, C : Map<K, V>> C.forAllKeys(fn: (K) -> Unit): C = apply { keys.forAll(fn) }
@@ -203,3 +204,24 @@ fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
       else -> buildAssertionError("Expected a single element in the collection, but found ${results.size}.", results)
    }
 }
+
+/**
+ * Filters the [Collection], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T, C : Collection<T>> C.filterMatching(f: (T) -> Unit): List<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
+
+/**
+ * Filters the [Collection], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T> Array<T>.filterMatching(f: (T) -> Unit): List<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
+
+/**
+ * Filters the [Sequence], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T> Sequence<T>.filterMatching(crossinline f: (T) -> Unit): Sequence<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
