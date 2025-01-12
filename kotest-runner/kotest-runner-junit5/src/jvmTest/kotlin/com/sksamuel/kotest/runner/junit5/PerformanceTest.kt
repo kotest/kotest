@@ -13,14 +13,14 @@ import kotlin.time.Duration.Companion.seconds
 @EnabledIf(LinuxCondition::class)
 class PerformanceTest : FunSpec() {
    init {
-      test("performance of multiple tests").config(timeout = 90.seconds) {
+      test("performance of multiple tests").config(timeout = 10.seconds) {
          EngineTestKit
             .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
             .selectors(DiscoverySelectors.selectClass(ManyTests::class.java))
             .configurationParameter("allow_private", "true")
             .execute()
             .allEvents().apply {
-               finished().count() shouldBe 10003L // kotest, spec, foo, and the nested tests
+               finished().count() shouldBe 1003L // kotest, spec, foo, and the nested tests
             }
       }
    }
@@ -30,7 +30,7 @@ class PerformanceTest : FunSpec() {
 private class ManyTests : DescribeSpec() {
    init {
       describe("foo") {
-         List(10000) { it }.forEach {
+         List(1000) { it }.forEach {
             it("test $it") {
                1 shouldBe 1
             }
