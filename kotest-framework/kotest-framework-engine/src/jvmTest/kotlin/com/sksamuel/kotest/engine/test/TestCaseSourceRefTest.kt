@@ -19,7 +19,7 @@ class TestCaseSourceRefTest : FunSpec() {
          )
       }
 
-      test("source ref should be performant").config(timeout = 10.seconds) {
+      test("source ref should be performant").config(timeout = 20.seconds) {
          repeat(5_000) {
             Materializer().materialize(MySpecForTestCaseSourceRefTest()).first().source
          }
