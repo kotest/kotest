@@ -1,12 +1,8 @@
-@file:Suppress("unused")
-
 package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
-import io.github.classgraph.ClassInfo
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
-import io.kotest.mpp.syspropOrEnv
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.time.measureTimedValue
@@ -29,7 +25,7 @@ data class DiscoveryResult(
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
  */
-class Discovery {
+class Discovery(private val classgraph: ClassGraph) {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
@@ -58,23 +54,9 @@ class Discovery {
    fun discover(request: DiscoveryRequest): DiscoveryResult =
       requests.getOrPut(request) { doDiscovery(request).getOrElse { DiscoveryResult.error(it) } }
 
-   /**
-    * Loads a class reference from a [ClassInfo].
-    *
-    * @param init false to avoid initializing the class
-    */
-   private fun ClassInfo.load(init: Boolean): KClass<out Any> =
-      Class.forName(name, init, this::class.java.classLoader).kotlin
-
    private fun doDiscovery(request: DiscoveryRequest): Result<DiscoveryResult> = runCatching {
 
       log { "[Discovery] Starting spec discovery" }
-
-      if (request.selectors.isEmpty()) {// && !configuration.discoveryClasspathFallbackEnabled) {
-         log { "[Discovery] no specs discovered: no selectors provided and classpath fallback is disabled" }
-         error("ello")
-         return@runCatching DiscoveryResult(emptyList(), null)
-      }
 
       val specsSelected = request.specsFromClassDiscoverySelectorsOnlyOrNull()
          ?: cachedSpecsFromClassPaths
@@ -125,7 +107,7 @@ class Discovery {
     */
    private fun specsFromClassGraph(): List<KClass<out Spec>> {
       val (specs, duration) = measureTimedValue {
-         classgraph().scan().use { scanResult ->
+         classgraph.scan().use { scanResult ->
             scanResult
                .getSubclasses(Spec::class.java.name)
                .map { Class.forName(it.name).kotlin }
@@ -138,37 +120,5 @@ class Discovery {
       }
 
       return specs
-   }
-
-   private fun classgraph(): ClassGraph {
-
-      val cg = ClassGraph()
-         .enableClassInfo()
-         .enableExternalClasses()
-         .ignoreClassVisibility()
-
-//      if (configuration.disableTestNestedJarScanning) {
-//         log { "[Discovery] Nested jar scanning is disabled" }
-//         cg.disableNestedJarScanning()
-//         cg.disableModuleScanning()
-//      }
-
-      // do not change this to use reject as it will break clients using older versions of classgraph
-      @Suppress("DEPRECATION")
-      return cg.blacklistPackages(
-         "java.*",
-         "javax.*",
-         "sun.*",
-         "com.sun.*",
-         "kotlin.*",
-         "kotlinx.*",
-         "androidx.*",
-         "org.jetbrains.kotlin.*",
-         "org.junit.*"
-      ).apply {
-         if (syspropOrEnv("kotest.framework.discovery.jar.scan.disable") == "true") {
-            disableJarScanning()
-         }
-      }
    }
 }
