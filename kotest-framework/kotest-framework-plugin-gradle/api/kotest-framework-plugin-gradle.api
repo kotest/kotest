@@ -1,0 +1,147 @@
+public final class io/kotest/framework/gradle/ContainerDescriptor : io/kotest/framework/gradle/KotestTestDescriptor {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;)Lio/kotest/framework/gradle/ContainerDescriptor;
+	public static synthetic fun copy$default (Lio/kotest/framework/gradle/ContainerDescriptor;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;ILjava/lang/Object;)Lio/kotest/framework/gradle/ContainerDescriptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getClassDisplayName ()Ljava/lang/String;
+	public fun getClassName ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getFqn ()Ljava/lang/String;
+	public fun getId ()Ljava/lang/Object;
+	public fun getName ()Ljava/lang/String;
+	public fun getParent ()Lorg/gradle/api/internal/tasks/testing/TestDescriptorInternal;
+	public synthetic fun getParent ()Lorg/gradle/api/tasks/testing/TestDescriptor;
+	public final fun getParentTestDescriptor ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public fun getTestId ()Ljava/lang/String;
+	public final fun getTestName ()Ljava/lang/String;
+	public fun getTestType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isComposite ()Z
+	public fun parentTestDescription ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class io/kotest/framework/gradle/KotestExtension {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public final fun getTags ()Lorg/gradle/api/provider/Property;
+}
+
+public class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
+	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
+	public static final field DESCRIPTION Ljava/lang/String;
+	public static final field EXTENSION_NAME Ljava/lang/String;
+	public static final field TASK_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public final class io/kotest/framework/gradle/KotestPlugin$Companion {
+}
+
+public final class io/kotest/framework/gradle/KotestServiceMessageParserCallback : jetbrains/buildServer/messages/serviceMessages/ServiceMessageParserCallback {
+	public fun <init> (Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;Ljava/util/List;Ljava/util/List;)V
+	public fun parseException (Ljava/text/ParseException;Ljava/lang/String;)V
+	public fun regularText (Ljava/lang/String;)V
+	public fun serviceMessage (Ljetbrains/buildServer/messages/serviceMessages/ServiceMessage;)V
+}
+
+public class io/kotest/framework/gradle/KotestTask : org/gradle/api/DefaultTask {
+	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
+	public final fun executeTests ()V
+	public final fun setTags (Ljava/lang/String;)V
+	public final fun setTests (Ljava/lang/String;)V
+}
+
+public abstract interface class io/kotest/framework/gradle/KotestTestDescriptor : org/gradle/api/internal/tasks/testing/TestDescriptorInternal {
+	public abstract fun getTestId ()Ljava/lang/String;
+	public abstract fun getTestType ()Ljava/lang/String;
+	public abstract fun parentTestDescription ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+}
+
+public final class io/kotest/framework/gradle/SourcesetsKt {
+	public static final fun javaTestSourceSet (Lorg/gradle/api/Project;)Lorg/gradle/api/tasks/SourceSet;
+	public static final fun mppTestTargets (Lorg/gradle/api/Project;)Ljava/util/Map;
+}
+
+public final class io/kotest/framework/gradle/SpecDescriptor : io/kotest/framework/gradle/KotestTestDescriptor {
+	public fun <init> (Ljava/lang/String;Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;
+	public final fun copy (Ljava/lang/String;Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;)Lio/kotest/framework/gradle/SpecDescriptor;
+	public static synthetic fun copy$default (Lio/kotest/framework/gradle/SpecDescriptor;Ljava/lang/String;Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;ILjava/lang/Object;)Lio/kotest/framework/gradle/SpecDescriptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getClassDisplayName ()Ljava/lang/String;
+	public fun getClassName ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getFqn ()Ljava/lang/String;
+	public fun getId ()Ljava/lang/Object;
+	public fun getName ()Ljava/lang/String;
+	public fun getParent ()Lorg/gradle/api/internal/tasks/testing/TestDescriptorInternal;
+	public synthetic fun getParent ()Lorg/gradle/api/tasks/testing/TestDescriptor;
+	public final fun getRoot ()Lorg/gradle/api/internal/tasks/testing/DefaultTestSuiteDescriptor;
+	public fun getTestId ()Ljava/lang/String;
+	public fun getTestType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isComposite ()Z
+	public fun parentTestDescription ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/framework/gradle/TeamCityListener {
+	public fun <init> ()V
+	public final fun getOutput ()Ljava/io/PipedOutputStream;
+	public final fun start ()V
+}
+
+public final class io/kotest/framework/gradle/TestCaseDescriptor : io/kotest/framework/gradle/KotestTestDescriptor {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;)Lio/kotest/framework/gradle/TestCaseDescriptor;
+	public static synthetic fun copy$default (Lio/kotest/framework/gradle/TestCaseDescriptor;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lio/kotest/framework/gradle/KotestTestDescriptor;ILjava/lang/Object;)Lio/kotest/framework/gradle/TestCaseDescriptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getClassDisplayName ()Ljava/lang/String;
+	public fun getClassName ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getFqn ()Ljava/lang/String;
+	public fun getId ()Ljava/lang/Object;
+	public fun getName ()Ljava/lang/String;
+	public fun getParent ()Lorg/gradle/api/internal/tasks/testing/TestDescriptorInternal;
+	public synthetic fun getParent ()Lorg/gradle/api/tasks/testing/TestDescriptor;
+	public final fun getParentTestDescriptor ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public fun getTestId ()Ljava/lang/String;
+	public final fun getTestName ()Ljava/lang/String;
+	public fun getTestType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isComposite ()Z
+	public fun parentTestDescription ()Lio/kotest/framework/gradle/KotestTestDescriptor;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/framework/gradle/TestLauncherExecBuilder {
+	public static final field Companion Lio/kotest/framework/gradle/TestLauncherExecBuilder$Companion;
+	public static final field IDEA_PROP Ljava/lang/String;
+	public static final field LAUNCHER_MAIN_CLASS Ljava/lang/String;
+	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/io/OutputStream;)V
+	public final fun build ()Lorg/gradle/process/internal/JavaExecAction;
+	public final fun copy (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/io/OutputStream;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+	public static synthetic fun copy$default (Lio/kotest/framework/gradle/TestLauncherExecBuilder;Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/io/OutputStream;ILjava/lang/Object;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withClasspath (Lorg/gradle/api/file/FileCollection;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+	public final fun withCommandLineTags (Ljava/lang/String;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+	public final fun withStandardOutputConsumer (Ljava/io/OutputStream;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+}
+
+public final class io/kotest/framework/gradle/TestLauncherExecBuilder$Companion {
+	public final fun builder (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+}
+

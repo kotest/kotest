@@ -1,18 +1,18 @@
 package io.kotest.engine.launcher
 
 import io.kotest.common.KotestInternal
-import io.kotest.engine.runBlocking
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.engine.runBlocking
 import kotlin.system.exitProcess
 
 /**
  * The entry point for the launcher.
  *
- * Parses the cli args, creates the reporter and passes them to the [execute] method.
+ * Parses the cli args, creates the listeners and creates a test launcher using [setupLauncher].
  *
  * This is used by the kotest-intellij-plugin (and other third party clients).
  * Therefore, the package name and args for this main method should remain backwards compatible.

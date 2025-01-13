@@ -1,6 +1,7 @@
 package io.kotest.core.listeners
 
 import io.kotest.core.extensions.Extension
+import io.kotest.core.spec.AfterProject
 
 /**
  * Union of [BeforeProjectListener] and [AfterProjectListener].
@@ -20,4 +21,13 @@ interface AfterProjectListener : Extension {
     * Callback which is invoked after the last test of the project.
     */
    suspend fun afterProject() {}
+}
+
+internal class ContextAwareAfterProjectListener(
+   val context: String?,
+   private val f: AfterProject
+) : AfterProjectListener {
+   override suspend fun afterProject() {
+      f()
+   }
 }

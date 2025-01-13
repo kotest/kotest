@@ -7,7 +7,7 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.framework.discovery.Discovery
+import io.kotest.framework.discovery.DiscoveryBuilder
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
@@ -106,7 +106,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
 
       val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-         val discovery = Discovery()
+
+         val discovery = DiscoveryBuilder.builder()
+            .addDefaultBlacklistPackages()
+            .build()
          val result = discovery.discover(discoveryRequest)
 
          val extensions = if (result.specs.isNotEmpty()) {
