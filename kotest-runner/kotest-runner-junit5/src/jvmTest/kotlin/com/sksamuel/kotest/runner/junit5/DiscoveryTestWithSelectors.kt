@@ -169,7 +169,7 @@ class DiscoveryTestWithSelectors : FunSpec({
    }
 
    test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery().discover(
+      Discovery(nestedJarScanning, externalClasses, ignoreClassVisibility, classgraph()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
@@ -178,7 +178,7 @@ class DiscoveryTestWithSelectors : FunSpec({
    }
 
    test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery().discover(
+      Discovery(nestedJarScanning, externalClasses, ignoreClassVisibility, classgraph()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
@@ -187,7 +187,7 @@ class DiscoveryTestWithSelectors : FunSpec({
    }
 
    test("kotest should detect only internal specs if public is not set") {
-      Discovery().discover(
+      Discovery(nestedJarScanning, externalClasses, ignoreClassVisibility, classgraph()).discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))

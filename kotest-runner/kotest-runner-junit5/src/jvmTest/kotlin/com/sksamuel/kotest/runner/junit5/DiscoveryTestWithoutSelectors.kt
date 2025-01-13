@@ -168,7 +168,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
    }
 
    test("kotest should discover nothing if request contains no selectors") {
-      Discovery().discover(
+      Discovery(nestedJarScanning, externalClasses, ignoreClassVisibility, classgraph()).discover(
          DiscoveryRequest()
       ).specs.map { it.simpleName }.shouldBeEmpty()
    }
