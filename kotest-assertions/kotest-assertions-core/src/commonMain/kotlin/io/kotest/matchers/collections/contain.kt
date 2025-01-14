@@ -39,15 +39,17 @@ fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.defaul
          index, it -> if(verifier.verify(it, t).areEqual()) index else null
       }
       val passed = passedAtIndexes.isNotEmpty()
-      val possibleMatches = if(!passed && (verifier.name() == Equality.default<T>().name())) {
-         val candidates = possibleMatchesDescription(value.toSet(), t)
-         if(candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
-      } else ""
+      val possibleMatches = {
+         if (!passed && (verifier.name() == Equality.default<T>().name())) {
+            val candidates = possibleMatchesDescription(value.toSet(), t)
+            if (candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
+         } else ""
+      }
       return MatcherResult(
          passed,
          {
             "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
-               "but the collection is ${value.print().value}$possibleMatches"
+               "but the collection is ${value.print().value}${possibleMatches()}"
          },
          { "Collection should not contain element ${t.print().value} based on ${verifier.name()}, but it did at index(es):${passedAtIndexes.print().value}" }
       )
