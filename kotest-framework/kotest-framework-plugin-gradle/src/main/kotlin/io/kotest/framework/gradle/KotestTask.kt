@@ -3,12 +3,19 @@ package io.kotest.framework.gradle
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.FileTree
+import org.gradle.api.file.FileVisitDetails
+import org.gradle.api.file.FileVisitor
 import org.gradle.api.internal.file.FileCollectionFactory
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.internal.concurrent.ExecutorFactory
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.Opcodes
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import javax.inject.Inject
@@ -38,15 +45,23 @@ open class KotestTask @Inject constructor(
 
    @TaskAction
    fun executeTests() {
+      println("Running tests with tags $tags and tests $tests")
       //val testResultsDir = project.buildDir.resolve("test-results")
-      val sourceset = project.javaTestSourceSet() ?: return
+      val testSourceSet = project.javaTestSourceSet() ?: return
+      println("sourceset $testSourceSet")
 
-      val listener = TeamCityListener()
+      val sourceSets =
+         project.extensions.findByType(JavaPluginExtension::class.java)?.sourceSets?.findByName("test") ?: return
+      println("sourceSets $sourceSets")
+
+      val specs = TestClassLoader().load(sourceSets.runtimeClasspath.asFileTree)
+      println("specs are $specs")
+//      val urls = classpaths.map { it.toURI().toURL() }
 
       val result = try {
          val builder = TestLauncherExecBuilder
             .builder(fileResolver, fileCollectionFactory, executorFactory)
-            .withClasspath(sourceset.runtimeClasspath)
+            .withClasspath(testSourceSet.runtimeClasspath)
             .withCommandLineTags(tags)
 //         if (hasRtJar()) {
 //            builder.withStandardOutputConsumer(listener.output)
@@ -71,6 +86,50 @@ open class KotestTask @Inject constructor(
       } catch (_: ClassNotFoundException) {
          false
       }
+   }
+}
+
+class TestClassLoader {
+
+   private val specClasses = listOf(
+      "io/kotest/core/spec/style/AnnotationSpec",
+      "io/kotest/core/spec/style/BehaviorSpec",
+      "io/kotest/core/spec/style/DescribeSpec",
+      "io/kotest/core/spec/style/ExpectSpec",
+      "io/kotest/core/spec/style/FeatureSpec",
+      "io/kotest/core/spec/style/FreeSpec",
+      "io/kotest/core/spec/style/FunSpec",
+      "io/kotest/core/spec/style/ShouldSpec",
+      "io/kotest/core/spec/style/StringSpec",
+      "io/kotest/core/spec/style/WordSpec",
+   )
+
+   fun load(candidates: FileTree): List<String> {
+      val specs = mutableListOf<String>()
+      candidates.filter { it.name.endsWith(".class") }.asFileTree.visit(object : FileVisitor {
+         override fun visitDir(dirDetails: FileVisitDetails) {
+         }
+
+         override fun visitFile(fileDetails: FileVisitDetails) {
+//            println("Visiting file ${fileDetails.file}")
+            ClassReader(fileDetails.file.readBytes()).accept(object : ClassVisitor(Opcodes.ASM4) {
+               override fun visit(
+                  version: Int,
+                  access: Int,
+                  name: String,
+                  signature: String?,
+                  superName: String,
+                  interfaces: Array<out String?>?
+               ) {
+                  if (specClasses.contains(superName)) {
+                     println("Accepting spec $name")
+                     specs.add(name)
+                  }
+               }
+            }, ClassReader.SKIP_DEBUG)
+         }
+      })
+      return specs.toList()
    }
 }
 

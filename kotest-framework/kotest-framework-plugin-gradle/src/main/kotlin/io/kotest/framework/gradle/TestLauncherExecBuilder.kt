@@ -19,12 +19,14 @@ data class TestLauncherExecBuilder(
    private val classpath: FileCollection?,
    private val tags: String?,
    private val consumer: OutputStream?,
+   private val specs: List<String>,
 ) {
 
    companion object {
       private const val LISTENER_ARG = "--listener"
       private const val TERMCOLOR_ARG = "--termcolor"
       private const val TAGS_ARG = "--tags"
+      private const val SPECS_ARG = "--specs"
       private const val TC_LISTENER = "teamcity"
       private const val ENHANCED_CONSOLE_LISTENER = "enhanced"
       private const val PLAIN_COLOURS = "ansi16"
@@ -45,6 +47,7 @@ data class TestLauncherExecBuilder(
             tags = null,
             classpath = null,
             consumer = null,
+            specs = emptyList(),
          )
       }
    }
@@ -59,6 +62,10 @@ data class TestLauncherExecBuilder(
 
    fun withStandardOutputConsumer(consumer: OutputStream): TestLauncherExecBuilder {
       return copy(consumer = consumer)
+   }
+
+   fun withSpecs(specs: List<String>): TestLauncherExecBuilder {
+      return copy(specs = specs)
    }
 
    /**
@@ -95,26 +102,14 @@ data class TestLauncherExecBuilder(
     * If they don't, the output will be the raw service-message format which is designed for parsing
     * not human consumption.
     */
-   private fun args() = when {
-      isIntellij() -> listOf(
-         LISTENER_ARG,
-         TC_LISTENER,
-         TERMCOLOR_ARG,
-         PLAIN_COLOURS
-      ) + tagArgs()
+   private fun args() = listenerArgs() + tagArgs() + specArgs()
 
-      else -> listOf(
-         LISTENER_ARG,
-         ENHANCED_CONSOLE_LISTENER,
-         TERMCOLOR_ARG,
-         TRUE_COLOURS
-      ) + tagArgs()
+   private fun listenerArgs(): List<String> {
+      return when {
+         isIntellij() -> listOf(LISTENER_ARG, TC_LISTENER, TERMCOLOR_ARG, PLAIN_COLOURS)
+         else -> listOf(LISTENER_ARG, ENHANCED_CONSOLE_LISTENER, TERMCOLOR_ARG, TRUE_COLOURS)
+      }
    }
-
-   /**
-    * We use the idea system property to determine if we are running inside intellij.
-    */
-   private fun isIntellij() = System.getProperty(IDEA_PROP) != null
 
    /**
     * Returns args to be used for the tag expression.
@@ -129,4 +124,17 @@ data class TestLauncherExecBuilder(
 //      project.kotest()?.tags?.orNull?.let { return listOf(TagsArg, it) }
       return emptyList()
    }
+
+   /**
+    * Returns the args that specify the specs to execute.
+    * This is a comma separated list of fully qualified class names.
+    */
+   private fun specArgs(): List<String> {
+      return if (specs.isEmpty()) emptyList() else listOf(SPECS_ARG, specs.joinToString(";"))
+   }
+
+   /**
+    * We use the idea system property to determine if we are running inside intellij.
+    */
+   private fun isIntellij() = System.getProperty(IDEA_PROP) != null
 }
