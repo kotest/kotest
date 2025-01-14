@@ -61,9 +61,6 @@ include(
    // a fat jar that includes everything needed to execute the engine as a standalone program
    ":kotest-framework:kotest-framework-standalone",
 
-   // used to start up the engine from gradle or intellij
-   ":kotest-framework:kotest-framework-launcher",
-
    // gradle plugin to run tests outside of gradle's test task
    ":kotest-framework:kotest-framework-plugin-gradle",
 
