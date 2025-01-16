@@ -54,7 +54,7 @@ open class KotestTask @Inject constructor(
          project.extensions.findByType(JavaPluginExtension::class.java)?.sourceSets?.findByName("test") ?: return
       println("sourceSets $sourceSets")
 
-      val specs = TestClassLoader().load(sourceSets.runtimeClasspath.asFileTree)
+      val specs = TestClassDetector().load(sourceSets.runtimeClasspath.asFileTree)
       println("specs are $specs")
 //      val urls = classpaths.map { it.toURI().toURL() }
 
@@ -62,6 +62,7 @@ open class KotestTask @Inject constructor(
          val builder = TestLauncherExecBuilder
             .builder(fileResolver, fileCollectionFactory, executorFactory)
             .withClasspath(testSourceSet.runtimeClasspath)
+            .withSpecs(specs)
             .withCommandLineTags(tags)
 //         if (hasRtJar()) {
 //            builder.withStandardOutputConsumer(listener.output)
@@ -89,7 +90,11 @@ open class KotestTask @Inject constructor(
    }
 }
 
-class TestClassLoader {
+/**
+ * Scans a gradle classpath looking for classes that extend a spec class.
+ * We use object-asm to scan the bytecode.
+ */
+class TestClassDetector {
 
    private val specClasses = listOf(
       "io/kotest/core/spec/style/AnnotationSpec",

@@ -1,9 +1,5 @@
 package io.kotest.engine.launcher
 
-//import io.kotest.framework.discovery.Discovery
-//import io.kotest.framework.discovery.DiscoveryRequest
-//import io.kotest.framework.discovery.DiscoveryResult
-//import io.kotest.framework.discovery.DiscoverySelector
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CompositeTestEngineListener
@@ -39,9 +35,6 @@ data class TestEngineLauncherBuilder(
    }
 }
 
-///**
-// * Creates a [TestEngineLauncher] to be used to launch the test engine.
-// */
 //@Suppress("UNCHECKED_CAST")
 //internal fun setupLauncher(
 //   args: LauncherArgs,
@@ -68,20 +61,3 @@ data class TestEngineLauncherBuilder(
 
 ///**
 // * Returns the spec classes to execute by using an FQN class name, a package scan,
-// * or a full scan.
-// */
-//private fun specs(specClass: KClass<out Spec>?, packageName: String?): DiscoveryResult {
-//   // if the spec class was null, then we perform discovery to locate all the classes
-//   // otherwise that specific spec class is used
-//   return when (specClass) {
-//      null -> scan(packageName)
-//      else -> DiscoveryResult(listOf(specClass), emptyList(), null)
-//   }
-//}
-//
-//private fun scan(packageName: String?): DiscoveryResult {
-//   val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
-//   val req = DiscoveryRequest(selectors = listOfNotNull(packageSelector))
-//   val discovery = Discovery(ProjectConfiguration())
-//   return discovery.discover(req)
-//}
