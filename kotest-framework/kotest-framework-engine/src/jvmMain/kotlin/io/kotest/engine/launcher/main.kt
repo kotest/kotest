@@ -24,17 +24,20 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
 
    val launcherArgs = parseArgs(args.toList())
-
-   val collector = CollectingTestEngineListener()
+   val specsArg = launcherArgs["specs"] ?: error("The --specs arg must be provided")
+   println("Executing tests from specs arg $specsArg")
 
    // what tests to run? We must be launched with a list.
    // That list comes from the --specs flag
-   val classes = launcherArgs["specs"]!!.split(';').map { Class.forName(it) as KClass<out Spec> }
+   val classes = specsArg.split(';').map { Class.forName(it) as KClass<out Spec> }
+
+   // we want to collect the results, so we can check if we need exit with an error
+   val collector = CollectingTestEngineListener()
 
    val launcher = TestEngineLauncherBuilder.builder()
       .withClasses(classes)
       .addListener(LoggingTestEngineListener) // we use this to write to the kotest log file
-      .addListener(collector) // we want to collect the results so we can check if we need exit with an error
+      .addListener(collector)
       .addListener(
          ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
