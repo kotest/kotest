@@ -24,18 +24,20 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
    val mismatchDescription = if(subsequenceIndex == subsequence.size) "" else
       ", could not match element ${subsequence.elementAt(subsequenceIndex).print().value} at index $subsequenceIndex"
 
-   val foundBeforeDescription = if(subsequenceIndex == subsequence.size) "" else {
-      val foundBeforeAtIndexes = actual.take(subsequenceIndex).mapIndexedNotNull { index, value ->
-         if(value == subsequence[subsequenceIndex]) index else null
-      }
-      if (foundBeforeAtIndexes.isEmpty()) "" else {
-         "\nbut found it before at index(es) ${foundBeforeAtIndexes.print().value}"
+   val foundBeforeDescription = {
+      if (subsequenceIndex == subsequence.size) "" else {
+         val foundBeforeAtIndexes = actual.take(subsequenceIndex).mapIndexedNotNull { index, value ->
+            if (value == subsequence[subsequenceIndex]) index else null
+         }
+         if (foundBeforeAtIndexes.isEmpty()) "" else {
+            "\nbut found it before at index(es) ${foundBeforeAtIndexes.print().value}"
+         }
       }
    }
 
    MatcherResult(
       subsequenceIndex == subsequence.size,
-      { "${actual.print().value} did not contain the elements ${subsequence.print().value} in order$mismatchDescription$foundBeforeDescription" },
+      { "${actual.print().value} did not contain the elements ${subsequence.print().value} in order$mismatchDescription${foundBeforeDescription()}" },
       { "${actual.print().value} should not contain the elements ${subsequence.print().value} in order" }
    )
 }
