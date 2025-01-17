@@ -86,15 +86,17 @@ fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
       if (collection.isEmpty()) throwEmptyCollectionError()
       val match = collection.any { it === value }
-      val indexesOfEqualElementsDescription = if(match) "" else {
-         val indexes = collection.mapIndexedNotNull { index, it -> if (it == value) index else null }
-         if(indexes.isNotEmpty()) {
-            "\nFound equal but not the same element(s) at index(es): ${indexes.print().value}"
-         } else ""
+      val indexesOfEqualElementsDescription = {
+         if (match) "" else {
+            val indexes = collection.mapIndexedNotNull { index, it -> if (it == value) index else null }
+            if (indexes.isNotEmpty()) {
+               "\nFound equal but not the same element(s) at index(es): ${indexes.print().value}"
+            } else ""
+         }
       }
       return MatcherResult(
          match,
-         { "Collection should contain the instance ${value.print().value} with hashcode ${value.hashCode()}.$indexesOfEqualElementsDescription" },
+         { "Collection should contain the instance ${value.print().value} with hashcode ${value.hashCode()}.${indexesOfEqualElementsDescription()}" },
          { "Collection should not contain the instance ${value.print().value} with hashcode ${value.hashCode()}." })
    }
 }
