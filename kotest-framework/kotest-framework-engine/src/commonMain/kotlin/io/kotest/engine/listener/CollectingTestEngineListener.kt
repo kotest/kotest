@@ -9,6 +9,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
 
+/**
+ * A [TestEngineListener] that collects test results and errors into maps so they can be
+ * programmatically queried after the test run.
+ */
 class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mutex() {
 
    val specs = mutableMapOf<KClass<*>, TestResult>()
