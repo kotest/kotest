@@ -3718,33 +3718,25 @@ public final class io/kotest/engine/interceptors/SystemPropertiesEngineIntercept
 	public fun intercept (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/engine/interceptors/NextEngineInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/launcher/LauncherArgs {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Ljava/lang/String;
-	public final fun component6 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/LauncherArgs;
-	public static synthetic fun copy$default (Lio/kotest/engine/launcher/LauncherArgs;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/LauncherArgs;
+public final class io/kotest/engine/launcher/ConsoleTestEngineListenerBuilder {
+	public static final field Companion Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
+	public static synthetic fun copy$default (Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getListener ()Ljava/lang/String;
-	public final fun getPackageName ()Ljava/lang/String;
-	public final fun getSpec ()Ljava/lang/String;
-	public final fun getTagExpression ()Ljava/lang/String;
-	public final fun getTermcolor ()Ljava/lang/String;
-	public final fun getTestpath ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public final fun withTermColors (Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
+	public final fun withType (Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
+}
+
+public final class io/kotest/engine/launcher/ConsoleTestEngineListenerBuilder$Companion {
+	public final fun builder ()Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
 }
 
 public final class io/kotest/engine/launcher/MainKt {
 	public static final fun main ([Ljava/lang/String;)V
-}
-
-public final class io/kotest/engine/launcher/ParseLauncherArgsKt {
-	public static final fun parseLauncherArgs (Ljava/util/List;)Lio/kotest/engine/launcher/LauncherArgs;
 }
 
 public final class io/kotest/engine/launcher/TestEngineLauncherBuilder {

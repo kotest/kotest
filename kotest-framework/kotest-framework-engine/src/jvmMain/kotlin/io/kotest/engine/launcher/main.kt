@@ -1,10 +1,8 @@
 package io.kotest.engine.launcher
 
-import com.github.ajalt.mordant.TermColors
 import io.kotest.core.spec.Spec
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -30,6 +28,11 @@ fun main(args: Array<String>) {
    // That list comes from the --specs flag
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
+   val console = ConsoleTestEngineListenerBuilder.builder()
+      .withType(launcherArgs["listener"])
+      .withTermColors(launcherArgs["termcolors"])
+      .build()
+
    // we want to collect the results, so we can check if we need exit with an error
    val collector = CollectingTestEngineListener()
 
@@ -37,15 +40,7 @@ fun main(args: Array<String>) {
       .withClasses(classes)
       .addListener(LoggingTestEngineListener) // we use this to write to the kotest log file
       .addListener(collector)
-      .addListener(
-         ThreadSafeTestEngineListener(
-            PinnedSpecTestEngineListener(
-               EnhancedConsoleTestEngineListener(
-                  TermColors(TermColors.Level.ANSI16)
-               )
-            )
-         )
-      ).build()
+      .addListener(ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(console))).build()
 
    runBlocking {
       launcher.async()
