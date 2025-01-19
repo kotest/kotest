@@ -34,10 +34,10 @@ fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.START)
 
-      val partialMatchesDescription = describePartialMatchesInCollection(expectedSlice, value)
+      val partialMatchesDescription = { describePartialMatchesInCollection(expectedSlice, value) }
       return MatcherResult(
          comparison.match,
-         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}$partialMatchesDescription" },
+         { "List should start with ${expectedSlice.print().value} but was ${comparison.valueSlice.print().value}\n${comparison.mismatchDescription}${partialMatchesDescription()}" },
          { "List should not start with ${expectedSlice.print().value}" }
       )
    }
