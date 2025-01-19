@@ -1798,7 +1798,6 @@ public final class io/kotest/matchers/maps/MapContainsMatcher : io/kotest/matche
 }
 
 public final class io/kotest/matchers/maps/MapMatchersKt {
-	public static final fun contain (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun containAll (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
 	public static final fun containAnyKeys ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun containAnyValues ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
@@ -1809,6 +1808,7 @@ public final class io/kotest/matchers/maps/MapMatchersKt {
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
 	public static final fun haveValue (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun haveValues ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun mapcontain (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun matchAll (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
 	public static final fun matchAll ([Lkotlin/Pair;)Lio/kotest/matchers/Matcher;
 	public static final fun matchExactly (Ljava/util/Map;)Lio/kotest/matchers/Matcher;
@@ -1827,7 +1827,6 @@ public final class io/kotest/matchers/maps/MapMatchesMatcher : io/kotest/matcher
 
 public final class io/kotest/matchers/maps/MatchersKt {
 	public static final fun beEmpty ()Lio/kotest/matchers/Matcher;
-	public static final fun mapcontain (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEmpty (Ljava/util/Map;)V
 	public static final fun shouldContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldContain (Ljava/util/Map;Lkotlin/Pair;)V
