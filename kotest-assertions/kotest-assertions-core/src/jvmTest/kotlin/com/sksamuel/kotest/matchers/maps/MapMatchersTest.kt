@@ -105,17 +105,26 @@ class MapMatchersTest : WordSpec() {
             map shouldNotContain (3 to "A")
             shouldThrow<AssertionError> {
                map.shouldContain(1, "c")
-            }.message.shouldBe("Map should contain mapping 1=c but was 1=a")
+            }.message.shouldContainInOrder(
+               "Map should contain mapping 1=c but value was different:",
+               "Expected: <\"c\">",
+               "But was:  <\"a\">"
+            )
             shouldThrow<AssertionError> {
                map.shouldContain(4, "e")
             }.message.shouldBe("Map should contain mapping 4=e but key was not in the map")
             shouldThrow<AssertionError> {
-               map should contain(2, "a")
-            }.message.shouldStartWith("Map should contain mapping 2=a but was 2=b")
+               map should mapcontain(2, "a")
+            }.message.shouldContainInOrder(
+               "Map should contain mapping 2=a but value was different:",
+               """Expected: <"a">""",
+               """But was:  <"b">""",
+               "Same value found for the following entries: [1=a]",
+               )
          }
          "print a similar key when no exact match" {
             val message = shouldThrow<AssertionError> {
-               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should contain(sweetGreenPear, 1)
+               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should mapcontain(sweetGreenPear, 1)
             }.message
             message shouldContain """
                | expected: Fruit(name=pear, color=green, taste=sweet),
@@ -126,7 +135,7 @@ class MapMatchersTest : WordSpec() {
          }
          "print entries with same value" {
             val message = shouldThrow<AssertionError> {
-               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should contain(sweetGreenPear, 1)
+               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should mapcontain(sweetGreenPear, 1)
             }.message
             message shouldContain """
                |Same value found for the following entries: [Fruit(name=apple, color=green, taste=sweet)=1]
@@ -134,7 +143,7 @@ class MapMatchersTest : WordSpec() {
          }
          "print entries with similar values" {
             val message = shouldThrow<AssertionError> {
-               mapOf(1 to sweetGreenApple, 2 to sweetRedApple) should contain(3, sweetGreenPear)
+               mapOf(1 to sweetGreenApple, 2 to sweetRedApple) should mapcontain(3, sweetGreenPear)
             }.message
             message shouldContain """
                | expected: Fruit(name=pear, color=green, taste=sweet),
