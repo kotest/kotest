@@ -6,7 +6,6 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.concurrent.ExecutorFactory
 import org.gradle.process.internal.DefaultExecActionFactory
 import org.gradle.process.internal.JavaExecAction
-import java.io.OutputStream
 
 /**
  * This [TestLauncherExecBuilder] is responsible for creating a [JavaExecAction] that will run tests
@@ -18,7 +17,6 @@ data class TestLauncherExecBuilder(
    private val executorFactory: ExecutorFactory,
    private val classpath: FileCollection?,
    private val tags: String?,
-   private val consumer: OutputStream?,
    private val specs: List<String>,
 ) {
 
@@ -46,7 +44,6 @@ data class TestLauncherExecBuilder(
             executorFactory = executorFactory,
             tags = null,
             classpath = null,
-            consumer = null,
             specs = emptyList(),
          )
       }
@@ -58,10 +55,6 @@ data class TestLauncherExecBuilder(
 
    fun withClasspath(classpath: FileCollection): TestLauncherExecBuilder {
       return copy(classpath = classpath)
-   }
-
-   fun withStandardOutputConsumer(consumer: OutputStream): TestLauncherExecBuilder {
-      return copy(consumer = consumer)
    }
 
    fun withSpecs(specs: List<String>): TestLauncherExecBuilder {
@@ -127,7 +120,7 @@ data class TestLauncherExecBuilder(
 
    /**
     * Returns the args that specify the specs to execute.
-    * This is a comma separated list of fully qualified class names.
+    * This is a semi-colon separated list of fully qualified class names.
     */
    private fun specArgs(): List<String> {
       return if (specs.isEmpty()) emptyList() else listOf(SPECS_ARG, specs.joinToString(";"))

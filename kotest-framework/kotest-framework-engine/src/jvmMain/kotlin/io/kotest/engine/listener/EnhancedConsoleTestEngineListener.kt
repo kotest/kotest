@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
 /**
- * Generates test output to the console in an enhanced, formatted, coloured, way.
+ * A [TestEngineListener] that outputs in a more colourful rich way.
  */
 class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
 
@@ -48,7 +48,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       "Feeding the kotest engine with freshly harvested tests",
       "Engaging kotest engine at warp factor 9",
       "Harvesting the test fields",
-      "Preparing to sacrifice your code to the demi-god of test",
+      "Preparing to sacrifice your code to the gods of testing",
       "Hamsters are turning the wheels of kotest",
       "Battle commanders are ready to declare war on bugs",
       "Be afraid - be very afraid - of failing tests",
@@ -84,7 +84,6 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-
       if (specsSeen.isEmpty()) return
 
       if (t.isNotEmpty()) {
@@ -113,7 +112,10 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       printSpecCounts()
       printTestsCounts()
       print("Time:    ")
-      println(bold("$duration"))
+      if (duration.inWholeSeconds > 60)
+         println(bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s"))
+      else
+         println(bold("${duration.inWholeSeconds}s"))
    }
 
    private fun printThrowable(error: Throwable?, padding: Int) {
@@ -175,6 +177,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
 
    override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
       if (result.isErrorOrFailure) {
+         println("$kclass $result")
          errors++
          specsFailed = specsFailed + kclass.toDescriptor()
          printThrowable(result.errorOrNull, 4)

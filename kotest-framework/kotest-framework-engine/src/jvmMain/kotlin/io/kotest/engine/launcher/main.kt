@@ -25,11 +25,10 @@ fun main(args: Array<String>) {
 
    val launcherArgs = parseArgs(args.toList())
    val specsArg = launcherArgs["specs"] ?: error("The --specs arg must be provided")
-   println("Executing tests from specs arg $specsArg")
 
    // what tests to run? We must be launched with a list.
    // That list comes from the --specs flag
-   val classes = specsArg.split(';').map { Class.forName(it) as KClass<out Spec> }
+   val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
    // we want to collect the results, so we can check if we need exit with an error
    val collector = CollectingTestEngineListener()

@@ -3206,7 +3206,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun launch ()Lio/kotest/engine/EngineResult;
 	public final fun promise ()V
-	public final fun toConfig ()Lio/kotest/engine/TestEngineConfig;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withDetectedProjectConfig ()Lio/kotest/engine/TestEngineLauncher;
@@ -3746,6 +3745,29 @@ public final class io/kotest/engine/launcher/MainKt {
 
 public final class io/kotest/engine/launcher/ParseLauncherArgsKt {
 	public static final fun parseLauncherArgs (Ljava/util/List;)Lio/kotest/engine/launcher/LauncherArgs;
+}
+
+public final class io/kotest/engine/launcher/TestEngineLauncherBuilder {
+	public static final field Companion Lio/kotest/engine/launcher/TestEngineLauncherBuilder$Companion;
+	public fun <init> (Ljava/util/List;ZLjava/util/List;)V
+	public final fun addListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
+	public final fun build ()Lio/kotest/engine/TestEngineLauncher;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;ZLjava/util/List;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
+	public static synthetic fun copy$default (Lio/kotest/engine/launcher/TestEngineLauncherBuilder;Ljava/util/List;ZLjava/util/List;ILjava/lang/Object;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClasses ()Ljava/util/List;
+	public final fun getListeners ()Ljava/util/List;
+	public final fun getLogging ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
+}
+
+public final class io/kotest/engine/launcher/TestEngineLauncherBuilder$Companion {
+	public final fun builder ()Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
 }
 
 public final class io/kotest/engine/launcher/TestPathTestCaseFilter : io/kotest/core/filter/TestFilter {
