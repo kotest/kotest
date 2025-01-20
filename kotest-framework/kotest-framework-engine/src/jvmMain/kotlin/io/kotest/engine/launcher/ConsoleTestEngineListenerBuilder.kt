@@ -11,6 +11,14 @@ data class ConsoleTestEngineListenerBuilder(
 ) {
 
    companion object {
+
+      const val TEAMCITY = "teamcity"
+      const val ENHANCED = "enhanced"
+      const val DEFAULT = "default"
+      const val TRUECOLOR = "true"
+      const val ANSI256 = "ansi256"
+      const val ANSI16 = "ansi16"
+
       fun builder(): ConsoleTestEngineListenerBuilder = ConsoleTestEngineListenerBuilder(null, null)
    }
 
@@ -19,8 +27,8 @@ data class ConsoleTestEngineListenerBuilder(
 
    fun build(): TestEngineListener {
       return when (type) {
-         "teamcity" -> TeamCityTestEngineListener()
-         "enhanced" -> EnhancedConsoleTestEngineListener(TermColors())
+         TEAMCITY -> TeamCityTestEngineListener()
+         ENHANCED -> EnhancedConsoleTestEngineListener(TermColors())
          else if isIntellij() -> TeamCityTestEngineListener()
          else -> EnhancedConsoleTestEngineListener(colours())
       }
@@ -30,9 +38,9 @@ data class ConsoleTestEngineListenerBuilder(
 
    internal fun colours(): TermColors {
       return when (termcolors) {
-         "true" -> TermColors(TermColors.Level.TRUECOLOR)
-         "ansi256" -> TermColors(TermColors.Level.ANSI256)
-         "ansi16" -> TermColors(TermColors.Level.ANSI16)
+         TRUECOLOR -> TermColors(TermColors.Level.TRUECOLOR)
+         ANSI256 -> TermColors(TermColors.Level.ANSI256)
+         ANSI16 -> TermColors(TermColors.Level.ANSI16)
          else -> TermColors()
       }
    }

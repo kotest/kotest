@@ -3719,7 +3719,13 @@ public final class io/kotest/engine/interceptors/SystemPropertiesEngineIntercept
 }
 
 public final class io/kotest/engine/launcher/ConsoleTestEngineListenerBuilder {
+	public static final field ANSI16 Ljava/lang/String;
+	public static final field ANSI256 Ljava/lang/String;
 	public static final field Companion Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder$Companion;
+	public static final field DEFAULT Ljava/lang/String;
+	public static final field ENHANCED Ljava/lang/String;
+	public static final field TEAMCITY Ljava/lang/String;
+	public static final field TRUECOLOR Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
