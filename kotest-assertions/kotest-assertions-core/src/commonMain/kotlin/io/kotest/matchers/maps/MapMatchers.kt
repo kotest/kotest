@@ -113,13 +113,22 @@ fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matche
    }
 }
 
-fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
+fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>): MatcherResult {
-      val passed = value[key] == v
+      val passed = (key in value) && value[key] == v
+      val mismatchDescription = {
+         when {
+            key in value -> listOf("value was different:",
+               "Expected: <${v.print().value}>",
+               "But was:  <${value[key].print().value}>",
+               ).joinToString("\n")
+            else -> "key was not in the map"
+         }
+      }
       val possibleMatches = { if(passed) "" else describePossibleMatches(key, v, value) }
       return MatcherResult(
          passed,
-         { "Map should contain mapping $key=$v but was ${buildActualValue(value)}${possibleMatches()}" },
+         { "Map should contain mapping $key=$v but ${mismatchDescription()}${possibleMatches()}" },
          { "Map should not contain mapping $key=$v but was $value" }
       )
    }
