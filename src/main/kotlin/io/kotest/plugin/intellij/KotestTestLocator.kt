@@ -32,9 +32,9 @@ class KotestTestLocator : SMTestLocator {
       scope: GlobalSearchScope
    ): List<Location<PsiElement>> {
       return when (protocol) {
-         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
-         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
-         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
+         Constants.FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants.ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants.OldLocatorProtocol -> parseClass(project, scope, path)
          else -> emptyList()
       }
    }
@@ -47,9 +47,9 @@ class KotestTestLocator : SMTestLocator {
       scope: GlobalSearchScope
    ): List<Location<PsiElement>> {
       return when (protocol) {
-         Constants().FileLocatorProtocol -> parseFile(project, scope, path)
-         Constants().ClassLocatorProtocol -> parseClass(project, scope, path)
-         Constants().OldLocatorProtocol -> parseClass(project, scope, path)
+         Constants.FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants.ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants.OldLocatorProtocol -> parseClass(project, scope, path)
          else -> emptyList()
       }
    }

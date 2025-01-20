@@ -16,7 +16,8 @@ import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.testMode
 
 /**
- * Adds an icon to the gutter for tests which are disabled.
+ * A [LineMarkerProvider] adds icons to gutters for elements.
+ * This [DisabledTestLineMarker] adds the test-ignored icon to disabled kotest tests.
  */
 class DisabledTestLineMarker : LineMarkerProvider {
 

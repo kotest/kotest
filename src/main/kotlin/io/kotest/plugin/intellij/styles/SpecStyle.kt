@@ -22,6 +22,8 @@ import org.jetbrains.kotlin.psi.KtTypeReference
 interface SpecStyle {
 
    companion object {
+
+
       val styles = listOf(
          AnnotationSpecStyle,
          BehaviorSpecStyle,
@@ -34,6 +36,17 @@ interface SpecStyle {
          StringSpecStyle,
          WordSpecStyle
       )
+
+      /**
+       * For the given [PsiElement], if it is contained within a Kotest test definition, then
+       * it will return a [Test] instance that models that test.
+       */
+      fun findTest(element: PsiElement): Test? {
+         return styles.asSequence()
+            .filter { it.isContainedInSpec(element) }
+            .mapNotNull { it.findAssociatedTest(element) }
+            .firstOrNull()
+      }
    }
 
    /**

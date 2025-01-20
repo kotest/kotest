@@ -17,14 +17,16 @@ import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
+import javax.swing.Icon
 
 /**
- * Returns a [RunLineMarkerContributor.Info] if the element is a test case.
+ * A [RunLineMarkerContributor] adds gutter icons to elements if they are actionable.
+ * This [TestRunLineMarkerContributor] adds the test run icon to kotest test cases.
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    // icons list https://jetbrains.design/intellij/resources/icons_list/
-   private val icon = AllIcons.RunConfigurations.TestState.Run
+   private val icon: Icon = AllIcons.RunConfigurations.TestState.Run
 
    override fun getInfo(element: PsiElement): Info? {
       // the docs say to only run a line marker for a leaf
@@ -64,8 +66,8 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
    private fun icon(test: Test): Info {
       return Info(
          icon,
+         ExecutorAction.getActions(1),
          Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
-         *ExecutorAction.getActions(1)
       )
    }
 }

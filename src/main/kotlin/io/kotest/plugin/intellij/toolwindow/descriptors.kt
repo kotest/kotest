@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 class KotestRootNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
    init {
-      templatePresentation.presentableText = Constants().FrameworkName
+      templatePresentation.presentableText = Constants.FrameworkName
    }
 
    override fun update(presentation: PresentationData) {
@@ -183,7 +183,7 @@ class ModuleNodeDescriptor(
  * [NodeDescriptor] for a detected kotest tag.
  */
 class TagNodeDescriptor(
-   private val tag: String,
+   tag: String,
    project: Project,
    parent: NodeDescriptor<Any>
 ) : PresentableNodeDescriptor<Any>(project, parent) {

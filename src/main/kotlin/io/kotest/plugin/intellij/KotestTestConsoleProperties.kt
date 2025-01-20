@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope
 class KotestTestConsoleProperties(
    config: KotestRunConfiguration,
    executor: Executor
-) : JavaAwareTestConsoleProperties<KotestRunConfiguration>(Constants().FrameworkName, config, executor) {
+) : JavaAwareTestConsoleProperties<KotestRunConfiguration>(Constants.FrameworkName, config, executor) {
    init {
       isPrintTestingStartedTime = true
    }

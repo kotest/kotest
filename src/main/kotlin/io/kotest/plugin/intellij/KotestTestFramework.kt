@@ -50,7 +50,7 @@ class KotestTestFramework : TestFramework {
 //      }
    }
 
-   override fun getName(): String = Constants().FrameworkName
+   override fun getName(): String = Constants.FrameworkName
    override fun getLanguage(): Language = KotlinLanguage.INSTANCE
    override fun getIcon(): Icon = Icons().Kotest16
 

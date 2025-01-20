@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runReadAction
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
@@ -47,7 +46,7 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
 
          val root = model.root as DefaultMutableTreeNode
          val kotest = root.userObject as KotestRootNodeDescriptor
-         kotest.presentation.presentableText shouldBe Constants().FrameworkName
+         kotest.presentation.presentableText shouldBe Constants.FrameworkName
 
          val children = root.children().toList() as List<DefaultMutableTreeNode>
          children.size shouldBe 3

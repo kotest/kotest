@@ -12,9 +12,9 @@ class KotestConfigurationType : ConfigurationType {
 
    override fun getConfigurationTypeDescription(): String = "Run tests with Kotest"
 
-   override fun getId(): String = Constants().FrameworkId
+   override fun getId(): String = Constants.FrameworkId
 
-   override fun getDisplayName(): String = Constants().FrameworkName
+   override fun getDisplayName(): String = Constants.FrameworkName
 
    override fun getConfigurationFactories(): Array<ConfigurationFactory> = arrayOf(factory)
 }
