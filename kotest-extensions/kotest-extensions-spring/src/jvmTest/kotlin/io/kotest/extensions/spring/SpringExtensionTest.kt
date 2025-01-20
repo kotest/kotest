@@ -2,7 +2,7 @@ package io.kotest.extensions.spring
 
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -37,7 +37,7 @@ class SpringExtensionTest : WordSpec() {
                   name = TestNameBuilder.builder("0foo__!!55@#woo").build(),
                   spec = this@SpringExtensionTest,
                   test = {},
-                  source = sourceRef(),
+                  source = SourceRef.None,
                   type = TestType.Test
                )
             ) shouldStartWith "_0foo____55__woo"
@@ -51,7 +51,7 @@ class SpringExtensionTest : WordSpec() {
                   name = TestNameBuilder.builder("wibble%%wobble").build(),
                   spec = this@SpringExtensionTest,
                   test = {},
-                  source = sourceRef(),
+                  source = SourceRef.None,
                   type = TestType.Test
                )
             ) shouldStartWith "wibble__wobble"

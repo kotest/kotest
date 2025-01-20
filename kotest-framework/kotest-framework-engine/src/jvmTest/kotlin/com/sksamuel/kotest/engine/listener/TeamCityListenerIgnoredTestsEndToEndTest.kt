@@ -25,7 +25,7 @@
 //      name = TestName("disabled test"),
 //      spec = this,
 //      test = { },
-//      source = sourceRef(),
+//      source = SourceRef.None,
 //      type = TestType.Test,
 //      config = ResolvedTestConfig.default.copy(enabled = { Enabled.disabled }),
 //      factoryId = null,

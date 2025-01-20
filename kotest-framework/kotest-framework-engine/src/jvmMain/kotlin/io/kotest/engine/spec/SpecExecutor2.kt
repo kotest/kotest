@@ -210,8 +210,7 @@ internal class SpecExecutor2(
 
             logger.log { Pair(testCase.name.name, failFastReason) }
             engineContext.listener.testIgnored(nestedTestCase, failFastReason)
-            engineContext.testExtensions()
-               .ignoredTestListenersInvocation(nestedTestCase, failFastReason)
+            engineContext.testExtensions().ignoredTestListenersInvocation(nestedTestCase, failFastReason)
 
          } else {
             executeTest(nestedTestCase, specContext)
