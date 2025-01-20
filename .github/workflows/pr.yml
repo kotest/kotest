@@ -12,7 +12,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-241", "IC-242", "IC-243", "IC-251" ]
+            product: [ "IC-241", "IC-242", "IC-243" ]
          max-parallel: 10
          fail-fast: false
 

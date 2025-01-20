@@ -1,11 +1,11 @@
 package io.kotest.plugin.intellij.intentions
 
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.idea.core.moveCaret
-import org.jetbrains.kotlin.idea.util.application.runWriteAction
 import java.nio.file.Paths
 
 class BangIntentionTest : LightJavaCodeInsightFixtureTestCase() {
