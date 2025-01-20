@@ -4,13 +4,14 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.internal.file.FileCollectionFactory
 import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.internal.concurrent.ExecutorFactory
 import javax.inject.Inject
 
 // gradle requires the class be extendable
+@CacheableTask // this allows gradle to cache our inputs
 open class KotestTask @Inject constructor(
    private val fileResolver: FileResolver,
    private val fileCollectionFactory: FileCollectionFactory,
@@ -21,12 +22,14 @@ open class KotestTask @Inject constructor(
    private var tests: String? = null
 
    // gradle will call this if --tests was specified on the command line
+   @Suppress("unused")
    @Option(option = "tests", description = "Filter to a single spec and/or test")
    fun setTests(tests: String) {
       this.tests = tests
    }
 
    // gradle will call this if --tags was specified on the command line
+   @Suppress("unused")
    @Option(option = "tags", description = "Set tag expression to include or exclude tests")
    fun setTags(tags: String) {
       this.tags = tags
@@ -39,11 +42,7 @@ open class KotestTask @Inject constructor(
       val testSourceSet = project.javaTestSourceSet() ?: return
       println("sourceset $testSourceSet")
 
-      val sourceSets =
-         project.extensions.findByType(JavaPluginExtension::class.java)?.sourceSets?.findByName("test") ?: return
-      println("sourceSets $sourceSets")
-
-      val specs = TestClassDetector().detect(sourceSets.runtimeClasspath.asFileTree)
+      val specs = TestClassDetector().detect(testSourceSet.runtimeClasspath.asFileTree)
       specs.forEach { println("detected spec: $it") }
 
       val result = try {
