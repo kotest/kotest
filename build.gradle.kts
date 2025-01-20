@@ -12,6 +12,8 @@ repositories {
    mavenCentral()
    mavenLocal()
    maven("https://oss.sonatype.org/content/repositories/snapshots")
+
+   // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
    intellijPlatform {
       defaultRepositories()
       jetbrainsRuntime()
@@ -38,8 +40,7 @@ data class PluginDescriptor(
 // when releasing for an EAP, look at snapshots and see the column called build number
 //    https://www.jetbrains.com/intellij-repository/snapshots
 
-// for the sdk version we can use IC-2021.1 if the product is released
-// or IC-213-EAP-SNAPSHOT if not
+// for the sdk version we can use IC-241 if the product is released or 243-EAP-SNAPSHOT if not
 
 // for 'since' we can use an early build number without eap/snapshot eg 213.5281.15
 // and 'until' we can use a wildcard eg 213.*
@@ -64,12 +65,19 @@ val descriptors = listOf(
       until = "244.*",
       sdkVersion = "2024.3.1",
       sourceFolder = "IC-243",
+      useInstaller = true,
+   ),
+   PluginDescriptor(
+      since = "251.*", // this version is 2025.1.x
+      until = "252.*",
+      sdkVersion = "251-EAP-SNAPSHOT",
+      sourceFolder = "IC-251",
       useInstaller = false,
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-243"
-val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "11"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
+val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "17"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -112,17 +120,32 @@ intellijPlatform {
 }
 
 dependencies {
+   // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
    testImplementation("junit:junit:4.13.2")
+
+   // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
    intellijPlatform {
       // snapshots here https://www.jetbrains.com/intellij-repository/snapshots/
       intellijIdeaCommunity(descriptor.sdkVersion, useInstaller = descriptor.useInstaller)
-      if (!descriptor.useInstaller)
+
+      if (!descriptor.useInstaller) {
          jetbrainsRuntime()
+//         testPlatformDependency(Coordinates("com.jetbrains.intelli.java", "java-test-framework"))
+      }
+
       pluginVerifier()
       zipSigner()
+
       bundledPlugin("com.intellij.java")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
+
+      // this is workaround for a bug in intellij itself
+      // see https://jetbrains-platform.slack.com/archives/C5U8BM1MK/p1734228390297349
+      if (descriptor.sdkVersion == "2024.3.1") {
+         bundledPlugin("com.intellij.llmInstaller")
+      }
+
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
@@ -159,6 +182,9 @@ kotlin {
 
 tasks {
    test {
+      if (descriptor.useInstaller) {
+         useTestNG() // no test ng tests so this will disable junit
+      }
       isScanForTestClasses = false
       // Only run tests from classes that end with "Test"
       include("**/*Test.class")

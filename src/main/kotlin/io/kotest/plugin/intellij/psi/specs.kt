@@ -40,7 +40,7 @@ fun KtClassOrObject.isSpec(): Boolean {
  */
 fun PsiElement.isSpec(): Boolean = when (this) {
    is KtUltraLightClass -> kotlinOrigin.isSpec()
-   is KtLightClass -> kotlinOrigin?.isSpec() == true
+   is KtLightClass -> kotlinOrigin?.isSpec() ?: false
    is KtClassOrObject -> isSpec()
    else -> false
 }

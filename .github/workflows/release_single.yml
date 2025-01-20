@@ -27,8 +27,8 @@ jobs:
 
          -  uses: actions/setup-java@v4
             with:
-               java-version: ${{ inputs.java }}
-               distribution: ${{ inputs.distribution }}
+               java-version: "17"
+               distribution: "temurin"
 
          -  name: deploy to jetbrains
             run: ./gradlew --stacktrace publishPlugin

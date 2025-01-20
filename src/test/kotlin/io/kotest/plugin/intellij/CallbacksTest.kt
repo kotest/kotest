@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runReadAction
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
