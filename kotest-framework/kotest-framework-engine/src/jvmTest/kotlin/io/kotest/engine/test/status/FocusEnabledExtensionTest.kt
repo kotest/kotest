@@ -2,7 +2,7 @@ package io.kotest.engine.test.status
 
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
@@ -17,7 +17,7 @@ class FocusEnabledExtensionTest : FunSpec() {
          TestNameBuilder.builder("t").build(),
          FocusEnabledTest(),
          { },
-         sourceRef(),
+         SourceRef.None,
          TestType.Test,
          parent = null,
       )
@@ -31,7 +31,7 @@ class FocusEnabledExtensionTest : FunSpec() {
             TestNameBuilder.builder("t").build(),
             FocusEnabledExtensionTest(),
             { },
-            sourceRef(),
+            SourceRef.None,
             TestType.Test,
             parent = tc,
          )

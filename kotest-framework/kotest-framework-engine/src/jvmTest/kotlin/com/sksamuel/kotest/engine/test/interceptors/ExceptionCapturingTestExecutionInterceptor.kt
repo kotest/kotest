@@ -5,7 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -24,7 +24,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
          TestNameBuilder.builder("foo").build(),
          ExceptionCapturingTestExecutionInterceptorTest(),
          {},
-         sourceRef(),
+         SourceRef.None,
          TestType.Test
       )
       val context = TerminalTestScope(tc, coroutineContext)
@@ -42,7 +42,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
          TestNameBuilder.builder("foo").build(),
          ExceptionCapturingTestExecutionInterceptorTest(),
          {},
-         sourceRef(),
+         SourceRef.None,
          TestType.Test
       )
       val context = TerminalTestScope(tc, coroutineContext)

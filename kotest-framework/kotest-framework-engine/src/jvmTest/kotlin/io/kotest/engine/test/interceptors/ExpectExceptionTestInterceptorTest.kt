@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.ExpectFailureException
 import io.kotest.core.test.TestCase
@@ -28,7 +28,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
          TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
-         sourceRef(),
+         SourceRef.None,
          TestType.Test,
       )
       ExpectExceptionTestInterceptor.intercept(tc, NoopTestScope(tc, coroutineContext)) { _, _ ->
@@ -42,7 +42,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
          TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
-         sourceRef(),
+         SourceRef.None,
          TestType.Test,
       )
       ExpectExceptionTestInterceptor.intercept(tc, NoopTestScope(tc, coroutineContext)) { _, _ ->
@@ -56,7 +56,7 @@ class ExpectExceptionTestInterceptorTest : FunSpec({
          TestNameBuilder.builder("a").build(),
          ExpectExceptionTestInterceptorTest(),
          {},
-         sourceRef(),
+         SourceRef.None,
          TestType.Test,
       )
       ExpectExceptionTestInterceptor.intercept(tc, NoopTestScope(tc, coroutineContext)) { _, _ ->
