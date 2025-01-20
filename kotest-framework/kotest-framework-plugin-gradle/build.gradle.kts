@@ -50,9 +50,9 @@ gradlePlugin {
       create("KotestGradlePlugin") {
          id = "io.kotest"
          implementationClass = "io.kotest.framework.gradle.KotestPlugin"
-         displayName = "Kotest Multiplatform Compiler Plugin"
-         description = "Adds support for JavaScript and Native tests in Kotest"
-         tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
+         displayName = "Kotest Gradle Plugin"
+         description = "Adds support for running Kotest tests in gradle"
+         tags.addAll("kotest", "kotlin", "testing", "integration testing")
       }
    }
 }
