@@ -5,7 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
@@ -34,7 +34,7 @@ class CoroutineDispatcherFactoryTestInterceptor : DescribeSpec() {
                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
-               sourceRef(),
+               SourceRef.None,
                TestType.Container,
             )
 
