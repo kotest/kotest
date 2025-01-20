@@ -151,13 +151,15 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List
    override fun test(value: List<T>): MatcherResult {
       val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && cmp(it, value[i + 1]) > 0 }
       val snippet = value.joinToString(",", limit = 10)
-      val elementMessage = when (failure) {
-         null -> ""
-         else -> ". Element ${failure.value} at index ${failure.index} shouldn't precede element ${value[failure.index + 1]}"
+      val elementMessage = {
+         when (failure) {
+            null -> ""
+            else -> ". Element ${failure.value} at index ${failure.index} shouldn't precede element ${value[failure.index + 1]}"
+         }
       }
       return MatcherResult(
          failure == null,
-         { "List [$snippet] should be sorted$elementMessage" },
+         { "List [$snippet] should be sorted${elementMessage()}" },
          { "List [$snippet] should not be sorted" })
    }
 }
