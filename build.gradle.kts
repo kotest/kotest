@@ -130,7 +130,6 @@ dependencies {
 
       if (!descriptor.useInstaller) {
          jetbrainsRuntime()
-//         testPlatformDependency(Coordinates("com.jetbrains.intelli.java", "java-test-framework"))
       }
 
       pluginVerifier()
@@ -182,9 +181,6 @@ kotlin {
 
 tasks {
    test {
-      if (descriptor.useInstaller) {
-         useTestNG() // no test ng tests so this will disable junit
-      }
       isScanForTestClasses = false
       // Only run tests from classes that end with "Test"
       include("**/*Test.class")
