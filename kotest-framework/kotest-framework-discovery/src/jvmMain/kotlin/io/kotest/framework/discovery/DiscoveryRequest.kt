@@ -10,6 +10,8 @@ import io.kotest.core.spec.Spec
  * package may be referred to via a [DiscoverySelector.PackageDiscoverySelector]. Selectors stack, so each
  * selector may contribute zero or more specs and all discovered specs are returned.
  *
+ * If no selectors are provided, then all specs on the class path are returned.
+ *
  * Filters are instances of [DiscoveryFilter] and are applied to the discovered set of Specs.
  * All of them have to include a resource for it to end up in the test plan. For example, you may
  * filter specs by a [DiscoveryFilter.ClassNameDiscoveryFilter] where any specs that do not have a matching name
@@ -17,21 +19,34 @@ import io.kotest.core.spec.Spec
  * the specified packages would be removed.
  */
 data class DiscoveryRequest(
-   val selectors: List<DiscoverySelector> = emptyList(),
-   val filters: List<DiscoveryFilter> = emptyList()
+   val selectors: List<DiscoverySelector>,
+   val filters: List<DiscoveryFilter>,
+)
+
+data class DiscoveryRequestBuilder(
+   val selectors: List<DiscoverySelector>,
+   val filters: List<DiscoveryFilter>,
 ) {
 
-   fun withSelector(selector: DiscoverySelector): DiscoveryRequest =
+   companion object {
+      fun builder() = DiscoveryRequestBuilder(emptyList(), emptyList())
+   }
+
+   fun withSelector(selector: DiscoverySelector): DiscoveryRequestBuilder =
       copy(selectors = this.selectors + selector)
 
-   fun withFilter(filter: DiscoveryFilter): DiscoveryRequest =
+   fun withFilter(filter: DiscoveryFilter): DiscoveryRequestBuilder =
       copy(filters = this.filters + filter)
 
-   fun withSelectors(selectors: List<DiscoverySelector>): DiscoveryRequest =
+   fun withSelectors(selectors: List<DiscoverySelector>): DiscoveryRequestBuilder =
       copy(selectors = this.selectors + selectors)
 
-   fun withFilters(filters: List<DiscoveryFilter>): DiscoveryRequest =
+   fun withFilters(filters: List<DiscoveryFilter>): DiscoveryRequestBuilder =
       copy(filters = this.filters + filters)
+
+   fun build(): DiscoveryRequest {
+      return DiscoveryRequest(selectors, filters)
+   }
 }
 
 data class FullyQualifiedClassName(val value: String)

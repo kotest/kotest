@@ -13,6 +13,7 @@ plugins {
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
+   implementation("org.ow2.asm:asm:9.7.1") // used to poke into classes to see if they are specs
    testImplementation(libs.kotlin.gradle.plugin)
 }
 
@@ -49,9 +50,9 @@ gradlePlugin {
       create("KotestGradlePlugin") {
          id = "io.kotest"
          implementationClass = "io.kotest.framework.gradle.KotestPlugin"
-         displayName = "Kotest Multiplatform Compiler Plugin"
-         description = "Adds support for JavaScript and Native tests in Kotest"
-         tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
+         displayName = "Kotest Gradle Plugin"
+         description = "Adds support for running Kotest tests in gradle"
+         tags.addAll("kotest", "kotlin", "testing", "integration testing")
       }
    }
 }
