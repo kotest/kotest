@@ -12,22 +12,22 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
+import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.styles.SpecStyle
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.execution.GradleExternalTaskConfigurationType
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 /**
- * Runs a Kotest individual test using the `kotest` gradle task.
+ * Runs a Kotest individual test or spec using the `kotest` gradle task.
  *
  * This uses a [GradleRunConfiguration] which is an intellij provided ExternalSystemRunConfiguration
  * that runs gradle tasks.
  *
  * Intellij 242+ provides a GradleRunConfigurationProducer but that isn't part of 241, so until that is
- * no longer supported we will use this custom producer.
+ * no longer supported we will need to extend [LazyRunConfigurationProducer].
  */
-class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRunConfiguration>() {
+class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<GradleRunConfiguration>() {
 
    override fun getConfigurationFactory(): ConfigurationFactory {
       return GradleExternalTaskConfigurationType.getInstance().factory
@@ -47,10 +47,18 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
 
    /**
     * Returns true if this configuration should replace the other configuration.
+    *
     * // todo determine what the logic should be here, sometimes we create a new configuration, sometimes we don't,
+    *
+    * notes: seems to be invoked when showing the line marker drop downs
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
-      return false
+      println("Should replace ${self.configuration.name} over ${other.configuration.name}")
+      // we need this gradle configuration to take precedence over the previous kotest run that ran a java process directly,
+      // but we only want to do this if the user has enabled the kotest gradle plugin
+      // we don't have access to the module at this point, but we can assume that the presence of this configuration
+      // means the [isConfigurationFromContext] set it up and did the detection for us.
+      return true
    }
 
    /**
@@ -84,12 +92,17 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
       val element = sourceElement.get()
       if (element == null) return false
 
-      // if a gradle task was initiated outside a kotest test then we are not interested
-      val test = SpecStyle.findTest(element)
-      if (test == null) return false
+      // we must be in a class or object, as we need the fully qualified name of the spec
+      println("Element = $element")
+      val spec = element.enclosingSpec()
+      if (spec == null) {
+         println("No spec found for element $element")
+         return false
+      } else {
+         println("kt class = ${spec.fqName?.asString()}")
+      }
 
-      // we must be in a class, as we need the fully qualified name of the spec
-      val spec: KtClass = element.enclosingKtClass() ?: return false
+      val test = SpecStyle.findTest(element)
 
       // this is the path to the project on the file system
       val externalProjectPath = GradleUtils.resolveProjectPath(module) ?: return false
@@ -97,7 +110,10 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
       // this is the psi element associated with the run, needed by the java run extension manager
       val location = context.location ?: return false
 
-      configuration.name = GradleTestRunNameBuilder.builder().withSpec(spec).withTest(test).build()
+      val nameBuilder = GradleTestRunNameBuilder.builder().withSpec(spec)
+      if (test != null) nameBuilder.withTest(test)
+
+      configuration.name = nameBuilder.build()
       configuration.isDebugServerProcess = false
       // if we set this to true then intellij will send output to a gradle test console, which we want to override
       configuration.isRunAsTest = false

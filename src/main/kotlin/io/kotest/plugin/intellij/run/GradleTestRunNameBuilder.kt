@@ -1,13 +1,13 @@
 package io.kotest.plugin.intellij.run
 
 import io.kotest.plugin.intellij.Test
-import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
  * Builds names to show in the run configuration dropdown for tests/specs/packages.
  */
 data class GradleTestRunNameBuilder(
-   private val spec: KtClass?,
+   private val spec: KtClassOrObject?,
    private val test: Test?
 ) {
 
@@ -15,7 +15,7 @@ data class GradleTestRunNameBuilder(
       fun builder(): GradleTestRunNameBuilder = GradleTestRunNameBuilder(null, null)
    }
 
-   fun withSpec(spec: KtClass): GradleTestRunNameBuilder {
+   fun withSpec(spec: KtClassOrObject): GradleTestRunNameBuilder {
       return copy(spec = spec)
    }
 

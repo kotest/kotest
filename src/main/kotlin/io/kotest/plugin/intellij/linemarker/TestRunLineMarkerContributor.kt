@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.linemarker
 
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
@@ -21,6 +21,7 @@ import javax.swing.Icon
 
 /**
  * A [RunLineMarkerContributor] adds gutter icons to elements if they are actionable.
+ *
  * This [TestRunLineMarkerContributor] adds the test run icon to kotest test cases.
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
@@ -61,12 +62,14 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
    }
 
    /**
-    * Returns an [Info] to use for the given [Test].
+    * Returns an [Info] to use for the given [io.kotest.plugin.intellij.Test].
     */
    private fun icon(test: Test): Info {
       return Info(
          icon,
-         ExecutorAction.getActions(1),
+         ExecutorAction.Companion.getActions(1),
+         // note that the run name is used for the tooltip not the drop down
+         // the drop down gets names from the created run configurations
          Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
       )
    }

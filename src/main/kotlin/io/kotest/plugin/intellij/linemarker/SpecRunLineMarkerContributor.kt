@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.linemarker
 
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
@@ -6,18 +6,18 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.util.Function
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.testMode
-import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Returns a [RunLineMarkerContributor.Info] for a spec class.
+ * Returns a [Info] for a spec class.
  *
  * The entry point is the 'class' or 'object' keyword that is part of the spec's
  * definition in code. In psi terms, this is a leaf element whose element type is KTK, and context
- * element is [KtClassOrObject].
+ * element is [org.jetbrains.kotlin.psi.KtClassOrObject].
  */
 class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
 
@@ -35,8 +35,10 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
             if (spec != null && spec.isRunnableSpec()) {
                return Info(
                   icon,
-                  com.intellij.util.Function<PsiElement, String> { "Run ${spec.fqName?.shortName()}" },
-                  *ExecutorAction.getActions(1)
+                  ExecutorAction.Companion.getActions(1),
+                  // note that the run name is used for the tooltip not the drop down
+                  // the drop down gets names from the created run configurations
+                  Function<PsiElement, String> { "Run ${spec.fqName?.shortName()}" },
                )
             }
          }
@@ -44,4 +46,3 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
       return null
    }
 }
-

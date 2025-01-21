@@ -59,17 +59,17 @@
 
       <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
       <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
-      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.run.TestRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.run.SpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.SpecRunLineMarkerContributor"/>
 
       <externalSystemExecutionConsoleManager implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
                                              order="before gradle"/>
 
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleKotestTaskRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleTestRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleTestTaskRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>

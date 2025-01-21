@@ -6,12 +6,13 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
+import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.Test
 
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
@@ -35,6 +36,10 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
+
+// if we have the kotest plugin then we shouldn't use this
+      if (GradleUtils.hasKotestTask(context.module)) return false
+
       val element = sourceElement.get()
       if (element != null) {
          val test = findTest(element)
@@ -58,6 +63,10 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    // if one of the configurations matches then this should return true
    override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
                                            context: ConfigurationContext): Boolean {
+
+      // if we have the kotest plugin then we shouldn't use this
+      if (GradleUtils.hasKotestTask(context.module)) return false
+
       val element = context.psiLocation
       if (element != null) {
          val test = findTest(element)
@@ -85,7 +94,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
     * We always return true because no one else should be creating Kotest configurations.
     */
    override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
-      return true
+      return false
    }
 
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {

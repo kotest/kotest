@@ -57,7 +57,7 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
          val style = ktclass.specStyle() ?: return null
          val test = style.test(element) ?: return null
          if (test.name.interpolated) MainEditorLineMarkerInfo(element, text, icon) else null
-      } catch (e: Exception) {
+      } catch (_: Exception) {
          null
       }
    }
