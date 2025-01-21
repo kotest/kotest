@@ -6,6 +6,7 @@ import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Constants
@@ -65,6 +66,7 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
     *
     * Return false otherwise.
     */
+   @Suppress("UnstableApiUsage")
    override fun setupConfigurationFromContext(
       configuration: GradleRunConfiguration,
       context: ConfigurationContext,
@@ -89,11 +91,17 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
       // we must be in a class, as we need the fully qualified name of the spec
       val spec: KtClass = element.enclosingKtClass() ?: return false
 
+      // this is the path to the project on the file system
       val externalProjectPath = GradleUtils.resolveProjectPath(module) ?: return false
+
+      // this is the psi element associated with the run, needed by the java run extension manager
       val location = context.location ?: return false
 
       configuration.name = GradleTestRunNameBuilder.builder().withSpec(spec).withTest(test).build()
       configuration.isDebugServerProcess = false
+      // if we set this to true then intellij will send output to a gradle test console, which we want to override
+      configuration.isRunAsTest = false
+      configuration.putUserData<Boolean>(Key.create<Boolean>("kotest"), true)
 
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)
@@ -102,7 +110,7 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
       configuration.settings.externalProjectPath = externalProjectPath
       configuration.settings.scriptParameters = ""
       configuration.settings.taskNames = GradleTaskNamesBuilder.builder(gradleModuleData).withSpec(spec).build()
-      println(configuration.settings.taskNames.toString())
+      println("Task names: " + configuration.settings.taskNames.toString())
 
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
       return true
@@ -123,7 +131,9 @@ class GradleTestRunConfigurationProducer : LazyRunConfigurationProducer<GradleRu
 
       // if kotest is not the task this configuration is running, then this isn't a configuration we can re-use
       // eg, we might be passed another gradle run configuration that was running build or clean etc
-      if (configuration.settings.taskNames.firstOrNull() != Constants.GRADLE_TASK_NAME) return false
+      // todo we need a better way of checking the task
+      if (!configuration.settings.taskNames.first().endsWith(Constants.GRADLE_TASK_NAME)) return false
+//      println("Reusing configuration ${configuration.settings.taskNames.joinToString(", ")}")
 
       val element = context.psiLocation
       if (element != null) {

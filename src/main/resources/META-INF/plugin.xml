@@ -62,6 +62,9 @@
       <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.run.TestRunLineMarkerContributor"/>
       <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.run.SpecRunLineMarkerContributor"/>
 
+      <externalSystemExecutionConsoleManager implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
+                                             order="before gradle"/>
+
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>

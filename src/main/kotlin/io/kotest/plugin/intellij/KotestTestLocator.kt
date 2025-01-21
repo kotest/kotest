@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij
 import com.intellij.execution.Location
 import com.intellij.execution.PsiLocation
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
@@ -16,14 +17,14 @@ import io.kotest.plugin.intellij.psi.toPsiLocation
 /**
  * A parser for location URLs reported by test runners.
  *
- * Kotest 5.0 reports its location hints as
+ * Kotest 5.0+ reports its location hints as
  *   kotest:file://filename:linenumber
  * or
  *   kotest:class://fqn:lineNumber
  *
- * Kotest 4 reported it's located hints as kotest://class:linenumber
+ * Kotest 4 reported its location hints as kotest://class:linenumber
  */
-class KotestTestLocator : SMTestLocator {
+class KotestTestLocator : SMTestLocator, DumbAware {
 
    override fun getLocation(
       protocol: String,
@@ -31,12 +32,7 @@ class KotestTestLocator : SMTestLocator {
       project: Project,
       scope: GlobalSearchScope
    ): List<Location<PsiElement>> {
-      return when (protocol) {
-         Constants.FileLocatorProtocol -> parseFile(project, scope, path)
-         Constants.ClassLocatorProtocol -> parseClass(project, scope, path)
-         Constants.OldLocatorProtocol -> parseClass(project, scope, path)
-         else -> emptyList()
-      }
+      return getLocation(protocol, path, null, project, scope)
    }
 
    override fun getLocation(
