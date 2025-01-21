@@ -14,6 +14,7 @@ open class KotestPlugin : Plugin<Project> {
       const val DESCRIPTION = "Run Kotest"
       const val TASK_NAME = "kotest"
       const val EXTENSION_NAME = "kotest"
+      const val KOTLIN_JVM_PLUGIN = "org.jetbrains.kotlin.jvm"
    }
 
    override fun apply(project: Project) {
@@ -25,22 +26,14 @@ open class KotestPlugin : Plugin<Project> {
          /* ...constructionArguments = */ project
       )
 
-      // add a kotest task to all targets that have a test task
-//      project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
-//         println("multiplatform=" + this::class.qualifiedName)
-//      }
-
-      // todo only add to projects which have a Test type already
-      // todo should only add to projects which have kotest on the classpath
-      project.afterEvaluate {
-         plugins.withId("org.jetbrains.kotlin.jvm") {
-            this@afterEvaluate.allprojects.forEach { subproject ->
-               subproject.tasks.register("kotest", KotestTask::class.java) {
-                  description = DESCRIPTION
-                  group = JavaBasePlugin.VERIFICATION_GROUP
-                  dependsOn(subproject.tasks.getByName(JavaPlugin.TEST_CLASSES_TASK_NAME))
-               }
-            }
+      // we only want to add the task if the project has the kotlin jvm plugin
+      project.plugins.withId(KOTLIN_JVM_PLUGIN) {
+         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+         // see https://docs.gradle.org/current/userguide/isolated_projects.html
+         project.tasks.register(TASK_NAME, KotestTask::class.java) {
+            description = DESCRIPTION
+            group = JavaBasePlugin.VERIFICATION_GROUP
+            dependsOn(project.tasks.getByName(JavaPlugin.TEST_CLASSES_TASK_NAME))
          }
       }
    }

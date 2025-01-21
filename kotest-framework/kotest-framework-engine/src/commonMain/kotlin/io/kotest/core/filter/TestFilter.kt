@@ -19,9 +19,7 @@ interface TestFilter : Extension {
 }
 
 sealed interface TestFilterResult {
-   object Include : TestFilterResult {
-      override fun toString() = "TestFilterResult.Include" // Replace me with `data object` when it's available
-   }
+   data object Include : TestFilterResult
    data class Exclude(val reason: String?) : TestFilterResult
 }
 

@@ -1344,6 +1344,8 @@ public final class io/kotest/core/filter/TestFilterResult$Exclude : io/kotest/co
 
 public final class io/kotest/core/filter/TestFilterResult$Include : io/kotest/core/filter/TestFilterResult {
 	public static final field INSTANCE Lio/kotest/core/filter/TestFilterResult$Include;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 

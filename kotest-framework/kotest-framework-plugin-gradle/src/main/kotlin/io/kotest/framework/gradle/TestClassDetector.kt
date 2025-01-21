@@ -26,8 +26,15 @@ class TestClassDetector {
       "io/kotest/core/spec/style/WordSpec",
    )
 
-   internal fun toCanonicalFqn(className: String): String {
-      return className.replace("/", ".")
+   fun detect(candidates: FileTree): List<TestClass> {
+      parents.clear()
+      candidates.filter { it.name.endsWith(".class") }.asFileTree.visit(visitor)
+      return parents.filter { isSpecClass(it.value) }.keys.toList().map { toTestClass(it) }
+   }
+
+   internal fun toTestClass(className: String): TestClass {
+      val qualifiedName = className.replace("/", ".")
+      return TestClass(qualifiedName.substringBeforeLast('.'), qualifiedName)
    }
 
    /**
@@ -38,12 +45,6 @@ class TestClassDetector {
     */
    internal fun add(className: String, superName: String) {
       parents[className] = superName
-   }
-
-   fun detect(candidates: FileTree): List<String> {
-      parents.clear()
-      candidates.filter { it.name.endsWith(".class") }.asFileTree.visit(visitor)
-      return parents.filter { isSpecClass(it.value) }.keys.toList().map { toCanonicalFqn(it) }
    }
 
    /**
@@ -67,3 +68,5 @@ class TestClassDetector {
       }
    }
 }
+
+data class TestClass(val packageName: String, val qualifiedName: String)
