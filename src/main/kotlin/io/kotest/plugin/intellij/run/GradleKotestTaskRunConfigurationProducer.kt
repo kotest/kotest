@@ -122,10 +122,14 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)
 
+      val taskNamesBuilder = GradleTaskNamesBuilder.builder(gradleModuleData).withSpec(spec)
+      if (test != null)
+         taskNamesBuilder.withTest(test)
+
       // note: configuration.settings.externalSystemId is set for us
       configuration.settings.externalProjectPath = externalProjectPath
       configuration.settings.scriptParameters = ""
-      configuration.settings.taskNames = GradleTaskNamesBuilder.builder(gradleModuleData).withSpec(spec).build()
+      configuration.settings.taskNames = taskNamesBuilder.build()
       println("Task names: " + configuration.settings.taskNames.toString())
 
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
