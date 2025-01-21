@@ -9,12 +9,7 @@ sealed interface SourceRef {
    object None : SourceRef
 
    /**
-    * A [SourceRef] for the line number and filename.
-    */
-   data class FileSource(val fileName: String, val lineNumber: Int?) : SourceRef
-
-   /**
-    * A [SourceRef] for the line number and the fully qualified class.
+    * A [SourceRef] for a line number in a class.
     */
    data class ClassSource(val fqn: String, val lineNumber: Int?) : SourceRef
 }

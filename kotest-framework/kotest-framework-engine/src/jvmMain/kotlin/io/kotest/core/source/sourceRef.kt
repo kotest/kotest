@@ -24,8 +24,6 @@ internal actual fun sourceRef(): SourceRef {
          it.className.startsWith("kotlinx.")
    }.firstOrNull()
 
-   val fileName = frame?.fileName
-
    // preference is given to the class name but we must try to find the enclosing spec
    val kclass = frame?.className?.let { fqn ->
       runCatching {
@@ -40,7 +38,6 @@ internal actual fun sourceRef(): SourceRef {
    return when {
       frame == null -> SourceRef.None
       kclass != null -> SourceRef.ClassSource(kclass.java.name, frame.lineNumber.takeIf { it > 0 })
-      fileName != null -> SourceRef.FileSource(fileName, frame.lineNumber.takeIf { it > 0 })
       else -> SourceRef.None
    }
 }
