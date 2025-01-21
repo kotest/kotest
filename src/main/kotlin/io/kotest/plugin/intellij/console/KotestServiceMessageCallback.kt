@@ -47,7 +47,7 @@ class KotestServiceMessageCallback(
             proxy.setFinished()
             val attrs = MessageAttributeParser.parse(msg)
             // this will actually be ignored due to a bug in intellij
-            proxy.setDuration(attrs.duration?.inWholeMilliseconds ?: 0L)
+            attrs.duration?.let { proxy.setDuration(attrs.duration.inWholeMilliseconds) }
             console.resultsViewer.onSuiteFinished(proxy)
             publisher.onSuiteFinished(proxy)
          }
@@ -61,7 +61,7 @@ class KotestServiceMessageCallback(
             val proxy = getProxy(msg)
             proxy.setFinished()
             val attrs = MessageAttributeParser.parse(msg)
-            proxy.setDuration(attrs.duration?.inWholeMilliseconds ?: 0L)
+            attrs.duration?.let { proxy.setDuration(attrs.duration.inWholeMilliseconds) }
             console.resultsViewer.onTestFinished(proxy)
             publisher.onTestFinished(proxy)
          }
@@ -96,6 +96,4 @@ class KotestServiceMessageCallback(
       val attrs = MessageAttributeParser.parse(msg)
       return proxies[attrs.id] ?: error("Proxy ${attrs.id} not found")
    }
-
-
 }

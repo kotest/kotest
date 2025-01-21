@@ -6,6 +6,8 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
+import com.intellij.execution.testframework.sm.runner.SMTestProxy.SMRootTestProxy
+import com.intellij.execution.testframework.sm.runner.events.TestDurationStrategy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.externalSystem.execution.ExternalSystemExecutionConsoleManager
@@ -16,7 +18,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import io.kotest.plugin.intellij.Constants
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
-import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
 //object KotestConsoleFilterProvider: ConsoleFilterProvider {
@@ -47,7 +48,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       return emptyArray()
    }
 
-   @Suppress("UnstableApiUsage")
+   @Suppress("UnstableApiUsage", "OverrideOnly")
    override fun attachExecutionConsole(
       project: Project,
       task: ExternalSystemTask,
@@ -59,11 +60,9 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       if (processHandler == null) return null
       val settings = env.runnerAndConfigurationSettings ?: return null
 
-      val runConfiguration = settings.configuration as GradleRunConfiguration
-      val consoleProperties = KotestSMTRunnerConsoleProperties(runConfiguration, env.executor)
+      val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
 
 //      val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FrameworkName)
-//
 //      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName)
 
       val consoleView = SMTestRunnerConnectionUtil.createConsole(consoleProperties)
@@ -72,6 +71,16 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
 
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
+      try {
+         // don't know why this method is not public, and cannot figure out how to override it
+         // see https://youtrack.jetbrains.com/issue/IJSDK-2340/set-duration-strategy-on-SMRootTestProxy
+         val method = SMRootTestProxy::class.java.getDeclaredMethod("setDurationStrategy", TestDurationStrategy::class.java)
+         method.isAccessible = true
+         method.invoke(consoleView.resultsViewer.testsRootNode, TestDurationStrategy.MANUAL)
+      } catch (e: Exception) {
+         println(e)
+         e.printStackTrace()
+      }
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()
 
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
@@ -89,6 +98,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
             }
             consoleView.resultsViewer.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
             publisher.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
+
             consoleView.resultsViewer.onTestingFinished(consoleView.resultsViewer.testsRootNode)
             publisher.onTestingFinished(consoleView.resultsViewer.testsRootNode)
          }
