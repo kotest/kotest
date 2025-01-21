@@ -23,8 +23,6 @@ This plugin requires Kotest 4.1.0 or above.
   tasks.withType<Test> { useJUnitPlatform() }
 ```
 
-This plugin has been tested with IDEA 2020.3, 2020.2, 2020.1 and 2019.3.1.
-
 ## Gutter Icons
 
 The plugin provides gutter run icons for specs, top level tests, and nested tests.
