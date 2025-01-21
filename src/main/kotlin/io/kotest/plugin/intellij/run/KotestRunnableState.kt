@@ -18,7 +18,7 @@ class KotestRunnableState(
 
    override fun getForkMode(): String = "none"
    override fun getFrameworkId(): String = Constants.FrameworkId
-   override fun getFrameworkName(): String = Constants.FrameworkName
+   override fun getFrameworkName(): String = Constants.FRAMEWORK_NAME
    override fun getConfiguration(): KotestRunConfiguration = config
 
    override fun passForkMode(forkMode: String?, tempFile: File?, parameters: JavaParameters?) {}

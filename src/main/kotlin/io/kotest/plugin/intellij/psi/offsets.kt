@@ -1,10 +1,8 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.execution.PsiLocation
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiUtilCore
 
 /**
  * Returns the offsets for the given line in this file, or -1 if the document cannot be loaded for this file.
@@ -37,5 +35,3 @@ fun PsiElement.findElementInRange(offsets: IntRange): PsiElement? {
  */
 fun PsiFile.elementAtLine(line: Int): PsiElement? =
    offsetForLine(line)?.let { findElementInRange(it) }
-
-fun PsiElement.toPsiLocation() = PsiLocation(project, this)

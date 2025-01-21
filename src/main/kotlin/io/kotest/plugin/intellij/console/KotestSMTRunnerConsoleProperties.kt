@@ -14,7 +14,7 @@ import javax.swing.tree.TreeSelectionModel
 class KotestSMTRunnerConsoleProperties(
    conf: ExternalSystemRunConfiguration,
    executor: Executor
-) : SMTRunnerConsoleProperties(conf, Constants.FrameworkName, executor) {
+) : SMTRunnerConsoleProperties(conf, Constants.FRAMEWORK_NAME, executor) {
 
    override fun getTestLocator(): SMTestLocator = KotestTestLocator()
 

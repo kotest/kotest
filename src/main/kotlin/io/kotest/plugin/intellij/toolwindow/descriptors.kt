@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 class KotestRootNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
    init {
-      templatePresentation.presentableText = Constants.FrameworkName
+      templatePresentation.presentableText = Constants.FRAMEWORK_NAME
    }
 
    override fun update(presentation: PresentationData) {

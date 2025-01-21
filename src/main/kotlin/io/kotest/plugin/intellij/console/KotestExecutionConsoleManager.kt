@@ -18,7 +18,6 @@ import io.kotest.plugin.intellij.Constants
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import kotlin.time.Duration
 
 //object KotestConsoleFilterProvider: ConsoleFilterProvider {
 //   override fun getDefaultFilters(p0: Project): Array<out Filter?> {
@@ -70,7 +69,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       val consoleView = SMTestRunnerConnectionUtil.createConsole(consoleProperties)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
-      SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FrameworkName)
+      SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
 
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()

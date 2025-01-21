@@ -9,6 +9,10 @@ import jetbrains.buildServer.messages.serviceMessages.ServiceMessageParserCallba
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTypes
 import java.text.ParseException
 
+/**
+ * An implementation of [ServiceMessageParserCallback] that updates the [console] and
+ * [publisher] with test events.
+ */
 class KotestServiceMessageCallback(
    private val console: SMTRunnerConsoleView,
    private val publisher: SMTRunnerEventsListener,
@@ -42,6 +46,7 @@ class KotestServiceMessageCallback(
             val proxy = getProxy(msg)
             proxy.setFinished()
             val attrs = MessageAttributeParser.parse(msg)
+            // this will actually be ignored due to a bug in intellij
             proxy.setDuration(attrs.duration?.inWholeMilliseconds ?: 0L)
             console.resultsViewer.onSuiteFinished(proxy)
             publisher.onSuiteFinished(proxy)

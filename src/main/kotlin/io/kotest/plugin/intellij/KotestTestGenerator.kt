@@ -32,7 +32,7 @@ class KotestTestGenerator : JavaTestGenerator() {
       // the framework name and delegate to the JavaTestGenerator one. But this only works while JavaTestGenerator
       // is public, and has a zero arg constructor, so I would like to find a better long term solution:
       // https://intellij-support.jetbrains.com/hc/en-us/community/posts/15040678418450-How-to-choose-when-to-apply-TestGenerator
-      if (d.selectedTestFrameworkDescriptor.name != Constants.FrameworkName)
+      if (d.selectedTestFrameworkDescriptor.name != Constants.FRAMEWORK_NAME)
          return super.generateTest(project, d)
       return PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(Computable {
          ApplicationManager.getApplication().runWriteAction(Computable<PsiElement?> {
