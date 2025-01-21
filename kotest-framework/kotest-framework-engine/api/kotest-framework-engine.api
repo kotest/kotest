@@ -1665,10 +1665,6 @@ public final class io/kotest/core/source/SourceRef$None : io/kotest/core/source/
 	public static final field INSTANCE Lio/kotest/core/source/SourceRef$None;
 }
 
-public final class io/kotest/core/source/SourceRefKt {
-	public static final fun sourceRef ()Lio/kotest/core/source/SourceRef;
-}
-
 public abstract class io/kotest/core/spec/CompositeSpec : io/kotest/core/spec/Spec {
 	public fun <init> ([Lio/kotest/core/factory/TestFactory;)V
 	public fun rootTests ()Ljava/util/List;

@@ -4,7 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -29,7 +29,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
-               sourceRef(),
+               SourceRef.None,
                TestType.Container,
             )
             var fired = false
@@ -49,7 +49,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
-               sourceRef(),
+               SourceRef.None,
                TestType.Test,
             )
             var fired = false
@@ -69,7 +69,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestNameBuilder.builder("foo").build(),
                InvocationCountCheckInterceptorTest(),
                {},
-               sourceRef(),
+               SourceRef.None,
                TestType.Container,
             )
 

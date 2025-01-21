@@ -5,7 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -35,7 +35,7 @@ class TestTimeoutTest : FunSpec() {
             name = TestNameBuilder.builder("wibble").build(),
             spec = this@TestTimeoutTest,
             test = { Thread.sleep(10000000) },
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Container,
             parent = null,
             config = TestConfig(
@@ -62,7 +62,7 @@ class TestTimeoutTest : FunSpec() {
             name = TestNameBuilder.builder("wobble").build(),
             spec = this@TestTimeoutTest,
             test = { delay(1000000) },
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Container,
             parent = null,
             config = TestConfig(

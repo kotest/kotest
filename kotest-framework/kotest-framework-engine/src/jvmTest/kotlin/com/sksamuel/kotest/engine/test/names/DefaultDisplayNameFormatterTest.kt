@@ -11,7 +11,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -48,7 +48,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestNameBuilder.builder("test").build(),
             SpecWithDisplayName(),
             {},
-            sourceRef(),
+            SourceRef.None,
             TestType.Test,
          )
          val tc2 = TestCase(
@@ -56,7 +56,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestNameBuilder.builder("test2").build(),
             SpecWithDisplayName(),
             {},
-            sourceRef(),
+            SourceRef.None,
             TestType.Test,
             parent = tc1
          )
@@ -74,7 +74,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestNameBuilder.builder("test").build(),
             SpecWithDisplayName(),
             {},
-            sourceRef(),
+            SourceRef.None,
             TestType.Test,
             TestConfig(tags = setOf(NamedTag("Foo"), Dummy))
          )
@@ -91,7 +91,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("!test").build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
@@ -106,7 +106,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("f:test").build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
@@ -121,7 +121,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("foo").withPrefix("prefix").withDefaultAffixes().build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
@@ -136,7 +136,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("foo").withPrefix("prefix").build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
@@ -153,7 +153,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("foo").withSuffix("suffix").withDefaultAffixes().build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )
@@ -168,7 +168,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             name = TestNameBuilder.builder("foo").withSuffix("suffix").build(),
             spec = SpecWithDisplayName(),
             test = {},
-            source = sourceRef(),
+            source = SourceRef.None,
             type = TestType.Test,
             config = TestConfig(tags = setOf(Dummy, NoUse))
          )

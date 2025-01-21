@@ -5,7 +5,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -39,7 +39,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
             TestNameBuilder.builder("foo").build(),
             EmptyTestSuiteInterceptorTest(),
             {},
-            sourceRef(),
+            SourceRef.None,
             TestType.Test
          )
 

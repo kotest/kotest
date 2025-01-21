@@ -22,4 +22,4 @@ sealed interface SourceRef {
 /**
  * Returns a [SourceRef] for the current execution point.
  */
-expect fun sourceRef(): SourceRef
+internal expect fun sourceRef(): SourceRef
