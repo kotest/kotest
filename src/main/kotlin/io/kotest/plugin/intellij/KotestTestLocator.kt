@@ -16,12 +16,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
 /**
  * A parser for location URLs reported by test runners.
  *
- * Kotest 5.0+ reports its location hints as
- *   kotest:file://filename:linenumber
- * or
- *   kotest:class://fqn:lineNumber
- *
- * Kotest 4 reported its location hints as kotest://class:linenumber
+ * Kotest reports its location hints as kotest://qualifiedName:linenumber
  */
 class KotestTestLocator : SMTestLocator, DumbAware {
 
