@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 
 object Locations {
 
-   fun location(kclass: KClass<*>): String = classHint(kclass.bestName() ?: "", 1)
+   fun location(kclass: KClass<*>): String = classHint(kclass.bestName(), 1)
 
    fun location(sourceRef: SourceRef): String? = when (sourceRef) {
       is SourceRef.ClassSource -> classHint(sourceRef.fqn, sourceRef.lineNumber ?: 1)
