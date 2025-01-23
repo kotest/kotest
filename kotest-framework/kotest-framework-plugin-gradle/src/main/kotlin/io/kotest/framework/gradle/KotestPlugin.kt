@@ -42,8 +42,6 @@ open class KotestPlugin : Plugin<Project> {
                description = DESCRIPTION
                group = JavaBasePlugin.VERIFICATION_GROUP
                inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-               // TODO: I think wiring dependencies,
-//               dependsOn(project.tasks.withType<KotlinCompile>())
             }
          }
       }
@@ -52,19 +50,12 @@ open class KotestPlugin : Plugin<Project> {
       project.pluginManager.withPlugin(KOTLIN_MULTIPLATFORM_PLUGIN) {
          project.extensions.configure<KotlinMultiplatformExtension> {
             targets.configureEach {
-               println("Detected target: $name")
-               if (name in unsupportedTargets) {
-                  println("Skipping unsupported target: $name")
-               } else {
+               if (name !in unsupportedTargets) {
                   val capitalTarget = name.replaceFirstChar { it.uppercase() }
-                  println("Creating task kotest$capitalTarget")
                   project.tasks.register("kotest$capitalTarget", KotestTask::class.java) {
                      description = DESCRIPTION
                      group = JavaBasePlugin.VERIFICATION_GROUP
-                     println("Adding dependency on test classes")
                      inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
-//                     dependsOn(project.tasks.named("${targetName}TestClasses"))
-                     // TODO: Setup dependency on the compile task for this target's test source set
                   }
                }
             }
