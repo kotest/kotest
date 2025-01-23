@@ -1,3 +1,5 @@
+import Ci.snapshotVersion
+
 object Ci {
 
    /**
@@ -5,13 +7,17 @@ object Ci {
     *
     * `-SNAPSHOT` or `-LOCAL` will be appended.
     */
-   private const val snapshotBase = "6.0.0"
+   private const val SNAPSHOT_BASE = "6.0.0"
+
+   private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
 
    /** Is the build currently running on CI. */
    private val isCI = System.getenv("CI").toBoolean()
 
-   private val snapshotVersion =
-      snapshotBase + if (isCI) "-SNAPSHOT" else "-LOCAL"
+   private val snapshotVersion = when (githubBuildNumber) {
+      null -> "$SNAPSHOT_BASE-LOCAL"
+      else -> "$SNAPSHOT_BASE.${githubBuildNumber}-SNAPSHOT"
+   }
 
    /** The final release version. If specified, will override [snapshotVersion]. */
    private val releaseVersion = System.getenv("RELEASE_VERSION")?.ifBlank { null }

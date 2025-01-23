@@ -161,7 +161,7 @@ class TestEngineLauncher(
       )
    }
 
-   fun toConfig(): TestEngineConfig {
+   private fun toConfig(): TestEngineConfig {
 
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }

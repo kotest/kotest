@@ -7,7 +7,7 @@ import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -44,7 +44,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       TestNameBuilder.builder("foo").build(),
       MySpec(),
       {},
-      sourceRef(),
+      SourceRef.None,
       TestType.Container,
    )
 
@@ -53,7 +53,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       TestNameBuilder.builder("bar").build(),
       tc1.spec,
       {},
-      sourceRef(),
+      SourceRef.None,
       TestType.Test,
       parent = tc1,
    )
@@ -63,7 +63,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       TestNameBuilder.builder("baz").build(),
       MySpec2(),
       {},
-      sourceRef(),
+      SourceRef.None,
       TestType.Container,
    )
 

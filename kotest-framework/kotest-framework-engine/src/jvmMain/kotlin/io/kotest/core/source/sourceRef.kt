@@ -10,7 +10,7 @@ import kotlin.reflect.full.isSubclassOf
  * On the JVM we can create a stack trace to get the line number.
  * Users can disable the source ref via the system property [KotestEngineProperties.disableSourceRef].
  */
-actual fun sourceRef(): SourceRef {
+internal actual fun sourceRef(): SourceRef {
    if (sysprop(KotestEngineProperties.disableSourceRef, "false") == "true") return SourceRef.None
 
    val stack = Thread.currentThread().stackTrace
@@ -23,8 +23,6 @@ actual fun sourceRef(): SourceRef {
          it.className.startsWith("kotlin.") ||
          it.className.startsWith("kotlinx.")
    }.firstOrNull()
-
-   val fileName = frame?.fileName
 
    // preference is given to the class name but we must try to find the enclosing spec
    val kclass = frame?.className?.let { fqn ->
@@ -40,7 +38,6 @@ actual fun sourceRef(): SourceRef {
    return when {
       frame == null -> SourceRef.None
       kclass != null -> SourceRef.ClassSource(kclass.java.name, frame.lineNumber.takeIf { it > 0 })
-      fileName != null -> SourceRef.FileSource(fileName, frame.lineNumber.takeIf { it > 0 })
       else -> SourceRef.None
    }
 }

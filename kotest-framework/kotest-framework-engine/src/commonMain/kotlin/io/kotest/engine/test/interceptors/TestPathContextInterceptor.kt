@@ -1,6 +1,5 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.common.TestNameContextElement
 import io.kotest.common.TestPathContextElement
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -22,17 +21,3 @@ internal object TestPathContextInterceptor : TestExecutionInterceptor {
    }
 }
 
-/**
- * Puts the test name into the coroutine context.
- */
-internal object TestNameContextInterceptor : TestExecutionInterceptor {
-   override suspend fun intercept(
-      testCase: TestCase,
-      scope: TestScope,
-      test: NextTestExecutionInterceptor
-   ): TestResult {
-      return withContext(TestNameContextElement(testCase.name.name)) {
-         test(testCase, scope)
-      }
-   }
-}

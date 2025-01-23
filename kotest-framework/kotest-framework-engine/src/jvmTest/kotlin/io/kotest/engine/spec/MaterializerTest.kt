@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
@@ -38,7 +38,7 @@ class MaterializerTest : FunSpec({
          ),
          spec = self,
          test = {},
-         source = sourceRef(),
+         source = SourceRef.None,
          type = TestType.Test,
          config = TestConfig(
             enabledOrReasonIf = { Enabled.enabled },
@@ -67,7 +67,7 @@ class MaterializerTest : FunSpec({
          disabled = false,
          config = null,
          type = TestType.Container,
-         source = sourceRef(),
+         source = SourceRef.None,
       )
       Materializer().materialize(nested, parent).name.name shouldBe "- prefixes are swallowed"
    }
