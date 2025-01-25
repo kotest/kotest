@@ -12,8 +12,9 @@ object MessageAttributeParser {
       val name = msg.attributes["name"] ?: error("name is a required service message attribute")
       val location = msg.attributes["locationHint"]
       val message = msg.attributes["message"]
+      val details = msg.attributes["details"]
       val duration = msg.attributes["duration"]?.toLongOrNull()?.milliseconds
-      return MessageAttributes(id, parentId, name, location, duration, message)
+      return MessageAttributes(id, parentId, name, location, duration, message, details)
    }
 }
 
@@ -24,4 +25,5 @@ data class MessageAttributes(
    val location: String?,
    val duration: Duration?,
    val message: String?,
+   val details: String?,
 )

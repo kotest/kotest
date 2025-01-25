@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.console
 
+import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage
@@ -12,6 +13,7 @@ import java.text.ParseException
  */
 class KotestServiceMessageCallback(
    private val console: SMTRunnerConsoleView,
+   private val publisher: SMTRunnerEventsListener,
 ) : ServiceMessageParserCallback {
 
    // each new proxy must be attached to its parent, so we keep a map of test ids to proxies
@@ -36,6 +38,7 @@ class KotestServiceMessageCallback(
             val proxy = createProxy(msg = msg, suite = true)
             proxy.setSuiteStarted()
             console.resultsViewer.onSuiteStarted(proxy)
+            publisher.onSuiteStarted(proxy)
          }
          ServiceMessageTypes.TEST_SUITE_FINISHED -> {
             val proxy = getProxy(msg)
@@ -43,11 +46,13 @@ class KotestServiceMessageCallback(
             val attrs = MessageAttributeParser.parse(msg)
             attrs.duration?.let { proxy.setDuration(attrs.duration.inWholeMilliseconds) }
             console.resultsViewer.onSuiteFinished(proxy)
+            publisher.onSuiteFinished(proxy)
          }
          ServiceMessageTypes.TEST_STARTED -> {
             val proxy = createProxy(msg = msg, suite = false)
             proxy.setStarted()
             console.resultsViewer.onTestStarted(proxy)
+            publisher.onTestStarted(proxy)
          }
          ServiceMessageTypes.TEST_FINISHED -> {
             val proxy = getProxy(msg)
@@ -55,15 +60,21 @@ class KotestServiceMessageCallback(
             val attrs = MessageAttributeParser.parse(msg)
             attrs.duration?.let { proxy.setDuration(attrs.duration.inWholeMilliseconds) }
             console.resultsViewer.onTestFinished(proxy)
+            publisher.onTestFinished(proxy)
          }
          ServiceMessageTypes.TEST_IGNORED -> {
             val proxy = createProxy(msg = msg, suite = false)
             val attrs = MessageAttributeParser.parse(msg)
             proxy.setTestIgnored(attrs.message, null)
             console.resultsViewer.onTestIgnored(proxy)
+            publisher.onTestIgnored(proxy)
          }
          ServiceMessageTypes.TEST_FAILED -> {
-            println("Not supported $msg")
+            val proxy = getProxy(msg)
+            val attrs = MessageAttributeParser.parse(msg)
+            proxy.setTestFailed(attrs.message, attrs.details, true)
+            console.resultsViewer.onTestFailed(proxy)
+            publisher.onTestFailed(proxy)
          }
          else -> {
             println("Unknown message type: ${msg.messageName}")
@@ -75,7 +86,7 @@ class KotestServiceMessageCallback(
       val attrs = MessageAttributeParser.parse(msg)
       val parent = if (attrs.parentId == null) root else proxies[attrs.parentId]
          ?: error("Parent proxy ${attrs.parentId} not found for ${attrs.id} in ${proxies.keys}")
-      val proxy = TestProxyBuilder.builder(attrs.name, suite, parent).build()
+      val proxy = TestProxyBuilder.builder(attrs.name, suite, attrs.location, parent).build()
       proxies[attrs.id] = proxy
       return proxy
    }

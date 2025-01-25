@@ -36,6 +36,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
    // needs to be defined here so we don't created a new one in the onObject method every time
    private var callback: KotestServiceMessageCallback? = null
 
+   private val parser = ServiceMessagesParser()
+
    override fun getExternalSystemId(): ProjectSystemId {
       return GradleConstants.SYSTEM_ID
    }
@@ -62,31 +64,20 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
 
-//      val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FrameworkName)
-//      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName)
-
       val consoleView = SMTestRunnerConnectionUtil.createConsole(consoleProperties)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
 
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
-      try {
-         // don't know why this method is not public, and cannot figure out how to override it
-         // see https://youtrack.jetbrains.com/issue/IJSDK-2340/set-duration-strategy-on-SMRootTestProxy
-         val method = SMRootTestProxy::class.java.getDeclaredMethod("setDurationStrategy", TestDurationStrategy::class.java)
-         method.isAccessible = true
-         method.invoke(consoleView.resultsViewer.testsRootNode, TestDurationStrategy.MANUAL)
-      } catch (e: Exception) {
-         println(e)
-         e.printStackTrace()
-      }
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()
+      updateDurationMode(consoleView)
 
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
-      consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
+      callback = KotestServiceMessageCallback(consoleView, publisher)
 
-      callback = KotestServiceMessageCallback(consoleView)
+      consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
+      publisher.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
 
       processHandler.addProcessListener(object : ProcessAdapter() {
          override fun processTerminated(event: ProcessEvent) {
@@ -108,6 +99,20 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       return consoleView
    }
 
+   private fun updateDurationMode(consoleView: SMTRunnerConsoleView) {
+      try {
+         // don't know why this method is not public, and cannot figure out how to override it
+         // see https://youtrack.jetbrains.com/issue/IJSDK-2340/set-duration-strategy-on-SMRootTestProxy
+         val methodName = "setDurationStrategy"
+         val method = SMRootTestProxy::class.java.getDeclaredMethod(methodName, TestDurationStrategy::class.java)
+         method.isAccessible = true
+         method.invoke(consoleView.resultsViewer.testsRootNode, TestDurationStrategy.MANUAL)
+      } catch (e: Exception) {
+         println(e)
+         e.printStackTrace()
+      }
+   }
+
    /**
     * Returns true if this [KotestExecutionConsoleManager] should be used to handle the output
     * of the given [ExternalSystemTask]. We determine true if the task is a gradle task
@@ -121,7 +126,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
             // todo this should be updated to handle any command line as long as it contains kotest
             return task.tasksToExecute.any {
-               it.endsWith(Constants.GRADLE_TASK_NAME)
+               it.contains(Constants.GRADLE_TASK_NAME)
             }
          }
       }
@@ -134,8 +139,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       text: String,
       processOutputType: Key<*>, // is stdout or stderr
    ) {
-      ServiceMessagesParser().parse(text, callback ?: error("callback must be set"))
-//      if (message == null)
-//         executionConsole.print(text, ConsoleViewContentType.NORMAL_OUTPUT)
+      parser.parse(text, callback ?: error("callback must be set"))
    }
 }
