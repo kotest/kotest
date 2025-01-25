@@ -38,6 +38,8 @@ open class KotestPlugin : Plugin<Project> {
       // Configure Kotlin JVM projects
       project.pluginManager.withPlugin(KOTLIN_JVM_PLUGIN) {
          project.extensions.configure<KotlinJvmExtension> {
+         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+         // see https://docs.gradle.org/current/userguide/isolated_projects.html           
             project.tasks.register("kotest", KotestTask::class.java) {
                description = DESCRIPTION
                group = JavaBasePlugin.VERIFICATION_GROUP

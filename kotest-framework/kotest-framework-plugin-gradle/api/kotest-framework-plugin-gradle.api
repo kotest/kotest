@@ -7,6 +7,7 @@ public class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field EXTENSION_NAME Ljava/lang/String;
+	public static final field KOTLIN_JVM_PLUGIN Ljava/lang/String;
 	public static final field TASK_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
@@ -27,15 +28,35 @@ public final class io/kotest/framework/gradle/KotestPlugin$apply$2$inlined$sam$i
 }
 
 public class io/kotest/framework/gradle/KotestTask : org/gradle/api/DefaultTask {
+	public static final field Companion Lio/kotest/framework/gradle/KotestTask$Companion;
+	public static final field DELIMITER Ljava/lang/String;
 	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
 	public final fun executeTests ()V
+	public final fun setPackages (Ljava/lang/String;)V
+	public final fun setSpecs (Ljava/lang/String;)V
 	public final fun setTags (Ljava/lang/String;)V
 	public final fun setTests (Ljava/lang/String;)V
+}
+
+public final class io/kotest/framework/gradle/KotestTask$Companion {
 }
 
 public final class io/kotest/framework/gradle/SourcesetsKt {
 	public static final fun javaTestSourceSet (Lorg/gradle/api/Project;)Lorg/gradle/api/tasks/SourceSet;
 	public static final fun mppTestTargets (Lorg/gradle/api/Project;)Ljava/util/Map;
+}
+
+public final class io/kotest/framework/gradle/TestClass {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/gradle/TestClass;
+	public static synthetic fun copy$default (Lio/kotest/framework/gradle/TestClass;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/framework/gradle/TestClass;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getQualifiedName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/framework/gradle/TestClassDetector {
