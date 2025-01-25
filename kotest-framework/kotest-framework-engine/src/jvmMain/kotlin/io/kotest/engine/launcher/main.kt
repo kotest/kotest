@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
 
    // what classes to run? We must be launched with a list.
    // That list comes from the --specs flag
+   // the argument was called --spec in kotest 5 but was changed to --specs in kotest 6
    @Suppress("UNCHECKED_CAST")
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
