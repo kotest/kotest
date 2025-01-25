@@ -24,11 +24,16 @@ fun main(args: Array<String>) {
    val launcherArgs = parseArgs(args.toList())
    val specsArg = launcherArgs["specs"] ?: error("The --specs arg must be provided")
 
-   // what tests to run? We must be launched with a list.
+   // what classes to run? We must be launched with a list.
    // That list comes from the --specs flag
+   @Suppress("UNCHECKED_CAST")
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
-   val console = ConsoleTestEngineListenerBuilder.builder()
+   // we can filter to a test or parent test, eg from the command line or from the intellij plugin
+   // this filter comes from the --filter flag
+   val filter = launcherArgs["filter"]
+
+   val console = TestEngineListenerBuilder.builder()
       .withType(launcherArgs["listener"])
       .withTermColors(launcherArgs["termcolors"])
       .build()

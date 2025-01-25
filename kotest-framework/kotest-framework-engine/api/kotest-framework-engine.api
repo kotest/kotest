@@ -3703,29 +3703,6 @@ public final class io/kotest/engine/interceptors/SystemPropertiesEngineIntercept
 	public fun intercept (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/engine/interceptors/NextEngineInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/launcher/ConsoleTestEngineListenerBuilder {
-	public static final field ANSI16 Ljava/lang/String;
-	public static final field ANSI256 Ljava/lang/String;
-	public static final field Companion Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder$Companion;
-	public static final field DEFAULT Ljava/lang/String;
-	public static final field ENHANCED Ljava/lang/String;
-	public static final field TEAMCITY Ljava/lang/String;
-	public static final field TRUECOLOR Ljava/lang/String;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
-	public static synthetic fun copy$default (Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-	public final fun withTermColors (Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
-	public final fun withType (Ljava/lang/String;)Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
-}
-
-public final class io/kotest/engine/launcher/ConsoleTestEngineListenerBuilder$Companion {
-	public final fun builder ()Lio/kotest/engine/launcher/ConsoleTestEngineListenerBuilder;
-}
-
 public final class io/kotest/engine/launcher/MainKt {
 	public static final fun main ([Ljava/lang/String;)V
 }
@@ -3751,6 +3728,29 @@ public final class io/kotest/engine/launcher/TestEngineLauncherBuilder {
 
 public final class io/kotest/engine/launcher/TestEngineLauncherBuilder$Companion {
 	public final fun builder ()Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
+}
+
+public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
+	public static final field ANSI16 Ljava/lang/String;
+	public static final field ANSI256 Ljava/lang/String;
+	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
+	public static final field DEFAULT Ljava/lang/String;
+	public static final field ENHANCED Ljava/lang/String;
+	public static final field TEAMCITY Ljava/lang/String;
+	public static final field TRUECOLOR Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+	public static synthetic fun copy$default (Lio/kotest/engine/launcher/TestEngineListenerBuilder;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withTermColors (Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+	public final fun withType (Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+}
+
+public final class io/kotest/engine/launcher/TestEngineListenerBuilder$Companion {
+	public final fun builder ()Lio/kotest/engine/launcher/TestEngineListenerBuilder;
 }
 
 public final class io/kotest/engine/launcher/TestPathTestCaseFilter : io/kotest/core/filter/TestFilter {
