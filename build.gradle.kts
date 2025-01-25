@@ -45,6 +45,9 @@ data class PluginDescriptor(
 // for 'since' we can use an early build number without eap/snapshot eg 213.5281.15
 // and 'until' we can use a wildcard eg 213.*
 
+// this page shows android studio versions and the corresponding intellij version that is behind it
+// https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html#2024
+
 val descriptors = listOf(
    PluginDescriptor(
       since = "241.15989.150", // this version is 2024.1.x
@@ -76,7 +79,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-243"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-242"
 val jvmTargetVersion = System.getenv("JVM_TARGET") ?: "17"
 val descriptor = descriptors.first { it.sourceFolder == productName }
 

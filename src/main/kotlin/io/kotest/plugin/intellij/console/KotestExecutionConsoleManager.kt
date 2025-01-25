@@ -85,17 +85,18 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
       consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
-      publisher.onTestingStarted(consoleView.resultsViewer.testsRootNode)
 
-      callback = KotestServiceMessageCallback(consoleView, publisher)
+      callback = KotestServiceMessageCallback(consoleView)
 
       processHandler.addProcessListener(object : ProcessAdapter() {
          override fun processTerminated(event: ProcessEvent) {
+
             if (event.exitCode == 1) {
-               consoleView.resultsViewer.testsRootNode.setTestFailed("", null, true)
+               consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code 1", null, true)
             } else {
                consoleView.resultsViewer.testsRootNode.setFinished()
             }
+
             consoleView.resultsViewer.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
             publisher.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
 

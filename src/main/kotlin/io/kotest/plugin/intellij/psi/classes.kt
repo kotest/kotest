@@ -19,7 +19,7 @@ fun KtClassOrObject.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().cont
 /**
  * If this is an instance of [KtClass] returns this, otherwise returns null.
  */
-fun KtClassOrObject.toKtClass(): KtClass? = if (this is KtClass) this else null
+fun KtClassOrObject.toKtClass(): KtClass? = this as? KtClass
 
 /**
  * Returns all [KtClass]s located in this [PsiFile]
