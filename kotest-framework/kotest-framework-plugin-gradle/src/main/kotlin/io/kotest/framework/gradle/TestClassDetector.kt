@@ -4,6 +4,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileVisitDetails
 import org.gradle.api.file.FileVisitor
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
 
 /**
  * Scans a gradle [FileTree] looking for classes that extend a spec class.
@@ -62,9 +63,11 @@ class TestClassDetector {
       override fun visitDir(dirDetails: FileVisitDetails) {
       }
 
+      // Note: Abstract classes are filtered out
       override fun visitFile(fileDetails: FileVisitDetails) {
          val reader = ClassReader(fileDetails.file.readBytes())
-         add(reader.className, reader.superName)
+         if (reader.access and Opcodes.ACC_ABSTRACT == 0)
+            add(reader.className, reader.superName)
       }
    }
 }
