@@ -37,7 +37,7 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
 
 private fun Regex.toTestFilter(): DescriptorFilter = object : DescriptorFilter {
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
-      val name = descriptor.path(false).value
+      val name = descriptor.path().value
       return if (this@toTestFilter.matches(name))
          DescriptorFilterResult.Include
       else

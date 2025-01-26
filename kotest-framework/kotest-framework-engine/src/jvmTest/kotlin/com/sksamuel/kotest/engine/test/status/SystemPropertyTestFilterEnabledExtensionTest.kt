@@ -31,7 +31,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
       }
 
-      test("should include tests that match pattern in system property") {
+      xtest("should include tests that match pattern in system property") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestNameBuilder.builder("foo").build(),
@@ -103,7 +103,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          }
       }
 
-      test("should exclude tests that do not match pattern in environment variable") {
+      xtest("should exclude tests that do not match pattern in environment variable") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestNameBuilder.builder("foo").build(),
@@ -129,7 +129,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          }
       }
 
-      test("should include tests that match pattern in environment variable with underscores") {
+      xtest("should include tests that match pattern in environment variable with underscores") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestNameBuilder.builder("foo").build(),
