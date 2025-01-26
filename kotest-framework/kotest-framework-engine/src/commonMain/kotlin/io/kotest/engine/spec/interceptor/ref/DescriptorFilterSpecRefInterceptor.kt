@@ -1,12 +1,13 @@
 package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.core.Logger
-import io.kotest.core.filter.SpecFilter
-import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
@@ -14,28 +15,28 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.bestName
 
 /**
- * Evaluates a spec against any registered [SpecFilter]s.
+ * Evaluates a spec against any registered [DescriptorFilter]s.
  */
-internal class SpecFilterInterceptor(
+internal class DescriptorFilterSpecRefInterceptor(
    private val listener: TestEngineListener,
    private val projectConfigResolver: ProjectConfigResolver,
    private val specExtensions: SpecExtensions,
 ) : SpecRefInterceptor {
 
-   private val logger = Logger(SpecFilterInterceptor::class)
+   private val logger = Logger(DescriptorFilterSpecRefInterceptor::class)
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
-      val excluded = projectConfigResolver.extensions().filterIsInstance<SpecFilter>().firstNotNullOfOrNull {
-         val result = it.filter(ref.kclass)
-         result as? SpecFilterResult.Exclude
+      val excluded = projectConfigResolver.extensions().filterIsInstance<DescriptorFilter>().firstNotNullOfOrNull {
+         val result = it.filter(ref.kclass.toDescriptor())
+         result as? DescriptorFilterResult.Exclude
       }
       logger.log { Pair(ref.kclass.bestName(), "excludedByFilters == $excluded") }
 
       return if (excluded == null) {
          next.invoke(ref)
       } else {
-         val reason = excluded.reason ?: "Disabled by spec filter"
+         val reason = excluded.reason ?: "Disabled by descriptor filter"
          listener.specIgnored(ref.kclass, reason)
          specExtensions.ignored(ref.kclass, reason)
          Result.success(emptyMap())

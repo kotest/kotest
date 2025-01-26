@@ -34,6 +34,7 @@ data class TestEngineListenerBuilder(
       }
    }
 
+   // this system property is added by intellij itself when running tasks
    private fun isIntellij() = System.getProperty("idea.active") != null
 
    internal fun colours(): TermColors {

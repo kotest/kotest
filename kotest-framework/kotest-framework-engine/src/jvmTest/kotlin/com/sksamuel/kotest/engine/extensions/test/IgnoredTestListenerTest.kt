@@ -24,7 +24,7 @@ class IgnoredTestListenerTest : FunSpec({
    test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()
          .withClasses(IgnoredTests::class)
-         .withExtensions(ignoredTestListener)
+         .addExtensions(ignoredTestListener)
          .launch()
       ignoredTests shouldBe setOf(
          "should be ignored by failfast strategy",

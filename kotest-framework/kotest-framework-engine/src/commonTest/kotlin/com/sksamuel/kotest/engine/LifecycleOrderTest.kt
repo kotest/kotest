@@ -19,7 +19,7 @@ class LifecycleOrderTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(LifecycleTests::class)
-            .withExtensions(LifecycleExtension("engine"))
+            .addExtensions(LifecycleExtension("engine"))
             .launch()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(

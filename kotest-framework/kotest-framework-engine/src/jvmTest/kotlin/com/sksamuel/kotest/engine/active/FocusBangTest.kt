@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.active
 
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase

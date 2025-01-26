@@ -1,9 +1,8 @@
-package io.kotest.engine
+package com.sksamuel.kotest.engine.descriptors
 
-import io.kotest.core.descriptors.TestPath
-import io.kotest.core.descriptors.append
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.common.TestPath
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 
 class DescriptorTest : FunSpec({
@@ -64,16 +63,16 @@ class DescriptorTest : FunSpec({
       test.isDescendentOf(container) shouldBe true
    }
 
-   test("isOnPath") {
-      container.isOnPath(test) shouldBe true
-      test.isOnPath(container) shouldBe false
-      spec.isOnPath(test) shouldBe true
-      test.isOnPath(spec) shouldBe false
-      container.isOnPath(spec) shouldBe false
-      spec.isOnPath(container) shouldBe true
-      spec.isOnPath(spec) shouldBe true
-      test.isOnPath(test) shouldBe true
-      container.isOnPath(container) shouldBe true
+   test("isPrefixOf") {
+      container.isPrefixOf(test) shouldBe true
+      test.isPrefixOf(container) shouldBe false
+      spec.isPrefixOf(test) shouldBe true
+      test.isPrefixOf(spec) shouldBe false
+      container.isPrefixOf(spec) shouldBe false
+      spec.isPrefixOf(container) shouldBe true
+      spec.isPrefixOf(spec) shouldBe true
+      test.isPrefixOf(test) shouldBe true
+      container.isPrefixOf(container) shouldBe true
    }
 
    test("path") {

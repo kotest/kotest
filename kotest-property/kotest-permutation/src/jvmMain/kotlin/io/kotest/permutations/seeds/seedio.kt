@@ -1,7 +1,7 @@
 package io.kotest.permutations.seeds
 
 import io.kotest.assertions.print.print
-import io.kotest.common.TestPath
+import io.kotest.common.DescriptorPath
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
@@ -12,8 +12,7 @@ import kotlin.io.path.isRegularFile
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-
-internal actual fun readSeed(path: TestPath): Long? {
+internal actual fun readSeed(path: DescriptorPath): Long? {
    return try {
       return path.seedPath()
          .takeIf(Path::exists)
@@ -27,7 +26,7 @@ internal actual fun readSeed(path: TestPath): Long? {
    }
 }
 
-internal actual fun writeSeed(path: TestPath, seed: Long) {
+internal actual fun writeSeed(path: DescriptorPath, seed: Long) {
    try {
       val f = path.seedPath()
       f.createParentDirectories()
@@ -38,7 +37,7 @@ internal actual fun writeSeed(path: TestPath, seed: Long) {
    }
 }
 
-internal actual fun clearSeed(path: TestPath) {
+internal actual fun clearSeed(path: DescriptorPath) {
    try {
       val f = path.seedPath()
       if (
@@ -67,8 +66,8 @@ internal val seedDirectory: Path by lazy {
    }
 }
 
-private fun TestPath.seedPath(): Path =
+private fun DescriptorPath.seedPath(): Path =
    seedDirectory.resolve(seedFileName())
 
-private fun TestPath.seedFileName(): String =
+private fun DescriptorPath.seedFileName(): String =
    value.replace(Regex("""[/\\<>:()]"""), "_")

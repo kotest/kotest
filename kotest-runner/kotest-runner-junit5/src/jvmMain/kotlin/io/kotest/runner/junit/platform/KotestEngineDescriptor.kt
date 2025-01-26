@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.TestFilter
+import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.engine.descriptors.toDescriptor
@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 class KotestEngineDescriptor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
-   val testFilters: List<TestFilter>,
+   val testFilters: List<DescriptorFilter>,
    val extensions: List<Extension>, // extensions can be added via junit configuration parameters
    val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, KotestJunitPlatformTestEngine.ENGINE_NAME) {

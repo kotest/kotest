@@ -2,9 +2,8 @@ package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.descriptors.append
 import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.core.filter.TestFilterResult
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
@@ -23,7 +22,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          listOf(".*\\Q.platform.gradle.GradleClassMethodRegexTestFilterTest\\E"),
          listOf(".*\\Qorm.gradle.GradleClassMethodRegexTestFilterTest\\E")
       ) { filters ->
-         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Include
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Include
       }
    }
 
@@ -35,7 +34,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          listOf("\\QGradleClassMethodRegexTestFilterTes\\E"),
          listOf("\\Qio.kotest.runner.junit.platform.GradleClassMethodRegexTestFilterTest\\E")
       ) { filters ->
-         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Exclude(null)
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Exclude(null)
       }
    }
 
@@ -55,7 +54,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          listOf("\\Qio.kotest.runner.junit.platform.gra\\E.*"),
          listOf(".*\\QNotSpec\\E", "\\Qio.kotest.runner.junit\\E"),
       ) { filters ->
-         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Include
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Include
       }
 
       withData(
@@ -63,7 +62,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          listOf("\\Qio.kotest.runner.junit2\\E"),
          listOf("\\Qio.kotest.runner.junit2\\E", ".*\\QNotSpec\\E"),
       ) { filters ->
-         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe TestFilterResult.Exclude(null)
+         GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Exclude(null)
       }
 
       withData(
@@ -71,8 +70,8 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          listOf("\\QGradleClassMethodRegexTestFilterTest.a context\\E.*"),
          listOf(".*\\QTest\\E", "\\QGradleClassMethodRegex\\E.*\\Q.a context\\E.*"),
       ) { filters ->
-         GradleClassMethodRegexTestFilter(filters).filter(container) shouldBe TestFilterResult.Include
-         GradleClassMethodRegexTestFilter(filters).filter(test) shouldBe TestFilterResult.Include
+         GradleClassMethodRegexTestFilter(filters).filter(container) shouldBe DescriptorFilterResult.Include
+         GradleClassMethodRegexTestFilter(filters).filter(test) shouldBe DescriptorFilterResult.Include
       }
    }
 
@@ -91,7 +90,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          ".*\\Qadle.GradleClassMethodRegexTestFilterTest.a context\\E.*"
       ) { filter ->
          GradleClassMethodRegexTestFilter(listOf(filter))
-            .filter(test) shouldBe TestFilterResult.Include
+            .filter(test) shouldBe DescriptorFilterResult.Include
       }
 
       withData(
@@ -102,7 +101,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          ".*\\QsMethodRegexTestFilterTest.a context -- nested test2\\Q",
       ) { filter ->
          GradleClassMethodRegexTestFilter(listOf(filter))
-            .filter(test) shouldBe TestFilterResult.Exclude(null)
+            .filter(test) shouldBe DescriptorFilterResult.Exclude(null)
       }
    }
 })

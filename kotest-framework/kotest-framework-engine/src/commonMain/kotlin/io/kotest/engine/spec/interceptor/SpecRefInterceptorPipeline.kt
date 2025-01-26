@@ -14,11 +14,10 @@ import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.PrepareSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.RequiresPlatformInterceptor
 import io.kotest.engine.spec.interceptor.ref.RequiresTagInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
+import io.kotest.engine.spec.interceptor.ref.DescriptorFilterSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.mpp.bestName
 
@@ -58,8 +57,8 @@ internal class SpecRefInterceptorPipeline(
          if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
          IgnoredSpecInterceptor(listener, context.specExtensions()),
          if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.registry) else null,
-         SpecFilterInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
-         SystemPropertySpecFilterInterceptor(listener, context.specExtensions()),
+         DescriptorFilterSpecRefInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
+//         SystemPropertyDescriptorFilterInterceptor(listener, context.specExtensions()),
          TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          if (platform == Platform.JVM)
             RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())

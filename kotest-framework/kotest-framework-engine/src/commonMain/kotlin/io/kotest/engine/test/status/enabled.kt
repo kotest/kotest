@@ -41,7 +41,7 @@ internal fun TestCase.isEnabledInternal(
    val extensions = listOf(
       TestConfigEnabledExtension(testConfigResolver),
       TagsEnabledExtension(TagExpressionBuilder.build(projectConfigResolver), testConfigResolver),
-      TestFilterEnabledExtension(projectConfigResolver),
+      DescriptorFilterTestEnabledExtension(projectConfigResolver),
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,
