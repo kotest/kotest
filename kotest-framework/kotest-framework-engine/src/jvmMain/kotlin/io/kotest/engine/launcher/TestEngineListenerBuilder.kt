@@ -5,7 +5,7 @@ import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
-data class ConsoleTestEngineListenerBuilder(
+data class TestEngineListenerBuilder(
    private val type: String?,
    private val termcolors: String?,
 ) {
@@ -19,11 +19,11 @@ data class ConsoleTestEngineListenerBuilder(
       const val ANSI256 = "ansi256"
       const val ANSI16 = "ansi16"
 
-      fun builder(): ConsoleTestEngineListenerBuilder = ConsoleTestEngineListenerBuilder(null, null)
+      fun builder(): TestEngineListenerBuilder = TestEngineListenerBuilder(null, null)
    }
 
-   fun withType(type: String?): ConsoleTestEngineListenerBuilder = copy(type = type)
-   fun withTermColors(colors: String?): ConsoleTestEngineListenerBuilder = copy(termcolors = colors)
+   fun withType(type: String?): TestEngineListenerBuilder = copy(type = type)
+   fun withTermColors(colors: String?): TestEngineListenerBuilder = copy(termcolors = colors)
 
    fun build(): TestEngineListener {
       return when (type) {

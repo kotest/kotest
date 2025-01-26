@@ -35,18 +35,6 @@ data class TestEngineLauncherBuilder(
    }
 }
 
-//@Suppress("UNCHECKED_CAST")
-//internal fun setupLauncher(
-//   args: LauncherArgs,
-//   listener: TestEngineListener,
-//): Result<TestEngineLauncher> = runCatching {
-//
-//   val specClass = args.spec?.let { (Class.forName(it) as Class<Spec>).kotlin }
-//
-//   // todo move discovery out of this module entirely
-////   val (specs, _, error) = specs(specClass, args.packageName)
-//   val specs = emptyList<KClass<out Spec>>()
-//   val error: Throwable? = null
 //   val filter = if (args.testpath == null || specClass == null) null else {
 //      TestPathTestCaseFilter(args.testpath, specClass)
 //   }
@@ -58,6 +46,3 @@ data class TestEngineLauncherBuilder(
 //      .withTagExpression(args.tagExpression?.let { TagExpression(it) })
 //      .withClasses(specs)
 //}
-
-///**
-// * Returns the spec classes to execute by using an FQN class name, a package scan,

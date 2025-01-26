@@ -2,6 +2,7 @@ import utils.configureGradleDaemonJvm
 
 plugins {
    id("kotest-base")
+   java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 

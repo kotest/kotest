@@ -7,14 +7,28 @@ public class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field EXTENSION_NAME Ljava/lang/String;
-	public static final field KOTLIN_JVM_PLUGIN Ljava/lang/String;
-	public static final field TASK_NAME Ljava/lang/String;
+	public static final field JVM_TASK_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
 public final class io/kotest/framework/gradle/KotestPlugin$Companion {
+}
+
+public final class io/kotest/framework/gradle/KotestPlugin$apply$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final synthetic fun execute (Ljava/lang/Object;)V
+}
+
+public final class io/kotest/framework/gradle/KotestPlugin$apply$2$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final synthetic fun execute (Ljava/lang/Object;)V
+}
+
+public final class io/kotest/framework/gradle/KotestPlugin$apply$3$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
 public class io/kotest/framework/gradle/KotestTask : org/gradle/api/DefaultTask {
