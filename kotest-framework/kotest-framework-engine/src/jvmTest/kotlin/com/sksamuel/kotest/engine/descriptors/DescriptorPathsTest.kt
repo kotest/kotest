@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.descriptors
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.DescriptorPaths
@@ -54,7 +55,28 @@ class DescriptorPathsTest : FunSpec() {
       }
 
       test("render with spec only") {
+         DescriptorPaths.render(Descriptor.SpecDescriptor(DescriptorId("com.sksamuel.Spec1"))) shouldBe
+            DescriptorPath("com.sksamuel.Spec1")
+      }
 
+      test("render with test") {
+         DescriptorPaths.render(
+            Descriptor.TestDescriptor(
+               parent = Descriptor.SpecDescriptor(DescriptorId("com.sksamuel.Spec1")),
+               id = DescriptorId("rooty mcrootface")
+            )
+         ) shouldBe DescriptorPath("com.sksamuel.Spec1/rooty mcrootface")
+      }
+
+      test("parse should remove line breaks") {
+         DescriptorPaths.parse(
+            """         com.sksamuel.Spec1   /    rooty
+            mcrootface   """
+         ) shouldBe
+            Descriptor.TestDescriptor(
+               parent = Descriptor.SpecDescriptor(DescriptorId("com.sksamuel.Spec1")),
+               id = DescriptorId("rooty mcrootface")
+            )
       }
    }
 }

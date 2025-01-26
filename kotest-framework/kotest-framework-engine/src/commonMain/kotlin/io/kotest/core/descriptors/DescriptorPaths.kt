@@ -48,7 +48,7 @@ object DescriptorPaths {
 
       val testNames = testsString.split(TEST_DELIMITER)
       return testNames.fold(specDescriptor as Descriptor) { acc, name ->
-         acc.append(name.trim())
+         acc.append(name.trim().lines().joinToString(" ") { it.trim() })
       }
    }
 }

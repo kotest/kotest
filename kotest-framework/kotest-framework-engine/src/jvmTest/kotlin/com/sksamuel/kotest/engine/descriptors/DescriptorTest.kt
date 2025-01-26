@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.descriptors
 
-import io.kotest.common.TestPath
+import io.kotest.common.DescriptorPath
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
@@ -77,11 +77,11 @@ class DescriptorTest : FunSpec({
 
    test("path") {
 
-      spec.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest")
-      container.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest/a context")
-      test.path(true) shouldBe TestPath("io.kotest.engine.DescriptorTest/a context -- nested test")
+      spec.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest")
+      container.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest/a context")
+      test.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest/a context -- nested test")
 
-      container.path(false) shouldBe TestPath("a context")
-      test.path(false) shouldBe TestPath("a context -- nested test")
+      container.path(false) shouldBe DescriptorPath("a context")
+      test.path(false) shouldBe DescriptorPath("a context -- nested test")
    }
 })
