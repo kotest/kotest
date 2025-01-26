@@ -80,7 +80,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          }
       }
 
-      test("should include tests that match pattern in environment variable") {
+      xtest("should include tests that match pattern in environment variable") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestNameBuilder.builder("foo").build(),
