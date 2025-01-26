@@ -36,7 +36,7 @@ class TestFilterTest : FunSpec() {
             .withProjectConfig(c)
             .launch()
 
-         collector.result("foo") shouldBe TestResult.Ignored("foo is excluded by test filter(s): get outta here!")
+         collector.result("foo") shouldBe TestResult.Ignored("get outta here!")
          collector.result("bar")!!.isSuccess.shouldBeTrue()
       }
    }

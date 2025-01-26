@@ -24,7 +24,7 @@ internal class DescriptorFilterTestEnabledExtension(
       return when {
          excluded == null -> Enabled.enabled
          excluded.reason == null -> Enabled.disabled("${testCase.descriptor.path().value} is excluded by filter(s)")
-         else -> Enabled.disabled("${testCase.descriptor.path().value} is excluded: ${excluded.reason}")
+         else -> Enabled.disabled(excluded.reason)
       }
    }
 }
