@@ -1,7 +1,7 @@
 package io.kotest.extensions.allure
 
-import io.kotest.core.descriptors.Descriptor
 import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
@@ -172,5 +172,5 @@ class AllureWriter {
    }
 
    // returns an id that's acceptable in format for allure
-   private fun safeId(descriptor: Descriptor.TestDescriptor): String = descriptor.path(true).value
+   private fun safeId(descriptor: Descriptor.TestDescriptor): String = descriptor.path().value
 }

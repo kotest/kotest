@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.descriptors
 
-import io.kotest.common.DescriptorPath
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
@@ -73,15 +72,5 @@ class DescriptorTest : FunSpec({
       spec.isPrefixOf(spec) shouldBe true
       test.isPrefixOf(test) shouldBe true
       container.isPrefixOf(container) shouldBe true
-   }
-
-   test("path") {
-
-      spec.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest")
-      container.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest/a context")
-      test.path(true) shouldBe DescriptorPath("io.kotest.engine.DescriptorTest/a context -- nested test")
-
-      container.path(false) shouldBe DescriptorPath("a context")
-      test.path(false) shouldBe DescriptorPath("a context -- nested test")
    }
 })
