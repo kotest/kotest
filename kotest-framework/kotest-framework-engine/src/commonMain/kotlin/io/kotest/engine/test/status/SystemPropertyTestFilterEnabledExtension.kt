@@ -2,11 +2,11 @@ package io.kotest.engine.test.status
 
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.KotestEngineProperties
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.mpp.syspropOrEnv
 
 /**
@@ -21,8 +21,11 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
    private val logger = Logger(SystemPropertyTestFilterEnabledExtension::class)
 
    override fun isEnabled(testCase: TestCase): Enabled {
-      val filter = syspropOrEnv(KotestEngineProperties.filterTests) ?: ""
+
+      val filter = syspropOrEnv(KotestEngineProperties.filterTests)
       logger.log { Pair(testCase.name.name, "Filter tests syspropOrEnv=$filter") }
+
+      if (filter == null || filter.isBlank()) return Enabled.enabled
 
       val excluded = filter
          .propertyToRegexes()
@@ -41,7 +44,7 @@ private fun Regex.toTestFilter(): DescriptorFilter = object : DescriptorFilter {
       return if (this@toTestFilter.matches(name))
          DescriptorFilterResult.Include
       else
-         DescriptorFilterResult.Exclude("Excluded by kotest.filter.tests test filter: ${this@toTestFilter}")
+         DescriptorFilterResult.Exclude("Excluded by 'kotest.filter.tests': ${this@toTestFilter}")
    }
 }
 

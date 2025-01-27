@@ -1,5 +1,6 @@
 package io.kotest.engine.test.status
 
+import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
@@ -13,9 +14,13 @@ internal class DescriptorFilterTestEnabledExtension(
    private val projectConfigResolver: ProjectConfigResolver,
 ) : TestEnabledExtension {
 
+   private val logger = Logger(DescriptorFilterTestEnabledExtension::class)
+
    override fun isEnabled(testCase: TestCase): Enabled {
 
       val filters = projectConfigResolver.extensions().filterIsInstance<DescriptorFilter>()
+      logger.log { Pair(testCase.name.name, "${filters.size} descriptor filters") }
+
       val excluded = filters
          .map { it.filter(testCase.descriptor) }
          .filterIsInstance<DescriptorFilterResult.Exclude>()

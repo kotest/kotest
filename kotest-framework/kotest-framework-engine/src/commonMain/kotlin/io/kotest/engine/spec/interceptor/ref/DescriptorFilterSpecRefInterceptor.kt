@@ -27,7 +27,10 @@ internal class DescriptorFilterSpecRefInterceptor(
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
-      val excluded = projectConfigResolver.extensions().filterIsInstance<DescriptorFilter>().firstNotNullOfOrNull {
+      val filters = projectConfigResolver.extensions().filterIsInstance<DescriptorFilter>()
+      logger.log { Pair(ref.kclass.bestName(), "${filters.size} descriptor filters") }
+
+      val excluded = filters.firstNotNullOfOrNull {
          val result = it.filter(ref.kclass.toDescriptor())
          result as? DescriptorFilterResult.Exclude
       }

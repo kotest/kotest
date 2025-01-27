@@ -147,7 +147,7 @@ class TeamCityMessageBuilder(
          // stackTraceToString fails if the error is created by a mocking framework, so we should catch
          val stacktrace = try {
             error.stackTraceToString()
-         } catch (e: Exception) {
+         } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
          details(escapeColons(stacktrace))

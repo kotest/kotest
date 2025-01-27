@@ -62,7 +62,8 @@ internal class SpecRefInterceptorPipeline(
          TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
          if (platform == Platform.JVM)
             RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
-         else null,
+         else
+            null,
          SpecRefExtensionInterceptor(context.projectConfigResolver),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
