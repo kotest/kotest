@@ -19,8 +19,20 @@ data class TestName(
    companion object {
       operator fun invoke(prefix: String?, name: String, interpolated: Boolean): TestName {
          return when {
-            name.trim().startsWith("!") -> TestName(prefix, name.trim().drop(1).trim(), focus = false, bang = true, interpolated = interpolated)
-            name.trim().startsWith("f:") -> TestName(prefix, name.trim().drop(2).trim(), focus = true, bang = false, interpolated = interpolated)
+            name.trim().startsWith("!") -> TestName(
+               prefix,
+               name.trim().drop(1).trim(),
+               focus = false,
+               bang = true,
+               interpolated = interpolated
+            )
+            name.trim().startsWith("f:") -> TestName(
+               prefix,
+               name.trim().drop(2).trim(),
+               focus = true,
+               bang = false,
+               interpolated = interpolated
+            )
             else -> TestName(prefix, name, focus = false, bang = false, interpolated = interpolated)
          }
       }
@@ -73,7 +85,7 @@ data class Test(
    /**
     * Returns the descriptor string for this test.
     */
-   fun descriptor(): String = specClassName.fqName?.asString() + "/" + testPath()
+   fun descriptor(): String = specClassName.fqName?.asString() + "/" + path().joinToString(" -- ") { it.name }
 
    /**
     * Returns the test path without delimiters for display to a user.

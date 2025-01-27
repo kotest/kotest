@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.module.Module
 import io.kotest.plugin.intellij.Constants
+import io.kotest.plugin.intellij.run.GradleTaskNamesBuilder
 import org.jetbrains.plugins.gradle.execution.GradleRunnerUtil
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.project.GradleTasksIndices
@@ -22,9 +23,15 @@ object GradleUtils {
    }
 
    fun hasKotestTask(taskNames: List<String>): Boolean {
-      return taskNames.any { it.startsWith(Constants.KOTEST_GRADLE_TASK_PREFIX) }
+      return taskNames.any { it.contains(Constants.KOTEST_GRADLE_TASK_PREFIX) }
    }
 
+   fun getDescriptorArg(taskNames: List<String>): String? {
+      val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.DESCRIPTOR_ARG) } ?: return null
+      return arg.substringAfter(GradleTaskNamesBuilder.DESCRIPTOR_ARG).trim().removeSurrounding("'")
+   }
+
+   @Suppress("UnstableApiUsage")
    fun resolveProjectPath(module: Module): String? {
       val gradleModuleData: GradleModuleData = CachedModuleDataFinder.getGradleModuleData(module) ?: return null
       val isGradleProjectDirUsedToRunTasks = gradleModuleData.directoryToRunTask == gradleModuleData.gradleProjectDir

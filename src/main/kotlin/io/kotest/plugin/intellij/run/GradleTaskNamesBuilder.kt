@@ -17,7 +17,9 @@ data class GradleTaskNamesBuilder(
 
    companion object {
 
-      private const val CANDIDATE_DELIMITER = ";"
+      const val CANDIDATE_DELIMITER = ";"
+      const val CANDIDATES_ARG = "--candidates"
+      const val DESCRIPTOR_ARG = "--descriptor"
 
       fun builder(gradleModuleData: GradleModuleData): GradleTaskNamesBuilder =
          GradleTaskNamesBuilder(gradleModuleData, emptyList(), null)
@@ -39,11 +41,11 @@ data class GradleTaskNamesBuilder(
 
    private fun candidatesArg(): String {
       val fqns = candidates.mapNotNull { it.fqName }.joinToString(CANDIDATE_DELIMITER) { it.asString() }
-      return "--candidates '$fqns'"
+      return "$CANDIDATES_ARG '$fqns'"
    }
 
    private fun descriptorArg(): String? {
       if (test == null) return null
-      return "--descriptor '${test.descriptor()}'"
+      return "$DESCRIPTOR_ARG '${test.descriptor()}'"
    }
 }

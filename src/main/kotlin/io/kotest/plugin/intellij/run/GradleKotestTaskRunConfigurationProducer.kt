@@ -11,10 +11,8 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.gradle.GradleUtils
-import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.styles.SpecStyle
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.execution.GradleExternalTaskConfigurationType
@@ -50,10 +48,6 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
 
    /**
     * Returns true if this configuration should replace the other configuration.
-    *
-    * // todo determine what the logic should be here, sometimes we create a new configuration, sometimes we don't,
-    *
-    * notes: seems to be invoked when showing the line marker drop downs
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
       println("Should replace ${self.configuration.name} over ${other.configuration.name}")
@@ -100,7 +94,6 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       // launcher doesn't need to be passed more than one class
       val spec = element.enclosingSpec() ?: return false
       val test = SpecStyle.findTest(element)
-      println("Test = $test")
 
       // this is the path to the project on the file system
       val externalProjectPath = GradleUtils.resolveProjectPath(module) ?: return false
@@ -122,7 +115,6 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       configuration.settings.externalProjectPath = externalProjectPath
       configuration.settings.scriptParameters = ""
       configuration.settings.taskNames = taskNames(gradleModuleData, spec, test)
-      println("Task names: " + configuration.settings.taskNames.toString())
 
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
       return true
@@ -165,15 +157,8 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       if (element != null) {
          val test = SpecStyle.findTest(element)
          if (test != null) {
-            val specClass: KtClass? = element.enclosingKtClass() ?: return false
-            configuration.settings.taskNames.forEach { println("Trying to find task name $it") }
-
-            // todo we need to compare the test path with the test path from the context
-            // for now we'll just make a new one each time as we figure it out
-
-//            return configuration.getTestPath() == test.testPath()
-//               && configuration.getPackageName().isNullOrBlank()
-//               && configuration.getSpecName() == spec?.fqName?.asString()
+            val descriptorArg = GradleUtils.getDescriptorArg(configuration.settings.taskNames) ?: return false
+            if (test.descriptor() == descriptorArg) return true
          }
       }
       return false
