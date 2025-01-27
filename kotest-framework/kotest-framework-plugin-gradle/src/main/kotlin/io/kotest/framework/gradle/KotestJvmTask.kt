@@ -27,14 +27,13 @@ open class KotestJvmTask @Inject constructor(
       val candidates = this@KotestJvmTask.candidates(test.runtimeClasspath)
       candidates.forEach { println("spec: $it") }
 
-      val builder = TestLauncherExecBuilder
+      val exec = TestLauncherExecBuilder
          .builder(fileResolver, fileCollectionFactory, executorFactory)
          .withClasspath(test.runtimeClasspath)
          .withCandidates(candidates)
          .withDescriptor(descriptor())
          .withCommandLineTags(tags())
-
-      val exec = builder.build()
+         .build()
       val result = exec.execute()
 
       if (result?.exitValue != 0) {

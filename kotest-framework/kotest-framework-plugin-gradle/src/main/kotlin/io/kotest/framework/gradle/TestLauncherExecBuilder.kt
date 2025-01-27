@@ -84,7 +84,6 @@ data class TestLauncherExecBuilder(
       exec.classpath = classpath
 //      exec.jvmArgs = allJvmArgs
       exec.args = args()
-//      if (consumer != null) exec.standardOutput = consumer
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle

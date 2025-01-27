@@ -40,14 +40,14 @@ class KotestAndroidTask @Inject constructor(
 
       val candidates = candidates(classpathWithTests)
 
-      val builder = TestLauncherExecBuilder
+      val exec = TestLauncherExecBuilder
          .builder(fileResolver, fileCollectionFactory, executorFactory)
          .withClasspath(classpathWithTests)
          .withCandidates(candidates)
          .withDescriptor(descriptor())
          .withCommandLineTags(tags())
+         .build()
 
-      val exec = builder.build()
       val result = exec.execute()
 
       if (result.exitValue != 0) {

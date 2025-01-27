@@ -24,8 +24,15 @@ internal class SpecRefExtensionInterceptor(
       logger.log { Pair(ref.kclass.bestName(), "Intercepting spec") }
 
       val exts = projectConfigResolver.extensions().filterIsInstance<SpecRefExtension>()
+
+      if (exts.isEmpty()) {
+         return next.invoke(ref)
+      }
+
       var results: Result<Map<TestCase, TestResult>> = Result.success(emptyMap())
-      val inner: suspend (SpecRef) -> Unit = { results = next.invoke(ref) }
+      val inner: suspend (SpecRef) -> Unit = {
+         results = next.invoke(ref)
+      }
 
       val chain = exts.foldRight(inner) { op, acc -> { op.interceptRef(ref) { acc(ref) } } }
       chain.invoke(ref)
