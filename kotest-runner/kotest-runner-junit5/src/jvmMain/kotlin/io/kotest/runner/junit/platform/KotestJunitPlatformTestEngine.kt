@@ -8,14 +8,13 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.framework.discovery.DiscoverySelector
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
@@ -96,11 +95,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
       if (!includeKotest)
          return createEmptyEngineDescriptor(uniqueId)
 
-      val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
+      val descriptor = if (shouldRunTests(request)) {
 
-      val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-
-         val result: List<KClass<out Spec>> = classesFromSelectors(discoveryRequest)
+         val result: List<KClass<out Spec>> = classesFromSelectors(request)
 
          val extensions = request.configurationParameters.get("kotest.extensions").orElseGet { "" }
             .split(',')
@@ -126,11 +123,11 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return descriptor
    }
 
-   private fun classesFromSelectors(request: DiscoveryRequest): List<KClass<out Spec>> {
+   private fun classesFromSelectors(request: EngineDiscoveryRequest): List<KClass<out Spec>> {
       // first filter down to spec instances only, then load the full class
-      return request.selectors
+      val selectors = request.getSelectorsByType(ClassSelector::class.java)
+      return selectors
          .asSequence()
-         .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
          .map { Class.forName(it.className, false, this::class.java.classLoader) }
          .filter(isSpecSubclass)
          .map { Class.forName(it.name).kotlin }
@@ -148,12 +145,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * Kotest does not use method selectors, so if we have one, then we know its the junit plugin
     * and not kotest, so we should skip running the engine.
     */
-   private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest): Boolean {
-
-      if (discoveryRequest.selectors.isNotEmpty()) {
-         logger.log { "DiscoverySelectors are non-empty" }
-         return true
-      }
+   private fun shouldRunTests(request: EngineDiscoveryRequest): Boolean {
 
       if (request.getSelectorsByType(MethodSelector::class.java).isEmpty() &&
          request.getSelectorsByType(UniqueIdSelector::class.java).isEmpty()
