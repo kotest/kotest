@@ -2,23 +2,24 @@ package io.kotest.runner.junit.platform
 
 import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
+import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.framework.discovery.DiscoveryBuilder
 import io.kotest.framework.discovery.DiscoveryRequest
+import io.kotest.framework.discovery.DiscoverySelector
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
-import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
+import kotlin.reflect.KClass
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -43,15 +44,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       }
       logger.log { "Root request children ${request.rootTestDescriptor.children.joinToString(" ,") { it.uniqueId.toString() }}" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
-      when (root.error) {
-         null -> execute(request, root)
-         else -> abortExecution(request, root.error)
-      }
-   }
-
-   private fun abortExecution(request: ExecutionRequest, e: Throwable) {
-      request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
-      request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.failed(e))
+      execute(request, root)
    }
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
@@ -107,27 +100,21 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val descriptor = if (shouldRunTests(discoveryRequest, request)) {
 
-         val discovery = DiscoveryBuilder.builder()
-            .addDefaultBlacklistPackages()
-            .build()
-         val result = discovery.discover(discoveryRequest)
+         val result: List<KClass<out Spec>> = classesFromSelectors(discoveryRequest)
 
-         val extensions = if (result.specs.isNotEmpty()) {
-            request.configurationParameters.get("kotest.extensions").orElseGet { "" }
-               .split(',')
-               .map { it.trim() }
-               .filter { it.isNotBlank() }
-               .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
-         } else emptyList()
+         val extensions = request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+            .split(',')
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
 
          val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
          val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
 
          createEngineDescriptor(
             uniqueId,
-            result.specs,
+            result,
             gradleClassMethodTestFilter,
-            result.error,
             extensions,
          )
       } else {
@@ -138,6 +125,22 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "Final specs [${descriptor.classes.joinToString(", ")}]" }
       return descriptor
    }
+
+   private fun classesFromSelectors(request: DiscoveryRequest): List<KClass<out Spec>> {
+      // first filter down to spec instances only, then load the full class
+      return request.selectors
+         .asSequence()
+         .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
+         .map { Class.forName(it.className, false, this::class.java.classLoader) }
+         .filter(isSpecSubclass)
+         .map { Class.forName(it.name).kotlin }
+         .filterIsInstance<KClass<out Spec>>()
+         .filterNot(isAbstract)
+         .toList()
+   }
+
+   private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
+   private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
 
    /**
     * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
