@@ -66,17 +66,17 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
 
          withSystemProperty(KotestEngineProperties.filterTests, "goo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: goo"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': goo"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "g*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: g.*?"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': g.*?"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "*p") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: .*?p"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': .*?p"))
          }
       }
 
@@ -164,17 +164,17 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
 
          withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "goo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: goo"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': goo"))
          }
 
          withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "g*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: g.*?"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': g.*?"))
          }
 
          withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "*p") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: .*?p"))
+               .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': .*?p"))
          }
       }
    }
