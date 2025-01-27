@@ -6,12 +6,32 @@ import io.kotest.matchers.shouldBe
 
 class ArgParseTest : FunSpec() {
    init {
+
       test("parsing args happy path") {
          val args = listOf("--reporter", "taycan", "--package", "com.foo.bar.baz", "--spec", "FooBarTest")
          parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
             "package" to "com.foo.bar.baz",
             "spec" to "FooBarTest",
+         )
+      }
+
+      test("parsing args with descriptor") {
+         val args = listOf(
+            "--listener",
+            "teamcity",
+            "--termcolor",
+            "ansi16",
+            "--candidates",
+            "com.sksamuel.aedile.core.CoroutineContextTest",
+            "--descriptor",
+            "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches"
+         )
+         parseArgs(args) shouldBe mapOf(
+            "listener" to "teamcity",
+            "termcolor" to "ansi16",
+            "candidates" to "com.sksamuel.aedile.core.CoroutineContextTest",
+            "descriptor" to "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches",
          )
       }
 
@@ -43,10 +63,10 @@ class ArgParseTest : FunSpec() {
       }
 
       test("parsing args with empty value") {
-         val args = listOf("--reporter", "taycan", "--spec", "FooBarTest", "--tags", "--testname", "wibble test")
+         val args = listOf("--reporter", "taycan", "--candidates", "FooBarTest", "--tags", "--testname", "wibble test")
          parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
-            "spec" to "FooBarTest",
+            "candidates" to "FooBarTest",
             "tags" to "",
             "testname" to "wibble test",
          )

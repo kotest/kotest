@@ -1,7 +1,15 @@
 package io.kotest.engine.launcher
 
+import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.cli.parseArgs
+import io.kotest.engine.extensions.ProvidedDescriptorFilter
+import io.kotest.engine.launcher.LauncherArgs.CANDIDATES
+import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
+import io.kotest.engine.launcher.LauncherArgs.LISTENER
+import io.kotest.engine.launcher.LauncherArgs.SPEC
+import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
+import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -9,6 +17,20 @@ import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.runBlocking
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
+
+object LauncherArgs {
+
+   const val CANDIDATES = "candidates"
+
+   // these are optional
+   const val LISTENER = "listener"
+   const val TERMCOLORS = "termcolors"
+   const val DESCRIPTOR = "descriptor"
+
+   // these are deprecated kotest 5 flags kept for backwards compatibility
+   const val SPEC = "spec"
+   const val TESTPATH = "testpath"
+}
 
 /**
  * The entry point for the launcher.
@@ -21,22 +43,39 @@ import kotlin.system.exitProcess
  */
 fun main(args: Array<String>) {
 
+   println("Starting Kotest launcher with args: ${args.joinToString(";")}")
+
    val launcherArgs = parseArgs(args.toList())
-   val specsArg = launcherArgs["specs"] ?: error("The --specs arg must be provided")
+   println("Parsed args: $launcherArgs")
 
-   // what classes to run? We must be launched with a list.
-   // That list comes from the --specs flag
-   // the argument was called --spec in kotest 5 but was changed to --specs in kotest 6
+   // The launcher *must* be told what classes are available on the classpath, the engine will not perform scanning.
+   // It is the responsibility of the caller to pass this information.
+   // In Kotest 5 the argument was called --spec but was changed to --candidates in Kotest 6,
+   // we must support both for backwards compatibility
+   val candidatesArg = launcherArgs[CANDIDATES]
+      ?: launcherArgs[SPEC]
+      ?: error("The $CANDIDATES arg must be provided")
+
    @Suppress("UNCHECKED_CAST")
-   val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
+   val classes = candidatesArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
-   // we can filter to a test or parent test, eg from the command line or from the intellij plugin
-   // this filter comes from the --filter flag
-   val filter = launcherArgs["filter"]
+   // we support --descriptor to support an exact descriptor path as a way to run a single test
+   val descriptorFilter = launcherArgs[DESCRIPTOR]?.let { descriptor ->
+      println("Making a filter from input $descriptor")
+      ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
+   }
+
+   // Kotest 5 supported --testpath and didn't support the a descriptor selector, only the test name
+   // but we can combine that with the --spec arg which we know must be present in kotest 5 if testpath is
+   val descriptorFilterKotest5 = launcherArgs[TESTPATH]?.let { test ->
+      launcherArgs[SPEC]?.let { spec ->
+         ProvidedDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
+      }
+   }
 
    val console = TestEngineListenerBuilder.builder()
-      .withType(launcherArgs["listener"])
-      .withTermColors(launcherArgs["termcolors"])
+      .withType(launcherArgs[LISTENER]) // sets the output type, will be detected if not specified
+      .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
       .build()
 
    // we want to collect the results, so we can check if we need exit with an error
@@ -47,6 +86,7 @@ fun main(args: Array<String>) {
       .addListener(LoggingTestEngineListener) // we use this to write to the kotest log file
       .addListener(collector)
       .addListener(ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(console))).build()
+      .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
 
    runBlocking {
       launcher.async()

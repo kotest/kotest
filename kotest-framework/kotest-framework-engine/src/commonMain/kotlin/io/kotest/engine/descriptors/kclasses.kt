@@ -11,8 +11,5 @@ import kotlin.reflect.KClass
  * On platforms where the FQN is not available, this will fall back to the simple class name.
  */
 fun KClass<*>.toDescriptor(): SpecDescriptor {
-   return SpecDescriptor(
-      DescriptorId(this.bestName()),
-      this,
-   )
+   return SpecDescriptor(DescriptorId(this.bestName()))
 }

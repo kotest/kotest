@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
@@ -89,7 +90,7 @@ class FunSpecDataTest : FunSpec() {
       ) {
          context("context $it") {
             test("test $it") {
-               this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- context $it -- test $it"
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FunSpecDataTest/$it -- context $it -- test $it")
             }
          }
       }
@@ -162,7 +163,7 @@ class FunSpecDataTest : FunSpec() {
          ) {
             context("context $it") {
                test("test $it") {
-                  this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a context -- $it -- context $it -- test $it"
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FunSpecDataTest/inside a context -- $it -- context $it -- test $it")
                }
             }
          }

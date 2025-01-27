@@ -1,7 +1,6 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.descriptors.append
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
@@ -57,7 +56,7 @@ class Materializer(
          else rootTest.config
 
          TestCase(
-            descriptor = spec::class.toDescriptor().append(resolvedName),
+            descriptor = spec::class.toDescriptor().append(resolvedName.name),
             name = resolvedName,
             spec = spec,
             type = rootTest.type,
@@ -91,7 +90,7 @@ class Materializer(
       else nested.config
 
       return TestCase(
-         descriptor = parent.descriptor.append(resolvedName),
+         descriptor = parent.descriptor.append(resolvedName.name),
          name = resolvedName,
          spec = parent.spec,
          test = nested.test,

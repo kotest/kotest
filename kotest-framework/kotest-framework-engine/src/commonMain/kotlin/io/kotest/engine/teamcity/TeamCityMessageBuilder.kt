@@ -9,6 +9,9 @@ import kotlin.time.Duration
  *
  * Message format:
  *
+ * Reporting tests:
+ * https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Tests
+ *
  * https://www.jetbrains.com/help/teamcity/service-messages.html
  * https://confluence.jetbrains.com/display/TCD10/Build+Script+Interaction+with+TeamCity
  * https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html
@@ -117,9 +120,11 @@ class TeamCityMessageBuilder(
       return this
    }
 
+   // message contains the textual representation of the error
    fun message(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.MESSAGE, value.trim()) else this
 
+   // details contains detailed information on the test failure, typically a message and an exception stacktrace
    fun details(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.DETAILS, value.trim()) else this
 

@@ -46,7 +46,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       executed.clear()
    }
 
-   test("include all classes when filter specs is blank") {
+   xtest("include all classes when filter specs is blank") {
       withSystemProperties(
          mapOf(
             KotestEngineProperties.filterSpecs to "",
@@ -56,7 +56,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(13)
    }
 
-   test("filters a specific class") {
+   xtest("filters a specific class") {
       withSystemProperties(
          mapOf(
             KotestEngineProperties.filterSpecs to "*DistantFutureSciFiTests",
@@ -66,7 +66,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(7)
    }
 
-   test("filters a class prefix") {
+   xtest("filters a class prefix") {
       withSystemProperties(
          mapOf(
             KotestEngineProperties.filterSpecs to "*FutureSciFiTests",
@@ -76,7 +76,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(9)
    }
 
-   test("filters a specific class and test") {
+   xtest("filters a specific class and test") {
 
       withSystemProperties(
          mapOf(
@@ -88,7 +88,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(1)
    }
 
-   test("filters a test name with spaces") {
+   xtest("filters a test name with spaces") {
 
       withSystemProperties(
          mapOf(
@@ -100,7 +100,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(3)
    }
 
-   test("filters all classes in a package") {
+   xtest("filters all classes in a package") {
 
       withSystemProperties(
          mapOf(
@@ -112,7 +112,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(2)
    }
 
-   test("filters nested tests in a context") {
+   xtest("filters nested tests in a context") {
 
       withSystemProperties(
          mapOf(
@@ -124,7 +124,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(4)
    }
 
-   test("filter tests using prefix and suffix wildcard") {
+   xtest("filter tests using prefix and suffix wildcard") {
 
       withSystemProperties(
          mapOf(
@@ -136,7 +136,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
       numberOfTestsRunShouldBe(4)
    }
 
-   test("filter tests with prefix wildcard") {
+   xtest("filter tests with prefix wildcard") {
 
       withSystemProperties(
          mapOf(

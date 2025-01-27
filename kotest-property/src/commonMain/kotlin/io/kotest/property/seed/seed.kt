@@ -1,7 +1,7 @@
 package io.kotest.property.seed
 
-import io.kotest.common.TestPath
-import io.kotest.common.TestPathContextElement
+import io.kotest.common.DescriptorPath
+import io.kotest.common.DescriptorPathContextElement
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
@@ -14,24 +14,24 @@ internal suspend fun createRandom(config: PropTestConfig): RandomSource {
 
 internal suspend fun getFailedSeed(): Long? {
    if (!PropertyTesting.writeFailedSeed) return null
-   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
+   val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return null
    return readSeed(path)
 }
 
 suspend fun writeFailedSeed(seed: Long) {
    if (PropertyTesting.writeFailedSeed) {
-      val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+      val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return
       writeSeed(path, seed)
    }
 }
 
 internal suspend fun clearFailedSeed() {
-   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+   val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return
    clearSeed(path)
 }
 
-internal expect fun readSeed(path: TestPath): Long?
+internal expect fun readSeed(path: DescriptorPath): Long?
 
-internal expect fun writeSeed(path: TestPath, seed: Long)
+internal expect fun writeSeed(path: DescriptorPath, seed: Long)
 
-internal expect fun clearSeed(path: TestPath)
+internal expect fun clearSeed(path: DescriptorPath)

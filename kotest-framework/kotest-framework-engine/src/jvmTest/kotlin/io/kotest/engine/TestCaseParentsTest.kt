@@ -1,6 +1,5 @@
 package io.kotest.engine
 
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec

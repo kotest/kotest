@@ -2,7 +2,6 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.DescribeSpec

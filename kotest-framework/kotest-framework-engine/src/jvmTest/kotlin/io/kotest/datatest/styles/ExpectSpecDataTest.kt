@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
@@ -89,7 +90,7 @@ class ExpectSpecDataTest : ExpectSpec() {
       ) {
          context("context $it") {
             expect("test $it") {
-               this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- context $it -- test $it"
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/$it -- context $it -- test $it")
             }
          }
       }
@@ -153,7 +154,7 @@ class ExpectSpecDataTest : ExpectSpec() {
          ) {
             context("context $it") {
                expect("test $it") {
-                  this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a context -- $it -- context $it -- test $it"
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/inside a context -- $it -- context $it -- test $it")
                }
             }
          }

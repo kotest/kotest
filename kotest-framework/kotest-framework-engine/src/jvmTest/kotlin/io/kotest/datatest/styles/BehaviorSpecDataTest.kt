@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
@@ -90,7 +91,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
       given("given $it") {
         `when`("when $it") {
           then("then $it") {
-            this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- given $it -- when $it -- then $it"
+            this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecDataTest/$it -- given $it -- when $it -- then $it")
           }
         }
       }
@@ -158,7 +159,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
             `when`("when $b") {
               withData("foo", "bar") { c ->
                 then("then $c") {
-                  this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a given -- $a -- given $a -- $b -- when $b -- $c -- then $c"
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecDataTest/inside a given -- $a -- given $a -- $b -- when $b -- $c -- then $c")
                 }
               }
             }

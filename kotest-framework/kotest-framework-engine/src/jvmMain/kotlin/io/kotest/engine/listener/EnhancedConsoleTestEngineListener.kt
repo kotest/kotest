@@ -101,7 +101,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
          println(redBold(">> There were test failures"))
          println()
          specsFailed.distinct().forEach { spec ->
-            println(brightRedBold(" ${formatter.format(spec.kclass)}"))
+            println(brightRedBold(" ${formatter.format(this::class)}"))
             testsFailed.filter { it.first.spec::class.toDescriptor() == spec }.forEach { (testCase, _) ->
                println(brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}"))
             }
