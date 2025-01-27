@@ -5,6 +5,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
@@ -39,7 +40,8 @@ object BehaviorSpecStyle : SpecStyle {
    private val thens = listOf("then", "Then", "`then`", "`Then`")
    private val xthens = thens.map { "x$it" }
 
-   private val fnNames = (contexts + xcontexts + givens + xgivens + ands + xands + whens + xwhens + thens + xthens).toSet()
+   private val fnNames =
+      (contexts + xcontexts + givens + xgivens + ands + xands + whens + xwhens + thens + xthens).toSet()
 
    private fun PsiElement.locateParent(): Test? {
       return when (val p = parent) {
@@ -51,108 +53,126 @@ object BehaviorSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = this.extractStringArgForFunctionWithStringAndLambdaArgs(contexts)
       return if (context == null) null else {
          val name = TestName("Context: ", context.text, context.interpolated)
-         Test(name, null, TestType.Container, xdisabled = false, psi = this)
+         Test(name, null, specClass, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryXContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = this.extractStringArgForFunctionWithStringAndLambdaArgs(xcontexts)
       return if (context == null) null else {
          val name = TestName("Context: ", context.text, context.interpolated)
-         Test(name, null, TestType.Container, xdisabled = true, psi = this)
+         Test(name, null, specClass, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
    private fun KtCallExpression.tryGiven(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = TestName("Given: ", given.text, given.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryXGiven(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(xgivens)
       return if (given == null) null else {
          val name = TestName("Given: ", given.text, given.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = true, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
    private fun KtCallExpression.tryWhen(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
       return if (w == null) null else {
          val name = TestName("When: ", w.text, w.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryXWhen(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(xwhens)
       return if (w == null) null else {
          val name = TestName("When: ", w.text, w.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = true, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
    private fun KtCallExpression.tryAnd(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val a = this.extractStringArgForFunctionWithStringAndLambdaArgs(ands)
       return if (a == null) null else {
          val name = TestName("And: ", a.text, a.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryXAnd(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val a = this.extractStringArgForFunctionWithStringAndLambdaArgs(xands)
       return if (a == null) null else {
          val name = TestName("And: ", a.text, a.interpolated)
          val parents = locateParent()
-         Test(name, parents, TestType.Container, xdisabled = true, psi = this)
+         Test(name, parents, specClass, TestType.Container, xdisabled = true, psi = this)
       }
    }
 
    private fun KtDotQualifiedExpression.tryThenWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
       return if (then == null) null else {
          val parents = locateParent()
          val name = TestName("Then: ", then.text, then.interpolated)
-         Test(name, parents, TestType.Test, xdisabled = false, psi = this)
+         Test(name, parents, specClass, TestType.Test, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryThen(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
          val parents = locateParent()
          val name = TestName("Then: ", then.text, then.interpolated)
-         Test(name, parents, TestType.Test, xdisabled = false, psi = this)
+         Test(name, parents, specClass, TestType.Test, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryXThen(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(xthens)
       return if (then == null) null else {
          val parents = locateParent()
          val name = TestName("Then: ", then.text, then.interpolated)
-         Test(name, parents, TestType.Test, xdisabled = true, psi = this)
+         Test(name, parents, specClass, TestType.Test, xdisabled = true, psi = this)
       }
    }
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression ->
-            element.tryContext() ?: element.tryXContext() ?: element.tryGiven() ?: element.tryXGiven() ?: element.tryAnd() ?: element.tryXAnd() ?: element.tryWhen()
-            ?: element.tryXWhen()
-            ?: element.tryThen() ?: element.tryXThen()
+            element.tryContext()
+               ?: element.tryXContext()
+               ?: element.tryGiven()
+               ?: element.tryXGiven()
+               ?: element.tryAnd()
+               ?: element.tryXAnd()
+               ?: element.tryWhen()
+               ?: element.tryXWhen()
+               ?: element.tryThen()
+               ?: element.tryXThen()
          is KtDotQualifiedExpression -> element.tryThenWithConfig()
          else -> null
       }

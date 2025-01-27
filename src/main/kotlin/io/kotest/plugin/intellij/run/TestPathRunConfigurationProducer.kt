@@ -38,7 +38,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
                                               sourceElement: Ref<PsiElement>): Boolean {
 
 // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestTask(context.module)) return false
+      if (GradleUtils.hasGradlePlugin(context.module)) return false
 
       val element = sourceElement.get()
       if (element != null) {
@@ -65,7 +65,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
                                            context: ConfigurationContext): Boolean {
 
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestTask(context.module)) return false
+      if (GradleUtils.hasGradlePlugin(context.module)) return false
 
       val element = context.psiLocation
       if (element != null) {

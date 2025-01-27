@@ -5,6 +5,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
@@ -23,6 +24,8 @@ object AnnotationSpecStyle : SpecStyle {
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtNamedFunction -> {
+            // must be inside a class
+            val specClass = element.enclosingKtClassOrObject() ?: return null
             // check for the presence of the annotation @Test
             element.modifierList?.annotationEntries?.find { it.text == "@Test" } ?: return null
             // element must be named
@@ -30,6 +33,7 @@ object AnnotationSpecStyle : SpecStyle {
             return Test(
                TestName(null, name, focus = false, bang = false, interpolated = false),
                null,
+               specClass,
                TestType.Test,
                xdisabled = false,
                psi = element

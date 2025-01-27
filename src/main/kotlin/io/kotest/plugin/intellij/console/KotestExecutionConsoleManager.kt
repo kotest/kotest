@@ -64,7 +64,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
 
-      val consoleView = SMTestRunnerConnectionUtil.createConsole(consoleProperties)
+      val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FRAMEWORK_NAME)
+      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
@@ -81,6 +82,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       processHandler.addProcessListener(object : ProcessAdapter() {
          override fun processTerminated(event: ProcessEvent) {
+
+            callback?.addNoTestsPlaceholder()
 
             if (event.exitCode == 1) {
                consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code 1", null, true)
@@ -126,7 +129,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
             // todo this should be updated to handle any command line as long as it contains kotest
             return task.tasksToExecute.any {
-               it.contains(Constants.GRADLE_TASK_NAME)
+               it.contains(Constants.KOTEST_GRADLE_TASK_PREFIX)
             }
          }
       }

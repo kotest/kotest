@@ -11,37 +11,39 @@ import org.jetbrains.plugins.gradle.util.GradleModuleData
 @Suppress("UnstableApiUsage")
 data class GradleTaskNamesBuilder(
    private val gradleModuleData: GradleModuleData,
-   private val specs: List<KtClassOrObject>,
+   private val candidates: List<KtClassOrObject>,
    private val test: Test?,
 ) {
 
    companion object {
-      private const val SPEC_PACKAGE_DELIMITER = ";"
+
+      private const val CANDIDATE_DELIMITER = ";"
+
       fun builder(gradleModuleData: GradleModuleData): GradleTaskNamesBuilder =
          GradleTaskNamesBuilder(gradleModuleData, emptyList(), null)
    }
 
-   fun withSpec(spec: KtClassOrObject): GradleTaskNamesBuilder {
-      return copy(specs = specs + spec)
+   fun withCandidate(candidate: KtClassOrObject): GradleTaskNamesBuilder {
+      return copy(candidates = candidates + candidate)
    }
 
-   fun withTest(test: Test): GradleTaskNamesBuilder {
+   fun withTest(test: Test?): GradleTaskNamesBuilder {
       return copy(test = test)
    }
 
    fun build(): List<String> {
-      return listOfNotNull(taskArg(), specsArg(), testArg())
+      return listOfNotNull(taskArg(), candidatesArg(), descriptorArg())
    }
 
-   private fun taskArg() = gradleModuleData.getTaskPath(Constants.GRADLE_TASK_NAME)
+   private fun taskArg() = gradleModuleData.getTaskPath(Constants.KOTEST_GRADLE_TASK_PREFIX)
 
-   private fun specsArg(): String {
-      val specFQNs = specs.mapNotNull { it.fqName }.joinToString(SPEC_PACKAGE_DELIMITER) { it.asString() }
-      return "--specs '$specFQNs'"
+   private fun candidatesArg(): String {
+      val fqns = candidates.mapNotNull { it.fqName }.joinToString(CANDIDATE_DELIMITER) { it.asString() }
+      return "--candidates '$fqns'"
    }
 
-   private fun testArg(): String? {
+   private fun descriptorArg(): String? {
       if (test == null) return null
-      return "--test '${test.name.name}'"
+      return "--descriptor '${test.descriptor()}'"
    }
 }

@@ -7,11 +7,12 @@ import com.intellij.execution.ui.ConsoleViewContentType
 
 /**
  * An [KotestSMTRunnerConsoleView] is a customized [SMTRunnerConsoleView] for ServiceMessage (ie TeamCity format)
- * based test runners. We are extending this to avoid unwanted empty lines in the console.
+ * based test runners. We are extending this to support hiding the gradle build stages view pane.
  */
+@Suppress("UnstableApiUsage")
 class KotestSMTRunnerConsoleView(
    consoleProperties: KotestSMTRunnerConsoleProperties,
-   splitterPropertyName: String
+   splitterPropertyName: String,
 ) : SMTRunnerConsoleView(consoleProperties, splitterPropertyName), BuildViewSettingsProvider {
 
    private var lastMessageWasEmptyLine = false

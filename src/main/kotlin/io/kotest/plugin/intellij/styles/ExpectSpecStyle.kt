@@ -5,12 +5,14 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object ExpectSpecStyle : SpecStyle {
@@ -35,22 +37,25 @@ object ExpectSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, specClass)
    }
 
    private fun KtCallExpression.tryExpect(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val expect = extractStringArgForFunctionWithStringAndLambdaArgs("expect") ?: return null
-      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test, specClass)
    }
 
    private fun KtDotQualifiedExpression.tryExpectWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("expect", "config") ?: return null
-      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test, specClass)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      return Test(testName, locateParent(element), type, false, element)
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, specClass: KtClassOrObject): Test {
+      return Test(testName, locateParent(element), specClass, type, false, element)
    }
 
    override fun test(element: PsiElement): Test? {

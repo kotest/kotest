@@ -5,6 +5,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
@@ -14,6 +15,7 @@ import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FreeSpecStyle : SpecStyle {
@@ -44,8 +46,9 @@ object FreeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val string = extractStringFromStringInvokeWithLambda() ?: return null
-      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test, specClass)
    }
 
    /**
@@ -54,8 +57,9 @@ object FreeSpecStyle : SpecStyle {
     *   "some test".config(...) {}
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val string = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
-      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test, specClass)
    }
 
    /**
@@ -64,12 +68,13 @@ object FreeSpecStyle : SpecStyle {
     *   "some test" - {}
     */
    private fun KtBinaryExpression.tryContainer(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val string = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
-      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Container, specClass)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      return Test(testName, locateParent(element), type, false, element)
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, specClass: KtClassOrObject): Test {
+      return Test(testName, locateParent(element), specClass, type, false, element)
    }
 
    override fun test(element: PsiElement): Test? {

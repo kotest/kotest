@@ -30,6 +30,8 @@ class KotestServiceMessageCallback(
    override fun regularText(p0: String) {
    }
 
+   fun tests() = proxies.size
+
    @Suppress("UnstableApiUsage")
    override fun serviceMessage(msg: ServiceMessage) {
       println(msg)
@@ -79,6 +81,27 @@ class KotestServiceMessageCallback(
          else -> {
             println("Unknown message type: ${msg.messageName}")
          }
+      }
+   }
+
+   /**
+    * Adds a placeholder to the console to indicate that no tests were found (if necessary).
+    */
+   fun addNoTestsPlaceholder() {
+      if (tests() == 0) {
+         val proxy = TestProxyBuilder.builder("No tests were found", false, null, root).build()
+         proxy.setStarted()
+
+         console.resultsViewer.onTestStarted(proxy)
+         publisher.onTestStarted(proxy)
+
+         proxy.setTestFailed("No tests were found", null, true)
+         console.resultsViewer.onTestFailed(proxy)
+         publisher.onTestFailed(proxy)
+
+         proxy.setFinished()
+         console.resultsViewer.onTestFinished(proxy)
+         publisher.onTestFinished(proxy)
       }
    }
 

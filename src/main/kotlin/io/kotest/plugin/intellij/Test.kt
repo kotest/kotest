@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 data class TestElement(
    val psi: PsiElement,
@@ -40,6 +41,7 @@ data class TestPathEntry(val name: String)
 data class Test(
    val name: TestName, // the name as entered by the user
    val parent: Test?, // can be null if this is a root test
+   val specClassName: KtClassOrObject, // the containing class name, which all tests must have
    val testType: TestType,
    val xdisabled: Boolean, // if true then this test was defined using one of the x methods
    val psi: PsiElement // the canonical element that identifies this test
@@ -63,9 +65,15 @@ data class Test(
    }
 
    /**
-    * Returns the test path with delimiters so that the launcher can parse into components
+    * Returns the test path with delimiters so that the launcher can parse into components.
     */
+   @Deprecated("Used by the Kotest5 run producers. Use descriptor for all new code")
    fun testPath(): String = path().joinToString(" -- ") { it.name }
+
+   /**
+    * Returns the descriptor string for this test.
+    */
+   fun descriptor(): String = specClassName.fqName?.asString() + "/" + testPath()
 
    /**
     * Returns the test path without delimiters for display to a user.

@@ -9,14 +9,17 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.Constants
+import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.styles.SpecStyle
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.execution.GradleExternalTaskConfigurationType
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
+import org.jetbrains.plugins.gradle.util.GradleModuleData
 
 /**
  * Runs a Kotest individual test or spec using the `kotest` gradle task.
@@ -82,7 +85,7 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
    ): Boolean {
 
       // we must have kotest as a task configured in gradle for this run producer to be applicable
-      if (!GradleUtils.hasKotestTask(context.module)) return false
+      if (!GradleUtils.hasGradlePlugin(context.module)) return false
 
       val project = context.project ?: return false
       val module = context.module ?: return false
@@ -92,17 +95,12 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       val element = sourceElement.get()
       if (element == null) return false
 
-      // we must be in a class or object, as we need the fully qualified name of the spec
-      println("Element = $element")
-      val spec = element.enclosingSpec()
-      if (spec == null) {
-         println("No spec found for element $element")
-         return false
-      } else {
-         println("kt class = ${spec.fqName?.asString()}")
-      }
-
+      // we must be in a class or object to define tests,
+      // and we will use the FQN of that class or object as the candidates class list, so the kotest
+      // launcher doesn't need to be passed more than one class
+      val spec = element.enclosingSpec() ?: return false
       val test = SpecStyle.findTest(element)
+      println("Test = $test")
 
       // this is the path to the project on the file system
       val externalProjectPath = GradleUtils.resolveProjectPath(module) ?: return false
@@ -110,30 +108,39 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
       // this is the psi element associated with the run, needed by the java run extension manager
       val location = context.location ?: return false
 
-      val nameBuilder = GradleTestRunNameBuilder.builder().withSpec(spec)
-      if (test != null) nameBuilder.withTest(test)
-
-      configuration.name = nameBuilder.build()
+      configuration.name = configurationName(spec, test)
       configuration.isDebugServerProcess = false
-      // if we set this to true then intellij will send output to a gradle test console, which we want to override
+      // if we set this to true then intellij will send output to its own gradle test console,
+      // but we want to display our own SMTestRunnerConsole
       configuration.isRunAsTest = false
       configuration.putUserData<Boolean>(Key.create<Boolean>("kotest"), true)
 
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)
 
-      val taskNamesBuilder = GradleTaskNamesBuilder.builder(gradleModuleData).withSpec(spec)
-      if (test != null)
-         taskNamesBuilder.withTest(test)
-
       // note: configuration.settings.externalSystemId is set for us
       configuration.settings.externalProjectPath = externalProjectPath
       configuration.settings.scriptParameters = ""
-      configuration.settings.taskNames = taskNamesBuilder.build()
+      configuration.settings.taskNames = taskNames(gradleModuleData, spec, test)
       println("Task names: " + configuration.settings.taskNames.toString())
 
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
       return true
+   }
+
+   private fun configurationName(spec: KtClassOrObject, test: Test?): String {
+      return GradleTestRunNameBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build()
+   }
+
+   @Suppress("UnstableApiUsage")
+   private fun taskNames(gradleModuleData: GradleModuleData, spec: KtClassOrObject, test: Test?): List<String> {
+      return GradleTaskNamesBuilder.builder(gradleModuleData)
+         .withCandidate(spec)
+         .withTest(test)
+         .build()
    }
 
    /**
@@ -147,20 +154,19 @@ class GradleKotestTaskRunConfigurationProducer : LazyRunConfigurationProducer<Gr
    ): Boolean {
 
       // we must have kotest as a task configured in gradle for this run producer to be applicable
-      if (!GradleUtils.hasKotestTask(context.module)) return false
+      if (!GradleUtils.hasGradlePlugin(context.module)) return false
 
-      // if kotest is not the task this configuration is running, then this isn't a configuration we can re-use
-      // eg, we might be passed another gradle run configuration that was running build or clean etc
-      // todo we need a better way of checking the task
-      if (!configuration.settings.taskNames.first().endsWith(Constants.GRADLE_TASK_NAME)) return false
-//      println("Reusing configuration ${configuration.settings.taskNames.joinToString(", ")}")
+      // if kotest is not a task this configuration is running, then this isn't a configuration we can re-use
+      // eg, we might be passed another gradle run configuration that was running build or clean etc.
+      // we just see if any of the tasks start with kotest, eg kotestJs, kotestJvm or just the plain kotest task
+      if (!GradleUtils.hasKotestTask(configuration.settings.taskNames)) return false
 
       val element = context.psiLocation
       if (element != null) {
          val test = SpecStyle.findTest(element)
          if (test != null) {
-            val spec = element.enclosingKtClass()
-            return false
+            val specClass: KtClass? = element.enclosingKtClass() ?: return false
+            configuration.settings.taskNames.forEach { println("Trying to find task name $it") }
 
             // todo we need to compare the test path with the test path from the context
             // for now we'll just make a new one each time as we figure it out

@@ -13,7 +13,9 @@ import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.testMode
 
 /**
- * Returns a [Info] for a spec class.
+ * A [RunLineMarkerContributor] adds gutter icons to elements if they are actionable.
+ *
+ * This [SpecRunLineMarkerContributor] adds the test run icon to kotest spec classes.
  *
  * The entry point is the 'class' or 'object' keyword that is part of the spec's
  * definition in code. In psi terms, this is a leaf element whose element type is KTK, and context

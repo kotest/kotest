@@ -4,7 +4,7 @@ object Constants {
 
    const val FRAMEWORK_NAME = "Kotest"
    const val KOTEST_CLASS_LOCATOR_PROTOCOL = "kotest"
-   const val GRADLE_TASK_NAME = "kotest"
+   const val KOTEST_GRADLE_TASK_PREFIX = "kotest"
 
    val FrameworkId = "ioKotest"
 

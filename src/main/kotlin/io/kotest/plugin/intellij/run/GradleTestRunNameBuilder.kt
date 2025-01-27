@@ -19,9 +19,17 @@ data class GradleTestRunNameBuilder(
       return copy(spec = spec)
    }
 
-   fun withTest(test: Test): GradleTestRunNameBuilder {
+   fun withTest(test: Test?): GradleTestRunNameBuilder {
       return copy(test = test)
    }
 
-   fun build(): String = "[kotest] ${spec?.name} ${test?.readableTestPath()}"
+   fun build(): String {
+      return buildString {
+         append(spec?.name)
+         if (test != null) {
+            append(" ")
+            append(test.readableTestPath())
+         }
+      }
+   }
 }

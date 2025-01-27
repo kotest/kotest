@@ -41,7 +41,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
    ): Boolean {
 
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestTask(context.module)) return false
+      if (GradleUtils.hasGradlePlugin(context.module)) return false
 
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
@@ -71,7 +71,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
    ): Boolean {
 
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestTask(context.module)) return false
+      if (GradleUtils.hasGradlePlugin(context.module)) return false
 
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {

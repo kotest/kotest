@@ -6,6 +6,7 @@ import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.StringArg
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
@@ -16,6 +17,7 @@ import io.kotest.plugin.intellij.psi.ifOpenQuoteOfLhsArgOfIndexFunction
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object WordSpecStyle : SpecStyle {
@@ -49,43 +51,44 @@ object WordSpecStyle : SpecStyle {
    }
 
    private fun KtBinaryExpression.tryWhen(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("when", "When"))
       return if (name == null) null else {
          val testName = TestName(null, name.text, name.interpolated)
-         Test(testName, null, TestType.Container, xdisabled = false, psi = this)
+         Test(testName, null, specClass, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtBinaryExpression.tryShould(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("should", "Should"))
       return if (name == null) null else {
          val testName = TestName(null, name.text, name.interpolated)
          val w = locateParentWhen()
-         return if (w == null) {
-            Test(testName, null, TestType.Container, xdisabled = false, psi = this)
-         } else {
-            Test(
-               testName,
-               w,
-               TestType.Container,
-               xdisabled = false,
-               psi = this
-            )
-         }
+         return Test(
+            name = testName,
+            parent = w,
+            specClassName = specClass,
+            testType = TestType.Container,
+            xdisabled = false,
+            psi = this
+         )
       }
    }
 
    private fun KtCallExpression.trySubject(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val subject = extractStringFromStringInvokeWithLambda()
-      return buildSubjectWithParents(subject, this)
+      return buildSubjectWithParents(subject, this, specClass)
    }
 
    private fun KtDotQualifiedExpression.trySubjectWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val subject = extractStringForStringExtensionFunctonWithRhsFinalLambda("config")
-      return buildSubjectWithParents(subject, this)
+      return buildSubjectWithParents(subject, this, specClass)
    }
 
-   private fun buildSubjectWithParents(subject: StringArg?, psi: PsiElement): Test? {
+   private fun buildSubjectWithParents(subject: StringArg?, psi: PsiElement, specClass: KtClassOrObject): Test? {
       return if (subject == null) null else {
          val should = psi.locateParentShould()
          val w = psi.locateParentWhen()
@@ -93,6 +96,7 @@ object WordSpecStyle : SpecStyle {
             should != null && w != null -> Test(
                TestName(null, subject.text, subject.interpolated),
                w,
+               specClass,
                TestType.Test,
                xdisabled = false,
                psi = psi
@@ -100,6 +104,7 @@ object WordSpecStyle : SpecStyle {
             should != null -> Test(
                TestName(null, subject.text, subject.interpolated),
                should,
+               specClass,
                TestType.Test,
                xdisabled = false,
                psi = psi
@@ -107,6 +112,7 @@ object WordSpecStyle : SpecStyle {
             else -> Test(
                TestName(null, subject.text, subject.interpolated),
                null,
+               specClass,
                TestType.Test,
                xdisabled = false,
                psi = psi

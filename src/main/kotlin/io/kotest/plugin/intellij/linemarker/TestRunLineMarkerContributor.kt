@@ -22,7 +22,7 @@ import javax.swing.Icon
 /**
  * A [RunLineMarkerContributor] adds gutter icons to elements if they are actionable.
  *
- * This [TestRunLineMarkerContributor] adds the test run icon to kotest test cases.
+ * This [TestRunLineMarkerContributor] adds the test run icon to individual kotest test cases.
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
@@ -54,7 +54,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
-      // we cannot run interpolated names via the plugin
+      // we cannot run interpolated names via the plugin because we don't know what descriptor to pass along
       if (test.name.interpolated) return null
       // disabled tests are handled by another line marker
       if (!test.enabled) return null

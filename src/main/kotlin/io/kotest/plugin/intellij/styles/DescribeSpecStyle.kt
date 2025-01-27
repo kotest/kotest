@@ -5,13 +5,14 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
-import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object DescribeSpecStyle : SpecStyle {
@@ -46,12 +47,14 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryDescribe(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
       return buildTest(
          TestName(null, name.text, name.interpolated),
          name.text.startsWith("!"),
          this,
-         TestType.Container
+         TestType.Container,
+         specClass
       )
    }
 
@@ -62,12 +65,14 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
       return buildTest(
          TestName(null, name.text, name.interpolated),
          name.text.startsWith("!"),
          this,
-         TestType.Container
+         TestType.Container,
+         specClass
       )
    }
 
@@ -78,8 +83,15 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryIt(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("it") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Test,
+         specClass
+      )
    }
 
    /**
@@ -89,8 +101,9 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXIt(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xit") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
    }
 
    /**
@@ -100,8 +113,9 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXDescribe(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container, specClass)
    }
 
    /**
@@ -111,8 +125,9 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXContent(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xcontext") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container, specClass)
    }
 
    /**
@@ -122,8 +137,15 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Test,
+         specClass
+      )
    }
 
    /**
@@ -133,8 +155,9 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
    }
 
    /**
@@ -144,8 +167,15 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryDescribeWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("describe", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Test,
+         specClass
+      )
    }
 
    /**
@@ -155,12 +185,19 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXDescribeWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xdescribe", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
    }
 
-   private fun buildTest(testName: TestName, xdisabled: Boolean, element: PsiElement, testType: TestType): Test {
-      return Test(testName, locateParent(element), testType, xdisabled, element)
+   private fun buildTest(
+      testName: TestName,
+      xdisabled: Boolean,
+      element: PsiElement,
+      testType: TestType,
+      specClass: KtClassOrObject,
+   ): Test {
+      return Test(testName, locateParent(element), specClass, testType, xdisabled, element)
    }
 
    override fun test(element: PsiElement): Test? {

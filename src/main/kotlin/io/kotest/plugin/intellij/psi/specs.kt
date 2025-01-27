@@ -77,8 +77,8 @@ fun PsiElement.isContainedInSpec(): Boolean {
 }
 
 /**
- * Returns the [KtClassOrObject] that contains this element if a spec type,
- * or null if this element is not located inside a spec class.
+ * Returns the [KtClassOrObject] that contains this element if the element is located inside a
+ * spec class, otherwise null.
  */
 fun PsiElement.enclosingSpec(): KtClassOrObject? {
    val ktclassOrObject = this.getStrictParentOfType<KtClassOrObject>()

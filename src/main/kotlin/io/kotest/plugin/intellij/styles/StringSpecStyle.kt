@@ -5,6 +5,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
@@ -34,9 +35,10 @@ object StringSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringFromStringInvokeWithLambda() ?: return null
       val testName = TestName(null, normalize(name.text), name.interpolated)
-      return Test(testName, null, TestType.Test, xdisabled = false, psi = this)
+      return Test(testName, null, specClass, TestType.Test, xdisabled = false, psi = this)
    }
 
    /**
@@ -45,9 +47,10 @@ object StringSpecStyle : SpecStyle {
     *   "some test".config(...) {}
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
       val testName = TestName(null, normalize(name.text), name.interpolated)
-      return Test(testName, null, TestType.Test, xdisabled = false, psi = this)
+      return Test(testName, null, specClass, TestType.Test, xdisabled = false, psi = this)
    }
 
    /**

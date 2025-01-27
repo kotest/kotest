@@ -84,6 +84,8 @@
       <programRunner implementation="io.kotest.plugin.intellij.run.KotestDebuggerRunner"/>
       <library.dependencyScopeSuggester implementation="io.kotest.plugin.intellij.KotestDependencyScopeSuggester"/>
 
+      <breadcrumbProvider implementation="io.kotest.plugin.intellij.breadcrumbs.KotestBreadcrumbProvider"/>
+
       <intentionAction>
          <className>io.kotest.plugin.intellij.intentions.SoftAssertIntention</className>
          <category>Kotlin/Test</category>

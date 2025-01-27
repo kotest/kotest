@@ -13,12 +13,16 @@ object GradleUtils {
     * Returns true if we have the kotest gradle plugin configured for the given module.
     */
    @Suppress("UnstableApiUsage")
-   fun hasKotestTask(module: Module?): Boolean {
+   fun hasGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
       val externalProjectPath = resolveProjectPath(module) ?: return false
       return GradleTasksIndices.getInstance(module.project)
          .findTasks(externalProjectPath)
-         .any { it.name.endsWith(Constants.GRADLE_TASK_NAME) }
+         .any { it.name.endsWith(Constants.KOTEST_GRADLE_TASK_PREFIX) }
+   }
+
+   fun hasKotestTask(taskNames: List<String>): Boolean {
+      return taskNames.any { it.startsWith(Constants.KOTEST_GRADLE_TASK_PREFIX) }
    }
 
    fun resolveProjectPath(module: Module): String? {

@@ -5,12 +5,14 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FunSpecStyle : SpecStyle {
@@ -39,8 +41,9 @@ object FunSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false, specClass)
    }
 
    /**
@@ -50,8 +53,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("xcontext") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, true)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, true, specClass)
    }
 
    /**
@@ -61,8 +65,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -72,8 +77,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true, specClass)
    }
 
    /**
@@ -83,8 +89,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val test = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
-      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -94,8 +101,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXTest(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val test = extractStringArgForFunctionWithStringAndLambdaArgs("xtest") ?: return null
-      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, true)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, true, specClass)
    }
 
    /**
@@ -105,8 +113,9 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config") ?: return null
-      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -116,12 +125,19 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXTestWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xtest", "config") ?: return null
-      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, true)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, true, specClass)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, xdisabled: Boolean): Test {
-      return Test(testName, locateParent(element), type, xdisabled, element)
+   private fun buildTest(
+      testName: TestName,
+      element: PsiElement,
+      type: TestType,
+      xdisabled: Boolean,
+      specClass: KtClassOrObject,
+   ): Test {
+      return Test(testName, locateParent(element), specClass, type, xdisabled, element)
    }
 
    /**

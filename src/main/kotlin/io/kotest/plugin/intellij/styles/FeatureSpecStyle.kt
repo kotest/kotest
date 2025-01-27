@@ -5,12 +5,14 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FeatureSpecStyle : SpecStyle {
@@ -35,23 +37,26 @@ object FeatureSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryFeature(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val feature = extractStringArgForFunctionWithStringAndLambdaArgs("feature") ?: return null
-      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Container, specClass)
    }
 
    private fun KtCallExpression.tryScenario(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val scenario = extractStringArgForFunctionWithStringAndLambdaArgs("scenario") ?: return null
-      return buildTest(TestName(null, scenario.text, scenario.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, scenario.text, scenario.interpolated), this, TestType.Test, specClass)
    }
 
    private fun KtDotQualifiedExpression.tryScenarioWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val feature = extractLhsStringArgForDotExpressionWithRhsFinalLambda("scenario", "config") ?: return null
-      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Test, specClass)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      val parents = locateParent(element)
-      return Test(testName, parents, type, false, element)
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, specClass: KtClassOrObject): Test {
+      val parent = locateParent(element)
+      return Test(testName, parent, specClass, type, false, element)
    }
 
    override fun test(element: PsiElement): Test? {

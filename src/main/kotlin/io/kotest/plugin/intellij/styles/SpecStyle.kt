@@ -23,18 +23,18 @@ interface SpecStyle {
 
    companion object {
 
-
+      // for speed when detecting via psi elements, we order this in the types most common
       val styles = listOf(
-         AnnotationSpecStyle,
+         FunSpecStyle,
          BehaviorSpecStyle,
          DescribeSpecStyle,
+         FreeSpecStyle,
+         StringSpecStyle,
          ExpectSpecStyle,
          FeatureSpecStyle,
-         FreeSpecStyle,
-         FunSpecStyle,
          ShouldSpecStyle,
-         StringSpecStyle,
-         WordSpecStyle
+         WordSpecStyle,
+         AnnotationSpecStyle,
       )
 
       /**
@@ -130,7 +130,7 @@ interface SpecStyle {
    }
 
    /**
-    * Returns the fully qualified name of the spec parent class, eg io.kotest.core.specs.style.FunSpec.
+    * Returns the fully qualified name of the base spec type, eg io.kotest.core.specs.style.FunSpec.
     */
    fun fqn(): FqName
 

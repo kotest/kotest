@@ -5,12 +5,14 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
 import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object ShouldSpecStyle : SpecStyle {
@@ -34,8 +36,9 @@ object ShouldSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryContext(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false, specClass)
    }
 
    /**
@@ -45,8 +48,9 @@ object ShouldSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryShouldWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val should = extractLhsStringArgForDotExpressionWithRhsFinalLambda("should", "config") ?: return null
-      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -56,8 +60,9 @@ object ShouldSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -67,8 +72,9 @@ object ShouldSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true, specClass)
    }
 
    /**
@@ -78,8 +84,9 @@ object ShouldSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryShould(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val should = extractStringArgForFunctionWithStringAndLambdaArgs("should") ?: return null
-      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
@@ -89,13 +96,19 @@ object ShouldSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXShould(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
       val should = extractStringArgForFunctionWithStringAndLambdaArgs("xshould") ?: return null
-      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, true)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, true, specClass)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, xdisabled: Boolean): Test {
-      val contexts = locateParent(element)
-      return Test(testName, contexts, type, xdisabled, element)
+   private fun buildTest(
+      testName: TestName,
+      element: PsiElement,
+      type: TestType,
+      xdisabled: Boolean,
+      specClass: KtClassOrObject
+   ): Test {
+      return Test(testName, locateParent(element), specClass, type, xdisabled, element)
    }
 
    private fun PsiElement.tryKtCallExpression() =
