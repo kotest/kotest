@@ -22,6 +22,7 @@ import io.kotest.plugin.intellij.styles.SpecStyle
  *
  * This producer creates run configurations for individual tests.
  */
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
@@ -33,9 +34,11 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
     * Returns true if the given context is applicable to this run producer.
     * This implementation will return true if the source element is a test in any of the [SpecStyle]s.
     */
-   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
-                                              context: ConfigurationContext,
-                                              sourceElement: Ref<PsiElement>): Boolean {
+   override fun setupConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext,
+      sourceElement: Ref<PsiElement>
+   ): Boolean {
 
 // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
@@ -61,8 +64,10 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
 
    // compares the existing configurations to the context in question
    // if one of the configurations matches then this should return true
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
-                                           context: ConfigurationContext): Boolean {
+   override fun isConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext
+   ): Boolean {
 
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false

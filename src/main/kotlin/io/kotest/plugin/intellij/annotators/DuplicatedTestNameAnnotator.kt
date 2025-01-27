@@ -28,7 +28,7 @@ class DuplicatedTestNameAnnotator : Annotator {
 
       // generate the full path as nested tests may be unique if inside differently named parents
       // this test is duplicated if any other test has the same full path
-      val duplicated = tests.count { it.test.testPath() == test.testPath() } > 1
+      val duplicated = tests.count { it.test.descriptor() == test.descriptor() } > 1
 
       if (duplicated) {
          holder.createWarnAnnotation(test.psi, "Duplicated test name")

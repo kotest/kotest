@@ -14,6 +14,7 @@ import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
@@ -21,11 +22,16 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration, context: ConfigurationContext): Boolean = false
+   override fun isConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext
+   ): Boolean = false
 
-   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
-                                              context: ConfigurationContext,
-                                              sourceElement: Ref<PsiElement>): Boolean {
+   override fun setupConfigurationFromContext(
+      configuration: KotestRunConfiguration,
+      context: ConfigurationContext,
+      sourceElement: Ref<PsiElement>
+   ): Boolean {
       val index = ProjectRootManager.getInstance(context.project).fileIndex
       val dirservice = JavaDirectoryService.getInstance()
       val psiDirectory = sourceElement.get()

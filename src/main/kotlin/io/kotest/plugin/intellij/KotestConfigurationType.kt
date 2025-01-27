@@ -4,6 +4,7 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import javax.swing.Icon
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class KotestConfigurationType : ConfigurationType {
 
    private val factory = KotestConfigurationFactory(this)

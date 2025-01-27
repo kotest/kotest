@@ -7,6 +7,7 @@ import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.psi.search.GlobalSearchScope
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class KotestTestConsoleProperties(
    config: KotestRunConfiguration,
    executor: Executor

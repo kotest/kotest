@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.KotestRunConfiguration
 import java.io.File
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class KotestRunnableState(
    private val env: ExecutionEnvironment,
    private val config: KotestRunConfiguration

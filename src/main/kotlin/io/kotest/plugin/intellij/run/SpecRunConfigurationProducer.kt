@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  *
  * This producer creates run configurations for spec classes (run all).
  */
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())

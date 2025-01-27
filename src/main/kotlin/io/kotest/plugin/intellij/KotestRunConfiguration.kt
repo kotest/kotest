@@ -32,6 +32,7 @@ import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class KotestRunConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
    JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory),
    TargetEnvironmentAwareRunProfile {

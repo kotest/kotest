@@ -7,16 +7,19 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 /**
  * Holds state for generating suggested names for our config.
  */
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 data class RunData(
    val specName: String?,
    val testPath: String?,
    val packageName: String?
 )
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 fun generateName(packageName: String): String {
    return "All tests in '$packageName'"
 }
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 fun generateName(fqName: FqName, test: Test?): String {
    return if (test == null) {
       fqName.shortName().asString()
@@ -25,6 +28,7 @@ fun generateName(fqName: FqName, test: Test?): String {
    }
 }
 
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 fun generateName(ktclass: KtClassOrObject, test: Test?): String {
    return if (test == null) {
       ktclass.fqName?.shortName()?.asString() ?: ktclass.toString()
@@ -33,7 +37,7 @@ fun generateName(ktclass: KtClassOrObject, test: Test?): String {
    }
 }
 
-@Deprecated("Set names manually")
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 fun RunData.suggestedName(): String? {
    return when {
       !packageName.isNullOrBlank() -> "All tests in '$packageName'"

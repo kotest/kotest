@@ -16,6 +16,7 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 /**
  * Runs a Kotest spec using the standard gradle `task` test.
  */
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProducer() {
 
    override fun setupConfigurationFromContext(
