@@ -17,14 +17,16 @@ data class TestLauncherExecBuilder(
    private val executorFactory: ExecutorFactory,
    private val classpath: FileCollection?,
    private val tags: String?,
-   private val specs: List<String>,
+   private val descriptor: String?,
+   private val candidates: List<String>,
 ) {
 
    companion object {
       private const val LISTENER_ARG = "--listener"
       private const val TERMCOLOR_ARG = "--termcolor"
       private const val TAGS_ARG = "--tags"
-      private const val SPECS_ARG = "--specs"
+      private const val CANDIDATES_ARG = "--candidates"
+      private const val DESCRIPTOR_ARG = "--descriptor"
       private const val TC_LISTENER = "teamcity"
       private const val ENHANCED_CONSOLE_LISTENER = "enhanced"
       private const val PLAIN_COLOURS = "ansi16"
@@ -43,8 +45,9 @@ data class TestLauncherExecBuilder(
             fileCollectionFactory = fileCollectionFactory,
             executorFactory = executorFactory,
             tags = null,
+            descriptor = null,
             classpath = null,
-            specs = emptyList(),
+            candidates = emptyList(),
          )
       }
    }
@@ -57,8 +60,12 @@ data class TestLauncherExecBuilder(
       return copy(classpath = classpath)
    }
 
-   fun withSpecs(specs: List<String>): TestLauncherExecBuilder {
-      return copy(specs = specs)
+   fun withCandidates(candidates: List<String>): TestLauncherExecBuilder {
+      return copy(candidates = candidates)
+   }
+
+   fun withDescriptor(descriptor: String?): TestLauncherExecBuilder {
+      return copy(descriptor = descriptor)
    }
 
    /**
@@ -95,13 +102,18 @@ data class TestLauncherExecBuilder(
     * If they don't, the output will be the raw service-message format which is designed for parsing
     * not human consumption.
     */
-   private fun args() = listenerArgs() + tagArgs() + specArgs()
+   private fun args() = listenerArgs() + tagsArg() + classesArg() + descriptorArg()
 
    private fun listenerArgs(): List<String> {
       return when {
          isIntellij() -> listOf(LISTENER_ARG, TC_LISTENER, TERMCOLOR_ARG, PLAIN_COLOURS)
          else -> listOf(LISTENER_ARG, ENHANCED_CONSOLE_LISTENER, TERMCOLOR_ARG, TRUE_COLOURS)
       }
+   }
+
+   private fun descriptorArg(): List<String> {
+      if (descriptor == null) return emptyList()
+      return listOf(DESCRIPTOR_ARG, descriptor)
    }
 
    /**
@@ -112,18 +124,18 @@ data class TestLauncherExecBuilder(
     *
     * Returns empty list if no tag expression was specified.
     */
-   private fun tagArgs(): List<String> {
+   private fun tagsArg(): List<String> {
       tags?.let { return listOf(TAGS_ARG, it) }
 //      project.kotest()?.tags?.orNull?.let { return listOf(TagsArg, it) }
       return emptyList()
    }
 
    /**
-    * Returns the args that specify the specs to execute.
+    * Returns the args that specify the candidate classes.
     * This is a semi-colon separated list of fully qualified class names.
     */
-   private fun specArgs(): List<String> {
-      return if (specs.isEmpty()) emptyList() else listOf(SPECS_ARG, specs.joinToString(";"))
+   private fun classesArg(): List<String> {
+      return if (candidates.isEmpty()) emptyList() else listOf(CANDIDATES_ARG, candidates.joinToString(";"))
    }
 
    /**

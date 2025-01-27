@@ -2,8 +2,8 @@ package com.sksamuel.kotest.engine
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.filter.TestFilterResult
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestResult
@@ -17,11 +17,11 @@ class TestFilterTest : FunSpec() {
 
       test("a filtered test should be ignored with reason") {
 
-         val filter = object : TestFilter {
-            override fun filter(descriptor: Descriptor): TestFilterResult {
+         val filter = object : DescriptorFilter {
+            override fun filter(descriptor: Descriptor): DescriptorFilterResult {
                return when (descriptor.id.value) {
-                  "foo" -> TestFilterResult.Exclude("get outta here!")
-                  else -> TestFilterResult.Include
+                  "foo" -> DescriptorFilterResult.Exclude("get outta here!")
+                  else -> DescriptorFilterResult.Include
                }
             }
          }
@@ -36,7 +36,7 @@ class TestFilterTest : FunSpec() {
             .withProjectConfig(c)
             .launch()
 
-         collector.result("foo") shouldBe TestResult.Ignored("foo is excluded by test filter(s): get outta here!")
+         collector.result("foo") shouldBe TestResult.Ignored("get outta here!")
          collector.result("bar")!!.isSuccess.shouldBeTrue()
       }
    }

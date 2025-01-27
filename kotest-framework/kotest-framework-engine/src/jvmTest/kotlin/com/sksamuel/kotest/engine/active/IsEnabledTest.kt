@@ -4,12 +4,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.filter.toTestFilterResult
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
@@ -21,6 +17,8 @@ import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.engine.test.status.isEnabledInternal
@@ -198,9 +196,9 @@ class IsEnabledTest : StringSpec() {
 
       "isEnabledInternal should return false if a test filter excludes the test" {
 
-         val filter = object : TestFilter {
-            override fun filter(descriptor: Descriptor): TestFilterResult {
-               return (descriptor.id.value == "f").toTestFilterResult(null)
+         val filter = object : DescriptorFilter {
+            override fun filter(descriptor: Descriptor): DescriptorFilterResult {
+               return if (descriptor.id.value == "f") DescriptorFilterResult.Include else DescriptorFilterResult.Exclude(null)
             }
          }
 

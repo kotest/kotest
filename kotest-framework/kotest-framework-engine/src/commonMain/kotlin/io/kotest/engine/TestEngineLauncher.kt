@@ -132,15 +132,21 @@ class TestEngineLauncher(
    }
 
    /**
-    * Returns a copy of this launcher with the given [extensions] added to the configuration.
+    * Returns a copy of this launcher with the given [extension] added to the configuration.
     */
-   fun withExtensions(vararg extensions: Extension): TestEngineLauncher =
-      withExtensions(extensions.toList())
+   fun addExtension(extension: Extension): TestEngineLauncher =
+      addExtensions(listOf(extension))
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
     */
-   fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
+   fun addExtensions(vararg extensions: Extension): TestEngineLauncher =
+      addExtensions(extensions.toList())
+
+   /**
+    * Returns a copy of this launcher with the given [extensions] added to the configuration.
+    */
+   fun addExtensions(extensions: List<Extension>): TestEngineLauncher {
       extensions.forEach { registry.add(it) }
       return this
    }

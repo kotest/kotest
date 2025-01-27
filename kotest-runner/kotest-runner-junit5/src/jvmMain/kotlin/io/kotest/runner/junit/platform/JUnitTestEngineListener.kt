@@ -365,7 +365,7 @@ class JUnitTestEngineListener(
       val unique = UniqueNames.unique(name, dummies) { s, k -> "${s}_$k" } ?: name
       dummies.add(unique)
 
-      val descriptor = createSpecTestDescriptor(root, Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique)
+      val descriptor = createSpecTestDescriptor(root, Descriptor.SpecDescriptor(DescriptorId(unique)), unique)
       root.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       return descriptor

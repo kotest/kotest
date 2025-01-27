@@ -1,7 +1,7 @@
 package io.kotest.permutations.seeds
 
-import io.kotest.common.TestPath
-import io.kotest.common.TestPathContextElement
+import io.kotest.common.DescriptorPath
+import io.kotest.common.DescriptorPathContextElement
 import io.kotest.permutations.PermutationConfiguration
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
@@ -16,7 +16,7 @@ internal object SeedOperations {
 
    private suspend fun getFailedSeed(): Long? {
       if (!PropertyTesting.writeFailedSeed) return null
-      val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return null
+      val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return null
       return readSeed(path)
    }
 
@@ -25,19 +25,19 @@ internal object SeedOperations {
     */
    suspend fun writeFailedSeed(writeFailedSeed: Boolean, seed: Long) {
       if (writeFailedSeed) {
-         val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+         val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return
          writeSeed(path, seed)
       }
    }
 
    suspend fun clearFailedSeed() {
-      val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+      val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return
       clearSeed(path)
    }
 }
 
-internal expect fun readSeed(path: TestPath): Long?
+internal expect fun readSeed(path: DescriptorPath): Long?
 
-internal expect fun writeSeed(path: TestPath, seed: Long)
+internal expect fun writeSeed(path: DescriptorPath, seed: Long)
 
-internal expect fun clearSeed(path: TestPath)
+internal expect fun clearSeed(path: DescriptorPath)

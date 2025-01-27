@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
@@ -89,7 +90,7 @@ class FeatureSpecDataTest : FeatureSpec() {
       ) {
          feature("feature $it") {
             scenario("scenario $it") {
-               this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- feature $it -- scenario $it"
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FeatureSpecDataTest/$it -- feature $it -- scenario $it")
             }
          }
       }
@@ -153,7 +154,7 @@ class FeatureSpecDataTest : FeatureSpec() {
          ) {
             feature("feature $it") {
                scenario("scenario $it") {
-                  this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a feature -- $it -- feature $it -- scenario $it"
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FeatureSpecDataTest/inside a feature -- $it -- feature $it -- scenario $it")
                }
             }
          }

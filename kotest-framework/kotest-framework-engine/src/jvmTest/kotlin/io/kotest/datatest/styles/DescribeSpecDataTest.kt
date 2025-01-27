@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
@@ -89,7 +90,7 @@ class DescribeSpecDataTest : DescribeSpec() {
       ) {
          context("describe $it") {
             it(it) {
-               this.testCase.descriptor.path(includeSpec = false).value shouldBe "$it -- describe $it -- $it"
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecDataTest/$it -- describe $it -- $it")
             }
          }
       }
@@ -153,7 +154,7 @@ class DescribeSpecDataTest : DescribeSpec() {
          ) {
             describe("describe $it") {
                it(it) {
-                  this.testCase.descriptor.path(includeSpec = false).value shouldBe "inside a context -- $it -- describe $it -- $it"
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecDataTest/inside a context -- $it -- describe $it -- $it")
                }
             }
          }

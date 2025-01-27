@@ -28,7 +28,7 @@ internal fun createSpecTestDescriptor(
    displayName: String,
 ): TestDescriptor {
    val id = engine.deriveSpecUniqueId(descriptor.id)
-   val source = ClassSource.from(descriptor.kclass.java)
+   val source = ClassSource.from(descriptor.id.value)
    return object : AbstractTestDescriptor(id, displayName, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
       override fun mayRegisterTests(): Boolean = true

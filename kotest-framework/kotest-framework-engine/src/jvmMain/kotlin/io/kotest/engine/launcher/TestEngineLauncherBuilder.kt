@@ -34,15 +34,3 @@ data class TestEngineLauncherBuilder(
          .withClasses(classes)
    }
 }
-
-//   val filter = if (args.testpath == null || specClass == null) null else {
-//      TestPathTestCaseFilter(args.testpath, specClass)
-//   }
-//
-//   if (error != null) throw error
-//
-//   TestEngineLauncher(listener)
-//      .withExtensions(listOfNotNull(filter))
-//      .withTagExpression(args.tagExpression?.let { TagExpression(it) })
-//      .withClasses(specs)
-//}
