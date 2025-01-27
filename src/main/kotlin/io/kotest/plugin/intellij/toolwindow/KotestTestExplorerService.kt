@@ -37,10 +37,6 @@ class KotestTestExplorerService(
    private val scope: CoroutineScope,
 ) {
 
-   // TODO: Remove when dropping IC-223 support.
-   @Suppress("unused")
-   constructor(project: Project) : this(project, CoroutineScope(Dispatchers.Default))
-
    var showCallbacks by observable(true) { _, _, _ -> reloadModelInBackgroundThread() }
    var showTags by observable(true) { _, _, _ -> reloadModelInBackgroundThread() }
    var showModules by observable(true) { _, _, _ -> reloadModelInBackgroundThread() }
