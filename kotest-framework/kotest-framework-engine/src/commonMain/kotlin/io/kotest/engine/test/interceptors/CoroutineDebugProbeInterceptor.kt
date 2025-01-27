@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -11,6 +12,7 @@ import io.kotest.engine.config.TestConfigResolver
  * If configured, then the kotlinx debug probe is installed for coroutines.
  * Note: This is a JVM only option.
  */
+@JVMOnly
 internal class CoroutineDebugProbeInterceptor(
    private val testConfigResolver: TestConfigResolver,
 ) : TestExecutionInterceptor {

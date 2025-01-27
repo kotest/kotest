@@ -13,8 +13,6 @@ kotlin {
             implementation(kotlin("reflect"))
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
-            // used to install the debug probes for coroutines
-            api(libs.kotlinx.coroutines.debug)
             api(libs.kotlinx.coroutines.core)
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
@@ -29,6 +27,9 @@ kotlin {
 
             // used to write to the console with fancy colours!
             api(libs.mordant)
+
+            // used to install the debug probes for coroutines
+            api(libs.kotlinx.coroutines.debug)
          }
       }
 
