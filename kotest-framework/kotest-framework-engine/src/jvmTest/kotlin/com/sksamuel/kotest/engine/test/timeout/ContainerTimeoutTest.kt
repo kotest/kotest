@@ -21,7 +21,7 @@ class ContainerTimeoutTest : FunSpec() {
          withData(
             nameFn = { (coroutineTestScope, message) -> "coroutineTestScope = $coroutineTestScope -> $message" },
             false to "Test 'a' did not complete within 100ms",
-            true to "After waiting for 100ms, the test coroutine is not completing, there were active child jobs",
+            true to "After waiting for 100ms, the test body did not run to completion",
          ) { (enableCoroutineTestScope, message) ->
             val collector = CollectingTestEngineListener()
             val c = object : AbstractProjectConfig() {
