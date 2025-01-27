@@ -14,7 +14,7 @@ public class io/kotest/framework/gradle/AbstractKotestTask : org/gradle/api/Defa
 public final class io/kotest/framework/gradle/AbstractKotestTask$Companion {
 }
 
-public final class io/kotest/framework/gradle/KotestAndroidTask : io/kotest/framework/gradle/AbstractKotestTask {
+public class io/kotest/framework/gradle/KotestAndroidTask : io/kotest/framework/gradle/AbstractKotestTask {
 	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
 	public final fun execute ()V
 }

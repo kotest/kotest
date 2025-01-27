@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 // gradle requires the class be extendable
 @CacheableTask // this allows gradle to cache our inputs
-class KotestAndroidTask @Inject constructor(
+open class KotestAndroidTask @Inject constructor(
    private val fileResolver: FileResolver,
    private val fileCollectionFactory: FileCollectionFactory,
    private val executorFactory: ExecutorFactory,
