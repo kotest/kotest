@@ -10,7 +10,6 @@ kotlin {
             api(projects.kotestCommon)
             api(projects.kotestAssertions.kotestAssertionsShared)
             api(projects.kotestFramework.kotestFrameworkEngine)
-            api(projects.kotestFramework.kotestFrameworkDiscovery)
             api(libs.junit4)
             api(libs.kotlinx.coroutines.core)
          }

@@ -24,7 +24,6 @@ class SpecInitializationErrorTest : FunSpec({
          UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
          listOf(SpecWithInstanceFieldError::class),
          null,
-         null,
          emptyList(),
       )
 
@@ -60,7 +59,6 @@ class SpecInitializationErrorTest : FunSpec({
       val root = createEngineDescriptor(
          UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
          listOf(SpecWithInitError::class),
-         null,
          null,
          emptyList(),
       )

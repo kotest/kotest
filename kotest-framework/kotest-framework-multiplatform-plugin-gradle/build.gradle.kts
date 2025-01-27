@@ -24,7 +24,6 @@ dependencies {
    devPublication(projects.kotestAssertions.kotestAssertionsCore)
    devPublication(projects.kotestAssertions.kotestAssertionsShared)
    devPublication(projects.kotestExtensions)
-   devPublication(projects.kotestFramework.kotestFrameworkDiscovery)
    devPublication(projects.kotestCommon)
    devPublication(projects.kotestFramework.kotestFrameworkEngine)
    devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler)

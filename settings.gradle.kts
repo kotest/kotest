@@ -50,10 +50,6 @@ plugins {
 include(
    ":kotest-common",
 
-   // used to discovery specs from the classpath at runtime
-   // brings in the API dependency for required data types
-   ":kotest-framework:kotest-framework-discovery",
-
    // contains the execution engine implementation for jvm, js, native
    // brings in the API dependency
    ":kotest-framework:kotest-framework-engine",
