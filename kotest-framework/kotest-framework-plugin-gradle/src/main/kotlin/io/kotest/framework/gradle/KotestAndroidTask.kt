@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.internal.file.FileCollectionFactory
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.concurrent.ExecutorFactory
 import org.gradle.kotlin.dsl.get
@@ -19,23 +20,31 @@ open class KotestAndroidTask @Inject constructor(
    private val executorFactory: ExecutorFactory,
 ) : AbstractKotestTask() {
 
+   @Input
+   val compilationNames = project.objects.listProperty(String::class.java)
+
    @TaskAction
    fun execute() {
-      val android = project.extensions.findByType(KotlinAndroidExtension::class.java)
-      android?.target?.compilations?.forEach {
-         // todo better way to detect the test compilations ?
-         if (it.name.endsWith("UnitTest"))
+      val ext = project.extensions.getByType(KotlinAndroidExtension::class.java)
+      ext.target.compilations
+         .matching { it.name.endsWith("UnitTest") }
+         .matching { compilationNames.get().contains(it.name) }
+         .forEach {
             executeCompilation(it)
-      }
+         }
    }
 
    private fun executeCompilation(compilation: KotlinCompilation<*>) {
 
+      val ext = project.extensions.getByType(KotestExtension::class.java)
+
       // todo how do we get a handle to this location without hard coding the path ?
-      val classesFolder = "tmp/kotlin-classes/${compilation.compilationName}"
+      val classesFolder = "${ext.androidTestSource}/${compilation.compilationName}"
       val classesPath = project.layout.buildDirectory.get().asFile.toPath().resolve(classesFolder)
+
       val runtimeName = compilation.runtimeDependencyConfigurationName ?: error("No runtimeDependencyConfigurationName")
       val runtimeClasspath = project.configurations[runtimeName]
+
       val classpathWithTests = runtimeClasspath.plus(fileCollectionFactory.fixed(classesPath.toFile()))
 
       val candidates = candidates(classpathWithTests)
