@@ -17,10 +17,12 @@ public final class io/kotest/framework/gradle/AbstractKotestTask$Companion {
 public class io/kotest/framework/gradle/KotestAndroidTask : io/kotest/framework/gradle/AbstractKotestTask {
 	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
 	public final fun execute ()V
+	public final fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
 }
 
 public abstract class io/kotest/framework/gradle/KotestExtension {
 	public fun <init> (Lorg/gradle/api/Project;)V
+	public final fun getAndroidTestSource ()Ljava/lang/String;
 	public final fun getFailOnEmptySpecs ()Lorg/gradle/api/provider/Property;
 	public final fun getTagExpression ()Lorg/gradle/api/provider/Property;
 }
@@ -68,7 +70,7 @@ public final class io/kotest/framework/gradle/TestClass {
 
 public final class io/kotest/framework/gradle/TestClassDetector {
 	public fun <init> ()V
-	public final fun detect (Lorg/gradle/api/file/FileTree;)Ljava/util/List;
+	public final fun detect (Lorg/gradle/api/file/FileTree;)Ljava/util/Set;
 }
 
 public final class io/kotest/framework/gradle/TestLauncherExecBuilder {
