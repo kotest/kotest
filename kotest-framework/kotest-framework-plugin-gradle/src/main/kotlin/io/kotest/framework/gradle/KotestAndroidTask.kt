@@ -39,13 +39,21 @@ open class KotestAndroidTask @Inject constructor(
       val ext = project.extensions.getByType(KotestExtension::class.java)
 
       // todo how do we get a handle to this location without hard coding the path ?
-      val classesFolder = "${ext.androidTestSource}/${compilation.compilationName}"
-      val classesPath = project.layout.buildDirectory.get().asFile.toPath().resolve(classesFolder)
+      val testClassesDir = "${ext.androidTestSource}/${compilation.compilationName}"
+      val testClassesPath = project.layout.buildDirectory.get().asFile.toPath().resolve(testClassesDir)
+
+      // todo how do we get a handle to this location without hard coding the path ?
+      val classesDir = "${ext.androidTestSource}/${compilation.compilationName.removeSuffix("UnitTest")}"
+      val classesPath = project.layout.buildDirectory.get().asFile.toPath().resolve(classesDir)
 
       val runtimeName = compilation.runtimeDependencyConfigurationName ?: error("No runtimeDependencyConfigurationName")
       val runtimeClasspath = project.configurations[runtimeName]
 
-      val classpathWithTests = runtimeClasspath.plus(fileCollectionFactory.fixed(classesPath.toFile()))
+      val classpathWithTests = runtimeClasspath.plus(
+         fileCollectionFactory.fixed(
+            listOf(classesPath.toFile(), testClassesPath.toFile())
+         )
+      )
 
       val candidates = candidates(classpathWithTests)
 
