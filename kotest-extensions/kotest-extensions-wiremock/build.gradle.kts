@@ -13,7 +13,6 @@ kotlin {
       }
       val jvmTest by getting {
          dependencies {
-//            implementation(libs.kotest.assertions)
             implementation(libs.fuel)
          }
       }

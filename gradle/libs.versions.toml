@@ -25,13 +25,13 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 byte-buddy = "1.15.11"
 allure = "2.24.0"
-koin = "3.5.6"
-wiremock = "3.6.0"
+koin = "3.6.0"
+wiremock = "3.5.4"
 fuel = "2.3.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
-jvmMinTarget = "8"
+jvmMinTarget = "11"
 # Kotest's maximum supported Java version. (Must be >= jvmMinTarget.)
 jvmMaxTarget = "21"
 # JDK used to compile Kotest. (Must be >= jvmMaxTarget.)
