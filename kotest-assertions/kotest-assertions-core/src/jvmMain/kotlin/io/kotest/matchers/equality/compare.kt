@@ -32,7 +32,6 @@ private fun compareFields(actual: Any?, expected: Any?, field: String?, config: 
       throw failure("Comparing type ${actual!!::class.jvmName} to ${expected!!::class.jvmName} with mismatched properties")
 
    return props1.fold(CompareResult(emptyList(), emptyMap())) { acc, prop ->
-      println("Prop: " + prop.returnType.toString().replace("?", ""))
       val actualValue = prop.getter.call(actual)
       val expectedValue = prop.getter.call(expected)
       val name = if (field == null) prop.name else field + "." + prop.name
@@ -49,7 +48,6 @@ private fun compareValue(
    config: FieldEqualityConfig,
    prop: KProperty<*>
 ): CompareResult {
-   println("Compare value $type from $actual $expected")
 
    when (val overrideMatcherResult: CustomComparisonResult =
          config.overrideMatchers[prop]?.assert(expected, actual) ?:
