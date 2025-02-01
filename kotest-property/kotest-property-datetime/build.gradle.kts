@@ -5,22 +5,23 @@ plugins {
 
 kotlin {
    sourceSets {
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.datetime)
          }
       }
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
          }
       }
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
          }
       }
    }
