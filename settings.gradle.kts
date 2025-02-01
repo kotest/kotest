@@ -91,12 +91,19 @@ include(
    ":kotest-runner:kotest-runner-junit5",
 
    ":kotest-runner:kotest-runner-junit4",
+
+   // contains some common extensions not worth making a module for
    ":kotest-extensions",
-   ":kotest-extensions:kotest-extensions-blockhound",
-   ":kotest-extensions:kotest-extensions-junitxml",
-   ":kotest-extensions:kotest-extensions-htmlreporter",
-   ":kotest-extensions:kotest-extensions-spring",
+
+   // adds support for the allure reporting framework - see more https://allurereport.org/
    ":kotest-extensions:kotest-extensions-allure",
+   ":kotest-extensions:kotest-extensions-blockhound",
+   ":kotest-extensions:kotest-extensions-htmlreporter",
+   ":kotest-extensions:kotest-extensions-junitxml",
+
+   // adds support for the koin DI framework - see more https://insert-koin.io/
+   ":kotest-extensions:kotest-extensions-koin",
+   ":kotest-extensions:kotest-extensions-spring",
 
    // allows overriding the .now() functionality on time classes
    ":kotest-extensions:kotest-extensions-now",
