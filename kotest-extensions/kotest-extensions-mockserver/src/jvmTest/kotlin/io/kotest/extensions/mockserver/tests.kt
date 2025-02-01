@@ -1,19 +1,20 @@
 package io.kotest.extensions.mockserver
 
 import com.github.kittinunf.fuel.httpGet
+import io.kotest.core.extensions.install
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class MockServerListenerSinglePortTest : FunSpec({
-   listener(MockServerListener(3030))
+class MockServerExtensionSinglePortTest : FunSpec({
+   install(MockServerExtension(3030))
 
    test("Should create mock server in specified port") {
       "http://localhost:3030".httpGet().response().second.statusCode shouldBe 404
    }
 })
 
-class MockServerListenerMultiPortTest : FunSpec({
-   listener(MockServerListener(3030, 3031, 3032))
+class MockServerExtensionMultiPortTest : FunSpec({
+   install(MockServerExtension(3030, 3031, 3032))
 
    test("Should create mock server in multiple ports") {
       listOf("3030", "3031", "3032").forEach {
@@ -22,10 +23,10 @@ class MockServerListenerMultiPortTest : FunSpec({
    }
 })
 
-class MockServerListenerRandomPortTest : FunSpec({
-   val target = listener(MockServerListener())
+class MockServerExtensionRandomPortTest : FunSpec({
+   val server = install(MockServerExtension())
 
    test("Should create mock server in a random port") {
-      "http://localhost:${target.mockServer?.port}".httpGet().response().second.statusCode shouldBe 404
+      "http://localhost:${server.port}".httpGet().response().second.statusCode shouldBe 404
    }
 })
