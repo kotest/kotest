@@ -10,6 +10,7 @@ kotlin {
             api(projects.kotestAssertions.kotestAssertionsArrow)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.arrow.fx.coroutines)
+            api(libs.kotlinx.coroutines.core)
          }
       }
 

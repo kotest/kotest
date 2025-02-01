@@ -7,7 +7,7 @@ kotlin {
 
       commonMain {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(projects.kotestProperty)
             api(libs.arrow.optics)
             implementation(libs.arrow.functions)
@@ -16,7 +16,6 @@ kotlin {
 
       commonTest {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsArrow)
             implementation(libs.arrow.core)
 

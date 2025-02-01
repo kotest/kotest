@@ -7,7 +7,7 @@ kotlin {
 
       commonMain {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestAssertions.kotestAssertionsCore)
             api(libs.arrow.core)
          }
       }
