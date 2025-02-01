@@ -76,8 +76,13 @@ include(
    ":kotest-assertions:kotest-assertions-json",
    ":kotest-assertions:kotest-assertions-ktor",
    ":kotest-assertions:kotest-assertions-yaml",
+
+   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
    ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
+
+   // assertions for the konform validation library
+   ":kotest-assertions:kotest-assertions-konform",
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
