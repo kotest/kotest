@@ -26,6 +26,8 @@ spring = "5.3.39"
 byte-buddy = "1.15.11"
 allure = "2.24.0"
 koin = "3.5.6"
+wiremock = "3.6.0"
+fuel = "2.3.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -50,6 +52,8 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+
+fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
@@ -89,6 +93,8 @@ byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte
 
 allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
+
+wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
