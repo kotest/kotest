@@ -71,6 +71,7 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun getAssertSoftly ()Ljava/lang/Boolean;
 	public final fun getAssertions ()Lio/kotest/core/test/AssertionMode;
 	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
+	public final fun register (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
 	public final fun registeredAutoCloseables ()Ljava/util/List;
 	public final fun setAssertSoftly (Ljava/lang/Boolean;)V
 	public final fun setAssertions (Lio/kotest/core/test/AssertionMode;)V

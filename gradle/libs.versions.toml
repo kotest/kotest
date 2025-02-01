@@ -25,6 +25,7 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 byte-buddy = "1.15.11"
 allure = "2.24.0"
+koin = "3.5.6"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -49,6 +50,9 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
