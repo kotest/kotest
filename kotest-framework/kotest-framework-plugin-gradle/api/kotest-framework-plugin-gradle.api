@@ -1,38 +1,10 @@
-public class io/kotest/framework/gradle/AbstractKotestTask : org/gradle/api/DefaultTask {
-	public static final field Companion Lio/kotest/framework/gradle/AbstractKotestTask$Companion;
-	public static final field DELIMITER Ljava/lang/String;
-	public fun <init> ()V
-	public final fun descriptor ()Ljava/lang/String;
-	public final fun setCandidates (Ljava/lang/String;)V
-	public final fun setDescriptor (Ljava/lang/String;)V
-	public final fun setPackages (Ljava/lang/String;)V
-	public final fun setTags (Ljava/lang/String;)V
-	public final fun setTests (Ljava/lang/String;)V
-	public final fun tags ()Ljava/lang/String;
-}
-
-public final class io/kotest/framework/gradle/AbstractKotestTask$Companion {
-}
-
-public class io/kotest/framework/gradle/KotestAndroidTask : io/kotest/framework/gradle/AbstractKotestTask {
-	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
-	public final fun execute ()V
-	public final fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
-}
-
 public abstract class io/kotest/framework/gradle/KotestExtension {
-	public fun <init> (Lorg/gradle/api/Project;)V
 	public final fun getAndroidTestSource ()Ljava/lang/String;
-	public final fun getFailOnEmptySpecs ()Lorg/gradle/api/provider/Property;
-	public final fun getTagExpression ()Lorg/gradle/api/provider/Property;
+	public abstract fun getFailOnEmptySpecs ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTagExpression ()Lorg/gradle/api/provider/Property;
 }
 
-public class io/kotest/framework/gradle/KotestJvmTask : io/kotest/framework/gradle/AbstractKotestTask {
-	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)V
-	public final fun execute ()V
-}
-
-public class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
+public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field EXTENSION_NAME Ljava/lang/String;
@@ -45,52 +17,35 @@ public class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 public final class io/kotest/framework/gradle/KotestPlugin$Companion {
 }
 
-public final class io/kotest/framework/gradle/KotestPlugin$apply$2$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
+public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinAndroid$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
-public final class io/kotest/framework/gradle/KotestPlugin$apply$3$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
+public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinMultiplatform$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
-public final class io/kotest/framework/gradle/TestClass {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/gradle/TestClass;
-	public static synthetic fun copy$default (Lio/kotest/framework/gradle/TestClass;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/framework/gradle/TestClass;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getPackageName ()Ljava/lang/String;
-	public final fun getQualifiedName ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/AbstractKotestTask$Companion;
+	public static final field DELIMITER Ljava/lang/String;
+	public abstract fun getCandidates ()Lorg/gradle/api/provider/Property;
+	public abstract fun getDescriptor ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTags ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTests ()Lorg/gradle/api/provider/Property;
 }
 
-public final class io/kotest/framework/gradle/TestClassDetector {
-	public fun <init> ()V
-	public final fun detect (Lorg/gradle/api/file/FileTree;)Ljava/util/Set;
+public final class io/kotest/framework/gradle/tasks/AbstractKotestTask$Companion {
 }
 
-public final class io/kotest/framework/gradle/TestLauncherExecBuilder {
-	public static final field Companion Lio/kotest/framework/gradle/TestLauncherExecBuilder$Companion;
-	public static final field IDEA_PROP Ljava/lang/String;
-	public static final field LAUNCHER_MAIN_CLASS Ljava/lang/String;
-	public fun <init> (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
-	public final fun build ()Lorg/gradle/process/internal/JavaExecAction;
-	public final fun copy (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
-	public static synthetic fun copy$default (Lio/kotest/framework/gradle/TestLauncherExecBuilder;Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;Lorg/gradle/api/file/FileCollection;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-	public final fun withCandidates (Ljava/util/List;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
-	public final fun withClasspath (Lorg/gradle/api/file/FileCollection;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
-	public final fun withCommandLineTags (Ljava/lang/String;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
-	public final fun withDescriptor (Ljava/lang/String;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	protected final fun execute ()V
+	public abstract fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
 }
 
-public final class io/kotest/framework/gradle/TestLauncherExecBuilder$Companion {
-	public final fun builder (Lorg/gradle/api/internal/file/FileResolver;Lorg/gradle/api/internal/file/FileCollectionFactory;Lorg/gradle/internal/concurrent/ExecutorFactory;)Lio/kotest/framework/gradle/TestLauncherExecBuilder;
+public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	protected final fun execute ()V
 }
 
