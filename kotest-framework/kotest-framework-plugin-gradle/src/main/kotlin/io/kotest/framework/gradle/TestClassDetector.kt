@@ -10,7 +10,7 @@ import org.objectweb.asm.Opcodes
  * Scans a gradle [FileTree] looking for classes that extend a spec class.
  * We use object-asm to scan the bytecode.
  */
-class TestClassDetector {
+internal class TestClassDetector {
 
    private val parents = mutableMapOf<String, String>()
    private val candidates = mutableSetOf<String>()
@@ -34,7 +34,7 @@ class TestClassDetector {
       return candidates.filter { isSpecClass(parents[it] ?: "") }.map { toTestClass(it) }.toSet()
    }
 
-   internal fun toTestClass(className: String): TestClass {
+   private fun toTestClass(className: String): TestClass {
       val qualifiedName = className.replace("/", ".")
       return TestClass(qualifiedName.substringBeforeLast('.'), qualifiedName)
    }
@@ -42,7 +42,7 @@ class TestClassDetector {
    /**
     * Creates a relationship between the given class and its parent super class.
     * We must do this for all classes, not just spec classes, because we need to know
-    * the full heirarchy to determine if a class is a spec class, since we allow classes
+    * the full hierarchy to determine if a class is a spec class, since we allow classes
     * to extend other classes that are themselves extending spec classes.
     */
    internal fun add(className: String, superName: String) {
@@ -77,4 +77,7 @@ class TestClassDetector {
    }
 }
 
-data class TestClass(val packageName: String, val qualifiedName: String)
+internal data class TestClass(
+   val packageName: String,
+   val qualifiedName: String,
+)
