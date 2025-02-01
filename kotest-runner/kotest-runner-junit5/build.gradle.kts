@@ -17,7 +17,6 @@ kotlin {
          dependencies {
             api(projects.kotestCommon)
             api(projects.kotestFramework.kotestFrameworkEngine)
-            api(projects.kotestFramework.kotestFrameworkDiscovery)
             api(projects.kotestAssertions.kotestAssertionsCore)
             api(projects.kotestExtensions)
             api(libs.kotlinx.coroutines.core)

@@ -174,31 +174,31 @@ private class FeatureSpecSample : FeatureSpec() {
             count.incrementAndGet().shouldBe(2)
          }
          feature("c") {
-            count.incrementAndGet().shouldBe(2)
+            count.incrementAndGet().shouldBe(111111)
             scenario("d") {
-               count.incrementAndGet().shouldBe(3)
+               count.incrementAndGet().shouldBe(4)
             }
             feature("e") {
-               count.incrementAndGet().shouldBe(3)
+               count.incrementAndGet().shouldBe(5)
                scenario("f") {
-                  count.incrementAndGet().shouldBe(4)
+                  count.incrementAndGet().shouldBe(6)
                }
                scenario("g") {
-                  count.incrementAndGet().shouldBe(4)
+                  count.incrementAndGet().shouldBe(7)
                }
             }
          }
       }
 
       feature("h") {
-         count.incrementAndGet().shouldBe(1)
+         count.incrementAndGet().shouldBe(11111)
          feature("i") {
-            count.incrementAndGet().shouldBe(2)
+            count.incrementAndGet().shouldBe(9)
             scenario("j") {
-               count.incrementAndGet().shouldBe(3)
+               count.incrementAndGet().shouldBe(10)
             }
             scenario("k") {
-               count.incrementAndGet().shouldBe(3)
+               count.incrementAndGet().shouldBe(11)
             }
          }
       }

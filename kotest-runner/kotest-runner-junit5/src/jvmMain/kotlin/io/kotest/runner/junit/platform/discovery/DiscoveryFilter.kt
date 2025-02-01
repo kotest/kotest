@@ -1,4 +1,4 @@
-package io.kotest.framework.discovery
+package io.kotest.runner.junit.platform.discovery
 
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
@@ -27,7 +27,7 @@ sealed class DiscoveryFilter {
    }
 
    /**
-    * Filters specs based on their [Modifier] values (public, internal, etc).
+    * Filters specs based on their [java.lang.reflect.Modifier] values (public, internal, etc).
     * A Spec is included if it has a modifier that is included in the given set.
     */
    data class ClassModifierDiscoveryFilter(val modifiers: Set<Modifier>) : DiscoveryFilter() {
@@ -41,4 +41,11 @@ sealed class DiscoveryFilter {
          return false
       }
    }
+}
+
+data class FullyQualifiedClassName(val value: String)
+data class PackageName(val value: String)
+
+enum class Modifier {
+   Public, Internal, Private
 }
