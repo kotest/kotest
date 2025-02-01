@@ -76,14 +76,21 @@ include(
    ":kotest-assertions:kotest-assertions-json",
    ":kotest-assertions:kotest-assertions-ktor",
    ":kotest-assertions:kotest-assertions-yaml",
+
+   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
    ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
 
+   // assertions for the konform validation library
+   ":kotest-assertions:kotest-assertions-konform",
+
    // base classes for property testing, plus std lib generators
    ":kotest-property",
-   ":kotest-property:kotest-permutation",
 
-   // contains  extensions for property testing that build on the kotest test framework
+   // the new 6.0+ permutations based DSL for property testing
+   ":kotest-property:kotest-property-permutations",
+
+   // contains extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
 
    // support for executing tests via junit platform through gradle
@@ -143,23 +150,23 @@ develocity {
    }
 }
 
-//buildCache {
-//   val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
-//   val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
-//   remote<HttpBuildCache> {
-//      url = uri("https://kotest-gradle.duckdns.org/cache")
-//      credentials {
-//         username = kotestUser
-//         password = kotestPass
-//      }
-//      isPush = kotestUser != null && kotestPass != null
-//   }
-//   local {
-//      // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
-//      // and to ensure that CI builds updates the remote cache.
-//      val isCI = System.getenv("CI") == "true"
-//      isEnabled = !isCI
-//   }
-//}
+buildCache {
+   val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
+   val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
+   remote<HttpBuildCache> {
+      url = uri("https://kotest-gradle.duckdns.org/cache")
+      credentials {
+         username = kotestUser
+         password = kotestPass
+      }
+      isPush = kotestUser != null && kotestPass != null
+   }
+   local {
+      // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
+      // and to ensure that CI builds updates the remote cache.
+      val isCI = System.getenv("CI") == "true"
+      isEnabled = !isCI
+   }
+}
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
