@@ -83,6 +83,9 @@ include(
    ":kotest-property",
    ":kotest-property:kotest-permutation",
 
+   // contains arbs for kotlinx datetime
+   ":kotest-property:kotest-property-datetime",
+
    // contains  extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
 
