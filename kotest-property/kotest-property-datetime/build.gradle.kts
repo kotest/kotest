@@ -7,7 +7,7 @@ kotlin {
    sourceSets {
       val commonMain by getting {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestProperty)
             implementation(libs.kotlinx.datetime)
          }
       }
