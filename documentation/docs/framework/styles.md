@@ -6,7 +6,7 @@ slug: testing-styles.html
 
 
 Kotest offers 10 different styles of test layout. Some are inspired from other popular test frameworks to make you feel right at home.
-Others were created just for Kotest.
+Others were created just for Kotest. 
 
 To use Kotest, create a class file that extends one of the test styles. Then inside an `init { }` block,
 create your test cases. The following table contains the test styles you can pick from along with examples.
@@ -27,7 +27,7 @@ it is simply a matter of preference how you structure your tests.
 | [Word Spec](#word-spec) | ScalaTest |
 | [Feature Spec](#feature-spec) | Cucumber |
 | [Expect Spec](#expect-spec) | A Kotest original |
-| [Annotation Spec](#annotation-spec) | JUnit |
+| [Annotation Spec (JVM only)](#annotation-spec) | JUnit |
 
 
 
@@ -430,7 +430,7 @@ class MyTests : ExpectSpec({
 ## Annotation Spec
 
 If you are migrating from JUnit then `AnnotationSpec` is a spec that uses annotations like JUnit 4/5.
-Just add the `@Test` annotation to any function defined in the spec class.
+Just add the `@Test` annotation to any function defined in the spec class. Unlike other styles, `AnnotationSpec` only works on JVM.
 
 You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
 
