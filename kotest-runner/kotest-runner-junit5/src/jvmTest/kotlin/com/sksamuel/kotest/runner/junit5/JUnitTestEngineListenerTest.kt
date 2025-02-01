@@ -33,8 +33,6 @@ class JUnitTestEngineListenerTest : FunSpec({
    val root = createEngineDescriptor(
       uniqueId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
       specs = listOf(MySpec::class),
-      gradleClassMethodTestFilter = null,
-      error = null,
       extensions = emptyList()
    )
 
@@ -285,8 +283,6 @@ class JUnitTestEngineListenerTest : FunSpec({
       val root2 = createEngineDescriptor(
          UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
          listOf(MySpec::class, MySpec2::class),
-         null,
-         null,
          emptyList(),
       )
 
@@ -336,8 +332,6 @@ class JUnitTestEngineListenerTest : FunSpec({
       val root2 = createEngineDescriptor(
          UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
          listOf(MySpec::class, MySpec2::class),
-         null,
-         null,
          emptyList(),
       )
 

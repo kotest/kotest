@@ -32,8 +32,6 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          val root = createEngineDescriptor(
             UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
             listOf(JUnitTestRunnerListenerTest::class),
-            null,
-            null,
             emptyList(),
          )
 
