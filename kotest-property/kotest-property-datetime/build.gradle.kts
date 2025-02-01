@@ -11,12 +11,16 @@ kotlin {
             implementation(libs.kotlinx.datetime)
          }
       }
-      val jvmTest by getting {
+      val commonTest by getting {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
+         }
+      }
+      val jvmTest by getting {
+         dependencies {
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
    }
