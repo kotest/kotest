@@ -1,6 +1,5 @@
 [versions]
 blockhound = "1.0.10.RELEASE"
-classgraph = "4.8.179"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
@@ -25,6 +24,8 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 byte-buddy = "1.15.11"
 allure = "2.24.0"
+koin = "3.5.6"
+konform = "0.10.0"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -39,7 +40,6 @@ gradleDaemonJvm = "21"
 [libraries]
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
@@ -49,6 +49,9 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
@@ -64,6 +67,8 @@ kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+konform = { module = "io.konform:konform", version.ref = "konform" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }

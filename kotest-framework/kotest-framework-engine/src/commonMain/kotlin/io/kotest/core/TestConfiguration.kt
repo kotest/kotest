@@ -89,6 +89,15 @@ abstract class TestConfiguration {
    }
 
    /**
+    * Register a single [Extension] of type T return that listener.
+    */
+   @Deprecated("Use extension instead", ReplaceWith("extension"))
+   fun <T : Extension> register(extension: T): T {
+      extensions(listOf(extension))
+      return extension
+   }
+
+   /**
     * Register one or more [Extension]s.
     */
    fun extensions(extensions: List<Extension>) {
