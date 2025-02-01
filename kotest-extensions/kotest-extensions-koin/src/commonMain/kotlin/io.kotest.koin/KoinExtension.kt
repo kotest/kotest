@@ -22,9 +22,6 @@ enum class KoinLifecycleMode {
    Root, Test
 }
 
-@Deprecated("Use KoinExtension directly. Deprecated since 1.1.0.")
-typealias KoinListener = KoinExtension
-
 class KoinExtension(
    private val modules: List<Module>,
    private val mockProvider: Provider<*>? = null,
