@@ -81,9 +81,11 @@ include(
 
    // base classes for property testing, plus std lib generators
    ":kotest-property",
-   ":kotest-property:kotest-permutation",
 
-   // contains  extensions for property testing that build on the kotest test framework
+   // the new 6.0+ permutations based DSL for property testing
+   ":kotest-property:kotest-property-permutations",
+
+   // contains extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
 
    // support for executing tests via junit platform through gradle
