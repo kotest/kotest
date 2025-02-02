@@ -1,0 +1,61 @@
+public final class io/kotest/assertions/arrow/fx/coroutines/ExitCaseKt {
+	public static final fun shouldBeCancelled (Larrow/fx/coroutines/ExitCase;Ljava/util/concurrent/CancellationException;)Larrow/fx/coroutines/ExitCase$Cancelled;
+	public static final fun shouldBeCancelled (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;)Larrow/fx/coroutines/ExitCase$Cancelled;
+	public static synthetic fun shouldBeCancelled$default (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Larrow/fx/coroutines/ExitCase$Cancelled;
+	public static final fun shouldBeCompleted (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;)Larrow/fx/coroutines/ExitCase$Completed;
+	public static synthetic fun shouldBeCompleted$default (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Larrow/fx/coroutines/ExitCase$Completed;
+	public static final fun shouldBeFailure (Larrow/fx/coroutines/ExitCase;Ljava/lang/Throwable;)Larrow/fx/coroutines/ExitCase$Failure;
+	public static final fun shouldBeFailure (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;)Larrow/fx/coroutines/ExitCase$Failure;
+	public static synthetic fun shouldBeFailure$default (Larrow/fx/coroutines/ExitCase;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Larrow/fx/coroutines/ExitCase$Failure;
+}
+
+public final class io/kotest/assertions/arrow/fx/coroutines/LifecycleMode : java/lang/Enum {
+	public static final field EveryTest Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public static final field Leaf Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public static final field Root Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public static final field Spec Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public static fun values ()[Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+}
+
+public final class io/kotest/assertions/arrow/fx/coroutines/ProjectResource : io/kotest/core/extensions/LazyMaterialized, io/kotest/core/listeners/ProjectListener {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getResource ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class io/kotest/assertions/arrow/fx/coroutines/ResourceExtension : io/kotest/core/extensions/LazyMountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getLifecycleMode ()Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;
+	public final fun getResource ()Lkotlin/jvm/functions/Function2;
+	public fun mount (Lkotlin/jvm/functions/Function1;)Lio/kotest/core/extensions/LazyMaterialized;
+	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/assertions/arrow/fx/coroutines/ResourceExtensionKt {
+	public static final fun extension (Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;)Lio/kotest/assertions/arrow/fx/coroutines/ResourceExtension;
+	public static synthetic fun extension$default (Lkotlin/jvm/functions/Function2;Lio/kotest/assertions/arrow/fx/coroutines/LifecycleMode;ILjava/lang/Object;)Lio/kotest/assertions/arrow/fx/coroutines/ResourceExtension;
+}
+
+public final class io/kotest/assertions/arrow/fx/coroutines/ResourceKt {
+	public static final fun shouldBeResource (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shouldBeResource (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

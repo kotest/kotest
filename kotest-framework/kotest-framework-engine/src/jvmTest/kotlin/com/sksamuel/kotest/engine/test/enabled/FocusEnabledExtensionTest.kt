@@ -1,4 +1,4 @@
-package io.kotest.engine.test.status
+package com.sksamuel.kotest.engine.test.enabled
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -7,6 +7,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.engine.test.status.FocusEnabledExtension
 import io.kotest.matchers.shouldBe
 
 class FocusEnabledExtensionTest : FunSpec() {

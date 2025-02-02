@@ -81,6 +81,9 @@ include(
    ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
 
+   ":kotest-assertions:kotest-assertions-arrow",
+   ":kotest-assertions:kotest-assertions-arrow-fx-coroutines",
+
    // assertions for the konform validation library
    ":kotest-assertions:kotest-assertions-konform",
 
@@ -96,6 +99,9 @@ include(
 
    // contains extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
+
+   ":kotest-property:kotest-property-arrow",
+   ":kotest-property:kotest-property-arrow-optics",
 
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin

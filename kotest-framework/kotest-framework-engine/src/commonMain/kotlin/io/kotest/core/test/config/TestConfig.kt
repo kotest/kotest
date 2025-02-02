@@ -98,7 +98,7 @@ data class TestConfig(
       return copy(
          enabled = null,
          enabledIf = null,
-         enabledOrReasonIf = { Enabled.disabled("Disabled by xmethod") }
+         enabledOrReasonIf = { Enabled.disabledByXMethod }
       )
    }
 }
