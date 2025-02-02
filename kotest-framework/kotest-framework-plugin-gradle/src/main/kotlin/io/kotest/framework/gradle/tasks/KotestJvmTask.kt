@@ -1,6 +1,6 @@
 package io.kotest.framework.gradle.tasks
 
-import io.kotest.framework.gradle.TestLauncherExecBuilder
+import io.kotest.framework.gradle.internal.TestLauncherExecBuilder
 import org.gradle.api.GradleException
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.CacheableTask

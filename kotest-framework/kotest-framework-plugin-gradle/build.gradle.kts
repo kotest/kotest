@@ -20,6 +20,12 @@ dependencies {
    testImplementation(libs.kotlin.gradle.plugin)
 }
 
+kotlin {
+   compilerOptions {
+      optIn.add("io.kotest.framework.gradle.internal.InternalKotestGradlePluginApi")
+   }
+}
+
 tasks.withType<Test>().configureEach {
    enabled = !project.hasProperty(Ci.JVM_ONLY)
 

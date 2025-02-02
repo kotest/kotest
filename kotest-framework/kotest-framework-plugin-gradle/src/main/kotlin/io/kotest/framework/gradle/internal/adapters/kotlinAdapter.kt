@@ -1,11 +1,15 @@
 package io.kotest.framework.gradle.internal.adapters
 
 import io.kotest.framework.gradle.KotestExtension
-import io.kotest.framework.gradle.config.TestCandidate
-import io.kotest.framework.gradle.utils.artifactType
-import io.kotest.framework.gradle.utils.domainObjectContainer
-import io.kotest.framework.gradle.utils.letAll
-import io.kotest.framework.gradle.utils.warn
+import io.kotest.framework.gradle.config.KotestAndroidJvmSpec
+import io.kotest.framework.gradle.config.KotestJsSpec
+import io.kotest.framework.gradle.config.KotestJvmSpec
+import io.kotest.framework.gradle.config.KotestNativeSpec
+import io.kotest.framework.gradle.config.KotestWasmSpec
+import io.kotest.framework.gradle.internal.utils.artifactType
+import io.kotest.framework.gradle.internal.utils.domainObjectContainer
+import io.kotest.framework.gradle.internal.utils.letAll
+import io.kotest.framework.gradle.internal.utils.warn
 import org.gradle.api.NamedDomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer
@@ -19,12 +23,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.Companion.MAIN_COMPILATION_NAME
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmAndroidCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataTarget
@@ -47,7 +46,6 @@ private fun registerTestCandidates(
    kotestExtension: KotestExtension,
 ) {
    val objects = project.objects
-//   val providers = project.providers
 
    val kotlinExtension = findKotlinExtension(project)
    if (kotlinExtension == null) {
@@ -56,33 +54,62 @@ private fun registerTestCandidates(
    }
    logger.info("Configuring Kotest KotlinAdapter in Gradle Kotlin Project ${project.path}")
 
-   kotlinExtension.allKotlinCompilations().letAll { compilation: KotlinCompilation<*> ->
+   kotlinExtension.allKotlinCompilations()
+      .matching { it.isTest() }
+      .letAll { compilation: KotlinCompilation<*> ->
 
-      val isMetadataCompilation = compilation is KotlinMetadataTarget
-      val isTestCompilation = compilation.isTest()
+         fun compilationClasspath(): FileCollection {
+            return collectKotlinCompilationClasspath(
+               configurations = project.configurations,
+               objects = objects,
+               compilation = compilation,
+            )
+         }
 
-      val compilationClasspath = collectKotlinCompilationClasspath(
-         configurations = project.configurations,
-         objects = objects,
-         compilation = compilation,
-      )
+         when (compilation.platformType) {
+            KotlinPlatformType.common -> {}
 
-      kotestExtension.testCandidates.register(compilation.name) {
-         this.kotlinTargetName.set(compilation.target.targetName)
-         this.kotlinTarget.set(
-            when (compilation.platformType) {
-               common -> TestCandidate.KotlinTarget.Common
-               jvm -> TestCandidate.KotlinTarget.JVM
-               js -> TestCandidate.KotlinTarget.JS
-               androidJvm -> TestCandidate.KotlinTarget.AndroidJVM
-               native -> TestCandidate.KotlinTarget.Native
-               wasm -> TestCandidate.KotlinTarget.Wasm
-            }
-         )
-         this.enabled.set(!isMetadataCompilation && !isTestCompilation)
-         this.classpath.from(compilationClasspath)
+            KotlinPlatformType.androidJvm ->
+               kotestExtension.testExecutions.register<KotestAndroidJvmSpec>(compilation.name) {
+                  classpath.from(compilationClasspath())
+               }
+
+            KotlinPlatformType.jvm ->
+               kotestExtension.testExecutions.register<KotestJvmSpec>(compilation.name) {
+                  classpath.from(compilationClasspath())
+               }
+
+            KotlinPlatformType.js ->
+               kotestExtension.testExecutions.register<KotestJsSpec>(compilation.name) {
+                  // TODO register JS target ...
+               }
+
+            KotlinPlatformType.native ->
+               kotestExtension.testExecutions.register<KotestNativeSpec>(compilation.name) {
+                  // TODO register Native target ...
+               }
+
+            KotlinPlatformType.wasm ->
+               kotestExtension.testExecutions.register<KotestWasmSpec>(compilation.name) {
+                  // TODO register Wasm target ...
+               }
+         }
+
+//         kotestExtension.testExecutions.register(compilation.name) {
+////         this.kotlinTargetName.set(compilation.target.targetName)
+//            this.kotlinTarget.set(
+//               when (compilation.platformType) {
+//                  common -> KotlinTarget.Common
+//                  jvm -> KotlinTarget.JVM
+//                  js -> KotlinTarget.JS
+//                  androidJvm -> KotlinTarget.AndroidJVM
+//                  native -> KotlinTarget.Native
+//                  wasm -> KotlinTarget.Wasm
+//               }
+//            )
+//            this.classpath.from(compilationClasspath)
+//         }
       }
-   }
 }
 
 
@@ -98,9 +125,9 @@ private fun collectKotlinCompilationClasspath(
 ): FileCollection {
    val compilationClasspath = objects.fileCollection()
 
-   if (compilation.target.platformType == androidJvm) {
-      compilationClasspath.from(kotlinCompileDependencyFiles(configurations, compilation, "jar"))
-      compilationClasspath.from(kotlinCompileDependencyFiles(configurations, compilation, "android-classes-jar"))
+   if (compilation.target.platformType == KotlinPlatformType.androidJvm) {
+      compilationClasspath.from(kotlinCompileDependencyFiles(configurations, compilation))
+      compilationClasspath.from(kotlinCompileDependencyFiles(configurations, compilation, selectAndroidJars = true))
    } else {
       // using compileDependencyFiles breaks Android projects because AGP fills it with
       // files from so many Configurations it triggers Gradle variant resolution errors.
@@ -115,8 +142,10 @@ private fun kotlinCompileDependencyFiles(
    configurations: ConfigurationContainer,
    compilation: KotlinCompilation<*>,
    /** `android-classes-jar` or `jar` */
-   artifactType: String,
+   selectAndroidJars: Boolean = false,
 ): Provider<FileCollection> {
+   val jarArtifactType = if (selectAndroidJars) "android-classes-jar" else "jar"
+
    return configurations
       .named(compilation.compileDependencyConfigurationName)
       .map {
@@ -124,15 +153,16 @@ private fun kotlinCompileDependencyFiles(
             .artifactView {
                // Android publishes many variants, which can cause Gradle to get confused,
                // so specify that we need a JAR and resolve leniently
-               if (compilation.target.platformType == androidJvm) {
-                  attributes { artifactType(artifactType) }
+               if (compilation.target.platformType == KotlinPlatformType.androidJvm) {
+                  attributes {
+                     artifactType(jarArtifactType)
+                  }
 
                   // Setting lenient=true is not ideal, because it might hide problems.
                   // Unfortunately, Gradle has no chill and dependency resolution errors
                   // will cause tasks to completely fail, even if the dependencies aren't necessary.
                   // (There's a chance that the dependencies aren't even used in the project!)
-                  // So, resolve leniently to at least permit generating _something_,
-                  // even if the generated output might be incomplete and missing some classes.
+                  // So, resolve leniently, just in case it works.
                   lenient(true)
                }
                // 'Regular' Kotlin compilations have non-JAR files (e.g. Kotlin/Native klibs),
@@ -201,7 +231,7 @@ private fun KotlinProjectExtension.allKotlinCompilations(): NamedDomainObjectSet
          return compilations.matching {
             // Exclude legacy KMP metadata compilations, only present in KGP 1.8
             val isMedataCompilation =
-               it.platformType == common && it.name == MAIN_COMPILATION_NAME
+               it.platformType == KotlinPlatformType.common && it.name == MAIN_COMPILATION_NAME
             !isMedataCompilation
          }
       }
@@ -217,18 +247,21 @@ private fun KotlinProjectExtension.allKotlinCompilations(): NamedDomainObjectSet
 }
 
 /**
- * Determine if a [KotlinCompilation] is for tests, and so should be enabled by default.
+ * Determine if a [KotlinCompilation] compiles tests.
+ * If it does, then Kotest should run tests with it.
  */
 private fun KotlinCompilation<*>.isTest(): Boolean {
    return when (this) {
+      is KotlinMetadataTarget -> false
+
       is KotlinMetadataCompilation<*> -> false
 
       is KotlinJvmAndroidCompilation -> {
          // Use string-based comparison, not the actual classes, because AGP has deprecated and
-         // moved the Library/Application classes to a different package.
+         // moved the Library/Application/Test classes to a different package.
          // Using strings is more widely compatible.
          val variantName = androidVariant::class.jvmName
-         "LibraryVariant" !in variantName && "ApplicationVariant" !in variantName
+         "TestExtension" in variantName
       }
 
       else ->

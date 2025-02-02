@@ -1,6 +1,6 @@
 package io.kotest.framework.gradle.tasks
 
-import io.kotest.framework.gradle.TestClassDetector
+import io.kotest.framework.gradle.internal.TestClassDetector
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
@@ -8,7 +8,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.options.Option
 
-abstract class AbstractKotestTask internal constructor() : DefaultTask() {
+sealed class AbstractKotestTask : DefaultTask() {
 
    @get:Option(option = "descriptor", description = "Filter to a single spec or test")
    @get:Input

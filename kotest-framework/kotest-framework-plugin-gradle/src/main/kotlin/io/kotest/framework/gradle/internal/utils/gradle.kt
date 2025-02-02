@@ -1,6 +1,6 @@
-package io.kotest.framework.gradle.utils
+package io.kotest.framework.gradle.internal.utils
 
-import org.gradle.api.DomainObjectSet
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.attributes.Attribute
@@ -27,18 +27,30 @@ internal inline fun <reified T : Any> ObjectFactory.domainObjectContainer(
    }
 
 
+/**
+ * `artifactType` is a special Gradle attribute used to determine the files inside a
+ * [org.gradle.api.artifacts.Configuration].
+ */
 private val ArtifactTypeAttribute: Attribute<String> =
    Attribute.of("artifactType", String::class.java)
 
-
+/**
+ * Set the value of the [ArtifactTypeAttribute] inside this [AttributeContainer].
+ */
 internal fun AttributeContainer.artifactType(value: String) {
    attribute(ArtifactTypeAttribute, value)
 }
 
 
-//region NDOC.all {} kinda sucks sometimes when it makes each item the receiver.
-// The function is similarly named to `let { it }`.
-internal fun <T : Any> DomainObjectSet<T>.letAll(
+/**
+ * [NDOC.all {}][NamedDomainObjectContainer.all] kinda sometimes sucks because
+ * it makes each item the receiver, which can be confusing when nested.
+ *
+ * This function helps by using an actual parameter.
+ *
+ * The name is inspired by [let] - `let { it -> ... }`.
+ */
+internal fun <T : Any> DomainObjectCollection<T>.letAll(
    configure: (element: T) -> Unit
 ): Unit =
    all(configure)

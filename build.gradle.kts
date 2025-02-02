@@ -21,4 +21,3 @@ configureGradleDaemonJvm(
    updateDaemonJvm = tasks.updateDaemonJvm,
    gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm.map { JavaVersion.toVersion(it) },
 )
-

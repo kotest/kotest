@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle
 
+import io.kotest.framework.gradle.internal.adapters.androidAdapter
 import io.kotest.framework.gradle.internal.adapters.kotlinAdapter
 import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
@@ -40,22 +41,17 @@ abstract class KotestPlugin internal constructor() : Plugin<Project> {
 
       configureTaskConventions(project)
 
-      // Configure Kotlin JVM projects
-      handleKotlinJvm(project)
-
-      // Configure Kotlin multiplatform projects
-      handleKotlinMultiplatform(project)
-
-      // Configure Kotlin Android projects
-      handleKotlinAndroid(project)
+//      // Configure Kotlin JVM projects
+//      handleKotlinJvm(project)
+//
+//      // Configure Kotlin multiplatform projects
+//      handleKotlinMultiplatform(project)
+//
+//      // Configure Kotlin Android projects
+//      handleKotlinAndroid(project)
 
       kotlinAdapter(project, kotestExtension)
-
-      kotestExtension.testCandidates.all {
-         // TODO register the appropriate task for each target type
-         when (kotlinTarget) {
-         }
-      }
+      androidAdapter(project, kotestExtension)
    }
 
    private fun configureTaskConventions(project: Project) {
@@ -64,63 +60,63 @@ abstract class KotestPlugin internal constructor() : Plugin<Project> {
       }
    }
 
-   private fun handleKotlinJvm(project: Project) {
-      project.plugins.withId(KOTLIN_JVM_PLUGIN) {
-         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-         // see https://docs.gradle.org/current/userguide/isolated_projects.html
-         project.tasks.register(JVM_TASK_NAME, KotestJvmTask::class) {
-            description = DESCRIPTION
-            inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-         }
-      }
-   }
-
-   private fun handleKotlinMultiplatform(project: Project) {
-      project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN) {
-         val kotlinExt = project.extensions.getByType<KotlinMultiplatformExtension>()
-         kotlinExt.targets
-            .matching { it.name !in unsupportedTargets }
-            .configureEach {
-               val capitalTarget = name.replaceFirstChar { it.uppercase() }
-
-               project.tasks.register("kotest$capitalTarget", AbstractKotestTask::class) {
-                  description = DESCRIPTION
-                  inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
-               }
-            }
-      }
-   }
-
-   private fun handleKotlinAndroid(
-      project: Project
-   ) {
-      project.plugins.withId(KOTLIN_ANDROID_PLUGIN) {
-         project.extensions.configure<KotlinAndroidExtension> {
-
-            // todo better way to detect the test compilations, or find a way to get android variants
-            // by default will be debugUnitTest and releaseUnitTest
-            val testCompilations = target.compilations.matching { it.name.endsWith("UnitTest") }
-
-            testCompilations.configureEach {
-               val compilation: KotlinCompilation<*> = this
-               val capitalTarget = name.replaceFirstChar { it.uppercase() }
-               // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-               // see https://docs.gradle.org/current/userguide/isolated_projects.html
-               project.tasks.register("kotest$capitalTarget", KotestAndroidTask::class) {
-                  description = DESCRIPTION
-                  compilationNames.set(listOf(compilation.name))
-                  inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-               }
-            }
-
-            // add one special task that runs all compilations
-            // todo can we just make a task that runs the other tasks above
-            project.tasks.register("kotest", KotestAndroidTask::class) {
-               description = DESCRIPTION
-               compilationNames.set(testCompilations.map { it.name })
-               inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-            }
-         }
-      }
-   }
+//   private fun handleKotlinJvm(project: Project) {
+//      project.plugins.withId(KOTLIN_JVM_PLUGIN) {
+//         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+//         // see https://docs.gradle.org/current/userguide/isolated_projects.html
+//         project.tasks.register(JVM_TASK_NAME, KotestJvmTask::class) {
+//            description = DESCRIPTION
+//            inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
+//         }
+//      }
+//   }
+//
+//   private fun handleKotlinMultiplatform(project: Project) {
+//      project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN) {
+//         val kotlinExt = project.extensions.getByType<KotlinMultiplatformExtension>()
+//         kotlinExt.targets
+//            .matching { it.name !in unsupportedTargets }
+//            .configureEach {
+//               val capitalTarget = name.replaceFirstChar { it.uppercase() }
+//
+//               project.tasks.register("kotest$capitalTarget", AbstractKotestTask::class) {
+//                  description = DESCRIPTION
+//                  inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
+//               }
+//            }
+//      }
+//   }
+//
+//   private fun handleKotlinAndroid(
+//      project: Project
+//   ) {
+//      project.plugins.withId(KOTLIN_ANDROID_PLUGIN) {
+//         project.extensions.configure<KotlinAndroidExtension> {
+//
+//            // todo better way to detect the test compilations, or find a way to get android variants
+//            // by default will be debugUnitTest and releaseUnitTest
+//            val testCompilations = target.compilations.matching { it.name.endsWith("UnitTest") }
+//
+//            testCompilations.configureEach {
+//               val compilation: KotlinCompilation<*> = this
+//               val capitalTarget = name.replaceFirstChar { it.uppercase() }
+//               // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+//               // see https://docs.gradle.org/current/userguide/isolated_projects.html
+//               project.tasks.register("kotest$capitalTarget", KotestAndroidTask::class) {
+//                  description = DESCRIPTION
+//                  compilationNames.set(listOf(compilation.name))
+//                  inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
+//               }
+//            }
+//
+//            // add one special task that runs all compilations
+//            // todo can we just make a task that runs the other tasks above
+//            project.tasks.register("kotest", KotestAndroidTask::class) {
+//               description = DESCRIPTION
+//               compilationNames.set(testCompilations.map { it.name })
+//               inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
+//            }
+//         }
+//      }
+//   }
 }

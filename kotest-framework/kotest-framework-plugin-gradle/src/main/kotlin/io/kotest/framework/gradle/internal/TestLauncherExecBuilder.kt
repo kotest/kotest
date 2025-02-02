@@ -1,4 +1,4 @@
-package io.kotest.framework.gradle
+package io.kotest.framework.gradle.internal
 
 import org.gradle.api.file.FileCollection
 import org.gradle.process.JavaExecSpec

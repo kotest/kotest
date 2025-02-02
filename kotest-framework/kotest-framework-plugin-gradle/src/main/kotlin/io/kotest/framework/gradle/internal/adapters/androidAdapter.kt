@@ -5,8 +5,8 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import io.kotest.framework.gradle.KotestExtension
-import io.kotest.framework.gradle.config.TestCandidate
-import io.kotest.framework.gradle.utils.*
+import io.kotest.framework.gradle.config.KotestAndroidJvmSpec
+import io.kotest.framework.gradle.internal.utils.artifactType
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
@@ -38,24 +38,12 @@ private fun configure(
 ) {
    val androidExt = AndroidExtensionWrapper(project) ?: return
 
-   kotestExtension.testCandidates.configureEach {
-      classpath.from(androidExt.bootClasspath())
-
-      classpath.from(
-         kotlinTarget.map { analysisPlatform ->
-            when (analysisPlatform) {
-               TestCandidate.KotlinTarget.AndroidJVM ->
-                  androidClasspathCollector(
-                     androidExt = androidExt,
-                     objects = project.objects,
-                  )
-
-               else ->
-                  project.objects.fileCollection()
-            }
-         }
-      )
-   }
+   kotestExtension.testExecutions
+      .withType<KotestAndroidJvmSpec>()
+      .configureEach {
+         classpath.from(androidExt.bootClasspath())
+         classpath.from({ androidExt.variantsClasspath() })
+      }
 }
 
 
@@ -81,13 +69,20 @@ private fun AndroidExtensionWrapper(
 
 
 /**
- * Wrap the Android extension so that Dokka can still access the configuration names without
+ * Wrap the Android extension so that we can still access the configuration names without
  * caring about the AGP version in use.
  */
 private interface AndroidExtensionWrapper {
 
-   fun variantsCompileClasspath(): FileCollection
+   /**
+    * Collect the classpath from _all_ variants.
+    */
+   fun variantsClasspath(
+      includeRuntime: Boolean = false,
+      includeCompile: Boolean = true,
+   ): FileCollection
 
+   /** Collect the Android boot classpath used for compilation.  */
    fun bootClasspath(): Provider<List<File>>
 
    companion object {
@@ -99,8 +94,10 @@ private interface AndroidExtensionWrapper {
       ): AndroidExtensionWrapper {
          return object : AndroidExtensionWrapper {
 
-            override fun variantsCompileClasspath(): FileCollection {
-               val androidComponentsCompileClasspath = objects.fileCollection()
+            override fun variantsClasspath(
+               includeRuntime: Boolean,
+               includeCompile: Boolean,
+            ): FileCollection {
 
                val variants = when (androidExt) {
                   is LibraryExtension -> androidExt.libraryVariants
@@ -111,6 +108,9 @@ private interface AndroidExtensionWrapper {
                      return objects.fileCollection()
                   }
                }
+
+               // collect the classpath into this file collection
+               val androidComponentsCompileClasspath = objects.fileCollection()
 
                fun Configuration.collect(artifactType: String) {
                   val artifactTypeFiles = incoming
@@ -128,8 +128,8 @@ private interface AndroidExtensionWrapper {
                }
 
                variants.all {
-                  compileConfiguration.collect("jar")
-                  //runtimeConfiguration.collect("jar")
+                  if (includeCompile) compileConfiguration.collect("jar")
+                  if (includeRuntime) runtimeConfiguration.collect("jar")
                }
 
                return androidComponentsCompileClasspath
@@ -141,19 +141,4 @@ private interface AndroidExtensionWrapper {
          }
       }
    }
-}
-
-
-/**
- * A utility for determining the classpath of an Android compilation.
- */
-private fun androidClasspathCollector(
-   androidExt: AndroidExtensionWrapper,
-   objects: ObjectFactory,
-): FileCollection {
-   val compilationClasspath = objects.fileCollection()
-
-   compilationClasspath.from({ androidExt.variantsCompileClasspath() })
-
-   return compilationClasspath
 }

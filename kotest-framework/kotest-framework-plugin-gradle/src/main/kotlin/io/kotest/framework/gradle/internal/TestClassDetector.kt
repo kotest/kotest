@@ -1,4 +1,4 @@
-package io.kotest.framework.gradle
+package io.kotest.framework.gradle.internal
 
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileVisitDetails
@@ -31,7 +31,10 @@ internal class TestClassDetector {
    fun detect(inputs: FileTree): Set<TestClass> {
       parents.clear()
       inputs.filter { it.name.endsWith(".class") }.asFileTree.visit(visitor)
-      return candidates.filter { isSpecClass(parents[it] ?: "") }.map { toTestClass(it) }.toSet()
+      return candidates
+         .filter { isSpecClass(parents[it] ?: "") }
+         .map { toTestClass(it) }
+         .toSet()
    }
 
    private fun toTestClass(className: String): TestClass {
