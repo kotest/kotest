@@ -1,18 +1,19 @@
 package io.kotest.framework.gradle.tasks.run
 
-import io.kotest.framework.gradle.internal.TestLauncherExecBuilder
 import io.kotest.framework.gradle.internal.TestClassDetector
-import io.kotest.framework.gradle.tasks.AbstractKotestTask.Companion.DELIMITER
+import io.kotest.framework.gradle.internal.TestLauncherExecBuilder
 import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.jvm.toolchain.JavaLauncher
 
+@CacheableTask
 abstract class RunKotestJvmTask internal constructor() : BaseRunKotestTask() {
    @get:Classpath
    abstract val runtimeClasspath: ConfigurableFileCollection
@@ -51,7 +52,7 @@ abstract class RunKotestJvmTask internal constructor() : BaseRunKotestTask() {
    private fun computeCandidates(classpath: FileCollection): List<String> {
       // if the --candidates option was specified, then that is the highest priority and we take
       // that as a delimited list of fully qualified class names
-      val candidatesFromOptions = candidates.orNull?.split(DELIMITER)
+      val candidatesFromOptions = candidates.orNull?.split(OPTION_DELIMITER)
       if (candidatesFromOptions != null) return candidatesFromOptions
 
       // If specs was omitted, then we scan the classpath
@@ -59,7 +60,7 @@ abstract class RunKotestJvmTask internal constructor() : BaseRunKotestTask() {
       println("specsFromScanning: $specsFromScanning")
 
       // if packages was set, we filter down to only classes in those packages
-      val packagesFromOptions = packages.orNull?.split(DELIMITER)?.toSet()
+      val packagesFromOptions = packages.orNull?.split(OPTION_DELIMITER)?.toSet()
       val filteredSpecs = if (packagesFromOptions == null) {
          specsFromScanning
       } else {
@@ -68,5 +69,9 @@ abstract class RunKotestJvmTask internal constructor() : BaseRunKotestTask() {
          }
       }
       return filteredSpecs.map { it.qualifiedName }
+   }
+
+   companion object {
+      private const val OPTION_DELIMITER = ";"
    }
 }

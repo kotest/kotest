@@ -6,6 +6,9 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.options.Option
 
+/**
+ * Base task for launching Kotest tests.
+ */
 sealed class BaseRunKotestTask : BaseKotestTask() {
    @get:Option(option = "descriptor", description = "Filter to a single spec or test")
    @get:Input
