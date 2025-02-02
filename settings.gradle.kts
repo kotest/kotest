@@ -108,6 +108,9 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
+   // adds support for mockserver - see more https://www.mock-server.com/
+   ":kotest-extensions:kotest-extensions-mockserver",
+
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
    ":kotest-extensions:kotest-extensions-spring",
