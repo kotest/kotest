@@ -8,6 +8,7 @@ import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.status.isEnabled
+import kotlin.time.Duration
 
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
@@ -30,17 +31,24 @@ internal class TestEnabledCheckInterceptor(
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      val enabled = testCase.isEnabled(projectConfigResolver, specConfigResolver, testConfigResolver)
-      return when (enabled.isEnabled) {
-         true -> {
-            logger.log { Pair(testCase.name.name, "Test is enabled") }
-            test(testCase, scope)
-         }
+      return runCatching { testCase.isEnabled(projectConfigResolver, specConfigResolver, testConfigResolver) }.fold(
+         { enabled ->
+            when (enabled.isEnabled) {
+               true -> {
+                  logger.log { Pair(testCase.name.name, "Test is enabled") }
+                  test(testCase, scope)
+               }
 
-         false -> {
-            logger.log { Pair(testCase.name.name, "Test is disabled: ${enabled.reason}") }
-            TestResult.Ignored(enabled)
+               false -> {
+                  logger.log { Pair(testCase.name.name, "Test is disabled: ${enabled.reason}") }
+                  TestResult.Ignored(enabled)
+               }
+            }
+         },
+         { t ->
+            logger.log { Pair(testCase.name.name, "Error running enabled checks") }
+            TestResult.Error(Duration.ZERO, t)
          }
-      }
+      )
    }
 }
