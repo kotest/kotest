@@ -3692,9 +3692,11 @@ public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field LISTENER Ljava/lang/String;
+	public static final field REPORTER Ljava/lang/String;
 	public static final field SPEC Ljava/lang/String;
 	public static final field TERMCOLORS Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
+	public static final field WRITER Ljava/lang/String;
 }
 
 public final class io/kotest/engine/launcher/MainKt {
