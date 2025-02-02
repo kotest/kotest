@@ -30,14 +30,14 @@ import org.gradle.kotlin.dsl.support.serviceOf
 fun configureGradleDaemonJvm(
    project: Project,
    updateDaemonJvm: TaskProvider<UpdateDaemonJvm>,
-   gradleDaemonJvmVersion: Provider<JavaVersion>,
+   gradleDaemonJvmVersion: Provider<String>,
 ) {
    @Suppress("UnstableApiUsage")
    updateDaemonJvm {
-      jvmVersion.set(gradleDaemonJvmVersion.map { JavaLanguageVersion.of(it.majorVersion) })
+      jvmVersion.set(gradleDaemonJvmVersion.map { JavaLanguageVersion.of(it) })
 
       val javaToolchains = project.serviceOf<JavaToolchainService>()
-      val isGradleDaemonJvmVersionInstalled = gradleDaemonJvmVersion.isInstalled(javaToolchains)
+      val isGradleDaemonJvmVersionInstalled = jvmVersion.isInstalled(javaToolchains)
       inputs.property("isGradleDaemonJvmVersionInstalled", isGradleDaemonJvmVersionInstalled)
       onlyIf { isGradleDaemonJvmVersionInstalled.get() }
    }
@@ -54,7 +54,7 @@ fun configureGradleDaemonJvm(
  * Determine if the [JavaToolchainService] can detect, or automatically install,
  * a toolchain for this [JavaVersion].
  */
-private fun Provider<JavaVersion>.isInstalled(
+private fun Provider<JavaLanguageVersion>.isInstalled(
    javaToolchains: JavaToolchainService
 ): Provider<Boolean> {
    // Must catch exceptions because Toolchains don't properly support the Provider API.
@@ -62,7 +62,7 @@ private fun Provider<JavaVersion>.isInstalled(
    return map { version ->
       runCatching {
          javaToolchains
-            .launcherFor { languageVersion = JavaLanguageVersion.of(version.majorVersion) }
+            .launcherFor { languageVersion = version }
             .orNull
       }.getOrNull() != null
    }
