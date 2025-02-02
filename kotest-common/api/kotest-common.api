@@ -55,6 +55,13 @@ public abstract interface class io/kotest/common/errors/ComparisonError {
 public abstract interface class io/kotest/mpp/AnnotationSearchParameter {
 }
 
+public final class io/kotest/mpp/AtomicReference {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun compareAndSet (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public final fun setValue (Ljava/lang/Object;)V
+}
+
 public final class io/kotest/mpp/BasicReflection : io/kotest/mpp/Reflection {
 	public static final field INSTANCE Lio/kotest/mpp/BasicReflection;
 	public fun annotations (Lkotlin/reflect/KClass;Ljava/util/Set;)Ljava/util/List;

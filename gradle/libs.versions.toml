@@ -28,6 +28,7 @@ koin = "3.5.6"
 mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
+arrow = "2.0.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -51,6 +52,11 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
+arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
