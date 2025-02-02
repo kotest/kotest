@@ -25,5 +25,5 @@ apiValidation {
 configureGradleDaemonJvm(
    project = project,
    updateDaemonJvm = tasks.updateDaemonJvm,
-   gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm.map { JavaVersion.toVersion(it) },
+   gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm,
 )
