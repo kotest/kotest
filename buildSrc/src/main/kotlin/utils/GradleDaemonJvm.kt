@@ -34,7 +34,7 @@ fun configureGradleDaemonJvm(
 ) {
    @Suppress("UnstableApiUsage")
    updateDaemonJvm {
-      jvmVersion = gradleDaemonJvmVersion.map { JavaVersion.toVersion(it) }
+      jvmVersion.set(gradleDaemonJvmVersion.map { JavaVersion.toVersion(it) })
 
       val javaToolchains = project.serviceOf<JavaToolchainService>()
       val isGradleDaemonJvmVersionInstalled = gradleDaemonJvmVersion.isInstalled(javaToolchains)
