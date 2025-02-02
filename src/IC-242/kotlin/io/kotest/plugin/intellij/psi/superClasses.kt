@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.openapi.application.runReadAction
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisOnEdt
-import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisOnEdt
 import org.jetbrains.kotlin.analysis.api.types.symbol
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.StandardClassIds
@@ -15,10 +15,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
    return superTypeListEntries.mapNotNull { it.typeReference }
       .flatMap { ref ->
-         // SurroundSelectionWithFunctionIntention.isAvailable is called in EDT before the intention is applied
-         // unfortunately API to avoid this was introduced in 23.2 only
-         // this we need to move intentions to the facade or accept EDT here until 23.2- are still supported
-         allowAnalysisOnEdt {
+         runReadAction {
             analyze(this) {
                val kaType = ref.type
                val superTypes = (kaType.allSupertypes(false) + kaType).toList()

@@ -5,8 +5,8 @@ import com.intellij.ide.structureView.StructureViewExtension
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.DumbService
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
@@ -25,11 +25,14 @@ class KotestStructureViewExtension : StructureViewExtension {
    }
 
    override fun getChildren(parent: PsiElement): Array<StructureViewTreeElement> {
-      if (DumbService.isDumb(parent.project)) return emptyArray()
+      if (ApplicationManager.getApplication().isDispatchThread) {
+         return emptyArray()
+      }
       val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
       val spec = ktClassOrObject.specStyle() ?: return emptyArray()
       val tests = spec.tests(parent, false)
-      return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
+      val children = tests.map { KotestTestStructureViewTreeElement(it) }
+      return children.toTypedArray()
    }
 
    class KotestTestStructureViewTreeElement(private val testElement: TestElement) : StructureViewTreeElement {
