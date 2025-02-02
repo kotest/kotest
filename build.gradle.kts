@@ -17,6 +17,7 @@ apiValidation {
    nonPublicMarkers.addAll(
       listOf(
          "io.kotest.common.KotestInternal",
+         "io.kotest.framework.gradle.internal.InternalKotestGradlePluginApi",
       )
    )
 }
