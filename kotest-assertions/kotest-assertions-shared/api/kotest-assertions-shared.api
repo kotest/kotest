@@ -26,7 +26,6 @@ public final class io/kotest/assertions/AllKt {
 	public static final fun all (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun assertSoftly (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public static final fun assertSoftly (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static final fun withSubject (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
 public final class io/kotest/assertions/AnyKt {
@@ -124,10 +123,6 @@ public final class io/kotest/assertions/EnvironmentConfigValue : io/kotest/asser
 	public final fun getConverter ()Lkotlin/jvm/functions/Function1;
 	public fun getSourceDescription ()Ljava/lang/String;
 	public fun getValue ()Ljava/lang/Object;
-}
-
-public final class io/kotest/assertions/ErrorAndAssertionsScopeKt {
-	public static final fun pushErrorAndThrow (Lio/kotest/assertions/ErrorCollector;Ljava/lang/Throwable;)Ljava/lang/Void;
 }
 
 public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
@@ -288,7 +283,6 @@ public final class io/kotest/assertions/RetryConfig {
 	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
 	public final fun getMaxRetry ()I
 	public final fun getMultiplier ()I
-	public final fun getTimeSource ()Lkotlin/time/TimeSource;
 	public final fun getTimeout-UwyO8pc ()J
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -300,13 +294,11 @@ public final class io/kotest/assertions/RetryConfigBuilder {
 	public final fun getExceptionClass ()Lkotlin/reflect/KClass;
 	public final fun getMaxRetry ()I
 	public final fun getMultiplier ()I
-	public final fun getTimeSource ()Lkotlin/time/TimeSource;
 	public final fun getTimeout-UwyO8pc ()J
 	public final fun setDelay-LRDsOJo (J)V
 	public final fun setExceptionClass (Lkotlin/reflect/KClass;)V
 	public final fun setMaxRetry (I)V
 	public final fun setMultiplier (I)V
-	public final fun setTimeSource (Lkotlin/time/TimeSource;)V
 	public final fun setTimeout-LRDsOJo (J)V
 }
 
