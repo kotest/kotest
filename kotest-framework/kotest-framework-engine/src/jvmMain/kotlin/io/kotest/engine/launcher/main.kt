@@ -7,9 +7,11 @@ import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.CANDIDATES
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.LISTENER
+import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.SPEC
 import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
+import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -30,6 +32,8 @@ object LauncherArgs {
    // these are deprecated kotest 5 flags kept for backwards compatibility
    const val SPEC = "spec"
    const val TESTPATH = "testpath"
+   const val REPORTER = "reporter"
+   const val WRITER = "writer"
 }
 
 /**
@@ -74,7 +78,7 @@ fun main(args: Array<String>) {
    }
 
    val console = TestEngineListenerBuilder.builder()
-      .withType(launcherArgs[LISTENER]) // sets the output type, will be detected if not specified
+      .withType(launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]) // sets the output type, will be detected if not specified
       .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
       .build()
 
