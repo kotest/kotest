@@ -1,6 +1,8 @@
 package io.kotest.assertions.arrow.fx.coroutines
 
-import arrow.fx.coroutines.*
+import arrow.fx.coroutines.ExitCase
+import arrow.fx.coroutines.Resource
+import arrow.fx.coroutines.allocate
 import io.kotest.core.extensions.LazyMaterialized
 import io.kotest.core.extensions.LazyMountableExtension
 import io.kotest.core.listeners.AfterSpecListener
@@ -10,6 +12,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isRootTest
+import io.kotest.mpp.AtomicReference
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 
