@@ -7,9 +7,9 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.KotestConfigurationFactory
-import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.run.KotestConfigurationFactory
+import io.kotest.plugin.intellij.run.KotestConfigurationType
+import io.kotest.plugin.intellij.run.KotestRunConfiguration
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec

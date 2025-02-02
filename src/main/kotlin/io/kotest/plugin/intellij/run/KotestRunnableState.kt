@@ -8,7 +8,7 @@ import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
 import com.intellij.util.PathUtil
 import io.kotest.plugin.intellij.Constants
-import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.run.KotestRunConfiguration
 import java.io.File
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")

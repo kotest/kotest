@@ -8,7 +8,7 @@ import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.pom.Navigatable
 import io.kotest.plugin.intellij.Constants
-import io.kotest.plugin.intellij.KotestTestLocator
+import io.kotest.plugin.intellij.locations.KotestTestLocator
 import javax.swing.tree.TreeSelectionModel
 
 class KotestSMTRunnerConsoleProperties(

@@ -1,7 +1,7 @@
 package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
-import io.kotest.plugin.intellij.KotestTestLocator
+import io.kotest.plugin.intellij.locations.KotestTestLocator
 
 data class TestProxyBuilder(val name: String, val suite: Boolean, val location: String?, val parent: SMTestProxy) {
 

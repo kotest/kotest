@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.locations
 
 import com.intellij.execution.Location
 import com.intellij.execution.PsiLocation
@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
+import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.psi.elementAtLine
 
 /**
@@ -77,5 +78,3 @@ class KotestTestLocator : SMTestLocator, DumbAware {
       return virtualFile?.let { manager.findFile(it) }
    }
 }
-
-

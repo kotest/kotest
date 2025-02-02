@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.Executor
 import com.intellij.execution.testframework.JavaAwareTestConsoleProperties
@@ -6,6 +6,10 @@ import com.intellij.execution.testframework.actions.AbstractRerunFailedTestsActi
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.psi.search.GlobalSearchScope
+import io.kotest.plugin.intellij.Constants
+import io.kotest.plugin.intellij.run.KotestRunConfiguration
+import io.kotest.plugin.intellij.locations.KotestTestLocator
+import io.kotest.plugin.intellij.RerunFailedTestsAction
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class KotestTestConsoleProperties(

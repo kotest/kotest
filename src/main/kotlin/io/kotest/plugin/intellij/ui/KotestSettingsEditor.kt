@@ -12,7 +12,7 @@ import com.intellij.openapi.ui.LabeledComponent
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import com.intellij.ui.TextFieldWithHistory
-import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.run.KotestRunConfiguration
 import java.awt.BorderLayout
 import java.util.function.BiConsumer
 

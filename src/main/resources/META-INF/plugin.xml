@@ -36,7 +36,7 @@
    </actions>
 
    <extensions defaultExtensionNs="com.intellij">
-      <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
+      <configurationType implementation="io.kotest.plugin.intellij.run.KotestConfigurationType"/>
       <defaultLiveTemplates file="liveTemplates.xml" />
 
       <annotator language="kotlin"

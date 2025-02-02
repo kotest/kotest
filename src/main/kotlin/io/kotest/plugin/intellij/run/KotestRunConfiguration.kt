@@ -1,6 +1,4 @@
-@file:Suppress("RedundantOverride")
-
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.run
 
 import com.intellij.execution.AlternativeJrePathConverter
 import com.intellij.execution.Executor
@@ -24,9 +22,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import com.intellij.refactoring.listeners.RefactoringElementListener
-import io.kotest.plugin.intellij.run.KotestRunnableState
-import io.kotest.plugin.intellij.run.RunData
-import io.kotest.plugin.intellij.run.suggestedName
+import io.kotest.plugin.intellij.console.KotestTestConsoleProperties
 import io.kotest.plugin.intellij.ui.KotestSettingsEditor
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
@@ -98,7 +94,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       return if (specName != null) {
          JavaRunConfigurationModule.getModulesForClass(project, specName)
       } else {
-         ModuleManager.getInstance(project).modules.toMutableList()
+         ModuleManager.Companion.getInstance(project).modules.toMutableList()
       }
    }
 

@@ -10,9 +10,9 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
-import io.kotest.plugin.intellij.KotestRunConfiguration
-import io.kotest.plugin.intellij.KotestConfigurationFactory
-import io.kotest.plugin.intellij.KotestConfigurationType
+import io.kotest.plugin.intellij.run.KotestRunConfiguration
+import io.kotest.plugin.intellij.run.KotestConfigurationFactory
+import io.kotest.plugin.intellij.run.KotestConfigurationType
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
