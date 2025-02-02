@@ -14,6 +14,11 @@ apiValidation {
          "io.kotest.framework.multiplatform.native"
       )
    )
+   nonPublicMarkers.addAll(
+      listOf(
+         "io.kotest.common.KotestInternal",
+      )
+   )
 }
 
 configureGradleDaemonJvm(
