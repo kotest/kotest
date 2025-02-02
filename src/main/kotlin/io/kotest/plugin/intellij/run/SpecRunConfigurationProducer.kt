@@ -7,9 +7,7 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.run.KotestConfigurationFactory
-import io.kotest.plugin.intellij.run.KotestConfigurationType
-import io.kotest.plugin.intellij.run.KotestRunConfiguration
+import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec
@@ -44,6 +42,8 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
 
+      if (!ModuleDependencies.hasKotest(context.module)) return false
+
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
 
@@ -73,6 +73,8 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
 
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
+
+      if (!ModuleDependencies.hasKotest(context.module)) return false
 
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {

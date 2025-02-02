@@ -56,6 +56,7 @@ private fun is420(project: Project): Boolean {
  * In 4.1.3, we included the launcher as a separate dependency explicitly
  * In <4.1.3 users were required to add console dependency to the build
  */
+@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 fun determineKotestLauncher(project: Project): LauncherConfig {
    return when {
       is421(project) -> LauncherConfig(mainClass421, emptyList(), kotest421params)

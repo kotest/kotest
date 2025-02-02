@@ -5,14 +5,13 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
-import io.kotest.plugin.intellij.run.KotestRunConfiguration
-import io.kotest.plugin.intellij.run.KotestConfigurationFactory
-import io.kotest.plugin.intellij.run.KotestConfigurationType
+import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
@@ -32,6 +31,10 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       context: ConfigurationContext,
       sourceElement: Ref<PsiElement>
    ): Boolean {
+
+      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotest(context.module)) return false
+
       val index = ProjectRootManager.getInstance(context.project).fileIndex
       val dirservice = JavaDirectoryService.getInstance()
       val psiDirectory = sourceElement.get()

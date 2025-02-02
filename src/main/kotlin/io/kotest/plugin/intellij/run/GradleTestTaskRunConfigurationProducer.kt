@@ -6,6 +6,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import org.jetbrains.kotlin.asJava.toLightClass
@@ -26,6 +27,10 @@ class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProdu
    ): Boolean {
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
+
+      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotest(context.module)) return false
+
       return super.setupConfigurationFromContext(configuration, context, sourceElement)
    }
 
@@ -35,6 +40,11 @@ class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProdu
    ): Boolean {
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
+
+      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotest(context.module)) return false
+
+
       return super.isConfigurationFromContext(configuration, context)
    }
 

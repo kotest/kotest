@@ -6,10 +6,8 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.run.KotestConfigurationFactory
-import io.kotest.plugin.intellij.run.KotestConfigurationType
-import io.kotest.plugin.intellij.run.KotestRunConfiguration
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.styles.SpecStyle
@@ -40,8 +38,11 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-// if we have the kotest plugin then we shouldn't use this
+      // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
+
+      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotest(context.module)) return false
 
       val element = sourceElement.get()
       if (element != null) {
@@ -71,6 +72,9 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
 
       // if we have the kotest plugin then we shouldn't use this
       if (GradleUtils.hasGradlePlugin(context.module)) return false
+
+      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotest(context.module)) return false
 
       val element = context.psiLocation
       if (element != null) {
