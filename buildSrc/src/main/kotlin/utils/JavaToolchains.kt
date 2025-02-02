@@ -3,18 +3,15 @@ package utils
 import org.gradle.api.provider.Provider
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 
 /** Convert a Gradle [JavaLanguageVersion] to a Kotlin [JvmTarget]. */
 internal fun JavaLanguageVersion.jvmTarget(): JvmTarget {
-   val version = asInt()
-   val target = if (version <= 8) "1.$version" else "$version"
-   return JvmTarget.fromTarget(target)
+   return JvmTarget.fromTarget(asInt().toString())
 }
 
 internal fun Provider<JavaLanguageVersion>.jvmTarget(): Provider<JvmTarget> =
-   map { it.jvmTarget() }
+   map { JvmTarget.fromTarget(it.asInt().toString()) }
 
 internal fun Provider<JavaLanguageVersion>.asInt(): Provider<Int> =
    map { it.asInt() }

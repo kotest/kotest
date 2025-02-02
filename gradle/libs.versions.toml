@@ -31,7 +31,7 @@ konform = "0.10.0"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
-jvmMinTarget = "8"
+jvmMinTarget = "11"
 # Kotest's maximum supported Java version. (Must be >= jvmMinTarget.)
 jvmMaxTarget = "21"
 # JDK used to compile Kotest. (Must be >= jvmMaxTarget.)
