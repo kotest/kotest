@@ -2,36 +2,27 @@ package io.kotest.framework.gradle
 
 import io.kotest.framework.gradle.internal.adapters.androidAdapter
 import io.kotest.framework.gradle.internal.adapters.kotlinAdapter
-import io.kotest.framework.gradle.tasks.AbstractKotestTask
-import io.kotest.framework.gradle.tasks.KotestAndroidTask
-import io.kotest.framework.gradle.tasks.KotestJvmTask
+import io.kotest.framework.gradle.tasks.BaseKotestTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 abstract class KotestPlugin internal constructor() : Plugin<Project> {
 
    companion object {
-      const val DESCRIPTION = "Runs tests using Kotest"
-      const val JVM_TASK_NAME = "kotest"
+//      const val DESCRIPTION = "Runs tests using Kotest"
+//      const val JVM_TASK_NAME = "kotest"
       const val EXTENSION_NAME = "kotest"
 
-      private const val KOTLIN_JVM_PLUGIN = "org.jetbrains.kotlin.jvm"
-      private const val KOTLIN_MULTIPLATFORM_PLUGIN = "org.jetbrains.kotlin.multiplatform"
-      private const val KOTLIN_ANDROID_PLUGIN = "org.jetbrains.kotlin.android"
-
-      private val unsupportedTargets = listOf(
-         "metadata"
-      )
+//      private const val KOTLIN_JVM_PLUGIN = "org.jetbrains.kotlin.jvm"
+//      private const val KOTLIN_MULTIPLATFORM_PLUGIN = "org.jetbrains.kotlin.multiplatform"
+//      private const val KOTLIN_ANDROID_PLUGIN = "org.jetbrains.kotlin.android"
+//
+//      private val unsupportedTargets = listOf(
+//         "metadata"
+//      )
    }
 
    override fun apply(project: Project) {
@@ -55,7 +46,7 @@ abstract class KotestPlugin internal constructor() : Plugin<Project> {
    }
 
    private fun configureTaskConventions(project: Project) {
-      project.tasks.withType<AbstractKotestTask>().configureEach {
+      project.tasks.withType<BaseKotestTask>().configureEach {
          group = JavaBasePlugin.VERIFICATION_GROUP
       }
    }
