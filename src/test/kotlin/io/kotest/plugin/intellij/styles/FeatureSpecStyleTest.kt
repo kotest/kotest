@@ -23,7 +23,7 @@ class FeatureSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       )
 
       val gutters = myFixture.findAllGutters()
-      gutters.size shouldBe 10
+      gutters.size shouldBe 11
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
       gutters[0].tooltipText shouldBe "Run FeatureSpecExample"
@@ -50,20 +50,24 @@ class FeatureSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 464
 
       gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[6].tooltipText shouldBe "Run this feature"
-      (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 588
+      gutters[6].tooltipText shouldBe "Run a feature with config"
+      (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 596
 
       gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[7].tooltipText shouldBe "Run this feature has nested feature contexts"
-      (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 638
+      gutters[7].tooltipText shouldBe "Run this feature"
+      (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 706
 
       gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[8].tooltipText shouldBe "Run this feature has nested feature contexts test without config"
-      (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 684
+      gutters[8].tooltipText shouldBe "Run this feature has nested feature contexts"
+      (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 756
 
       gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[9].tooltipText shouldBe "Run this feature has nested feature contexts test with config"
-      (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 777
+      gutters[9].tooltipText shouldBe "Run this feature has nested feature contexts test without config"
+      (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 802
+
+      gutters[10].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[10].tooltipText shouldBe "Run this feature has nested feature contexts test with config"
+      (gutters[10] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 895
    }
 
    fun testMethodGeneration() {

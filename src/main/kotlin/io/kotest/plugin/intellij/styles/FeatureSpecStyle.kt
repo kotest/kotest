@@ -42,6 +42,12 @@ object FeatureSpecStyle : SpecStyle {
       return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Container, specClass)
    }
 
+   private fun KtDotQualifiedExpression.tryFeatureWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
+      val feature = extractLhsStringArgForDotExpressionWithRhsFinalLambda("feature", "config") ?: return null
+      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Container, specClass)
+   }
+
    private fun KtCallExpression.tryScenario(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val scenario = extractStringArgForFunctionWithStringAndLambdaArgs("scenario") ?: return null
@@ -62,7 +68,7 @@ object FeatureSpecStyle : SpecStyle {
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression -> element.tryScenario() ?: element.tryFeature()
-         is KtDotQualifiedExpression -> element.tryScenarioWithConfig()
+         is KtDotQualifiedExpression -> element.tryFeatureWithConfig() ?: element.tryScenarioWithConfig()
          else -> null
       }
    }
