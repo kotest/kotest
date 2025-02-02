@@ -1,24 +1,18 @@
 package io.kotest.framework.gradle
 
 import org.gradle.api.file.FileCollection
-import org.gradle.api.internal.file.FileCollectionFactory
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.internal.concurrent.ExecutorFactory
-import org.gradle.process.internal.DefaultExecActionFactory
+import org.gradle.process.JavaExecSpec
 import org.gradle.process.internal.JavaExecAction
 
 /**
  * This [TestLauncherExecBuilder] is responsible for creating a [JavaExecAction] that will run tests
  * through the kotest engine.
  */
-data class TestLauncherExecBuilder(
-   private val fileResolver: FileResolver,
-   private val fileCollectionFactory: FileCollectionFactory,
-   private val executorFactory: ExecutorFactory,
-   private val classpath: FileCollection?,
-   private val tags: String?,
-   private val descriptor: String?,
-   private val candidates: List<String>,
+internal data class TestLauncherExecBuilder(
+   private val classpath: FileCollection? = null,
+   private val tags: String? = null,
+   private val descriptor: String? = null,
+   private val candidates: List<String> = emptyList(),
 ) {
 
    companion object {
@@ -32,24 +26,8 @@ data class TestLauncherExecBuilder(
       private const val PLAIN_COLOURS = "ansi16"
       private const val TRUE_COLOURS = "ansi256"
 
-      const val LAUNCHER_MAIN_CLASS = "io.kotest.engine.launcher.MainKt"
-      const val IDEA_PROP = "idea.active"
-
-      fun builder(
-         fileResolver: FileResolver,
-         fileCollectionFactory: FileCollectionFactory,
-         executorFactory: ExecutorFactory,
-      ): TestLauncherExecBuilder {
-         return TestLauncherExecBuilder(
-            fileResolver = fileResolver,
-            fileCollectionFactory = fileCollectionFactory,
-            executorFactory = executorFactory,
-            tags = null,
-            descriptor = null,
-            classpath = null,
-            candidates = emptyList(),
-         )
-      }
+      internal const val LAUNCHER_MAIN_CLASS = "io.kotest.engine.launcher.MainKt"
+      internal const val IDEA_PROP = "idea.active"
    }
 
    fun withCommandLineTags(tags: String?): TestLauncherExecBuilder {
@@ -68,28 +46,14 @@ data class TestLauncherExecBuilder(
       return copy(descriptor = descriptor)
    }
 
-   /**
-    * Returns a [JavaExecAction] configured to execute the test engine launcher.
-    */
-   fun build(): JavaExecAction {
-      val exec = DefaultExecActionFactory.of(
-         /* fileResolver = */ fileResolver,
-         /* fileCollectionFactory = */ fileCollectionFactory,
-         /* executorFactory = */ executorFactory,
-         /* temporaryFileProvider = */ null
-      ).newJavaExecAction()
-//      copyTo(exec)
-
-      exec.mainClass.set(LAUNCHER_MAIN_CLASS)
-      exec.classpath = classpath
-//      exec.jvmArgs = allJvmArgs
-      exec.args = args()
+   fun configure(spec: JavaExecSpec) {
+      spec.mainClass.set(LAUNCHER_MAIN_CLASS)
+      spec.classpath(this@TestLauncherExecBuilder.classpath)
+      spec.args(this@TestLauncherExecBuilder.args())
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle
-      exec.isIgnoreExitValue = true
-
-      return exec
+      spec.isIgnoreExitValue = true
    }
 
    /**
