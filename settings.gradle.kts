@@ -87,6 +87,10 @@ include(
    // base classes for property testing, plus std lib generators
    ":kotest-property",
 
+   // contains arbs for kotlinx datetime
+   ":kotest-property:kotest-property-datetime",
+
+   // contains  extensions for property testing that build on the kotest test framework
    // the new 6.0+ permutations based DSL for property testing
    ":kotest-property:kotest-property-permutations",
 
@@ -107,6 +111,9 @@ include(
    ":kotest-extensions:kotest-extensions-blockhound",
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
+
+   // adds support for mockserver - see more https://www.mock-server.com/
+   ":kotest-extensions:kotest-extensions-mockserver",
 
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
