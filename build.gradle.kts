@@ -14,6 +14,11 @@ apiValidation {
          "io.kotest.framework.multiplatform.native"
       )
    )
+   nonPublicMarkers.addAll(
+      listOf(
+         "io.kotest.common.KotestInternal",
+      )
+   )
 }
 
 configureGradleDaemonJvm(
@@ -21,4 +26,3 @@ configureGradleDaemonJvm(
    updateDaemonJvm = tasks.updateDaemonJvm,
    gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm.map { JavaVersion.toVersion(it) },
 )
-
