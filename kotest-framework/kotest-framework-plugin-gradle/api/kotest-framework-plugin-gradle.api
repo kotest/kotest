@@ -1,7 +1,9 @@
 public abstract class io/kotest/framework/gradle/KotestExtension {
 	public final fun getAndroidTestSource ()Ljava/lang/String;
 	public abstract fun getFailOnEmptySpecs ()Lorg/gradle/api/provider/Property;
+	public abstract fun getKonanHome ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getTagExpression ()Lorg/gradle/api/provider/Property;
+	public final fun getTestCandidates ()Lio/kotest/framework/gradle/config/TestCandidates;
 }
 
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
@@ -9,7 +11,6 @@ public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/P
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field EXTENSION_NAME Ljava/lang/String;
 	public static final field JVM_TASK_NAME Ljava/lang/String;
-	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
 }
@@ -22,9 +23,29 @@ public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinAndroid$1
 	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
-public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinMultiplatform$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
+public abstract class io/kotest/framework/gradle/config/TestCandidate : org/gradle/api/Named {
+	public static final field Companion Lio/kotest/framework/gradle/config/TestCandidate$Companion;
+	public abstract fun getClasspath ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getEnabled ()Lorg/gradle/api/provider/Property;
+	public abstract fun getKotlinTargetName ()Lorg/gradle/api/provider/Property;
+	public fun getName ()Ljava/lang/String;
+}
+
+public final class io/kotest/framework/gradle/config/TestCandidate$Companion {
+}
+
+public abstract class io/kotest/framework/gradle/config/TestCandidates {
+	public static final field Companion Lio/kotest/framework/gradle/config/TestCandidates$Companion;
+	public final fun configure (Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public final fun configureEach (Lorg/gradle/api/Action;)V
+	public final fun matching (Lorg/gradle/api/specs/Spec;)Lio/kotest/framework/gradle/config/TestCandidates;
+	public final fun register (Ljava/lang/String;Lorg/gradle/api/Action;)Lorg/gradle/api/NamedDomainObjectProvider;
+}
+
+public final class io/kotest/framework/gradle/config/TestCandidates$Companion {
+}
+
+public abstract interface annotation class io/kotest/framework/gradle/internal/InternalKotestGradlePluginApi : java/lang/annotation/Annotation {
 }
 
 public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {

@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle
 
+import io.kotest.framework.gradle.internal.adapters.kotlinAdapter
 import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
 import io.kotest.framework.gradle.tasks.KotestJvmTask
@@ -8,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
@@ -15,7 +17,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-abstract class KotestPlugin : Plugin<Project> {
+abstract class KotestPlugin internal constructor() : Plugin<Project> {
 
    companion object {
       const val DESCRIPTION = "Runs tests using Kotest"
@@ -46,6 +48,14 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // Configure Kotlin Android projects
       handleKotlinAndroid(project)
+
+      kotlinAdapter(project, kotestExtension)
+
+      kotestExtension.testCandidates.all {
+         // TODO register the appropriate task for each target type
+         when (kotlinTarget) {
+         }
+      }
    }
 
    private fun configureTaskConventions(project: Project) {
@@ -67,19 +77,17 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleKotlinMultiplatform(project: Project) {
       project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN) {
-         project.extensions.configure<KotlinMultiplatformExtension> {
-            targets.configureEach {
-               if (name !in unsupportedTargets) {
-                  val capitalTarget = name.replaceFirstChar { it.uppercase() }
-                  // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-                  // see https://docs.gradle.org/current/userguide/isolated_projects.html
-                  project.tasks.register("kotest$capitalTarget", AbstractKotestTask::class) {
-                     description = DESCRIPTION
-                     inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
-                  }
+         val kotlinExt = project.extensions.getByType<KotlinMultiplatformExtension>()
+         kotlinExt.targets
+            .matching { it.name !in unsupportedTargets }
+            .configureEach {
+               val capitalTarget = name.replaceFirstChar { it.uppercase() }
+
+               project.tasks.register("kotest$capitalTarget", AbstractKotestTask::class) {
+                  description = DESCRIPTION
+                  inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
                }
             }
-         }
       }
    }
 

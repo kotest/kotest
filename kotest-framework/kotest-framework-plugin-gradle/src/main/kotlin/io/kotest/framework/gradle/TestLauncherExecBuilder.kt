@@ -82,8 +82,8 @@ internal data class TestLauncherExecBuilder(
    /**
     * Returns args to be used for the tag expression.
     *
-    * If --tags was passed as a command line arg, then that takes precedence over the value
-    * set in the gradle build.
+    * If `--tags` was passed as a command line arg, then that takes precedence over the value
+    * set in the Gradle build.
     *
     * Returns empty list if no tag expression was specified.
     */
@@ -95,7 +95,8 @@ internal data class TestLauncherExecBuilder(
 
    /**
     * Returns the args that specify the candidate classes.
-    * This is a semi-colon separated list of fully qualified class names.
+    * This is a [io.kotest.framework.gradle.tasks.AbstractKotestTask.DELIMITER]
+    * separated list of fully qualified class names.
     */
    private fun classesArg(): List<String> {
       return if (candidates.isEmpty()) emptyList() else listOf(CANDIDATES_ARG, candidates.joinToString(";"))
