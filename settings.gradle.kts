@@ -87,6 +87,10 @@ include(
    // base classes for property testing, plus std lib generators
    ":kotest-property",
 
+   // contains arbs for kotlinx datetime
+   ":kotest-property:kotest-property-datetime",
+
+   // contains  extensions for property testing that build on the kotest test framework
    // the new 6.0+ permutations based DSL for property testing
    ":kotest-property:kotest-property-permutations",
 
