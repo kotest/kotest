@@ -18,6 +18,13 @@ typealias Test = AnnotationSpec.Test
 
 abstract class AnnotationSpec : Spec() {
 
+   // we need to track instances because we have to create instances of nested classes
+   private val instances = mutableMapOf<KClass<*>, AnnotationSpec>()
+
+   init {
+      instances.put(this::class, this)
+   }
+
    override suspend fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()
    }
@@ -50,37 +57,30 @@ abstract class AnnotationSpec : Spec() {
       if (it.isSuspend) it.callSuspend(this) else it.call(this)
    }
 
-   private fun KFunction<*>.toIgnoredRootTest(): RootTest {
-      return deriveRootTest(true)
+   private fun KFunction<*>.toIgnoredRootTest(spec: AnnotationSpec): RootTest {
+      return deriveRootTest(true, spec)
    }
 
-   private fun KFunction<*>.toEnabledRootTest(): RootTest {
-      return deriveRootTest(false)
+   private fun KFunction<*>.toEnabledRootTest(spec: AnnotationSpec): RootTest {
+      return deriveRootTest(false, spec)
    }
 
-   private fun KFunction<*>.deriveRootTest(disabled: Boolean): RootTest {
-      return if (this.isExpectingException()) {
+   private fun KFunction<*>.deriveRootTest(disabled: Boolean, spec: Spec): RootTest {
+      val test = if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         RootTest(
-            name = TestNameBuilder.builder(name).build(),
-            test = callExpectingException(expected),
-            source = sourceRef(),
-            type = TestType.Test,
-            config = null,
-            disabled = disabled,
-            factoryId = null,
-         )
+         createTestFnExceptingException(expected, spec)
       } else {
-         RootTest(
-            name = TestNameBuilder.builder(name).build(),
-            test = callNotExpectingException(),
-            source = sourceRef(),
-            type = TestType.Test,
-            config = null,
-            disabled = disabled,
-            factoryId = null,
-         )
+         createTestFunctionNotExpectingException(spec)
       }
+      return RootTest(
+         name = TestNameBuilder.builder(name).build(),
+         test = test,
+         source = sourceRef(),
+         type = TestType.Test,
+         config = null,
+         disabled = disabled,
+         factoryId = null,
+      )
    }
 
    override fun rootTests(): List<RootTest> {
@@ -98,12 +98,13 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun KClass<*>.findRootTests(): List<RootTest> {
+      val spec = instances.getOrPut(this) { this.java.constructors.first().newInstance() as AnnotationSpec }
       return findTestFunctions().map { f ->
          f.isAccessible = true
          if (f.isIgnoredTest()) {
-            f.toIgnoredRootTest()
+            f.toIgnoredRootTest(spec)
          } else {
-            f.toEnabledRootTest()
+            f.toEnabledRootTest(spec)
          }
       }
    }
@@ -114,10 +115,13 @@ abstract class AnnotationSpec : Spec() {
          .flatMap { it.findRootTests() }
    }
 
-   private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestScope.() -> Unit {
+   private fun KFunction<*>.createTestFnExceptingException(
+      expected: KClass<out Throwable>,
+      spec: Spec,
+   ): suspend TestScope.() -> Unit {
       return {
          val thrown = try {
-            callSuspend(this@AnnotationSpec)
+            callSuspend(spec)
             null
          } catch (t: Throwable) {
             t.unwrapIfReflectionCall()
@@ -127,10 +131,12 @@ abstract class AnnotationSpec : Spec() {
       }
    }
 
-   private fun KFunction<*>.callNotExpectingException(): suspend TestScope.() -> Unit {
+   private fun KFunction<*>.createTestFunctionNotExpectingException(
+      spec: Spec
+   ): suspend TestScope.() -> Unit {
       return {
          try {
-            callSuspend(this@AnnotationSpec)
+            callSuspend(spec)
          } catch (t: Throwable) {
             throw t.unwrapIfReflectionCall()
          }
@@ -262,23 +268,23 @@ abstract class AnnotationSpec : Spec() {
 }
 
 internal fun KClass<out AnnotationSpec>.findBeforeTestFunctions() =
-   findFunctionAnnotatedWithAnyOf(AnnotationSpec.BeforeEach::class, AnnotationSpec.Before::class)
+   findMethodsAnnotatedWithAnyOf(AnnotationSpec.BeforeEach::class, AnnotationSpec.Before::class)
 
 internal fun KClass<out AnnotationSpec>.findBeforeSpecFunctions() =
-   findFunctionAnnotatedWithAnyOf(AnnotationSpec.BeforeAll::class, AnnotationSpec.BeforeClass::class)
+   findMethodsAnnotatedWithAnyOf(AnnotationSpec.BeforeAll::class, AnnotationSpec.BeforeClass::class)
 
 internal fun KClass<out AnnotationSpec>.findAfterSpecFunctions() =
-   findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterAll::class, AnnotationSpec.AfterClass::class)
+   findMethodsAnnotatedWithAnyOf(AnnotationSpec.AfterAll::class, AnnotationSpec.AfterClass::class)
 
 internal fun KClass<out AnnotationSpec>.findAfterTestFunctions() =
-   findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterEach::class, AnnotationSpec.After::class)
+   findMethodsAnnotatedWithAnyOf(AnnotationSpec.AfterEach::class, AnnotationSpec.After::class)
 
 internal fun KClass<*>.findTestFunctions(): List<KFunction<*>> =
-   findFunctionAnnotatedWithAnyOf(AnnotationSpec.Test::class)
+   findMethodsAnnotatedWithAnyOf(AnnotationSpec.Test::class)
 
 internal fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(AnnotationSpec.Ignore::class)
 
-internal fun KClass<*>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>): List<KFunction<*>> =
+internal fun KClass<*>.findMethodsAnnotatedWithAnyOf(vararg annotation: KClass<*>): List<KFunction<*>> =
    memberFunctions.filter { it.isFunctionAnnotatedWithAnyOf(*annotation) }
 
 internal fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
