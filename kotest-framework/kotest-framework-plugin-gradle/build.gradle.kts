@@ -13,8 +13,17 @@ plugins {
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
+   compileOnly(libs.gradlePlugin.android)
+   compileOnly(libs.gradlePlugin.androidApi)
+
    implementation("org.ow2.asm:asm:9.7.1") // used to poke into classes to see if they are specs
    testImplementation(libs.kotlin.gradle.plugin)
+}
+
+kotlin {
+   compilerOptions {
+      optIn.add("io.kotest.framework.gradle.internal.InternalKotestGradlePluginApi")
+   }
 }
 
 tasks.withType<Test>().configureEach {

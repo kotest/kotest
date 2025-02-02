@@ -22,6 +22,12 @@ dependencyResolutionManagement {
          mavenContent { snapshotsOnly() }
       }
 
+      google {
+         mavenContent {
+            includeGroupAndSubgroups("com.android")
+         }
+      }
+
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
       ivy("https://nodejs.org/dist/") {
