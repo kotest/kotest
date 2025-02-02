@@ -133,7 +133,7 @@ private fun ObjectFactory.newKotestExecutionContainer(
 }
 
 private fun BaseKotestSpec.applyBaseConventions() {
-   enabled.convention(true)
+   //enabled.convention(true)
 }
 
 /**

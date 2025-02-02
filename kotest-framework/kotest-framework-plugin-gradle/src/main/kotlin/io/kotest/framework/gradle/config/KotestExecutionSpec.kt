@@ -9,7 +9,6 @@ import io.kotest.framework.gradle.tasks.run.RunKotestWasmTask
 import org.gradle.api.Named
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.toolchain.JavaLauncher
@@ -21,8 +20,7 @@ import javax.inject.Inject
  */
 sealed class BaseKotestSpec(private val name: String) : Named {
 
-   @get:Input
-   abstract val enabled: Property<Boolean>
+//   abstract val enabled: Property<Boolean>
 
    override fun getName(): String = name
 
