@@ -1,0 +1,58 @@
+public final class io/kotest/property/arrow/core/EitherKt {
+	public static final fun either (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun or (Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/core/FunctionKt {
+	public static final fun functionAAToA (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun functionABToB (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun functionAToB (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun functionBAToB (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun functionToA (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/core/IorKt {
+	public static final fun alignWith (Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun ior (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/core/NelKt {
+	public static final fun nel (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun nel (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
+	public static final fun nonEmptyList (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun nonEmptyList (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/core/OptionKt {
+	public static final fun option (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/core/TupleKt {
+	public static final fun tuple4 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun tuple5 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun tuple6 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun tuple7 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun tuple8 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+	public static final fun tuple9 (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arrow/laws/Law {
+	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lkotlin/jvm/functions/Function2;
+	public final fun copy (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lio/kotest/property/arrow/laws/Law;
+	public static synthetic fun copy$default (Lio/kotest/property/arrow/laws/Law;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lio/kotest/property/arrow/laws/Law;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getTest ()Lkotlin/jvm/functions/Function2;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/property/arrow/laws/LawKt {
+	public static final fun equalUnderTheLaw (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
+	public static synthetic fun equalUnderTheLaw$default (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Z
+	public static final fun testLaws (Lio/kotest/core/spec/style/scopes/RootScope;Ljava/lang/String;[Ljava/util/List;)V
+	public static final fun testLaws (Lio/kotest/core/spec/style/scopes/RootScope;[Ljava/util/List;)V
+}
+

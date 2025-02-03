@@ -112,13 +112,6 @@ public final class io/kotest/assertions/nondeterministic/ExponentialIntervalFnKt
 	public static synthetic fun exponential-4_FzEXg$default (JDLkotlin/time/Duration;ILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/ExponentialIntervalFn;
 }
 
-public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFn : io/kotest/assertions/nondeterministic/DurationFn {
-	public static final field Companion Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn$Companion;
-	public synthetic fun <init> (JILkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun next-5sfh64U (I)J
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFn$Companion {
 	public final fun getDefaultMax-UwyO8pc ()J
 }

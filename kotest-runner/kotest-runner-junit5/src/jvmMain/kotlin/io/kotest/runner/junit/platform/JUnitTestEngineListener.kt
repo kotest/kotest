@@ -6,6 +6,7 @@ import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -229,9 +230,15 @@ class JUnitTestEngineListener(
 
       logger.log { Pair(testCase.name.name, "test started") }
 
-      // if this test has a parent, we can mark it as executing now, because it's definitely not a leaf
+
+      // if this test has a parent, we can mark that parent as started, because it's definitely not a leaf
       if (testCase.parent != null)
          startParents(testCase)
+
+      // if the test is a Kotest TEST type then its definitely a leaf test, so we can start it immediately
+      if (testCase.type == TestType.Test) {
+         startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
+      }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
