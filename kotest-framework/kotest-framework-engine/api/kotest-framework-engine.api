@@ -3584,19 +3584,6 @@ public final class io/kotest/engine/launcher/TestEngineListenerBuilder$Companion
 	public final fun builder ()Lio/kotest/engine/launcher/TestEngineListenerBuilder;
 }
 
-public abstract class io/kotest/engine/listener/AbstractTestEngineListener : io/kotest/engine/listener/TestEngineListener {
-	public fun <init> ()V
-	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/listener/CollectingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener, kotlinx/coroutines/sync/Mutex {
 	public fun <init> ()V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3680,10 +3667,6 @@ public final class io/kotest/engine/listener/PinnedSpecTestEngineListener : io/k
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/listener/TestEngineListenerKt {
-	public static final fun getNoopTestEngineListener ()Lio/kotest/engine/listener/AbstractTestEngineListener;
 }
 
 public final class io/kotest/engine/listener/ThreadSafeTestEngineListener : io/kotest/engine/listener/TestEngineListener {
