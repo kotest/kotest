@@ -169,7 +169,10 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
                kotestBomService.coordinates.addAll(
                   providers
                      .provider {
-                        "${this@publication.groupId}:${this@publication.artifactId}:${this@publication.version}"
+                        // We are publishing the -jvm jars in the root variants so we can simply remove the -jvm suffix
+                        // See: publishPlatformArtifactsInRootModule
+                        val artifactId = this@publication.artifactId.replace("-jvm", "")
+                        "${this@publication.groupId}:$artifactId:${this@publication.version}"
                      }
                      .zip(includeInKotestBom) { coords, enabled ->
                         if (enabled) listOf(coords) else emptyList()
