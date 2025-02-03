@@ -6,6 +6,8 @@ import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -36,7 +38,7 @@ import kotlin.reflect.full.primaryConstructor
  */
 class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
-) : ConstructorExtension, SpecExtension, TestCaseExtension {
+) : ConstructorExtension, SpecExtension, TestCaseExtension, BeforeTestListener, AfterTestListener {
 
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
       // we only instantiate via spring if there's actually parameters in the constructor
@@ -71,15 +73,27 @@ class SpringExtension(
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
       val methodName = method(testCase)
       if (testCase.isApplicable()) {
-         testContextManager().beforeTestMethod(testCase.spec, methodName)
          testContextManager().beforeTestExecution(testCase.spec, methodName)
       }
       val result = execute(testCase)
       if (testCase.isApplicable()) {
-         testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
          testContextManager().afterTestExecution(testCase.spec, methodName, null as Throwable?)
       }
       return result
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      if (testCase.isApplicable()) {
+         val methodName = method(testCase)
+         testContextManager().beforeTestMethod(testCase.spec, methodName)
+      }
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+      if (testCase.isApplicable()) {
+         val methodName = method(testCase)
+         testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
+      }
    }
 
    /**
