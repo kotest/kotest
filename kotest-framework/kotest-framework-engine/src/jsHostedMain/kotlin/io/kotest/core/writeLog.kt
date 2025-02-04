@@ -18,3 +18,7 @@ actual fun print(str: String) {
 actual fun println(str: String) {
    console.log("$str\n")
 }
+
+actual fun println() {
+   console.log("\n")
+}
