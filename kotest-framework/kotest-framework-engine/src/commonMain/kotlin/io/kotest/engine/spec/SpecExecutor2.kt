@@ -30,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
- * A [SpecExecutor2] is responsible for executing all the tests inside a single [Spec],
+ * A [SpecExecutor2] is responsible for executing all the tests inside a single [io.kotest.core.spec.Spec],
  * and handling the lifecycle callbacks of each spec. The executor handles executing tests in relation
  * to the spec isolation mode, instantiating fresh specs when required. It also handles the
  * execution (concurrency) mode of tests inside a spec.
@@ -60,7 +60,7 @@ internal class SpecExecutor2(
 
       // we switch to a new coroutine for each spec instance
       return withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         val specContext = SpecContext.create()
+         val specContext = SpecContext.Companion.create()
          runInstancePipeline(spec, specContext) {
             val tests = Materializer(engineContext.specConfigResolver).materialize(spec).withIndex().toList()
             enqueueRootTests(spec, tests, specContext)
@@ -110,7 +110,7 @@ internal class SpecExecutor2(
    ): Result<Map<TestCase, TestResult>> {
       require(target.isRootTest()) { "Descriptor must be a root test" }
       return createInstance(ref).flatMap { spec ->
-         val specContext = SpecContext.create()
+         val specContext = SpecContext.Companion.create()
          // we switch to a new coroutine for each spec instance
          withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
             runInstancePipeline(spec, specContext) {
@@ -147,7 +147,7 @@ internal class SpecExecutor2(
    }
 
    /**
-    * Executes the given [TestCase] using a [TestCaseExecutor].
+    * Executes the given [TestCase] using a [io.kotest.engine.test.TestCaseExecutor].
     * Logs the results in the results tree.
     *
     * @return the result of this single test.
@@ -183,7 +183,7 @@ internal class SpecExecutor2(
    }
 
    /**
-    * A [TestScope] that runs discovered tests as soon as they are registered in the same spec instance.
+    * A [io.kotest.core.test.TestScope] that runs discovered tests as soon as they are registered in the same spec instance.
     *
     * This implementation tracks fail fast if configured via spec config or globally.
     */
@@ -218,5 +218,3 @@ internal class SpecExecutor2(
       }
    }
 }
-
-

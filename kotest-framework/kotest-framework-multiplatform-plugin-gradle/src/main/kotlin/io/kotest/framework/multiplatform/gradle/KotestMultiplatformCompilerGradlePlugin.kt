@@ -1,6 +1,5 @@
 package io.kotest.framework.multiplatform.gradle
 
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
@@ -14,6 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+import javax.inject.Inject
 
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
@@ -22,7 +22,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val logger: Logger = Logging.getLogger(this::class.java)
 
    companion object {
-      const val kotestPluginExtensionName = "kotest"
+      const val EXTENSION_NAME = "kotestMultiplatform"
       const val compilerPluginId = "io.kotest.multiplatform"
       const val KotestGroupId = "io.kotest"
       const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
@@ -39,11 +39,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private var kotestExtension: KotestPluginExtension? = null
 
    override fun apply(target: Project) {
-      kotestExtension = target.createKotestExtension()
-   }
-
-   private fun Project.createKotestExtension(): KotestPluginExtension {
-      return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
+      kotestExtension = target.extensions.create<KotestPluginExtension>(EXTENSION_NAME).apply {
          kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
       }
    }

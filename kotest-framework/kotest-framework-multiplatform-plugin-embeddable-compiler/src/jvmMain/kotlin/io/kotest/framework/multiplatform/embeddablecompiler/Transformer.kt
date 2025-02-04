@@ -30,6 +30,7 @@ abstract class Transformer(
    private val messageCollector: MessageCollector,
    protected val pluginContext: IrPluginContext
 ) : IrElementTransformerVoidWithContext() {
+
    private val specs = CopyOnWriteArrayList<IrClass>()
    private var configs = CopyOnWriteArrayList<IrClass>()
 
@@ -43,7 +44,7 @@ abstract class Transformer(
       super.visitFileNew(declaration)
       val specs = declaration.specs()
       messageCollector.toLogger()
-         .log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
+         .warning("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
       this.specs.addAll(specs)
       return declaration
    }
@@ -51,14 +52,14 @@ abstract class Transformer(
    override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
       val fragment = super.visitModuleFragment(declaration)
 
-      messageCollector.toLogger().log("Detected ${configs.size} configs:")
+      messageCollector.toLogger().warning("Detected ${configs.size} configs:")
       configs.forEach {
-         messageCollector.toLogger().log(it.kotlinFqName.asString())
+         messageCollector.toLogger().warning(it.kotlinFqName.asString())
       }
 
-      messageCollector.toLogger().log("Detected ${specs.size} JS specs:")
+      messageCollector.toLogger().warning("Detected ${specs.size} JS specs:")
       specs.forEach {
-         messageCollector.toLogger().log(it.kotlinFqName.asString())
+         messageCollector.toLogger().warning(it.kotlinFqName.asString())
       }
 
       if (specs.isEmpty()) {
@@ -112,8 +113,8 @@ abstract class Transformer(
    }
 
    protected val launcherClass by lazy {
-      pluginContext.referenceClass(ClassId.fromString(EntryPoint.TestEngineClassName))
-         ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
+      pluginContext.referenceClass(ClassId.fromString(EntryPoint.TEST_ENGINE_CLASS_NAME))
+         ?: error("Cannot find ${EntryPoint.TEST_ENGINE_CLASS_NAME} class reference")
    }
 
    protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
