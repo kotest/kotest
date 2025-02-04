@@ -102,9 +102,9 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       printTestsCounts()
       consoleRenderer.print("Time:    ")
       if (duration.inWholeSeconds > 60)
-         consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s")
+         consoleRenderer.println(consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s"))
       else
-         consoleRenderer.bold("${duration.inWholeSeconds}s")
+         consoleRenderer.println(consoleRenderer.bold("${duration.inWholeSeconds}s"))
    }
 
    private fun printThrowable(error: Throwable?, padding: Int) {
