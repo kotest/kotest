@@ -1,10 +1,10 @@
 package io.kotest.engine.teamcity
 
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.core.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -36,7 +36,7 @@ internal class TeamCityWriter(
          .message(result.reason)
          .result(result)
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    /**
@@ -50,7 +50,7 @@ internal class TeamCityWriter(
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    /**
@@ -62,19 +62,19 @@ internal class TeamCityWriter(
          .id(name)
          .parent(parent)
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    internal fun outputTestStarted(testName: String) {
-      println(TeamCityMessageBuilder.testStarted(prefix, testName).build())
+      io.kotest.core.println(TeamCityMessageBuilder.testStarted(prefix, testName).build())
    }
 
    internal fun outputTestFailed(testName: String, message: String) {
-      println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
+      io.kotest.core.println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
    }
 
    internal fun outputTestFinished(testName: String) {
-      println(TeamCityMessageBuilder.testFinished(prefix, testName).build())
+      io.kotest.core.println(TeamCityMessageBuilder.testFinished(prefix, testName).build())
    }
 
    /**
@@ -90,7 +90,7 @@ internal class TeamCityWriter(
          .withException(result.errorOrNull, details)
          .result(result)
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    /**
@@ -104,7 +104,7 @@ internal class TeamCityWriter(
          .parent(parent)
          .withException(cause, details)
          .build()
-      println(msg2)
+      io.kotest.core.println(msg2)
    }
 
    /**
@@ -120,7 +120,7 @@ internal class TeamCityWriter(
          .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    internal fun outputTestFinished(name: String, parent: String) {
@@ -129,7 +129,7 @@ internal class TeamCityWriter(
          .id(name)
          .parent(parent)
          .build()
-      println(msg3)
+      io.kotest.core.println(msg3)
    }
 
    /**
@@ -143,7 +143,7 @@ internal class TeamCityWriter(
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    /**
@@ -159,7 +159,7 @@ internal class TeamCityWriter(
          .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    /**
@@ -171,7 +171,7 @@ internal class TeamCityWriter(
          .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.location(kclass))
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 
    internal fun outputTestSuiteStarted(kclass: KClass<*>) {
@@ -180,6 +180,6 @@ internal class TeamCityWriter(
          .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.location(kclass))
          .build()
-      println(msg)
+      io.kotest.core.println(msg)
    }
 }

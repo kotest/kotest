@@ -39,7 +39,7 @@ class TestEngineLauncher(
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(NoopTestEngineListener)
+   constructor() : this(TeamCityTestEngineListener())
 
    constructor(listener: TestEngineListener) : this(
       Platform.JVM,

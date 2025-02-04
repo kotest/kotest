@@ -76,6 +76,8 @@ abstract class KotestPlugin : Plugin<Project> {
                   when (targetName) {
                      "js" -> {
                         project.tasks.register("kotestJs", KotestJsTask::class) {
+                           dependsOn(":kotlinNodeJsSetup")
+                           dependsOn(":build")
                            inputs.files(project.tasks.named("jsTestClasses").map { it.outputs.files })
                         }
                      }

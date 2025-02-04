@@ -40,6 +40,7 @@ abstract class Transformer(
       return declaration
    }
 
+   // todo only run this for files in the test source sets
    override fun visitFileNew(declaration: IrFile): IrFile {
       super.visitFileNew(declaration)
       val specs = declaration.specs()
