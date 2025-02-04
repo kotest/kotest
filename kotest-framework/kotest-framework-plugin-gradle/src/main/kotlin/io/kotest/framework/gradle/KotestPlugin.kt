@@ -2,6 +2,7 @@ package io.kotest.framework.gradle
 
 import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
+import io.kotest.framework.gradle.tasks.KotestJsTask
 import io.kotest.framework.gradle.tasks.KotestJvmTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,6 +14,7 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsSetupTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 abstract class KotestPlugin : Plugin<Project> {
@@ -46,11 +48,15 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // Configure Kotlin Android projects
       handleKotlinAndroid(project)
+
+      // configure node js projects
+      handleNodeJS(project)
    }
 
    private fun configureTaskConventions(project: Project) {
       project.tasks.withType<AbstractKotestTask>().configureEach {
          group = JavaBasePlugin.VERIFICATION_GROUP
+         description = DESCRIPTION
       }
    }
 
@@ -59,7 +65,6 @@ abstract class KotestPlugin : Plugin<Project> {
          // gradle best practice is to only apply to this project, and users add the plugin to each subproject
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
          project.tasks.register(JVM_TASK_NAME, KotestJvmTask::class) {
-            description = DESCRIPTION
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
       }
@@ -74,7 +79,6 @@ abstract class KotestPlugin : Plugin<Project> {
                   // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                   // see https://docs.gradle.org/current/userguide/isolated_projects.html
                   project.tasks.register("kotest$capitalTarget", AbstractKotestTask::class) {
-                     description = DESCRIPTION
                      inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
                   }
                }
@@ -99,7 +103,6 @@ abstract class KotestPlugin : Plugin<Project> {
                // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                // see https://docs.gradle.org/current/userguide/isolated_projects.html
                project.tasks.register("kotest$capitalTarget", KotestAndroidTask::class) {
-                  description = DESCRIPTION
                   compilationNames.set(listOf(compilation.name))
                   inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
                }
@@ -108,10 +111,18 @@ abstract class KotestPlugin : Plugin<Project> {
             // add one special task that runs all compilations
             // todo can we just make a task that runs the other tasks above
             project.tasks.register("kotest", KotestAndroidTask::class) {
-               description = DESCRIPTION
                compilationNames.set(testCompilations.map { it.name })
                inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
             }
+         }
+      }
+   }
+
+   private fun handleNodeJS(project: Project) {
+      project.rootProject.tasks.withType(NodeJsSetupTask::class).whenTaskAdded {
+         project.tasks.register("jsKotest", KotestJsTask::class.java) {
+            dependsOn(":kotlinNodeJsSetup")
+            dependsOn(":build")
          }
       }
    }
