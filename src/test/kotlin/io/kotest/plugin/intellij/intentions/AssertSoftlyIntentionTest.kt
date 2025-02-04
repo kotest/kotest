@@ -9,6 +9,10 @@ import java.nio.file.Paths
 
 class AssertSoftlyIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
+   init {
+      testMode = true
+   }
+
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
       return path.toString()

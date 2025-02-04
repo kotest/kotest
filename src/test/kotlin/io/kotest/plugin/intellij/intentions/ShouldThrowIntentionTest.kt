@@ -9,30 +9,33 @@ import java.nio.file.Paths
 
 class ShouldThrowIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
-  override fun getTestDataPath(): String {
-    val path = Paths.get("./src/test/resources/").toAbsolutePath()
-    return path.toString()
-  }
+   init {
+      testMode = true
+   }
 
-  fun testIntentionForPartialLine() {
+   override fun getTestDataPath(): String {
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
+      return path.toString()
+   }
 
-     myFixture.configureByFiles(
-        "/intentions/should_throw.kt",
-        "/io/kotest/core/spec/style/specs.kt"
-     )
-    editor.moveCaret(649)
-    editor.selectionModel.setSelection(649, 651)
+   fun testIntentionForPartialLine() {
+      myFixture.configureByFiles(
+         "/intentions/should_throw.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+      editor.moveCaret(649)
+      editor.selectionModel.setSelection(649, 651)
 
-    val intention = myFixture.findSingleIntention("Surround statements with shouldThrow assertion")
-    intention.familyName shouldBe "Surround statements with shouldThrow assertion"
+      val intention = myFixture.findSingleIntention("Surround statements with shouldThrow assertion")
+      intention.familyName shouldBe "Surround statements with shouldThrow assertion"
 
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
 
-    file.text shouldBe """package com.sksamuel.kotest.specs.behavior
+      file.text shouldBe """package com.sksamuel.kotest.specs.behavior
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.string.shouldStartWith
@@ -65,28 +68,28 @@ class BehaviorSpecExample : BehaviorSpec() {
    }
 }
 """
-  }
+   }
 
-  fun testIntentionForFullSelection() {
+   fun testIntentionForFullSelection() {
 
-     myFixture.configureByFiles(
-        "/intentions/should_throw.kt",
-        "/io/kotest/core/spec/style/specs.kt"
-     )
+      myFixture.configureByFiles(
+         "/intentions/should_throw.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
-    editor.moveCaret(631)
-    editor.selectionModel.setSelection(631, 658)
+      editor.moveCaret(631)
+      editor.selectionModel.setSelection(631, 658)
 
-    val intention = myFixture.findSingleIntention("Surround statements with shouldThrow assertion")
-    intention.familyName shouldBe "Surround statements with shouldThrow assertion"
+      val intention = myFixture.findSingleIntention("Surround statements with shouldThrow assertion")
+      intention.familyName shouldBe "Surround statements with shouldThrow assertion"
 
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
 
-    file.text shouldBe """package com.sksamuel.kotest.specs.behavior
+      file.text shouldBe """package com.sksamuel.kotest.specs.behavior
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.string.shouldStartWith
@@ -119,5 +122,5 @@ class BehaviorSpecExample : BehaviorSpec() {
    }
 }
 """
-  }
+   }
 }

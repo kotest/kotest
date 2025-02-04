@@ -13,10 +13,12 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.resolve.ImportPath
 
+internal var testMode = false
+
 abstract class SurroundSelectionWithFunctionIntention : PsiElementBaseIntentionAction() {
 
    override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
-      if (ApplicationManager.getApplication().isDispatchThread) {
+      if (ApplicationManager.getApplication().isDispatchThread && !testMode) {
          return false
       }
       return try {
