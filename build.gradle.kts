@@ -65,7 +65,7 @@ val descriptors = listOf(
    ),
    PluginDescriptor(
       since = "243.*", // this version is 2024.3.x
-      until = "244.*",
+      until = "252.*",
       sdkVersion = "2024.3.1",
       sourceFolder = "IC-243",
       useInstaller = true,
