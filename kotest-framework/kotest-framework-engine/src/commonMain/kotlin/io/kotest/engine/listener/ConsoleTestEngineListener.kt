@@ -85,14 +85,14 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       val duration = start.elapsedNow()
 
       if (errors == 0) {
-         consoleRenderer.bold(">> All tests passed")
+         consoleRenderer.println(consoleRenderer.bold(">> All tests passed"))
       } else {
-         consoleRenderer.redBold(">> There were test failures")
+         consoleRenderer.println(consoleRenderer.redBold(">> There were test failures"))
          consoleRenderer.println()
          specsFailed.distinct().forEach { spec ->
-            consoleRenderer.brightRedBold(" ${formatter.format(this::class)}")
+            consoleRenderer.println(consoleRenderer.brightRedBold(" ${formatter.format(this::class)}"))
             testsFailed.filter { it.first.spec::class.toDescriptor() == spec }.forEach { (testCase, _) ->
-               consoleRenderer.brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}")
+               consoleRenderer.println(consoleRenderer.brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}"))
             }
          }
       }
@@ -111,14 +111,13 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       if (error != null) {
          val message = error.message
          if (message != null) {
-            consoleRenderer.brightRed(message.padStart(padding, ' '))
+            consoleRenderer.println(consoleRenderer.brightRed(message.padStart(padding, ' ')))
          }
          printlnStackTrace(error, padding)
       }
    }
 
    open fun printlnStackTrace(error: Throwable, padding: Int) {
-
    }
 
    private fun printSpecCounts() {
@@ -180,7 +179,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       testsIgnored++
       consoleRenderer.print("".padEnd(testCase.descriptor.depth() * 4, ' '))
       consoleRenderer.print("- " + formatter.format(testCase))
-      consoleRenderer.brightYellowBold(" IGNORED")
+      consoleRenderer.println(consoleRenderer.brightYellowBold(" IGNORED"))
    }
 
    private fun durationString(duration: Duration): String {
