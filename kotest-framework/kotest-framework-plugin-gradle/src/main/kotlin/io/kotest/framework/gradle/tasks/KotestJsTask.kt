@@ -15,14 +15,16 @@ abstract class KotestJsTask @Inject internal constructor(
    protected fun execute() {
 
       val testModule = "${project.name}-test"
-      val entryPackage = "io.kotest.js"
-      val runFnName = "runKotest"
+      val entryPackage = "io.kotest.examples.js"
+      val runFnName = "kotestTestEngine"
+
+      println("Running kotest js tests $testModule")
 
       executors.exec {
          val buildDir = project.layout.buildDirectory.asFile.get().toPath()
          val moduleFile = buildDir.resolve("js/packages/${testModule}/kotlin/${testModule}.js")
          val testFilter = if (tests.orNull == null) null else "'$tests'"
-         val runKotestCommand = "require('${moduleFile}').$entryPackage.$runFnName($testFilter)"
+         val runKotestCommand = "require('${moduleFile}').$entryPackage.$runFnName()"
          commandLine("node", "-e", runKotestCommand)
       }
    }
