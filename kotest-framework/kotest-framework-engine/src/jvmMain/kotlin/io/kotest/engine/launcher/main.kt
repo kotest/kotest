@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
    println("Starting Kotest launcher with args: ${args.joinToString(";")}")
 
    val launcherArgs = parseArgs(args.toList())
-   println("Parsed args: $launcherArgs")
+//   println("Parsed args: $launcherArgs")
 
    // The launcher *must* be told what classes are available on the classpath, the engine will not perform scanning.
    // It is the responsibility of the caller to pass this information.
@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
    val descriptorFilter = launcherArgs[DESCRIPTOR]?.let { descriptor ->
-      println("Making a filter from input $descriptor")
+//      println("Making a filter from input $descriptor")
       ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
    }
 
