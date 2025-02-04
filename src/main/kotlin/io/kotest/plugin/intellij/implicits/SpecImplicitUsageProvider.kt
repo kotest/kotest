@@ -29,6 +29,6 @@ class SpecImplicitUsageProvider : ImplicitUsageProvider {
          }
          else -> null
       }
-      return ktclass?.isSpec() ?: false
+      return ktclass?.isSpec() == true
    }
 }
