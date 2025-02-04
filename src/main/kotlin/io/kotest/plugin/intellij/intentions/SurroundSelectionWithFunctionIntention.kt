@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij.intentions
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -16,9 +15,6 @@ import org.jetbrains.kotlin.resolve.ImportPath
 abstract class SurroundSelectionWithFunctionIntention : PsiElementBaseIntentionAction() {
 
    override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
-      if (ApplicationManager.getApplication().isDispatchThread) {
-         return false
-      }
       return try {
          editor?.selectionModel?.hasSelection() == true && element.isContainedInSpec()
       } catch (e: Exception) {

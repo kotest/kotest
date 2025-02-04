@@ -15,12 +15,17 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
    return superTypeListEntries.mapNotNull { it.typeReference }
       .flatMap { ref ->
-         analyze(this) {
-            val kaType = ref.type
-            val superTypes = (kaType.allSupertypes(false) + kaType).toList()
-            superTypes.mapNotNull {
-               val classId = it.symbol?.classId?.takeIf { id -> id != StandardClassIds.Any }
-               classId?.asSingleFqName()
+         // SurroundSelectionWithFunctionIntention.isAvailable is called in EDT before the intention is applied
+         // unfortunately API to avoid this was introduced in 23.2 only
+         // this we need to move intentions to the facade or accept EDT here until 23.2- are still supported
+         allowAnalysisOnEdt {
+            analyze(this) {
+               val kaType = ref.type
+               val superTypes = (kaType.allSupertypes(false) + kaType).toList()
+               superTypes.mapNotNull {
+                  val classId = it.symbol?.classId?.takeIf { id -> id != StandardClassIds.Any }
+                  classId?.asSingleFqName()
+               }
             }
          }
       }
