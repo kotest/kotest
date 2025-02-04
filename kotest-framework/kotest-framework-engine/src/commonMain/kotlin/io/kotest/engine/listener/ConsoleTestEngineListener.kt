@@ -90,6 +90,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
          consoleRenderer.println(consoleRenderer.redBold(">> There were test failures"))
          consoleRenderer.println()
          specsFailed.distinct().forEach { spec ->
+            // todo fix this to use the proper class name
             consoleRenderer.println(consoleRenderer.brightRedBold(" ${formatter.format(this::class)}"))
             testsFailed.filter { it.first.spec::class.toDescriptor() == spec }.forEach { (testCase, _) ->
                consoleRenderer.println(consoleRenderer.brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}"))
