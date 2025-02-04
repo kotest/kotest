@@ -1,6 +1,6 @@
 package io.kotest.engine.launcher
 
-import com.github.ajalt.mordant.TermColors
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -11,7 +11,6 @@ import io.kotest.engine.listener.TestEngineListener
  */
 data class TestEngineListenerBuilder(
    private val type: String?,
-   private val termcolors: String?,
 ) {
 
    companion object {
@@ -39,7 +38,7 @@ data class TestEngineListenerBuilder(
          LISTENER_CONSOLE -> EnhancedConsoleTestEngineListener(colours())
          // if not speciifed, we'll try to detect instead
          else if isIntellij() -> TeamCityTestEngineListener()
-         else -> EnhancedConsoleTestEngineListener(colours())
+         else -> ConsoleTestEngineListener()
       }
    }
 

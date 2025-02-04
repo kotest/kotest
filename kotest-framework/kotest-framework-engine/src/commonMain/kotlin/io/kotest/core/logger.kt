@@ -53,3 +53,4 @@ expect fun writeLog(start: TimeMark, t: Throwable?, f: () -> String)
 
 expect fun print(str: String)
 expect fun println(str: String)
+expect fun println()

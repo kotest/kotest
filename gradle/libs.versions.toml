@@ -14,7 +14,7 @@ kotlinx-coroutines = "1.10.0"
 kotlinx-serialization = "1.6.3"
 ktor = "2.3.13"
 mockk = "1.13.17"
-mordant = "1.2.1"
+mordant = "3.0.1"
 opentest4j = "1.3.0"
 plugin-publish = "1.3.1"
 rgxgen = "1.4"
@@ -52,7 +52,7 @@ jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-mordant = { module = "com.github.ajalt:mordant", version.ref = "mordant" }
+mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
 

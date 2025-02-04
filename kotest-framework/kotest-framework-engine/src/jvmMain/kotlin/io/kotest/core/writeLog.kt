@@ -38,6 +38,10 @@ actual fun println(str: String) {
    kotlin.io.println(str)
 }
 
+actual fun println() {
+   kotlin.io.println()
+}
+
 private fun getPid(): Long {
    return if (currentMajorJavaVersion >= 9) {
       getPidFromProcessHandle()

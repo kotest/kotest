@@ -12,7 +12,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -39,7 +39,7 @@ class TestEngineLauncher(
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(TeamCityTestEngineListener())
+   constructor() : this(ConsoleTestEngineListener())
 
    constructor(listener: TestEngineListener) : this(
       Platform.JVM,
