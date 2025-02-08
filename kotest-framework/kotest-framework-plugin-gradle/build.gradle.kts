@@ -60,11 +60,11 @@ gradlePlugin {
 tasks.withType<KotlinCompile>().configureEach {
    kotlin {
       compilerOptions {
-         jvmTarget.set(JvmTarget.JVM_1_8)
+         jvmTarget.set(JvmTarget.JVM_11)
       }
    }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
+   options.release.set(11)
 }

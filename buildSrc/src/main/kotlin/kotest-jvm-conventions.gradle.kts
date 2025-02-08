@@ -34,13 +34,13 @@ fun VersionCatalog.findJvmVersion(name: String): Provider<JavaLanguageVersion> =
 
 
 /** The minimum Java version that Kotest supports. */
-val jvmMinTargetVersion = versionCatalog.findJvmVersion("jvmMinTarget")
+val jvmMinTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMinTarget")
 
 /** The minimum Java version that Kotest supports. */
-val jvmMaxTargetVersion = versionCatalog.findJvmVersion("jvmMaxTarget")
+val jvmMaxTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMaxTarget")
 
 /** The Java version used for compilation. */
-val jvmCompilerVersion = versionCatalog.findJvmVersion("jvmCompiler")
+val jvmCompilerVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmCompiler")
 
 
 //region configure Java compiler
