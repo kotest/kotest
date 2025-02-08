@@ -2,10 +2,12 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultWithError
 import io.kotest.matchers.neverNullMatcher
 
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
@@ -167,17 +169,37 @@ fun <T> matchEach(expected: List<T>, asserter: (T, T) -> Unit): Matcher<Collecti
       }
    })
 
+private sealed interface MatchEachProblem {
+   val atIndex: Int
+   /** A short message without a stack trace. */
+   val shortMessage: String
+   /** A long message including a stack trace if available. */
+   val longMessage: String
+
+   data class SizeMismatch(override val atIndex: Int, val problem: String) : MatchEachProblem {
+      override val shortMessage: String
+         get() = problem
+      override val longMessage: String
+         get() = problem
+   }
+
+   data class Thrown(override val atIndex: Int, val problem: Throwable) : MatchEachProblem {
+      override val shortMessage: String
+         get() = problem.message ?: "Exception $problem thrown"
+      override val longMessage: String
+         get() = problem.stackTraceToString()
+   }
+}
+
 /**
  * Asserts that each element in the collection matches its corresponding matcher in [assertions].
  * Elements will be compared sequentially in the order given by the iterators of the collections.
  */
 fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-   data class MatchEachProblem(val atIndex: Int, val problem: String?)
-
    val problems = errorCollector.runWithMode(ErrorCollectionMode.Hard) {
       actual.mapIndexedNotNull { index, element ->
          if (index !in assertions.indices) {
-            MatchEachProblem(
+            MatchEachProblem.SizeMismatch(
                index,
                "Element has no corresponding assertion. Only ${assertions.size} assertions provided"
             )
@@ -185,23 +207,44 @@ fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neve
             runCatching {
                assertions[index](element)
             }.exceptionOrNull()?.let { exception ->
-               MatchEachProblem(index, exception.message)
+               MatchEachProblem.Thrown(index, exception)
             }
          }
       }
    } + (actual.size until assertions.size).map {
-      MatchEachProblem(
+      MatchEachProblem.SizeMismatch(
          it,
          "No actual element for assertion at index $it"
       )
    }
 
-   MatcherResult(
-      problems.isEmpty(),
-      {
-         "Expected each element to pass its assertion, but found issues at indexes: [${problems.joinToString { it.atIndex.toString() }}]\n\n" +
-            problems.joinToString(separator = "\n") { "${it.atIndex} => ${it.problem}" }
-      },
-      { "Expected some element to fail its assertion, but all passed." },
-   )
+   when (problems.size) {
+      0 -> MatcherResult(
+         true,
+         { "" },
+         { "Expected some element to fail its assertion, but all passed." },
+      )
+
+      1 -> {
+         val problem = problems.first()
+         val failMsg = "Expected each element to pass its assertion, but found issues at indexes: [${problem.atIndex}]\n\n${problem.atIndex} => ${problem.shortMessage}"
+         MatcherResultWithError(
+            (problem as? MatchEachProblem.Thrown)?.problem?.let { cause ->
+               failure(failMsg, cause)
+            },
+            false,
+            { failMsg },
+            { "" },
+         )
+      }
+
+      else -> MatcherResult(
+         false,
+         {
+            "Expected each element to pass its assertion, but found issues at indexes: [${problems.joinToString { it.atIndex.toString() }}]\n\n" +
+               problems.joinToString(separator = "\n") { "${it.atIndex} => ${it.longMessage}" }
+         },
+         { "" },
+      )
+   }
 }
