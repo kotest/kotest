@@ -15,6 +15,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldStartWith
+import java.math.BigDecimal
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {
@@ -107,8 +108,7 @@ class MapMatchersTest : WordSpec() {
                map.shouldContain(1, "c")
             }.message.shouldContainInOrder(
                "Map should contain mapping 1=c but value was different:",
-               "Expected: <\"c\">",
-               "But was:  <\"a\">"
+               "expected:<\"c\"> but was:<\"a\">"
             )
             shouldThrow<AssertionError> {
                map.shouldContain(4, "e")
@@ -117,8 +117,7 @@ class MapMatchersTest : WordSpec() {
                map should mapcontain(2, "a")
             }.message.shouldContainInOrder(
                "Map should contain mapping 2=a but value was different:",
-               """Expected: <"a">""",
-               """But was:  <"b">""",
+               """expected:<"a"> but was:<"b">""",
                "Same value found for the following entries: [1=a]",
                )
          }
@@ -161,6 +160,15 @@ class MapMatchersTest : WordSpec() {
          "pass for key not in map and null value" {
             val map = mapOf("apple" to "green")
             map shouldNotContain("lemon" to null)
+         }
+         "expose different types that print identically" {
+            val thrown = shouldThrow<AssertionError> {
+               mapOf("a" to BigDecimal("1.5")) shouldContain("a" to 1.5)
+            }
+            thrown.message.shouldContainInOrder(
+               "Map should contain mapping a=1.5 but value was different:",
+               "expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"
+            )
          }
       }
 
