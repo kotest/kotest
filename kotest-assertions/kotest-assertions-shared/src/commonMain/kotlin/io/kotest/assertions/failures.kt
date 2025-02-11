@@ -56,6 +56,7 @@ fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Th
    )
 }
 
+@KotestInternal
 fun<V> getFailureWithTypeInformation(
    expected: V,
    actual: V?,
