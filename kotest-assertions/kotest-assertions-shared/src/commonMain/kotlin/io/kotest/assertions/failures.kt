@@ -2,6 +2,7 @@ package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.PrintedWithType
+import io.kotest.assertions.print.printWithType
 import io.kotest.assertions.print.printed
 import io.kotest.mpp.stacktraces
 
@@ -54,6 +55,16 @@ fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Th
       actual
    )
 }
+
+fun<V> getFailureWithTypeInformation(
+   expected: V,
+   actual: V?,
+   prependMessage: String = ""
+) = failureWithTypeInformation(
+   ExpectedWithType(expected.printWithType()),
+   ActualWithType(actual.printWithType()),
+   prependMessage
+)
 
 fun failureWithTypeInformation(
    expected: ExpectedWithType,
