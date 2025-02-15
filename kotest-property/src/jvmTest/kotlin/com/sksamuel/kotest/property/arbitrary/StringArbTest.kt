@@ -172,10 +172,10 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with list of acceptable characters should only contain those characters") {
-         val chars = listOf("a", "z", "3", "?", "-")
+         val chars = "aZ3-?".toList()
          checkAll(Arb.string(10..20, chars.joinToString(""))) { a ->
             a.toList().forEach {
-               it.toString() in chars
+               it in chars.toList()
             }
          }
       }
