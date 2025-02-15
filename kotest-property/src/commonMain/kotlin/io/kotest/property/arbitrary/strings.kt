@@ -50,6 +50,19 @@ fun Arb.Companion.string(
 fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
+
+/**
+ * Returns an [Arb] where each random value is a String which has a length in the given range.
+ * Each generated [String] contains only acceptable characters.
+ *
+ * The edge case values are a string of the first value in the range, using the first edge case
+ * codepoint provided by the codepoints arb.
+ */
+fun Arb.Companion.string(range: IntRange, acceptableChars: String) =
+   Arb.string(range, acceptableChars.toCodepoints())
+
+internal fun String.toCodepoints(): Arb<Codepoint> = Arb.of(this.map { Codepoint(it.code) })
+
 /**
  * Returns an [Arb] where each random value is a String of length [size].
  * By default the arb uses a [printableAscii] codepoint generator, but this can be substituted
