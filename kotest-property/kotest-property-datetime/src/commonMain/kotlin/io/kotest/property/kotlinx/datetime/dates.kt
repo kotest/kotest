@@ -33,7 +33,9 @@ fun Arb.Companion.datesBetween(
    endDate: LocalDate,
 ): Arb<LocalDate> {
    val daysRange: IntRange = 0..(endDate - startDate).days
-   return arbitrary {
+   return arbitrary(
+      edgecases = listOf(startDate, endDate),
+   ) {
       startDate.plus(it.random.nextInt(daysRange), DateTimeUnit.DAY)
    }
 }
