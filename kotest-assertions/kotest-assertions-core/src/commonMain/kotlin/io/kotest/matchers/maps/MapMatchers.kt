@@ -2,6 +2,8 @@ package io.kotest.matchers.maps
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.failureWithTypeInformation
+import io.kotest.assertions.getFailureWithTypeInformation
 import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
@@ -118,10 +120,12 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
       val passed = (key in value) && value[key] == v
       val mismatchDescription = {
          when {
-            key in value -> listOf("value was different:",
-               "Expected: <${v.print().value}>",
-               "But was:  <${value[key].print().value}>",
-               ).joinToString("\n")
+            key in value -> getFailureWithTypeInformation(
+               expected = v,
+               actual = value[key],
+               prependMessage = "value was different: "
+            ).message ?: ""
+
             else -> "key was not in the map"
          }
       }

@@ -1,0 +1,13 @@
+public final class io/kotest/property/kotlinx/datetime/DatesKt {
+	public static final fun date (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
+	public static synthetic fun date$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun datesBetween (Lio/kotest/property/Arb$Companion;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)Lio/kotest/property/Arb;
+	public static final fun datetime (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
+	public static synthetic fun datetime$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/kotlinx/datetime/InstantsKt {
+	public static final fun instant (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/LongRange;)Lio/kotest/property/Arb;
+	public static synthetic fun instant$default (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/LongRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
+}
+

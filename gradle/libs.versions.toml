@@ -1,6 +1,5 @@
 [versions]
 blockhound = "1.0.10.RELEASE"
-classgraph = "4.8.179"
 commons-lang3 = "3.13.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.12"
@@ -27,7 +26,10 @@ byte-buddy = "1.15.11"
 allure = "2.24.0"
 koin = "3.5.6"
 wiremock = "3.11.0"
+mockserver = "5.15.0"
 fuel = "2.3.1"
+konform = "0.10.0"
+arrow = "2.0.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -42,7 +44,6 @@ gradleDaemonJvm = "21"
 [libraries]
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
@@ -55,6 +56,12 @@ rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" 
 
 fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
+arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow" }
+
+
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
@@ -66,12 +73,19 @@ junit-platform-api = { module = "org.junit.platform:junit-platform-suite-api", v
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
 
+fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
+
+mockserver-client-java = { module = "org.mock-server:mockserver-client-java", version.ref = "mockserver" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver" }
+
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+konform = { module = "io.konform:konform", version.ref = "konform" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }

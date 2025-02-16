@@ -1,5 +1,6 @@
 plugins {
    id("kotest-multiplatform-library-conventions")
+   id("kotest-publishing-conventions")
    alias(libs.plugins.kotlin.serialization)
 }
 

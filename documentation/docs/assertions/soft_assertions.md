@@ -42,7 +42,7 @@ assertSoftly {
 }
 ```
 
-Likewise, if mockk`s `verify(...)` fails in the following example, the second assertion will not execute:
+Likewise, if `mockk`'s `verify(...)` fails in the following example, the second assertion will not execute:
 
 ```kotlin
 assertSoftly {
