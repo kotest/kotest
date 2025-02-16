@@ -21,7 +21,7 @@ object ProjectConfigLoader {
    }
 
    private fun fqn(): String {
-      val fqn = System.getProperty(KotestEngineProperties.configurationClassNames)
+      val fqn = System.getProperty(KotestEngineProperties.CONFIGURATION_CLASS_NAME)
       return if (fqn == null) {
          log { "No project config class name provided, checking for default at $DEFAULT_CONFIG_FQN" }
          DEFAULT_CONFIG_FQN
