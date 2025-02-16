@@ -9,6 +9,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.random.nextInt
@@ -22,6 +23,21 @@ fun Arb.Companion.date(
    yearRange: IntRange = 1970..Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
 ): Arb<LocalDate> = arbitrary {
    LocalDate(it.random.nextInt(yearRange), 1, 1).plus(it.random.nextInt(0..364), DateTimeUnit.DAY)
+}
+
+/**
+ * Returns an [Arb] where each value is a [LocalDate] in the given range of dates.
+ */
+fun Arb.Companion.datesBetween(
+   startDate: LocalDate,
+   endDate: LocalDate,
+): Arb<LocalDate> {
+   val daysRange: IntRange = 0..(endDate - startDate).days
+   return arbitrary(
+      edgecases = listOf(startDate, endDate),
+   ) {
+      startDate.plus(it.random.nextInt(daysRange), DateTimeUnit.DAY)
+   }
 }
 
 /**
