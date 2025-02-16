@@ -3172,13 +3172,13 @@ public final class io/kotest/engine/config/IncludeTestScopeAffixes : java/lang/E
 }
 
 public final class io/kotest/engine/config/KotestEngineProperties {
+	public static final field CONFIGURATION_CLASS_NAME Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/config/KotestEngineProperties;
 	public static final field INVOCATION_TIMEOUT Ljava/lang/String;
 	public static final field PROJECT_TIMEOUT Ljava/lang/String;
 	public static final field TIMEOUT Ljava/lang/String;
 	public static final field allowMultilineTestName Ljava/lang/String;
 	public static final field assertionMode Ljava/lang/String;
-	public static final field configurationClassNames Ljava/lang/String;
 	public static final field coroutineDebugProbes Ljava/lang/String;
 	public static final field disableBangPrefix Ljava/lang/String;
 	public static final field disableSourceRef Ljava/lang/String;
