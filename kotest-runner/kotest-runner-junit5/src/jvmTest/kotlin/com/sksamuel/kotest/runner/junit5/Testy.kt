@@ -7,6 +7,6 @@ class Testy : FunSpec() {
       test("a") {
 
       }
-      afterProject {  }
+      afterProject { }
    }
 }

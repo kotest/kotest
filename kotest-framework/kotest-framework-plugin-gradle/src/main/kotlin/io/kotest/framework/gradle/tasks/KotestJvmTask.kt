@@ -22,7 +22,7 @@ abstract class KotestJvmTask @Inject internal constructor(
       val test = java.sourceSets.findByName("test") ?: return
 
       val candidates = this@KotestJvmTask.candidates(test.runtimeClasspath)
-      candidates.forEach { println("spec: $it") }
+//      candidates.forEach { println("spec: $it") }
 
       val exec = TestLauncherExecBuilder()
          .withClasspath(test.runtimeClasspath)

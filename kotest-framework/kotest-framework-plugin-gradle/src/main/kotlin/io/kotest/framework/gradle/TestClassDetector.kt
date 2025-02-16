@@ -8,7 +8,7 @@ import org.objectweb.asm.Opcodes
 
 /**
  * Scans a gradle [FileTree] looking for classes that extend a spec class.
- * We use object-asm to scan the bytecode.
+ * We use object-asm to scan the bytecode the same way the standard gradle Test task does.
  */
 internal class TestClassDetector {
 

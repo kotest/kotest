@@ -1,0 +1,59 @@
+public final class io/kotest/property/arrow/optics/IsoLaws {
+	public static final field INSTANCE Lio/kotest/property/arrow/optics/IsoLaws;
+	public final fun composeModify (Larrow/optics/PIso;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun consistentSetModify (Larrow/optics/PIso;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun laws (Larrow/optics/PIso;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/IsoLaws;Larrow/optics/PIso;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun modifyIdentity (Larrow/optics/PIso;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun roundTripOneWay (Larrow/optics/PIso;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun roundTripOtherWay (Larrow/optics/PIso;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/property/arrow/optics/LensLaws {
+	public static final field INSTANCE Lio/kotest/property/arrow/optics/LensLaws;
+	public final fun laws (Larrow/optics/PLens;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public final fun laws (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/LensLaws;Larrow/optics/PLens;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/LensLaws;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun lensComposeModify (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun lensConsistentSetModify (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun lensGetSet (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun lensModifyIdentity (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun lensSetGet (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun lensSetIdempotent (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/property/arrow/optics/OptionalLaws {
+	public static final field INSTANCE Lio/kotest/property/arrow/optics/OptionalLaws;
+	public final fun composeModify (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun consistentSetModify (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOptionSet (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun laws (Larrow/optics/POptional;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public final fun laws (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/OptionalLaws;Larrow/optics/POptional;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/OptionalLaws;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun modifyIdentity (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setGetOption (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setIdempotent (Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/property/arrow/optics/PrismLaws {
+	public static final field INSTANCE Lio/kotest/property/arrow/optics/PrismLaws;
+	public final fun composeModify (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun consistentSetModify (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun laws (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/PrismLaws;Larrow/optics/PPrism;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun modifyIdentity (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun partialRoundTripOneWay (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun roundTripOtherWay (Larrow/optics/PPrism;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/property/arrow/optics/TraversalLaws {
+	public static final field INSTANCE Lio/kotest/property/arrow/optics/TraversalLaws;
+	public final fun composeModify (Larrow/optics/PTraversal;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun laws (Larrow/optics/PTraversal;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun laws$default (Lio/kotest/property/arrow/optics/TraversalLaws;Larrow/optics/PTraversal;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
+	public final fun modifyIdentity (Larrow/optics/PTraversal;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setIdempotent (Larrow/optics/PTraversal;Lio/kotest/property/Arb;Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

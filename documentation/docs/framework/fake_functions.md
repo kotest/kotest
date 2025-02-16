@@ -17,7 +17,7 @@ class AnsweringService: HasAnswer {
 }
 
 class MyService(private val hasAnswer: HasAnswer) {
-   fun answer(question: String): Int = hasAnswer.answer(question)
+   fun respond(question: String): Int = hasAnswer.answer(question)
 }
 ```
 
@@ -57,9 +57,9 @@ This fake function can be used in unit tests as follows:
 ```kotlin
 val fakeFunction = sequenceOf("yes", "no", "maybe").toFunction()
 val myService = MyService { fakeFunction.next() }
-myService.answer("what") shouldBe "yes"
-myService.answer("when") shouldBe "no"
-myService.answer("where") shouldBe "maybe"
+myService.respond("what") shouldBe "yes"
+myService.respond("when") shouldBe "no"
+myService.respond("where") shouldBe "maybe"
 ```
 Should we need a fake function that sometimes returns a value and sometimes throws an exception,it can easily be done as follows:
 

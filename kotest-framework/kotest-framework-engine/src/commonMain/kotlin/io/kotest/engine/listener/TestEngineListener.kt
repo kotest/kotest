@@ -72,6 +72,7 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult)
 }
 
+@KotestInternal
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
    override suspend fun engineFinished(t: List<Throwable>) {}
@@ -84,4 +85,5 @@ abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun testStarted(testCase: TestCase) {}
 }
 
+@KotestInternal
 val NoopTestEngineListener = object : AbstractTestEngineListener() {}

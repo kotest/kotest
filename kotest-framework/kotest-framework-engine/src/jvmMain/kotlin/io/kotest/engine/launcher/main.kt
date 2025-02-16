@@ -7,9 +7,11 @@ import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.CANDIDATES
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.LISTENER
+import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.SPEC
 import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
+import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -30,6 +32,8 @@ object LauncherArgs {
    // these are deprecated kotest 5 flags kept for backwards compatibility
    const val SPEC = "spec"
    const val TESTPATH = "testpath"
+   const val REPORTER = "reporter"
+   const val WRITER = "writer"
 }
 
 /**
@@ -46,7 +50,7 @@ fun main(args: Array<String>) {
    println("Starting Kotest launcher with args: ${args.joinToString(";")}")
 
    val launcherArgs = parseArgs(args.toList())
-   println("Parsed args: $launcherArgs")
+//   println("Parsed args: $launcherArgs")
 
    // The launcher *must* be told what classes are available on the classpath, the engine will not perform scanning.
    // It is the responsibility of the caller to pass this information.
@@ -61,7 +65,7 @@ fun main(args: Array<String>) {
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
    val descriptorFilter = launcherArgs[DESCRIPTOR]?.let { descriptor ->
-      println("Making a filter from input $descriptor")
+//      println("Making a filter from input $descriptor")
       ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
    }
 
@@ -74,7 +78,7 @@ fun main(args: Array<String>) {
    }
 
    val console = TestEngineListenerBuilder.builder()
-      .withType(launcherArgs[LISTENER]) // sets the output type, will be detected if not specified
+      .withType(launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]) // sets the output type, will be detected if not specified
       .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
       .build()
 
