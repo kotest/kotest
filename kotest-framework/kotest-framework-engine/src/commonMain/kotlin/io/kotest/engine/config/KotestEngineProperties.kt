@@ -81,10 +81,8 @@ object KotestEngineProperties {
    /**
     * Specify a fully qualified name to use for project config.
     * This class will be instantiated via reflection.
-    *
-    * Note: Multiple config classes are supported by using the ; delimiter.
     */
-   const val configurationClassNames = "kotest.framework.config.fqn"
+   const val CONFIGURATION_CLASS_NAME = "kotest.framework.config.fqn"
 
    const val allowMultilineTestName = "kotest.framework.testname.multiline"
 

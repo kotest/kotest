@@ -138,6 +138,7 @@ include(
 
    ":kotest-tests:kotest-tests-concurrency-tests",
    ":kotest-tests:kotest-tests-concurrency-specs",
+   ":kotest-tests:kotest-tests-config-project",
    ":kotest-tests:kotest-tests-config-classname",
    ":kotest-tests:kotest-tests-config-packages",
    ":kotest-tests:kotest-tests-htmlreporter",
