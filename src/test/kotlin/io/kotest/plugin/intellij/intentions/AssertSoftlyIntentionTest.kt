@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij.intentions
 
-import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.idea.core.moveCaret
@@ -31,10 +30,8 @@ class AssertSoftlyIntentionTest : LightJavaCodeInsightFixtureTestCase() {
       val intention = myFixture.findSingleIntention("Surround statements with soft assert")
       intention.familyName shouldBe "Surround statements with soft assert"
 
-      CommandProcessor.getInstance().runUndoTransparentAction {
-         runWriteAction {
-            intention.invoke(project, editor, file)
-         }
+      WriteCommandAction.runWriteCommandAction(project) {
+         intention.invoke(project, editor, file)
       }
 
       file.text shouldBe """package io.kotest.samples.gradle
@@ -97,10 +94,8 @@ class FunSpecExampleTest : FunSpec({
       val intention = myFixture.findSingleIntention("Surround statements with soft assert")
       intention.familyName shouldBe "Surround statements with soft assert"
 
-      CommandProcessor.getInstance().runUndoTransparentAction {
-         runWriteAction {
-            intention.invoke(project, editor, file)
-         }
+      WriteCommandAction.runWriteCommandAction(project) {
+         intention.invoke(project, editor, file)
       }
 
       file.text shouldBe """package io.kotest.samples.gradle

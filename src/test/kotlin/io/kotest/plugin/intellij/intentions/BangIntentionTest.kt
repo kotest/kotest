@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij.intentions
 
-import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -25,17 +24,13 @@ class BangIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
       val intention = myFixture.findSingleIntention("Add/Remove bang to test name")
       intention.familyName shouldBe "Add/Remove bang to test name"
-      CommandProcessor.getInstance().runUndoTransparentAction {
-         runWriteAction {
-            intention.invoke(project, editor, file)
-         }
+      WriteCommandAction.runWriteCommandAction(project) {
+         intention.invoke(project, editor, file)
       }
       file.findElementAt(265)?.text shouldBe "!another test"
 
-      CommandProcessor.getInstance().runUndoTransparentAction {
-         runWriteAction {
-            intention.invoke(project, editor, file)
-         }
+      WriteCommandAction.runWriteCommandAction(project) {
+         intention.invoke(project, editor, file)
       }
       file.findElementAt(265)?.text shouldBe "another test"
    }

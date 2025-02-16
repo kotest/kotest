@@ -5,13 +5,15 @@ import com.intellij.ide.structureView.StructureViewExtension
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.roots.TestSourcesFilter
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
+import io.kotest.plugin.intellij.intentions.testMode
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -26,9 +28,13 @@ class KotestStructureViewExtension : StructureViewExtension {
    }
 
    override fun getChildren(parent: PsiElement): Array<StructureViewTreeElement> {
-      if (ApplicationManager.getApplication().isDispatchThread) {
+      // we need indices available in order to scan this file because in order to determine if we have
+      // a spec we need to check if any of the parent classes (which are different files) are spec types
+      if (DumbService.isDumb(parent.project) && !testMode) {
          return emptyArray()
       }
+      val virtualFile: VirtualFile = parent.containingFile?.virtualFile ?: return emptyArray()
+      if (!TestSourcesFilter.isTestSources(virtualFile, parent.project) && !testMode) return emptyArray()
       val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
       val spec = ktClassOrObject.specStyle() ?: return emptyArray()
       val tests = spec.tests(parent, false)
