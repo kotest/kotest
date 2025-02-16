@@ -131,6 +131,9 @@ include(
    // extensions that adapt junit extensions into kotest extensions
    ":kotest-extensions:kotest-extensions-junit5",
 
+   // adds support for the wiremock framework - see more https://www.wiremock.io/
+   ":kotest-extensions:kotest-extensions-wiremock",
+
    // the tests modules each test a piece of functionality
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests

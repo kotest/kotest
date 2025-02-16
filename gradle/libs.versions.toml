@@ -25,6 +25,7 @@ spring = "5.3.39"
 byte-buddy = "1.15.11"
 allure = "2.24.0"
 koin = "3.5.6"
+wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
@@ -58,6 +59,8 @@ arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
 arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow" }
 
+fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
+
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
@@ -68,8 +71,6 @@ junit-platform-api = { module = "org.junit.platform:junit-platform-suite-api", v
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-
-fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
 mockserver-client-java = { module = "org.mock-server:mockserver-client-java", version.ref = "mockserver" }
 mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver" }
@@ -103,6 +104,8 @@ byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte
 
 allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
+
+wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
