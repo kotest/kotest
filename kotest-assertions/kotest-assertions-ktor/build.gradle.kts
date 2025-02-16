@@ -1,6 +1,7 @@
 plugins {
    id("kotest-js-not-wasm-conventions")
    id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
