@@ -675,4 +675,18 @@ class BindTest : StringSpec({
       }
    }
 
+   "When binding nullable properties to an arb that does not generate nulls, then no nulls should be implicitly added" {
+      data class Bar(val baz: String)
+      data class Foo(val bar: Bar?)
+
+      val arbBarNotNull = Arb.bind<Bar>()
+      val arbFooWithBar: Arb<Foo> = Arb.bind<Foo> {
+         bind(Foo::bar to arbBarNotNull) // field should never be null since its Arb does not generate nulls
+      }
+
+      checkAll(arbFooWithBar) { foo ->
+         foo.bar != null
+      }
+   }
+
 })
