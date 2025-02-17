@@ -2565,6 +2565,34 @@ public final class io/kotest/core/test/NestedTest {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/core/test/TestCase {
+	public fun <init> (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lio/kotest/core/source/SourceRef;Lio/kotest/core/test/TestType;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;Lio/kotest/core/test/TestCase;)V
+	public synthetic fun <init> (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lio/kotest/core/source/SourceRef;Lio/kotest/core/test/TestType;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;Lio/kotest/core/test/TestCase;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
+	public final fun component2 ()Lio/kotest/core/names/TestName;
+	public final fun component3 ()Lio/kotest/core/spec/Spec;
+	public final fun component4 ()Lkotlin/jvm/functions/Function2;
+	public final fun component5 ()Lio/kotest/core/source/SourceRef;
+	public final fun component6 ()Lio/kotest/core/test/TestType;
+	public final fun component7 ()Lio/kotest/core/test/config/TestConfig;
+	public final fun component8 ()Lio/kotest/core/factory/FactoryId;
+	public final fun component9 ()Lio/kotest/core/test/TestCase;
+	public final fun copy (Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lio/kotest/core/source/SourceRef;Lio/kotest/core/test/TestType;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
+	public static synthetic fun copy$default (Lio/kotest/core/test/TestCase;Lio/kotest/core/descriptors/Descriptor$TestDescriptor;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lio/kotest/core/source/SourceRef;Lio/kotest/core/test/TestType;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;Lio/kotest/core/test/TestCase;ILjava/lang/Object;)Lio/kotest/core/test/TestCase;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
+	public final fun getDescriptor ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
+	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
+	public final fun getName ()Lio/kotest/core/names/TestName;
+	public final fun getParent ()Lio/kotest/core/test/TestCase;
+	public final fun getSource ()Lio/kotest/core/source/SourceRef;
+	public final fun getSpec ()Lio/kotest/core/spec/Spec;
+	public final fun getTest ()Lkotlin/jvm/functions/Function2;
+	public final fun getType ()Lio/kotest/core/test/TestType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/core/test/TestCaseKt {
 	public static final fun isRootTest (Lio/kotest/core/test/TestCase;)Z
 	public static final fun parents (Lio/kotest/core/test/TestCase;)Ljava/util/List;
