@@ -39,7 +39,6 @@ import io.kotest.core.test.config.TestConfig
  * }
  * ```
  */
-@KotestInternal
 data class TestCase(
    // parseable, stable, consistent identifier for this test element
    val descriptor: Descriptor.TestDescriptor,
