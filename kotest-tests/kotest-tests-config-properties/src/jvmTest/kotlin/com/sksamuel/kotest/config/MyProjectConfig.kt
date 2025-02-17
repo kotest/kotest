@@ -1,8 +1,14 @@
 package com.sksamuel.kotest.config
 
 import io.kotest.core.config.AbstractProjectConfig
-import kotlin.time.Duration.Companion.milliseconds
 
 class MyProjectConfig : AbstractProjectConfig() {
-   override val invocationTimeout = 2.milliseconds
+
+   override suspend fun beforeProject() {
+      initialized = "yes, and before project"
+   }
+
+   companion object {
+      lateinit var initialized: String
+   }
 }
