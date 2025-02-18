@@ -37,6 +37,7 @@ allure-results/
 
 allure.log
 kotest-*.log
+kotest.log
 
 local.properties
 .kotest
