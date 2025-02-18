@@ -144,6 +144,9 @@ include(
    ":kotest-tests:kotest-tests-config-project",
    ":kotest-tests:kotest-tests-config-classname",
    ":kotest-tests:kotest-tests-config-packages",
+
+   // tests that kotest.properties on the classpath are picked up
+   ":kotest-tests:kotest-tests-config-properties",
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
