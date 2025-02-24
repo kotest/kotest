@@ -1456,6 +1456,12 @@ public final class io/kotest/matchers/equality/ReflectionKt {
 	public static final fun shouldNotBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty;)V
 }
 
+public final class io/kotest/matchers/equals/SameInstanceKt {
+	public static final fun beSameInstance (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeSameInstance (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeSameInstance (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class io/kotest/matchers/equals/ShouldEqualKt {
 	public static final fun beEqual (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEqual (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;

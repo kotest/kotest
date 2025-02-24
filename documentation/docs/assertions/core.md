@@ -12,7 +12,8 @@ Matchers provided by the `kotest-assertions-core` module.
 
 | General                                 |                                                                                                  |
 |-----------------------------------------|--------------------------------------------------------------------------------------------------|
-| `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal                            |
+| `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal (aka ==)                   |
+| `obj.shouldBeSameInstance(other)`       | General purpose assertion that the given obj and other are the same instance (aka ===)           |
 | `obj::prop.shouldHaveValue(other)`      | General purpose assertion on a property value printing information of the property on failure.   |
 | `expr.shouldBeTrue()`                   | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)`           |
 | `expr.shouldBeFalse()`                  | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)`         |
