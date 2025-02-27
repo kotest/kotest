@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.date.shouldNotBeAfter
@@ -19,6 +20,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.getLocalDateArbParams
 import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
@@ -538,6 +540,30 @@ class DateTest : WordSpec({
          timesBeforeMidnight.shouldNotBeEmpty()
          timesBeforeMidnight.min() shouldBe start
          times.filter { it > end && it < start }.shouldBeEmpty()
+      }
+   }
+   "getLocalDateArbParams" should {
+      "work when startTime is before endTime" {
+         val startTime = LocalTime.of(10, 30, 0)
+         val endTime = LocalTime.of(12, 30, 0)
+         with(getLocalDateArbParams(
+            startTime,
+            endTime,
+         )) {
+            durationInNanoSeconds shouldBe 7_200_000_000_000L
+            edgeCases shouldContainExactlyInAnyOrder listOf(startTime, endTime)
+         }
+      }
+      "span over midnight when startTime is after endTime" {
+         val startTime = LocalTime.of(22, 30, 0)
+         val endTime = LocalTime.of(0, 30, 0)
+         with(getLocalDateArbParams(
+            startTime,
+            endTime,
+         )) {
+            durationInNanoSeconds shouldBe 7_200_000_000_000L
+            edgeCases shouldContainExactlyInAnyOrder listOf(startTime, endTime, LocalTime.MIN, LocalTime.MAX)
+         }
       }
    }
 })

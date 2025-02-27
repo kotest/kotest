@@ -113,21 +113,33 @@ fun Arb.Companion.localTime(
    startTime: LocalTime = LocalTime.of(0, 0),
    endTime: LocalTime = LocalTime.of(23, 59, 59, 999_999_999)
 ): Arb<LocalTime> {
-   val durationFromMinToMax = minOf(startTime, endTime).until(maxOf(startTime, endTime), ChronoUnit.NANOS)
-   val durationInNanoSeconds = if(startTime <= endTime) {
-      durationFromMinToMax
-   } else {
-      nanoSecondsInOneDay - durationFromMinToMax
-   }
-   val edgeCases = listOf(startTime, endTime) + if(startTime < endTime) {
-      emptyList()
-   } else {
-      listOf(LocalTime.MIN, LocalTime.MAX)
-   }
+   val (durationInNanoSeconds, edgeCases) = getLocalDateArbParams(startTime, endTime)
    return arbitrary(edgeCases) {
       startTime.plus(it.random.nextLong(durationInNanoSeconds), ChronoUnit.NANOS)
    }
 }
+
+internal fun getLocalDateArbParams(
+   startTime: LocalTime,
+   endTime: LocalTime,
+): LocalDateArbParams {
+   val durationFromMinToMax = minOf(startTime, endTime).until(maxOf(startTime, endTime), ChronoUnit.NANOS)
+   return if (startTime <= endTime)
+      LocalDateArbParams(
+         durationFromMinToMax,
+         listOf(startTime, endTime)
+      )
+   else
+      LocalDateArbParams(
+         nanoSecondsInOneDay - durationFromMinToMax,
+         listOf(LocalTime.MIN, LocalTime.MAX, startTime, endTime)
+      )
+}
+
+internal data class LocalDateArbParams(
+   val durationInNanoSeconds: Long,
+   val edgeCases: List<LocalTime>,
+)
 
 /**
  * Arberates a stream of random LocalDateTimes
