@@ -9,7 +9,6 @@ import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.LISTENER
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.SPEC
-import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -79,7 +78,6 @@ fun main(args: Array<String>) {
 
    val console = TestEngineListenerBuilder.builder()
       .withType(launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]) // sets the output type, will be detected if not specified
-      .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
       .build()
 
    // we want to collect the results, so we can check if we need exit with an error

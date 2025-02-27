@@ -14,8 +14,16 @@ kotlin {
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             api(libs.kotlinx.coroutines.core)
+
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
+         }
+      }
+
+      jsMain {
+         // used to write to the console with fancy colours!
+         dependencies {
+            implementation(libs.mordant)
          }
       }
 
