@@ -6,7 +6,10 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
@@ -43,9 +46,11 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 import kotlin.time.Duration.Companion.hours
 
-@EnabledIf(LinuxCondition::class)
+//@EnabledIf(LinuxCondition::class)
 class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
@@ -459,6 +464,80 @@ class DateTest : WordSpec({
          }
 
          months.toSet() shouldBe setOf(5)
+      }
+   }
+   "Arb.Companion.localTime(startTime, endTime)" should {
+         "generate LocalTimes between non-default startTime and endTime" {
+            val start = LocalTime.of(10, 0)
+            val end = LocalTime.of(12, 0)
+            val times = mutableSetOf<LocalTime>()
+
+            checkAll(10_000, Arb.localTime(start, end)) {
+               times += it
+            }
+
+            times.forAll {
+               it shouldBeIn start..end
+            }
+
+            times.min() shouldBe start
+            times.max() shouldBe end
+         }
+
+      "generate LocalTimes between default startTime and non-default endTime" {
+         val start = LocalTime.of(0, 0)
+         val end = LocalTime.of(12, 0)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(endTime = end)) {
+            times += it
+         }
+
+         times.forAll {
+            it shouldBeIn start..end
+         }
+
+         times.min() shouldBe start
+         times.max() shouldBe end
+      }
+
+      "generate LocalTimes between non-default startTime and default endTime" {
+         val start = LocalTime.of(20, 0)
+         val end = LocalTime.of(0, 0).minus(1L, ChronoUnit.NANOS)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(startTime = start)) {
+            times += it
+         }
+
+         times.forAll {
+            it shouldBeIn start..end
+         }
+
+         times.min() shouldBe start
+         times.max() shouldBe end
+      }
+
+      "generate LocalTimes between non-default startTime and endTime spanning over midnight" {
+         val start = LocalTime.of(23, 0)
+         val end = LocalTime.of(1, 0)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(start, end)) {
+            times += it
+         }
+
+         times.forAll {
+            (it <= start || it >= end) shouldBe true
+         }
+
+         val timesAfterMidnight = times.filter { it < end.plusMinutes(10) }
+         timesAfterMidnight.shouldNotBeEmpty()
+         timesAfterMidnight.max() shouldBe end
+         val timesBeforeMidnight = times.filter { it > start.minusMinutes(10) }
+         timesBeforeMidnight.shouldNotBeEmpty()
+         timesBeforeMidnight.min() shouldBe start
+         times.filter { it > end && it < start }.shouldBeEmpty()
       }
    }
 })
