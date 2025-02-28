@@ -857,6 +857,7 @@ public final class io/kotest/property/arbitrary/CombinationsKt {
 	public static final fun frequency (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun frequencyArbs (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun shuffle (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
+	public static final fun slice (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun subsequence (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 }
 
