@@ -34,6 +34,34 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
    return perms(list, length).exhaustive()
 }
 
+fun <A> Exhaustive.Companion.slices(list: List<A>): Exhaustive<List<A>> {
+   require(list.isNotEmpty()) { "List should not be empty." }
+   return listOf(list)
+      .exhaustive()
+}
+
+internal fun indexPermutations(size: Int): Sequence<List<Int>> = sequence {
+   val indexes = (0 until size).toMutableList()
+   val lastIndexes = (0 until size).toMutableList()
+   lastIndexes.reverse()
+   yield(indexes.toList())
+   while(indexes != lastIndexes) {
+      yield(indexes.toList())
+   }
+}
+
+internal fun nextPermutation(list: MutableList<Int>): List<Int>? {
+   (1 until list.size - 1).forEach { index ->
+      if(list[index - 1] < list[index]) {
+         val valueToSwap = list[index - 1]
+         list[index - 1] = list[index]
+         list[index] = valueToSwap
+         return list
+      }
+   }
+   return null
+}
+
 /*
 *  Returns an [Exhaustive] which provides all the subsets of elements from the given list, aka the power set.
 * For instance:

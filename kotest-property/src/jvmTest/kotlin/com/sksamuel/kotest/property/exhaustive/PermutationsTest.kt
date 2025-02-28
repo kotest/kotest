@@ -7,9 +7,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
+import io.kotest.property.exhaustive.nextPermutation
 import io.kotest.property.exhaustive.permutations
 
-@EnabledIf(LinuxCondition::class)
+//@EnabledIf(LinuxCondition::class)
 class PermutationsTest : FunSpec() {
    init {
       test("Exhaustive.permutations should generate full permutations when length is omitted") {
@@ -36,6 +37,10 @@ class PermutationsTest : FunSpec() {
       test("Exhaustive.permutations should throw if length is greater than list length") {
          shouldThrowWithMessage<IllegalArgumentException>("length must be between 0 and the list size (3), but was 7.")
          { Exhaustive.permutations(listOf(1, 2, 3), 7) }
+      }
+
+      test("nextPermutation should compute second one off the first") {
+         nextPermutation(mutableListOf(1, 2, 3))?.toList() shouldBe listOf(2, 1, 3)
       }
    }
 }
