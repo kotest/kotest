@@ -5,6 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.nextPermutation
@@ -41,6 +42,14 @@ class PermutationsTest : FunSpec() {
 
       test("nextPermutation should compute second one off the first") {
          nextPermutation(mutableListOf(1, 2, 3))?.toList() shouldBe listOf(2, 1, 3)
+      }
+
+      test("nextPermutation should return last permutation off the penultimate one") {
+         nextPermutation(mutableListOf(3, 1, 2))?.toList() shouldBe listOf(3, 2, 1)
+      }
+
+      test("nextPermutation should return null off the last permutation") {
+         nextPermutation(mutableListOf(3, 2, 1)).shouldBeNull()
       }
    }
 }

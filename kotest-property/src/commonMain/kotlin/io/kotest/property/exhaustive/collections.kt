@@ -51,7 +51,7 @@ internal fun indexPermutations(size: Int): Sequence<List<Int>> = sequence {
 }
 
 internal fun nextPermutation(list: MutableList<Int>): List<Int>? {
-   (1 until list.size - 1).forEach { index ->
+   (1 until list.size).forEach { index ->
       if(list[index - 1] < list[index]) {
          val valueToSwap = list[index - 1]
          list[index - 1] = list[index]
