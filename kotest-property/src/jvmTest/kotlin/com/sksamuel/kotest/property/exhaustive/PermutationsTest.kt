@@ -4,12 +4,13 @@ import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
-import io.kotest.property.exhaustive.nextPermutation
 import io.kotest.property.exhaustive.permutations
+import io.kotest.property.exhaustive.sliceIndexes
 
 //@EnabledIf(LinuxCondition::class)
 class PermutationsTest : FunSpec() {
@@ -40,16 +41,32 @@ class PermutationsTest : FunSpec() {
          { Exhaustive.permutations(listOf(1, 2, 3), 7) }
       }
 
-      test("nextPermutation should compute second one off the first") {
-         nextPermutation(mutableListOf(1, 2, 3))?.toList() shouldBe listOf(2, 1, 3)
+      test("sliceIndexes for 1") {
+         sliceIndexes(1).toList() shouldContainExactlyInAnyOrder
+            listOf(
+               Pair(0, 0),
+            )
       }
 
-      test("nextPermutation should return last permutation off the penultimate one") {
-         nextPermutation(mutableListOf(3, 1, 2))?.toList() shouldBe listOf(3, 2, 1)
+      test("sliceIndexes for 2") {
+         sliceIndexes(2).toList() shouldContainExactlyInAnyOrder
+            listOf(
+               Pair(0, 0),
+               Pair(1, 1),
+               Pair(0, 1),
+            )
       }
 
-      test("nextPermutation should return null off the last permutation") {
-         nextPermutation(mutableListOf(3, 2, 1)).shouldBeNull()
+      test("sliceIndexes for 3") {
+         sliceIndexes(3).toList() shouldContainExactlyInAnyOrder
+            listOf(
+               Pair(0, 0),
+               Pair(1, 1),
+               Pair(2, 2),
+               Pair(0, 1),
+               Pair(1, 2),
+               Pair(0, 2),
+            )
       }
    }
 }

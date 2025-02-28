@@ -40,26 +40,11 @@ fun <A> Exhaustive.Companion.slices(list: List<A>): Exhaustive<List<A>> {
       .exhaustive()
 }
 
-internal fun indexPermutations(size: Int): Sequence<List<Int>> = sequence {
-   val indexes = (0 until size).toMutableList()
-   val lastIndexes = (0 until size).toMutableList()
-   lastIndexes.reverse()
-   yield(indexes.toList())
-   while(indexes != lastIndexes) {
-      yield(indexes.toList())
-   }
-}
-
-internal fun nextPermutation(list: MutableList<Int>): List<Int>? {
-   (1 until list.size).forEach { index ->
-      if(list[index - 1] < list[index]) {
-         val valueToSwap = list[index - 1]
-         list[index - 1] = list[index]
-         list[index] = valueToSwap
-         return list
-      }
-   }
-   return null
+internal fun sliceIndexes(size: Int): Sequence<Pair<Int, Int>> = sequence {
+   require(size > 0) { "Size should be positive, was: $size"}
+   (0 until size).flatMap { start ->
+      (start until size).map { end -> start to end }
+   }.forEach { yield(it) }
 }
 
 /*
