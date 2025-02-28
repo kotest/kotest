@@ -36,7 +36,8 @@ fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size
 
 fun <A> Exhaustive.Companion.slices(list: List<A>): Exhaustive<List<A>> {
    require(list.isNotEmpty()) { "List should not be empty." }
-   return listOf(list)
+   return sliceIndexes(list.size)
+      .map { indexes -> list.subList(indexes.first, indexes.second + 1) }.toList()
       .exhaustive()
 }
 

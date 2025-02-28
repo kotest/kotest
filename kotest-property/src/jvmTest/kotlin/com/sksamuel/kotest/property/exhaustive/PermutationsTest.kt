@@ -4,15 +4,14 @@ import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.enabledif.LinuxCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.permutations
 import io.kotest.property.exhaustive.sliceIndexes
+import io.kotest.property.exhaustive.slices
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class PermutationsTest : FunSpec() {
    init {
       test("Exhaustive.permutations should generate full permutations when length is omitted") {
@@ -39,6 +38,23 @@ class PermutationsTest : FunSpec() {
       test("Exhaustive.permutations should throw if length is greater than list length") {
          shouldThrowWithMessage<IllegalArgumentException>("length must be between 0 and the list size (3), but was 7.")
          { Exhaustive.permutations(listOf(1, 2, 3), 7) }
+      }
+
+      test("Exhaustive.slices for integers") {
+         Exhaustive.slices(listOf(1, 2, 3)).values shouldContainExactlyInAnyOrder listOf(
+            listOf(1), listOf(1, 2), listOf(1, 2, 3), listOf(2), listOf(2, 3), listOf(3)
+         )
+      }
+
+      test("Exhaustive.slices for strings") {
+         Exhaustive.slices(listOf("apple", "orange", "banana")).values shouldContainExactlyInAnyOrder listOf(
+            listOf("apple"),
+            listOf("apple", "orange"),
+            listOf("apple", "orange", "banana"),
+            listOf("orange"),
+            listOf("orange", "banana"),
+            listOf("banana"),
+         )
       }
 
       test("sliceIndexes for 1") {
