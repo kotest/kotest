@@ -110,8 +110,8 @@ private val nanoSecondsInOneDay = 24*60*60*1_000_000_000L
  * @see [localDate]
  */
 fun Arb.Companion.localTime(
-   startTime: LocalTime = LocalTime.of(0, 0),
-   endTime: LocalTime = LocalTime.of(23, 59, 59, 999_999_999)
+   startTime: LocalTime = LocalTime.MIN,
+   endTime: LocalTime = LocalTime.MAX,
 ): Arb<LocalTime> {
    val (durationInNanoSeconds, edgeCases) = getLocalDateArbParams(startTime, endTime)
    return arbitrary(edgeCases) {
