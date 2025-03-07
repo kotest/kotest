@@ -52,7 +52,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import kotlin.time.Duration.Companion.hours
 
-//@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxCondition::class)
 class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
