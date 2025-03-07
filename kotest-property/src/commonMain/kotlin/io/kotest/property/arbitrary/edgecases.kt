@@ -44,6 +44,21 @@ fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = object : Arb<A>() {
 }
 
 /**
+ * Returns a new [Arb] with the supplied edge cases added to existing edge cases.
+ */
+fun <A> Arb<A>.plusEdgecases(additionalEdgecases: List<A>): Arb<A> {
+   val originalEdgecases: List<A> = this.edgecases().toList()
+   return this.withEdgecases(originalEdgecases + additionalEdgecases)
+}
+//   object : Arb<A>() {
+//   override fun edgecase(rs: RandomSource): Sample<A>? =
+//      (this@plusEdgecases.edgecases() + edgecases).random(rs.random).asSample()
+//
+//   override fun sample(rs: RandomSource): Sample<A> = this@plusEdgecases.sample(rs)
+//   override val classifier: Classifier<out A>? = this@plusEdgecases.classifier
+//}
+
+/**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = this.withEdgecases(edgecases.toList())
