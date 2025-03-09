@@ -19,6 +19,7 @@ class PlusEdgecasesTest: StringSpec() {
           val additionalEdgecases = listOf(-42, 42)
           val newEdgecases = intArb.plusEdgecases(additionalEdgecases).edgecases().toList()
           newEdgecases.containsAll(edgecases) shouldBe true
+          edgecases.containsAll(additionalEdgecases) shouldBe false
           newEdgecases.containsAll(additionalEdgecases) shouldBe true
        }
    }
