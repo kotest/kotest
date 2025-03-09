@@ -10,10 +10,7 @@ import kotlin.math.exp
 
 infix fun <A : Any> A.shouldBeSameInstance(expected: A): A = also { it should beSameInstance(expected) }
 
-infix fun <A : Any> A.shouldNotBeSameInstance(expected: A): A {
-   this shouldNot beSameInstance(expected)
-   return this
-}
+infix fun <A : Any> A.shouldNotBeSameInstance(expected: A): A = also { it shouldNot beSameInstance(expected) }
 
 /**
  * Verifies that two values are the same using [equals].
