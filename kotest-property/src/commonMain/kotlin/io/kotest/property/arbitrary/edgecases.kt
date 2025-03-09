@@ -44,6 +44,14 @@ fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = object : Arb<A>() {
 }
 
 /**
+ * Returns a new [Arb] with the supplied edge cases added to existing edge cases.
+ */
+fun <A> Arb<A>.plusEdgecases(additionalEdgecases: List<A>): Arb<A> {
+   val originalEdgecases: List<A> = this.edgecases().toList()
+   return this.withEdgecases(originalEdgecases + additionalEdgecases)
+}
+
+/**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = this.withEdgecases(edgecases.toList())

@@ -952,6 +952,7 @@ public final class io/kotest/property/arbitrary/EdgecasesKt {
 	public static final fun edgecases (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;)Ljava/util/Set;
 	public static synthetic fun edgecases$default (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;ILjava/lang/Object;)Ljava/util/Set;
 	public static final fun modifyEdgecases (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;
+	public static final fun plusEdgecases (Lio/kotest/property/Arb;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun removeEdgecases (Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static final fun withEdgecases (Lio/kotest/property/Arb;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun withEdgecases (Lio/kotest/property/Arb;[Ljava/lang/Object;)Lio/kotest/property/Arb;
