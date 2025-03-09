@@ -95,6 +95,52 @@ fun Arb.Companion.localTime(): Arb<LocalTime> =
       LocalTime.of(it.random.nextInt(24), it.random.nextInt(60), it.random.nextInt(60))
    }
 
+private val nanoSecondsInOneDay = 24*60*60*1_000_000_000L
+
+/**
+ * Arberates a stream of random LocalTimes
+ *
+ * This generator creates randomly generated LocalTimes in the given range.
+ * @param startTime The minimum time to generate (inclusive). Default is 00:00:00.
+ * @param endTime The maximum time to generate (inclusive). Default is 23:59:59.999999999.
+ * If [startTime] is after [endTime], the generator will generate times between [endTime] and midnight,
+ * followed by times between midnight and [startTime].
+ *
+ * @see [localDateTime]
+ * @see [localDate]
+ */
+fun Arb.Companion.localTime(
+   startTime: LocalTime = LocalTime.MIN,
+   endTime: LocalTime = LocalTime.MAX,
+): Arb<LocalTime> {
+   val (durationInNanoSeconds, edgeCases) = getLocalDateArbParams(startTime, endTime)
+   return arbitrary(edgeCases) {
+      startTime.plus(it.random.nextLong(durationInNanoSeconds), ChronoUnit.NANOS)
+   }
+}
+
+internal fun getLocalDateArbParams(
+   startTime: LocalTime,
+   endTime: LocalTime,
+): LocalDateArbParams {
+   val durationFromMinToMax = minOf(startTime, endTime).until(maxOf(startTime, endTime), ChronoUnit.NANOS)
+   return if (startTime <= endTime)
+      LocalDateArbParams(
+         durationFromMinToMax,
+         listOf(startTime, endTime)
+      )
+   else
+      LocalDateArbParams(
+         nanoSecondsInOneDay - durationFromMinToMax,
+         listOf(LocalTime.MIN, LocalTime.MAX, startTime, endTime)
+      )
+}
+
+internal data class LocalDateArbParams(
+   val durationInNanoSeconds: Long,
+   val edgeCases: List<LocalTime>,
+)
+
 /**
  * Arberates a stream of random LocalDateTimes
  *
