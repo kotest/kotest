@@ -8,10 +8,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.math.exp
 
-infix fun <A : Any> A.shouldBeSameInstance(expected: A): A {
-   this should beSameInstance(expected)
-   return this
-}
+infix fun <A : Any> A.shouldBeSameInstance(expected: A): A = also { it should beSameInstance(expected) }
 
 infix fun <A : Any> A.shouldNotBeSameInstance(expected: A): A {
    this shouldNot beSameInstance(expected)
