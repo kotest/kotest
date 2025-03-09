@@ -94,11 +94,12 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
  * @see [shouldNotThrow]
  *
  */
-inline fun <T> shouldNotThrowAny(block: () -> T): T? {
+inline fun shouldNotThrowAny(block: () -> Unit) {
    assertionCounter.inc()
 
    val thrownException = try {
-      return block()
+      block()
+      return
    } catch (e: Throwable) {
       e
    }
@@ -109,7 +110,6 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T? {
          thrownException
       )
    )
-   return null
 }
 
 
