@@ -1,6 +1,9 @@
 package io.kotest.matchers
 
-internal interface MatcherResultWithError : MatcherResult {
+import io.kotest.common.KotestInternal
+
+@KotestInternal
+interface MatcherResultWithError : MatcherResult {
 
    val error: Throwable?
 
