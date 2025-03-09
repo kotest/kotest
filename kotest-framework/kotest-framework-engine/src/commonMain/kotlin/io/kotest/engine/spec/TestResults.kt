@@ -3,7 +3,6 @@ package io.kotest.engine.spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.isRootTest
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A mutable store of results, which can be queried to check if a test has already been run,
@@ -15,7 +14,8 @@ class TestResults {
 
    // the presence of a test case in this map indicates that the test has started
    // once the test completes, the result will no longer be null
-   private val results = ConcurrentHashMap<TestCase, TestResult?>()
+   // todo change to be thread safe on jvm
+   private val results = mutableMapOf<TestCase, TestResult?>()
 
    fun toMap(): Map<TestCase, TestResult> {
       @Suppress("UNCHECKED_CAST")

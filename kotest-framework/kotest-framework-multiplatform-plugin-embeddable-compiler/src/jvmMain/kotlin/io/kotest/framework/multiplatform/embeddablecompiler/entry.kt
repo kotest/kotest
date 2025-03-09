@@ -9,14 +9,18 @@ object EntryPoint {
 
    // the method invoked on TestEngineLauncher to start the tests
    // in JS we use promise() which ultimately calls into GlobalScope.promise on JS platforms
-   const val PromiseMethodName = "promise"
+   const val PROMISE_METHOD_NAME = "promise"
+
+   const val JS_ENTRY_POINT_NAME = "kotestTestEngine"
+
+   const val JsExportAnnotationClassName = "kotlin/js/JsExport"
 
    /**
     * the FQN for the class used to launch the MPP engine.
     *
     * This must be a string where packages are delimited by '/' and classes by '.', e.g. "kotlin/Map.Entry".
     */
-   const val TestEngineClassName = "io/kotest/engine/TestEngineLauncher"
+   const val TEST_ENGINE_CLASS_NAME = "io/kotest/engine/TestEngineLauncher"
 
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
@@ -28,7 +32,7 @@ object EntryPoint {
    const val WithTeamCityListenerMethodName = "withTeamCityListener"
 
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
-   const val WithJsMethodName = "withJs"
+   const val WITH_JS_METHOD_NAME = "withJs"
 
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
    const val WithWasmJsMethodName = "withWasmJs"

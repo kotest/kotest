@@ -1,7 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -21,7 +21,7 @@ class TestEngineListenerBuilderTest : FunSpec() {
             .builder()
             .withType(TestEngineListenerBuilder.ENHANCED)
             .build()
-            .shouldBeInstanceOf<EnhancedConsoleTestEngineListener>()
+            .shouldBeInstanceOf<ConsoleTestEngineListener>()
       }
    }
 }
