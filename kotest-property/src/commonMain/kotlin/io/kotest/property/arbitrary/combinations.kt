@@ -110,6 +110,16 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
 }
 
 /**
+ * Generates a random slice of the input list, including the empty list.
+ * The returned list has the same order as the input list.
+ */
+fun <A> Arb.Companion.slice(list: List<A>): Arb<List<A>> = arbitrary {
+   val startIndex = it.random.nextInt(0, list.size)
+   val size = it.random.nextInt(0, list.size + 1)
+   list.drop(startIndex).take(size)
+}
+
+/**
  * Uses the [Arb]s provided to randomly generate the next element.
  * The returned [Arb]'s edge cases contains the edge cases of the input [Arb]s.
  *

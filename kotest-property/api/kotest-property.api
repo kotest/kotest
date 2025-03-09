@@ -857,6 +857,7 @@ public final class io/kotest/property/arbitrary/CombinationsKt {
 	public static final fun frequency (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun frequencyArbs (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun shuffle (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
+	public static final fun slice (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun subsequence (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 }
 
@@ -1393,6 +1394,7 @@ public final class io/kotest/property/exhaustive/CollectionsKt {
 	public static final fun permutations (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;I)Lio/kotest/property/Exhaustive;
 	public static synthetic fun permutations$default (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;IILjava/lang/Object;)Lio/kotest/property/Exhaustive;
 	public static final fun powerSet (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;)Lio/kotest/property/Exhaustive;
+	public static final fun slices (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;)Lio/kotest/property/Exhaustive;
 }
 
 public final class io/kotest/property/exhaustive/ExhaustiveKt {
