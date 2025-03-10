@@ -13,7 +13,7 @@ infix fun <A : Any> A.shouldBeSameInstance(expected: A): A = also { it should be
 infix fun <A : Any> A.shouldNotBeSameInstance(expected: A): A = also { it shouldNot beSameInstance(expected) }
 
 /**
- * Verifies that two values are the same using [equals].
+ * Verifies that two values are the same using referencial equality aka ===.
  */
 fun <A> beSameInstance(expected: A): Matcher<A> = object : Matcher<A> {
    override fun test(value: A): MatcherResult {
