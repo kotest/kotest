@@ -125,6 +125,9 @@ include(
    ":kotest-extensions:kotest-extensions-koin",
    ":kotest-extensions:kotest-extensions-spring",
 
+   // adds support for the testcontainers framework - see more https://testcontainers.com
+   ":kotest-extensions:kotest-extensions-testcontainers",
+
    // allows overriding the .now() functionality on time classes
    ":kotest-extensions:kotest-extensions-now",
 
