@@ -125,3 +125,21 @@ context("...") {
   }
 }
 ```
+
+### Custom case naming
+
+If you wish or need to have data subtests named in a custom way, the easiest way to achieve it is by passing a `Map` to `withData`.
+The key will be used as the subtest name, and the value will be used as the actual `it` for the test.
+
+For example:
+
+```kotlin
+  withData(
+    mapOf( // all-whitespace strings make lousy test names
+      "empty" to "",
+      "blank" to "  ",
+    )
+  ) {
+    it.isBlank() shouldBe true
+  }
+```
