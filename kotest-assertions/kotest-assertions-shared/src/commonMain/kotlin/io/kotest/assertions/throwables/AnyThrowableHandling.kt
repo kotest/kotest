@@ -37,7 +37,25 @@ inline fun shouldThrowAnyUnit(block: () -> Unit) = shouldThrowAny(block)
  * @see [shouldNotThrowUnit]
  *
  */
-inline fun shouldNotThrowAnyUnit(block: () -> Unit) = shouldNotThrowAny(block)
+inline fun shouldNotThrowAnyUnit(block: () -> Unit) {
+   assertionCounter.inc()
+
+   val thrownException = try {
+      block()
+      null
+   } catch (e: Throwable) {
+      e
+   }
+
+   thrownException?.let {
+      errorCollector.collectOrThrow(
+         failure(
+            "No exception expected, but a ${thrownException::class.simpleName} was thrown with message: \"${thrownException.message}\".",
+            thrownException
+         )
+      )
+   }
+}
 
 /**
  * Verifies that a block of code throws any [Throwable]
@@ -94,7 +112,7 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
  * @see [shouldNotThrow]
  *
  */
-inline fun <T> shouldNotThrowAny(block: () -> T): T? {
+inline fun <T> shouldNotThrowAny(block: () -> T): T {
    assertionCounter.inc()
 
    val thrownException = try {
@@ -103,13 +121,10 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T? {
       e
    }
 
-   errorCollector.collectOrThrow(
-      failure(
-         "No exception expected, but a ${thrownException::class.simpleName} was thrown with message: \"${thrownException.message}\".",
-         thrownException
-      )
+   throw failure(
+      "No exception expected, but a ${thrownException::class.simpleName} was thrown with message: \"${thrownException.message}\".",
+      thrownException
    )
-   return null
 }
 
 
