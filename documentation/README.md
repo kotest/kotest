@@ -8,7 +8,7 @@ use `./cut-docs.sh` to automate steps 1-4
 3. Copy the contents of `./docs/` to the folder
 4. Copy `./sidebars.js` to `./verioned_sidebars/version-<RELEASED_VERSION>-sidebars.json` and remove `module.exports = ` from the start of the file
 5. Push/merge to master to update [kotest.io](https://kotest.io)
-6. A crawl of newly added docs will be trigger by [github action](/.github/workflows/crawl.yaml)
+6. A crawl of newly added docs will be triggered by [github action](/.github/workflows/crawl.yaml)
    * To manually initiate crawl go to [crawler.algolia.com](https://crawler.algolia.com/admin/crawlers?sort=status&order=ASC&limit=20)
    * search will be broken until this is triggered
 
