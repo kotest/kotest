@@ -1002,7 +1002,7 @@ The 4.0.0 release is a large release. With the project rename, the packages have
 
 Major changes:
 
-* The KotlinTest project is now multi-platform. This means most of the modules now require -jvm to be added if you are working server side JVM only. For example, `io.kotlintest:kotlintest-runner-junit5` is now `io.kotest:kotest-runner-junit5-jvm` taking into account package name changes and the platform suffix.
+* The KotlinTest project is now multiplatform. This means most of the modules now require -jvm to be added if you are working server side JVM only. For example, `io.kotlintest:kotlintest-runner-junit5` is now `io.kotest:kotest-runner-junit5-jvm` taking into account package name changes and the platform suffix.
 * The main assertions library is now `kotest-assertions-core` and many new assertions (matchers) have been added. This changelog won't list them all. It is simpler to view the [full list](assertions/matchers.md).
 * The property test library has moved to a new module `kotest-property` and been reworked to include many new features. The old property test classes are deprecated and will be removed in a future release.
 * Many new property test generators have been added. The full list is [here](proptest/gens.md).
@@ -1704,7 +1704,7 @@ Version 3.0.x - March 29 2018
 KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring,
 allure and junit-xml.
 
-The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta).
+The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multiplatform Kotlin is out of beta).
 When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build
 rather than the old `kotlintest` module which is now defunct. When upgrading, you might find that you need to update imports
 to some matchers.
