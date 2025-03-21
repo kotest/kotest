@@ -28,11 +28,6 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - :kotest-assertions:kotest-assertions-ktor:publishKotlinMultiplatformPublicationToDeployRepository
-               - :kotest-assertions:kotest-assertions-ktor:publishJvmPublicationToDeployRepositor
-               - :kotest-assertions:kotest-assertions-ktor:publishJsPublicationToDeployRepository
-               - :kotest-assertions:kotest-assertions-ktor:publishWasmJsPublicationToDeployRepository
-               - :kotest-assertions:kotest-assertions-ktor:publishKotestBomPublicationToDeployRepository
                - :kotest-assertions:kotest-assertions-ktor:publishLinuxX64PublicationToDeployRepository
                - :kotest-assertions:kotest-assertions-ktor:publishLinuxArm64PublicationToDeployRepository
                - :kotest-assertions:kotest-assertions-ktor:publishAndroidNativeX86PublicationToDeployRepository
