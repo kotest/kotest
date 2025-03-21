@@ -5,7 +5,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.retry
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.doubles.plusOrMinus
@@ -21,7 +21,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.forAll
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class OrNullTest : FunSpec({
 
    test("Arb.orNull() should add null values to those generated") {

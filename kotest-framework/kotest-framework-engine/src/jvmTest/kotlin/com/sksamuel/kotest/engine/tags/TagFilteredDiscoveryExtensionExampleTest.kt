@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Tags
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension
@@ -14,7 +14,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.booleans.shouldBeFalse
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
    companion object {
       val ext = TagExtension { TagExpression(emptySet(), setOf(NamedTag("SpecExcluded"))) }

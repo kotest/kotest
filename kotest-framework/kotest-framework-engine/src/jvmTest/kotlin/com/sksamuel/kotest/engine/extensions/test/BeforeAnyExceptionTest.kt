@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.test
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -104,7 +104,7 @@ private class WordSpecWithBeforeTestError : WordSpec({
    }
 })
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class BeforeAnyExceptionTest : WordSpec({
 
    var error: Throwable? = null

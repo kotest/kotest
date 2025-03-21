@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.assertions
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.AssertionMode
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class AssertionCounterFreeSpecTest : FreeSpec({
    assertions = AssertionMode.Error
    "container should not need to have an assertion" - {

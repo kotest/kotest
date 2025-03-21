@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
@@ -10,7 +10,7 @@ import io.kotest.property.exhaustive.flatMap
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.map
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class IntsTest : FunSpec({
    test("should return all filtered Ints") {
       Exhaustive.ints(0..10)

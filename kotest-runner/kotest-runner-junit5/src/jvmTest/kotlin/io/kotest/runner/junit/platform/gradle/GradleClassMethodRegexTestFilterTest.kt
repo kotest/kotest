@@ -1,14 +1,14 @@
 package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class GradleClassMethodRegexTestFilterTest : FunSpec({
 
    context("include classes") {

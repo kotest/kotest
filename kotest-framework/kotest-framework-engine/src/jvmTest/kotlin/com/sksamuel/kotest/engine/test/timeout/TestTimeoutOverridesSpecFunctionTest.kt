@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * Tests that the timeout in a test case should take precedence over the timeout at a spec level.
  */
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class TestTimeoutOverridesSpecFunctionTest : FunSpec() {
 
    override fun timeout(): Long = 1.milliseconds.inWholeMilliseconds

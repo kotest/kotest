@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.exhaustive
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class IterationsTest : ShouldSpec({
 
    should("calculate min iterations to be at least the minimum for an exhaustive") {

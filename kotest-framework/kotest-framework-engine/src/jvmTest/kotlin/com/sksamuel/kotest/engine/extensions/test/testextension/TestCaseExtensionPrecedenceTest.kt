@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.test.testextension
 
 import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -20,7 +20,7 @@ class TestCaseExtensionAppender(private val char: Char) : TestCaseExtension {
 }
 
 @Description("Tests the specification of precedence for TestCaseExtensions")
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class TestCaseExtensionPrecedenceTest : FunSpec() {
 
    override val extensions = listOf(TestCaseExtensionAppender('a'), TestCaseExtensionAppender('b'))
