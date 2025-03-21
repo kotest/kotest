@@ -28,9 +28,9 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - "publishIosX64PublicationToDeployRepository"
-               - "publishIosSimulatorArm64PublicationToDeployRepository"
-               - "publishIosArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishIosX64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishIosSimulatorArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishIosArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

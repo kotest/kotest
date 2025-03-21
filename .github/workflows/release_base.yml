@@ -28,17 +28,17 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - publishKotlinMultiplatformPublicationToDeployRepository
-               - publishJvmPublicationToDeployRepository
-               - publishJsPublicationToDeployRepository
-               - publishWasmJsPublicationToDeployRepository
-               - publishKotestBomPublicationToDeployRepository
-               - publishLinuxX64PublicationToDeployRepository
-               - publishLinuxArm64PublicationToDeployRepository
-               - publishAndroidNativeX86PublicationToDeployRepository
-               - publishAndroidNativeX64PublicationToDeployRepository
-               - publishAndroidNativeArm32PublicationToDeployRepository
-               - publishAndroidNativeArm64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishKotlinMultiplatformPublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishJvmPublicationToDeployRepositor
+               - :kotest-assertions:kotest-assertions-ktor:publishJsPublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishWasmJsPublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishKotestBomPublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishLinuxX64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishLinuxArm64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishAndroidNativeX86PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishAndroidNativeX64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishAndroidNativeArm32PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

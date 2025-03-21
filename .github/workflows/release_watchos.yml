@@ -28,11 +28,11 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - "publishWatchosArm32PublicationToDeployRepository"
-               - "publishWatchosArm64PublicationToDeployRepository"
-               - "publishWatchosX64PublicationToDeployRepository"
-               - "publishWatchosSimulatorArm64PublicationToDeployRepository"
-               - "publishWatchosDeviceArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishWatchosArm32PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishWatchosArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishWatchosX64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishWatchosSimulatorArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishWatchosDeviceArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

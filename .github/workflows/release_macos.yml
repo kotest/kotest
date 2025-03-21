@@ -28,8 +28,8 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - "publishMacosX64PublicationToDeployRepository"
-               - "publishMacosArm64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishMacosX64PublicationToDeployRepository"
+               - ":kotest-assertions:kotest-assertions-ktor:publishMacosArm64PublicationToDeployRepository"
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4

@@ -28,9 +28,9 @@ jobs:
          max-parallel: 1
          matrix:
             target:
-               - publishTvosX64PublicationToDeployRepository
-               - publishTvosArm64PublicationToDeployRepository
-               - publishTvosSimulatorArm64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishTvosX64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishTvosArm64PublicationToDeployRepository
+               - :kotest-assertions:kotest-assertions-ktor:publishTvosSimulatorArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v4
