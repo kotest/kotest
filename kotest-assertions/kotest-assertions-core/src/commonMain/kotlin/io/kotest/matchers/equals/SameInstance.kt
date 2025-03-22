@@ -21,7 +21,7 @@ fun <A> beSameInstance(expected: A): Matcher<A> = object : Matcher<A> {
       val differenceMessage =  {
          when {
             passed -> ""
-            value == expected -> "the instances were equal yet different."
+            value == expected -> "the instances were equal using equals but have different references"
             else -> getFailureWithTypeInformation(expected, value, "they were different: ").message ?: ""
          }
       }
