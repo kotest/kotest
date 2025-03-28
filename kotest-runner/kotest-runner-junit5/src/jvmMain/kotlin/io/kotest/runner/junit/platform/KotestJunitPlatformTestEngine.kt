@@ -49,6 +49,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
+      // we need to load this here as well so we can configure the formatter
+      // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
       val config = ProjectConfigLoader.load()
 
       val listener = ThreadSafeTestEngineListener(
@@ -66,7 +68,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
       TestEngineLauncher(listener)
          .addExtensions(root.extensions)
          .withClasses(root.classes)
-         .withProjectConfig(config)
          .launch()
    }
 
