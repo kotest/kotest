@@ -49,7 +49,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
-      val config = ProjectConfigLoader.detect()
+      val config = ProjectConfigLoader.load()
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(

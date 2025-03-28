@@ -8,10 +8,10 @@ import kotlin.reflect.full.isSubclassOf
 
 /**
  * On the JVM we can create a stack trace to get the line number.
- * Users can disable the source ref via the system property [KotestEngineProperties.disableSourceRef].
+ * Users can disable the source ref via the system property [KotestEngineProperties.DISABLE_SOURCE_REF].
  */
 internal actual fun sourceRef(): SourceRef {
-   if (sysprop(KotestEngineProperties.disableSourceRef, "false") == "true") return SourceRef.None
+   if (sysprop(KotestEngineProperties.DISABLE_SOURCE_REF, "false") == "true") return SourceRef.None
 
    val stack = Thread.currentThread().stackTrace
    if (stack.isEmpty()) return SourceRef.None

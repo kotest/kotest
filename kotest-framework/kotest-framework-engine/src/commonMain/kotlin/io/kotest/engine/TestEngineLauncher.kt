@@ -110,15 +110,15 @@ class TestEngineLauncher(
       )
    }
 
-   /**
-    * Sets a [AbstractProjectConfig] that was detected by reflection on the JVM.
-    * This is a no-op on non-JVM platforms.
-    */
-   @JVMOnly
-   fun withDetectedProjectConfig(): TestEngineLauncher {
-      val config = loadProjectConfigFromReflection()
-      return withProjectConfig(config)
-   }
+//   /**
+//    * Sets an [AbstractProjectConfig] that was detected by reflection on the JVM.
+//    * This is a no-op on non-JVM platforms.
+//    */
+//   @JVMOnly
+//   fun withReflectionProjectConfig(): TestEngineLauncher {
+//      val config = loadProjectConfigFromReflection()
+//      return withProjectConfig(config)
+//   }
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
