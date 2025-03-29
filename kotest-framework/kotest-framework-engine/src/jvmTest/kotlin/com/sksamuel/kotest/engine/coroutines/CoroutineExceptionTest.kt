@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * Tests that an exception in a coroutine is caught and reports the test as failed.
  */
+@EnabledIf(NotMacOnGithubCondition::class)
 @Isolate
 class CoroutineExceptionTest : FunSpec({
 

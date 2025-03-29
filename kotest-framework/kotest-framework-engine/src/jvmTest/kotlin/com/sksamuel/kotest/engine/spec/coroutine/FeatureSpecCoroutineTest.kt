@@ -5,12 +5,10 @@ import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 @EnabledIf(NotMacOnGithubCondition::class)
@@ -18,7 +16,6 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
 
    private var longOpCompleted = false
    private val count = AtomicInteger(0)
-   private val threadnames = ConcurrentHashMap.newKeySet<String>()
    private var listenerThread = ""
 
    override suspend fun beforeTest(testCase: TestCase) {
