@@ -3076,7 +3076,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun promise ()V
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withDetectedProjectConfig ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
@@ -3164,7 +3163,6 @@ public final class io/kotest/engine/config/Defaults {
 	public static final field COROUTINE_DEBUG_PROBES Z
 	public static final field COROUTINE_TEST_SCOPE Z
 	public static final field DISPLAY_FULL_TEST_PATH Z
-	public static final field DISPLAY_SPEC_IF_NO_ACTIVE_TESTS Z
 	public static final field DUMP_CONFIG Z
 	public static final field FAILFAST Z
 	public static final field FAIL_ON_EMPTY_TEST_SUITE Z
@@ -3184,7 +3182,6 @@ public final class io/kotest/engine/config/Defaults {
 	public final fun getDEFAULT_RETRIES ()Ljava/lang/Integer;
 	public final fun getDEFAULT_TIMEOUT-UwyO8pc ()J
 	public final fun getDUPLICATE_TEST_NAME_MODE ()Lio/kotest/core/names/DuplicateTestNameMode;
-	public final fun getDefaultRetryDelay-FghU774 ()Lkotlin/time/Duration;
 	public final fun getISOLATION_MODE ()Lio/kotest/core/spec/IsolationMode;
 	public final fun getLOG_LEVEL ()Lio/kotest/core/config/LogLevel$Off;
 	public final fun getSPEC_EXECUTION_MODE ()Lio/kotest/engine/concurrency/SpecExecutionMode$Sequential;
@@ -3205,62 +3202,10 @@ public final class io/kotest/engine/config/IncludeTestScopeAffixes : java/lang/E
 }
 
 public final class io/kotest/engine/config/KotestEngineProperties {
-	public static final field CONFIGURATION_CLASS_NAME Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/config/KotestEngineProperties;
 	public static final field INVOCATION_TIMEOUT Ljava/lang/String;
-	public static final field PROJECT_TIMEOUT Ljava/lang/String;
+	public static final field PROJECT_CONFIGURATION_FQN Ljava/lang/String;
 	public static final field TIMEOUT Ljava/lang/String;
-	public static final field allowMultilineTestName Ljava/lang/String;
-	public static final field assertionMode Ljava/lang/String;
-	public static final field coroutineDebugProbes Ljava/lang/String;
-	public static final field disableBangPrefix Ljava/lang/String;
-	public static final field disableSourceRef Ljava/lang/String;
-	public static final field disableTestNestedJarScanning Ljava/lang/String;
-	public static final field discoveryClasspathFallbackEnabled Ljava/lang/String;
-	public static final field displayFullTestPath Ljava/lang/String;
-	public static final field dumpConfig Ljava/lang/String;
-	public static final field duplicateTestNameMode Ljava/lang/String;
-	public static final field excludeTags Ljava/lang/String;
-	public static final field filterSpecs Ljava/lang/String;
-	public static final field filterTests Ljava/lang/String;
-	public static final field globalAssertSoftly Ljava/lang/String;
-	public static final field ignorePrivateClasses Ljava/lang/String;
-	public static final field includeTags Ljava/lang/String;
-	public static final field isolationMode Ljava/lang/String;
-	public static final field logLevel Ljava/lang/String;
-	public static final field propertiesFilename Ljava/lang/String;
-	public static final field tagExpression Ljava/lang/String;
-	public static final field tagInheritance Ljava/lang/String;
-	public static final field testNameAppendTags Ljava/lang/String;
-	public static final field testSeverity Ljava/lang/String;
-}
-
-public final class io/kotest/engine/config/NoopSystemPropertyConfiguration : io/kotest/engine/config/SystemPropertyConfiguration {
-	public static final field INSTANCE Lio/kotest/engine/config/NoopSystemPropertyConfiguration;
-	public fun allowMultilineTestName ()Ljava/lang/Boolean;
-	public fun assertionMode ()Lio/kotest/core/test/AssertionMode;
-	public fun coroutineDebugProbes ()Ljava/lang/Boolean;
-	public fun disableTestNestedJarScanning ()Ljava/lang/Boolean;
-	public fun discoveryClasspathScanningEnabled ()Ljava/lang/Boolean;
-	public fun displayFullTestPath ()Ljava/lang/Boolean;
-	public fun dumpConfig ()Ljava/lang/Boolean;
-	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
-	public fun globalAssertSoftly ()Ljava/lang/Boolean;
-	public fun ignorePrivateClasses ()Ljava/lang/Boolean;
-	public fun invocationTimeout-FghU774 ()Lkotlin/time/Duration;
-	public fun isolationMode ()Lio/kotest/core/spec/IsolationMode;
-	public fun logLevel ()Lio/kotest/core/config/LogLevel;
-	public fun minimumRuntimeTestCaseSeverityLevel ()Lio/kotest/core/test/TestCaseSeverityLevel;
-	public fun projectTimeout-FghU774 ()Lkotlin/time/Duration;
-	public fun tagInheritance ()Ljava/lang/Boolean;
-	public fun testNameAppendTags ()Ljava/lang/Boolean;
-	public fun timeout-FghU774 ()Lkotlin/time/Duration;
-}
-
-public final class io/kotest/engine/config/ProjectConfigLoader {
-	public static final field DEFAULT_CONFIG_FQN Ljava/lang/String;
-	public static final field INSTANCE Lio/kotest/engine/config/ProjectConfigLoader;
-	public final fun detect ()Lio/kotest/core/config/AbstractProjectConfig;
 }
 
 public final class io/kotest/engine/config/ProjectConfigResolver {
@@ -3325,8 +3270,6 @@ public abstract interface class io/kotest/engine/config/SystemPropertyConfigurat
 	public abstract fun allowMultilineTestName ()Ljava/lang/Boolean;
 	public abstract fun assertionMode ()Lio/kotest/core/test/AssertionMode;
 	public abstract fun coroutineDebugProbes ()Ljava/lang/Boolean;
-	public abstract fun disableTestNestedJarScanning ()Ljava/lang/Boolean;
-	public abstract fun discoveryClasspathScanningEnabled ()Ljava/lang/Boolean;
 	public abstract fun displayFullTestPath ()Ljava/lang/Boolean;
 	public abstract fun dumpConfig ()Ljava/lang/Boolean;
 	public abstract fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
@@ -3550,11 +3493,6 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 	public final fun getTimeout-UwyO8pc ()J
 }
 
-public final class io/kotest/engine/interceptors/SystemPropertiesEngineInterceptor : io/kotest/engine/interceptors/EngineInterceptor {
-	public static final field INSTANCE Lio/kotest/engine/interceptors/SystemPropertiesEngineInterceptor;
-	public fun intercept (Lio/kotest/engine/interceptors/EngineContext;Lio/kotest/engine/interceptors/NextEngineInterceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field CANDIDATES Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
@@ -3569,29 +3507,6 @@ public final class io/kotest/engine/launcher/LauncherArgs {
 
 public final class io/kotest/engine/launcher/MainKt {
 	public static final fun main ([Ljava/lang/String;)V
-}
-
-public final class io/kotest/engine/launcher/TestEngineLauncherBuilder {
-	public static final field Companion Lio/kotest/engine/launcher/TestEngineLauncherBuilder$Companion;
-	public fun <init> (Ljava/util/List;ZLjava/util/List;)V
-	public final fun addListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
-	public final fun build ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Z
-	public final fun component3 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;ZLjava/util/List;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
-	public static synthetic fun copy$default (Lio/kotest/engine/launcher/TestEngineLauncherBuilder;Ljava/util/List;ZLjava/util/List;ILjava/lang/Object;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getClasses ()Ljava/util/List;
-	public final fun getListeners ()Ljava/util/List;
-	public final fun getLogging ()Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
-}
-
-public final class io/kotest/engine/launcher/TestEngineLauncherBuilder$Companion {
-	public final fun builder ()Lio/kotest/engine/launcher/TestEngineLauncherBuilder;
 }
 
 public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
@@ -3657,6 +3572,7 @@ public final class io/kotest/engine/listener/CollectingTestEngineListener$TestCa
 
 public final class io/kotest/engine/listener/CompositeTestEngineListener : io/kotest/engine/listener/TestEngineListener {
 	public fun <init> (Ljava/util/List;)V
+	public fun <init> ([Lio/kotest/engine/listener/TestEngineListener;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

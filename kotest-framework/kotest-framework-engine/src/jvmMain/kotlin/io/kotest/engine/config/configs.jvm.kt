@@ -10,4 +10,4 @@ internal actual fun loadPlatformDefaultExtensions(): List<Extension> = listOf(Sy
 
 internal actual fun loadPackageConfigs(spec: Spec): List<AbstractPackageConfig> = PackageConfigLoader.configs(spec)
 
-internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = ProjectConfigLoader.detect()
+internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = ProjectConfigLoader.load()

@@ -2,7 +2,6 @@
 
 package io.kotest.engine
 
-import io.kotest.common.JVMOnly
 import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.config.AbstractProjectConfig
@@ -10,7 +9,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.config.loadProjectConfigFromReflection
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
@@ -110,15 +108,15 @@ class TestEngineLauncher(
       )
    }
 
-   /**
-    * Sets a [AbstractProjectConfig] that was detected by reflection on the JVM.
-    * This is a no-op on non-JVM platforms.
-    */
-   @JVMOnly
-   fun withDetectedProjectConfig(): TestEngineLauncher {
-      val config = loadProjectConfigFromReflection()
-      return withProjectConfig(config)
-   }
+//   /**
+//    * Sets an [AbstractProjectConfig] that was detected by reflection on the JVM.
+//    * This is a no-op on non-JVM platforms.
+//    */
+//   @JVMOnly
+//   fun withReflectionProjectConfig(): TestEngineLauncher {
+//      val config = loadProjectConfigFromReflection()
+//      return withProjectConfig(config)
+//   }
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
@@ -172,9 +170,6 @@ class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
-      // if config was not set, we'll try to load from reflection
-      val resolvedConfig = config ?: loadProjectConfigFromReflection()
-
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -182,7 +177,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         projectConfig = resolvedConfig,
+         projectConfig = config,
          tagExpression,
          platform,
          registry,

@@ -6,7 +6,6 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId
@@ -18,13 +17,6 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 @Isolate
 @EnabledIf(NotMacOnGithubCondition::class)
 class DiscoveryTestWithoutSelectors : FunSpec({
-
-   aroundTest { (testCase, execute) ->
-      check(System.setProperty(KotestEngineProperties.discoveryClasspathFallbackEnabled, "true") == null)
-      val result = execute(testCase)
-      System.clearProperty(KotestEngineProperties.discoveryClasspathFallbackEnabled)
-      result
-   }
 
    test("discovery should be skipped if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
