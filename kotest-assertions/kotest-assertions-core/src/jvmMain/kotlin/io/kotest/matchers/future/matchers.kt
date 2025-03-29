@@ -15,11 +15,14 @@ fun <T> completedExceptionally() = object : Matcher<CompletableFuture<T>> {
       MatcherResult(
          value.isCompletedExceptionally,
          { "Future should be completed exceptionally" },
-         {
-            "Future should not be completed exceptionally"
-         })
+         { errorMessageForFailedFuture(value) })
 }
 
+internal fun errorMessageForFailedFuture(failedFuture: CompletableFuture<*>): String {
+   val exception = failedFuture.runCatching { get() }.exceptionOrNull()
+      ?: error("Future completed exceptionally, but get() did not throw an exception")
+   return "Future should not be completed exceptionally, but it failed with ${exception.cause}"
+}
 
 fun <T> CompletableFuture<T>.shouldBeCompleted() = this shouldBe completed<T>()
 fun <T> CompletableFuture<T>.shouldNotBeCompleted() = this shouldNotBe completed<T>()
