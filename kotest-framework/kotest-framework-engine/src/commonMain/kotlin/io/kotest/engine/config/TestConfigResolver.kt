@@ -22,11 +22,14 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * This class handles settings that can be set at the test level, such as retry count, or timeouts.
  *
+ * For project level settings, see [ProjectConfigResolver].
+ * For spec level settings, see [SpecConfigResolver].
+ *
  * Order of precedence for each possible setting from highest priority to lowest:
  *
  * - individual test level settings set on the test definition itself
  * - spec level individual test settings
- * - spec level defaults from setting [io.kotest.core.TestConfiguration.defaultTestConfig]
+ * - spec level defaults from setting [io.kotest.core.spec.Spec.defaultTestConfig]
  * - package level defaults from [io.kotest.core.config.AbstractPackageConfig]
  * - project level defaults from [io.kotest.core.config.AbstractProjectConfig]
  * - system property overrides

@@ -19,7 +19,8 @@ import io.kotest.engine.extensions.ExtensionRegistry
  * This class handles settings that should only be configured at the spec level,
  * such as test execution order, or test ordering.
  *
- * For project level settings, see [io.kotest.engine.config.ProjectConfigResolver].
+ * For project level settings, see [ProjectConfigResolver].
+ * For test level settings, see [TestConfigResolver].
  *
  *  Order of precedence for each setting from highest priority to lowest:
  *
