@@ -21,6 +21,10 @@ class BooleanMatchersTest : FreeSpec() {
          shouldThrow<AssertionError> { false.shouldBeTrue() }
       }
 
+      "Boolean shouldBeTrue should fail for null" {
+         shouldThrow<AssertionError> { null.shouldBeTrue() }
+      }
+
       "Boolean shouldBeFalse should not fail for false booleans" {
          false.shouldBeFalse()
          (3 + 3 == 42).shouldBeFalse()
@@ -28,6 +32,10 @@ class BooleanMatchersTest : FreeSpec() {
 
       "Boolean shouldBeFalse should fail for true booleans" {
          shouldThrow<AssertionError> { true.shouldBeFalse() }
+      }
+
+      "Boolean shouldBeFalse should fail for null" {
+         shouldThrow<AssertionError> { null.shouldBeFalse() }
       }
 
       "Boolean shouldNotBeFalse should not fail for true booleans" {
@@ -45,6 +53,10 @@ class BooleanMatchersTest : FreeSpec() {
          }.message shouldBe "false should not equal false"
       }
 
+      "Boolean shouldNotBeFalse should not fail for null" {
+         null.shouldNotBeFalse()
+      }
+
       "Boolean shouldNotBeTrue should not fail for false booleans" {
          false.shouldNotBeTrue()
          (3 + 3 == 7).shouldNotBeTrue()
@@ -58,6 +70,10 @@ class BooleanMatchersTest : FreeSpec() {
          shouldThrow<AssertionError> {
             (3 + 3 == 6).shouldNotBeTrue()
          }.message shouldBe "true should not equal true"
+      }
+
+      "Boolean shouldNotBeTrue should not fail for null" {
+         null.shouldNotBeTrue()
       }
    }
 }
