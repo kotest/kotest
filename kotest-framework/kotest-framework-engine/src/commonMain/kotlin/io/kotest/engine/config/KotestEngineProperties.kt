@@ -2,30 +2,34 @@ package io.kotest.engine.config
 
 object KotestEngineProperties {
 
-   const val dumpConfig = "kotest.framework.dump.config"
+   internal const val DUMP_CONFIG = "kotest.framework.dump.config"
 
    /**
     * Sets the tag expression that determines included/excluded tags.
     */
-   const val tagExpression = "kotest.tags"
+   internal const val TAG_EXPRESSION = "kotest.tags"
 
-   const val excludeTags = "kotest.tags.exclude"
+   internal const val excludeTags = "kotest.tags.exclude"
 
-   const val includeTags = "kotest.tags.include"
+   internal const val includeTags = "kotest.tags.include"
 
    /**
     * A regex expression that is used to match the test [io.kotest.core.descriptors.Descriptor]'s path
     * to determine if a test should be included in the test plan or not.
     */
-   const val filterTests = "kotest.filter.tests"
+   internal const val filterTests = "kotest.filter.tests"
 
    /**
     * A regex expression that is used to match the [io.kotest.mpp.bestName] of a class
     * to determine if a spec should be included in the test plan or not.
     */
-   const val filterSpecs = "kotest.filter.specs"
+   internal const val filterSpecs = "kotest.filter.specs"
 
-   const val propertiesFilename = "kotest.properties.filename"
+   /**
+    * Specifies the name of a system property that is used to define a properties file to load, and
+    * each property in that file is then in turn applied as a system property.
+    */
+   internal const val PROPERTIES_FILENAME = "kotest.properties.filename"
 
    /**
     * If set to true, then source ref's will not be created for test cases.
@@ -33,22 +37,22 @@ object KotestEngineProperties {
     * generate line numbers) but will also reduce functionality in the intellij plugin
     * (by limiting the ability to drill directly into the test inside a file).
     */
-   const val disableSourceRef = "kotest.framework.sourceref.disable"
+   internal const val DISABLE_SOURCE_REF = "kotest.framework.sourceref.disable"
 
    /**
     * If set to true, disables the use of '!' as a prefix to disable tests.
     */
-   const val disableBangPrefix = "kotest.bang.disable"
+   internal const val DISABLE_BANG_PREFIX = "kotest.bang.disable"
 
    /**
     * The default [io.kotest.core.spec.IsolationMode] for specs.
     */
-   const val isolationMode = "kotest.framework.isolation.mode"
+   internal const val ISOLATION_MODE = "kotest.framework.isolation.mode"
 
    /**
     * The default [io.kotest.core.test.AssertionMode] for tests.
     */
-   const val assertionMode = "kotest.framework.assertion.mode"
+   internal const val ASSERTION_MODE = "kotest.framework.assertion.mode"
 
    /**
     * The default timeout for test cases.
@@ -58,63 +62,54 @@ object KotestEngineProperties {
    /**
     * The default timeout for the entire test suite.
     */
-   const val PROJECT_TIMEOUT = "kotest.framework.projecttimeout"
+   internal const val PROJECT_TIMEOUT = "kotest.framework.projecttimeout"
 
-   const val logLevel = "kotest.framework.loglevel"
+   internal const val logLevel = "kotest.framework.loglevel"
 
    /**
     * The default timeout for each invocation of a test case.
     */
    const val INVOCATION_TIMEOUT = "kotest.framework.invocation.timeout"
 
-   /**
-    * Use classpath scanning for test discovery if no selectors are present (defaults to "false").
-    * - Do not enable this when using Gradle with `maxParallelForks > 1`. Gradle might inadvertently invoke one
-    *   Kotest instance with an empty class list, resulting in duplicate test runs (#3973).
-    */
-   const val discoveryClasspathFallbackEnabled = "kotest.framework.discovery.classpath.fallback.enabled"
-
-   const val disableTestNestedJarScanning = "kotest.framework.disable.test.nested.jar.scanning"
-
-   const val displayFullTestPath = "kotest.framework.testname.display.full.path"
+   internal const val DISPLAY_FULL_TEST_PATH = "kotest.framework.testname.display.full.path"
 
    /**
     * Specify a fully qualified name to use for project config.
     * This class will be instantiated via reflection.
     */
-   const val CONFIGURATION_CLASS_NAME = "kotest.framework.config.fqn"
+   const val PROJECT_CONFIGURATION_FQN = "kotest.framework.config.fqn"
 
-   const val allowMultilineTestName = "kotest.framework.testname.multiline"
+   internal const val ALLOW_MULTILINE_TEST_NAME = "kotest.framework.testname.multiline"
 
    /**
     *  If set -> filter testCases by this severity level and higher, else running all
     */
-   const val testSeverity = "kotest.framework.test.severity"
+   internal const val TEST_SEVERITY = "kotest.framework.test.severity"
 
    /**
     * Enable assert softly globally.
     * */
-   const val globalAssertSoftly = "kotest.framework.assertion.globalassertsoftly"
+   internal const val GLOBAL_ASSERT_SOFTLY = "kotest.framework.assertion.globalassertsoftly"
 
-   const val coroutineDebugProbes = "kotest.framework.coroutine.debug.probes"
+   internal const val COROUTINE_DEBUG_PROBES = "kotest.framework.coroutine.debug.probes"
 
    /**
     * Appends all tags associated with a test case to its display name.
     * */
-   const val testNameAppendTags = "kotest.framework.testname.append.tags"
+   internal const val TEST_NAME_APPEND_TAGS = "kotest.framework.testname.append.tags"
 
    /**
     * Controls whether classes will inherit tags from their supertypes. Default false
     */
-   const val tagInheritance = "kotest.framework.tag.inheritance"
+   internal const val TAG_INHERITANCE = "kotest.framework.tag.inheritance"
 
    /**
     * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
     */
-   const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
+   internal const val DUPLICATE_TEST_NAME_MODE = "kotest.framework.testname.duplicate.mode"
 
    /**
     * If set to true, then private classes will not be included in the test plan.
     */
-   const val ignorePrivateClasses = "kotest.framework.discovery.ignore.private.classes"
+   internal const val IGNORE_PRIVATE_CLASSES = "kotest.framework.discovery.ignore.private.classes"
 }
