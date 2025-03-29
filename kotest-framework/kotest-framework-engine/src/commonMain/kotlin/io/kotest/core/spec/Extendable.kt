@@ -6,7 +6,7 @@ import kotlin.js.JsName
 abstract class Extendable {
 
    // the registered extensions
-   @JsName("extensions_js")
+   @JsName("_extensions_js")
    private var _extensions = emptyList<Extension>()
 
    /**
