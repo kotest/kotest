@@ -57,7 +57,7 @@ object KotestEngineProperties {
    /**
     * The default timeout for test cases.
     */
-   internal const val TIMEOUT = "kotest.framework.timeout"
+   const val TIMEOUT = "kotest.framework.timeout"
 
    /**
     * The default timeout for the entire test suite.
@@ -69,7 +69,7 @@ object KotestEngineProperties {
    /**
     * The default timeout for each invocation of a test case.
     */
-   internal const val INVOCATION_TIMEOUT = "kotest.framework.invocation.timeout"
+   const val INVOCATION_TIMEOUT = "kotest.framework.invocation.timeout"
 
    internal const val DISPLAY_FULL_TEST_PATH = "kotest.framework.testname.display.full.path"
 
