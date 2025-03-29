@@ -31,7 +31,7 @@ internal object KotestPropertiesLoader {
     * to be overriden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
-      syspropOrEnv(KotestEngineProperties.propertiesFilename) ?: DEFAULT_KOTEST_PROPERTIES_FILENAME
+      syspropOrEnv(KotestEngineProperties.PROPERTIES_FILENAME) ?: DEFAULT_KOTEST_PROPERTIES_FILENAME
 
    /**
     * Loads system props from the given [filename].

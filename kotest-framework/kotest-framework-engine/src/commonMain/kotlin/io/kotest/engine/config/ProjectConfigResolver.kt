@@ -44,12 +44,12 @@ class ProjectConfigResolver(
     */
    fun minimumRuntimeTestSeverityLevel(): TestCaseSeverityLevel? {
       return config?.minimumRuntimeTestCaseSeverityLevel
-         ?: systemPropertyConfiguration.minimumRuntimeTestCaseSeverityLevel()
+         ?: systemPropertyConfiguration?.minimumRuntimeTestCaseSeverityLevel()
    }
 
    fun logLevel(): LogLevel {
       return config?.logLevel
-         ?: systemPropertyConfiguration.logLevel()
+         ?: systemPropertyConfiguration?.logLevel()
          ?: Defaults.LOG_LEVEL
    }
 
@@ -59,7 +59,7 @@ class ProjectConfigResolver(
 
    fun tagInheritance(): Boolean {
       return config?.tagInheritance
-         ?: systemPropertyConfiguration.tagInheritance()
+         ?: systemPropertyConfiguration?.tagInheritance()
          ?: Defaults.TAG_INHERITANCE
    }
 
@@ -69,7 +69,7 @@ class ProjectConfigResolver(
     */
    fun ignorePrivateClasses(): Boolean {
       return config?.ignorePrivateClasses
-         ?: systemPropertyConfiguration.ignorePrivateClasses()
+         ?: systemPropertyConfiguration?.ignorePrivateClasses()
          ?: Defaults.IGNORE_PRIVATE_CLASSES
    }
 
@@ -172,12 +172,12 @@ class ProjectConfigResolver(
 
    fun projectTimeout(): Duration? {
       return config?.projectTimeout
-         ?: systemPropertyConfiguration.projectTimeout()
+         ?: systemPropertyConfiguration?.projectTimeout()
    }
 
    fun dumpConfig(): Boolean {
       return config?.dumpConfig
-         ?: systemPropertyConfiguration.dumpConfig()
+         ?: systemPropertyConfiguration?.dumpConfig()
          ?: Defaults.DUMP_CONFIG
    }
 }

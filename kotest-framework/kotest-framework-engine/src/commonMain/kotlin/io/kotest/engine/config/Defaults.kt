@@ -10,7 +10,6 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 object Defaults {
@@ -19,9 +18,6 @@ object Defaults {
 
    // by default, we do not retry tests
    val DEFAULT_RETRIES: Int? = null
-
-   // by default, tests are retried immediately
-   val defaultRetryDelay: Duration? = null
 
    const val INVOCATIONS = 1
 
@@ -50,8 +46,6 @@ object Defaults {
    const val COROUTINE_TEST_SCOPE = false
 
    const val BLOCKING_TEST = false
-
-   const val DISPLAY_SPEC_IF_NO_ACTIVE_TESTS = true
 
    const val FAIL_ON_EMPTY_TEST_SUITE = false
 

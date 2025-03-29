@@ -9,7 +9,7 @@ import io.kotest.matchers.result.shouldBeFailure
 class InvalidDuplicateNameModeSystemPropertyTest : FunSpec() {
    init {
       test("invalid duplicate name mode value should error") {
-         withSystemProperty(KotestEngineProperties.duplicateTestNameMode, "qwerty") {
+         withSystemProperty(KotestEngineProperties.DUPLICATE_TEST_NAME_MODE, "qwerty") {
             runCatching { SpecConfigResolver().duplicateTestNameMode(this@InvalidDuplicateNameModeSystemPropertyTest) }.shouldBeFailure()
          }
       }

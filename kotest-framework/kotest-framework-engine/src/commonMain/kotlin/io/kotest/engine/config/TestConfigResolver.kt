@@ -76,7 +76,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.assertSoftly
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertSoftly }
          ?: projectConfig?.globalAssertSoftly
-         ?: systemPropertyConfiguration.globalAssertSoftly()
+         ?: systemPropertyConfiguration?.globalAssertSoftly()
          ?: Defaults.GLOBAL_ASSERT_SOFTLY
    }
 
@@ -94,7 +94,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.assertionMode
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.assertionMode }
          ?: projectConfig?.assertionMode
-         ?: systemPropertyConfiguration.assertionMode()
+         ?: systemPropertyConfiguration?.assertionMode()
          ?: Defaults.ASSERTION_MODE
    }
 
@@ -104,7 +104,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.coroutineDebugProbes
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.coroutineDebugProbes }
          ?: projectConfig?.coroutineDebugProbes
-         ?: systemPropertyConfiguration.coroutineDebugProbes()
+         ?: systemPropertyConfiguration?.coroutineDebugProbes()
          ?: Defaults.COROUTINE_DEBUG_PROBES
    }
 
@@ -131,7 +131,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.timeout
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.timeout }
          ?: projectConfig?.timeout
-         ?: systemPropertyConfiguration.timeout()
+         ?: systemPropertyConfiguration?.timeout()
          ?: Defaults.DEFAULT_TIMEOUT
    }
 
@@ -142,7 +142,7 @@ class TestConfigResolver(
          ?: testCase.spec.defaultTestConfig?.invocationTimeout
          ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.invocationTimeout }
          ?: projectConfig?.invocationTimeout
-         ?: systemPropertyConfiguration.invocationTimeout()
+         ?: systemPropertyConfiguration?.invocationTimeout()
          ?: Defaults.DEFAULT_INVOCATION_TIMEOUT_MILLIS
    }
 
