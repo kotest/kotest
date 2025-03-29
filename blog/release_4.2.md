@@ -32,7 +32,7 @@ A new [assertions module](https://search.maven.org/artifact/io.kotest/kotest-ass
 which contains matchers for the new [Kotlinx Datetime library](https://github.com/Kotlin/kotlinx-datetime).
 Since the datetime library has an _incubating_ status, this assertions module may require breaking changes in the future if the date/time API mandates it.
 
-This assertions module is multi platform and is released for the JVM, JS, Linux, Mac and Windows targets.
+This assertions module is multiplatform and is released for the JVM, JS, Linux, Mac and Windows targets.
 
 An example assertion is checking that a date time has a given hour.
 
