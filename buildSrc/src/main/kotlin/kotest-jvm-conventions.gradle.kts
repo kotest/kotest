@@ -36,7 +36,7 @@ fun VersionCatalog.findJvmVersion(name: String): Provider<JavaLanguageVersion> =
 /** The minimum Java version that Kotest supports. */
 val jvmMinTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMinTarget")
 
-/** The minimum Java version that Kotest supports. */
+/** The maximum Java version that Kotest supports. */
 val jvmMaxTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMaxTarget")
 
 /** The Java version used for compilation. */
