@@ -3,7 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -27,7 +27,7 @@ import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class JUnitTestEngineListenerTest : FunSpec({
 
    val root = createEngineDescriptor(

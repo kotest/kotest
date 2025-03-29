@@ -1,14 +1,14 @@
 package io.kotest.permutations.constraints
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
 import io.kotest.permutations.permutations
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ConstraintsTest : FunSpec() {
    init {
       test("iterations should be used by default") {

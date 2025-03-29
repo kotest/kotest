@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.seed
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
@@ -14,7 +14,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.deleteRecursively
 import kotlin.io.path.readText
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class PersistSeedsTest : FunSpec({
 
    fun clearSeedDirectory() {

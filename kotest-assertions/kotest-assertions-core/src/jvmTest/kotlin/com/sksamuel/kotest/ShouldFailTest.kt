@@ -3,12 +3,12 @@ package com.sksamuel.kotest
 import com.sksamuel.kotest.throwablehandling.catchThrowable
 import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ShouldFailTest : FreeSpec({
 
    "shouldFail" - {

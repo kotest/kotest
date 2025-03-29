@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.data
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
 import kotlinx.coroutines.delay
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class SuspendTest : FunSpec({
 
    test("forAll1 should support suspend functions") {

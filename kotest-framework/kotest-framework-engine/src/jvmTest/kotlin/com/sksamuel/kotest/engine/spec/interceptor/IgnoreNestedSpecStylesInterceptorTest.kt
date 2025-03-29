@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -15,7 +15,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class IgnoreNestedSpecStylesInterceptorTest : FunSpec({
    test("IgnoreNestedSpecStylesInterceptor should skip any nested spec style") {
 

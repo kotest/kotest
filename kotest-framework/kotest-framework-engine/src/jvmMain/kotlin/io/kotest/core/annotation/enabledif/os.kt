@@ -29,3 +29,8 @@ class WindowsCondition : EnabledCondition {
 class NotWindowsCondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean = !WindowsCondition().enabled(kclass)
 }
+
+class NotMacOnGithubCondition : EnabledCondition {
+   override fun enabled(kclass: KClass<out Spec>): Boolean =
+      !(osName().contains("mac") && System.getenv("GITHUB_ACTION") != null)
+}

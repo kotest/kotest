@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.coroutine
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class FeatureSpecCoroutineTest : FeatureSpec() {
 
    private var longOpCompleted = false

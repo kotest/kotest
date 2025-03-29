@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
@@ -16,7 +16,7 @@ import java.nio.file.Paths
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class FunSpecTest : FunSpec() {
 
    var count = 0

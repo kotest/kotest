@@ -6,12 +6,12 @@ import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ContainJsonKeyValueTest : StringSpec({
    @Language("JSON")
    val json = """

@@ -3,7 +3,7 @@ package io.kotest.extensions.blockhound
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +19,7 @@ private suspend fun blockInNonBlockingContext() {
    }
 }
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class BlockHoundCaseTest : FunSpec({
    test("detects for test case").config(extensions = listOf(BlockHound())) {
       shouldThrow<BlockingOperationError> { blockInNonBlockingContext() }

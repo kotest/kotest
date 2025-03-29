@@ -5,7 +5,7 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -20,7 +20,7 @@ import java.io.FileNotFoundException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class TeamCityTestEngineListenerTest : FunSpec() {
 
    init {

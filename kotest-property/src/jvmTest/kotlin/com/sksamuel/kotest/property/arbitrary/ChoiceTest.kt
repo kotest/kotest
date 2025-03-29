@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.comparables.beGreaterThan
@@ -19,7 +19,7 @@ import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.take
 import io.kotest.property.forAll
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ChoiceTest : WordSpec({
 
    "Arb.choice" should {

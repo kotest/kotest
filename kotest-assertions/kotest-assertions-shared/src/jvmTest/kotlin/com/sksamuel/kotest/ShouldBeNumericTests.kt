@@ -2,12 +2,12 @@ package com.sksamuel.kotest
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import java.math.BigInteger
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ShouldBeNumericTests : WordSpec({
    "should be" should {
       "support combinations of numerics" {

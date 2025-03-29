@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledCondition
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.Spec
@@ -19,7 +19,7 @@ import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {

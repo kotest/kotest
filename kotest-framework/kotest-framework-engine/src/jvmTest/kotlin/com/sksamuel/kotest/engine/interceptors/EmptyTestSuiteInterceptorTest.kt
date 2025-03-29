@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -17,7 +17,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlin.time.Duration
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class EmptyTestSuiteInterceptorTest : FunSpec() {
    init {
 
