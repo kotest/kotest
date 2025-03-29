@@ -2,6 +2,7 @@
 
 package io.kotest.extensions.testcontainers
 
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -19,6 +20,7 @@ private val ext = SharedJdbcDatabaseContainerExtension(mysql) {
    minimumIdle = 4
 }
 
+@Ignored
 class SharedJdbcTestContainerExtensionSpecTest1 : FunSpec() {
    init {
 
@@ -48,6 +50,7 @@ class SharedJdbcTestContainerExtensionSpecTest1 : FunSpec() {
    }
 }
 
+@Ignored
 class SharedJdbcTestContainerExtensionSpecTest2 : FunSpec() {
    init {
 

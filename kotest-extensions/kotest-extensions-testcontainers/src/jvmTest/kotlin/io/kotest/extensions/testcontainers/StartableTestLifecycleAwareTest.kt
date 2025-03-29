@@ -8,7 +8,7 @@ class StartableTestLifecycleAwareTest : StringSpec({
    val startableTestLifecycleAwareForPerTest = StartableTestLifecycleAware()
    val startableTestLifecycleAwareForPerSpec = StartableTestLifecycleAware()
 
-   listeners(startableTestLifecycleAwareForPerTest.perTest(), startableTestLifecycleAwareForPerSpec.perSpec())
+   extensions(startableTestLifecycleAwareForPerTest.perTest(), startableTestLifecycleAwareForPerSpec.perSpec())
 
    "beforeTestCount for first test should be one" {
       startableTestLifecycleAwareForPerTest.testDescriptions shouldHaveSize 1

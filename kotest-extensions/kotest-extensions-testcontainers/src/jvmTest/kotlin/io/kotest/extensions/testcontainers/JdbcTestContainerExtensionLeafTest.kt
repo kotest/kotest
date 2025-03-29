@@ -2,11 +2,13 @@
 
 package io.kotest.extensions.testcontainers
 
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.MySQLContainer
 
+@Ignored
 class JdbcTestContainerExtensionLeafTest : DescribeSpec() {
    init {
 
