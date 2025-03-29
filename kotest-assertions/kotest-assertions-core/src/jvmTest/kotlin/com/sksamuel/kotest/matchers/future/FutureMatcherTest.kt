@@ -114,4 +114,13 @@ class FutureMatcherTest : StringSpec({
 
       completableFuture shouldNotCompleteExceptionallyWith RuntimeException("Bang Bang")
    }
+   "test error message for shouldNotBeCompletedExceptionally when completable future completes with exception" {
+      val completableFuture = CompletableFuture<Int>()
+      val exception = RuntimeException("Bruh", RuntimeException("Another bruh"))
+      completableFuture.completeExceptionally(exception)
+
+      shouldThrowMessage("Future should not be completed exceptionally, but it failed with $exception") {
+         completableFuture.shouldNotBeCompletedExceptionally()
+      }
+   }
 })
