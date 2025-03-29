@@ -31,7 +31,6 @@ import javax.sql.DataSource
  *
  * @since 1.1.0
  */
-@Deprecated("use JdbcDatabaseContainerExtension")
 class JdbcTestContainerExtension(
    private val container: JdbcDatabaseContainer<Nothing>,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
