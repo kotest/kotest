@@ -2,6 +2,7 @@ package io.kotest.engine.launcher
 
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.CANDIDATES
@@ -13,6 +14,7 @@ import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -78,18 +80,22 @@ fun main(args: Array<String>) {
    }
 
    val console = TestEngineListenerBuilder.builder()
-      .withType(launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]) // sets the output type, will be detected if not specified
+      .withType(
+         launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]
+      ) // sets the output type, will be detected if not specified
       .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
       .build()
 
    // we want to collect the results, so we can check if we need exit with an error
    val collector = CollectingTestEngineListener()
 
-   val launcher = TestEngineLauncherBuilder.builder()
-      .withClasses(classes)
-      .addListener(LoggingTestEngineListener) // we use this to write to the kotest log file
-      .addListener(collector)
-      .addListener(ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(console))).build()
+   val launcher = TestEngineLauncher(
+      CompositeTestEngineListener(
+         collector,
+         LoggingTestEngineListener,// we use this to write to the kotest log file
+         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(console))
+      )
+   ).withClasses(classes)
       .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
 
    runBlocking {
