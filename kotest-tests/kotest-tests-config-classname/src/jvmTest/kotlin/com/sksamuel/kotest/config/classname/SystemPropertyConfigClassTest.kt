@@ -15,7 +15,7 @@ class SystemPropertyConfigClassTest : FunSpec() {
 
       test("system property override should be used for config classname") {
          withSystemProperty(
-            KotestEngineProperties.CONFIGURATION_CLASS_NAME,
+            KotestEngineProperties.PROJECT_CONFIGURATION_FQN,
             "com.sksamuel.kotest.config.classname.WibbleConfig"
          ) {
             val collector = CollectingTestEngineListener()
