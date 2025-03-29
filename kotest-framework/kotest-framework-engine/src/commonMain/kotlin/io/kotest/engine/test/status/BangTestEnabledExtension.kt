@@ -15,7 +15,7 @@ internal object BangTestEnabledExtension : TestEnabledExtension {
 
       // this sys property disables the use of !
       // when it is true, we don't check for !
-      if (sysprop(KotestEngineProperties.disableBangPrefix) == "true") {
+      if (sysprop(KotestEngineProperties.DISABLE_BANG_PREFIX) == "true") {
          return Enabled.enabled
       }
 

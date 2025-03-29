@@ -2,16 +2,12 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.spec.Spec
-import io.kotest.engine.config.PackageConfigLoader.loadPackageConfig
 import io.kotest.engine.instantiateOrObject
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A [PackageConfigLoader] is responsible for locating concrete implementations of [io.kotest.core.config.AbstractPackageConfig]
- * at runtime, based on a given spec's package.
- *
- * On the JVM this will use [loadPackageConfig] to locate the config using reflection based on package names.
- * On other platforms, this will return an empty list.
+ * at runtime, based on a given spec's package, using reflection based lookups.
  */
 internal object PackageConfigLoader {
 
