@@ -61,7 +61,7 @@ class TestEngine(private val config: TestEngineConfig) {
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
       return execute(
-         EngineContext.invoke(
+         EngineContext(
             suite = suite,
             listener = config.listener,
             tags = tags,

@@ -60,7 +60,7 @@ class SpecConfigResolver(
          ?: spec.isolationMode
          ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.isolationMode }
          ?: projectConfig?.isolationMode
-         ?: systemPropertyConfiguration.isolationMode()
+         ?: systemPropertyConfiguration?.isolationMode()
          ?: Defaults.ISOLATION_MODE
    }
 
@@ -85,7 +85,7 @@ class SpecConfigResolver(
          ?: spec.defaultTestConfig?.duplicateTestNameMode
          ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.duplicateTestNameMode }
          ?: projectConfig?.duplicateTestNameMode
-         ?: systemPropertyConfiguration.duplicateTestNameMode()
+         ?: systemPropertyConfiguration?.duplicateTestNameMode()
          ?: Defaults.DUPLICATE_TEST_NAME_MODE
    }
 
