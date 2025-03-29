@@ -36,7 +36,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.DefaultTestConfig
 import kotlin.js.JsName
 
 /**
@@ -51,14 +50,6 @@ abstract class TestConfiguration : Extendable() {
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
    private var _parentConfiguration: TestConfiguration? = null
-
-   /**
-    * Config applied to each test case if not overridden per test case.
-    * If null, then defaults to the project level default.
-    *
-    * Any test case config set a test itself will override any value here.
-    */
-   var defaultTestConfig: DefaultTestConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.

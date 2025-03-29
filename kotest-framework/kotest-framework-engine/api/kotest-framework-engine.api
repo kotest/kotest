@@ -59,12 +59,10 @@ public abstract class io/kotest/core/TestConfiguration : io/kotest/core/spec/Ext
 	public final fun extension (Lkotlin/jvm/functions/Function2;)V
 	public final fun getAssertSoftly ()Ljava/lang/Boolean;
 	public final fun getAssertions ()Lio/kotest/core/test/AssertionMode;
-	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
 	public final fun register (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
 	public final fun registeredAutoCloseables ()Ljava/util/List;
 	public final fun setAssertSoftly (Ljava/lang/Boolean;)V
 	public final fun setAssertions (Lio/kotest/core/test/AssertionMode;)V
-	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/DefaultTestConfig;)V
 	public fun tags ([Lio/kotest/core/Tag;)V
 }
 
@@ -942,9 +940,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTestNameRemoveWhitespace ()Ljava/lang/Boolean;
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
-	public fun setAllowOutOfOrderCallbacks (Ljava/lang/Boolean;)V
-	public fun setRetries (Ljava/lang/Integer;)V
-	public fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 }
 
 public final class io/kotest/core/config/AbstractProjectConfigKt {
@@ -1663,12 +1658,12 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
-	protected final fun getAfterProjectListeners ()Ljava/util/List;
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public final fun getBlockingTest ()Ljava/lang/Boolean;
 	public final fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
 	public final fun getCoroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public final fun getCoroutineTestScope ()Ljava/lang/Boolean;
+	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
 	public final fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public fun getExtensions ()Ljava/util/List;
 	public final fun getFailfast ()Ljava/lang/Boolean;
@@ -1677,6 +1672,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getRetries ()Ljava/lang/Integer;
 	public final fun getRetryDelay-FghU774 ()Lkotlin/time/Duration;
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
+	public final fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
 	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public final fun getTestOrder ()Lio/kotest/core/test/TestCaseOrder;
 	public final fun getTimeout ()Ljava/lang/Long;
@@ -1688,6 +1684,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setCoroutineDebugProbes (Ljava/lang/Boolean;)V
 	public final fun setCoroutineDispatcherFactory (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;)V
 	public final fun setCoroutineTestScope (Ljava/lang/Boolean;)V
+	public final fun setDefaultTestConfig (Lio/kotest/core/test/config/DefaultTestConfig;)V
 	public final fun setDuplicateTestNameMode (Lio/kotest/core/names/DuplicateTestNameMode;)V
 	public final fun setFailfast (Ljava/lang/Boolean;)V
 	public final fun setInvocationTimeout (Ljava/lang/Long;)V
@@ -1695,6 +1692,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setRetries (Ljava/lang/Integer;)V
 	public final fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
+	public final fun setTestCaseOrder (Lio/kotest/core/test/TestCaseOrder;)V
 	public final fun setTestExecutionMode (Lio/kotest/engine/concurrency/TestExecutionMode;)V
 	public final fun setTestOrder (Lio/kotest/core/test/TestCaseOrder;)V
 	public final fun setTimeout (Ljava/lang/Long;)V

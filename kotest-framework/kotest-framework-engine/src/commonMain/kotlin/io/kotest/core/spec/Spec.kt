@@ -6,7 +6,6 @@ import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterSpecListener
@@ -22,6 +21,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
@@ -67,7 +67,7 @@ import kotlin.time.Duration
  * override fun beforeTest() { println("bonjour!") }
  * ```
  *
- * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
+ * Functions to register [AutoCloseable] instances can be found in [TestConfiguration].
  *
  */
 abstract class Spec : TestConfiguration() {
@@ -78,13 +78,23 @@ abstract class Spec : TestConfiguration() {
    abstract fun rootTests(): List<RootTest>
 
    /**
-    * Override this function to register instances of [TestCaseExtension]
-    * which will be invoked during execution of this spec.
+    * Override this value to register [Extension]s which will be invoked during the
+    * execution of this spec.
     *
     * If you wish to register an extension for all specs then register the extension
-    * with project config.
+    * using project config.
     */
+   @JsName("extensions_js")
    open val extensions: List<Extension> = emptyList()
+
+   /**
+    * Config applied to each test case if not overridden per test case.
+    * If null, then defaults to the project level default.
+    *
+    * Any test case config set a test itself will override any value here.
+    */
+   @JsName("defaultTestConfig_js")
+   var defaultTestConfig: DefaultTestConfig? = null
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.
@@ -109,7 +119,12 @@ abstract class Spec : TestConfiguration() {
     * Sets the [TestCaseOrder] for root tests in this spec.
     * If null, then the project default is used.
     */
+   @JsName("testOrder_js")
+   @Deprecated("Use testCaseOrder. Deprecated since 6.0", ReplaceWith("testCaseOrder"))
    var testOrder: TestCaseOrder? = null
+
+   @JsName("testCaseOrder_js")
+   var testCaseOrder: TestCaseOrder? = null
 
    /**
     * Returns the timeout to be used by each test case. This value is overridden by a timeout
@@ -124,7 +139,7 @@ abstract class Spec : TestConfiguration() {
     * Sets a millisecond timeout for each test case in this spec unless overridden in the test config itself.
     * If this value is null, the project default will be used.
     */
-   @JsName("timeout_var")
+   @JsName("timeout_js")
    var timeout: Long? = null
 
    /**
@@ -188,12 +203,12 @@ abstract class Spec : TestConfiguration() {
    @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
-   protected val afterProjectListeners = mutableListOf<AfterProjectListener>()
+   internal val afterProjectListeners = mutableListOf<AfterProjectListener>()
 
    /**
     * Returns any extensions registered via this spec that should be added to the global scope.
     */
-   internal fun projectExtensions(): List<Extension> {
+   internal fun projectExtensions(): List<AfterProjectListener> {
       return afterProjectListeners.toList()
    }
 
