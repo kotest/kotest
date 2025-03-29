@@ -4,6 +4,7 @@ import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.MarkAbortedExceptionsAsSkippedTestInterceptor
+import io.kotest.engine.interceptors.ProjectConfigurationEngineInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
@@ -17,7 +18,10 @@ import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 
 actual fun testEngineInterceptors(): List<EngineInterceptor> {
    return listOfNotNull(
+      // this must be first to allow other interceptors to be configured by system properties
       SystemPropertiesEngineInterceptor,
+      // this must come after system properties because the system properties can be used to configure the project config location
+      ProjectConfigurationEngineInterceptor,
       TestEngineStartedFinishedInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
