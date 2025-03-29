@@ -189,7 +189,7 @@ class TestConfigResolver(
       return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
          testCase.spec.extensions + // overriding the extensions val in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
-         testCase.spec.specExtensions() + // added to the spec via dsl eg beforeTest { tc -> }
+         testCase.spec.extensions() + // added to the spec via dsl eg beforeTest { tc -> }
          loadPackageConfigs(testCase.spec).flatMap { it.extensions } + // package level extensions
          (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
          registry.all()

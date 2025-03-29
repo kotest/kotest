@@ -27,7 +27,7 @@ class TestCaseExtensionPrecedenceTest : FunSpec() {
 
    init {
 
-      extensions(TestCaseExtensionAppender('c'), TestCaseExtensionAppender('d'))
+      this@TestCaseExtensionPrecedenceTest.extensions(TestCaseExtensionAppender('c'), TestCaseExtensionAppender('d'))
 
       test("precedence specification").config(extensions = listOf(TestCaseExtensionAppender('e'))) {
          // closest TestCaseExtensions should run last so they can override project/spec level TestCaseExtensions

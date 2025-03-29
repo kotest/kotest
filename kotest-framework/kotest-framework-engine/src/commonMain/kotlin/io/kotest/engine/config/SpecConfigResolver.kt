@@ -103,7 +103,7 @@ class SpecConfigResolver(
    fun extensions(spec: Spec): List<Extension> {
       return spec.extensions + // overriding the extensions function in the spec
          spec.functionOverrideCallbacks() + // dsl
-         spec.specExtensions() + // added to the spec via register
+         spec.extensions() + // added to the spec via register
          (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
          registry.all() // globals
    }

@@ -38,7 +38,7 @@ public final class io/kotest/core/Tag$Companion {
 	public final fun invoke (Ljava/lang/String;)Lio/kotest/core/NamedTag;
 }
 
-public abstract class io/kotest/core/TestConfiguration {
+public abstract class io/kotest/core/TestConfiguration : io/kotest/core/spec/Extendable {
 	public fun <init> ()V
 	public final fun afterAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun afterContainer (Lkotlin/jvm/functions/Function2;)V
@@ -49,16 +49,14 @@ public abstract class io/kotest/core/TestConfiguration {
 	public final fun aroundTest (Lkotlin/jvm/functions/Function2;)V
 	public final fun autoClose (Ljava/lang/AutoCloseable;)Ljava/lang/AutoCloseable;
 	public final fun autoClose (Lkotlin/Lazy;)Lkotlin/Lazy;
+	public final fun autoCloseables ()Ljava/util/List;
 	public final fun beforeAny (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeContainer (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeEach (Lkotlin/jvm/functions/Function2;)V
 	public final fun beforeInvocation (Lkotlin/jvm/functions/Function3;)V
 	public final fun beforeSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
-	public final fun extension (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
 	public final fun extension (Lkotlin/jvm/functions/Function2;)V
-	public final fun extensions (Ljava/util/List;)V
-	public final fun extensions ([Lio/kotest/core/extensions/Extension;)V
 	public final fun getAssertSoftly ()Ljava/lang/Boolean;
 	public final fun getAssertions ()Lio/kotest/core/test/AssertionMode;
 	public final fun getDefaultTestConfig ()Lio/kotest/core/test/config/DefaultTestConfig;
@@ -1589,6 +1587,16 @@ public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Sp
 	public fun rootTests ()Ljava/util/List;
 	public final fun seal ()V
 	public fun tags ([Lio/kotest/core/Tag;)V
+}
+
+public abstract class io/kotest/core/spec/Extendable {
+	public fun <init> ()V
+	public final fun extension (Lio/kotest/core/extensions/Extension;)Lio/kotest/core/extensions/Extension;
+	public final fun extensions ()Ljava/util/List;
+	public final fun extensions (Ljava/util/List;)V
+	public final fun extensions ([Lio/kotest/core/extensions/Extension;)V
+	public final fun prependExtension (Lio/kotest/core/extensions/Extension;)V
+	public final fun prependExtensions (Ljava/util/List;)V
 }
 
 public final class io/kotest/core/spec/InvalidDslException : java/lang/Exception {
