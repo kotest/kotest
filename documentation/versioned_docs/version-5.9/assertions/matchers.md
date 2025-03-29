@@ -10,7 +10,7 @@ Kotest framework.
 
 | Module                                                | Description                                                  | Type          |
 |-------------------------------------------------------|--------------------------------------------------------------|---------------|
-| [kotest-assertions-core](core.md)                     | Provides matchers for standard libary types.                 | Multiplatform |
+| [kotest-assertions-core](core.md)                     | Provides matchers for standard library types.                | Multiplatform |
 | [kotest-assertions-collections](collections.md)       | Provides matchers for Collection, Iterable, and Array types. | Multiplatform |
 | [kotest-assertions-json](json/overview.md)            | Provides matchers for testing json objects.                  | JVM           |
 | [kotest-assertions-kotlinx-time](kotlinx-datetime.md) | Provides matchers for Kotlin's date / time library.          | Multiplatform |

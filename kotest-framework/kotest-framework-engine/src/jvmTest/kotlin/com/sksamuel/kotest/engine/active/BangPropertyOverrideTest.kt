@@ -11,7 +11,7 @@ class BangPropertyOverrideTest : WordSpec({
 
    "setting system property to override bang" should {
       var run = false
-      withSystemProperty(KotestEngineProperties.disableBangPrefix, "true") {
+      withSystemProperty(KotestEngineProperties.DISABLE_BANG_PREFIX, "true") {
          "!allow this test to run" {
             run = true
          }

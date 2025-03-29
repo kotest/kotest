@@ -11,8 +11,8 @@ import io.kotest.core.extensions.Extension
 internal expect fun loadPlatformDefaultExtensions(): List<Extension>
 
 /**
- * Load an [AbstractProjectConfig] instance using reflection from a well defined fully qualified classname.
+ * Loads an [AbstractProjectConfig] instance using reflection from a well defined fully qualified classname.
  *
- * Only applies on the JVM.
+ * Only applies on the JVM, on other platforms is a no-op.
  */
 internal expect fun loadProjectConfigFromReflection(): AbstractProjectConfig?

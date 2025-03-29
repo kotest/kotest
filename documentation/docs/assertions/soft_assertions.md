@@ -56,7 +56,7 @@ In the following example both `verify` and the second assertion can fail, and we
 
 ```kotlin
 assertSoftly {
-  shouldNotThrowAny {
+  shouldNotThrowAnyUnit {
     verify(exactly = 1) { myClass.myMethod(any()) }
   }
   foo shouldBe bar
@@ -69,7 +69,7 @@ Likewise, in the following example the failure of `verify` will not be ignored, 
 ```kotlin
 assertSoftly {
   (2+2) shouldBe 5
-  shouldNotThrowAny {
+  shouldNotThrowAnyUnit {
     verify(exactly = 1) { myClass.myMethod(any()) }
   }
 }
@@ -80,7 +80,6 @@ assertSoftly {
 * `shouldCompleteWithin`
 * `shouldCompleteBetween`
 * `shouldNotThrowExactly`
-* `shouldNotThrowExactlyUnit`
 * `shouldNotThrowMessage`
 * `shouldThrow`
 * `shouldThrowExactly`
@@ -91,4 +90,4 @@ assertSoftly {
 * `shouldThrowWithMessage`
 * `shouldTimeout`
 
-But `shouldThrowSoftly` is compatible with `assertSoftly`.
+But `shouldThrowSoftly` and `shouldNotThrowExactlyUnit` are compatible with `assertSoftly`.

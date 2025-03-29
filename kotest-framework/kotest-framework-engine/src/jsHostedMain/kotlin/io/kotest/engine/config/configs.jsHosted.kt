@@ -11,4 +11,4 @@ internal actual fun loadProjectConfigFromReflection(): AbstractProjectConfig? = 
 
 internal actual fun loadPackageConfigs(spec: Spec): List<AbstractPackageConfig> = emptyList()
 
-internal actual fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration = NoopSystemPropertyConfiguration
+internal actual fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration? = null

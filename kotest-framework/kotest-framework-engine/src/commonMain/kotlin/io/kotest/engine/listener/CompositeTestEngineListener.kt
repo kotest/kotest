@@ -11,6 +11,8 @@ import kotlin.reflect.KClass
  */
 class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
+   constructor(vararg listeners: TestEngineListener) : this(listeners.toList())
+
    init {
       require(listeners.isNotEmpty())
    }

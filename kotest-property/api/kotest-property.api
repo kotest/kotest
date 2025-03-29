@@ -857,6 +857,7 @@ public final class io/kotest/property/arbitrary/CombinationsKt {
 	public static final fun frequency (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun frequencyArbs (Lio/kotest/property/Arb$Companion;Lkotlin/Pair;Lkotlin/Pair;[Lkotlin/Pair;)Lio/kotest/property/Arb;
 	public static final fun shuffle (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
+	public static final fun slice (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun subsequence (Lio/kotest/property/Arb$Companion;Ljava/util/List;)Lio/kotest/property/Arb;
 }
 
@@ -883,6 +884,8 @@ public final class io/kotest/property/arbitrary/DatesKt {
 	public static synthetic fun localDateTime$default (Lio/kotest/property/Arb$Companion;Ljava/lang/Integer;IILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static synthetic fun localDateTime$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun localTime (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
+	public static final fun localTime (Lio/kotest/property/Arb$Companion;Ljava/time/LocalTime;Ljava/time/LocalTime;)Lio/kotest/property/Arb;
+	public static synthetic fun localTime$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalTime;Ljava/time/LocalTime;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun offsetDateTime (Lio/kotest/property/Arb$Companion;Ljava/time/Instant;Ljava/time/Instant;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static final fun offsetDateTime (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static synthetic fun offsetDateTime$default (Lio/kotest/property/Arb$Companion;Ljava/time/Instant;Ljava/time/Instant;Lio/kotest/property/Arb;ILjava/lang/Object;)Lio/kotest/property/Arb;
@@ -949,6 +952,7 @@ public final class io/kotest/property/arbitrary/EdgecasesKt {
 	public static final fun edgecases (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;)Ljava/util/Set;
 	public static synthetic fun edgecases$default (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;ILjava/lang/Object;)Ljava/util/Set;
 	public static final fun modifyEdgecases (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;)Lio/kotest/property/Arb;
+	public static final fun plusEdgecases (Lio/kotest/property/Arb;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun removeEdgecases (Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 	public static final fun withEdgecases (Lio/kotest/property/Arb;Ljava/util/List;)Lio/kotest/property/Arb;
 	public static final fun withEdgecases (Lio/kotest/property/Arb;[Ljava/lang/Object;)Lio/kotest/property/Arb;
@@ -1391,6 +1395,7 @@ public final class io/kotest/property/exhaustive/CollectionsKt {
 	public static final fun permutations (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;I)Lio/kotest/property/Exhaustive;
 	public static synthetic fun permutations$default (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;IILjava/lang/Object;)Lio/kotest/property/Exhaustive;
 	public static final fun powerSet (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;)Lio/kotest/property/Exhaustive;
+	public static final fun slices (Lio/kotest/property/Exhaustive$Companion;Ljava/util/List;)Lio/kotest/property/Exhaustive;
 }
 
 public final class io/kotest/property/exhaustive/ExhaustiveKt {

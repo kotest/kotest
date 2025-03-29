@@ -28,7 +28,7 @@ To use, add `io.kotest.extensions:kotest-property-arbs:version` to your build.
 | Arb.domain()               | Produces random domain names, eg `www.wibble.co.uk`                                                                 |
 | Arb.country()              | Produces random country objects, eg `Botswana / BW / Africa`                                                        |
 | Arb.continent()            | Produces random continents from the list of seven                                                                   |
-| Arb.zipcode()              | Random zipcodes from 01000 to 99999, without validating they are exant                                              |
+| Arb.zipcode()              | Random zipcodes from 01000 to 99999, without validating they are extant                                              |
 |                            |                                                                                                                     |
 | Arb.harryPotterCharacter() | Produces random first and last names from the Harry Potter series                                                   |
 |                            |                                                                                                                     |

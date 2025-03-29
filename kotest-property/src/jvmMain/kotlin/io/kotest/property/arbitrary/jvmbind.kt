@@ -117,12 +117,14 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
       val arbForProp = relevantProps.firstOrNull { (key, _) -> key.name == param.name }?.second
-      val arb = when {
+      when {
          arbForProp != null -> arbForProp
-         else -> arbForParameter(providedArbs, arbsForProperties, className, param)
+         else -> {
+            val arb = arbForParameter(providedArbs, arbsForProperties, className, param)
+            if (param.type.isMarkedNullable) arb.orNull() else arb
+         }
       }
 
-      if (param.type.isMarkedNullable) arb.orNull() else arb
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
