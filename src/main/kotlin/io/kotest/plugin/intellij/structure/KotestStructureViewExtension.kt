@@ -24,25 +24,48 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  */
 class KotestStructureViewExtension : StructureViewExtension {
 
+   private var cachedParent: PsiElement? = null
+   private var cachedElements: Array<StructureViewTreeElement> = emptyArray()
+
    override fun getType(): Class<out PsiElement> {
       return KtClassOrObject::class.java
    }
 
+   /**
+    * This method is called from background workers to populate the structure view, but also from the EDT thread
+    * when the user uses navigate to next method / previous method inside the editor.
+    *
+    * We can't call superclasses from the EDT thread (and I cannot figure out how to make the analysis call
+    * inside the superclasses method work not on the EDT thread), so we can cache the elements generated
+    * when not on the EDT thread and use those.
+    */
    override fun getChildren(parent: PsiElement): Array<StructureViewTreeElement> {
+      require(parent is KtClassOrObject) { "Parent must be a KtClassOrObject" }
+
       // we need indices available in order to scan this file because in order to determine if we have
       // a spec we need to check if any of the parent classes (which are different files) are spec types
       if (DumbService.isDumb(parent.project) && !testMode) {
          return emptyArray()
       }
-      if (ApplicationManager.getApplication().isDispatchThread) {
-         return emptyArray()
-      }
-      val virtualFile: VirtualFile = parent.containingFile?.virtualFile ?: return emptyArray()
+
+      val virtualFile: VirtualFile = parent.containingFile.virtualFile ?: return emptyArray()
       if (!TestSourcesFilter.isTestSources(virtualFile, parent.project) && !testMode) return emptyArray()
-      val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
-      val spec = ktClassOrObject.specStyle() ?: return emptyArray()
+
+      // analysis doesn't work on the EDT thread
+      if (ApplicationManager.getApplication().isDispatchThread) {
+         // we only use the cached if we know we've already been refreshed
+         return if (cachedParent == parent) {
+            cachedElements
+         } else {
+            emptyArray()
+         }
+      }
+
+      val spec = parent.specStyle() ?: return emptyArray()
       val tests = spec.tests(parent, false)
-      return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
+      cachedParent = parent
+      cachedElements = tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
+      return cachedElements
    }
 
    override fun getCurrentEditorElement(editor: Editor?, parent: PsiElement?): Any? {
