@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
@@ -15,7 +15,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 @Isolate
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BeforeProjectListenerExceptionTest : FunSpec({
 
    test("exception in beforeProject should use BeforeProjectListenerException") {

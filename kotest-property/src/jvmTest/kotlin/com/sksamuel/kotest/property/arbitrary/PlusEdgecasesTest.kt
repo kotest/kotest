@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -9,7 +9,7 @@ import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.plusEdgecases
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PlusEdgecasesTest: StringSpec() {
    private val intArb = Arb.Companion.int(-50..50)
 

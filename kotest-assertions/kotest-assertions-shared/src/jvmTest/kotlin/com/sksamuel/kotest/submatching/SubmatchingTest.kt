@@ -2,7 +2,7 @@ package com.sksamuel.kotest.submatching
 
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -17,7 +17,7 @@ import io.kotest.submatching.removeShorterMatchesWithSameEnd
 import io.kotest.submatching.toCharIndex
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SubmatchingTest : WordSpec() {
    init {
       "findPartialMatches" should {

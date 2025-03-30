@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.test.testextension
 
 import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -25,7 +25,7 @@ object TestCaseExtensionAdder : TestCaseExtension {
 }
 
 @Description("tests that we can use around advice with intercept")
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestCaseExtensionTest : FunSpec() {
 
    override val extensions = listOf(TestCaseExtensionAdder)

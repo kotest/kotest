@@ -1,8 +1,11 @@
 package io.kotest.extensions.testcontainers
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class StartableTestLifecycleAwareTest : StringSpec({
 
    val startableTestLifecycleAwareForPerTest = StartableTestLifecycleAware()

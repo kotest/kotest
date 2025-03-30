@@ -1,7 +1,7 @@
 package io.kotest.framework.multiplatform.gradle
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
@@ -9,7 +9,7 @@ import io.mockk.verify
 import org.gradle.api.Project
 import org.gradle.api.provider.ProviderFactory
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class KotestMultiplatformCompilerGradlePluginTest : BehaviorSpec({
 
    Given("KotestMultiplatformCompilerGradlePlugin") {

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
@@ -11,7 +11,7 @@ import io.kotest.property.exhaustive.permutations
 import io.kotest.property.exhaustive.sliceIndexes
 import io.kotest.property.exhaustive.slices
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PermutationsTest : FunSpec() {
    init {
       test("Exhaustive.permutations should generate full permutations when length is omitted") {

@@ -3,7 +3,7 @@ package io.kotest.datatest
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -17,7 +17,7 @@ import io.kotest.matchers.shouldNotBe
 
 @ExperimentalKotest
 @Isolate // sets global values via configuration so must be isolated
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class UnstableTestNameWithIsolationTest : FunSpec() {
    init {
 

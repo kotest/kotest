@@ -5,7 +5,7 @@ import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldBeNull
@@ -44,7 +44,7 @@ private val expectedPath = if (System.getProperty("os.name").lowercase().contain
    "UnixPath"
 }
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IterableEqTest : FunSpec({
    test("Comparing empty set with other iterable should be ok") {
       shouldNotThrowAny {

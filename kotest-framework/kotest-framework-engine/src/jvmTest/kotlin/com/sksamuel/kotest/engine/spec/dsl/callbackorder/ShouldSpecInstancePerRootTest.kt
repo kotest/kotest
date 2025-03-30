@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestCase
@@ -15,7 +15,7 @@ private object Counters {
    var threads = mutableSetOf<Long>()
 }
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ShouldSpecInstancePerRootTest : ShouldSpec() {
 
    override fun isolationMode() = IsolationMode.InstancePerRoot

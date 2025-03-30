@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.IgnoredTestListener
@@ -21,7 +21,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestFinishedExecutionInterceptorTest : FunSpec({
 
    test("should notify of test finishes") {
