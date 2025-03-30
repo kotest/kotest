@@ -7,6 +7,9 @@ import io.kotest.plugin.intellij.getContentFactory
 
 /**
  * Wired into the plugin.xml and creates a [TestExplorerWindow] upon demand.
+ *
+ * A [ToolWindow] is one of the side views that intellij provides, like the project view or the run view.
+ * Kotest provides a tool window that shows the tests in a tree view.
  */
 class TestExplorerToolWindowFactory : ToolWindowFactory {
 

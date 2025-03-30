@@ -5,6 +5,7 @@ import com.intellij.ide.structureView.StructureViewExtension
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.roots.TestSourcesFilter
@@ -33,6 +34,9 @@ class KotestStructureViewExtension : StructureViewExtension {
       if (DumbService.isDumb(parent.project) && !testMode) {
          return emptyArray()
       }
+      if (ApplicationManager.getApplication().isDispatchThread) {
+         return emptyArray()
+      }
       val virtualFile: VirtualFile = parent.containingFile?.virtualFile ?: return emptyArray()
       if (!TestSourcesFilter.isTestSources(virtualFile, parent.project) && !testMode) return emptyArray()
       val ktClassOrObject = parent as? KtClassOrObject ?: return emptyArray()
@@ -41,35 +45,35 @@ class KotestStructureViewExtension : StructureViewExtension {
       return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
    }
 
-   class KotestTestStructureViewTreeElement(private val testElement: TestElement) : StructureViewTreeElement {
+   override fun getCurrentEditorElement(editor: Editor?, parent: PsiElement?): Any? {
+      return null
+   }
+}
 
-      override fun getPresentation(): ItemPresentation = KotestStructureItemPresentation(testElement.test)
+class KotestTestStructureViewTreeElement(private val testElement: TestElement) : StructureViewTreeElement {
 
-      override fun getChildren(): Array<TreeElement> {
-         return testElement.nestedTests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
-      }
+   override fun getPresentation(): ItemPresentation = KotestStructureItemPresentation(testElement.test)
 
-      override fun navigate(requestFocus: Boolean) {
-         if (testElement.psi is NavigatablePsiElement) {
-            testElement.psi.navigate(true)
-         }
-      }
+   override fun getChildren(): Array<TreeElement> {
+      return testElement.nestedTests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
+   }
 
-      override fun canNavigate(): Boolean {
-         return true
-      }
-
-      override fun canNavigateToSource(): Boolean {
-         return true
-      }
-
-      override fun getValue(): Any {
-         return testElement.psi
+   override fun navigate(requestFocus: Boolean) {
+      if (testElement.psi is NavigatablePsiElement) {
+         testElement.psi.navigate(true)
       }
    }
 
-   override fun getCurrentEditorElement(editor: Editor?, parent: PsiElement?): Any? {
-      return null
+   override fun canNavigate(): Boolean {
+      return true
+   }
+
+   override fun canNavigateToSource(): Boolean {
+      return true
+   }
+
+   override fun getValue(): Any {
+      return testElement.psi
    }
 }
 

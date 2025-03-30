@@ -1,7 +1,7 @@
 package io.kotest.plugin.intellij.toolwindow
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.DumbService
@@ -54,12 +54,13 @@ class KotestTestExplorerService(
    }
 
    private val modelListeners = mutableListOf<ModelListener>()
-   fun registerModelListener(modelListener: ModelListener) { modelListeners.add(modelListener) }
+   fun registerModelListener(modelListener: ModelListener) {
+      modelListeners.add(modelListener)
+   }
 
    private fun reloadModelInBackgroundThread() {
       scope.launch(Dispatchers.Default) {
-         // TODO: Just use runReadAction function after dropping IC-223
-         ApplicationManager.getApplication().runReadAction {
+         readAction {
             reloadModel(currentFile)
          }
       }
@@ -97,15 +98,13 @@ class KotestTestExplorerService(
    }
 
    fun scanTags() {
-      scope.launch(Dispatchers.Default) {
-         // TODO: Just use runReadAction function after dropping IC-223
-         ApplicationManager.getApplication().runReadAction {
-            tags =
-               findFiles(project)
-                  .mapNotNull { it.toPsiFile(project) }
-                  .flatMap { it.detectKotestTags() }
-                  .distinct()
-                  .sorted()
+      scope.launch(Dispatchers.IO) {
+         readAction {
+            tags = findFiles(project)
+               .mapNotNull { it.toPsiFile(project) }
+               .flatMap { it.detectKotestTags() }
+               .distinct()
+               .sorted()
          }
       }
    }

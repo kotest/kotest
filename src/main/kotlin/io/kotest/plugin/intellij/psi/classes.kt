@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.isAbstract
 
 /**
- * Returns true if this [KtClassOrObject] is a descendent of the given class,
+ * Returns true if this [KtClassOrObject] is a descendent of the given class.
  */
 fun KtClassOrObject.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
 

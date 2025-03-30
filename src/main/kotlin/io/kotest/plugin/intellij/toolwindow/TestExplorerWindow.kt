@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.wm.ToolWindow
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiTreeAnyChangeAbstractAdapter
@@ -19,6 +20,9 @@ import java.awt.event.MouseEvent
 
 /**
  * The main panel for the test explorer 'tool window'.
+ *
+ * A [ToolWindow] is one of the side views that intellij provides, like the project view or the run view.
+ * Kotest provides a tool window that shows the tests in a tree view.
  */
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
    val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
