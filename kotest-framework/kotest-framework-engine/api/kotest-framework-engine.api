@@ -853,6 +853,11 @@ public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotes
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
+public final class io/kotest/core/annotation/enabledif/LinuxOnlyGithubCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
 public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z

@@ -1,10 +1,13 @@
 package io.kotest.extensions.testcontainers
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 @Ignored
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestLifecycleAwareListenerTest : StringSpec({
    val startableTestLifecycleAware = StartableTestLifecycleAware()
    val startable = TestStartable()
