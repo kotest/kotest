@@ -845,7 +845,42 @@ public abstract interface annotation class io/kotest/core/annotation/Tags : java
 public final class io/kotest/core/annotation/enabledif/CICondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
 	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
 
+public final class io/kotest/core/annotation/enabledif/GithubActionsCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/LinuxOnlyGithubCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/LinuxRunnerOsCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/MacRunnerOsCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/NotCICondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
 
 public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
@@ -857,16 +892,19 @@ public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kote
 	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-
+public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
 
 public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
 	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/WindowsRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
+public final class io/kotest/core/annotation/enabledif/WindowsRunnerOsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
 public abstract class io/kotest/core/config/AbstractPackageConfig {

@@ -3,6 +3,8 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.annotation.AlwaysFalseCondition
 import io.kotest.core.annotation.AlwaysTrueCondition
 import io.kotest.core.annotation.DisabledIf
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.SpecRef
@@ -18,6 +20,7 @@ import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DisabledIfInterceptorTest : FunSpec({
 
    test("DisabledIfInterceptor should proceed for any spec not annotated with @DisabledIf") {
