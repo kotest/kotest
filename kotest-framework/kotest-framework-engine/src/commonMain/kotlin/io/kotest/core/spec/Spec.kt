@@ -256,6 +256,9 @@ abstract class Spec : TestConfiguration() {
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
+   /**
+    * When set to true, tests will be executed inside a runTest block from the kotlin test library.
+    */
    var coroutineTestScope: Boolean? = null
 
    /**
