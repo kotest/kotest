@@ -24,8 +24,8 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  */
 class KotestStructureViewExtension : StructureViewExtension {
 
-   private var cachedParent: PsiElement? = null
-   private var cachedElements: Array<StructureViewTreeElement> = emptyArray()
+   @Volatile private var cachedParent: PsiElement? = null
+   @Volatile private var cachedElements: Array<StructureViewTreeElement> = emptyArray()
 
    override fun getType(): Class<out PsiElement> {
       return KtClassOrObject::class.java
