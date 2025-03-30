@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
@@ -16,6 +18,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
+@EnabledIf(NotMacOnGithubCondition::class)
 class AnnotationExtensionTest : FunSpec() {
    init {
 
@@ -108,7 +111,7 @@ class MyExtension : BeforeSpecListener,
    BeforeTestListener,
    AfterTestListener,
    SpecExtension,
-  PrepareSpecListener {
+   PrepareSpecListener {
 
    init {
       instantiations++

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
@@ -20,7 +20,7 @@ class WhackBeforeProjectListener : ProjectListener {
    }
 }
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
    test("a BeforeProjectListenerException should add marker test using listener name") {

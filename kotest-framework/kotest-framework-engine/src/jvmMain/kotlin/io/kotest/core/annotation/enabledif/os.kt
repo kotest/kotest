@@ -29,3 +29,9 @@ class WindowsCondition : EnabledCondition {
 class NotWindowsCondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean = !WindowsCondition().enabled(kclass)
 }
+
+// used by kotest to disable tests on macos when running on github actions to speed up the builds
+class NotMacOnGithubCondition : EnabledCondition {
+   override fun enabled(kclass: KClass<out Spec>): Boolean =
+      !(MacCondition().enabled(kclass) && GithubActionCondition().enabled(kclass))
+}
