@@ -7,7 +7,8 @@ import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
 /**
- * Invoked once per spec class if the spec has enabled root tests.
+ * Invoked once per spec class after all spec instances have completed.
+ *
  * This listener is only invoked if the spec had at least one enabled test.
  */
 interface FinalizeSpecListener : Extension {

@@ -18,7 +18,7 @@ interface BeforeSpecListener : Extension {
     *
     * If a spec is instantiated multiple times - for example, if
     * [io.kotest.core.spec.IsolationMode.InstancePerRoot] isolation mode is used,
-    * then this callback will be invoked for each instance created,
+    * then this callback will be invoked for each instance created.
     *
     * This callback should be used if you need to perform setup
     * each time a new spec instance is created. If you simply need to

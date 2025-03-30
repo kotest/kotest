@@ -25,6 +25,7 @@ import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlin.js.JsName
 import kotlin.time.Duration
 
@@ -76,6 +77,13 @@ abstract class Spec : TestConfiguration() {
     * Returns the [RootTest]s that are defined by this spec.
     */
    abstract fun rootTests(): List<RootTest>
+
+   /**
+    * A [CoroutineScope] that can be used to launch spec level coroutines.
+    *
+    * A spec will not be completed until all specs launched on this scope return.
+    */
+   lateinit var scope: CoroutineScope
 
    /**
     * Override this value to register [Extension]s which will be invoked during the
@@ -307,7 +315,7 @@ abstract class Spec : TestConfiguration() {
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   override fun beforeTest(f: BeforeTest) {
+   final override fun beforeTest(f: BeforeTest) {
       this@Spec.extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
@@ -327,7 +335,7 @@ abstract class Spec : TestConfiguration() {
     * first are executed last, which allows for nested test blocks to add callbacks that run before
     * top level callbacks.
     */
-   override fun afterTest(f: AfterTest) {
+   final override fun afterTest(f: AfterTest) {
       prependExtension(object : AfterTestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
@@ -341,7 +349,7 @@ abstract class Spec : TestConfiguration() {
     * Registers a callback to be executed after all tests in this spec.
     * The spec instance is provided as a parameter.
     */
-   override fun afterSpec(f: AfterSpec) {
+   final override fun afterSpec(f: AfterSpec) {
       extension(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)

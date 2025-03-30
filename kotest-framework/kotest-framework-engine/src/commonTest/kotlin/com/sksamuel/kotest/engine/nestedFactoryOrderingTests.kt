@@ -55,7 +55,7 @@ class NestedFactoriesShouldRespectTestOrderFunctionOverrideTest : FunSpec() {
 class NestedFactoriesShouldRespectTestOrderVarTest : FunSpec() {
    init {
 
-      testOrder = TestCaseOrder.Lexicographic
+      testCaseOrder = TestCaseOrder.Lexicographic
 
       val writer = StringBuilder()
       include(factory2(writer))
