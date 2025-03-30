@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
@@ -21,7 +21,7 @@ private object ExcludeTagExtension : TagExtension {
 }
 
 @Isolate
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ExcludeTagExtensionTest : FunSpec() {
    init {
       test("tag extensions should be applied to tests with tag inherited from spec") {

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.matchers.channels
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.channels.shouldBeClosed
 import io.kotest.matchers.channels.shouldBeEmpty
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
    DelicateCoroutinesApi::class,
    ExperimentalCoroutinesApi::class,
 )
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ChannelTest : StringSpec() {
    init {
       "shouldBeClosed should not fail on closed channels" {

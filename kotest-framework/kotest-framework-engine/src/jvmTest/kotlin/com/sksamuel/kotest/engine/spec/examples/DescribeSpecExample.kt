@@ -2,6 +2,8 @@ package com.sksamuel.kotest.engine.spec.examples
 
 import io.kotest.assertions.fail
 import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -12,6 +14,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
+@EnabledIf(NotMacOnGithubCondition::class)
 class DescribeSpecExampleTest : FunSpec({
    coroutineTestScope = true
 

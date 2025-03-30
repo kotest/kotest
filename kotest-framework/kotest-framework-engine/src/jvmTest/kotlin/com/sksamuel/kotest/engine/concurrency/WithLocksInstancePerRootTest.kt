@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.concurrency
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.TestExecutionMode
@@ -11,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 private val objects = ConcurrentHashMap.newKeySet<ReentrantLock>()
 
+@EnabledIf(NotMacOnGithubCondition::class)
 class WithLocksInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot

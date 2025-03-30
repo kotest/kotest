@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.ProjectListener
@@ -10,7 +10,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class AfterProjectListenerTest : FunSpec({
 
    test("ProjectListener's afterProject method should be fired") {

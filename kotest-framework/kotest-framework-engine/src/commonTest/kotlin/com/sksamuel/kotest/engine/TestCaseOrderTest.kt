@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
