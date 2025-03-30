@@ -1,12 +1,12 @@
 package io.kotest.matchers.string
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class MatchSubstringsTest : StringSpec() {
    private val value = "The quick brown fox jumps over the lazy dog"
    private val words = listOf("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog")

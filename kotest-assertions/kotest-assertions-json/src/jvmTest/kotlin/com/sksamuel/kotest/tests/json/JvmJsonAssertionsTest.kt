@@ -5,7 +5,7 @@ import io.kotest.assertions.json.*
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
@@ -37,7 +37,7 @@ private const val json = """
 }
 """
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class JvmJsonAssertionsTest : StringSpec({
 
    "test json path" {

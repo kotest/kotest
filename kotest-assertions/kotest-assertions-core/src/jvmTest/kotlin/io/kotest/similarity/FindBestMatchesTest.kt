@@ -2,13 +2,13 @@ package io.kotest.similarity
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.equality.shouldBeEqualUsingFields
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FindBestMatchesTest : StringSpec() {
    init {
       "find one perfect match" {

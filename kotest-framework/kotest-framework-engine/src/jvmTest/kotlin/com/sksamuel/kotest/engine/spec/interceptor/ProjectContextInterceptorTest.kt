@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.projectContext
 import io.kotest.core.spec.Spec
@@ -15,7 +15,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import kotlin.coroutines.coroutineContext
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ProjectContextInterceptorTest : FunSpec() {
    init {
 

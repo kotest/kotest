@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.*
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PropListenersTest : FunSpec({
    var previous = -1
    var current = 0

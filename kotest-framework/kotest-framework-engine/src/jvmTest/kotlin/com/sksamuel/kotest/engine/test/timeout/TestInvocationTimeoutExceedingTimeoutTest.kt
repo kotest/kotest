@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Tests that an `invocationTimeout` cannot exceed test case `timeout`.
  */
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestInvocationTimeoutExceedingTimeoutTest : FunSpec() {
    init {
       test("invocation timeout shouldn't exceed test timeout") {

@@ -3,7 +3,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
@@ -22,7 +22,7 @@ class WhackAfterProjectListener : AfterProjectListener {
    }
 }
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("an AfterProjectListenerException should add marker test") {

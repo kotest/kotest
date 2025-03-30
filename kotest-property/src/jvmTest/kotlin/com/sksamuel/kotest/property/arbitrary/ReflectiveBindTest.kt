@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
@@ -30,7 +30,7 @@ import java.time.YearMonth
 import java.time.ZonedDateTime
 import kotlin.reflect.KClass
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ReflectiveBindTest : StringSpec(
    {
       val randomSource = RandomSource.seeded(11L)

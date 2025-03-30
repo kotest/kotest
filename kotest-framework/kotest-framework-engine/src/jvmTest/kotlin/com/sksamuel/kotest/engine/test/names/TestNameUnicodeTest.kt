@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
 // some characters are being filtered out of ids and breaking nested tests
 // https://github.com/kotest/kotest/issues/1828
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestNameUnicodeTest : DescribeSpec({
 
    var count = 0

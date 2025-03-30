@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
@@ -10,7 +10,7 @@ import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestEngineStartedFinishedInterceptorTest : FunSpec({
 
    test("should invoke engineStarted before downstream") {

@@ -2,14 +2,14 @@ package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.assertions.fail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AnnotationSpecIgnoresTest : DescribeSpec({
 
    describe("An AnnotationSpec") {

@@ -12,12 +12,12 @@ import io.kotest.assertions.json.findValidSubPath
 import io.kotest.assertions.json.getPossibleSizeOfJsonArray
 import io.kotest.assertions.json.removeLastPartFromPath
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ExtractByPathTest : WordSpec() {
    @Language("JSON")
    private val json =
