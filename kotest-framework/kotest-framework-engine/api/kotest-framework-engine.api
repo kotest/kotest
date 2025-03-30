@@ -3903,7 +3903,7 @@ public final class io/kotest/engine/teamcity/Locations {
 
 public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
 	public static final field Companion Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Companion;
-	public static final field TeamCityPrefix Ljava/lang/String;
+	public static final field TEAM_CITY_PREFIX Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun actual (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -3927,6 +3927,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes {
 	public static final field ACTUAL Ljava/lang/String;
 	public static final field DETAILS Ljava/lang/String;
 	public static final field DURATION Ljava/lang/String;
+	public static final field DURATION_STRATEGY Ljava/lang/String;
 	public static final field EXPECTED Ljava/lang/String;
 	public static final field ID Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes;
@@ -3946,6 +3947,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Companion {
 	public final fun testFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testIgnored (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testIgnored (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public final fun testReporterAttached (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStarted (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStdErr (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -3963,6 +3965,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_FAILED Ljava/lang/String;
 	public static final field TEST_FINISHED Ljava/lang/String;
 	public static final field TEST_IGNORED Ljava/lang/String;
+	public static final field TEST_REPORTER_ATTACHED Ljava/lang/String;
 	public static final field TEST_STARTED Ljava/lang/String;
 	public static final field TEST_STD_ERR Ljava/lang/String;
 	public static final field TEST_STD_OUT Ljava/lang/String;
