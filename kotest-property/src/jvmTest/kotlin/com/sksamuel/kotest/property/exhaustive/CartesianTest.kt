@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.core.Tuple4
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -13,7 +13,7 @@ import io.kotest.property.exhaustive.cartesianTriples
 import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.exhaustive.of
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CartesianTest : FunSpec() {
    init {
 

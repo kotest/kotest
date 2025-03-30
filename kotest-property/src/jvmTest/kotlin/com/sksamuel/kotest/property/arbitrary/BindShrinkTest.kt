@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.collections.shouldHaveSize
@@ -17,7 +17,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.checkAll
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BindShrinkTest : StringSpec({
    data class MaximumComponents(
       val a: Int, val b: Int, val c: Int, val d: Int, val e: Int,

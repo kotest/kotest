@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.common.nonConstantFalse
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -17,7 +17,7 @@ import org.junit.platform.engine.discovery.DiscoverySelectors.selectUniqueId
 import org.junit.platform.testkit.engine.EngineTestKit
 import java.util.concurrent.atomic.AtomicInteger
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FeatureSpecEngineKitTest : FunSpec({
 
    test("verify engine events happy path") {

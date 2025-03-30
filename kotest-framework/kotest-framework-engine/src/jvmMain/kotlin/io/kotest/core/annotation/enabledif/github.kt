@@ -28,12 +28,6 @@ class GithubActionsCondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("GITHUB_ACTIONS") == "true"
 }
 
-// used by kotest to disable tests on macos when running on github actions to speed up the builds
-class NotMacOnGithubCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean =
-      !(MacCondition().enabled(kclass) && GithubActionsCondition().enabled(kclass))
-}
-
 // used by kotest to enable tests only on linux if running in github actions
 class LinuxOnlyGithubCondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean =

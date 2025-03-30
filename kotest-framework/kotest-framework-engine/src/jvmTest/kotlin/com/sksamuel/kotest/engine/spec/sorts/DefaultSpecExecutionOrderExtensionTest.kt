@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.sorts
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
@@ -14,7 +14,7 @@ import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
    describe("The DefaultSpecExecutionOrder extension should support") {

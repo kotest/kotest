@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.submatching
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.IndexRange
 import io.kotest.submatching.indexRangesOfLines
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IndexRangesOfLinesTest : StringSpec() {
    init {
       "handle single line" {
