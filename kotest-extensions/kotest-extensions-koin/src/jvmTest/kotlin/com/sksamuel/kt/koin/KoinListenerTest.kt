@@ -14,7 +14,7 @@ class KoinListenerTest : FunSpec(), KoinTest {
 
    init {
 
-      extensions(KoinExtension(koinModule))
+      this@KoinListenerTest.extensions(KoinExtension(koinModule))
 
       test("Should have autowired the service correctly") {
          genericService.foo() shouldBe "Bar"
