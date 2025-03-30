@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 @ApplyExtension(AssertionListener::class)
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
 
    companion object {

@@ -8,7 +8,7 @@ import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.json.shouldNotEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -22,7 +22,7 @@ import io.kotest.property.assume
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class EqualTest : FunSpec() {
    init {
       test("compare non equal objects") {

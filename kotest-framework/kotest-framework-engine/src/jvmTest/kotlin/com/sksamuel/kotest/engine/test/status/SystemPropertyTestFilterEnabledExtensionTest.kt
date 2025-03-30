@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.status
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -14,7 +14,7 @@ import io.kotest.engine.test.status.SystemPropertyTestFilterEnabledExtension
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
    init {
       test("should include tests when no filter system property or environment variable is specified") {

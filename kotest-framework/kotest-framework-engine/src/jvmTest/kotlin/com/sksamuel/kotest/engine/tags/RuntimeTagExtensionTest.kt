@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.RuntimeTagExpressionExtension
 import io.kotest.core.extensions.RuntimeTagExtension
@@ -29,7 +29,7 @@ object FooTagExtension : TagExtension {
 }
 
 @Isolate
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class RuntimeTagExtensionTest : StringSpec() {
    init {
 

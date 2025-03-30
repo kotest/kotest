@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
@@ -15,7 +15,7 @@ import org.junit.platform.launcher.EngineFilter.includeEngines
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 
 @Isolate
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DiscoveryTestWithSelectors : FunSpec({
    test("kotest should return Nil for uniqueId selectors if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()

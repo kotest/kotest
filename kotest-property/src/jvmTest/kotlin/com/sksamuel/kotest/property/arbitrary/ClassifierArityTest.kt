@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.PropTestConfig
 import io.kotest.property.checkAll
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ClassifierArityTest : FunSpec() {
    init {
 

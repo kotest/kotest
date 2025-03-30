@@ -843,7 +843,7 @@ public final class io/kotest/core/annotation/enabledif/CICondition : io/kotest/c
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/GithubActionCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/GithubActionsCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
@@ -853,7 +853,22 @@ public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotes
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
+public final class io/kotest/core/annotation/enabledif/LinuxOnlyGithubCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/LinuxRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
 public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/MacRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
@@ -873,17 +888,22 @@ public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kote
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/NotMacOnGithubCondition : io/kotest/core/annotation/EnabledCondition {
-	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
-}
-
 public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
+public abstract class io/kotest/core/annotation/enabledif/RunnerOsCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public final fun runneros ()Ljava/lang/String;
+}
+
 public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/WindowsRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }

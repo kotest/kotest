@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
@@ -13,7 +13,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.string.shouldContain
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class UnfinishedTestDefinitionTest : FunSpec() {
    init {
 

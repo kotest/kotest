@@ -7,7 +7,7 @@ import io.kotest.core.annotation.DisplayName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Tags
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -28,7 +28,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
 @Isolate
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 
