@@ -238,7 +238,7 @@ abstract class AbstractProjectConfig {
     */
    open val displayFullTestPath: Boolean? = null
 
-   open var allowOutOfOrderCallbacks: Boolean? = null
+   open val allowOutOfOrderCallbacks: Boolean? = null
 
    /**
     * If set to false then private spec classes will be ignored by the test engine.
@@ -291,12 +291,12 @@ abstract class AbstractProjectConfig {
    /**
     * If set, then this is the maximum number of times we will retry a test if it fails.
     */
-   open var retries: Int? = null
+   open val retries: Int? = null
 
    /**
     * If set, then this is the delay between retries.
     */
-   open var retryDelay: Duration? = null
+   open val retryDelay: Duration? = null
 
    /**
     * Specifies the minimum severity level for test cases to be executed.

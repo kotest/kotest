@@ -30,6 +30,7 @@ mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.0.1"
+testcontainers = "1.20.4"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -104,6 +105,15 @@ byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte
 
 allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
+
+hikari = { module = "com.zaxxer:HikariCP", version = "5.0.1" }
+kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
+
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-elastic = { module = "org.testcontainers:elasticsearch", version.ref = "testcontainers" }
+testcontainers-jdbc = { module = "org.testcontainers:jdbc", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
+testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
 
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 

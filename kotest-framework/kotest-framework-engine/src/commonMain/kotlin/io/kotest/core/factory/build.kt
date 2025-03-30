@@ -14,7 +14,7 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
    return TestFactory(
       factoryId = factoryId,
       tags = _tags,
-      extensions = _extensions.map {
+      extensions = extensions().map {
          when (it) {
             is BeforeEachListener -> FactoryConstrainedBeforeEachListener(factoryId, it)
             is AfterEachListener -> FactoryConstrainedAfterEachListener(factoryId, it)
