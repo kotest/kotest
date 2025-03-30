@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.interceptors.EngineContext
@@ -15,7 +15,7 @@ import io.kotest.runner.junit.platform.createEngineDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class field should fail spec") {

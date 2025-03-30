@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.tests.concurrency
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 // asserts that specs can be executed concurrently safely
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
 
    private var befores = ""
@@ -58,7 +58,7 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
 }
 
 // asserts that specs can be executed concurrently safely
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
 
    private var befores = ""
@@ -96,7 +96,7 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
 }
 
 // asserts that specs can be executed concurrently safely
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
 
    private var befores = ""
@@ -134,7 +134,7 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
 }
 
 // asserts that specs can be executed concurrently safely
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentSpecsSingleInstanceTest4 : FunSpec() {
 
    private var befores = ""

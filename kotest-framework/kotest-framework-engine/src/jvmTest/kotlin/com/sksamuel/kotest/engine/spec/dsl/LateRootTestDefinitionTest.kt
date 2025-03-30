@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.dsl
 
 import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.style.ExpectSpec
@@ -16,7 +16,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 @Description("Tests that a spec cannot define root tests after the spec has been instantiated")
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class LateRootTestDefinitionTest : FunSpec() {
    init {
 

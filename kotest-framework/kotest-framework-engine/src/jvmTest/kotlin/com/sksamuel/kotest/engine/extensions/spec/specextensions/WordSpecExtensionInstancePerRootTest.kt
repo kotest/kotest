@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec.specextensions
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.IsolationMode
@@ -21,7 +21,7 @@ class IsolationLeafExtension : SpecExtension {
 }
 
 @ApplyExtension(IsolationLeafExtension::class)
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class WordSpecExtensionInstancePerRootTest : WordSpec() {
    init {
 

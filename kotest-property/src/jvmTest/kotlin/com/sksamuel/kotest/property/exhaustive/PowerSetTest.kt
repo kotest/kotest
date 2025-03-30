@@ -2,13 +2,13 @@ package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.powerSet
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PowerSetTest: StringSpec() {
    init {
       "powerSet should blow up if list is empty" {

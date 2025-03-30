@@ -5,7 +5,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -17,7 +17,7 @@ import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 import kotlin.time.toJavaDuration
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TimeoutJvmTest : FunSpec({
 
    coroutineTestScope = true

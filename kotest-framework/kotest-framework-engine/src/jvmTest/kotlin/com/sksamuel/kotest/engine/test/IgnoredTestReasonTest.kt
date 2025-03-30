@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
@@ -13,7 +13,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IgnoredTestReasonTest : FunSpec() {
    init {
 

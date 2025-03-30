@@ -3,7 +3,7 @@ package com.sksamuel.kotest
 import com.sksamuel.kotest.ProjectConfig.Companion.taskTestResultsDir
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.shouldForAll
@@ -15,7 +15,7 @@ import org.jdom2.input.SAXBuilder
 // this must have a higher order number than the dummy tests
 // so that when we get to this test, we already have written some data
 @Order(1)
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class JunitXmlReporterTest : WordSpec() {
 
    companion object {
