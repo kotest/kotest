@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -17,7 +17,7 @@ import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class EnabledCheckTestExecutionInterceptorTest : FunSpec({
 
    test("should invoke chain function if test is enabled") {

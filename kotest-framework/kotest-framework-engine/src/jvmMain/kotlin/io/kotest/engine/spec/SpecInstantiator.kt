@@ -51,7 +51,7 @@ class SpecInstantiator(
                .mapError { SpecInstantiationException("Could not create instance of $kclass", it) }
                .getOrThrow()
 
-         // any spec level project extensions should now be added
+         // any spec level AfterProjectListener extensions should now be added
          spec.projectExtensions().forEach { registry.add(it) }
 
          postInstantiationExtensions(kclass)

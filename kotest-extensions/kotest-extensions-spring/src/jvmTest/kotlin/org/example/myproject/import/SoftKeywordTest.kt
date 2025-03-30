@@ -29,7 +29,7 @@ class IllegalPackageNameTest : FunSpec() {
 private class SoftKeywordTest(
    @Suppress("UNUSED_PARAMETER") service: UserService
 ) : StringSpec({
-   extensions(SpringExtension())
+   this.extensions(SpringExtension())
    "empty test should always be green" {
    }
 })

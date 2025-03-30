@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine.extensions.guarantees
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class BeforeTestExecutionOrderTest : FunSpec() {
 
    var order = ""
@@ -23,7 +23,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "a"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "b"
          }
@@ -39,7 +39,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "d"
       }
 
-      extensions(
+      this@BeforeTestExecutionOrderTest.extensions(
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                order += "e"
@@ -62,7 +62,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "h"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "i"
          }

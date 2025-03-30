@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.internal
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.withContext
@@ -15,6 +17,7 @@ class FooContext(val value: Any) : AbstractCoroutineContextElement(Key) {
 suspend fun foo(): Any? = coroutineContext[FooContext]?.value
 
 // the coroutine context used by a test case should inherit the context from a test case extension
+@EnabledIf(NotMacOnGithubCondition::class)
 class CoroutineContextTest : FunSpec() {
    init {
       aroundTest { (testCase, execute) ->

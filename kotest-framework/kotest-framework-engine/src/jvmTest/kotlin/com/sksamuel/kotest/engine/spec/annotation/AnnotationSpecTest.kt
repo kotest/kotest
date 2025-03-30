@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -10,7 +10,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class AnnotationSpecTest : DescribeSpec({
 
    describe("An AnnotationSpec") {
