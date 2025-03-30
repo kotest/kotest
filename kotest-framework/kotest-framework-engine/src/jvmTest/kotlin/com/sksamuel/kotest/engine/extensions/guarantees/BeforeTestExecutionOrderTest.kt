@@ -23,7 +23,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "a"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "b"
          }
@@ -39,7 +39,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "d"
       }
 
-      extensions(
+      this@BeforeTestExecutionOrderTest.extensions(
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                order += "e"
@@ -62,7 +62,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "h"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "i"
          }

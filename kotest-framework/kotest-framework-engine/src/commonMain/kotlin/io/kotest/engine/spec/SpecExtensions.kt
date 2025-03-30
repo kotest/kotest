@@ -64,7 +64,7 @@ internal class SpecExtensions(
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
       logger.log { Pair(spec::class.bestName(), "afterSpec $spec") }
 
-      spec.registeredAutoCloseables().let { closeables ->
+      spec.autoCloseables().let { closeables ->
          logger.log { Pair(spec::class.bestName(), "Closing ${closeables.size} autocloseables [$closeables]") }
          closeables.forEach {
             if (it.isInitialized()) it.value.close() else Unit
