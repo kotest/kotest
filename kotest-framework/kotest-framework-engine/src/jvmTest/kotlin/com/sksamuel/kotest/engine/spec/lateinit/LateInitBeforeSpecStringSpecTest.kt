@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.engine.spec.lateinit
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class LateInitBeforeSpecStringSpecTest : StringSpec() {
 
    private lateinit var string: String

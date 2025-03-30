@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.parallelism
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.TestExecutionMode
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 
 val linux = System.getProperty("os.name").lowercase().contains("linux")
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ParallelTests : FunSpec() {
    init {
 

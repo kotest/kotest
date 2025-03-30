@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.coroutines
 import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import kotlinx.coroutines.delay
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 
 @Isolate
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class CallbackCoroutinesTest : FunSpec({
 
    lateinit var start: TimeMark

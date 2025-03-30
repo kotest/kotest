@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
@@ -27,7 +27,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ArrayTest : DescribeSpec({
    describe("ByteArray should") {
       it("generate specified lengths") {

@@ -11,3 +11,7 @@ class CICondition : EnabledCondition {
 class NotCICondition : EnabledCondition {
    override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("CI") != "true"
 }
+
+class GithubActionCondition : EnabledCondition {
+   override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("GITHUB_ACTION") != null
+}
