@@ -81,8 +81,9 @@ abstract class Spec : TestConfiguration() {
    /**
     * A [CoroutineScope] that can be used to launch spec level coroutines.
     *
-    * A spec will not be completed until all specs launched on this scope return.
+    * A spec will not be completed until all coroutines launched on this scope return.
     */
+   @ExperimentalKotest
    lateinit var scope: CoroutineScope
 
    /**
