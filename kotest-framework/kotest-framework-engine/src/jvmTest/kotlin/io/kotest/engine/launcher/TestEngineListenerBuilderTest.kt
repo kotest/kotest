@@ -1,10 +1,13 @@
 package io.kotest.engine.launcher
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@EnabledIf(NotMacOnGithubCondition::class)
 class TestEngineListenerBuilderTest : FunSpec() {
    init {
 

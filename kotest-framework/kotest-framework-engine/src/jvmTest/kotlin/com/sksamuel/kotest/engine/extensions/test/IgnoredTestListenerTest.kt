@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.engine.extensions.test
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class IgnoredTestListenerTest : FunSpec({
 
    val ignoredTests = hashSetOf<String>()

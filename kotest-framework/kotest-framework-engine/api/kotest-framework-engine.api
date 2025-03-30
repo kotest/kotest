@@ -847,6 +847,11 @@ public final class io/kotest/core/annotation/enabledif/CICondition : io/kotest/c
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
+public final class io/kotest/core/annotation/enabledif/GithubActionCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
 public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
@@ -868,6 +873,11 @@ public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/ko
 }
 
 public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kotest/core/annotation/EnabledCondition {
+	public fun <init> ()V
+	public fun enabled (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/enabledif/NotMacOnGithubCondition : io/kotest/core/annotation/EnabledCondition {
 	public fun <init> ()V
 	public fun enabled (Lkotlin/reflect/KClass;)Z
 }

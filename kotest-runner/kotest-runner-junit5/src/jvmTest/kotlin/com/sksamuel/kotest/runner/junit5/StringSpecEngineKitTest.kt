@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -21,7 +21,7 @@ fun Events.shouldHaveNames(vararg names: String) =
 
 fun Events.shouldBeEmpty() = list().shouldBeEmpty()
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class StringSpecEngineKitTest : FunSpec({
 
    test("verify all events") {

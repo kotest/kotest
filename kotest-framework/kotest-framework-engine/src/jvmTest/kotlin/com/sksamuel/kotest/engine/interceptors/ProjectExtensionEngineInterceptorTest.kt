@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
@@ -12,7 +12,7 @@ import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class ProjectExtensionEngineInterceptorTest : FunSpec({
 
    test("should invoke all extensions") {
