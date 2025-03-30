@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -12,7 +12,7 @@ import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.shouldBe
 import java.io.File
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TempDirTest : FunSpec({
 
    test("temp directory should be removed after the spec is completed") {

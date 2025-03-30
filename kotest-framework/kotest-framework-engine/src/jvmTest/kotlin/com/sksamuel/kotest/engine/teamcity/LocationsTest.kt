@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine.teamcity
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.teamcity.Locations
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class LocationsTest : FunSpec({
 
    test("ClassSource hint") {

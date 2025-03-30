@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -13,7 +13,7 @@ import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
    test("ExceptionCapturingTestExecutionInterceptor should capture assertion errors") {

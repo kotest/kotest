@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Tags
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
@@ -20,7 +20,7 @@ import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.booleans.shouldBeTrue
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TagsExcludedDiscoveryExtensionTest : FunSpec() {
    init {
 

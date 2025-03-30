@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineDispatcherFactoryTestInterceptor : DescribeSpec() {
    init {
       describe("CoroutineDispatcherFactoryTest") {

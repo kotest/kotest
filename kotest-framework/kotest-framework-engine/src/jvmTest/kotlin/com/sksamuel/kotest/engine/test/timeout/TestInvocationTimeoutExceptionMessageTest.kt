@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 // tests that the values in the timeout exception are populated correctly
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestInvocationTimeoutExceptionMessageTest : FunSpec() {
    init {
 

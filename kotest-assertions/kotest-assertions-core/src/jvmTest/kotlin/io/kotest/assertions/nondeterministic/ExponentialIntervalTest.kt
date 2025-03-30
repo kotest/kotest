@@ -2,7 +2,7 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
@@ -12,7 +12,7 @@ import kotlin.math.pow
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ExponentialIntervalTest : FunSpec() {
    init {
       test("exponential interval should have a reasonable default next") {

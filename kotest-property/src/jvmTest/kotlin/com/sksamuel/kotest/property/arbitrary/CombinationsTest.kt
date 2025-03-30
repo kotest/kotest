@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -14,7 +14,7 @@ import io.kotest.property.arbitrary.slice
 import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.arbitrary.take
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CombinationsTest : FunSpec({
 
    test("shuffle should maintain all elements") {

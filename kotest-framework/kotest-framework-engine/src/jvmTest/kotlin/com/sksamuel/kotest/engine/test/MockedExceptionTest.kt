@@ -2,13 +2,13 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.assertions.Exceptions
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.mpp.stacktraces
 import io.mockk.mockk
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class MockedExceptionTest : FunSpec() {
    init {
       test("stacktraces should not error on mocked exception") {

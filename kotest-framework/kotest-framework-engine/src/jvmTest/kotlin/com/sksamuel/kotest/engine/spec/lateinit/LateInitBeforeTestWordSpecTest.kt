@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.engine.spec.lateinit
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class LateInitBeforeTestWordSpecTest : WordSpec() {
 
    private lateinit var string: String

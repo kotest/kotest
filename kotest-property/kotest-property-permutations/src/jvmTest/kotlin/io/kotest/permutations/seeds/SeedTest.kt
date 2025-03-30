@@ -2,7 +2,7 @@ package io.kotest.permutations.seeds
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,7 +17,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.random
 import kotlin.random.Random
 
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SeedTest : FunSpec({
 
    test("seeds should result in consistent randoms") {
