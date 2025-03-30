@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -17,7 +17,7 @@ import io.kotest.engine.test.scopes.NoopTestScope
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class InvocationTimeoutInterceptorTest : FunSpec() {
    init {
       test("InvocationTimeoutInterceptor should error after timeout") {

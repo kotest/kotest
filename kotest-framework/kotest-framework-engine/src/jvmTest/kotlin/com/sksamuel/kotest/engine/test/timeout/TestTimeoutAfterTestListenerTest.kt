@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("BlockingMethodInNonBlockingContext")
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(NotMacOnGithubCondition::class)
 class TestTimeoutAfterTestListenerTest : FunSpec() {
    init {
 

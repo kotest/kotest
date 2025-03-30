@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.spec.dsl.aftereach
 
 import io.kotest.core.annotation.Description
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FreeSpec
@@ -13,6 +15,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 @Description("Tests that afterEach cannot be defined after a test")
+@EnabledIf(NotMacOnGithubCondition::class)
 class AfterEachPlacementRestrictionTest : FunSpec() {
    init {
 
