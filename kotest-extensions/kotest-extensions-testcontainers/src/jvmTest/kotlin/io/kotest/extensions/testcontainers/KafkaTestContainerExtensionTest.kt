@@ -1,7 +1,7 @@
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.testcontainers.kafka.createStringStringConsumer
@@ -14,7 +14,7 @@ import org.testcontainers.utility.DockerImageName
 import java.time.Duration
 
 @Deprecated("To be removed")
-@EnabledIf(NotMacOnGithubCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class KafkaTestContainerExtensionTest : FunSpec() {
    init {
 
