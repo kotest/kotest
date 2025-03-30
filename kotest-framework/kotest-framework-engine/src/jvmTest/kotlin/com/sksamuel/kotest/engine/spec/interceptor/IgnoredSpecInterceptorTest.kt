@@ -15,7 +15,7 @@ import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 

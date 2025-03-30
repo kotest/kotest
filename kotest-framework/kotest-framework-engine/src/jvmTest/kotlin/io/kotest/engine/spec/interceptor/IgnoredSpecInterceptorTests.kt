@@ -13,7 +13,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.datatest.withData
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 

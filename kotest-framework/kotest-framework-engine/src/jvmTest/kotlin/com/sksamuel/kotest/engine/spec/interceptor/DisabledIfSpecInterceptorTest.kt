@@ -2,8 +2,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.AlwaysFalseCondition
 import io.kotest.core.annotation.AlwaysTrueCondition
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotMacOnGithubCondition
+import io.kotest.core.annotation.DisabledIf
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.spec.SpecRef
@@ -15,17 +14,16 @@ import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
-@EnabledIf(NotMacOnGithubCondition::class)
-class EnabledIfSpecInterceptorTest : FunSpec({
+class DisabledIfInterceptorTest : FunSpec({
 
-   test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
+   test("DisabledIfInterceptor should proceed for any spec not annotated with @DisabledIf") {
       var fired = false
-      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
-         .intercept(SpecRef.Reference(MyUnannotatedSpec::class), object : NextSpecRefInterceptor {
+      DisabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
+         .intercept(SpecRef.Reference(UnannotatedSpec::class), object : NextSpecRefInterceptor {
             override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                fired = true
                return Result.success(emptyMap())
@@ -34,11 +32,11 @@ class EnabledIfSpecInterceptorTest : FunSpec({
       fired.shouldBeTrue()
    }
 
-   test("EnabledIfSpecInterceptor should proceed any spec annotated with @EnabledIf that passes predicate") {
+   test("DisabledIfInterceptor should proceed any spec annotated with @DisabledIf that fails predicate") {
       var fired = false
-      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
+      DisabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
          .intercept(
-            SpecRef.Reference(MyEnabledSpec::class),
+            SpecRef.Reference(FalseSpec::class),
             object : NextSpecRefInterceptor {
                override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                   fired = true
@@ -48,10 +46,10 @@ class EnabledIfSpecInterceptorTest : FunSpec({
       fired.shouldBeTrue()
    }
 
-   test("EnabledIfSpecInterceptor should skip any spec annotated with @EnabledIf that fails predicate") {
-      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
+   test("DisabledIfInterceptor should skip any spec annotated with @DisabledIf that fails predicate") {
+      DisabledIfInterceptor(NoopTestEngineListener, SpecExtensions())
          .intercept(
-            SpecRef.Reference(MyDisabledSpec::class),
+            SpecRef.Reference(TrueSpec::class),
             object : NextSpecRefInterceptor {
                override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                   error("boom")
@@ -59,7 +57,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
             })
    }
 
-   test("EnabledIfSpecInterceptor should fire listeners on skip") {
+   test("DisabledIfInterceptor should fire listeners on skip") {
       var fired = false
       val ext = object : IgnoredSpecListener {
          override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
@@ -70,9 +68,9 @@ class EnabledIfSpecInterceptorTest : FunSpec({
          override val extensions = listOf(ext)
       }
 
-      EnabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver(c)))
+      DisabledIfInterceptor(NoopTestEngineListener, SpecExtensions(SpecConfigResolver(c), ProjectConfigResolver(c)))
          .intercept(
-            SpecRef.Reference(MyDisabledSpec::class),
+            SpecRef.Reference(TrueSpec::class),
             object : NextSpecRefInterceptor {
                override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
                   error("boom")
@@ -83,10 +81,10 @@ class EnabledIfSpecInterceptorTest : FunSpec({
    }
 })
 
-@EnabledIf(AlwaysTrueCondition::class)
-private class MyEnabledSpec : FunSpec()
+@DisabledIf(AlwaysTrueCondition::class)
+private class TrueSpec : FunSpec()
 
-@EnabledIf(AlwaysFalseCondition::class)
-private class MyDisabledSpec : FunSpec()
+@DisabledIf(AlwaysFalseCondition::class)
+private class FalseSpec : FunSpec()
 
-private class MyUnannotatedSpec : FunSpec()
+private class UnannotatedSpec : FunSpec()

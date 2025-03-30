@@ -5,13 +5,13 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 class CICondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("CI") == "true"
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = System.getenv("CI") == "true"
 }
 
 class NotCICondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("CI") != "true"
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = System.getenv("CI") != "true"
 }
 
 class GithubActionCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = System.getenv("GITHUB_ACTION") != null
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = System.getenv("GITHUB_ACTION") != null
 }

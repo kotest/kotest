@@ -7,31 +7,31 @@ import kotlin.reflect.KClass
 private fun osName() = System.getProperty("os.name").lowercase()
 
 class MacCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("mac")
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("mac")
 }
 
 class NotMacCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !MacCondition().enabled(kclass)
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !MacCondition().evaluate(kclass)
 }
 
 class LinuxCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("linux")
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("linux")
 }
 
 class NotLinuxCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !LinuxCondition().enabled(kclass)
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !LinuxCondition().evaluate(kclass)
 }
 
 class WindowsCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("windows")
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("windows")
 }
 
 class NotWindowsCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !WindowsCondition().enabled(kclass)
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !WindowsCondition().evaluate(kclass)
 }
 
 // used by kotest to disable tests on macos when running on github actions to speed up the builds
 class NotMacOnGithubCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean =
-      !(MacCondition().enabled(kclass) && GithubActionCondition().enabled(kclass))
+   override fun evaluate(kclass: KClass<out Spec>): Boolean =
+      !(MacCondition().evaluate(kclass) && GithubActionCondition().evaluate(kclass))
 }

@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor.ref
+package io.kotest.engine.spec.interceptor.ref.callbacks
 
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.spec.SpecRef

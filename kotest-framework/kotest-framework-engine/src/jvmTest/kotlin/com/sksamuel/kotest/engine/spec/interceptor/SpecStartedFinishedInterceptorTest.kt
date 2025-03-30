@@ -8,8 +8,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
