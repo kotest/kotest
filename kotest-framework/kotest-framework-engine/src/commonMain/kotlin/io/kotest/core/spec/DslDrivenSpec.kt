@@ -5,6 +5,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.ContextAwareAfterProjectListener
 import io.kotest.core.spec.style.scopes.RootScope
+import kotlin.js.JsName
 
 /**
  * Base class for specs that allow for registration of tests via the DSL.
@@ -14,6 +15,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    /**
     * Contains the [RootTest]s that have been registered on this spec.
     */
+   @JsName("rootTests_js")
    private var rootTests = emptyList<RootTest>()
 
    private var sealed = false

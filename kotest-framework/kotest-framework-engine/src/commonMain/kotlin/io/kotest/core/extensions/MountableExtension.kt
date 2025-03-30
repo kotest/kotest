@@ -65,7 +65,7 @@ fun <CONFIG, MATERIALIZED> Spec.install(
    ext: MountableExtension<CONFIG, MATERIALIZED>,
    configure: CONFIG.() -> Unit = {}
 ): MATERIALIZED {
-   extensions(ext)
+   this@install.extensions(ext)
    return ext.mount(configure)
 }
 
@@ -74,6 +74,6 @@ fun <CONFIG, MATERIALIZED> Spec.install(
    ext: LazyMountableExtension<CONFIG, MATERIALIZED>,
    configure: CONFIG.() -> Unit = {},
 ): LazyMaterialized<MATERIALIZED> {
-   extensions(ext)
+   this@install.extensions(ext)
    return ext.mount(configure)
 }
