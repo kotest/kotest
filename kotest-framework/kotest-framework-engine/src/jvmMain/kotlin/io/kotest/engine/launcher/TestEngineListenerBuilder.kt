@@ -17,10 +17,10 @@ data class TestEngineListenerBuilder(
    companion object {
 
       // the value used to specify the team city format
-      private const val LISTENER_TC = "teamcity"
+      const val LISTENER_TC = "teamcity"
 
       // the value used to specify a console format
-      private const val LISTENER_CONSOLE = "enhanced"
+      const val LISTENER_CONSOLE = "enhanced"
 
       const val COLORS_PLAIN = "ansi16"
       const val COLORS_TRUE = "true"
