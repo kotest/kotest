@@ -6,6 +6,8 @@ import io.kotest.core.test.TestResult
 
 /**
  * Interceptors that are executed before a spec is instantiated.
+ *
+ * See [SpecInterceptor] for interceptors that are executed after a spec is instantiated.
  */
 internal interface SpecRefInterceptor {
    suspend fun intercept(
