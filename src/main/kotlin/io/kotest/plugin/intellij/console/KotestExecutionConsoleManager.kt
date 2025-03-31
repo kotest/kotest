@@ -6,8 +6,6 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
-import com.intellij.execution.testframework.sm.runner.SMTestProxy.SMRootTestProxy
-import com.intellij.execution.testframework.sm.runner.events.TestDurationStrategy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.externalSystem.execution.ExternalSystemExecutionConsoleManager
@@ -72,7 +70,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()
-      updateDurationMode(consoleView)
 
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
       callback = KotestServiceMessageCallback(consoleView, publisher)
@@ -100,20 +97,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       })
 
       return consoleView
-   }
-
-   private fun updateDurationMode(consoleView: SMTRunnerConsoleView) {
-      try {
-         // don't know why this method is not public, and cannot figure out how to override it
-         // see https://youtrack.jetbrains.com/issue/IJSDK-2340/set-duration-strategy-on-SMRootTestProxy
-         val methodName = "setDurationStrategy"
-         val method = SMRootTestProxy::class.java.getDeclaredMethod(methodName, TestDurationStrategy::class.java)
-         method.isAccessible = true
-         method.invoke(consoleView.resultsViewer.testsRootNode, TestDurationStrategy.MANUAL)
-      } catch (e: Exception) {
-         println(e)
-         e.printStackTrace()
-      }
    }
 
    /**

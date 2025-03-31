@@ -22,8 +22,8 @@ import org.jetbrains.plugins.gradle.util.GradleModuleData
 /**
  * Runs a Kotest individual test or spec using the `kotest` gradle task.
  *
- * This uses a [GradleRunConfiguration] which is an intellij provided ExternalSystemRunConfiguration
- * that runs gradle tasks.
+ * This uses a [GradleRunConfiguration] which is an intellij provided
+ * [com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration] that runs gradle tasks.
  *
  * Intellij 242+ provides a GradleRunConfigurationProducer but that isn't part of 241, so until that is
  * no longer supported we will need to extend [LazyRunConfigurationProducer].

@@ -6,7 +6,7 @@ object Constants {
    const val KOTEST_CLASS_LOCATOR_PROTOCOL = "kotest"
    const val KOTEST_GRADLE_TASK_PREFIX = "kotest"
 
-   val FrameworkId = "ioKotest"
+   const val FRAMEWORK_ID = "ioKotest"
 
 }
 

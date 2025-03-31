@@ -17,6 +17,8 @@ object GradleUtils {
    fun hasGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
       val externalProjectPath = resolveProjectPath(module) ?: return false
+
+      // returns true if any task in the project ends with kotest
       return GradleTasksIndices.getInstance(module.project)
          .findTasks(externalProjectPath)
          .any { it.name.endsWith(Constants.KOTEST_GRADLE_TASK_PREFIX) }
