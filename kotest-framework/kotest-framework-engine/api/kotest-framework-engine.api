@@ -3523,13 +3523,13 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 }
 
 public final class io/kotest/engine/launcher/LauncherArgs {
-	public static final field CANDIDATES Ljava/lang/String;
+	public static final field ARG_CANDIDATES Ljava/lang/String;
+	public static final field ARG_LISTENER Ljava/lang/String;
+	public static final field ARG_TERMCOLOR Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
-	public static final field LISTENER Ljava/lang/String;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field SPEC Ljava/lang/String;
-	public static final field TERMCOLORS Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
 	public static final field WRITER Ljava/lang/String;
 }
@@ -3539,13 +3539,9 @@ public final class io/kotest/engine/launcher/MainKt {
 }
 
 public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
-	public static final field ANSI16 Ljava/lang/String;
-	public static final field ANSI256 Ljava/lang/String;
+	public static final field COLORS_PLAIN Ljava/lang/String;
+	public static final field COLORS_TRUE Ljava/lang/String;
 	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
-	public static final field DEFAULT Ljava/lang/String;
-	public static final field ENHANCED Ljava/lang/String;
-	public static final field TEAMCITY Ljava/lang/String;
-	public static final field TRUECOLOR Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;

@@ -44,16 +44,16 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
       val candidatesFromOptions = candidates.orNull?.split(DELIMITER)
       if (candidatesFromOptions != null) return candidatesFromOptions
 
-      // If specs was omitted, then we scan the classpath
-      val specsFromScanning = TestClassDetector().detect(classpath.asFileTree)
+      // If --candidates was omitted, then we scan the classpath
+      val candidatesFromScanning = TestClassDetector().detect(classpath.asFileTree)
 //      println("specsFromScanning: $specsFromScanning")
 
       // if packages was set, we filter down to only classes in those packages
       val packagesFromOptions = packages.orNull?.split(DELIMITER)?.toSet()
       val filteredSpecs = if (packagesFromOptions == null) {
-         specsFromScanning
+         candidatesFromScanning
       } else {
-         specsFromScanning.filter { spec ->
+         candidatesFromScanning.filter { spec ->
             packagesFromOptions.contains(spec.packageName)
          }
       }
