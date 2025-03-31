@@ -32,7 +32,6 @@ class KotestServiceMessageCallback(
 
    fun tests() = proxies.size
 
-   @Suppress("UnstableApiUsage")
    override fun serviceMessage(msg: ServiceMessage) {
       println(msg)
       when (msg.messageName) {
