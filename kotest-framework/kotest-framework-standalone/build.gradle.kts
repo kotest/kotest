@@ -1,19 +1,24 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
-   `java-library`
    id("kotest-jvm-conventions")
-   application
    alias(libs.plugins.shadowjar)
 }
 
-application {
-   mainClass.set("io.kotest.engine.launcher.MainKt")
+kotlin {
+   jvm {
+      @OptIn(ExperimentalKotlinGradlePluginApi::class)
+      binaries {
+         executable {
+            mainClass.set("io.kotest.engine.launcher.MainKt")
+         }
+      }
+   }
 }
 
 tasks {
-   jar {
-      archiveClassifier.set("default")
-   }
-   shadowJar {
+   val shadowJar = withType<ShadowJar> {
       archiveClassifier.set(null as String?)
       archiveBaseName.set("kotest-framework-standalone-jvm")
       exclude("**/module-info.class")
@@ -26,7 +31,7 @@ tasks {
       finalizedBy(shadowJar)
    }
 
-   startScripts {
+   withType<CreateStartScripts> {
       dependsOn(shadowJar)
    }
 }
