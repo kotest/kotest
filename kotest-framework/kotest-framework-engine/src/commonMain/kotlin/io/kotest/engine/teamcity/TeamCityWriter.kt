@@ -17,6 +17,13 @@ internal class TeamCityWriter(
 
    private val logger = Logger(TeamCityWriter::class)
 
+   internal fun outputTestReporterAttached() {
+      val msg = TeamCityMessageBuilder
+         .testReporterAttached(prefix)
+         .build()
+      println(msg)
+   }
+
    /**
     * For a given [TestCase] will output the "test ignored" message.
     */

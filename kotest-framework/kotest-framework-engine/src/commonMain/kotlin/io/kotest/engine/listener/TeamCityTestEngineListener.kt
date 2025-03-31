@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
  */
 @KotestInternal
 class TeamCityTestEngineListener(
-   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
+   private val prefix: String = TeamCityMessageBuilder.TEAM_CITY_PREFIX,
    private val details: Boolean = true,
 ) : TestEngineListener {
 
@@ -51,7 +51,9 @@ class TeamCityTestEngineListener(
       writer.outputTestFinished(name, parent.path().value)
    }
 
-   override suspend fun engineStarted() {}
+   override suspend fun engineStarted() {
+      writer.outputTestReporterAttached()
+   }
 
    override suspend fun engineInitialized(context: EngineContext) {
       writer = TeamCityWriter(
