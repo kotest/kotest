@@ -3542,6 +3542,8 @@ public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
 	public static final field COLORS_PLAIN Ljava/lang/String;
 	public static final field COLORS_TRUE Ljava/lang/String;
 	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
+	public static final field LISTENER_CONSOLE Ljava/lang/String;
+	public static final field LISTENER_TC Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
