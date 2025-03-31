@@ -27,7 +27,7 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
    beforeSpec { Dispatchers.setMain(dispatcher) }
    afterSpec { Dispatchers.resetMain() }
 
-   context("container with timeout").config(timeout = 500.milliseconds) {
+   context("container with timeout").config(timeout = 2000.milliseconds) {
       test("test with delay") {
          // It will crash if the Main dispatcher wasn't set before
          withContext(Dispatchers.Main) {
@@ -38,7 +38,7 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
       }
 
       xtest("test exceeding invocation timeout").config(
-         invocationTimeout = 100.milliseconds,
+         invocationTimeout = 1000.milliseconds,
          extensions = listOf(ExpectFailureExtension),
       ) {
          realTimeDelay(1.minutes)

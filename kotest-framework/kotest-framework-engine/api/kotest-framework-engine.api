@@ -1438,10 +1438,6 @@ public abstract interface class io/kotest/core/listeners/IgnoredTestListener : i
 	public abstract fun ignoredTest (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/core/listeners/IgnoredTestListener$DefaultImpls {
-	public static fun ignoredTest (Lio/kotest/core/listeners/IgnoredTestListener;Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class io/kotest/core/listeners/InstantiationErrorListener : io/kotest/core/extensions/Extension {
 	public abstract fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1671,21 +1667,22 @@ public final class io/kotest/core/spec/RootTest {
 }
 
 public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguration {
+	public field scope Lkotlinx/coroutines/CoroutineScope;
 	public fun <init> ()V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public fun assertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
+	public final fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
@@ -1701,6 +1698,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
 	public final fun getRetries ()Ljava/lang/Integer;
 	public final fun getRetryDelay-FghU774 ()Lkotlin/time/Duration;
+	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
 	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
@@ -1721,6 +1719,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setIsolationMode (Lio/kotest/core/spec/IsolationMode;)V
 	public final fun setRetries (Ljava/lang/Integer;)V
 	public final fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
+	public final fun setScope (Lkotlinx/coroutines/CoroutineScope;)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
 	public final fun setTestCaseOrder (Lio/kotest/core/test/TestCaseOrder;)V
 	public final fun setTestExecutionMode (Lio/kotest/engine/concurrency/TestExecutionMode;)V
@@ -3688,11 +3687,6 @@ public final class io/kotest/engine/spec/Sorters_jvmKt {
 
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-}
-
-public final class io/kotest/engine/spec/SpecInstantiator {
-	public fun <init> (Lio/kotest/engine/extensions/ExtensionRegistry;Lio/kotest/engine/config/ProjectConfigResolver;)V
-	public final fun createAndInitializeSpec-gIAlu-s (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/engine/spec/SpecSorter {

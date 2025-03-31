@@ -99,6 +99,9 @@ private suspend fun someCoroutine() {
    }
 }
 
+/**
+ * Applies a delay that will always be real time, even if the test is running in a virtual time environment.
+ */
 suspend fun realTimeDelay(duration: Duration) {
    // Default dispatcher knows nothing about virtual time
    withContext(Dispatchers.Default) { delay(duration) }

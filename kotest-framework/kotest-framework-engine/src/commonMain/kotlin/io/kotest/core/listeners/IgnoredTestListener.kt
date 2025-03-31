@@ -7,8 +7,11 @@ import io.kotest.core.test.TestCase
  * Is notified when a test is ignored.
  */
 interface IgnoredTestListener : Extension {
+
    /**
-    * Invoked whenever [testCase] is ignored by [reason].
+    * Invoked whenever a [TestCase] is ignored.
+    *
+    * @param reason optional reason given for being ignored.
     */
-   suspend fun ignoredTest(testCase: TestCase, reason: String?): Unit = Unit
+   suspend fun ignoredTest(testCase: TestCase, reason: String?)
 }
