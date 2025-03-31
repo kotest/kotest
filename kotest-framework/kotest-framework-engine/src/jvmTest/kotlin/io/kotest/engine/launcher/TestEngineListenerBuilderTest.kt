@@ -14,7 +14,7 @@ class TestEngineListenerBuilderTest : FunSpec() {
       test("specifying teamcity should return TeamCityTestEngineListener") {
          TestEngineListenerBuilder
             .builder()
-            .withType(TestEngineListenerBuilder.TEAMCITY)
+            .withType(TestEngineListenerBuilder.LISTENER_TC)
             .build()
             .shouldBeInstanceOf<TeamCityTestEngineListener>()
       }
@@ -22,7 +22,7 @@ class TestEngineListenerBuilderTest : FunSpec() {
       test("specifying enchanced should return EnhancedConsoleTestEngineListener") {
          TestEngineListenerBuilder
             .builder()
-            .withType(TestEngineListenerBuilder.ENHANCED)
+            .withType(TestEngineListenerBuilder.LISTENER_CONSOLE)
             .build()
             .shouldBeInstanceOf<EnhancedConsoleTestEngineListener>()
       }

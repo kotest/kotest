@@ -5,18 +5,19 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
-import io.kotest.engine.launcher.LauncherArgs.CANDIDATES
+import io.kotest.engine.launcher.LauncherArgs.ARG_CANDIDATES
+import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
+import io.kotest.engine.launcher.LauncherArgs.ARG_TERMCOLOR
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
-import io.kotest.engine.launcher.LauncherArgs.LISTENER
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.SPEC
-import io.kotest.engine.launcher.LauncherArgs.TERMCOLORS
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.runBlocking
 import kotlin.reflect.KClass
@@ -24,11 +25,18 @@ import kotlin.system.exitProcess
 
 object LauncherArgs {
 
-   const val CANDIDATES = "candidates"
+   // required to pass the candidates to the engine
+   const val ARG_CANDIDATES = "candidates"
 
    // these are optional
-   const val LISTENER = "listener"
-   const val TERMCOLORS = "termcolors"
+
+   // used to specify if we want team city or console output
+   const val ARG_LISTENER = "--listener"
+
+   // used to specify the color of the output
+   const val ARG_TERMCOLOR = "--termcolor"
+
+   // used to filter to a single spec or test within a spec
    const val DESCRIPTOR = "descriptor"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
@@ -41,11 +49,12 @@ object LauncherArgs {
 /**
  * The entry point for the launcher.
  *
- * Parses the cli args, creates the listeners and creates a test launcher using a [TestEngineLauncherBuilder].
+ * Parses the cli args, creates [io.kotest.engine.listener.TestEngineListener]s and invokes
+ * the test engine using a [TestEngineLauncher].
  *
  * --- IMPORTANT NOTE ---
  * This is used by the Gradle and Intellij plugins (and other third party clients).
- * Therefore, the package name and contract for this main method *MUST* remain backwards compatible.
+ * Therefore, the package name and contract for this main method **MUST** remain backwards compatible.
  */
 fun main(args: Array<String>) {
 
@@ -54,37 +63,28 @@ fun main(args: Array<String>) {
    val launcherArgs = parseArgs(args.toList())
 //   println("Parsed args: $launcherArgs")
 
-   // The launcher *must* be told what classes are available on the classpath, the engine will not perform scanning.
+   // The enigne *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
-   // In Kotest 5 the argument was called --spec but was changed to --candidates in Kotest 6,
+   // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --candidates
    // we must support both for backwards compatibility
-   val candidatesArg = launcherArgs[CANDIDATES]
+   // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
+   val candidatesArg = launcherArgs[ARG_CANDIDATES]
       ?: launcherArgs[SPEC]
-      ?: error("The $CANDIDATES arg must be provided")
+      ?: error("The $ARG_CANDIDATES arg must be provided")
 
    @Suppress("UNCHECKED_CAST")
    val classes = candidatesArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
-   val descriptorFilter = launcherArgs[DESCRIPTOR]?.let { descriptor ->
-//      println("Making a filter from input $descriptor")
-      ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
-   }
+   val descriptorFilter = buildDescriptorFilter(launcherArgs)
 
    // Kotest 5 supported --testpath and didn't support the a descriptor selector, only the test name
    // but we can combine that with the --spec arg which we know must be present in kotest 5 if testpath is
-   val descriptorFilterKotest5 = launcherArgs[TESTPATH]?.let { test ->
-      launcherArgs[SPEC]?.let { spec ->
-         ProvidedDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
-      }
-   }
+   // this exists so people can upgrade to kotest 6 but keep the old plugin
+   // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
+   val descriptorFilterKotest5 = buildKotest5DescriptorFilter(launcherArgs)
 
-   val console = TestEngineListenerBuilder.builder()
-      .withType(
-         launcherArgs[LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]
-      ) // sets the output type, will be detected if not specified
-      .withTermColors(launcherArgs[TERMCOLORS]) // if using the console, determines the prettiness of the output
-      .build()
+   val outputListener = buildOutputTestEngineListener(launcherArgs)
 
    // we want to collect the results, so we can check if we need exit with an error
    val collector = CollectingTestEngineListener()
@@ -93,7 +93,7 @@ fun main(args: Array<String>) {
       CompositeTestEngineListener(
          collector,
          LoggingTestEngineListener,// we use this to write to the kotest log file
-         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(console))
+         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(outputListener))
       )
    ).withClasses(classes)
       .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
@@ -106,4 +106,28 @@ fun main(args: Array<String>) {
    // for example if a test keeps a thread running,
    // so we must force the exit
    if (collector.errors) exitProcess(-1) else exitProcess(0)
+}
+
+private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener {
+   return TestEngineListenerBuilder.builder()
+      .withType(
+         launcherArgs[ARG_LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]
+      ) // sets the output type, will be detected if not specified
+      .withTermColors(launcherArgs[ARG_TERMCOLOR]) // if using the console, determines the prettiness of the output
+      .build()
+}
+
+private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
+   return launcherArgs[DESCRIPTOR]?.let { descriptor ->
+//      println("Making a filter from input $descriptor")
+      ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
+   }
+}
+
+private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
+   return launcherArgs[TESTPATH]?.let { test ->
+      launcherArgs[SPEC]?.let { spec ->
+         ProvidedDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
+      }
+   }
 }
