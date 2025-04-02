@@ -5,7 +5,6 @@ import com.intellij.ide.structureView.StructureViewExtension
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.roots.TestSourcesFilter
@@ -23,9 +22,6 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  * This is used to display the tests in the structure view which are navigable.
  */
 class KotestStructureViewExtension : StructureViewExtension {
-
-   @Volatile private var cachedParent: PsiElement? = null
-   @Volatile private var cachedElements: Array<StructureViewTreeElement> = emptyArray()
 
    override fun getType(): Class<out PsiElement> {
       return KtClassOrObject::class.java
@@ -51,21 +47,9 @@ class KotestStructureViewExtension : StructureViewExtension {
       val virtualFile: VirtualFile = parent.containingFile.virtualFile ?: return emptyArray()
       if (!TestSourcesFilter.isTestSources(virtualFile, parent.project) && !testMode) return emptyArray()
 
-      // analysis doesn't work on the EDT thread
-      if (ApplicationManager.getApplication().isDispatchThread) {
-         // we only use the cached if we know we've already been refreshed
-         return if (cachedParent == parent) {
-            cachedElements
-         } else {
-            emptyArray()
-         }
-      }
-
       val spec = parent.specStyle() ?: return emptyArray()
       val tests = spec.tests(parent, false)
-      cachedParent = parent
-      cachedElements = tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
-      return cachedElements
+      return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
    }
 
    override fun getCurrentEditorElement(editor: Editor?, parent: PsiElement?): Any? {
