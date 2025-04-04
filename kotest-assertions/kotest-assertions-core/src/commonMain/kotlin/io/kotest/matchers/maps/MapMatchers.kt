@@ -137,8 +137,6 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
       )
    }
 
-   private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
-
    private fun describePossibleMatches(key: K, v: V, map: Map<K, V>): String {
       val similarKeys = if(key in map) "" else possibleMatchesDescription(map.keys, key)
       val similarOrSameMatches = if(v in map.values) sameValueForOtherKeys(v, map) else similarValues(v, map)
