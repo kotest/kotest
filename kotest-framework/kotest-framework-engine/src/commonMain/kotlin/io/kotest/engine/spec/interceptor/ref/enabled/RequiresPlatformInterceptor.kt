@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor.ref
+package io.kotest.engine.spec.interceptor.ref.enabled
 
 import io.kotest.core.annotation.RequiresPlatform
 import io.kotest.core.spec.SpecRef
@@ -12,12 +12,12 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
 
 /**
- * A [SpecRefInterceptor] which will ignore specs if they are annotated with @[RequiresPlatform]
+ * A [io.kotest.engine.spec.interceptor.SpecRefInterceptor] which will ignore specs if they are annotated with @[io.kotest.core.annotation.RequiresPlatform]
  * and the engine is not executing on that platform.
  */
 internal class RequiresPlatformInterceptor(
-  private val listener: TestEngineListener,
-  private val context: EngineContext,
+   private val listener: TestEngineListener,
+   private val context: EngineContext,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {

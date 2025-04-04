@@ -11,6 +11,7 @@ import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerInterceptor
 import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
+import io.kotest.engine.spec.interceptor.instance.CoroutineScopeInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
@@ -55,6 +56,7 @@ internal class SpecInterceptorPipeline(
 
    private fun createPipeline(specContext: SpecContext): List<SpecInterceptor> {
       return listOfNotNull(
+         CoroutineScopeInterceptor,
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.specExtensions()) else null,
          EngineContextInterceptor(this.context),
          ProjectConfigResolverSpecInterceptor(context.projectConfigResolver),

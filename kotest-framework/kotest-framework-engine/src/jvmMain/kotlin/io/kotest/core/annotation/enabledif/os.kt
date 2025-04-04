@@ -1,31 +1,31 @@
 package io.kotest.core.annotation.enabledif
 
-import io.kotest.core.annotation.EnabledCondition
+import io.kotest.core.annotation.Condition
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 private fun osName() = System.getProperty("os.name").lowercase()
 
-class MacCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("mac")
+class MacCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("mac")
 }
 
-class NotMacCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !MacCondition().enabled(kclass)
+class NotMacCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !MacCondition().evaluate(kclass)
 }
 
-class LinuxCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("linux")
+class LinuxCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("linux")
 }
 
-class NotLinuxCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !LinuxCondition().enabled(kclass)
+class NotLinuxCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !LinuxCondition().evaluate(kclass)
 }
 
-class WindowsCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = osName().contains("windows")
+class WindowsCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = osName().contains("windows")
 }
 
-class NotWindowsCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = !WindowsCondition().enabled(kclass)
+class NotWindowsCondition : Condition {
+   override fun evaluate(kclass: KClass<out Spec>): Boolean = !WindowsCondition().evaluate(kclass)
 }

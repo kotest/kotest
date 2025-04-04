@@ -1,6 +1,5 @@
-package io.kotest.engine.spec.interceptor.ref
+package io.kotest.engine.spec.interceptor.ref.enabled
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -16,7 +15,7 @@ import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
 
 /**
- * Filters any [Spec] that can be eagerly excluded based on the @[io.kotest.core.annotation.Tags]
+ * Filters any [io.kotest.core.spec.Spec] that can be eagerly excluded based on the @[io.kotest.core.annotation.Tags]
  * annotation at the class level.
  */
 internal class TagsInterceptor(

@@ -787,13 +787,26 @@ public final class io/kotest/core/WriteLogKt {
 	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class io/kotest/core/annotation/AlwaysEnabledCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/AlwaysFalseCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public final class io/kotest/core/annotation/AlwaysTrueCondition : io/kotest/core/annotation/Condition {
+	public fun <init> ()V
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
+}
+
+public abstract interface class io/kotest/core/annotation/Condition {
+	public abstract fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
 public abstract interface annotation class io/kotest/core/annotation/Description : java/lang/annotation/Annotation {
 	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class io/kotest/core/annotation/DisabledIf : java/lang/annotation/Annotation {
+	public abstract fun condition ()Ljava/lang/Class;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/DisplayName : java/lang/annotation/Annotation {
@@ -803,12 +816,8 @@ public abstract interface annotation class io/kotest/core/annotation/DisplayName
 public abstract interface annotation class io/kotest/core/annotation/DoNotParallelize : java/lang/annotation/Annotation {
 }
 
-public abstract interface class io/kotest/core/annotation/EnabledCondition {
-	public abstract fun enabled (Lkotlin/reflect/KClass;)Z
-}
-
 public abstract interface annotation class io/kotest/core/annotation/EnabledIf : java/lang/annotation/Annotation {
-	public abstract fun enabledIf ()Ljava/lang/Class;
+	public abstract fun condition ()Ljava/lang/Class;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/Ignored : java/lang/annotation/Annotation {
@@ -816,11 +825,6 @@ public abstract interface annotation class io/kotest/core/annotation/Ignored : j
 }
 
 public abstract interface annotation class io/kotest/core/annotation/Isolate : java/lang/annotation/Annotation {
-}
-
-public final class io/kotest/core/annotation/NeverEnabled : io/kotest/core/annotation/EnabledCondition {
-	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
 }
 
 public abstract interface annotation class io/kotest/core/annotation/Parallel : java/lang/annotation/Annotation {
@@ -838,74 +842,69 @@ public abstract interface annotation class io/kotest/core/annotation/Tags : java
 	public abstract fun values ()[Ljava/lang/String;
 }
 
-public final class io/kotest/core/annotation/enabledif/CICondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/CICondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/GithubActionsCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/GithubActionsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/LinuxCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/LinuxOnlyGithubCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/LinuxOnlyGithubCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/LinuxRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
+public final class io/kotest/core/annotation/enabledif/LinuxRunnerOsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/MacCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/MacRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
+public final class io/kotest/core/annotation/enabledif/MacRunnerOsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/NotCICondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/NotCICondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/NotLinuxCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/NotMacCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/NotWindowsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public abstract class io/kotest/core/annotation/enabledif/RunnerOsCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public final fun runneros ()Ljava/lang/String;
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/enabledif/WindowsCondition : io/kotest/core/annotation/EnabledCondition {
+public final class io/kotest/core/annotation/enabledif/WindowsRunnerOsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
-}
-
-public final class io/kotest/core/annotation/enabledif/WindowsRunnerOsCondition : io/kotest/core/annotation/enabledif/RunnerOsCondition {
-	public fun <init> ()V
-	public fun enabled (Lkotlin/reflect/KClass;)Z
+	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
 public abstract class io/kotest/core/config/AbstractPackageConfig {
@@ -1438,10 +1437,6 @@ public abstract interface class io/kotest/core/listeners/IgnoredTestListener : i
 	public abstract fun ignoredTest (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/core/listeners/IgnoredTestListener$DefaultImpls {
-	public static fun ignoredTest (Lio/kotest/core/listeners/IgnoredTestListener;Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class io/kotest/core/listeners/InstantiationErrorListener : io/kotest/core/extensions/Extension {
 	public abstract fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1671,21 +1666,22 @@ public final class io/kotest/core/spec/RootTest {
 }
 
 public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguration {
+	public field scope Lkotlinx/coroutines/CoroutineScope;
 	public fun <init> ()V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterSpec (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterSpec (Lkotlin/jvm/functions/Function2;)V
 	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lkotlin/jvm/functions/Function2;)V
+	public final fun afterTest (Lkotlin/jvm/functions/Function2;)V
 	public fun assertionMode ()Lio/kotest/core/test/AssertionMode;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
+	public final fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
@@ -1701,6 +1697,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun getIsolationMode ()Lio/kotest/core/spec/IsolationMode;
 	public final fun getRetries ()Ljava/lang/Integer;
 	public final fun getRetryDelay-FghU774 ()Lkotlin/time/Duration;
+	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getSeverity ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public final fun getTestCaseOrder ()Lio/kotest/core/test/TestCaseOrder;
 	public final fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
@@ -1721,6 +1718,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun setIsolationMode (Lio/kotest/core/spec/IsolationMode;)V
 	public final fun setRetries (Ljava/lang/Integer;)V
 	public final fun setRetryDelay-BwNAW2A (Lkotlin/time/Duration;)V
+	public final fun setScope (Lkotlinx/coroutines/CoroutineScope;)V
 	public final fun setSeverity (Lio/kotest/core/test/TestCaseSeverityLevel;)V
 	public final fun setTestCaseOrder (Lio/kotest/core/test/TestCaseOrder;)V
 	public final fun setTestExecutionMode (Lio/kotest/engine/concurrency/TestExecutionMode;)V
@@ -3525,13 +3523,13 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 }
 
 public final class io/kotest/engine/launcher/LauncherArgs {
-	public static final field CANDIDATES Ljava/lang/String;
+	public static final field ARG_CANDIDATES Ljava/lang/String;
+	public static final field ARG_LISTENER Ljava/lang/String;
+	public static final field ARG_TERMCOLOR Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
-	public static final field LISTENER Ljava/lang/String;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field SPEC Ljava/lang/String;
-	public static final field TERMCOLORS Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
 	public static final field WRITER Ljava/lang/String;
 }
@@ -3541,13 +3539,11 @@ public final class io/kotest/engine/launcher/MainKt {
 }
 
 public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
-	public static final field ANSI16 Ljava/lang/String;
-	public static final field ANSI256 Ljava/lang/String;
+	public static final field COLORS_PLAIN Ljava/lang/String;
+	public static final field COLORS_TRUE Ljava/lang/String;
 	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
-	public static final field DEFAULT Ljava/lang/String;
-	public static final field ENHANCED Ljava/lang/String;
-	public static final field TEAMCITY Ljava/lang/String;
-	public static final field TRUECOLOR Ljava/lang/String;
+	public static final field LISTENER_CONSOLE Ljava/lang/String;
+	public static final field LISTENER_TC Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
 	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
@@ -3688,11 +3684,6 @@ public final class io/kotest/engine/spec/Sorters_jvmKt {
 
 public final class io/kotest/engine/spec/SpecInstantiationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-}
-
-public final class io/kotest/engine/spec/SpecInstantiator {
-	public fun <init> (Lio/kotest/engine/extensions/ExtensionRegistry;Lio/kotest/engine/config/ProjectConfigResolver;)V
-	public final fun createAndInitializeSpec-gIAlu-s (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/engine/spec/SpecSorter {
@@ -3903,7 +3894,7 @@ public final class io/kotest/engine/teamcity/Locations {
 
 public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
 	public static final field Companion Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Companion;
-	public static final field TeamCityPrefix Ljava/lang/String;
+	public static final field TEAM_CITY_PREFIX Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun actual (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -3927,6 +3918,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes {
 	public static final field ACTUAL Ljava/lang/String;
 	public static final field DETAILS Ljava/lang/String;
 	public static final field DURATION Ljava/lang/String;
+	public static final field DURATION_STRATEGY Ljava/lang/String;
 	public static final field EXPECTED Ljava/lang/String;
 	public static final field ID Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes;
@@ -3946,6 +3938,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Companion {
 	public final fun testFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testIgnored (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testIgnored (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public final fun testReporterAttached (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStarted (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStdErr (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -3963,6 +3956,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_FAILED Ljava/lang/String;
 	public static final field TEST_FINISHED Ljava/lang/String;
 	public static final field TEST_IGNORED Ljava/lang/String;
+	public static final field TEST_REPORTER_ATTACHED Ljava/lang/String;
 	public static final field TEST_STARTED Ljava/lang/String;
 	public static final field TEST_STD_ERR Ljava/lang/String;
 	public static final field TEST_STD_OUT Ljava/lang/String;

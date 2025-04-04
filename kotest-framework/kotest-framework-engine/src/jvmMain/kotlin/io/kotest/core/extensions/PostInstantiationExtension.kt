@@ -14,8 +14,8 @@ import io.kotest.core.spec.Spec
  * this extension will be invoked multiple times.
  *
  * Note: This extension invoked only when classes are created via reflection on the JVM.
- * Therefore, this extension is useful when you only want to invoke logic on that platform.
- * For a cross-platform instantiation extension, see [SpecInitializeExtension].
+ *
+ * For an extension that is notified for all platforms, see [io.kotest.core.listeners.InstantiationListener].
  */
 interface PostInstantiationExtension : Extension {
 

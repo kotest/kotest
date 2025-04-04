@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor.ref
+package io.kotest.engine.spec.interceptor.ref.enabled
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.spec.SpecRef
@@ -15,8 +15,8 @@ import io.kotest.mpp.IncludingSuperclasses
 import io.kotest.mpp.annotation
 
 /**
- * Evaluates any spec annotated with [EnabledIf] if the condition fails, skips the spec
- * and notifies the [TestEngineListener] that the spec is ignored.
+ * Evaluates any spec annotated with [io.kotest.core.annotation.EnabledIf] if the condition fails, skips the spec
+ * and notifies the [io.kotest.engine.listener.TestEngineListener] that the spec is ignored.
  *
  * Note: annotations are only available on the JVM.
  */
@@ -29,12 +29,13 @@ internal class EnabledIfInterceptor(
 
       val annotation = ref.kclass
          .annotation<EnabledIf>(IncludingAnnotations, IncludingSuperclasses)
-         ?.enabledIf
+         ?.condition
          ?.newInstanceNoArgConstructor()
 
-      val enabled = annotation?.enabled(ref.kclass) != false
+      val result = annotation?.evaluate(ref.kclass)
 
-      return if (enabled) {
+      // null is fine, just means there was no annotation
+      return if (result != false) {
          next.invoke(ref)
       } else {
          val message = "Disabled by @EnabledIf ($annotation)"

@@ -1,4 +1,4 @@
-package io.kotest.engine.spec.interceptor.ref
+package io.kotest.engine.spec.interceptor.ref.enabled
 
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
@@ -17,7 +17,7 @@ import io.kotest.engine.tags.parse
 import io.kotest.mpp.annotation
 
 /**
- * A [SpecRefInterceptor] which will ignore specs if they are annotated with @[RequiresTag]
+ * A [io.kotest.engine.spec.interceptor.SpecRefInterceptor] which will ignore specs if they are annotated with @[io.kotest.core.annotation.RequiresTag]
  * and those tags are not present in the runtime tag expression.
  */
 internal class RequiresTagInterceptor(

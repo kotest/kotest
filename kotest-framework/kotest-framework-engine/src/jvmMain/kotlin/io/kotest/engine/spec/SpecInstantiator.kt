@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.Extension
@@ -24,6 +25,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */
+@KotestInternal
 class SpecInstantiator(
    private val registry: ExtensionRegistry,
    private val projectConfigResolver: ProjectConfigResolver

@@ -31,7 +31,7 @@ internal class TestClassDetector {
    fun detect(inputs: FileTree): Set<TestClass> {
       parents.clear()
       inputs.filter { it.name.endsWith(".class") }.asFileTree.visit(visitor)
-      return candidates.filter { isSpecClass(parents[it] ?: "") }.map { toTestClass(it) }.toSet()
+      return candidates.filter { isSpecClass(it) }.map { toTestClass(it) }.toSet()
    }
 
    private fun toTestClass(className: String): TestClass {
@@ -50,13 +50,13 @@ internal class TestClassDetector {
    }
 
    /**
-    * Returns true if this class extends directly a spec class,
+    * Returns true if this class directly extends a spec class,
     * or indirectly via a chain of super classes.
     */
-   private fun isSpecClass(superName: String): Boolean {
+   private fun isSpecClass(className: String): Boolean {
+      val superName = parents[className] ?: return false
       if (specClasses.contains(superName)) return true
-      val superSuperName = parents[superName] ?: return false
-      return isSpecClass(superSuperName)
+      return isSpecClass(superName)
    }
 
    // basic visitor that just adds every class and its parent to the mutable map

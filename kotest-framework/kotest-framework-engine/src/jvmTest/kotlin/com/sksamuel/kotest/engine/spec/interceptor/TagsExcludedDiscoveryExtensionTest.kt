@@ -16,7 +16,7 @@ import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.booleans.shouldBeTrue
 
