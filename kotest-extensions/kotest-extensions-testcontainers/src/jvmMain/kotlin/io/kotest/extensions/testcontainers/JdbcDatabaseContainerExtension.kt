@@ -101,7 +101,7 @@ class JdbcDatabaseContainerExtension(
    }
 
    override suspend fun beforeSpec(spec: Spec) {
-      beforeSpec(spec)
+      this.beforeSpec(spec)
    }
 
    override suspend fun afterSpec(spec: Spec) {
