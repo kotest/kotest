@@ -30,7 +30,7 @@ mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.0.1"
-testcontainers = "1.20.4"
+testcontainers = "1.20.6"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
