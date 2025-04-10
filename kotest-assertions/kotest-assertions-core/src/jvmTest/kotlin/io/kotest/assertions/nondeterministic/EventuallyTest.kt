@@ -149,7 +149,7 @@ class EventuallyTest : FunSpec() {
          result.invocationTimes.shouldContainExactly(0.milliseconds)
       }
 
-      test("fail tests that throw unexpected exception types") {
+      test("fail tests that throw unexpected exception types defined by a set") {
          val start = nonDeterministicTestTimeSource().markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
@@ -161,10 +161,26 @@ class EventuallyTest : FunSpec() {
                throw ArrayIndexOutOfBoundsException()
             }
          }
-         failure.message shouldContain "Block failed after 5s; attempted 200 time(s)"
+         failure.message shouldContain "Block failed after 0s; attempted 1 time(s)"
          failure.message shouldContain "The first error was caused by: \njava.lang.ArrayIndexOutOfBoundsException"
-         failure.message shouldContain "The last error was caused by: \njava.lang.ArrayIndexOutOfBoundsException"
-         start.elapsedNow() shouldBe config.duration
+         start.elapsedNow() shouldBe 0.seconds
+      }
+
+      test("fail tests that throw unexpected exception types defined by a function") {
+         val start = nonDeterministicTestTimeSource().markNow()
+         val config = eventuallyConfig {
+            duration = 5.seconds
+            expectedExceptionsFn = { ex -> ex is IOException }
+         }
+
+         val failure = shouldFail {
+            testEventually(config) {
+               throw ArrayIndexOutOfBoundsException()
+            }
+         }
+         failure.message shouldContain "Block failed after 0s; attempted 1 time(s)"
+         failure.message shouldContain "The first error was caused by: \njava.lang.ArrayIndexOutOfBoundsException"
+         start.elapsedNow() shouldBe 0.seconds
       }
 
       test("pass tests that throws FileNotFoundException for some time") {
