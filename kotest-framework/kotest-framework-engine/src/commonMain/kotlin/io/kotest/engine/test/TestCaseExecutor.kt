@@ -50,14 +50,7 @@ internal class TestCaseExecutor(
 
       val timeMark = TimeSource.Monotonic.markNow()
 
-      // JS platforms require extra care when runTest is used, so skip it for now.
-      // Issue: https://github.com/kotest/kotest/issues/4077
-      val useCoroutineTestScope = when (platform) {
-         Platform.JVM, Platform.Native -> context.testConfigResolver.coroutineTestScope(testCase)
-         Platform.JS, Platform.WasmJs -> if (context.testConfigResolver.coroutineTestScope(testCase)) {
-            error("Configuration 'coroutineTestScope' is unsupported on $platform")
-         } else false
-      }
+      val useCoroutineTestScope = context.testConfigResolver.coroutineTestScope(testCase)
 
       val interceptors = listOfNotNull(
          DescriptorPathContextInterceptor,
