@@ -14,9 +14,10 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.intellij.lang.annotations.Language
 import kotlin.contracts.contract
 
-inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T) {
+inline fun <reified T> String?.shouldContainJsonKeyValue(@Language("JSONPath") path: String, value: T) {
    contract {
       returns() implies (this@shouldContainJsonKeyValue != null)
    }
@@ -24,10 +25,10 @@ inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T)
    this should containJsonKeyValue(path, value)
 }
 
-inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: T) =
+inline fun <reified T> String.shouldNotContainJsonKeyValue(@Language("JSONPath") path: String, value: T) =
    this shouldNot containJsonKeyValue(path, value)
 
-inline fun <reified T> containJsonKeyValue(path: String, t: T) =
+inline fun <reified T> containJsonKeyValue(@Language("JSONPath") path: String, t: T) =
    containJsonKeyValue(path, t, t?.let { it::class.java } ?: Nothing::class.java)
 
 @KotestInternal
@@ -182,4 +183,3 @@ internal data class JsonSubPathJsonArrayTooShort(
 internal data object JsonSubPathNotFound: JsonSubPathSearchOutcome {
    override fun description() = ""
 }
-
