@@ -48,7 +48,7 @@ blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blo
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
-jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.1" }
+jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
