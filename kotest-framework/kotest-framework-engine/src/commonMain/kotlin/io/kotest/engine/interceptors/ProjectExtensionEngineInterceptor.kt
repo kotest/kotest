@@ -15,11 +15,11 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: NextEngineInterceptor
+      execute: NextEngineInterceptor,
    ): EngineResult {
 
       var result: EngineResult = EngineResult.empty
-      val initial: suspend (ProjectContext) -> Unit = { result = execute(it.toEngineContext(context, context.platform, context.state)) }
+      val initial: suspend (ProjectContext) -> Unit = { result = execute(it.toEngineContext(context, context.platform)) }
       val chain = context.projectConfigResolver.extensions()
          .filterIsInstance<ProjectExtension>()
          .foldRight(initial) { extension, acc: suspend (ProjectContext) -> Unit ->

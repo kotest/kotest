@@ -54,7 +54,6 @@ data class EngineContext(
    val specConfigResolver: SpecConfigResolver,
    val testConfigResolver: TestConfigResolver,
    val platform: Platform,
-   val state: MutableMap<String, Any>, // mutable map that can be used for storing state during the engine execution
 ) {
 
    internal fun specExtensions() = SpecExtensions(specConfigResolver, projectConfigResolver)
@@ -75,7 +74,6 @@ data class EngineContext(
             testConfigResolver = TestConfigResolver(projectConfig, registry),
             projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
             platform = platform,
-            state = mutableMapOf(),
          )
       }
 
@@ -97,7 +95,6 @@ data class EngineContext(
             testConfigResolver = TestConfigResolver(projectConfig, registry),
             projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
             platform = platform,
-            state = mutableMapOf(),
          )
       }
 
@@ -112,7 +109,6 @@ data class EngineContext(
          testConfigResolver = TestConfigResolver(null, registry),
          projectConfigResolver = ProjectConfigResolver(null, registry),
          platform = Platform.JVM,
-         state = mutableMapOf(),
       )
    }
 
@@ -130,7 +126,6 @@ data class EngineContext(
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
          platform = platform,
-         state = state,
       )
    }
 
@@ -145,7 +140,6 @@ data class EngineContext(
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
          platform = platform,
-         state = state,
       )
    }
 
@@ -160,7 +154,6 @@ data class EngineContext(
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
          platform,
-         state,
       )
    }
 
@@ -175,7 +168,6 @@ data class EngineContext(
          specConfigResolver = SpecConfigResolver(projectConfig, registry),
          testConfigResolver = TestConfigResolver(projectConfig, registry),
          platform,
-         state,
       )
    }
 
@@ -190,7 +182,6 @@ data class EngineContext(
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
          platform,
-         state,
       )
    }
 }
@@ -198,7 +189,6 @@ data class EngineContext(
 internal fun ProjectContext.toEngineContext(
    context: EngineContext,
    platform: Platform,
-   state: MutableMap<String, Any>
 ): EngineContext {
    return EngineContext(
       suite,
@@ -210,7 +200,6 @@ internal fun ProjectContext.toEngineContext(
       SpecConfigResolver(projectConfig, context.registry),
       TestConfigResolver(projectConfig, context.registry),
       platform,
-      state,
    )
 }
 

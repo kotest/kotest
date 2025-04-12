@@ -13,18 +13,22 @@ import io.kotest.engine.config.ProjectConfigLoader
 internal object SystemPropertiesEngineInterceptor : EngineInterceptor {
    override suspend fun intercept(
       context: EngineContext,
-      execute: NextEngineInterceptor
+      execute: NextEngineInterceptor,
    ): EngineResult {
       KotestPropertiesLoader.loadAndApplySystemPropsFile()
       return execute(context)
    }
 }
 
+/**
+ * An [EngineInterceptor] that loads an [io.kotest.core.config.AbstractProjectConfig] from the classpath
+ * using a [ProjectConfigLoader]. This replaces any config set programatically on the engine.
+ */
 @JVMOnly
 internal object ProjectConfigurationEngineInterceptor : EngineInterceptor {
    override suspend fun intercept(
       context: EngineContext,
-      execute: NextEngineInterceptor
+      execute: NextEngineInterceptor,
    ): EngineResult {
       val config = ProjectConfigLoader.load()
       return if (config == null)
