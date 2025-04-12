@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

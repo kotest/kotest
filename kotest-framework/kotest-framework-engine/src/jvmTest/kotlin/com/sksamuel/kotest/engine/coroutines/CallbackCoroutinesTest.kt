@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.coroutines
 import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import kotlinx.coroutines.delay

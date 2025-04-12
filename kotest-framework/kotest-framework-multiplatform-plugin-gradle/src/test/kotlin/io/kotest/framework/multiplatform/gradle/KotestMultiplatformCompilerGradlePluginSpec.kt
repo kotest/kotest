@@ -5,7 +5,7 @@ package io.kotest.framework.multiplatform.gradle
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne

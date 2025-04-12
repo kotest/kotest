@@ -1,6 +1,5 @@
-package io.kotest.core.annotation.enabledif
+package io.kotest.core.annotation
 
-import io.kotest.core.annotation.Condition
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 

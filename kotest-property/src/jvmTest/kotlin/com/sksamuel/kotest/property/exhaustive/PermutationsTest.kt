@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe

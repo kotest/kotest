@@ -3,7 +3,7 @@ package com.sksamuel.kotest.property.shrinking
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAll

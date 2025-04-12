@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener

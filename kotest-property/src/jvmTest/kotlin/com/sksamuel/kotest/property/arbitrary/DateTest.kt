@@ -3,14 +3,13 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotBeEmpty
-import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
@@ -49,7 +48,6 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
 import kotlin.time.Duration.Companion.hours
 
 @EnabledIf(LinuxOnlyGithubCondition::class)

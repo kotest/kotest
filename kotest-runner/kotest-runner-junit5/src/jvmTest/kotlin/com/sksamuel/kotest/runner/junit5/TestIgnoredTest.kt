@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.NotCICondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
@@ -10,7 +10,7 @@ import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 import kotlin.streams.asSequence
 
-@EnabledIf(NotCICondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestIgnoredTest : FunSpec() {
    init {
       test("should be notified of ignored tests") {

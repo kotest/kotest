@@ -3,7 +3,7 @@ package com.sksamuel.kotest.assertions
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.assertionCounterContextElement
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe

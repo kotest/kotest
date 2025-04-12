@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
 import io.kotest.core.spec.style.FunSpec
