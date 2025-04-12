@@ -5,8 +5,10 @@ import io.kotest.core.extensions.Extension
 
 /**
  * A [DescriptorFilter] can be used to filter specs and tests before they are executed.
+ *
  * A given [Descriptor] must be included by all filters for it to be considered enabled at runtime.
- * If no filters are registered, then no specs and tests will be excluded.
+ *
+ * If no filters are registered, then all specs and tests will be executed.
  */
 interface DescriptorFilter : Extension {
 
