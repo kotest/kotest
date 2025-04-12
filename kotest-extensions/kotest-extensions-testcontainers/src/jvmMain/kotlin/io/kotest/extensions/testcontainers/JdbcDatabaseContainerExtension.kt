@@ -68,6 +68,7 @@ class JdbcDatabaseContainerExtension(
    AfterTestListener,
    AfterSpecListener {
 
+   private val beforeSpecFn = beforeSpec
    private var dataSource: HikariDataSource? = null
 
    /**
@@ -101,7 +102,7 @@ class JdbcDatabaseContainerExtension(
    }
 
    override suspend fun beforeSpec(spec: Spec) {
-      beforeSpec(spec)
+      beforeSpecFn(spec)
    }
 
    override suspend fun afterSpec(spec: Spec) {
