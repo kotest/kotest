@@ -1,7 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener

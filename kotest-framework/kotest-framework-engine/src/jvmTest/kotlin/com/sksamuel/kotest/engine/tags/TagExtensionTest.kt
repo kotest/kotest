@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec

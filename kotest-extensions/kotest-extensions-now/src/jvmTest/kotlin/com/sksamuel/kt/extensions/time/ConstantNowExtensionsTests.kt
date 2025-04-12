@@ -1,7 +1,7 @@
 package com.sksamuel.kt.extensions.time
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs

@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Tags
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension

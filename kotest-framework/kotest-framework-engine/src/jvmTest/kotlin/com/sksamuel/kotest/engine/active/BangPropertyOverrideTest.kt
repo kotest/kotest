@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.booleans.shouldBeTrue

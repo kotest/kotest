@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FunSpec
