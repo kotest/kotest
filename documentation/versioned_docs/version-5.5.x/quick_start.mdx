@@ -15,13 +15,13 @@ Kotest is divided into several, stand alone, subprojects, each of which can be u
 * [Property testing](proptest/index.mdx)
 
 You can decide to go _all in_ on Kotest, and use all three together, or you can choose to one or more modules in conjunction with other projects.
-For example, you could use the assertions library with JUnit, or you could use the test framework with another assertions library like assertj.
+For example, you could use the assertions library with JUnit, or you could use the test framework with another assertions library like AssertJ.
 
 This page gives setup instructions for various combinations of projects and targets.
 
 :::note
 Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
+If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or Android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
 :::
 
 ## Test Framework
@@ -40,9 +40,9 @@ To enable Kotest for multiple platforms, combine the steps for the individual pl
    ]}>
    <TabItem value="JVM/Gradle">
 
-Kotest on the JVM uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
+Kotest on the JVM uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) Gradle plugin.
 For Gradle 4.6 and higher this is as simple as adding `useJUnitPlatform()` inside the tasks with type `Test`
-      and then adding the Kotest junit5 runner dependency.
+    and then adding the Kotest JUnit5 runner dependency.
 
 If you are using Gradle + Groovy then:
 
@@ -74,7 +74,7 @@ A working multiplatform project with JVM, native and Javascript all configured, 
 https://github.com/kotest/kotest-examples-multiplatform
 :::
 
-Add the [Kotest multiplatform gradle plugin](https://plugins.gradle.org/plugin/io.kotest.multiplatform) to your build.
+Add the [Kotest Multiplatform Gradle plugin](https://plugins.gradle.org/plugin/io.kotest.multiplatform) to your build.
 
 For example:
 
@@ -112,13 +112,13 @@ able to use Kotest for testing.
 
 Write your tests using [FunSpec](framework/styles.md#fun-spec), [ShouldSpec](framework/styles.md#should-spec) or [StringSpec](framework/styles.md#string-spec).
       Tests can be placed in either `commonTest` or `jsTest`
-source sets. Run your tests using the `gradle check` command.
+source sets. Run your tests using the `gradle check` task.
 
-The Javascript test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
-      based configuration will not work as Kotlin does not expose annotations at runtime to javascript code.
+The JavaScript test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+    based configuration will not work as Kotlin does not expose annotations at runtime to JavaScript code.
 
 :::note
-Tests for Javascript cannot nest tests. This is due to the underlying Javascript test runners (such as Mocha or Karma)
+Tests for JavaScript cannot nest tests. This is due to the underlying JavaScript test runners (such as Mocha or Karma)
       not supporting promises in parent tests, which is incompatible with coroutines and in Kotest every test scope is a coroutine.
       This is why the supported specs are limited to `FunSpec`, `ShouldSpec` and `StringSpec`.
 :::
@@ -177,7 +177,7 @@ the `gradle check` task.
    </TabItem>
    <TabItem value="JVM/Maven">
 
-For maven you must configure the surefire plugin for junit tests.
+For Maven you must configure the Surefire plugin for JUnit tests.
 
 ```xml
 <plugin>
@@ -208,8 +208,8 @@ The following steps enable Kotest to be used for unit and integration tests, whe
 `src/test` folder of your module.
 :::
 
-Kotest on Android uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
-This requires configuring the android test options block in your build file and then adding the Kotest junit5 runner dependency.
+Kotest on Android uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) Gradle plugin.
+This requires configuring the Android test options block in your build file and then adding the Kotest JUnit5 Runner dependency.
 
 ```kotlin
 android.testOptions {
@@ -279,13 +279,13 @@ Add the following dependency to your build.
    </TabItem>
    <TabItem value="Multiplatform">
 
-Add the following dependency to your commonTest dependencies block:
+Add the following dependency to your `commonTest` dependencies block:
 
 ```groovy
 implementation 'io.kotest:kotest-assertions-core:$version'
 ```
 
-Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+Alternatively, add the dependency to a specific target. For example, we could add to the JavaScript target only.
 
 ```kotlin
 kotlin {
@@ -360,14 +360,14 @@ Add the following dependency to your build.
    </TabItem>
    <TabItem value="Multiplatform">
 
-Add the following dependency to your commonTest dependencies block:
+Add the following dependency to your `commonTest` dependencies block:
 
 ```groovy
 implementation 'io.kotest:kotest-property:$version'
 ```
 
 
-Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+Alternatively, add the dependency to a specific target. For example, we could add to the JavaScript target only.
 
 ```kotlin
 kotlin {
@@ -401,5 +401,5 @@ Snapshot are automatically published on each commit to master.
 If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
 
 ```
-https://s01.oss.sonatype.org/content/repositories/snapshots
+https://oss.sonatype.org/content/repositories/snapshots
 ```
