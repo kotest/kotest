@@ -4,9 +4,10 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.intellij.lang.annotations.Language
 import kotlin.contracts.contract
 
-infix fun String?.shouldContainJsonKey(path: String) {
+infix fun String?.shouldContainJsonKey(@Language("JSONPath") path: String) {
    contract {
       returns() implies (this@shouldContainJsonKey != null)
    }
@@ -14,10 +15,10 @@ infix fun String?.shouldContainJsonKey(path: String) {
    this should containJsonKey(path)
 }
 
-infix fun String.shouldNotContainJsonKey(path: String) =
+infix fun String.shouldNotContainJsonKey(@Language("JSONPath") path: String) =
    this shouldNot containJsonKey(path)
 
-fun containJsonKey(path: String) = object : Matcher<String?> {
+fun containJsonKey(@Language("JSONPath") path: String) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
       val sub = when (value) {

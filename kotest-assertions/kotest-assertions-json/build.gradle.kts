@@ -9,6 +9,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            compileOnly(libs.jetbrainsAnnotations)
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.serialization.json)
             implementation(projects.kotestAssertions.kotestAssertionsShared)
@@ -27,6 +28,11 @@ kotlin {
          dependencies {
             implementation(libs.jayway.json.path)
          }
+      }
+
+      // compileOnly is not supported in these source-sets, so needs must expose it as api too
+      named(listOf("nativeMain", "jsMain", "wasmJsMain")::contains).configureEach {
+         dependencies { api(libs.jetbrainsAnnotations) }
       }
    }
 }
