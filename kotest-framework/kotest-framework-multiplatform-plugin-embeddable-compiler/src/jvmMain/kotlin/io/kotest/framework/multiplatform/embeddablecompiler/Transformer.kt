@@ -81,6 +81,8 @@ abstract class Transformer(
       val specs = specs.joinToString(",") { it.kotlinFqName.asString() + "()" }
       val configs = if (configs.isEmpty()) "" else ".withProjectConfig(${configs.first().kotlinFqName.asString()}())"
 
+      // todo move this to a generated file not a source written file
+      // requires an answer to this https://discuss.kotlinlang.org/t/create-new-file-using-compiler-plugin/30225
       val myFile = File(outputDir, "runKotest.kt")
       myFile.writeText(
          """
@@ -90,25 +92,13 @@ import io.kotest.engine.TestEngineLauncher
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-fun runKotestConsole() {
-   TestEngineLauncher()
+fun runKotest(type: String) {
+   val launcher = TestEngineLauncher()
    .withJs()
    .withSpecs($specs)
    $configs
-   .promise()
+   if (type === "TeamCity") launcher.withTeamCityListener().promise() else launcher.promise()
 }
-
-@OptIn(ExperimentalJsExport::class)
-@JsExport
-fun runKotestTeamCity() {
-   TestEngineLauncher()
-   .withTeamCityListener()
-   .withJs()
-   .withSpecs($specs)
-   $configs
-   .promise()
-}
-
 """.trim()
       )
 //

@@ -83,8 +83,8 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
    }
 
    private val withTeamCityListenerMethodNameFn: IrSimpleFunctionSymbol by lazy {
-      launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
+      launcherClass.getSimpleFunction(EntryPoint.WITH_TEAM_CITY_LISTENER_METHOD_NAME)
+         ?: error("Cannot find function ${EntryPoint.WITH_TEAM_CITY_LISTENER_METHOD_NAME}")
    }
 
    private val eagerAnnotationConstructor by lazy {
