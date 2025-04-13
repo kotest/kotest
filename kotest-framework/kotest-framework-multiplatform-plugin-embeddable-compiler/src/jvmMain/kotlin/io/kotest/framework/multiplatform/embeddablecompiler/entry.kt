@@ -38,7 +38,7 @@ internal object EntryPoint {
    const val WITH_JS_METHOD_NAME = "withJs"
 
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
-   const val WithWasmJsMethodName = "withWasmJs"
+   const val WITH_WASM_JS_METHOD_NAME = "withWasmJs"
 
    // the method invoked to set the invoked platform, must exist on TestEngineLauncher
    const val WithNativeMethodName = "withNative"

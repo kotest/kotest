@@ -15,7 +15,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
       val transformer = when {
          platform.isJs() -> JsTransformer(EntryPoint.WITH_JS_METHOD_NAME, messageCollector, pluginContext)
-         platform.isWasm() -> JsTransformer(EntryPoint.WithWasmJsMethodName, messageCollector, pluginContext)
+         platform.isWasm() -> JsTransformer(EntryPoint.WITH_WASM_JS_METHOD_NAME, messageCollector, pluginContext)
          platform.isNative() -> NativeTransformer(messageCollector, pluginContext)
          else -> throw UnsupportedOperationException("Cannot use Kotest compiler plugin with platform: $platform")
       }

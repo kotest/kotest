@@ -8,7 +8,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.options.Option
 
-abstract class AbstractKotestTask internal constructor() : DefaultTask() {
+abstract class AbstractKotestJvmTask internal constructor() : DefaultTask() {
 
    @get:Option(option = "descriptor", description = "Filter to a single spec or test")
    @get:Input

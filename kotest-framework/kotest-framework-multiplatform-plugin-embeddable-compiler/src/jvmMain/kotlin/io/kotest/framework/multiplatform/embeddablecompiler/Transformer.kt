@@ -74,7 +74,7 @@ abstract class Transformer(
 
       // we want to write our launcher function to a well known package name, so the gradle plugin can execute it
       // so we can take any file, and strip out any package paths to get the base src path
-      // we are making an assumption the build folder contains jsTest
+      // we are making an assumption the build folder contains jsTest or wasmJsTest
       val outputDir = File(declaration.files.first().path.substringBefore("jsTest") + "jsTest/kotlin")
       messageCollector.toLogger().warning("outputDir: $outputDir")
 
@@ -90,7 +90,7 @@ import io.kotest.engine.TestEngineLauncher
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-fun main() {
+fun runKotest() {
    TestEngineLauncher()
    .withJs()
    .withSpecs($specs)

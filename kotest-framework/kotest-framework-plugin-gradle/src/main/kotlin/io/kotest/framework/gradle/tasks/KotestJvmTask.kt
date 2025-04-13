@@ -12,7 +12,7 @@ import javax.inject.Inject
 @CacheableTask // this allows gradle to cache our inputs
 abstract class KotestJvmTask @Inject internal constructor(
    private val executors: ExecOperations,
-) : AbstractKotestTask() {
+) : AbstractKotestJvmTask() {
 
    @TaskAction
    protected fun execute() {
