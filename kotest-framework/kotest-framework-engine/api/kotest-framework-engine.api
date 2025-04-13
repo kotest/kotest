@@ -784,6 +784,9 @@ public final class io/kotest/core/TupleKt {
 }
 
 public final class io/kotest/core/WriteLogKt {
+	public static final fun print (Ljava/lang/String;)V
+	public static final fun println ()V
+	public static final fun println (Ljava/lang/String;)V
 	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 
@@ -3335,6 +3338,77 @@ public final class io/kotest/engine/config/TestConfigResolver {
 	public final fun timeout-5sfh64U (Lio/kotest/core/test/TestCase;)J
 }
 
+public abstract interface class io/kotest/engine/console/ConsoleRenderer {
+	public abstract fun bold (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun brightRed (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun brightRedBold (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun brightYellow (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun brightYellowBold (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun green (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun greenBold (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun print (Ljava/lang/String;)V
+	public abstract fun println ()V
+	public abstract fun println (Ljava/lang/String;)V
+	public abstract fun red (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun redBold (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun yellow (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/console/ConsoleRenderer$DefaultImpls {
+	public static fun bold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun brightRed (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun brightRedBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun brightYellow (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun brightYellowBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun green (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun greenBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun red (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun redBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun yellow (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+	public static fun yellowBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/console/ConsoleRenderer_jvmKt {
+	public static final fun getConsoleRenderer ()Lio/kotest/engine/console/ConsoleRenderer;
+}
+
+public final class io/kotest/engine/console/MordantConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
+	public static final field INSTANCE Lio/kotest/engine/console/MordantConsoleRenderer;
+	public fun bold (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightRed (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightRedBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightYellow (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightYellowBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun green (Ljava/lang/String;)Ljava/lang/String;
+	public fun greenBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun print (Ljava/lang/String;)V
+	public fun println ()V
+	public fun println (Ljava/lang/String;)V
+	public fun red (Ljava/lang/String;)Ljava/lang/String;
+	public fun redBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun yellow (Ljava/lang/String;)Ljava/lang/String;
+	public fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/console/NoopConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
+	public static final field INSTANCE Lio/kotest/engine/console/NoopConsoleRenderer;
+	public fun bold (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightRed (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightRedBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightYellow (Ljava/lang/String;)Ljava/lang/String;
+	public fun brightYellowBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun green (Ljava/lang/String;)Ljava/lang/String;
+	public fun greenBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun print (Ljava/lang/String;)V
+	public fun println ()V
+	public fun println (Ljava/lang/String;)V
+	public fun red (Ljava/lang/String;)Ljava/lang/String;
+	public fun redBold (Ljava/lang/String;)Ljava/lang/String;
+	public fun yellow (Ljava/lang/String;)Ljava/lang/String;
+	public fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
+}
+
 public final class io/kotest/engine/coroutines/BackgroundScopeKt {
 	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
 }
@@ -3525,7 +3599,6 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_CANDIDATES Ljava/lang/String;
 	public static final field ARG_LISTENER Ljava/lang/String;
-	public static final field ARG_TERMCOLOR Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
@@ -3539,19 +3612,16 @@ public final class io/kotest/engine/launcher/MainKt {
 }
 
 public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
-	public static final field COLORS_PLAIN Ljava/lang/String;
-	public static final field COLORS_TRUE Ljava/lang/String;
 	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
 	public static final field LISTENER_CONSOLE Ljava/lang/String;
 	public static final field LISTENER_TC Ljava/lang/String;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lio/kotest/engine/listener/TestEngineListener;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
-	public static synthetic fun copy$default (Lio/kotest/engine/launcher/TestEngineListenerBuilder;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
+	public static synthetic fun copy$default (Lio/kotest/engine/launcher/TestEngineListenerBuilder;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public final fun withTermColors (Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
 	public final fun withType (Ljava/lang/String;)Lio/kotest/engine/launcher/TestEngineListenerBuilder;
 }
 
@@ -3611,15 +3681,21 @@ public final class io/kotest/engine/listener/CompositeTestEngineListener : io/ko
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
-	public fun <init> (Lcom/github/ajalt/mordant/TermColors;)V
+public class io/kotest/engine/listener/ConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
+	public fun <init> ()V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun printlnStackTrace (Ljava/lang/Throwable;I)V
 	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener : io/kotest/engine/listener/ConsoleTestEngineListener {
+	public fun <init> ()V
+	public fun printlnStackTrace (Ljava/lang/Throwable;I)V
 }
 
 public final class io/kotest/engine/listener/LoggingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {

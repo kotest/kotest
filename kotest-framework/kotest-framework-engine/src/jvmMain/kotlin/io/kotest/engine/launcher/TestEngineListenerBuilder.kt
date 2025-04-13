@@ -6,7 +6,7 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Builds a [TestEngineListener] based on the type and termcolors specified which is suitable
+ * Builds a [TestEngineListener] based on the type which is suitable
  * for test engines launched externally, by gradle or from intellij for example.
  */
 data class TestEngineListenerBuilder(
@@ -21,21 +21,17 @@ data class TestEngineListenerBuilder(
       // the value used to specify a console format
       const val LISTENER_CONSOLE = "enhanced"
 
-      const val COLORS_PLAIN = "ansi16"
-      const val COLORS_TRUE = "true"
-
       internal const val IDEA_PROP = "idea.active"
 
-      fun builder(): TestEngineListenerBuilder = TestEngineListenerBuilder(null, null)
+      fun builder(): TestEngineListenerBuilder = TestEngineListenerBuilder(null)
    }
 
    fun withType(type: String?): TestEngineListenerBuilder = copy(type = type)
-   fun withTermColors(colors: String?): TestEngineListenerBuilder = copy(termcolors = colors)
 
    fun build(): TestEngineListener {
       return when (type) {
          LISTENER_TC -> TeamCityTestEngineListener()
-         LISTENER_CONSOLE -> EnhancedConsoleTestEngineListener(colours())
+         LISTENER_CONSOLE -> EnhancedConsoleTestEngineListener()
          // if not speciifed, we'll try to detect instead
          else if isIntellij() -> TeamCityTestEngineListener()
          else -> ConsoleTestEngineListener()
@@ -44,12 +40,4 @@ data class TestEngineListenerBuilder(
 
    // this system property is added by intellij itself when running tasks
    private fun isIntellij() = System.getProperty(IDEA_PROP) != null
-
-   internal fun colours(): TermColors {
-      return when (termcolors) {
-         COLORS_TRUE -> TermColors(TermColors.Level.TRUECOLOR)
-         COLORS_PLAIN -> TermColors(TermColors.Level.ANSI16)
-         else -> TermColors()
-      }
-   }
 }

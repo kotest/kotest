@@ -20,9 +20,6 @@ internal data class TestLauncherExecBuilder(
       // used to specify if we want team city or console output
       private const val ARG_LISTENER = "--listener"
 
-      // used to specify the color of the output
-      private const val ARG_TERMCOLOR = "--termcolor"
-
       private const val ARG_TAGS = "--tags"
 
       // required to pass the candidates to the engine
@@ -36,9 +33,6 @@ internal data class TestLauncherExecBuilder(
 
       // the value used to specify a console format
       private const val LISTENER_CONSOLE = "enhanced"
-
-      private const val COLORS_PLAIN = "ansi16"
-      private const val COLORS_TRUE = "true"
 
       // note: this package cannot change as it is part of the public api
       internal const val LAUNCHER_MAIN_CLASS = "io.kotest.engine.launcher.MainKt"
@@ -87,8 +81,8 @@ internal data class TestLauncherExecBuilder(
     */
    private fun listenerArgs(): List<String> {
       return when {
-         isIntellij() -> listOf(ARG_LISTENER, LISTENER_TC, ARG_TERMCOLOR, COLORS_PLAIN)
-         else -> listOf(ARG_LISTENER, LISTENER_CONSOLE, ARG_TERMCOLOR, COLORS_TRUE)
+         isIntellij() -> listOf(ARG_LISTENER, LISTENER_TC)
+         else -> listOf(ARG_LISTENER, LISTENER_CONSOLE)
       }
    }
 

@@ -45,6 +45,10 @@ public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/ko
 	public abstract fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
 }
 
+public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	protected final fun execute ()V
+}
+
 public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 }

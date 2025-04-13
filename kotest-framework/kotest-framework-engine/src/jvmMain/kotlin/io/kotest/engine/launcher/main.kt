@@ -7,7 +7,6 @@ import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.ARG_CANDIDATES
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
-import io.kotest.engine.launcher.LauncherArgs.ARG_TERMCOLOR
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.SPEC
@@ -32,9 +31,6 @@ object LauncherArgs {
 
    // used to specify if we want team city or console output
    const val ARG_LISTENER = "--listener"
-
-   // used to specify the color of the output
-   const val ARG_TERMCOLOR = "--termcolor"
 
    // used to filter to a single spec or test within a spec
    const val DESCRIPTOR = "descriptor"
@@ -61,7 +57,7 @@ fun main(args: Array<String>) {
    println("Starting Kotest launcher with args: ${args.joinToString(";")}")
 
    val launcherArgs = parseArgs(args.toList())
-//   println("Parsed args: $launcherArgs")
+   println("Parsed args: $launcherArgs")
 
    // The enigne *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
@@ -110,16 +106,13 @@ fun main(args: Array<String>) {
 
 private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener {
    return TestEngineListenerBuilder.builder()
-      .withType(
-         launcherArgs[ARG_LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER]
-      ) // sets the output type, will be detected if not specified
-      .withTermColors(launcherArgs[ARG_TERMCOLOR]) // if using the console, determines the prettiness of the output
+      .withType(launcherArgs[ARG_LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER])
       .build()
 }
 
 private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
    return launcherArgs[DESCRIPTOR]?.let { descriptor ->
-//      println("Making a filter from input $descriptor")
+      println("Making a filter from input $descriptor")
       ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
    }
 }
