@@ -69,6 +69,10 @@ abstract class KotestPlugin : Plugin<Project> {
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = DESCRIPTION
       }
+      project.tasks.withType<KotestJsTask>().configureEach {
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = DESCRIPTION
+      }
    }
 
    private fun handleKotlinJvm(project: Project) {
@@ -103,7 +107,6 @@ abstract class KotestPlugin : Plugin<Project> {
                            }
                         }
                      }
-
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
                      KotlinPlatformType.jvm -> println("Todo jvm")

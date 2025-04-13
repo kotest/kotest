@@ -38,23 +38,6 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
     */
    private var kotestExtension: KotestPluginExtension? = null
 
-   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-      val project = kotlinCompilation.target.project
-      val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
-         ?: error("Could not find Kotest extension in $project")
-
-      return when {
-         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
-            logger.warn("Warning: the Kotest plugin has been added to $project, but kotestCompilerPluginVersion has been set to null. Kotest will not be enabled.")
-            false
-         }
-
-         kotlinCompilation is KotlinJsCompilation               -> true
-         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
-         else                                                   -> false
-      }
-   }
-
    override fun apply(target: Project) {
       kotestExtension = target.extensions.create<KotestPluginExtension>(EXTENSION_NAME).apply {
          kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
@@ -77,6 +60,23 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
          KOTEST_NATIVE_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
+
+   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
+      val project = kotlinCompilation.target.project
+      val kotestExtension = project.extensions.findByType<KotestPluginExtension>()
+         ?: error("Could not find Kotest extension in $project")
+
+      return when {
+         !kotestExtension.kotestCompilerPluginVersion.isPresent -> {
+            logger.warn("Warning: the Kotest plugin has been added to $project, but kotestCompilerPluginVersion has been set to null. Kotest will not be enabled.")
+            false
+         }
+
+         kotlinCompilation is KotlinJsCompilation               -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation   -> true
+         else                                                   -> false
+      }
+   }
 
    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> =
       providers.provider { emptyList() }
