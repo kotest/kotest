@@ -3,6 +3,7 @@ package io.kotest.framework.gradle
 import org.gradle.api.provider.Property
 
 abstract class KotestExtension internal constructor() {
+
    /**
     * Set a tag expression directly in the plugin configuration.
     * This can be useful if you want to run a subset of tests during development.

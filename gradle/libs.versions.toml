@@ -31,6 +31,7 @@ fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.0.1"
 testcontainers = "1.20.6"
+asm = "9.7.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -43,6 +44,7 @@ jvmCompiler = "21"
 gradleDaemonJvm = "21"
 
 [libraries]
+asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }

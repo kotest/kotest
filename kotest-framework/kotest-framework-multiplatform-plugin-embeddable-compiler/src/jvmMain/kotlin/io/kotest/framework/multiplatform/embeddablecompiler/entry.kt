@@ -1,6 +1,7 @@
 package io.kotest.framework.multiplatform.embeddablecompiler
 
-object EntryPoint {
+internal object EntryPoint {
+
    // we use a public val to register each spec
    const val LauncherValName = "launcher"
 
@@ -9,11 +10,13 @@ object EntryPoint {
 
    // the method invoked on TestEngineLauncher to start the tests
    // in JS we use promise() which ultimately calls into GlobalScope.promise on JS platforms
-   const val PROMISE_METHOD_NAME = "promise"
+   const val PROMISE_FUNCTION_NAME = "promise"
 
-   const val JS_ENTRY_POINT_NAME = "kotestTestEngine"
+   // this is the name of the function that is generated that contains the setup and launch of the test engine
+   // eg, this function would look something like `fun runKotest() { TestEngineLauncher().withSpecs(...).launch() }
+   const val RUN_TESTS_FUNCTION_NAME = "runKotest"
 
-   const val JsExportAnnotationClassName = "kotlin/js/JsExport"
+   const val JS_EXPORT_ANNOTATION_CLASS_NAME = "kotlin/js/JsExport"
 
    /**
     * the FQN for the class used to launch the MPP engine.
@@ -23,7 +26,7 @@ object EntryPoint {
    const val TEST_ENGINE_CLASS_NAME = "io/kotest/engine/TestEngineLauncher"
 
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
-   const val WithSpecsMethodName = "withSpecs"
+   const val WITH_SPECS_FUNCTION_NAME = "withSpecs"
 
    // the method invoked to set config on the launcher, must exist on TestEngineLauncher
    const val WITH_PROJECT_CONFIG_METHOD_NAME = "withProjectConfig"

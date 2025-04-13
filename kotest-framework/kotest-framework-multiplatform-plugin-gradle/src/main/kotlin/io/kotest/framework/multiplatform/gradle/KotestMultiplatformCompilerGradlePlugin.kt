@@ -23,10 +23,10 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
 
    companion object {
       const val EXTENSION_NAME = "kotestMultiplatform"
-      const val compilerPluginId = "io.kotest.multiplatform"
-      const val KotestGroupId = "io.kotest"
-      const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
-      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
+      const val COMPILER_PLUGIN_ID = "io.kotest.multiplatform"
+      const val KOTEST_GROUP_ID = "io.kotest"
+      const val KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-embeddable-compiler"
+      const val KOTEST_NATIVE_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-legacy-native"
    }
 
    /**
@@ -44,20 +44,20 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       }
    }
 
-   override fun getCompilerPluginId() = compilerPluginId
+   override fun getCompilerPluginId() = COMPILER_PLUGIN_ID
 
    override fun getPluginArtifact(): SubpluginArtifact =
       SubpluginArtifact(
-         KotestGroupId,
-         KotestEmbeddableCompilerArtifactId,
+         KOTEST_GROUP_ID,
+         KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
       SubpluginArtifact(
-         KotestGroupId,
-         KotestNativeArtifactId,
+         KOTEST_GROUP_ID,
+         KOTEST_NATIVE_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 

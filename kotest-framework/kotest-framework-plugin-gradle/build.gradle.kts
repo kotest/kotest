@@ -13,7 +13,7 @@ plugins {
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
-   implementation("org.ow2.asm:asm:9.7.1") // used to poke into classes to see if they are specs
+   implementation(libs.asm) // used to poke into classes to see if they are specs
    testImplementation(libs.kotlin.gradle.plugin)
 }
 
