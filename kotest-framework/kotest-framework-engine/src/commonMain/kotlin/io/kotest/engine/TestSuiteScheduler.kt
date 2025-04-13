@@ -40,7 +40,7 @@ internal class TestSuiteScheduler(
       schedule(isolated, 1)
       logger.log { Pair(null, "Isolated specs have completed") }
 
-      // first we run the specs that have been marked as always parallel regardless of concurrency mode
+      // next we run the specs that have been marked as always parallel regardless of concurrency mode
       val parallel = suite.specs.filter { it.kclass.isParallel() }
       logger.log { Pair(null, "Parallelized spec count: ${parallel.size}") }
       schedule(parallel, Int.MAX_VALUE)
