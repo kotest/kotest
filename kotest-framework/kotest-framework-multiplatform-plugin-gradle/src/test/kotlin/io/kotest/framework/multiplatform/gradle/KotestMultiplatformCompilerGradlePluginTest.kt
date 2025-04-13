@@ -19,7 +19,7 @@ class KotestMultiplatformCompilerGradlePluginTest : BehaviorSpec({
       When("plugin is applied to a project") {
          val projectMock: Project = mockk {
             every { extensions } returns mockk {
-               every { create<KotestPluginExtension>("kotest", any()) } returns mockk(relaxed = true)
+               every { create<KotestPluginExtension>("kotestMultiplatform", any()) } returns mockk(relaxed = true)
             }
          }
 

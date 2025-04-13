@@ -90,13 +90,25 @@ import io.kotest.engine.TestEngineLauncher
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-fun runKotest() {
+fun runKotestConsole() {
    TestEngineLauncher()
    .withJs()
    .withSpecs($specs)
    $configs
    .promise()
 }
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun runKotestTeamCity() {
+   TestEngineLauncher()
+   .withTeamCityListener()
+   .withJs()
+   .withSpecs($specs)
+   $configs
+   .promise()
+}
+
 """.trim()
       )
 //

@@ -49,7 +49,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
             false
          }
 
-         kotlinCompilation is KotlinJsCompilation               -> kotlinCompilation.compilationName == "test"
+         kotlinCompilation is KotlinJsCompilation               -> true
          kotlinCompilation is AbstractKotlinNativeCompilation   -> true
          else                                                   -> false
       }

@@ -16,7 +16,8 @@ abstract class KotestJsTask @Inject internal constructor(
 
    // this is the name of the generated function from the compiler plugin
    // it should always match whatever the compiler plugin is using
-   private val runKotestName = "runKotest"
+   private val runKotestConsole = "runKotestConsole"
+   private val runKotestTeamCity = "runKotestTeamCity"
 
    // this is the name of the package where the compiler plugin places the generated top level run function
    // it should always match whatever the compiler plugin is using
@@ -28,9 +29,9 @@ abstract class KotestJsTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       executors.exec {
+         println("isIntellij=" + IntellijUtils.isIntellij())
          // the kotlin js compiler uses projectname-test as the directory for test output, eg in build/js/packages
          val testModule = "${project.name}-test"
-
          println("JS Test Module $testModule")
          println("Node executable ${nodeExecutable.get()}")
 
@@ -43,10 +44,20 @@ abstract class KotestJsTask @Inject internal constructor(
 //         val testFilter = if (tests.orNull == null) null else "'$tests'"
 
          // this is the entry point passed to node which references the well defined runKotest function
-         val nodeCommand = "require('${moduleFile}').$runKotestPackage.$runKotestName()"
+         val nodeCommand = when {
+            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackage.$runKotestTeamCity()"
+            else -> "require('${moduleFile}').$runKotestPackage.$runKotestConsole()"
+         }
          println("Node command :$nodeCommand")
 
          commandLine(nodeExecutable.get(), "-e", nodeCommand)
       }
    }
+}
+
+internal object IntellijUtils {
+   private const val IDEA_PROP = "idea.active"
+
+   // this system property is added by intellij itself when running tasks
+   fun isIntellij() = System.getProperty(IDEA_PROP) != null
 }
