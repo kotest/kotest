@@ -1,14 +1,14 @@
 package io.kotest.matchers.collections
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.equals.Equality
 import io.kotest.equals.EqualityResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class MatchCollectionsWithVerifierTest : StringSpec() {
    private val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
       override fun name() = "Case Insensitive String Matcher"

@@ -3,10 +3,8 @@ package io.kotest.engine.concurrency
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.engine.isIsolate
-import io.kotest.engine.isParallel
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -37,7 +35,7 @@ private abstract class Woo
 
 private class Waz : Woo()
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrencyAnnotationTests : FreeSpec({
 
    "isIsolate should return true for class that is directly annotated by Isolate" {

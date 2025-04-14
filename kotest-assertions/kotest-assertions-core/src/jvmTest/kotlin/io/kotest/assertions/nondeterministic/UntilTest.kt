@@ -2,7 +2,7 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.common.nonConstantTrue
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class UntilTest : FunSpec({
 
    test("until with immediate pass") {

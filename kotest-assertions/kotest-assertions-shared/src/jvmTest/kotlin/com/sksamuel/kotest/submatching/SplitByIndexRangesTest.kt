@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.submatching
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.IndexRange
 import io.kotest.submatching.splitByIndexRanges
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SplitByIndexRangesTest : StringSpec() {
    init {
       "handle one line" {

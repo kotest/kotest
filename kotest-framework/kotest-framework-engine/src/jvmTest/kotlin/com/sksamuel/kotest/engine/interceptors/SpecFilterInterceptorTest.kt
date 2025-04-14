@@ -1,7 +1,7 @@
 //package com.sksamuel.kotest.engine.interceptors
 //
 //import io.kotest.core.annotation.EnabledIf
-//import io.kotest.core.annotation.enabledif.LinuxCondition
+//import io.kotest.core.annotation.enabledif.LinuxOnlyGithubCondition
 //import io.kotest.core.config.AbstractProjectConfig
 //import io.kotest.core.spec.SpecRef
 //import io.kotest.core.spec.style.FunSpec
@@ -16,7 +16,7 @@
 //import io.kotest.matchers.booleans.shouldBeTrue
 //import kotlin.reflect.KClass
 //
-//@EnabledIf(LinuxCondition::class)
+//@EnabledIf(LinuxOnlyGithubCondition::class)
 //class SpecFilterInterceptorTest : FunSpec() {
 //   init {
 //      test("spec filter's should filter tests") {

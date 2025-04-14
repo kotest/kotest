@@ -19,12 +19,13 @@ import io.kotest.engine.extensions.ExtensionRegistry
  * This class handles settings that should only be configured at the spec level,
  * such as test execution order, or test ordering.
  *
- * For project level settings, see [io.kotest.engine.config.ProjectConfigResolver].
+ * For project level settings, see [ProjectConfigResolver].
+ * For test level settings, see [TestConfigResolver].
  *
  *  Order of precedence for each setting from highest priority to lowest:
  *
  * - spec level individual test settings
- * - spec level defaults from setting [io.kotest.core.TestConfiguration.defaultTestConfig]
+ * - spec level defaults from setting [io.kotest.core.spec.Spec.defaultTestConfig]
  * - package level defaults from [io.kotest.core.config.AbstractPackageConfig]
  * - project level defaults from [io.kotest.core.config.AbstractProjectConfig]
  * - system property overrides
@@ -68,7 +69,9 @@ class SpecConfigResolver(
     * Returns the [TestCaseOrder] applicable for the root tests in this spec.
     */
    fun testCaseOrder(spec: Spec): TestCaseOrder {
+      @Suppress("DEPRECATION")
       return spec.testOrder
+         ?: spec.testCaseOrder
          ?: spec.testCaseOrder()
          ?: spec.defaultTestConfig?.testOrder
          ?: loadPackageConfigs(spec).firstNotNullOfOrNull { it.testCaseOrder }
@@ -101,9 +104,9 @@ class SpecConfigResolver(
     * and project wide extensions from configuration.
     */
    fun extensions(spec: Spec): List<Extension> {
-      return spec.extensions + // overriding the extensions function in the spec
+      return spec.extensions + // overriding the extensions val in the spec
          spec.functionOverrideCallbacks() + // dsl
-         spec.specExtensions() + // added to the spec via register
+         spec.extensions() + // added to the spec via the `extension` functions
          (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
          registry.all() // globals
    }

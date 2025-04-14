@@ -9,11 +9,12 @@ plugins {
    `kotlin-dsl`
    id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
+   id("com.github.node-gradle.node") version "7.1.0"
 }
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
-   implementation("org.ow2.asm:asm:9.7.1") // used to poke into classes to see if they are specs
+   implementation(libs.asm) // used to poke into classes to see if they are specs when running JVM tests
    testImplementation(libs.kotlin.gradle.plugin)
 }
 

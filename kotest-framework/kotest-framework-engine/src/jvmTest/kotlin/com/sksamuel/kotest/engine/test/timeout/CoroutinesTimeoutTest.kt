@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -16,7 +16,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutinesTimeoutTest : FunSpec() {
 
    init {
@@ -99,6 +99,9 @@ private suspend fun someCoroutine() {
    }
 }
 
+/**
+ * Applies a delay that will always be real time, even if the test is running in a virtual time environment.
+ */
 suspend fun realTimeDelay(duration: Duration) {
    // Default dispatcher knows nothing about virtual time
    withContext(Dispatchers.Default) { delay(duration) }

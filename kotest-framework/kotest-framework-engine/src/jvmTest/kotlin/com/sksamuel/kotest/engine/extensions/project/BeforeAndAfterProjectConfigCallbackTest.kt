@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
@@ -11,7 +11,7 @@ import io.kotest.matchers.shouldBe
 
 var beforeAfterProject = ""
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
    init {
 

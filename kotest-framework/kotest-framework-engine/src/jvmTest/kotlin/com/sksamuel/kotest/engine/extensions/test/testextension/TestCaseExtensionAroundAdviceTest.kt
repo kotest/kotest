@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.test.testextension
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Enabled
@@ -11,7 +11,7 @@ import io.kotest.engine.test.toTestResult
 import kotlin.time.Duration.Companion.milliseconds
 
 // this tests that we can manipulate the result of a test case from an extension
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {

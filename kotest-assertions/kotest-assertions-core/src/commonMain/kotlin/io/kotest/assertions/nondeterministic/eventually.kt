@@ -100,7 +100,8 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
       initialDelay = this.initialDelay,
       intervalFn = this.intervalFn ?: DurationFn { interval },
       retries = this.retries,
-      expectedExceptionsFn = { t -> this.expectedExceptions.any { it.isInstance(t) } || this.expectedExceptionsFn(t) },
+      expectedExceptionsFn = { t -> this.expectedExceptions.any { it.isInstance(t) } ||
+         (this.expectedExceptions.isEmpty() && this.expectedExceptionsFn(t)) } ,
       listener = this.listener ?: NoopEventuallyListener,
       shortCircuit = this.shortCircuit,
       includeFirst = this.includeFirst,
@@ -170,7 +171,7 @@ class EventuallyConfigurationBuilder {
     * A set of exceptions, which, if thrown, will cause the test function to be retried.
     * By default, all exceptions are retried.
     *
-    * This set is applied in addition to the values specified by [expectedExceptionsFn].
+    * This set, if provided and not empty, overrides the logic specified by [expectedExceptionsFn].
     */
    var expectedExceptions: Set<KClass<out Throwable>> = EventuallyConfigurationDefaults.expectedExceptions
 
@@ -179,7 +180,7 @@ class EventuallyConfigurationBuilder {
     * function retried. By default, this function returns true for all exceptions, or in other words,
     * all errors cause the test function to be retried.
     *
-    * This function is applied in addition to the values specified by [expectedExceptions].
+    * This function is applied only when no values are specified by [expectedExceptions].
     */
    var expectedExceptionsFn: (Throwable) -> Boolean = EventuallyConfigurationDefaults.expectedExceptionsFn
 

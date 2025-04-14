@@ -29,37 +29,27 @@ import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeInvocation
 import io.kotest.core.spec.BeforeSpec
 import io.kotest.core.spec.BeforeTest
+import io.kotest.core.spec.Extendable
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.DefaultTestConfig
 import kotlin.js.JsName
 
 /**
  * An abstract base implementation for shared configuration between [Spec] and [TestFactoryConfiguration].
+ * Provides convenience methods for adding callbacks.
  */
-abstract class TestConfiguration {
+abstract class TestConfiguration : Extendable() {
 
    @JsName("_tags")
    internal var _tags: Set<Tag> = emptySet()
 
-   @JsName("_extensions")
-   internal var _extensions = emptyList<Extension>()
-
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
    private var _parentConfiguration: TestConfiguration? = null
-
-   /**
-    * Config applied to each test case if not overridden per test case.
-    * If null, then defaults to the project level default.
-    *
-    * Any test case config set a test itself will override any value here.
-    */
-   var defaultTestConfig: DefaultTestConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
@@ -71,52 +61,6 @@ abstract class TestConfiguration {
     * Whether soft assertion mode should be applied for all tests in the spec.
     */
    var assertSoftly: Boolean? = null
-
-   /**
-    * Register a single [Extension] of type T and return that extension.
-    */
-   fun <T : Extension> extension(extension: T): T {
-      extensions(extension)
-      return extension
-   }
-
-   /**
-    * Registers one or more [Extension]s.
-    */
-   fun extensions(vararg extensions: Extension) {
-      require(extensions.isNotEmpty()) { "Cannot register empty list of extensions" }
-      extensions(extensions.toList())
-   }
-
-   /**
-    * Register a single [Extension] of type T return that listener.
-    */
-   @Deprecated("Use extension instead", ReplaceWith("extension"))
-   fun <T : Extension> register(extension: T): T {
-      extensions(listOf(extension))
-      return extension
-   }
-
-   /**
-    * Register one or more [Extension]s.
-    */
-   fun extensions(extensions: List<Extension>) {
-      _extensions = _extensions + extensions
-   }
-
-   /**
-    * Register [Extension]s to be invoked any other extensions registered in the spec directly.
-    */
-   internal fun prependExtension(extension: Extension) {
-      prependExtensions(listOf(extension))
-   }
-
-   /**
-    * Register [Extension]s to be invoked before all current extensions.
-    */
-   internal fun prependExtensions(extensions: List<Extension>) {
-      _extensions = extensions + _extensions
-   }
 
    /**
     * Adds [Tag]s to this spec or factory, which will be applied to each test case.
@@ -133,7 +77,6 @@ abstract class TestConfiguration {
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
     */
-   @Suppress("PropertyName")
    fun <T : AutoCloseable> autoClose(closeable: T): T =
       autoClose(lazy(LazyThreadSafetyMode.NONE) { closeable }).value
 
@@ -145,6 +88,11 @@ abstract class TestConfiguration {
       _autoCloseables = listOf(closeable) + _autoCloseables
       return closeable
    }
+
+   /**
+    * Returns a list of all [AutoCloseable]s registered in this spec or factory.
+    */
+   fun autoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
 
    /**
     * Registers a callback to be executed before every [TestCase].
@@ -339,16 +287,31 @@ abstract class TestConfiguration {
       })
    }
 
-   fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
-
-   /**
-    * Returns any [Extension] instances registered directly on this class.
-    */
-   internal fun specExtensions(): List<Extension> {
-      return _extensions.toList()
-   }
-
    internal fun setParentConfiguration(configuration: TestConfiguration) {
       _parentConfiguration = configuration
    }
+
+   /**
+    * Register a single [Extension] of type T return that listener.
+    */
+   @Deprecated("Use extension instead", ReplaceWith("extension"))
+   fun <T : Extension> register(extension: T): T {
+      extensions(listOf(extension))
+      return extension
+   }
+
+   @Deprecated("Use autoCloseables instead", ReplaceWith("autoCloseables"))
+   fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
+}
+
+
+/**
+ * Lazily creates and registers an extension of type [T], unless it's already registered (keyed by
+ * type [T]).
+ */
+internal inline fun <reified T : Extension> TestConfiguration.extensionLazy(
+   createExtension: () -> T,
+): T {
+   val existingExtension = this@extensionLazy.extensions().filterIsInstance<T>().singleOrNull()
+   return existingExtension ?: extension(createExtension())
 }

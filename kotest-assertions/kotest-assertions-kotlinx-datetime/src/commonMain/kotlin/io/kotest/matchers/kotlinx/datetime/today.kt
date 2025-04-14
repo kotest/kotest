@@ -10,10 +10,10 @@ import kotlinx.datetime.*
  * Matcher that checks if a LocalDateTime has a Date component of today
  *
  * It does this by checking it against Current Time, so if you are not using constant now listeners,
- * using this might fail if test run exactly on a date change.
+ * using this might fail if tests run exactly on a date change.
  *
  * ```
- *     val date = Clock.System().todayAt(TimeZone.UTC)
+ *     val date = Clock.System().todayIn(TimeZone.UTC)
  *
  *     date should beInToday() // Assertion passes
  *
@@ -41,7 +41,7 @@ fun beInToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDateTim
  * using this might fail if test run exactly on a date change.
  *
  * ```
- *     val date = Clock.System().todayAt(TimeZone.UTC).date
+ *     val date = Clock.System().todayIn(TimeZone.UTC).date
  *
  *     date should beToday() // Assertion passes
  *
@@ -66,7 +66,7 @@ fun beToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDate> {
  * Asserts that the LocalDateTime has a date component of today
  *
  * ```
- *      Clock.System().todayAt(TimeZone.UTC).shouldBeToday() // Assertion passes
+ *      Clock.System().todayIn(TimeZone.UTC).shouldBeToday() // Assertion passes
  * ```
  */
 fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beInToday(timezone)
@@ -75,7 +75,7 @@ fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should
  * Asserts that the LocalDate is today
  *
  * ```
- *      Clock.System().todayAt(TimeZone.UTC).date.shouldBeToday() // Assertion passes
+ *      Clock.System().todayIn(TimeZone.UTC).date.shouldBeToday() // Assertion passes
  * ```
  */
 fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beToday(timezone)

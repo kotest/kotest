@@ -1,12 +1,15 @@
 package com.sksamuel.kotest.engine.active
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class SeverityPropertyOverrideTest : WordSpec({
 
@@ -42,7 +45,7 @@ class SeverityPropertyOverrideTest : WordSpec({
 
    "Critical severity, prefix NORMAL" should {
       var run = false
-       System.setProperty(KotestEngineProperties.TEST_SEVERITY, "NORMAL")
+      System.setProperty(KotestEngineProperties.TEST_SEVERITY, "NORMAL")
       "allow this test to run".config(severity = TestCaseSeverityLevel.CRITICAL) {
          run = true
       }

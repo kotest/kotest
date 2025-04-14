@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.engine.extensions.test
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AfterContainerDescribeSpecTest : DescribeSpec() {
    var a = ""
 

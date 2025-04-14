@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -12,7 +12,7 @@ import io.kotest.property.Arb
 import io.kotest.property.checkAll
 import io.kotest.property.resolution.default
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ArbDefaultsTest : WordSpec({
 
    "Gen.default" should {

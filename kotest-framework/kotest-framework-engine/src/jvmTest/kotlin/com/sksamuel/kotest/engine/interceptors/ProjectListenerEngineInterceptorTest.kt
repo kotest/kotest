@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
@@ -12,7 +12,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ProjectListenerEngineInterceptorTest : FunSpec({
 
    test("should invoke beforeProject listener") {

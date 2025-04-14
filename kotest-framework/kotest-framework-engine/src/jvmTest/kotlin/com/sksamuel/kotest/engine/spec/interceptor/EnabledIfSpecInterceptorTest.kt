@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.core.annotation.EnabledCondition
+import io.kotest.core.annotation.AlwaysFalseCondition
+import io.kotest.core.annotation.AlwaysTrueCondition
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.IgnoredSpecListener
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -15,11 +15,11 @@ import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.reflect.KClass
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
@@ -83,19 +83,10 @@ class EnabledIfSpecInterceptorTest : FunSpec({
    }
 })
 
-class MyEnabledCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = true
-}
-
-class MyDisabledCondition : EnabledCondition {
-   override fun enabled(kclass: KClass<out Spec>): Boolean = false
-}
-
-
-@EnabledIf(MyEnabledCondition::class)
+@EnabledIf(AlwaysTrueCondition::class)
 private class MyEnabledSpec : FunSpec()
 
-@EnabledIf(MyDisabledCondition::class)
+@EnabledIf(AlwaysFalseCondition::class)
 private class MyDisabledSpec : FunSpec()
 
 private class MyUnannotatedSpec : FunSpec()

@@ -1,19 +1,19 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecStartedFinishedInterceptorTest : FunSpec() {
    init {
 

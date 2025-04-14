@@ -9,10 +9,11 @@ import io.kotest.matchers.paths.aFile
 import io.kotest.matchers.paths.exist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.intellij.lang.annotations.Language
 import java.nio.file.Path
 import kotlin.io.path.readText
 
-infix fun Path.shouldEqualJson(expected: String): Path {
+infix fun Path.shouldEqualJson(@Language("json") expected: String): Path {
    this should (exist() and aFile() and equalJson(expected, CompareJsonOptions()).contramap { it.readText() })
    return this
 }
@@ -24,7 +25,7 @@ infix fun Path.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.(
    return this
 }
 
-infix fun Path.shouldNotEqualJson(expected: String): Path {
+infix fun Path.shouldNotEqualJson(@Language("json") expected: String): Path {
    this.readText() shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
@@ -36,14 +37,14 @@ infix fun Path.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOption
    return this
 }
 
-infix fun Path.shouldEqualSpecifiedJson(expected: String) {
+infix fun Path.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    this.shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected
    }
 }
 
-infix fun Path.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
+infix fun Path.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expected: String) {
    this.shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
       arrayOrder = ArrayOrder.Lenient
@@ -51,7 +52,7 @@ infix fun Path.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
    }
 }
 
-infix fun Path.shouldNotEqualSpecifiedJson(expected: String) {
+infix fun Path.shouldNotEqualSpecifiedJson(@Language("json") expected: String) {
    this.shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected

@@ -20,8 +20,6 @@ class ArgParseTest : FunSpec() {
          val args = listOf(
             "--listener",
             "teamcity",
-            "--termcolor",
-            "ansi16",
             "--candidates",
             "com.sksamuel.aedile.core.CoroutineContextTest",
             "--descriptor",
@@ -29,7 +27,6 @@ class ArgParseTest : FunSpec() {
          )
          parseArgs(args) shouldBe mapOf(
             "listener" to "teamcity",
-            "termcolor" to "ansi16",
             "candidates" to "com.sksamuel.aedile.core.CoroutineContextTest",
             "descriptor" to "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches",
          )

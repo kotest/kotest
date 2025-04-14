@@ -72,6 +72,10 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult)
 }
 
+/**
+ * Implementation of [TestEngineListener] that provides no-op implementations for each method.
+ * This is useful for testing when you only want to override a single method.
+ */
 @KotestInternal
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}

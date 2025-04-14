@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.common.nonConstantFalse
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FreeSpecConfigSyntaxTest : FreeSpec() {
    init {
 

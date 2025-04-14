@@ -28,7 +28,7 @@ internal val LexicographicSpecSorter = object : SpecSorter {
 /**
  * An implementation of [SpecExecutionOrder] which will order specs randomly.
  */
-class RandomSpecSorter(private val random: Random) : SpecSorter {
+internal class RandomSpecSorter(private val random: Random) : SpecSorter {
    override fun sort(specs: List<SpecRef>): List<SpecRef> = specs.shuffled(random)
 }
 
@@ -40,7 +40,7 @@ class RandomSpecSorter(private val random: Random) : SpecSorter {
  * Note: Runtime annotations are not supported on Native or JS so on those platforms
  * this sort order is a no-op.
  */
-expect val AnnotatedSpecSorter: SpecSorter
+internal expect val AnnotatedSpecSorter: SpecSorter
 
 /**
  * An implementation of [SpecExecutionOrder] which will order specs that failed on the last run,
@@ -48,4 +48,4 @@ expect val AnnotatedSpecSorter: SpecSorter
  *
  * Note: This is a JVM sort only.
  */
-expect val FailureFirstSorter: SpecSorter
+internal expect val FailureFirstSorter: SpecSorter

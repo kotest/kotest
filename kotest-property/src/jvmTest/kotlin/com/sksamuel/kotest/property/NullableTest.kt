@@ -3,7 +3,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -13,7 +13,7 @@ import io.kotest.property.forAll
 import io.kotest.property.forNone
 import io.kotest.property.withAssumptions
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class NullableTest : FunSpec({
    test("forAll with implicit nullable arbitaries") {
       val iterations = 1000

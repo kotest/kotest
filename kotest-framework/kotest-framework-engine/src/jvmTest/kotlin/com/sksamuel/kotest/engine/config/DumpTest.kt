@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.config
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
@@ -14,6 +16,7 @@ import io.kotest.matchers.string.shouldInclude
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class DumpTest : FunSpec({
 

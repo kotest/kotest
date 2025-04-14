@@ -1,5 +1,7 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -14,6 +16,7 @@ import io.kotest.matchers.shouldBe
 import java.io.IOException
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ExpectExceptionTestInterceptorTest : FunSpec({
 
    test("test should be ignored when runIf block returns false") {

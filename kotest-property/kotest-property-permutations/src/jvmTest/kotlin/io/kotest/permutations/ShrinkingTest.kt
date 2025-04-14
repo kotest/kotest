@@ -2,7 +2,7 @@ package io.kotest.permutations
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.ints.shouldBeLessThan
@@ -13,7 +13,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.checkAll
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ShrinkingTest : FunSpec() {
    init {
       test("shrinking should show the exception raised by the shrunk values") {

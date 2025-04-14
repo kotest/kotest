@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.string.shouldMatch
@@ -10,7 +10,7 @@ import io.kotest.property.arbitrary.ipAddressV4
 import io.kotest.property.arbitrary.ipAddressV6
 import io.kotest.property.checkAll
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IpAddressTest : FunSpec() {
    init {
 

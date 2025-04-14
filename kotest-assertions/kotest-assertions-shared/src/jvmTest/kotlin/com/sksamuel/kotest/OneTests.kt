@@ -7,7 +7,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainOnlyOnce
@@ -15,7 +15,7 @@ import io.kotest.matchers.string.shouldContainOnlyOnce
 private fun matcherState() = Pair(errorCollector.errors(), assertionCounter.get())
 
 @Isolate
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class OneTests : FunSpec({
    test("either fails if less than two assertions are executed") {
       val (_, beforeAssertions) = matcherState()

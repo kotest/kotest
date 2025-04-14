@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.inspectors.forAtLeast
 import io.kotest.inspectors.forAtLeastOne
@@ -11,7 +11,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.upperLowerCase
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ArbitraryUpperLowerString : FreeSpec(
    {
       "UpperLowerString should generate strings with upper and lower case letters" {

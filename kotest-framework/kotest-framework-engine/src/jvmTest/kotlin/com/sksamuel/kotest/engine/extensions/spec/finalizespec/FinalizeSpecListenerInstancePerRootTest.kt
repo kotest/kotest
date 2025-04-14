@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
@@ -33,7 +33,7 @@ class FinalizeSpecListenerPerTest2 : FinalizeSpecListener {
 }
 
 @ApplyExtension(FinalizeSpecListenerPerTest1::class, FinalizeSpecListenerPerTest2::class)
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FinalizeSpecListenerInstancePerRootTest : FunSpec() {
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot

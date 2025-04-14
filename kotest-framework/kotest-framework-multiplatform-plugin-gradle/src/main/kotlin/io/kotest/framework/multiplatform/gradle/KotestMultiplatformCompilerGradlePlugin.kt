@@ -1,6 +1,5 @@
 package io.kotest.framework.multiplatform.gradle
 
-import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
@@ -14,6 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+import javax.inject.Inject
 
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
@@ -22,11 +22,11 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val logger: Logger = Logging.getLogger(this::class.java)
 
    companion object {
-      const val kotestPluginExtensionName = "kotest"
-      const val compilerPluginId = "io.kotest.multiplatform"
-      const val KotestGroupId = "io.kotest"
-      const val KotestEmbeddableCompilerArtifactId = "kotest-framework-multiplatform-plugin-embeddable-compiler"
-      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-legacy-native"
+      const val EXTENSION_NAME = "kotestMultiplatform"
+      const val COMPILER_PLUGIN_ID = "io.kotest.multiplatform"
+      const val KOTEST_GROUP_ID = "io.kotest"
+      const val KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-embeddable-compiler"
+      const val KOTEST_NATIVE_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-legacy-native"
    }
 
    /**
@@ -39,29 +39,25 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private var kotestExtension: KotestPluginExtension? = null
 
    override fun apply(target: Project) {
-      kotestExtension = target.createKotestExtension()
-   }
-
-   private fun Project.createKotestExtension(): KotestPluginExtension {
-      return extensions.create<KotestPluginExtension>(kotestPluginExtensionName).apply {
+      kotestExtension = target.extensions.create<KotestPluginExtension>(EXTENSION_NAME).apply {
          kotestCompilerPluginVersion.convention(KOTEST_COMPILER_PLUGIN_VERSION)
       }
    }
 
-   override fun getCompilerPluginId() = compilerPluginId
+   override fun getCompilerPluginId() = COMPILER_PLUGIN_ID
 
    override fun getPluginArtifact(): SubpluginArtifact =
       SubpluginArtifact(
-         KotestGroupId,
-         KotestEmbeddableCompilerArtifactId,
+         KOTEST_GROUP_ID,
+         KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
    // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
    override fun getPluginArtifactForNative(): SubpluginArtifact =
       SubpluginArtifact(
-         KotestGroupId,
-         KotestNativeArtifactId,
+         KOTEST_GROUP_ID,
+         KOTEST_NATIVE_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 

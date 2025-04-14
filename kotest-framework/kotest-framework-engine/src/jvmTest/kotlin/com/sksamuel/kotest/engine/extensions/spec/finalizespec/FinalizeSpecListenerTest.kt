@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
@@ -33,7 +33,7 @@ private class FinalizeSpecTestListener2 : FinalizeSpecListener {
    }
 }
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FinalizeSpecTest : FunSpec() {
    init {
       test("finalize spec listeners should be fired") {
@@ -52,7 +52,7 @@ class FinalizeSpecTest : FunSpec() {
    }
 }
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FinalizeSpec : FunSpec() {
    init {
       test("ignored test").config(enabled = false) {}

@@ -1,11 +1,11 @@
 package io.kotest.equals
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CountByEqualityTest : StringSpec() {
    private val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
       override fun name() = "Case Insensitive String Matcher"

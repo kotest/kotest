@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.coroutines
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 // tests kotest's interaction with coroutines
 @OptIn(DelicateCoroutinesApi::class)
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineTest : FunSpec() {
    init {
 

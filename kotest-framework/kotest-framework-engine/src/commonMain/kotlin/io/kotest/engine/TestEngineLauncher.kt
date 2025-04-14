@@ -12,7 +12,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -39,7 +39,7 @@ class TestEngineLauncher(
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(NoopTestEngineListener)
+   constructor() : this(ConsoleTestEngineListener())
 
    constructor(listener: TestEngineListener) : this(
       Platform.JVM,
@@ -52,6 +52,8 @@ class TestEngineLauncher(
 
    /**
     * Convenience function to be called by the compiler plugin to set up the TeamCity listener.
+    *
+    * Returns a copy of this launcher with the [TeamCityTestEngineListener] set.
     */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
@@ -59,6 +61,9 @@ class TestEngineLauncher(
 
    /**
     * Sets the [TestEngineListener] to be notified of [TestEngine] events.
+    *
+    * Returns a copy of this launcher with the given [TestEngineListener] set.
+    * This will override the current listener. Wrap in a composite listener if you want to use multiple.
     */
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
@@ -96,6 +101,8 @@ class TestEngineLauncher(
 
    /**
     * Sets a [AbstractProjectConfig] that was detected by the compiler plugin or loaded programmatically.
+    *
+    * This will override any existing project config.
     */
    fun withProjectConfig(config: AbstractProjectConfig?): TestEngineLauncher {
       return TestEngineLauncher(
@@ -107,16 +114,6 @@ class TestEngineLauncher(
          registry = registry,
       )
    }
-
-//   /**
-//    * Sets an [AbstractProjectConfig] that was detected by reflection on the JVM.
-//    * This is a no-op on non-JVM platforms.
-//    */
-//   @JVMOnly
-//   fun withReflectionProjectConfig(): TestEngineLauncher {
-//      val config = loadProjectConfigFromReflection()
-//      return withProjectConfig(config)
-//   }
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
@@ -149,11 +146,31 @@ class TestEngineLauncher(
       return this
    }
 
+   /**
+    * Convenience function to be called by the compiler plugin to set up the JS platform.
+    */
    fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the WASM platform.
+    */
    fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs).withTeamCityListener()
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the Native platform.
+    */
    fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the JVM platform.
+    */
    fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
 
+   /**
+    * Returns a copy of this launcher with the given [platform] set.
+    *
+    * This will override the current platform.
+    */
    fun withPlatform(platform: Platform): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,

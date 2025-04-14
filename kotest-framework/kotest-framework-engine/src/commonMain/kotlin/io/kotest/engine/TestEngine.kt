@@ -46,12 +46,11 @@ class TestEngine(private val config: TestEngineConfig) {
     */
    internal suspend fun execute(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Initiating test suite with ${suite.specs.size} specs") }
+      logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
 
       val innerExecute = NextEngineInterceptor { context ->
          TestSuiteScheduler(context).schedule(context.suite)
       }
-
-      logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
          NextEngineInterceptor { context -> extension.intercept(context, next) }

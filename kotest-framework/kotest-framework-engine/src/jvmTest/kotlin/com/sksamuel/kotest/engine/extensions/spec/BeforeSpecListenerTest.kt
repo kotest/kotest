@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -18,6 +20,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class BeforeSpecListenerTest : FunSpec() {
    init {

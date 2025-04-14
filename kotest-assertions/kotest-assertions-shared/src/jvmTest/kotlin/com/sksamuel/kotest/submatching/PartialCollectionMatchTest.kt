@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.submatching
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.MatchedCollectionElement
 import io.kotest.submatching.PartialCollectionMatch
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PartialCollectionMatchTest : StringSpec() {
    private val systemToTest = PartialCollectionMatch(
       MatchedCollectionElement(2, 3),

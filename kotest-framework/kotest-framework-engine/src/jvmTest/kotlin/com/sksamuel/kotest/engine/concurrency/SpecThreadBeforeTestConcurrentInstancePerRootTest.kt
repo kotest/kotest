@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.concurrency
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -8,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 private val lockedCounter = AtomicInteger(0)
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecThreadBeforeTestConcurrentInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot

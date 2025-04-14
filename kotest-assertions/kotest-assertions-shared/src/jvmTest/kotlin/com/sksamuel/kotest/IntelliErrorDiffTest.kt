@@ -2,12 +2,12 @@ package com.sksamuel.kotest
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 // checks that errors are in the intelli format for showing a diff link
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IntelliErrorDiffTest : FunSpec({
    test("shouldBe should output in intelli format") {
       shouldThrow<AssertionError> {

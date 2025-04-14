@@ -3,7 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -19,7 +19,7 @@ import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.random
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ChooseTest : FunSpec({
 
    test("Arb.choose should honour seed") {

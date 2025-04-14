@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.Extension
@@ -24,6 +25,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */
+@KotestInternal
 class SpecInstantiator(
    private val registry: ExtensionRegistry,
    private val projectConfigResolver: ProjectConfigResolver
@@ -51,7 +53,7 @@ class SpecInstantiator(
                .mapError { SpecInstantiationException("Could not create instance of $kclass", it) }
                .getOrThrow()
 
-         // any spec level project extensions should now be added
+         // any spec level AfterProjectListener extensions should now be added
          spec.projectExtensions().forEach { registry.add(it) }
 
          postInstantiationExtensions(kclass)

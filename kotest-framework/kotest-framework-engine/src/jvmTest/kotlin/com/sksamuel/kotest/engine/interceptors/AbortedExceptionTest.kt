@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.assertions.fail
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -11,7 +11,7 @@ import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.shouldBe
 import org.opentest4j.TestAbortedException
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AbortedExceptionTest : FreeSpec({
    "TestAbortedException is handled" {
       val collector = CollectingTestEngineListener()

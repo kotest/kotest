@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
@@ -15,7 +15,7 @@ import io.kotest.property.internal.proptest
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
       test("PropTestConfig constraints should be used by proptest1 if present") {

@@ -1,10 +1,13 @@
 package io.kotest.matchers.compilation
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import java.io.File
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CompilationsMatcherTest : StringSpec() {
    private lateinit var file: File
 

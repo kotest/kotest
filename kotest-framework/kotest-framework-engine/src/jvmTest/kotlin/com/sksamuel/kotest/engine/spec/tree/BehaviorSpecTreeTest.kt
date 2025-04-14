@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.spec.tree
 
 import io.kotest.common.DescriptorPath
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -10,7 +10,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
 // tests that behavior spec contexts are correctly nested when reporting
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BehaviorSpecTreeTest : FunSpec() {
    init {
       test("BehaviorSpec should nest tests properly") {

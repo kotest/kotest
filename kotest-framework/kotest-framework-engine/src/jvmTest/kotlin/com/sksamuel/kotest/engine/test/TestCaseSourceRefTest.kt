@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.source.SourceRef.ClassSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.time.Duration.Companion.seconds
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestCaseSourceRefTest : FunSpec() {
    init {
       test("source ref should include file name and line number") {

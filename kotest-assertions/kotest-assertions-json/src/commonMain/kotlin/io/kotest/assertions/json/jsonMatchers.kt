@@ -10,12 +10,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import org.intellij.lang.annotations.Language
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
 
-fun matchJson(expected: String?) = object : Matcher<String?> {
+fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)

@@ -80,12 +80,12 @@ interface ContainerScope : TestScope {
       registerTest(name = name, disabled = disabled, config = config, type = TestType.Test, test = test)
    }
 
-   private fun prependExtension(listener: Extension) {
-      testCase.spec.prependExtensions(listOf(listener))
+   private fun prependExtension(extension: Extension) {
+      testCase.spec.prependExtensions(listOf(extension))
    }
 
-   private fun appendExtension(listener: Extension) {
-      testCase.spec.extension(listener)
+   private fun appendExtension(extension: Extension) {
+      testCase.spec.extension(extension)
    }
 
    /**

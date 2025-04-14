@@ -5,7 +5,7 @@ import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldBeNull
@@ -15,7 +15,6 @@ import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.collections.HashSet
 import kotlin.time.Duration.Companion.seconds
 
 private class BareIterable(size: Int, offset: Int): Iterable<Int> {
@@ -44,7 +43,7 @@ private val expectedPath = if (System.getProperty("os.name").lowercase().contain
    "UnixPath"
 }
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IterableEqTest : FunSpec({
    test("Comparing empty set with other iterable should be ok") {
       shouldNotThrowAny {

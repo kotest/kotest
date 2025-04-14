@@ -1,6 +1,8 @@
 package io.kotest.permutations
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -18,6 +20,7 @@ import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.of
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AssumptionsTest : FunSpec() {
    init {
 

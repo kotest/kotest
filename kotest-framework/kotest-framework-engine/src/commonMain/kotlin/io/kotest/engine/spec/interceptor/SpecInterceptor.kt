@@ -8,6 +8,8 @@ import io.kotest.engine.atomic.createAtomicBoolean
 
 /**
  * Interceptors that are executed after a spec is instantiated.
+ *
+ * See [SpecRefInterceptor] for interceptors that are executed before a spec is instantiated.
  */
 internal interface SpecInterceptor {
    suspend fun intercept(

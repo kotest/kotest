@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.tags.Expression
 import io.kotest.engine.tags.Parser
 import io.kotest.engine.tags.expression
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TagParserTest : FunSpec() {
    init {
 

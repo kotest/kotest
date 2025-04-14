@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -15,7 +15,7 @@ private var includeTest = false
 /**
  * Tests that private classes can be ignored when the option is set
  */
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class PrivateClassesIngoreOptionTest : FunSpec() {
    init {
       test("private class should be ignore") {

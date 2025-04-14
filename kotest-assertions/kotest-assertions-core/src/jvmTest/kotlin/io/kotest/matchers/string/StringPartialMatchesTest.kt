@@ -1,7 +1,7 @@
 package io.kotest.matchers.string
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.enabledif.LinuxCondition
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.submatching.PartialMatchesInStringDescription
@@ -10,7 +10,7 @@ import io.kotest.submatching.describePartialMatchesInStringForSlice
 import io.kotest.submatching.describePartialMatchesInStringForSuffix
 import io.kotest.submatching.underscoreSubstring
 
-@EnabledIf(LinuxCondition::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class StringPartialMatchesTest : WordSpec() {
    val value = "0123456789"
    val text = """The quick brown fox

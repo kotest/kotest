@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.concurrency
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -9,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 private val locks = ConcurrentHashMap.newKeySet<ReentrantLock>()
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
 
    isolationMode = IsolationMode.InstancePerRoot

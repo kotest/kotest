@@ -13,7 +13,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.todayAt
+import kotlinx.datetime.todayIn
 import kotlin.time.Duration.Companion.days
 
 class LocalDateTimeTests : StringSpec({
@@ -92,11 +92,11 @@ class LocalDateTimeTests : StringSpec({
 
 
     "LocalDate.shouldBeToday() should match today" {
-        Clock.System.todayAt(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
+        Clock.System.todayIn(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
     }
 
     "LocalDateTime.shouldBeToday() should match today" {
-        Clock.System.todayAt(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
+        Clock.System.todayIn(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
     }
 
     "LocalDate.shouldBeToday() should not match the past" {
@@ -117,14 +117,14 @@ class LocalDateTimeTests : StringSpec({
     "LocalDateTime.shouldNotBeToday()" {
         LocalDateTime(2002, Month.APRIL, 1, 5, 2).shouldNotBeToday(TimeZone.UTC)
         shouldFail {
-            Clock.System.todayAt(TimeZone.UTC).shouldNotBeToday(TimeZone.UTC)
+            Clock.System.todayIn(TimeZone.UTC).shouldNotBeToday(TimeZone.UTC)
         }
     }
 
     "LocalDate.shouldNotBeToday()" {
         LocalDate(2002, Month.APRIL, 2).shouldNotBeToday()
         shouldFail {
-            Clock.System.todayAt(TimeZone.UTC).shouldNotBeToday(TimeZone.UTC)
+            Clock.System.todayIn(TimeZone.UTC).shouldNotBeToday(TimeZone.UTC)
         }
     }
 

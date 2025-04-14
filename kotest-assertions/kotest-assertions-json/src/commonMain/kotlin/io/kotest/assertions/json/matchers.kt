@@ -6,6 +6,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.intellij.lang.annotations.Language
 
 /**
  * Returns a [Matcher] that verifies that two JSON strings are equal.
@@ -14,7 +15,7 @@ import io.kotest.matchers.shouldNot
  * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
  */
 fun equalJson(
-   expected: String,
+   @Language("json") expected: String,
    options: CompareJsonOptions
 ): Matcher<String?> =
    Matcher { actual ->
@@ -69,7 +70,7 @@ data class JsonTree(val root: JsonNode, val raw: String)
  *
  * To more precisely control the comparison, use [shouldEqualJson] that accepts a [CompareJsonOptions].
  */
-infix fun String.shouldEqualJson(expected: String): String {
+infix fun String.shouldEqualJson(@Language("json") expected: String): String {
    this should equalJson(expected, CompareJsonOptions())
    return this
 }
@@ -85,7 +86,7 @@ infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions
    return this
 }
 
-infix fun String.shouldNotEqualJson(expected: String): String {
+infix fun String.shouldNotEqualJson(@Language("json") expected: String): String {
    this shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
@@ -100,14 +101,14 @@ infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOpti
    return this
 }
 
-infix fun String.shouldEqualSpecifiedJson(expected: String) {
+infix fun String.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected
    }
 }
 
-infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
+infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expected: String) {
    shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
       arrayOrder = ArrayOrder.Lenient
@@ -115,7 +116,7 @@ infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(expected: String) {
    }
 }
 
-infix fun String.shouldNotEqualSpecifiedJson(expected: String) {
+infix fun String.shouldNotEqualSpecifiedJson(@Language("json") expected: String) {
    shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient
       expected
