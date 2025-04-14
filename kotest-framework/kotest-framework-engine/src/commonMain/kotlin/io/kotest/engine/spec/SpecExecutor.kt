@@ -18,14 +18,14 @@ import kotlin.reflect.KClass
  * Executes a [SpecRef].
  *
  * First invokes the [SpecRef] against a [SpecRefInterceptorPipeline], then creates an instance
- * of the reference, then executes the spec instance via a [SpecExecutorDelegate].
+ * of the reference, then executes the spec instance via a [SpecExecutor2].
  */
 internal class SpecExecutor(
    private val context: EngineContext,
 ) {
 
    @Suppress("DEPRECATION")
-   private val logger = Logger(SpecExecutorDelegate::class)
+   private val logger = Logger(SpecExecutor::class)
    private val pipeline = SpecRefInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
 
@@ -46,9 +46,8 @@ internal class SpecExecutor(
    private suspend fun executeInDelegate(spec: Spec): Result<Map<TestCase, TestResult>> {
       return try {
          @Suppress("DEPRECATION")
-         val delegate = createSpecExecutorDelegate(context)
-         logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
-         Result.success(delegate.execute(spec))
+         val executor = SpecExecutor2(context)
+          executor.execute(spec)
       } catch (t: Throwable) {
          logger.log { Pair(spec::class.bestName(), "Error executing spec $t") }
          Result.failure(t)
@@ -67,20 +66,6 @@ internal class SpecExecutor(
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
          .onSuccess { if (it is DslDrivenSpec) it.seal() }
 }
-
-/**
- * A platform specific specialization of [SpecExecutor] logic.
- */
-@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
-internal interface SpecExecutorDelegate {
-   suspend fun execute(spec: Spec): Map<TestCase, TestResult>
-}
-
-@Suppress("DEPRECATION")
-@Deprecated("Will be replaced by subsuming delegates into the spec executor directly")
-internal expect fun createSpecExecutorDelegate(
-   context: EngineContext,
-): SpecExecutorDelegate
 
 /**
  * Used to test a [SpecExecutor] from another module.
