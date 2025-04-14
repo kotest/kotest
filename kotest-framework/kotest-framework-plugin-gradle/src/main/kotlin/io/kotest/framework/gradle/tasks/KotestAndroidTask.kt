@@ -19,7 +19,7 @@ import javax.inject.Inject
 abstract class KotestAndroidTask @Inject internal constructor(
    private val executors: ExecOperations,
    private val objects: ObjectFactory,
-) : AbstractKotestTask() {
+) : AbstractKotestJvmTask() {
 
    @get:Input
    abstract val compilationNames: ListProperty<String>

@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -9,8 +10,13 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import kotlin.reflect.KVisibility
 
 /**
- * A [SpecRefInterceptor] which will ignore private specs when the configuration values are set.
+ * A [SpecRefInterceptor] which will ignore private specs
+ * when [ProjectConfigResolver.ignorePrivateClasses] returns true.
+ *
+ * Since visibility modifiers are only available via reflection on the JVM,
+ * this is a JVM only interceptor.
  */
+@JVMOnly
 internal class ClassVisibilitySpecRefInterceptor(
    private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecRefInterceptor {
