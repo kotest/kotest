@@ -171,7 +171,7 @@ class BehaviorSpecTest : BehaviorSpec() {
          }
       }
 
-      context("a") {
+      context("context a") {
          given("b") {
             `when`("c") {
                then("d") {
@@ -184,19 +184,29 @@ class BehaviorSpecTest : BehaviorSpec() {
                counter.get() shouldBe 1
             }
          }
+         xgiven("c") {
+            error("boom")
+         }
+         xGiven("d") {
+            error("boom")
+         }
       }
 
-      xgiven("should be ignored 1") {
+      xGiven("should be ignored 1") {
          error("boom")
       }
 
       xgiven("should be ignored 2") {
+         error("boom")
+      }
+
+      xgiven("should be ignored 3") {
          `when`("should be ignored") {
             error("boom")
          }
       }
 
-      xgiven("should be ignored 3") {
+      xgiven("should be ignored 4") {
          `when`("should be ignored a") {
             then("should be ignored b") {
                error("boom")
@@ -204,13 +214,13 @@ class BehaviorSpecTest : BehaviorSpec() {
          }
       }
 
-      xcontext("should be ignored 4") {
+      xcontext("should be ignored 5") {
          given("should be ignored") {
             error("boom")
          }
       }
 
-      xcontext("should be ignored 5") {
+      xcontext("should be ignored 6") {
          given("should be ignored") {
             `when`("should be ignored") {
                error("boom")
@@ -218,7 +228,7 @@ class BehaviorSpecTest : BehaviorSpec() {
          }
       }
 
-      xcontext("should be ignored 6") {
+      xcontext("should be ignored 7") {
          given("should be ignored") {
             `when`("should be ignored a") {
                then("should be ignored b") {

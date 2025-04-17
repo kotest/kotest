@@ -61,14 +61,14 @@ sealed interface AnnotationSearchParameter
 /**
  * Search should also include composed annotations.
  */
-object IncludingAnnotations : AnnotationSearchParameter
+data object IncludingAnnotations : AnnotationSearchParameter
 
 /**
  * Search should include full type hierarchy.
  *
  * If used with [IncludingAnnotations] also include composed annotations of superclasses.
  */
-object IncludingSuperclasses : AnnotationSearchParameter
+data object IncludingSuperclasses : AnnotationSearchParameter
 
 object BasicReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = null
@@ -91,8 +91,6 @@ object BasicReflection : Reflection {
  */
 fun KClass<*>.bestName(): String = reflection.fqn(this) ?: simpleName ?: this.toString()
 
-fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
-
 /**
  * Finds the first annotation of type T on this class, or returns null if annotations
  * are not supported on this platform or the annotation is missing.
@@ -106,18 +104,6 @@ inline fun <reified T : Any> KClass<*>.annotation(
 }
 
 /**
- * Finds all annotations of type T on this class, or returns an empty list if annotations
- * are not supported on this platform or the annotation is not present.
- *
- * This method by default will recursively included composed annotations.
- */
-inline fun <reified T : Any> KClass<*>.annotations(
-   vararg parameters: AnnotationSearchParameter = arrayOf(IncludingAnnotations)
-): List<T> {
-   return reflection.annotations(this, parameters.toSet()).filterIsInstance<T>()
-}
-
-/**
  * Returns true if this class has the given annotation.
  *
  * This method by default will recursively check for annotations by looking for annotations on annotations.
@@ -127,22 +113,5 @@ inline fun <reified T : Any> KClass<*>.hasAnnotation(
 ): Boolean {
    return this.annotation<T>(*parameters) != null
 }
-
-/**
- * Returns an instance of this KClass via a no-arg default constructor or if this kclass
- * is an object, will return the object instance.
- *
- * Note: JVM only
- */
-fun <T : Any> KClass<T>.newInstanceNoArgConstructorOrObjectInstance(): T =
-   reflection.newInstanceNoArgConstructorOrObjectInstance(this)
-
-/**
- * Returns an instance of this KClass via a no-arg default constructor.
- * Will error if no such constructor exists.
- *
- * Note: JVM only
- */
-fun <T : Any> KClass<T>.newInstanceNoArgConstructor(): T = reflection.newInstanceNoArgConstructor(this)
 
 data class Property(val name: String, val type: KType, val call: (Any) -> Any?)

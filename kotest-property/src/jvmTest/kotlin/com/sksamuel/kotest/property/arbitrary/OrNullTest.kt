@@ -1,7 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.retry
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.doubles.plusOrMinus
@@ -17,6 +21,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.forAll
 import kotlin.time.Duration.Companion.seconds
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class OrNullTest : FunSpec({
 
    test("Arb.orNull() should add null values to those generated") {
@@ -42,18 +47,18 @@ class OrNullTest : FunSpec({
    }
 
    test("null probability values can be specified") {
-       retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
-           listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
-               .forAll { p: Double ->
-                   val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.default())
-                       .map(Sample<Long?>::value)
-                       .take(1000)
-                       .filter { it == null }
-                       .count()
+      retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
+         listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
+            .forAll { p: Double ->
+               val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.default())
+                  .map(Sample<Long?>::value)
+                  .take(1000)
+                  .filter { it == null }
+                  .count()
 
-                   (nullCount.toDouble() / 1000) shouldBe (p plusOrMinus 0.05)
-               }
-       }
+               (nullCount.toDouble() / 1000) shouldBe (p plusOrMinus 0.05)
+            }
+      }
    }
 
    test("invalid null probability raise an IllegalArgumentException") {
@@ -74,13 +79,13 @@ class OrNullTest : FunSpec({
       }
    }
 
-   test("orNull has a shrink to null"){
+   test("orNull has a shrink to null") {
       val iterations = 1000
       val rs = RandomSource.default()
       val classifications =
          forAll(iterations, Arb.constant(Arb.int().orNull())) { orNullArb ->
             val sample = orNullArb.sample(rs)
-            val hasNullShrink = sample.shrinks.children.value.map{it.value()}.any{it == null}
+            val hasNullShrink = sample.shrinks.children.value.map { it.value() }.any { it == null }
             classify(hasNullShrink, "nullShrink", "noNullShrink")
             true
          }.classifications()

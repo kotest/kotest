@@ -1,10 +1,13 @@
 package com.sksamuel.kotest.engine.extensions.guarantees
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BeforeTestExecutionOrderTest : FunSpec() {
 
    var order = ""
@@ -20,13 +23,13 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "a"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "b"
          }
       })
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "c"
          }
@@ -36,7 +39,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "d"
       }
 
-      register(
+      this@BeforeTestExecutionOrderTest.extensions(
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                order += "e"
@@ -49,7 +52,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          }
       )
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "g"
          }
@@ -59,13 +62,13 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          order += "h"
       }
 
-      extensions(object : BeforeTestListener {
+      this@BeforeTestExecutionOrderTest.extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "i"
          }
       })
 
-      register(object : BeforeTestListener {
+      extension(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
             order += "j"
          }

@@ -4,6 +4,8 @@ import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
 import io.kotest.data.forNone
@@ -18,6 +20,7 @@ import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DataTestingTest : StringSpec() {
    init {
 
@@ -217,7 +220,7 @@ class DataTestingTest : StringSpec() {
       "display error message in readable format using" {
          val errorMessage = shouldThrow<AssertionError> {
             forAll(
-               row(intArrayOf(2,3,1,1,4), 2),
+               row(intArrayOf(2, 3, 1, 1, 4), 2),
                row(intArrayOf(0), 0),
             ) { nums, result ->
                nums shouldBe result

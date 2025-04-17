@@ -1,5 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
@@ -23,6 +27,7 @@ import io.kotest.property.arbitrary.uLong
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class LongTest : FunSpec({
    test("<Long, Long> should give values between min and max inclusive") {
       // Test parameters include the test for negative bounds

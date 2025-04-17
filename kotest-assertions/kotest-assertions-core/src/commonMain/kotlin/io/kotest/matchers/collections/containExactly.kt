@@ -12,6 +12,7 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
+import io.kotest.similarity.possibleMatchesDescription
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
@@ -68,9 +69,13 @@ fun <T, C : Collection<T>> containExactly(
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
-      this?.message?.startsWith(IterableEq.trigger) == true
+      this?.message?.startsWith(IterableEq.TRIGGER) == true
 
-   val failureReason = eq(actual, expected, strictNumberEq = true)
+   val failureReason = if(verifier == null) {
+      eq(actual, expected, strictNumberEq = true)
+   } else {
+      matchCollectionsWithVerifier(actual, expected, verifier)
+   }
 
    val missing = expected.filterNot { t ->
       actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
@@ -91,8 +96,18 @@ fun <T, C : Collection<T>> containExactly(
             appendLine()
          }
 
+         if (failureReason is CollectionMismatchWithCustomVerifier) {
+            append(failureReason.message)
+            appendLine()
+         }
+
          appendMissingAndExtra(missing, extra)
          appendLine()
+         appendPossibleMatches(extra, actual)
+
+         if (!passed && !failureReason.isDisallowedIterableComparisonFailure() && verifier == null) {
+            appendSubmatches(actual, expected)
+         }
       }
    }
 
@@ -129,6 +144,37 @@ fun <T, C : Collection<T>> containExactly(
    }
 }
 
+internal fun<T> matchCollectionsWithVerifier(
+   actual: Collection<T>,
+   expected: Collection<T>,
+   verifier: Equality<T>
+): CollectionMismatchWithCustomVerifier? {
+   val actualIterator = actual.iterator()
+   val expectedIterator = expected.iterator()
+   var index = 0
+   while (actualIterator.hasNext()) {
+      val actualElement = actualIterator.next()
+      if (expectedIterator.hasNext()) {
+         val expectedElement = expectedIterator.next()
+         val equalityResult = verifier.verify(actualElement, expectedElement)
+         if(!equalityResult.areEqual()) {
+            return CollectionMismatchWithCustomVerifier(
+               "Elements differ at index $index, expected: <${expectedElement.print().value}>, but was <${actualElement.print().value}>, ${equalityResult.details().explain()}"
+            )
+         }
+      } else {
+         return CollectionMismatchWithCustomVerifier("Actual has an element at index $index, expected is shorter")
+      }
+      index++
+   }
+   if (expectedIterator.hasNext()) {
+      return CollectionMismatchWithCustomVerifier("Expected has an element at index $index, actual is shorter")
+   }
+   return null
+}
+
+internal class CollectionMismatchWithCustomVerifier(message: String): Exception(message)
+
 @JvmName("shouldNotContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldNotContainExactly(expected: Iterable<T>) =
    this?.toList() shouldNot containExactly(expected.toList())
@@ -159,5 +205,25 @@ fun StringBuilder.appendMissingAndExtra(missing: Collection<Any?>, extra: Collec
             extra.take(AssertionsConfig.maxCollectionPrintSize.value).print().value
          }"
       )
+   }
+}
+
+internal fun<T> StringBuilder.appendPossibleMatches(missing: Collection<T>, expected: Collection<T>) {
+   val possibleMatches = missing
+      .map { possibleMatchesDescription(expected.toSet(), it) }
+      .filter { it.isNotEmpty() }
+   if(possibleMatches.isNotEmpty()) {
+      append("\nPossible matches:\n${possibleMatches.take(AssertionsConfig.maxSimilarityPrintSize.value).joinToString("\n\n")}")
+   }
+   if(AssertionsConfig.maxSimilarityPrintSize.value < possibleMatches.size) {
+      append("\nPrinted first ${AssertionsConfig.maxSimilarityPrintSize.value} similarities out of ${possibleMatches.size}, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)\n")
+   }
+}
+
+private fun <T> StringBuilder.appendSubmatches(actual: Collection<T>, expected: Collection<T>) {
+   val partialMatchesDescription = describePartialMatchesInCollection(expected, actual.toList()).toString()
+   if (partialMatchesDescription.isNotEmpty()) {
+      appendLine()
+      appendLine(partialMatchesDescription)
    }
 }

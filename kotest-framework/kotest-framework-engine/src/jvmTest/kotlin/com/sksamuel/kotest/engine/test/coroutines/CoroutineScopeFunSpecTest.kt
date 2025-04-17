@@ -1,17 +1,18 @@
 package com.sksamuel.kotest.engine.test.coroutines
 
-import io.kotest.core.coroutines.backgroundScope
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.engine.coroutines.backgroundScope
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.days
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineScopeFunSpecTest : FunSpec() {
    init {
       test("should advance time when using coroutine test scope").config(coroutineTestScope = true) {
@@ -39,6 +40,7 @@ class CoroutineScopeFunSpecTest : FunSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineScopeShouldSpecTest : ShouldSpec() {
    init {
       should("should advance time when using coroutine test scope").config(coroutineTestScope = true) {
@@ -66,6 +68,7 @@ class CoroutineScopeShouldSpecTest : ShouldSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineScopeExpectSpecTest : ExpectSpec() {
    init {
 
@@ -93,6 +96,7 @@ class CoroutineScopeExpectSpecTest : ExpectSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineScopeFeatureSpecTest : FeatureSpec() {
    init {
       feature("should advance time when using coroutine test scope").config(coroutineTestScope = true) {
@@ -121,6 +125,7 @@ class CoroutineScopeFeatureSpecTest : FeatureSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineScopeFreeSpecTest : FreeSpec() {
    init {
       "should advance time when using coroutine test scope".config(coroutineTestScope = true) {

@@ -12,13 +12,19 @@ class JsonAssertionsTest : StringSpec({
 
    "should return correct error message on failure" {
       shouldThrow<AssertionError> {
-         json1 shouldMatchJson json3
-      }.message shouldBe """expected json to match, but they differed
-         |
-         |expected:<{"location":"chicago","name":"sam"}> but was:<{"name":"sam","location":"london"}>""".trimMargin()
+         json1 shouldEqualJson json3
+      }.message shouldBe """At 'location' expected 'chicago' but was 'london'
+
+expected:<{
+  "location": "chicago",
+  "name": "sam"
+}> but was:<{
+  "name": "sam",
+  "location": "london"
+}>"""
 
       shouldThrow<AssertionError> {
-         json1 shouldNotMatchJson json2
-      }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
+         json1 shouldNotEqualJson json2
+      }.message shouldBe """Expected values to not match"""
    }
 })

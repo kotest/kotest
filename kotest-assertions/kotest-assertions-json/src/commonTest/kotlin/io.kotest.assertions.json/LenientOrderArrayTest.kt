@@ -6,8 +6,10 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 
 class LenientOrderArrayTest : FunSpec(
    {
-      infix fun String.shouldEqualJsonIgnoringOrder(other: String) =
-         this.shouldEqualJson(other, compareJsonOptions { arrayOrder = ArrayOrder.Lenient })
+      infix fun String.shouldEqualJsonIgnoringOrder(other: String) = this shouldEqualJson {
+         arrayOrder = ArrayOrder.Lenient
+         other
+      }
 
       test("simple") {
          "[1, 2]" shouldEqualJsonIgnoringOrder "[2, 1]"

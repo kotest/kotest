@@ -2,26 +2,22 @@
 
 package io.kotest.engine
 
-import io.kotest.common.Platform
-import io.kotest.common.runBlocking
-import io.kotest.common.runPromise
-import io.kotest.core.TagExpression
+import io.kotest.core.Logger
+import io.kotest.core.Platform
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.detectAbstractProjectConfigs
-import io.kotest.engine.config.loadProjectConfigFromClassname
+import io.kotest.engine.extensions.DefaultExtensionRegistry
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.mpp.Logger
+import io.kotest.engine.tags.TagExpression
 import kotlin.reflect.KClass
 
 /**
@@ -35,54 +31,48 @@ import kotlin.reflect.KClass
 class TestEngineLauncher(
    private val platform: Platform,
    private val listener: TestEngineListener,
-   private val projectConfiguration: ProjectConfiguration,
-   private val configs: List<AbstractProjectConfig>,
+   private val config: AbstractProjectConfig?,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
-   private val configurationIsInitialized: Boolean,
+   private val registry: ExtensionRegistry,
 ) {
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(
-      Platform.JVM,
-      NoopTestEngineListener,
-      ProjectConfiguration(),
-      emptyList(),
-      emptyList(),
-      null,
-      false,
-   )
+   constructor() : this(ConsoleTestEngineListener())
 
    constructor(listener: TestEngineListener) : this(
       Platform.JVM,
       listener,
-      ProjectConfiguration(),
-      emptyList(),
+      null,
       emptyList(),
       null,
-      false,
+      DefaultExtensionRegistry(),
    )
 
    /**
-    * Convenience function to be called by the native code gen to set up the TeamCity listener.
+    * Convenience function to be called by the compiler plugin to set up the TeamCity listener.
+    *
+    * Returns a copy of this launcher with the [TeamCityTestEngineListener] set.
     */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
    }
 
    /**
-    * Replace the listener with the given value.
+    * Sets the [TestEngineListener] to be notified of [TestEngine] events.
+    *
+    * Returns a copy of this launcher with the given [TestEngineListener] set.
+    * This will override the current listener. Wrap in a composite listener if you want to use multiple.
     */
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs,
+         config = config,
          refs = refs,
          tagExpression = tagExpression,
-         configurationIsInitialized = configurationIsInitialized,
+         registry = registry,
       )
    }
 
@@ -90,11 +80,10 @@ class TestEngineLauncher(
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs,
+         config = config,
          refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
-         configurationIsInitialized = configurationIsInitialized,
+         registry = registry,
       )
    }
 
@@ -103,35 +92,26 @@ class TestEngineLauncher(
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs,
+         config = config,
          refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
-         configurationIsInitialized = configurationIsInitialized,
+         registry = registry,
       )
    }
 
    /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
+    * Sets a [AbstractProjectConfig] that was detected by the compiler plugin or loaded programmatically.
+    *
+    * This will override any existing project config.
     */
-   @Deprecated("Use withProjectConfig. Will be removed once compiler plugins are updated")
-   fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
-      return withProjectConfig(*projectConfig)
-   }
-
-   /**
-    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin,
-    * and sets [configurationIsInitialized] to false.
-    */
-   fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
+   fun withProjectConfig(config: AbstractProjectConfig?): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs + projectConfig,
+         config = config,
          refs = refs,
          tagExpression = tagExpression,
-         configurationIsInitialized = false,
+         registry = registry,
       )
    }
 
@@ -139,86 +119,73 @@ class TestEngineLauncher(
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs,
+         config = config,
          refs = refs,
          tagExpression = expression,
-         configurationIsInitialized = configurationIsInitialized,
+         registry = registry,
       )
    }
 
    /**
-    * Returns a copy of this launcher with the given [extensions] added to the configuration.
-    *
-    * Note: If after invoking this method, the [withConfiguration] is invoked, then any changes
-    * here will be lost.
+    * Returns a copy of this launcher with the given [extension] added to the configuration.
     */
-   fun withExtensions(vararg extensions: Extension): TestEngineLauncher = withExtensions(extensions.toList())
+   fun addExtension(extension: Extension): TestEngineLauncher =
+      addExtensions(listOf(extension))
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
-    *
-    * Note: If after invoking this method, the [withConfiguration] is invoked, then any changes
-    * here will be lost.
     */
-   fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
-      extensions.forEach { projectConfiguration.registry.add(it) }
+   fun addExtensions(vararg extensions: Extension): TestEngineLauncher =
+      addExtensions(extensions.toList())
+
+   /**
+    * Returns a copy of this launcher with the given [extensions] added to the configuration.
+    */
+   fun addExtensions(extensions: List<Extension>): TestEngineLauncher {
+      extensions.forEach { registry.add(it) }
       return this
    }
 
-   fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         projectConfiguration = configuration,
-         configs = configs,
-         refs = refs,
-         tagExpression = tagExpression,
-         configurationIsInitialized = false,
-      )
-   }
-
-   fun withInitializedConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         projectConfiguration = configuration,
-         configs = configs,
-         refs = refs,
-         tagExpression = tagExpression,
-         configurationIsInitialized = true,
-      )
-   }
-
+   /**
+    * Convenience function to be called by the compiler plugin to set up the JS platform.
+    */
    fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the WASM platform.
+    */
    fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs).withTeamCityListener()
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the Native platform.
+    */
    fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the JVM platform.
+    */
    fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
 
+   /**
+    * Returns a copy of this launcher with the given [platform] set.
+    *
+    * This will override the current platform.
+    */
    fun withPlatform(platform: Platform): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
-         projectConfiguration = projectConfiguration,
-         configs = configs,
+         config = config,
          refs = refs,
          tagExpression = tagExpression,
-         configurationIsInitialized = configurationIsInitialized,
+         registry = registry,
       )
    }
 
-   fun toConfig(): TestEngineConfig {
+   private fun toConfig(): TestEngineConfig {
 
       // if the engine was configured with explicit tags, we register those via a tag extension
-      tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
-
-      val configuration = if (configurationIsInitialized) projectConfiguration else {
-         ConfigManager.initialize(projectConfiguration) {
-            configs +
-               detectAbstractProjectConfigs() +
-               listOfNotNull(loadProjectConfigFromClassname())
-         }
-      }
+      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
@@ -227,13 +194,12 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         configuration = configuration,
+         projectConfig = config,
          tagExpression,
          platform,
+         registry,
       )
    }
-
-   fun testSuite(): TestSuite = TestSuite(refs)
 
    /**
     * Launch the [TestEngine] in an existing coroutine without blocking.
@@ -241,7 +207,7 @@ class TestEngineLauncher(
    suspend fun async(): EngineResult {
       logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
-      return engine.execute(testSuite())
+      return engine.execute(TestSuite(refs))
    }
 
    /**
@@ -252,7 +218,7 @@ class TestEngineLauncher(
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
-         engine.execute(testSuite())
+         engine.execute(TestSuite(refs))
       }
    }
 
@@ -264,7 +230,7 @@ class TestEngineLauncher(
       logger.log { "Launching Test Engine in Javascript promise" }
       runPromise {
          val engine = TestEngine(toConfig())
-         engine.execute(testSuite())
+         engine.execute(TestSuite(refs))
       }
    }
 }

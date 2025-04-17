@@ -1,11 +1,12 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.TagExpression
+import io.kotest.engine.tags.TagExpression
+import io.kotest.core.log
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
+import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
-import io.kotest.mpp.log
 
 /**
  * A [TestEnabledExtension] that uses [io.kotest.core.Tag]s.
@@ -18,9 +19,12 @@ import io.kotest.mpp.log
  *
  *  Note: tags are attached to tests either through test config, or at the spec level.
  */
-internal class TagsEnabledExtension(private val tags: TagExpression) : TestEnabledExtension {
+internal class TagsEnabledExtension(
+   private val tags: TagExpression,
+   private val testConfigResolver: TestConfigResolver,
+) : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
-      val enabledInTags = tags.parse().isActive(testCase.config.tags)
+      val enabledInTags = tags.parse().isActive(testConfigResolver.tags(testCase))
       if (!enabledInTags) {
          return Enabled
             .disabled("Disabled by tags: ${tags.expression}")

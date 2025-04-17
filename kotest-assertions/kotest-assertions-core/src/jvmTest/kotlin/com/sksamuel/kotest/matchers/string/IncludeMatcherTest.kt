@@ -11,6 +11,7 @@ import io.kotest.matchers.string.shouldInclude
 import io.kotest.matchers.string.shouldNotInclude
 import io.kotest.matchers.string.include
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContain
 
 class IncludeMatcherTest : FreeSpec() {
@@ -36,6 +37,18 @@ class IncludeMatcherTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "hello" shouldInclude "qwe"
             }.message shouldBe "\"hello\" should include substring \"qwe\""
+         }
+
+         "should find a submatch for reasonably long value and substring" {
+            val line = "The quick brown fox jumps over the lazy dog"
+            shouldThrow<AssertionError> {
+               line shouldInclude "The coyote jumps over the lazy dog"
+            }.message.shouldContainInOrder(
+               """"The quick brown fox jumps over the lazy dog" should include substring "The coyote jumps over the lazy dog"""",
+               """Match[0]: part of slice with indexes [10..33] matched actual[19..42]""",
+               """Line[0] ="The quick brown fox jumps over the lazy dog"""",
+               """Match[0]= -------------------++++++++++++++++++++++++"""
+            )
          }
 
          "should fail if value is null" {

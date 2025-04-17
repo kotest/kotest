@@ -9,7 +9,7 @@ var factoryBeforeContainer = mutableListOf<String>()
 
 private val factory = funSpec {
    beforeContainer {
-      factoryBeforeContainer.add(it.name.testName)
+      factoryBeforeContainer.add(it.name.name)
    }
    context("factory") {
       test("a") { }
@@ -20,7 +20,7 @@ private val factory = funSpec {
 class BeforeContainerInFactoryTest : FunSpec({
 
    beforeContainer {
-      specBeforeContainer.add(it.name.testName)
+      specBeforeContainer.add(it.name.name)
    }
 
    afterSpec {

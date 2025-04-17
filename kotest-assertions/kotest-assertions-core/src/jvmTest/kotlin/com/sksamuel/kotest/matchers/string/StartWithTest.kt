@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.string.startWith
@@ -52,9 +54,30 @@ class StartWithTest : FreeSpec() {
             a2 shouldBe "hello"
          }
          "should show divergence in error message" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                "la tour eiffel" should startWith("la tour tower london")
-            }.message shouldBe "\"la tour eiffel\" should start with \"la tour tower london\" (diverged at index 8)"
+            }.message
+            assertSoftly {
+               message shouldStartWith "\"la tour eiffel\" should start with \"la tour tower london\" (diverged at index 8)"
+               message.shouldContainInOrder(
+                  "Match[0]: part of prefix with indexes [0..7] matched actual[0..7]",
+                  """Line[0] ="la tour eiffel"""",
+                  """Match[0]= ++++++++------"""
+               )
+            }
+         }
+         "should find prefix in the middle of the string" {
+            val message = shouldThrow<AssertionError> {
+               "The quick brown fox jumps over the lazy dog" should startWith("quick brown fox jumps")
+            }.message
+            assertSoftly {
+               message shouldStartWith """"The quick brown fox jumps over the lazy dog" should start with "quick brown fox jumps" (diverged at index 0)"""
+               message.shouldContainInOrder(
+                  "Match[0]: whole prefix matched actual[4..24]",
+                  """Line[0] ="The quick brown fox jumps over the lazy dog"""",
+                  """Match[0]= ----+++++++++++++++++++++------------------"""
+               )
+            }
          }
          "should show should start with regex in error message" {
             shouldThrow<AssertionError> {

@@ -1,13 +1,16 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bigInt
 import io.kotest.property.checkAll
 import java.math.BigInteger
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BigIntArbTest : ShouldSpec({
 
    should("Generate different big ints") {

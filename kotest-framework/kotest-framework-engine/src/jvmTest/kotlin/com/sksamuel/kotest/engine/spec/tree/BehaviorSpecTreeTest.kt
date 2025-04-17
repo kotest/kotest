@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.spec.tree
 
-import io.kotest.core.descriptors.TestPath
+import io.kotest.common.DescriptorPath
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -8,6 +10,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
 // tests that behavior spec contexts are correctly nested when reporting
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BehaviorSpecTreeTest : FunSpec() {
    init {
       test("BehaviorSpec should nest tests properly") {
@@ -16,11 +19,11 @@ class BehaviorSpecTreeTest : FunSpec() {
             .withClasses(MyBehaviorSpecTree::class)
             .launch()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(
-            TestPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b -- c"),
-            TestPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b"),
-            TestPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- d -- e"),
-            TestPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- d"),
-            TestPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a"),
+            DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b -- c"),
+            DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b"),
+            DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- d -- e"),
+            DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- d"),
+            DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a"),
          )
       }
    }

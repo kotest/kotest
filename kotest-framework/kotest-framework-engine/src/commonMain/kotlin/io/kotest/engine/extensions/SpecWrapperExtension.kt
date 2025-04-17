@@ -2,6 +2,7 @@ package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterSpecListener
@@ -14,21 +15,20 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.PrepareSpecListener
-import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
 /**
- * Wraps another extension, delegating spec extensions only for the specified spec.
+ * Wraps another [Extension], delegating all calls to that extension, but only for the given [target] spec.
  */
 internal class SpecWrapperExtension(
    val delegate: Extension,
    val target: KClass<*>
-) : SpecInstantiationListener,
-   InstantiationErrorListener,
+) : InstantiationErrorListener,
    SpecExtension,
+   TestCaseExtension,
    IgnoredSpecListener,
    AfterSpecListener,
    BeforeSpecListener,
@@ -40,6 +40,13 @@ internal class SpecWrapperExtension(
    AfterEachListener,
    BeforeContainerListener,
    AfterContainerListener {
+
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when {
+         testCase.spec::class == target && delegate is TestCaseExtension -> delegate.intercept(testCase, execute)
+         else -> execute(testCase)
+      }
+   }
 
    override suspend fun beforeContainer(testCase: TestCase) {
       if (delegate is BeforeContainerListener && testCase.spec::class == target) delegate.beforeContainer(testCase)
@@ -96,23 +103,11 @@ internal class SpecWrapperExtension(
       if (delegate is FinalizeSpecListener && kclass == target) delegate.finalizeSpec(kclass, results)
    }
 
-   override fun specInstantiated(spec: Spec) {
-      if (delegate is SpecInstantiationListener && spec::class == target) delegate.specInstantiated(spec)
-   }
-
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       if (delegate is SpecExtension && spec::class == target) delegate.intercept(spec, execute) else execute(spec)
    }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       if (delegate is PrepareSpecListener && kclass == target) delegate.prepareSpec(kclass)
-   }
-
-   override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
-      if (delegate is SpecExtension && spec == target) delegate.intercept(spec, process) else process()
-   }
-
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
-      if (delegate is SpecInstantiationListener && kclass == target) delegate.specInstantiationError(kclass, t)
    }
 }

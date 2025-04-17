@@ -6,16 +6,13 @@ import kotlin.reflect.KClass
 
 object Locations {
 
-   fun location(kclass: KClass<*>): String =
-      "kotest:class://" + kclass.bestName() + ":1"
-
-   // note that everything before the :// is considered the "protocol" by the intellij plugin
-   private fun fileHint(fileName: String, lineNumber: Int) = "kotest:file://${fileName}:${lineNumber}"
-   private fun classHint(fqn: String, lineNumber: Int) = "kotest:class://${fqn}:${lineNumber}"
+   fun location(kclass: KClass<*>): String = classHint(kclass.bestName(), 1)
 
    fun location(sourceRef: SourceRef): String? = when (sourceRef) {
-      is SourceRef.FileSource -> fileHint(sourceRef.fileName, sourceRef.lineNumber ?: 1)
       is SourceRef.ClassSource -> classHint(sourceRef.fqn, sourceRef.lineNumber ?: 1)
       SourceRef.None -> null
    }
+
+   // note that everything before the :// is considered the "protocol" by the intellij plugin
+   private fun classHint(fqn: String, lineNumber: Int) = "kotest://${fqn}:${lineNumber}"
 }

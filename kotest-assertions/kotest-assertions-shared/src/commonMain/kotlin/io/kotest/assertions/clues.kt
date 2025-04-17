@@ -28,25 +28,14 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
       // this is a special control exception used by coroutines
    } catch (t: TimeoutCancellationException) {
       throw Exceptions.createAssertionError(clueContextAsString() + (t.message ?: ""), t)
+   } catch (e: ExceptionWithClue) {
+      throw e
+   } catch (e: Exception) {
+      throw ExceptionWithClue.from(clueContextAsString(), e)
    } finally {
       collector.popClue()
    }
 }
-
-/**
- * Similar to [withClue] but accepts a lazy in the case that a clue is expensive or is only valid when an assertion fails.
- * Can be nested, the error message will contain all available clues.
- *
- * @param thunk the code with assertions to be executed
- * @return the return value of the supplied [thunk]
- */
-@Deprecated(
-   message = "use withClue(lambda, lambda) instead",
-   replaceWith = ReplaceWith("withClue({ clue.value }, thunk)"),
-   level = DeprecationLevel.WARNING
-)
-inline fun <R> withClue(clue: Lazy<Any?>, thunk: () -> R): R =
-   clue.asClue { thunk() }
 
 /**
  * Similar to `withClue`, but will add `this` as a clue to the assertion error message in case an assertion fails.

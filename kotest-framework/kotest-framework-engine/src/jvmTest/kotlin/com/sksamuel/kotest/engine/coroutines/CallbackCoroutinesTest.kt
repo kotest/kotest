@@ -1,40 +1,43 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.common.testTimeSource
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeMark
 
 @Isolate
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CallbackCoroutinesTest : FunSpec({
 
-   var start: Long = 0
-   var a: Long = 0
-   var b: Long
+   lateinit var start: TimeMark
+   lateinit var a: TimeMark
 
    beforeTest {
-      delay(250)
+      delay(5)
    }
 
    afterTest {
-      delay(250)
+      delay(5)
    }
 
    beforeSpec {
-      start = System.currentTimeMillis()
+      start = testTimeSource().markNow()
    }
 
    afterSpec {
-      val end = System.currentTimeMillis()
-      (end - start).shouldBeGreaterThan(250)
+      start.elapsedNow() shouldBeGreaterThan 5.milliseconds
    }
 
    test("start the timer") {
-      a = System.currentTimeMillis()
+      a = testTimeSource().markNow()
    }
 
    test("should be delayed a bit due to the callbacks between these tests") {
-      b = System.currentTimeMillis()
-      (b - a).shouldBeGreaterThan(500)
+      a.elapsedNow() shouldBeGreaterThan 10.milliseconds
    }
 })

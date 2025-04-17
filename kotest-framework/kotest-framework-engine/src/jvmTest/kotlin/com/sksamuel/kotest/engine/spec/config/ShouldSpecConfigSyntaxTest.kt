@@ -1,39 +1,36 @@
 package com.sksamuel.kotest.engine.spec.config
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@ExperimentalKotest
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ShouldSpecConfigSyntaxTest : ShouldSpec() {
    init {
 
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 20
+         counter.get() shouldBe 17
       }
 
       should("a test disabled by an enabled flag").config(enabled = false) {
          error("boom")
       }
 
-      should("a test disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      should("a test disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
       should("a test with multiple invocations").config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      should("a test with multiple threads").config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 
@@ -73,7 +70,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
          should("an inner test") { error("boom") }
       }
 
-      context("an outer context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      context("an outer context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
          should("an inner test") { error("boom") }
       }
@@ -106,7 +103,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
             should("an inner test") { error("boom") }
          }
 
-         context("an inner context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         context("an inner context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
             error("boom")
             should("an inner test") { error("boom") }
          }

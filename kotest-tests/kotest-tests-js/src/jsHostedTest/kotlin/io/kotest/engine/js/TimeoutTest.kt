@@ -2,7 +2,6 @@ package io.kotest.engine.js
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import io.kotest.datatest.withData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
@@ -12,7 +11,7 @@ class TimeoutTest : FunSpec() {
 
       aroundTest { (tc, fn) ->
          val result = fn(tc)
-         if (tc.name.testName == "JS engine should capture timeouts" && result.isErrorOrFailure)
+         if (tc.name.name == "JS engine should capture timeouts" && result.isErrorOrFailure)
             TestResult.Success(0.milliseconds)
          else
             result

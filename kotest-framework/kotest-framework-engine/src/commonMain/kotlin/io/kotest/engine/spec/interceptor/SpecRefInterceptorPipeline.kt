@@ -1,26 +1,25 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.core.Logger
+import io.kotest.core.Platform
+import io.kotest.core.platform
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.ref.BeforeSpecStateInterceptor
-import io.kotest.engine.spec.interceptor.ref.EnabledIfInterceptor
-import io.kotest.engine.spec.interceptor.ref.FinalizeSpecInterceptor
-import io.kotest.engine.spec.interceptor.ref.IgnoredSpecInterceptor
-import io.kotest.engine.spec.interceptor.ref.PrepareSpecInterceptor
-import io.kotest.engine.spec.interceptor.ref.RequiresPlatformInterceptor
-import io.kotest.engine.spec.interceptor.ref.RequiresTagInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecFinishedInterceptor
+import io.kotest.engine.spec.interceptor.ref.DescriptorFilterSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.FinalizeSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.PrepareSpecInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresPlatformInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresTagInterceptor
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SystemPropertySpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.ref.TagsInterceptor
-import io.kotest.mpp.Logger
+import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
 import io.kotest.mpp.bestName
 
 internal class SpecRefInterceptorPipeline(
@@ -29,7 +28,6 @@ internal class SpecRefInterceptorPipeline(
 
    private val logger = Logger(SpecInterceptorPipeline::class)
    private val listener = context.listener
-   private val configuration = context.configuration
 
    /**
     * Executes all [SpecRefInterceptor]s in turn, returning a result, which will be
@@ -41,35 +39,40 @@ internal class SpecRefInterceptorPipeline(
     */
    suspend fun execute(
       ref: SpecRef,
-      inner: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+      inner: NextSpecRefInterceptor,
    ): Result<Map<TestCase, TestResult>> {
-      val interceptors = createPipeline()
+      val interceptors = platformInterceptors(context) + createCommonInterceptors()
       logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
-      return interceptors.foldRight(inner) { interceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
-         { ref -> interceptor.intercept(ref, fn) }
+      return interceptors.foldRight(inner) { interceptor, fn ->
+         object : NextSpecRefInterceptor {
+            override suspend fun invoke(ref: SpecRef): Result<Map<TestCase, TestResult>> {
+               return interceptor.intercept(ref, fn)
+            }
+         }
       }.invoke(ref)
    }
 
-   private fun createPipeline(): List<SpecRefInterceptor> {
+   private fun createCommonInterceptors(): List<SpecRefInterceptor> {
       return listOfNotNull(
-         RequiresPlatformInterceptor(listener, context, configuration.registry),
-         if (platform == Platform.JVM) EnabledIfInterceptor(listener, configuration.registry) else null,
-         IgnoredSpecInterceptor(listener, configuration.registry),
-         SpecFilterInterceptor(listener, configuration.registry),
-         SystemPropertySpecFilterInterceptor(listener, configuration.registry),
-         TagsInterceptor(listener, configuration),
-         if (platform == Platform.JVM) RequiresTagInterceptor(
-            listener,
-            configuration,
-            configuration.registry
-         ) else null,
-         SpecRefExtensionInterceptor(configuration.registry),
+         RequiresPlatformInterceptor(listener, context),
+         if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
+         if (platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
+         IgnoredSpecInterceptor(listener, context.specExtensions()),
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.registry) else null,
+         DescriptorFilterSpecRefInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
+//         SystemPropertyDescriptorFilterInterceptor(listener, context.specExtensions()),
+         TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
+         if (platform == Platform.JVM)
+            RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
+         else
+            null,
+         SpecRefExtensionInterceptor(context.projectConfigResolver),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(configuration.registry) else null,
-         PrepareSpecInterceptor(configuration.registry),
-         BeforeSpecStateInterceptor(context),
-         FinalizeSpecInterceptor(configuration.registry),
+         PrepareSpecInterceptor(context.specExtensions()),
+         FinalizeSpecInterceptor(context.specExtensions()),
       )
    }
 }
+
+internal expect fun platformInterceptors(context: EngineContext): List<SpecRefInterceptor>

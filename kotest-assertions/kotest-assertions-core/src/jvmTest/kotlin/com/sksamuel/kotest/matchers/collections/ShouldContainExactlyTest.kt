@@ -3,6 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
 import io.kotest.matchers.collections.CountMismatch
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -15,7 +17,10 @@ import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -29,8 +34,18 @@ import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
 
-
 class ShouldContainExactlyTest : WordSpec() {
+
+   private val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
+      override fun name() = "Case Insensitive String Matcher"
+
+      override fun verify(actual: String, expected: String): EqualityResult {
+         return if (actual.uppercase() == expected.uppercase())
+            EqualityResult.equal(actual, expected, this)
+         else
+            EqualityResult.notEqual(actual, expected, this)
+      }
+   }
 
    init {
 
@@ -97,7 +112,7 @@ class ShouldContainExactlyTest : WordSpec() {
                linkedSetOf(*elements),
             )
 
-            checkAll(Exhaustive.sortedSetOf(1,2,3)) { actual ->
+            checkAll(Exhaustive.sortedSetOf(1, 2, 3)) { actual ->
                actual should containExactly(1, 2, 3)
                actual.shouldContainExactly(1, 2, 3)
 
@@ -144,17 +159,16 @@ class ShouldContainExactlyTest : WordSpec() {
          "print errors unambiguously" {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
-            } shouldHaveMessage
-               """
-                  |Collection should contain exactly: [1, 2] but was: [1L, 2L]
-                  |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
-                  |
-                  |expected:<[1, 2]> but was:<[1L, 2L]>
-               """.trimMargin()
+            }.message.shouldContainInOrder(
+               "Collection should contain exactly: [1, 2] but was: [1L, 2L]",
+               "Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]",
+               "expected:<[1, 2]> but was:<[1L, 2L]>",
+            )
          }
 
          "print dataclasses" {
-            shouldThrow<AssertionError> {
+
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath),
@@ -163,30 +177,39 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
-               """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
-               """.trimMargin()
+            }.message?.trim()
+
+            message.shouldContainInOrder(
+               "Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]",
+               "Slice[0] of expected with indexes: 0..1 matched a slice of actual values with indexes: 0..1",
+               "[0] Blonde(a=foo, b=true, c=23423, p=$expectedPath) => slice 0",
+               "[1] Blonde(a=woo, b=true, c=97821, p=$expectedPath) => slice 0",
+               """expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""",
+            )
          }
 
          "include extras when too many" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath)
                ).shouldContainExactly(
                   Blonde("foo", true, 23423, inputPath),
-                  Blonde("woo", true, 97821, inputPath)
+                  Blonde("foo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+            message shouldContain (
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=foo, b=true, c=97821, p=$expectedPath)]
                """.trimMargin()
+               )
+
+            message.shouldContain(
+               """
+                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=foo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
+               """.trimMargin()
+            )
          }
 
          "include missing when too few" {
@@ -198,17 +221,15 @@ class ShouldContainExactlyTest : WordSpec() {
                ).shouldContainExactly(
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe
-               """
-                  |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |
-                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
-               """.trimMargin()
+            }.message.shouldContainInOrder(
+               "Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
+               "Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]",
+               "expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>",
+            )
          }
 
          "include missing and extras when not the right amount" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("hoo", true, 96915, inputPath)
@@ -216,17 +237,20 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("woo", true, 97821, inputPath),
                   Blonde("goo", true, 51984, inputPath)
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+            message shouldStartWith
                """
                   |Collection should contain exactly: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
                   |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
-                  |
+               """.trimMargin()
+            message shouldContain
+               """
                   |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
                """.trimMargin()
          }
 
          "exclude full print with warning on large collections" {
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                listOf(
                   Blonde("foo", true, 1, inputPath),
                   Blonde("foo", true, 2, inputPath),
@@ -272,14 +296,63 @@ class ShouldContainExactlyTest : WordSpec() {
                   Blonde("foo", true, 20, inputPath),
                   Blonde("foo", true, 21, inputPath),
                )
-            }.message?.trim() shouldBe
+            }.message?.trim()
+            message shouldContain
                """
-                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=a/b/c), Blonde(a=foo, b=true, c=2, p=a/b/c), Blonde(a=foo, b=true, c=3, p=a/b/c), Blonde(a=foo, b=true, c=4, p=a/b/c), Blonde(a=foo, b=true, c=5, p=a/b/c), Blonde(a=foo, b=true, c=6, p=a/b/c), Blonde(a=foo, b=true, c=7, p=a/b/c), Blonde(a=foo, b=true, c=8, p=a/b/c), Blonde(a=foo, b=true, c=9, p=a/b/c), Blonde(a=foo, b=true, c=10, p=a/b/c), Blonde(a=foo, b=true, c=11, p=a/b/c), Blonde(a=foo, b=true, c=12, p=a/b/c), Blonde(a=foo, b=true, c=13, p=a/b/c), Blonde(a=foo, b=true, c=14, p=a/b/c), Blonde(a=foo, b=true, c=15, p=a/b/c), Blonde(a=foo, b=true, c=16, p=a/b/c), Blonde(a=foo, b=true, c=17, p=a/b/c), Blonde(a=foo, b=true, c=18, p=a/b/c), Blonde(a=foo, b=true, c=19, p=a/b/c), Blonde(a=foo, b=true, c=20, p=a/b/c), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
-                  |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=a/b/c)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=a/b/c)]
-                  |(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)
+                  |Collection should contain exactly: [Blonde(a=foo, b=true, c=77, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] but was: [Blonde(a=foo, b=true, c=1, p=$expectedPath), Blonde(a=foo, b=true, c=2, p=$expectedPath), Blonde(a=foo, b=true, c=3, p=$expectedPath), Blonde(a=foo, b=true, c=4, p=$expectedPath), Blonde(a=foo, b=true, c=5, p=$expectedPath), Blonde(a=foo, b=true, c=6, p=$expectedPath), Blonde(a=foo, b=true, c=7, p=$expectedPath), Blonde(a=foo, b=true, c=8, p=$expectedPath), Blonde(a=foo, b=true, c=9, p=$expectedPath), Blonde(a=foo, b=true, c=10, p=$expectedPath), Blonde(a=foo, b=true, c=11, p=$expectedPath), Blonde(a=foo, b=true, c=12, p=$expectedPath), Blonde(a=foo, b=true, c=13, p=$expectedPath), Blonde(a=foo, b=true, c=14, p=$expectedPath), Blonde(a=foo, b=true, c=15, p=$expectedPath), Blonde(a=foo, b=true, c=16, p=$expectedPath), Blonde(a=foo, b=true, c=17, p=$expectedPath), Blonde(a=foo, b=true, c=18, p=$expectedPath), Blonde(a=foo, b=true, c=19, p=$expectedPath), Blonde(a=foo, b=true, c=20, p=$expectedPath), ...and 1 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
+                  |Some elements were missing: [Blonde(a=foo, b=true, c=77, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=1, p=$expectedPath)]
+               """.trimMargin()
+            message.shouldContain("Possible matches:")
+            message shouldContain "Printed first 5 similarities out of 20, (set the 'kotest.assertions.similarity.print.size' JVM property to see full output for similarity)"
+            message shouldContain
+               """
+                  |(set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)
                """.trimMargin()
          }
 
+         "find matching slices" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) shouldContainExactly listOf(5, 6, 7, 8, 9, 0, 1, 2, 3, 4,)
+            }.message
+            message should containInOrder(
+               "Slice[0] of expected with indexes: 0..4 matched a slice of actual values with indexes: 5..9",
+               "Slice[1] of expected with indexes: 5..9 matched a slice of actual values with indexes: 0..4",
+               "[0] 0 => slice 1",
+               "[1] 1 => slice 1",
+               "[2] 2 => slice 1",
+               "[3] 3 => slice 1",
+               "[4] 4 => slice 1",
+               "[5] 5 => slice 0",
+               "[6] 6 => slice 0",
+               "[7] 7 => slice 0",
+               "[8] 8 => slice 0",
+               "[9] 9 => slice 0",
+            )
+         }
+
+         "find elements not in matched slice" {
+            val message = shouldThrow<AssertionError> {
+               listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) shouldContainExactly listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0,)
+            }.message
+            message.shouldContainInOrder(
+               "Element(s) not in matched slice(s):",
+               "[9] 0 => Found At Index(es): [0]"
+            )
+         }
+
+         "pass with custom verifier" {
+            listOf("Apple", "ORANGE", "apple") should containExactly(
+               listOf("Apple", "orange", "APPLE"),
+               caseInsensitiveStringEquality
+            )
+         }
+
+         "fail with custom verifier" {
+            listOf("Apple", "ORANGE", "orange") shouldNot containExactly(
+               listOf("Apple", "orange", "APPLE"),
+               caseInsensitiveStringEquality
+            )
+         }
       }
 
       "containExactlyInAnyOrder" should {
@@ -357,16 +430,39 @@ class ShouldContainExactlyTest : WordSpec() {
 
          "find similar elements for unexpected key" {
             val message = shouldThrow<AssertionError> {
-               listOf(sweetGreenApple, sweetRedApple).shouldContainExactlyInAnyOrder(listOf(sweetGreenApple, sweetGreenPear))
+               listOf(sweetGreenApple, sweetRedApple).shouldContainExactlyInAnyOrder(
+                  listOf(
+                     sweetGreenApple,
+                     sweetGreenPear
+                  )
+               )
             }.message
+            println(message)
             message shouldContain """
                |Possible matches for unexpected elements:
                |
-               | expected: Fruit(name=apple, color=green, taste=sweet),
-               |  but was: Fruit(name=apple, color=red, taste=sweet),
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
                |  The following fields did not match:
-               |    "color" expected: <"green">, but was: <"red">
+               |    "name" expected: <"pear">, but was: <"apple">
             """.trimMargin()
+         }
+         "find similar element for String" {
+            val message = shouldThrow<AssertionError> {
+               listOf("sweet green apple", "sweet red apple").shouldContainExactlyInAnyOrder(
+                  listOf(
+                     "sweet green apple",
+                     "sweet red plum",
+                  )
+               )
+            }.message
+            println(message)
+            message.shouldContainInOrder(
+               "Possible matches for unexpected elements:",
+               """expected: <"sweet red plum">, found a similar value: <"sweet red apple">""",
+               """Line[0] ="sweet red apple"""",
+               """Match[0]= ++++++++++-----""",
+            )
          }
 
          "disambiguate when using optional expected value" {
@@ -380,17 +476,39 @@ class ShouldContainExactlyTest : WordSpec() {
                it shouldContainExactlyInAnyOrder listOf("1", "2", "3", "4", "5", "6", "7")
             }
          }
+
+         "use custom verifier correctly" {
+            val caseInsensitiveStringEquality: Equality<String> = object : Equality<String> {
+               override fun name() = "Case Insensitive String Matcher"
+
+               override fun verify(actual: String, expected: String): EqualityResult {
+                  return if (actual.uppercase() == expected.uppercase())
+                     EqualityResult.equal(actual, expected, this)
+                  else
+                     EqualityResult.notEqual(actual, expected, this)
+               }
+            }
+            listOf("apple", "orange", "Apple") should containExactlyInAnyOrder(
+               listOf("APPLE", "APPLE", "Orange"),
+               caseInsensitiveStringEquality
+            )
+            listOf("apple", "orange", "Orange") shouldNot containExactlyInAnyOrder(
+               listOf("APPLE", "APPLE", "Orange"),
+               caseInsensitiveStringEquality
+            )
+         }
       }
 
       "countMismatch" should {
          "return empty list for a complete match" {
             val counts = mapOf("apple" to 1, "orange" to 2)
-            countMismatch(counts, counts).shouldBeEmpty()
+            countMismatch(counts, counts, Equality.default()).shouldBeEmpty()
          }
          "return differences for not null key" {
             countMismatch(
                mapOf("apple" to 1, "orange" to 2, "banana" to 3),
-               mapOf("apple" to 2, "orange" to 2, "peach" to 1)
+               mapOf("apple" to 2, "orange" to 2, "peach" to 1),
+               Equality.default()
             ) shouldBe listOf(
                CountMismatch("apple", 1, 2)
             )
@@ -398,7 +516,8 @@ class ShouldContainExactlyTest : WordSpec() {
          "return differences for null key" {
             countMismatch(
                mapOf(null to 1, "orange" to 2, "banana" to 3),
-               mapOf(null to 2, "orange" to 2, "peach" to 1)
+               mapOf(null to 2, "orange" to 2, "peach" to 1),
+               Equality.default()
             ) shouldBe listOf(
                CountMismatch(null, 1, 2)
             )

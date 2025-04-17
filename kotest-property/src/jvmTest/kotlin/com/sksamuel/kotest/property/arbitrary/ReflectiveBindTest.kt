@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
@@ -28,6 +30,7 @@ import java.time.YearMonth
 import java.time.ZonedDateTime
 import kotlin.reflect.KClass
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ReflectiveBindTest : StringSpec(
    {
       val randomSource = RandomSource.seeded(11L)
@@ -253,11 +256,11 @@ class ReflectiveBindTest : StringSpec(
       object Puppy : Pet()
       object Cat : Pet()
 
-      data class Fish(val species: FishSpecies): Pet()
+      data class Fish(val species: FishSpecies) : Pet()
 
       sealed class FishSpecies {
          object GoldFish : FishSpecies()
-         data class Other(val name: String): FishSpecies()
+         data class Other(val name: String) : FishSpecies()
       }
 
       class NoArgConstructor

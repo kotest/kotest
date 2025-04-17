@@ -5,7 +5,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import kotlin.time.Duration
 
@@ -15,9 +14,8 @@ fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
       return MatcherResult(
          passed,
          { "$value should be today" },
-         {
-            "$value should not be today"
-         })
+         { "$value should not be today" }
+      )
    }
 }
 

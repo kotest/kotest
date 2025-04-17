@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -7,9 +9,11 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.shuffle
+import io.kotest.property.arbitrary.slice
 import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.arbitrary.take
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CombinationsTest : FunSpec({
 
    test("shuffle should maintain all elements") {
@@ -40,5 +44,11 @@ class CombinationsTest : FunSpec({
 
    test("subsequence should contain the original list") {
       Arb.subsequence(listOf(1, 2, 3, 4, 5)).take(1000).toSet().shouldContain(listOf(1, 2, 3, 4, 5))
+   }
+
+   test("slice") {
+      val actual = Arb.slice(listOf(1, 2, 3, 4, 5)).take(10000).toList()
+      actual.map { it.size }.distinct().shouldContainAll(0, 1, 2, 3, 4, 5)
+      actual.filter { it.isNotEmpty() }.map { it[0] }.distinct().shouldContainAll(1, 2, 3, 4, 5)
    }
 })

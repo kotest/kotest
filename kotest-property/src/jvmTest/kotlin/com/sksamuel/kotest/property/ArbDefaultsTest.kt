@@ -1,15 +1,18 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.default
 import io.kotest.property.checkAll
+import io.kotest.property.resolution.default
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ArbDefaultsTest : WordSpec({
 
    "Gen.default" should {
@@ -44,7 +47,7 @@ class ArbDefaultsTest : WordSpec({
       }
 
       "throw for nested parameters" {
-         var e = shouldThrow<IllegalStateException> {
+         val e = shouldThrow<IllegalStateException> {
             checkAll<Ear> { it.shouldNotBeNull() }
          }
          e.shouldHaveMessage("Failed to create generator for parameter com.sksamuel.kotest.property.Ear.d")

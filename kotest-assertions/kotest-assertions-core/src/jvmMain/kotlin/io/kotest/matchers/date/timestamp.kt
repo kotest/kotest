@@ -6,7 +6,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.sql.Timestamp
 
-fun beAfter(timestamp: Timestamp) = object: Matcher<Timestamp>  {
+fun beAfter(timestamp: Timestamp) = object: Matcher<Timestamp> {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.after(timestamp),
@@ -16,7 +16,7 @@ fun beAfter(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    }
 }
 
-fun beBefore(timestamp: Timestamp) = object: Matcher<Timestamp>  {
+fun beBefore(timestamp: Timestamp) = object: Matcher<Timestamp> {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.before(timestamp),

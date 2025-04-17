@@ -2,17 +2,24 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.getLocalDateArbParams
 import io.kotest.property.arbitrary.javaDate
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
@@ -29,6 +36,8 @@ import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDate.MAX
+import java.time.LocalDate.MIN
 import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -38,8 +47,10 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.hours
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
@@ -73,9 +84,30 @@ class DateTest : WordSpec({
          }
       }
 
+      "Edge cases are within specified date range when minDate is after typical edge case dates" {
+         val minDate = of(2024, 3, 1)
+         val maxDate = of(2024, 12, 31)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
+      }
+
+      "Century year edge case is included when within the date range" {
+         val minDate = of(1999, 12, 31)
+         val maxDate = of(2001, 1, 1)
+         val arb = Arb.localDate(minDate, maxDate)
+         val dates = arb.edgecases()
+         dates.forAll { date -> date shouldBeIn minDate..maxDate }
+      }
+
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(2016, 2, 29)
+         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(leapYear, 2, 29)
+      }
+
+      "Contain Jan 1st if century year" {
+         val centuryYear = 2100
+         Arb.localDate(of(centuryYear, 1, 1), of(centuryYear, 12, 31)).edgecases() shouldContain of(centuryYear, 1, 1)
       }
 
 
@@ -85,6 +117,12 @@ class DateTest : WordSpec({
    }
 
    "Arb.localDate(minDate, maxDate)" should {
+      "be able to handle a very large delta between boundaries" {
+         shouldNotThrowAny {
+            Arb.localDate(MIN, MAX).take(10_000).toList()
+         }
+      }
+
       "Work when min date == max date" {
          val date = of(2021, 1, 1)
          Arb.localDate(date, date).take(10).toList() shouldBe List(10) { date }
@@ -394,8 +432,8 @@ class DateTest : WordSpec({
 
          val zoneId = ZoneId.systemDefault()
          val testedArb = Arb.javaDate(
-            minDate = SimpleDateFormat("yyyy-mm-dd").parse("1970-01-01"),
-            maxDate = SimpleDateFormat("yyyy-mm-dd").parse("2050-12-31"),
+            minDate = SimpleDateFormat("yyyy-MM-dd").parse("1970-01-01"),
+            maxDate = SimpleDateFormat("yyyy-MM-dd").parse("2050-12-31"),
             zoneId = Arb.of(zoneId)
          )
 
@@ -406,9 +444,124 @@ class DateTest : WordSpec({
             years.add(localDate.year)
          }
 
-         days.sorted() shouldBe (1..31).toSet()
-         months.sorted() shouldBe (1..12).toSet()
-         years.sorted() shouldBe (1970..2050).toSet()
+         days shouldBe (1..31).toSet()
+         months shouldBe (1..12).toSet()
+         years shouldBe (1970..2050).toSet()
+      }
+
+      "use correct month symbols" {
+         val months = mutableSetOf<Int>()
+         val zoneId = ZoneId.systemDefault()
+         val testedArb = Arb.javaDate(
+            minDate = SimpleDateFormat("yyyy-MM-dd").parse("1979-05-01"),
+            maxDate = SimpleDateFormat("yyyy-MM-dd").parse("1979-05-02"),
+            zoneId = Arb.of(zoneId)
+         )
+
+         checkAll(5000, testedArb) { date ->
+            val localDate = ZonedDateTime.ofInstant(date.toInstant(), zoneId)
+            months.add(localDate.monthValue)
+         }
+
+         months.toSet() shouldBe setOf(5)
+      }
+   }
+   "Arb.Companion.localTime(startTime, endTime)" should {
+         "generate LocalTimes between non-default startTime and endTime" {
+            val start = LocalTime.of(10, 0)
+            val end = LocalTime.of(12, 0)
+            val times = mutableSetOf<LocalTime>()
+
+            checkAll(10_000, Arb.localTime(start, end)) {
+               times += it
+            }
+
+            times.forAll {
+               it shouldBeIn start..end
+            }
+
+            times.min() shouldBe start
+            times.max() shouldBe end
+         }
+
+      "generate LocalTimes between default startTime and non-default endTime" {
+         val start = LocalTime.of(0, 0)
+         val end = LocalTime.of(12, 0)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(endTime = end)) {
+            times += it
+         }
+
+         times.forAll {
+            it shouldBeIn start..end
+         }
+
+         times.min() shouldBe start
+         times.max() shouldBe end
+      }
+
+      "generate LocalTimes between non-default startTime and default endTime" {
+         val start = LocalTime.of(20, 0)
+         val end = LocalTime.of(0, 0).minus(1L, ChronoUnit.NANOS)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(startTime = start)) {
+            times += it
+         }
+
+         times.forAll {
+            it shouldBeIn start..end
+         }
+
+         times.min() shouldBe start
+         times.max() shouldBe end
+      }
+
+      "generate LocalTimes between non-default startTime and endTime spanning over midnight" {
+         val start = LocalTime.of(23, 0)
+         val end = LocalTime.of(1, 0)
+         val times = mutableSetOf<LocalTime>()
+
+         checkAll(10_000, Arb.localTime(start, end)) {
+            times += it
+         }
+
+         times.forAll {
+            (it <= start || it >= end) shouldBe true
+         }
+
+         val timesAfterMidnight = times.filter { it < end.plusMinutes(10) }
+         timesAfterMidnight.shouldNotBeEmpty()
+         timesAfterMidnight.max() shouldBe end
+         val timesBeforeMidnight = times.filter { it > start.minusMinutes(10) }
+         timesBeforeMidnight.shouldNotBeEmpty()
+         timesBeforeMidnight.min() shouldBe start
+         times.filter { it > end && it < start }.shouldBeEmpty()
+      }
+   }
+   "getLocalDateArbParams" should {
+      "work when startTime is before endTime" {
+         val startTime = LocalTime.of(10, 30, 0)
+         val endTime = LocalTime.of(12, 30, 0)
+         with(getLocalDateArbParams(
+            startTime,
+            endTime,
+         )) {
+            durationInNanoSeconds shouldBe 7_200_000_000_000L
+            edgeCases shouldContainExactlyInAnyOrder listOf(startTime, endTime)
+         }
+      }
+      "span over midnight when startTime is after endTime" {
+         val startTime = LocalTime.of(22, 30, 0)
+         val endTime = LocalTime.of(0, 30, 0)
+         with(getLocalDateArbParams(
+            startTime,
+            endTime,
+         )) {
+            durationInNanoSeconds shouldBe 7_200_000_000_000L
+            edgeCases shouldContainExactlyInAnyOrder listOf(startTime, endTime, LocalTime.MIN, LocalTime.MAX)
+         }
       }
    }
 })

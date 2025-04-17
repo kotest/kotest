@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeOneOf
 import io.kotest.matchers.collections.shouldNotBeOneOf
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class OneOfTest : DescribeSpec() {
@@ -33,7 +34,10 @@ class OneOfTest : DescribeSpec() {
             val list = listOf(fooz1)
             shouldThrow<AssertionError> {
                fooz2 shouldBeOneOf list
-            }.shouldHaveMessage("Collection should contain the instance Fooz(bar=Bar) with hashcode 12345.")
+            }.message.shouldContainInOrder(
+               "Collection should contain the instance Fooz(bar=Bar) with hashcode 12345.",
+               "Found equal but not the same element(s) at index(es): [0]"
+               )
          }
 
          it("Fail when the list is empty") {

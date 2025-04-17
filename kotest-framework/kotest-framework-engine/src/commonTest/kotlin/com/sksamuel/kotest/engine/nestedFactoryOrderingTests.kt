@@ -7,20 +7,20 @@ import io.kotest.matchers.shouldBe
 
 fun factory1(writer: StringBuilder) = funSpec {
    test("o") {
-      writer.append(this.testCase.name.testName)
+      writer.append(this.testCase.name.name)
    }
    test("r") {
-      writer.append(this.testCase.name.testName)
+      writer.append(this.testCase.name.name)
    }
 }
 
 fun factory2(writer: StringBuilder) = funSpec {
    test("w") {
-      writer.append(this.testCase.name.testName)
+      writer.append(this.testCase.name.name)
    }
    include(factory1(writer))
    test("f") {
-      writer.append(this.testCase.name.testName)
+      writer.append(this.testCase.name.name)
    }
 }
 
@@ -55,7 +55,7 @@ class NestedFactoriesShouldRespectTestOrderFunctionOverrideTest : FunSpec() {
 class NestedFactoriesShouldRespectTestOrderVarTest : FunSpec() {
    init {
 
-      testOrder = TestCaseOrder.Lexicographic
+      testCaseOrder = TestCaseOrder.Lexicographic
 
       val writer = StringBuilder()
       include(factory2(writer))

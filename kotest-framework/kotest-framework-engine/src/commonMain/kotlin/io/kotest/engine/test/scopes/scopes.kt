@@ -1,10 +1,10 @@
 package io.kotest.engine.test.scopes
 
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.spec.interceptor.SpecContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -29,18 +29,18 @@ private class TestScopeWithCoroutineContext(
  */
 fun createSingleInstanceTestScope(
    testCase: TestCase,
+   specContext: SpecContext,
    coroutineContext: CoroutineContext,
    mode: DuplicateTestNameMode,
-   dispatcherFactory: CoroutineDispatcherFactory,
    context: EngineContext,
 ): TestScope {
    return DuplicateNameHandlingTestScope(
-      testCase.spec.duplicateTestNameMode ?: context.configuration.duplicateTestNameMode,
+      context.specConfigResolver.duplicateTestNameMode(testCase.spec),
       InOrderTestScope(
+         specContext,
          testCase,
          coroutineContext,
          mode,
-         dispatcherFactory,
          context,
       )
    )

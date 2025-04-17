@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -16,6 +18,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class AfterSpecListenerTest : FunSpec() {
    init {
@@ -24,13 +27,14 @@ class AfterSpecListenerTest : FunSpec() {
 
          counter.set(0)
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyAfterSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyAfterSpecListener)
+         }
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyPopulatedSpec2::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          collector.specs.size shouldBe 1
@@ -49,15 +53,31 @@ class AfterSpecListenerTest : FunSpec() {
          collector.tests.size shouldBe 1
       }
 
-      test("AfterSpecListener's should NOT be triggered for a spec without tests") {
+      test("AfterSpecListener's should NOT be triggered for a spec without defined tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyAfterSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyAfterSpecListener)
+         }
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
+            .launch()
+
+         counter.get() shouldBe 0
+      }
+
+      test("AfterSpecListener's should NOT be triggered for a spec without active tests") {
+
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyAfterSpecListener)
+         }
+         counter.set(0)
+
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(NoActiveTestsSpec2::class)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -70,7 +90,7 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      test("f:inline afterSpec function errors should be caught") {
+      test("inline afterSpec function errors should be caught") {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
@@ -85,7 +105,6 @@ class AfterSpecListenerTest : FunSpec() {
 private val counter = AtomicInteger(0)
 
 private object MyAfterSpecListener : AfterSpecListener {
-   override val name: String = "MyAfterSpecListener"
    override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -94,16 +113,28 @@ private object MyAfterSpecListener : AfterSpecListener {
 private class MyEmptySpec2 : FunSpec()
 
 private class MyErrorSpec2 : FunSpec() {
-   override fun extensions(): List<Extension> {
-      return listOf(object : AfterSpecListener {
-         override suspend fun afterSpec(spec: Spec) {
-            error("zapp!")
-         }
-      })
-   }
+   override val extensions: List<Extension> = listOf(object : AfterSpecListener {
+      override suspend fun afterSpec(spec: Spec) {
+         error("zapp!")
+      }
+   })
 
    init {
       test("foo") {}
+   }
+}
+
+private class NoActiveTestsSpec2 : FunSpec() {
+   override val extensions: List<Extension> = listOf(object : AfterSpecListener {
+      override suspend fun afterSpec(spec: Spec) {
+         error("zapp!")
+      }
+   })
+
+   init {
+      xtest("foo1") {}
+      test("!foo2") {}
+      test("foo3").config(enabled = false) {}
    }
 }
 
@@ -113,17 +144,14 @@ private class MyPopulatedSpec2 : FunSpec() {
       counter.incrementAndGet()
    }
 
-   override fun extensions(): List<Extension> {
-      return listOf(MyAfterSpecListener)
-   }
-
-   override fun listeners(): List<TestListener> {
-      return listOf(object : TestListener {
+   override val extensions: List<Extension> = listOf(
+      MyAfterSpecListener,
+      object : TestListener {
          override suspend fun afterSpec(spec: Spec) {
             counter.incrementAndGet()
          }
-      })
-   }
+      }
+   )
 
    init {
 

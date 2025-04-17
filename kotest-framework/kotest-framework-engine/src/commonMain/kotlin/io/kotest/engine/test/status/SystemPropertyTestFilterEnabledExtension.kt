@@ -1,12 +1,12 @@
 package io.kotest.engine.test.status
 
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.Logger
+import io.kotest.engine.config.KotestEngineProperties
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.mpp.syspropOrEnv
 
 /**
@@ -21,27 +21,30 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
    private val logger = Logger(SystemPropertyTestFilterEnabledExtension::class)
 
    override fun isEnabled(testCase: TestCase): Enabled {
-      val filter = syspropOrEnv(KotestEngineProperties.filterTests) ?: ""
-      logger.log { Pair(testCase.name.testName, "Filter tests syspropOrEnv=$filter") }
+
+      val filter = syspropOrEnv(KotestEngineProperties.filterTests)
+      logger.log { Pair(testCase.name.name, "Filter tests syspropOrEnv=$filter") }
+
+      if (filter == null || filter.isBlank()) return Enabled.enabled
 
       val excluded = filter
          .propertyToRegexes()
          .map { it.toTestFilter().filter(testCase.descriptor) }
-         .filterIsInstance<TestFilterResult.Exclude>()
+         .filterIsInstance<DescriptorFilterResult.Exclude>()
          .firstOrNull()
 
-      logger.log { Pair(testCase.name.testName, "excluded = $excluded") }
+      logger.log { Pair(testCase.name.name, "excluded = $excluded") }
       return if (excluded == null) Enabled.enabled else Enabled.disabled(excluded.reason)
    }
 }
 
-private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
-   override fun filter(descriptor: Descriptor): TestFilterResult {
-      val name = descriptor.path(false).value
+private fun Regex.toTestFilter(): DescriptorFilter = object : DescriptorFilter {
+   override fun filter(descriptor: Descriptor): DescriptorFilterResult {
+      val name = descriptor.path().value
       return if (this@toTestFilter.matches(name))
-         TestFilterResult.Include
+         DescriptorFilterResult.Include
       else
-         TestFilterResult.Exclude("Excluded by kotest.filter.tests test filter: ${this@toTestFilter}")
+         DescriptorFilterResult.Exclude("Excluded by 'kotest.filter.tests': ${this@toTestFilter}")
    }
 }
 

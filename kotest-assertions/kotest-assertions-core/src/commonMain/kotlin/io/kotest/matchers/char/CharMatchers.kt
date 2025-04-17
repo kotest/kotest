@@ -2,6 +2,7 @@ package io.kotest.matchers.char
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.comparables.between
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
@@ -37,35 +38,44 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
 
 
 /**
- * Assert that [Char] is in between from and to.
+ * Assert that [Char] is in between [from, to] (inclusive, inclusive).
+ *
  * @see [shouldNotBeBetween]
  * @see [between]
  * */
+@Deprecated(
+   "Char-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Char import `io.kotest.matchers.char.shouldBeBetween` manually.",
+   ReplaceWith("shouldBeBetween(from, to)", "io.kotest.matchers.comparables.shouldBeBetween")
+)
 fun Char.shouldBeBetween(from: Char, to: Char): Char {
    this should between(from, to)
    return this
 }
 
 /**
- * Assert that [Char] is not in between from and to.
+ * Assert that [Char] is not between [from, to] (inclusive, inclusive).
+ *
  * @see [shouldBeBetween]
  * @see [between]
  * */
+@Deprecated(
+   "Char-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Char import `io.kotest.matchers.char.shouldNotBeBetween` manually.",
+   ReplaceWith("shouldNotBeBetween(from, to)", "io.kotest.matchers.comparables.shouldNotBeBetween")
+)
 fun Char.shouldNotBeBetween(from: Char, to: Char): Char {
    this shouldNot between(from, to)
    return this
 }
 
-fun between(from: Char, to: Char) = object : Matcher<Char> {
-   override fun test(value: Char) = MatcherResult(
-      value in from..to,
-      { "$value is between ($from, $to)" },
-      { "$value is not between ($from, $to)" }
-   )
-}
+@Deprecated(
+   "Char-specific matcher is getting replaced with a new Comparable matcher of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Char import `io.kotest.matchers.char.between` manually.",
+   ReplaceWith("between(from, to)", "io.kotest.matchers.comparables.between")
+)
+fun between(from: Char, to: Char): Matcher<Char> = between(from, to)
 
 /**
  * Assert that [Char] is equal to [other] ignoring case sensitivity
+ *
  * @see [shouldNotBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
@@ -76,6 +86,7 @@ infix fun Char.shouldBeEqualToIgnoreCase(other: Char): Char {
 
 /**
  * Assert that [Char] is not equal to [other] ignoring case sensitivity
+ *
  * @see [shouldBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */

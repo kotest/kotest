@@ -1,11 +1,14 @@
 package com.sksamuel.kotest.engine.tags
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.tags.Expression
 import io.kotest.engine.tags.Parser
 import io.kotest.engine.tags.expression
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TagParserTest : FunSpec() {
    init {
 
@@ -45,7 +48,8 @@ class TagParserTest : FunSpec() {
       }
 
       test("odd characters") {
-         Parser.from("(my#%#e123!#!@TAG & !____9123231.... | '''',.''/'l/'l/''/'''') & thattag").expression() shouldBe Expression.And(
+         Parser.from("(my#%#e123!#!@TAG & !____9123231.... | '''',.''/'l/'l/''/'''') & thattag")
+            .expression() shouldBe Expression.And(
             Expression.And(
                Expression.Identifier("my#%#e123!#!@TAG"),
                Expression.Or(

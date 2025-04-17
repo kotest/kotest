@@ -1,6 +1,7 @@
 package io.kotest.inspectors
 
 import io.kotest.assertions.failure
+import io.kotest.common.ExperimentalKotest
 
 inline fun <K, V, C : Map<K, V>> C.forAllValues(fn: (V) -> Unit): C = apply { values.forAll(fn) }
 inline fun <K, V, C : Map<K, V>> C.forAllKeys(fn: (K) -> Unit): C = apply { keys.forAll(fn) }
@@ -188,7 +189,7 @@ fun <T> Sequence<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
 fun <T> Array<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
 
 /**
- * Checks that [Collection] consists of a single element, which passes the given assertion block [fn]
+ * Checks that [Collection] consists of a single element, which passes the given assertion block [f]
  * and returns the element
  * */
 fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
@@ -198,7 +199,29 @@ fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
          is ElementPass<T> -> results[0].value()
          else -> buildAssertionError("Expected a single element to pass, but it failed.", results)
       }
+
       0 -> throw failure("Expected a single element in the collection, but it was empty.")
       else -> buildAssertionError("Expected a single element in the collection, but found ${results.size}.", results)
    }
 }
+
+/**
+ * Filters the [Collection], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T, C : Collection<T>> C.filterMatching(f: (T) -> Unit): List<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
+
+/**
+ * Filters the [Collection], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T> Array<T>.filterMatching(f: (T) -> Unit): List<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }
+
+/**
+ * Filters the [Sequence], excluding all elements which fail the given assertion block [f]
+ */
+@ExperimentalKotest
+inline fun <T> Sequence<T>.filterMatching(crossinline f: (T) -> Unit): Sequence<T> =
+   filterIndexed { i, element -> runTest(i, element, f) is ElementPass<T> }

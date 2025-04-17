@@ -9,20 +9,19 @@ abstract class FeatureSpecDuplicateNameTest(iso: IsolationMode) : FeatureSpec() 
       isolationMode = iso
       feature("foo") {
          scenario("woo") {}
-         scenario("woo") { this.testCase.name.testName shouldBe "(1) woo" }
-         scenario("woo") { this.testCase.name.testName shouldBe "(2) woo" }
+         scenario("woo") { this.testCase.name.name shouldBe "(1) woo" }
+         scenario("woo") { this.testCase.name.name shouldBe "(2) woo" }
       }
       feature("foo") {
-         this.testCase.name.testName shouldBe "(1) foo"
+         this.testCase.name.name shouldBe "(1) foo"
          scenario("woo") {}
       }
       feature("foo") {
-         this.testCase.name.testName shouldBe "(2) foo"
+         this.testCase.name.name shouldBe "(2) foo"
          scenario("woo") {}
       }
    }
 }
 
 class FeatureSpecSingleInstanceDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class FeatureSpecInstancePerLeafDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class FeatureSpecInstancePerTestDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class FeatureSpecInstancePerRootDuplicateNameTest : FeatureSpecDuplicateNameTest(IsolationMode.InstancePerRoot)

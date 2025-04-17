@@ -1,15 +1,19 @@
 package com.sksamuel.kotest.engine.interceptors
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.DumpConfigInterceptor
+import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.extensions.system.SystemOutWireListener
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DumpConfigInterceptorTest : FunSpec({
 
    val property = "kotest.framework.dump.config"
@@ -22,8 +26,10 @@ class DumpConfigInterceptorTest : FunSpec({
    }
 
    context("Uses system property `$property` correctly") {
-      val configuration = ProjectConfiguration()
-      val engineContext = EngineContext.empty.copy(configuration = configuration)
+      val engineContext = EngineContext.empty.withProjectConfig(object : AbstractProjectConfig() {
+         override val globalAssertSoftly = true
+         override val specExecutionOrder = SpecExecutionOrder.Annotated
+      })
 
       withData(
          "true",
@@ -31,35 +37,17 @@ class DumpConfigInterceptorTest : FunSpec({
          "True",
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
-         sysOutListener.output() shouldBe """
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         sysOutListener.output().trim() shouldBe """
             |~~~ Kotest Configuration ~~~
-            |-> Parallelization factor: 1
-            |-> Concurrent specs: null
-            |-> Global concurrent tests: 1
-            |-> Dispatcher affinity: true
-            |-> Coroutine debug probe: false
-            |-> Spec execution order: Lexicographic
-            |-> Default test execution order: Sequential
-            |-> Default test timeout: nullms
-            |-> Default test invocation timeout: nullms
-            |-> Default isolation mode: SingleInstance
-            |-> Global soft assertions: false
-            |-> Write spec failure file: false
-            |-> Fail on ignored tests: false
-            |-> Fail on empty test suite: false
-            |-> Duplicate test name mode: Warn
-            |-> Remove test name whitespace: false
-            |-> Append tags to test names: false
-            |-> ${"Tags: "}
-            |
-            |
-         """.trimMargin()
+            |-> Spec execution order: Annotated
+            |-> Global soft assertions: true
+         """.trimMargin().trim()
          // "Tags: " escaped to avoid formatter trimming whitespace at end of line which exists in actual output.
       }
 
       test("No property set, dumps nothing") {
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
 
@@ -70,7 +58,7 @@ class DumpConfigInterceptorTest : FunSpec({
          "Anything really"
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
    }

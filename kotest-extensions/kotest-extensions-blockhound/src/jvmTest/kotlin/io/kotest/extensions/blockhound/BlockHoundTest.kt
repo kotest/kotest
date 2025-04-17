@@ -2,6 +2,8 @@ package io.kotest.extensions.blockhound
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +19,7 @@ private suspend fun blockInNonBlockingContext() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BlockHoundCaseTest : FunSpec({
    test("detects for test case").config(extensions = listOf(BlockHound())) {
       shouldThrow<BlockingOperationError> { blockInNonBlockingContext() }
@@ -63,7 +66,7 @@ class BlockHoundSpecTest : FunSpec({
       shouldNotThrow<BlockingOperationError> { blockInNonBlockingContext() }
    }
 
-   test("parallelism").config(invocations = 2, threads = 2) {
+   test("with blocking thread").config(invocations = 2, blockingTest = true) {
       shouldThrow<BlockingOperationError> {
          withContext(Dispatchers.Default) {
             @Suppress("BlockingMethodInNonBlockingContext")

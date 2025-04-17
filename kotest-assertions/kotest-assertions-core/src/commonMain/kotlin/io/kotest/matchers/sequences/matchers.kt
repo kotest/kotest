@@ -6,7 +6,9 @@ import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.collections.duplicates
+import io.kotest.matchers.collections.beEmpty as iterableBeEmpty
+import io.kotest.matchers.collections.beUniqueByEquals
+import io.kotest.matchers.collections.ContainDuplicatesMatcher
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
@@ -24,37 +26,48 @@ For now, the documentation should mention that infinite sequences will cause the
 fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.all { it == null },
-         { "Sequence should contain only nulls" },
-         {
-            "Sequence should not contain only nulls"
-         })
+   override fun test(value: Sequence<T>): MatcherResult {
+      val firstNotNull = value.mapIndexed { index, t -> index to t }.firstOrNull { it.second != null }
+      return MatcherResult(
+         firstNotNull == null,
+         { "Sequence should contain only nulls, but had a non-null element ${firstNotNull!!.second.print().value} at index ${firstNotNull.first}" },
+         { "Sequence should not contain only nulls" }
+      )
+   }
 }
 
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
 fun <T> Sequence<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) =
-      MatcherResult(
-         value.any { it == null },
+   override fun test(value: Sequence<T>): MatcherResult {
+      val indexOfFirstNull = value.indexOfFirst { it == null }
+      return MatcherResult(
+         indexOfFirstNull != -1,
          { "Sequence should contain at least one null" },
-         {
-            "Sequence should not contain any nulls"
-         })
+         { "Sequence should not contain any nulls, but contained at least one at index $indexOfFirstNull" }
+      )
+   }
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
 fun <T> Sequence<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matcher<S> {
-   override fun test(value: S) =
-      MatcherResult(
-         value.elementAt(index) == element,
-         { "Sequence should contain $element at index $index" },
-         { "Sequence should not contain $element at index $index" }
+   override fun test(value: S): MatcherResult {
+      val sequenceHead = value.take(index + 1).toList()
+      val elementAtIndex = sequenceHead.elementAtOrNull(index)
+      val passed = elementAtIndex == element
+      val description = when {
+         passed -> ""
+         elementAtIndex != null && elementAtIndex != element -> ", but the value was different: ${elementAtIndex.print().value}."
+         else -> ", but the sequence only had ${sequenceHead.size} elements"
+      }
+      return MatcherResult(
+         passed,
+         { "Sequence should contain ${element.print().value} at index $index$description" },
+         { "Sequence should not contain ${element.print().value} at index $index" }
       )
+   }
 }
 
 fun <T> Sequence<T>.shouldContainNoNulls() = this should containNoNulls()
@@ -71,11 +84,14 @@ fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
 infix fun <T, C : Sequence<T>> C.shouldContain(t: T) = this should contain(t)
 infix fun <T, C : Sequence<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      value.contains(t),
-      { "Sequence should contain element $t" },
-      { "Sequence should not contain element $t" }
-   )
+   override fun test(value: C): MatcherResult {
+      val indexOfElement = value.indexOfFirst { it == t }
+      return MatcherResult(
+         indexOfElement >= 0,
+         { "Sequence should contain element $t" },
+         { "Sequence should not contain element ${t.print().value}, but contained it at index $indexOfElement" }
+      )
+   }
 }
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
@@ -94,7 +110,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    val consumedExpectedValues = mutableListOf<IndexedValue<T>>()
 
    fun IndexedValue<T>.printValue() = this.value.print().value
-   fun List<IndexedValue<T>>.printValues(hasNext: Boolean) = joinToString(postfix = if (hasNext) ", ..." else "") { it.printValue() }
+   fun List<IndexedValue<T>>.printValues(hasNext: Boolean) =
+      joinToString(postfix = if (hasNext) ", ..." else "") { it.printValue() }
 
    var passed = true
    var failDetails = ""
@@ -104,7 +121,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
       if (eq(actualElement.value, expectedElement.value) != null) {
-         failDetails = "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
+         failDetails =
+            "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
       }
    }
@@ -112,48 +130,28 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    if (passed && actualIterator.hasNext()) {
       val actualElement = actualIterator.next()
       consumedActualValues.add(actualElement)
-      failDetails = "\nActual sequence has more elements than expected sequence: found ${actualElement.printValue()} at index ${actualElement.index}."
+      failDetails =
+         "\nActual sequence has more elements than expected sequence: found ${actualElement.printValue()} at index ${actualElement.index}."
       passed = false
    }
 
    if (passed && expectedIterator.hasNext()) {
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      failDetails = "\nActual sequence has less elements than expected sequence: expected ${expectedElement.printValue()} at index ${expectedElement.index}."
+      failDetails =
+         "\nActual sequence has less elements than expected sequence: expected ${expectedElement.printValue()} at index ${expectedElement.index}."
       passed = false
    }
 
    MatcherResult(
       passed,
-      { "Sequence should contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())} but was ${consumedActualValues.printValues(actualIterator.hasNext())}.$failDetails" },
       {
-         "Sequence should not contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())}"
-      })
+         "Sequence should contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())} but was ${
+            consumedActualValues.printValues(actualIterator.hasNext())
+         }.$failDetails"
+      },
+      { "Sequence should not contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())}" })
 }
-
-@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
-infix fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
-   this shouldNot containAllInAnyOrder(expected)
-
-@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
-fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
-   this shouldNot containAllInAnyOrder(*expected)
-
-@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
-infix fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
-   this should containAllInAnyOrder(expected)
-
-@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
-fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
-   this should containAllInAnyOrder(*expected)
-
-@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
-   containAllInAnyOrder(expected.asSequence())
-
-@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-   /** Assert that a sequence contains the given values and nothing else, in any order. */
-fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = containAllInAnyOrder(expected)
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
@@ -182,7 +180,7 @@ fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverN
    )
 }
 
-internal fun<T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
+internal fun <T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
 
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 
@@ -219,26 +217,16 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>): MatcherResult {
-      val duplicates = value.toList().duplicates()
-      return MatcherResult(
-         duplicates.isEmpty(),
-         { "Sequence should be Unique, but has duplicates: ${duplicates.print().value}" },
-         { "Sequence should contain at least one duplicate element" }
-      )
-   }
+   val delegate = beUniqueByEquals<T>("Sequence")
+
+   override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      val duplicates = value.toList().duplicates()
-      return MatcherResult(
-         duplicates.isNotEmpty(),
-         { "Sequence should contain duplicates" },
-         { "Sequence should not contain duplicates, but has some: ${duplicates.print().value}" }
-      )
+      return ContainDuplicatesMatcher<T>("Sequence").test(value.asIterable())
    }
 }
 
@@ -305,7 +293,8 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
       if (!iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but is empty."
       } else if (eq(iterator.next().also { actualElement = it }, expectedElement) != null) {
-         failureMessage = "Sequence should have a single element of $expectedElement but has $actualElement as first element."
+         failureMessage =
+            "Sequence should have a single element of $expectedElement but has $actualElement as first element."
       } else if (iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but has more than one element."
       }
@@ -410,24 +399,6 @@ fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
 
 infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostCount(n)
 
-
-@Deprecated(
-   "Use `forAny` inspection instead",
-   ReplaceWith(
-      "forAny { p() shouldBe true }",
-      "io.kotest.matchers.shouldBe",
-      "io.kotest.inspectors.forAny",
-   )
-)
-infix fun <T> Sequence<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
-fun <T> exist(p: (T) -> Boolean) = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>) = MatcherResult(
-      value.any { p(it) },
-      { "Sequence should contain an element that matches the predicate $p" },
-      { "Sequence should not contain an element that matches the predicate $p" }
-   )
-}
-
 fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(vararg ts: T) =
    this should containsInOrder(ts.asSequence())
 
@@ -449,7 +420,7 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
       if (actualIterator.next() == subsequenceAsList.elementAt(subsequenceIndex)) subsequenceIndex += 1
    }
 
-   val mismatchDescription = if(subsequenceIndex == subsequenceAsList.size) "" else
+   val mismatchDescription = if (subsequenceIndex == subsequenceAsList.size) "" else
       ", could not match element ${subsequenceAsList.elementAt(subsequenceIndex)} at index $subsequenceIndex"
 
    MatcherResult(
@@ -462,11 +433,9 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
 fun <T> Sequence<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Sequence<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>): MatcherResult = MatcherResult(
-      value.count() == 0,
-      { "Sequence should be empty" },
-      { "Sequence should not be empty" }
-   )
+   private val delegate = iterableBeEmpty<T>("Sequence")
+
+   override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
 
@@ -498,4 +467,5 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
 
 fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
 infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
-fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) = toList().shouldMatchEach(expected.toList(), asserter)
+fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) =
+   toList().shouldMatchEach(expected.toList(), asserter)

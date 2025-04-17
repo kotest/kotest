@@ -9,6 +9,9 @@ import kotlin.time.Duration
  *
  * Message format:
  *
+ * Reporting tests:
+ * https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Tests
+ *
  * https://www.jetbrains.com/help/teamcity/service-messages.html
  * https://confluence.jetbrains.com/display/TCD10/Build+Script+Interaction+with+TeamCity
  * https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html
@@ -34,47 +37,52 @@ class TeamCityMessageBuilder(
 ) {
 
    companion object {
-      const val TeamCityPrefix = "##teamcity"
+      const val TEAM_CITY_PREFIX = "##teamcity"
 
-      fun testSuiteStarted(name: String): TeamCityMessageBuilder = testSuiteStarted(TeamCityPrefix, name)
+      fun testReporterAttached(prefix: String): TeamCityMessageBuilder {
+         return TeamCityMessageBuilder(prefix, Messages.TEST_REPORTER_ATTACHED)
+            .addAttribute(Attributes.DURATION_STRATEGY, "MANUAL")
+      }
+
+      fun testSuiteStarted(name: String): TeamCityMessageBuilder = testSuiteStarted(TEAM_CITY_PREFIX, name)
       fun testSuiteStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testSuiteFinished(name: String): TeamCityMessageBuilder = testSuiteFinished(TeamCityPrefix, name)
+      fun testSuiteFinished(name: String): TeamCityMessageBuilder = testSuiteFinished(TEAM_CITY_PREFIX, name)
       fun testSuiteFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_FINISHED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStarted(name: String): TeamCityMessageBuilder = testStarted(TeamCityPrefix, name)
+      fun testStarted(name: String): TeamCityMessageBuilder = testStarted(TEAM_CITY_PREFIX, name)
       fun testStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testFinished(name: String): TeamCityMessageBuilder = testFinished(TeamCityPrefix, name)
+      fun testFinished(name: String): TeamCityMessageBuilder = testFinished(TEAM_CITY_PREFIX, name)
       fun testFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FINISHED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStdOut(name: String): TeamCityMessageBuilder = testStdOut(TeamCityPrefix, name)
+      fun testStdOut(name: String): TeamCityMessageBuilder = testStdOut(TEAM_CITY_PREFIX, name)
       fun testStdOut(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_OUT).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStdErr(name: String): TeamCityMessageBuilder = testStdErr(TeamCityPrefix, name)
+      fun testStdErr(name: String): TeamCityMessageBuilder = testStdErr(TEAM_CITY_PREFIX, name)
       fun testStdErr(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_ERR).addAttribute(Attributes.NAME, name)
       }
 
       // note it seems that not attaching a message renders test failed irrelevant
-      fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TeamCityPrefix, name)
+      fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TEAM_CITY_PREFIX, name)
 
       // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FAILED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testIgnored(name: String): TeamCityMessageBuilder = testIgnored(TeamCityPrefix, name)
+      fun testIgnored(name: String): TeamCityMessageBuilder = testIgnored(TEAM_CITY_PREFIX, name)
       fun testIgnored(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_IGNORED).addAttribute(Attributes.NAME, name)
       }
@@ -86,6 +94,7 @@ class TeamCityMessageBuilder(
       const val LOCATION_HINT = "locationHint"
       const val NAME = "name"
       const val DURATION = "duration"
+      const val DURATION_STRATEGY = "durationStrategy"
       const val TIMESTAMP = "timestamp"
       const val TYPE = "type"
       const val DETAILS = "details"
@@ -96,6 +105,7 @@ class TeamCityMessageBuilder(
    }
 
    object Messages {
+      const val TEST_REPORTER_ATTACHED = "enteredTheMatrix"
       const val TEST_SUITE_STARTED = "testSuiteStarted"
       const val TEST_SUITE_FINISHED = "testSuiteFinished"
       const val TEST_STARTED = "testStarted"
@@ -117,9 +127,11 @@ class TeamCityMessageBuilder(
       return this
    }
 
+   // message contains the textual representation of the error
    fun message(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.MESSAGE, value.trim()) else this
 
+   // details contains detailed information on the test failure, typically a message and an exception stacktrace
    fun details(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.DETAILS, value.trim()) else this
 
@@ -142,7 +154,7 @@ class TeamCityMessageBuilder(
          // stackTraceToString fails if the error is created by a mocking framework, so we should catch
          val stacktrace = try {
             error.stackTraceToString()
-         } catch (e: Exception) {
+         } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
          details(escapeColons(stacktrace))
@@ -162,7 +174,7 @@ class TeamCityMessageBuilder(
    fun id(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ID, value)
 
    // workaround for TC colon issue, see main javadoc
-   fun escapeColons(value: String) = when (escapeColons) {
+   private fun escapeColons(value: String) = when (escapeColons) {
       true -> value.replace(":", "\u02D0")
       false -> value
    }

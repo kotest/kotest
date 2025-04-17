@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
+import io.kotest.property.resolution.CommonTypeArbResolver
 import io.kotest.property.resolution.GlobalArbResolver
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
@@ -9,6 +10,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.typeOf
 
 /**
@@ -78,6 +80,7 @@ fun <T : Any> Arb.Companion.bind(
 ): Arb<T> {
    val arb = Arb.forType(providedArbs, arbsForProps, type)
       ?: error("Could not locate generator for ${kclass.simpleName}, consider making it a dataclass or provide an Arb for it.")
+   @Suppress("UNCHECKED_CAST")
    return arb as Arb<T>
 }
 
@@ -114,12 +117,14 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
       val arbForProp = relevantProps.firstOrNull { (key, _) -> key.name == param.name }?.second
-      val arb = when {
+      when {
          arbForProp != null -> arbForProp
-         else -> arbForParameter(providedArbs, arbsForProperties, className, param)
+         else -> {
+            val arb = arbForParameter(providedArbs, arbsForProperties, className, param)
+            if (param.type.isMarkedNullable) arb.orNull() else arb
+         }
       }
 
-      if (param.type.isMarkedNullable) arb.orNull() else arb
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
@@ -145,7 +150,8 @@ internal fun Arb.Companion.forType(
    arbsForProperties: Map<KProperty1<*, *>, Arb<*>>,
    type: KType
 ): Arb<*>? {
-   return (type.classifier as? KClass<*>)?.let { providedArbs[it] ?: defaultForClass(it) }
+   return (type.classifier as? KClass<*>)
+      ?.let { providedArbs[it] ?: CommonTypeArbResolver.resolve(it.starProjectedType) }
       ?: GlobalArbResolver.resolve(type)
       ?: targetDefaultForType(providedArbs, arbsForProperties, type)
 }

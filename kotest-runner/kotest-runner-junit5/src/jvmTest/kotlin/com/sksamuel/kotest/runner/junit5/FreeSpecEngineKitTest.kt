@@ -1,16 +1,20 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FreeSpecEngineKitTest : FunSpec({
 
    test("verify container events") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(selectClass(FreeSpecSample::class.java))
          .configurationParameter("allow_private", "true")
          .execute()

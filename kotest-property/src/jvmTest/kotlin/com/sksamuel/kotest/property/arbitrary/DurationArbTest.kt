@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
@@ -19,6 +21,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DurationArbTest : WordSpec({
 
    "Arb.duration(-Duration.INFINITE..Duration.INFINITE)" should {

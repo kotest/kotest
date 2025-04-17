@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.engine.spec.config
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
 import io.kotest.core.Tag
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
@@ -15,29 +17,25 @@ object Tag2 : Tag()
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@ExperimentalKotest
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FunSpecConfigSyntaxTest : FunSpec() {
    init {
 
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 21
+         counter.get() shouldBe 18
       }
 
       test("a test disabled by an enabled flag").config(enabled = false) {
          error("boom")
       }
 
-      test("a test disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      test("a test disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
       test("a test with multiple invocations").config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      test("a test with multiple threads").config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 
@@ -79,7 +77,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          test("an inner test") { error("boom") }
       }
 
-      context("an outer context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      context("an outer context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
          error("boom")
          test("an inner test") { error("boom") }
       }
@@ -119,7 +117,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
             test("an inner test") { error("boom") }
          }
 
-         context("an inner context disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         context("an inner context disabled by an enabled function").config(enabledIf = { nonConstantFalse() }) {
             error("boom")
             test("an inner test") { error("boom") }
          }

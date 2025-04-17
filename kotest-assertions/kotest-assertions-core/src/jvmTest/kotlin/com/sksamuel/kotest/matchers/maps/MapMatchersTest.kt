@@ -11,7 +11,11 @@ import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
+import io.kotest.matchers.string.shouldStartWith
+import java.math.BigDecimal
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {
@@ -40,6 +44,24 @@ class MapMatchersTest : WordSpec() {
             val map = mapOf("a" to "b")
             map.shouldHaveKey("a")
          }
+
+         "find similarities if key not in map" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  sweetGreenApple to 1,
+                  sweetRedApple to 2,
+                  sourYellowLemon to 3
+               ).shouldContainKey(sweetGreenPear)
+            }.message.shouldBe("""
+            |Map should contain key Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing key:
+            |
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin())
+         }
       }
 
       "haveValue" should {
@@ -55,25 +77,98 @@ class MapMatchersTest : WordSpec() {
                map.shouldContainValue("c")
             }.message.shouldBe("Map should contain value c")
          }
+         "find similarities for values not found" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  1 to sweetGreenApple,
+                  2 to sweetRedApple,
+                  3 to sourYellowLemon
+               ).shouldContainValue(sweetGreenPear)
+            }.message.shouldBe("""
+            |Map should contain value Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing value:
+            |
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin())
+         }
       }
 
       "contain" should {
          "test that a map contains the given pair" {
             val map = mapOf(Pair(1, "a"), Pair(2, "b"))
-            map should contain(1, "a")
+            map shouldContain(1 to "a")
             map.shouldContain(2, "b")
             map.shouldNotContain(3, "A")
             map shouldContain (1 to "a")
             map shouldNotContain (3 to "A")
             shouldThrow<AssertionError> {
                map.shouldContain(1, "c")
-            }.message.shouldBe("Map should contain mapping 1=c but was 1=a")
+            }.message.shouldContainInOrder(
+               "Map should contain mapping 1=c but value was different:",
+               "expected:<\"c\"> but was:<\"a\">"
+            )
             shouldThrow<AssertionError> {
                map.shouldContain(4, "e")
-            }.message.shouldBe("Map should contain mapping 4=e but was {1=a, 2=b}")
+            }.message.shouldBe("Map should contain mapping 4=e but key was not in the map")
             shouldThrow<AssertionError> {
-               map should contain(2, "a")
-            }.message.shouldBe("Map should contain mapping 2=a but was 2=b")
+               map should mapcontain(2, "a")
+            }.message.shouldContainInOrder(
+               "Map should contain mapping 2=a but value was different:",
+               """expected:<"a"> but was:<"b">""",
+               "Same value found for the following entries: [1=a]",
+               )
+         }
+         "print a similar key when no exact match" {
+            val message = shouldThrow<AssertionError> {
+               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should mapcontain(sweetGreenPear, 1)
+            }.message
+            message shouldContain """
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
+               |  The following fields did not match:
+               |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin()
+         }
+         "print entries with same value" {
+            val message = shouldThrow<AssertionError> {
+               mapOf(sweetGreenApple to 1, sweetRedApple to 2) should mapcontain(sweetGreenPear, 1)
+            }.message
+            message shouldContain """
+               |Same value found for the following entries: [Fruit(name=apple, color=green, taste=sweet)=1]
+            """.trimMargin()
+         }
+         "print entries with similar values" {
+            val message = shouldThrow<AssertionError> {
+               mapOf(1 to sweetGreenApple, 2 to sweetRedApple) should mapcontain(3, sweetGreenPear)
+            }.message
+            message shouldContain """
+               | expected: Fruit(name=pear, color=green, taste=sweet),
+               |  but was: Fruit(name=apple, color=green, taste=sweet),
+               |  The following fields did not match:
+               |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin()
+         }
+         "fail for key not in map and null value" {
+            val map = mapOf("apple" to "green")
+            shouldThrow<AssertionError> {
+               map shouldContain("lemon" to null)
+            }.message.shouldBe("Map should contain mapping lemon=null but key was not in the map")
+         }
+         "pass for key not in map and null value" {
+            val map = mapOf("apple" to "green")
+            map shouldNotContain("lemon" to null)
+         }
+         "expose different types that print identically" {
+            val thrown = shouldThrow<AssertionError> {
+               mapOf("a" to BigDecimal("1.5")) shouldContain("a" to 1.5)
+            }
+            thrown.message.shouldContainInOrder(
+               "Map should contain mapping a=1.5 but value was different:",
+               "expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"
+            )
          }
       }
 
@@ -93,6 +188,24 @@ class MapMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                map.shouldContainKeys(1, 4, 5, 6)
             }.message.shouldBe("Map did not contain the keys 4, 5, 6")
+         }
+
+         "find similar keys for keys not in map" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  sweetGreenApple to 1,
+                  sweetRedApple to 2,
+                  sourYellowLemon to 3
+               ).shouldContainKeys(sweetGreenApple, sweetGreenPear)
+            }.message.shouldBe("""
+            |Map did not contain the keys Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing keys:
+            |
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin())
          }
       }
 
@@ -118,6 +231,26 @@ class MapMatchersTest : WordSpec() {
          }
       }
 
+      "containValues" should {
+         "find similarities for values not found" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  1 to sweetGreenApple,
+                  2 to sweetRedApple,
+                  3 to sourYellowLemon
+               ).shouldContainValues(sweetGreenApple, sweetGreenPear)
+            }.message.shouldBe("""
+            |Map did not contain the values Fruit(name=pear, color=green, taste=sweet)
+            |Possible matches for missing values:
+            |
+            | expected: Fruit(name=pear, color=green, taste=sweet),
+            |  but was: Fruit(name=apple, color=green, taste=sweet),
+            |  The following fields did not match:
+            |    "name" expected: <"pear">, but was: <"apple">
+            """.trimMargin())
+         }
+      }
+
       "containAnyKeys" should {
          "test that a map contains any of the given keys" {
             val map = mapOf("a" to 1, "b" to 2, "c" to 3)
@@ -134,6 +267,21 @@ class MapMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                map.shouldNotContainAnyKeysOf("a", "y")
             }
+         }
+         "find similar keys if no exact matches" {
+            shouldThrow<AssertionError> {
+               mapOf(
+                  sweetGreenApple to 0,
+                  sweetRedApple to 1,
+                  sourYellowLemon to 2
+               ) should containAnyKeys(sweetGreenPear, bitterPurplePlum)
+            }.message.shouldContainInOrder(
+               "Possible matches for missing keys:",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"pear">, but was: <"apple">""",
+            )
          }
       }
 
@@ -164,8 +312,8 @@ class MapMatchersTest : WordSpec() {
             map.shouldNotContainAll(mapOf(1 to "a", 3 to "h"))
          }
          "test empty map" {
-            emptyMap<Any, Any>() should containAll(emptyMap<Any, Any>())
-            emptyMap<Any, Any>().shouldContainAll(emptyMap<Any, Any>())
+            emptyMap<Any, Any>() should containAll(emptyMap())
+            emptyMap<Any, Any>().shouldContainAll(emptyMap())
          }
          "test assertion that map does not contain entries from the given map" {
             val e = shouldThrow<AssertionError> {
@@ -250,8 +398,8 @@ class MapMatchersTest : WordSpec() {
 
       "containExactly" should {
          "test empty map" {
-            emptyMap<Any, Any>() should containExactly(emptyMap<Any, Any>())
-            emptyMap<Any, Any>().shouldContainExactly(emptyMap<Any, Any>())
+            emptyMap<Any, Any>() should containExactly(emptyMap())
+            emptyMap<Any, Any>().shouldContainExactly(emptyMap())
          }
          "test assertion that a map contains extra keys" {
             val e = shouldThrow<AssertionError> {
@@ -300,8 +448,8 @@ class MapMatchersTest : WordSpec() {
                val arrayList: List<Int> = arrayListOf(1)
                val linkedList = LinkedList<Int>()
                linkedList.push(1)
-               mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>(mapOf("a" to linkedList))
-               mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>("a" to linkedList)
+               mapOf("a" to arrayList) shouldNot containExactly(mapOf("a" to linkedList))
+               mapOf("a" to arrayList) shouldNot containExactly("a" to linkedList)
             }
             e.message shouldBe """
           |
@@ -460,13 +608,12 @@ private fun matchMapTests(contextName: String) = wordSpec {
       }
 
       "works correctly within assertSoftly" {
-         shouldFail {
+         val message = shouldFail {
             assertSoftly {
                mapOf("key" to "hi") should matcher("key" to { it shouldHaveLength 4 })
             }
-         }.also {
-            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, "hi" should have length 4, but instead was 2)], Unexpected keys were []."""
-         }
+         }.message
+         message shouldBe "Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, \"hi\" should have length 4, but instead was 2)], Unexpected keys were []."
       }
 
       "empty map is not matched by matcher" {

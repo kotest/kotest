@@ -4,6 +4,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldBeNull
@@ -13,7 +15,6 @@ import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.collections.HashSet
 import kotlin.time.Duration.Companion.seconds
 
 private class BareIterable(size: Int, offset: Int): Iterable<Int> {
@@ -42,6 +43,7 @@ private val expectedPath = if (System.getProperty("os.name").lowercase().contain
    "UnixPath"
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IterableEqTest : FunSpec({
    test("Comparing empty set with other iterable should be ok") {
       shouldNotThrowAny {
@@ -87,7 +89,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should not give error for kotlin ordered set comparison with list") {
-      val error = IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
+      IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
    }
 
    test("should give error for unordered set comparison with list") {

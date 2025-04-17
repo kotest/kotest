@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -8,8 +10,20 @@ import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.alphanumeric
+import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.flatMap
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.withEdgecases
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FlatMapTest : FunSpec() {
    init {
       test("Arb.flatMap should compute probabilistic edge cases") {
@@ -104,7 +118,7 @@ class FlatMapTest : FunSpec() {
       }
 
       test("should yield a new immutable arb") {
-         val firstArb: Arb<Int> =  Arb.int(-3..3)
+         val firstArb: Arb<Int> = Arb.int(-3..3)
          val secondArb: Arb<Int> = firstArb.flatMap { Arb.int(10..30) }
          val thirdArb: Arb<String> = secondArb.flatMap { Arb.string(3, Codepoint.alphanumeric()) }
 

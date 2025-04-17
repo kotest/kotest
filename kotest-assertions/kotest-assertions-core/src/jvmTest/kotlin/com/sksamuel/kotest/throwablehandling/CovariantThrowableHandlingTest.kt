@@ -186,6 +186,12 @@ class CovariantThrowableHandlingTest : FreeSpec() {
       }
    }
 
+   private fun mimicPossibleAssertionError(fail: Boolean) {
+      if (fail) {
+         throw AssertionError("Assertion Failed!")
+      }
+   }
+
    private fun <T> onShouldThrowWithMessageMatcher(message: String, func: (ShouldThrowMatcher<T>) -> Unit) {
       func { shouldThrowUnitWithMessage(message, it) }
       func { shouldThrowWithMessage(message, it) }

@@ -1,19 +1,10 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import utils.SystemPropertiesArgumentProvider
 
 plugins {
-   `java-library`
+   id("kotest-base")
    kotlin("multiplatform")
    id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
-   google()
-   gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
 }
 
 testlogger {
@@ -22,32 +13,30 @@ testlogger {
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
+
+   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
    }
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + listOf(
-         "-opt-in=kotlin.RequiresOptIn",
-         "-opt-in=io.kotest.common.KotestInternal",
-         "-opt-in=io.kotest.common.ExperimentalKotest",
-      )
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-   }
-}
-
 kotlin {
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   compilerOptions {
+      freeCompilerArgs.add("-Xexpect-actual-classes")
+      freeCompilerArgs.add("-Xwhen-guards")
+      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+//      allWarningsAsErrors = true
+   }
    sourceSets.configureEach {
       languageSettings {
-         optIn("kotlin.time.ExperimentalTime")
-         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("io.kotest.common.ExperimentalKotest")
+         optIn("io.kotest.common.KotestInternal")
          optIn("kotlin.contracts.ExperimentalContracts")
+         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("kotlin.time.ExperimentalTime")
       }
    }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
 }

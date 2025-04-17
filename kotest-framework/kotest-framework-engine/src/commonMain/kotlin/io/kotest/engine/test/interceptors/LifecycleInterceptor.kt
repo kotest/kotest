@@ -1,14 +1,13 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.common.TimeMarkCompat
-import io.kotest.core.config.ExtensionRegistry
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
-import io.kotest.mpp.Logger
+import kotlin.time.TimeMark
 
 /**
  * Executes a test taking care of invoking user level listeners.
@@ -27,29 +26,28 @@ import io.kotest.mpp.Logger
  * or after code is returned as higher priority than the result from the test case itself.
  */
 internal class LifecycleInterceptor(
-   private val listener: TestCaseExecutionListener,
-   private val timeMark: TimeMarkCompat,
-   registry: ExtensionRegistry,
+  private val listener: TestCaseExecutionListener,
+  private val timeMark: TimeMark,
+  private val testExtensions: TestExtensions,
 ) : TestExecutionInterceptor {
 
-   private val extensions = TestExtensions(registry)
    private val logger = Logger(LifecycleInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
-      logger.log { Pair(testCase.name.testName, "Notifying listener test started") }
+      logger.log { Pair(testCase.name.name, "Notifying listener test started") }
       listener.testStarted(testCase)
 
-      return extensions.beforeTestBeforeAnyBeforeContainer(testCase)
+      return testExtensions.beforeTestBeforeAnyBeforeContainer(testCase)
          .fold(
             {
                val result = test(testCase, scope)
                // any error in the after listeners will override the test result unless the test was already an error
-               extensions
+               testExtensions
                   .afterTestAfterAnyAfterContainer(testCase, result)
                   .fold(
                      { result },
@@ -59,7 +57,7 @@ internal class LifecycleInterceptor(
             {
                val result = createTestResult(timeMark.elapsedNow(), it)
                // can ignore errors here as we already have the before errors to show
-               extensions.afterTestAfterAnyAfterContainer(testCase, result)
+               testExtensions.afterTestAfterAnyAfterContainer(testCase, result)
                result
             }
          )

@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
@@ -23,6 +25,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import kotlin.streams.toList
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class StringArbTest : FunSpec() {
 
    init {
@@ -164,6 +167,15 @@ class StringArbTest : FunSpec() {
          checkAll(Arb.string(10..20, Codepoint.whitespace())) { a ->
             a.codepoints().forEach {
                Character.isWhitespace(it)
+            }
+         }
+      }
+
+      test("all strings generated with list of acceptable characters should only contain those characters") {
+         val chars = "aZ3-?".toList()
+         checkAll(Arb.string(10..20, chars.joinToString(""))) { a ->
+            a.toList().forEach {
+               it in chars.toList()
             }
          }
       }

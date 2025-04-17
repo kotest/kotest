@@ -1,16 +1,8 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.shouldBeJsonArray
-import io.kotest.assertions.json.shouldBeJsonObject
-import io.kotest.assertions.json.shouldBeValidJson
-import io.kotest.assertions.json.shouldNotBeJsonArray
-import io.kotest.assertions.json.shouldNotBeJsonObject
-import io.kotest.assertions.json.shouldNotBeValidJson
 import io.kotest.core.spec.style.StringSpec
 
 class MatchTypeTest : StringSpec() {
-
-
    init {
       "should be valid json" {
          """
@@ -68,7 +60,5 @@ class MatchTypeTest : StringSpec() {
             [{"key":"value"},{"key2":"value2"}]
          """.shouldNotBeJsonObject()
       }
-
    }
 }
-

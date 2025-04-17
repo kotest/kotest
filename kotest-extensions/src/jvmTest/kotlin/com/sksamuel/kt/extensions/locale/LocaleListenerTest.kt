@@ -1,6 +1,7 @@
 package com.sksamuel.kt.extensions.locale
 
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.matchers.shouldBe
@@ -12,7 +13,7 @@ class LocaleListenerTest : FunSpec() {
    private val default = Locale.getDefault()
    private val ltl = LocaleTestListener(Locale.FRANCE)
 
-   override fun listeners() = listOf(ltl)
+   override val extensions: List<Extension> = listOf(ltl)
 
    init {
       test("LocaleTestListener should set locale") {

@@ -16,14 +16,27 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
    override fun test(value: L): MatcherResult {
-      val (passed, errorDescription) = when {
-         index >= value.size -> false to "but collection was shorter"
-         value[index] != element -> false to "but element was different. Expected: <${element.print().value}>, but was <${value[index].print().value}>"
-         else -> true to ""
+      val passed = index < value.size && value[index] == element
+      val listTooShortMsg = if(index < value.size) "" else "But it is too short: only ${value.size} elements"
+      val unexpectedElementMsg = when {
+         passed -> ""
+         index < value.size -> "Expected: <${value[index].print().value}>, but was <${element.print().value}>"
+         else -> ""
       }
+      val indexesForElement = value.mapIndexedNotNull { index, current ->
+         if(current == element) index else null
+      }
+      val indexesForElementMsg = if(passed || indexesForElement.isEmpty())
+         ""
+      else "Element was found at index(es): ${indexesForElement.print().value}"
+      val additionalDescriptions = listOf(listTooShortMsg, unexpectedElementMsg, indexesForElementMsg).filter {
+         it.isNotEmpty()
+      }
+      val additionalDescriptionsMsg = if(additionalDescriptions.isEmpty()) ""
+      else "\n${additionalDescriptions.joinToString("\n")}"
       return MatcherResult(
          passed,
-         { "Collection ${value.print().value} should contain ${element.print().value} at index $index, $errorDescription" },
+         { "Collection ${value.print().value} should contain ${element.print().value} at index $index$additionalDescriptionsMsg" },
          { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
    }
@@ -39,8 +52,8 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
       }
       return MatcherResult(
          matchingElementsIndexes.isNotEmpty(),
-         { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
-         { "Collection ${value.print().value} should not contain an element that matches the predicate $p, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
+         { "Collection ${value.print().value} should contain an element that matches the predicate" },
+         { "Collection ${value.print().value} should not contain an element that matches the predicate, but elements with the following indexes matched: ${matchingElementsIndexes.print().value}" }
       )
    }
 }
@@ -104,8 +117,6 @@ infix fun <T> Iterable<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) 
 infix fun <T> Array<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = asList().shouldNotExistInOrder(expected)
 infix fun <T> List<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = this shouldNot existInOrder(expected)
 
-
-
 fun <T> Iterable<T>.shouldContainAnyOf(vararg ts: T) = toList().shouldContainAnyOf(*ts)
 fun <T> Array<T>.shouldContainAnyOf(vararg ts: T) = asList().shouldContainAnyOf(*ts)
 fun <T> Collection<T>.shouldContainAnyOf(vararg ts: T) = this should containAnyOf(ts.asList())
@@ -122,15 +133,20 @@ infix fun <T> Collection<T>.shouldNotContainAnyOf(ts: Collection<T>) = this shou
 fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       if (ts.isEmpty()) throwEmptyCollectionError()
+      val elementsInValue = value.mapIndexedNotNull { index, t -> if(ts.contains(t)) IndexedValue(index, t) else null }
       return MatcherResult(
-         ts.any { it in value },
+         elementsInValue.isNotEmpty(),
          { "Collection ${value.print().value} should contain any of ${ts.print().value}" },
-         { "Collection ${value.print().value} should not contain any of ${ts.print().value}" }
+         { "Collection ${value.print().value} should not contain any of ${ts.print().value}${describeForbiddenElementsInCollection(elementsInValue)}" }
       )
    }
 }
 
-
+internal fun<T> describeForbiddenElementsInCollection(indexedElements: List<IndexedValue<T>>): String {
+   return "\nForbidden elements found in collection:\n${indexedElements.joinToString("\n") {
+      indexedValue -> "[${indexedValue.index}] => ${indexedValue.value.print().value}"
+   } }"
+}
 
 internal fun throwEmptyCollectionError(): Nothing {
    throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")

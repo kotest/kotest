@@ -32,6 +32,7 @@ import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import org.intellij.lang.annotations.Language
 
 private val schemaJsonConfig = Json {
    ignoreUnknownKeys = true
@@ -43,13 +44,13 @@ private val schemaJsonConfig = Json {
  * [shouldMatchSchema]
  */
 @ExperimentalKotest
-fun parseSchema(jsonSchema: String): JsonSchema =
+fun parseSchema(@Language("json") jsonSchema: String): JsonSchema =
    JsonSchema(root = schemaJsonConfig.decodeFromString(SchemaDeserializer, jsonSchema))
 
 @ExperimentalKotest
 internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
-   override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out JsonSchemaElement> {
-      return when (val type = element.jsonObject.get("type")?.jsonPrimitive?.content) {
+   override fun selectDeserializer(element: JsonElement): DeserializationStrategy<JsonSchemaElement> {
+      return when (val type = element.jsonObject["type"]?.jsonPrimitive?.content) {
          "array" -> JsonSchemaArraySerializer
          "object" -> JsonSchema.JsonObject.serializer()
          "string" -> JsonSchemaStringSerializer

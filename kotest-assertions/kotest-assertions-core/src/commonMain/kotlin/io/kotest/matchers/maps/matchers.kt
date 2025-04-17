@@ -5,16 +5,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
-   override fun test(value: Map<K, V>) = MatcherResult(
-      value[key] == v,
-      { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
-      { "Map should not contain mapping $key=$v but was $value" }
-   )
-
-   private fun buildActualValue(map: Map<K, V>) = map[key]?.let { "$key=$it" } ?: map
-}
-
 fun <K, V> Map<K, V>.shouldContain(key: K, value: V) = this should mapcontain(key, value)
 fun <K, V> Map<K, V>.shouldNotContain(key: K, value: V) = this shouldNot mapcontain(key, value)
 

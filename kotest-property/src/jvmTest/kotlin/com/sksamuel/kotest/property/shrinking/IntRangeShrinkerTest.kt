@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.shrinking
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldHaveAtMostSize
@@ -14,6 +16,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
 import io.kotest.property.rtree
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IntRangeShrinkerTest : FunSpec({
    fun List<Int>.asRange() = first()..last()
 

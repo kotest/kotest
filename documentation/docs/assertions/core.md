@@ -39,6 +39,52 @@ Matchers provided by the `kotest-assertions-core` module.
 | `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other` |
 | `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other` |
 | `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
+| `comp.shouldBeBetween(lower, upper)`               | Uses `compareTo` to verify that `comp` is in range `lower..upper` (inclusive, inclusive) |
+
+
+Collections: also see [inspectors](inspectors.md) which are useful ways to test multiple elements in a collection.
+
+| Collections                                     |                                                                                                                                                                   |
+|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `collection.shouldBeEmpty()`                    | Asserts that the collections has zero elements.                                                                                                                   |
+| `collection.shouldBeUnique()`                   | Asserts that all the elements of the collection are distinct using the natural equals of the elements.                                                            |
+| `collection.shouldBeUnique(comparator)`         | Asserts that all the elements of the collection are distinct by comparing elements using the given `comparator`.                                                  |
+| `collection.shouldContain(element)`             | Asserts that the collection contains the given element.                                                                                                           |
+| `collection.shouldContainAll(e1, e2, ..., en)`  | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.              |
+| `collection.shouldContainDuplicates()`          | Asserts that the collection contains at least one duplicate element.                                                                                              |
+| `collection.shouldContainExactly()`             | Assert that a collection contains exactly the given values and nothing else, in order.                                                                            |
+| `collection.shouldContainExactlyInAnyOrder()`   | Assert that a collection contains exactly the given values and nothing else, in _any_ order.                                                                      |
+| `collection.shouldContainAllInAnyOrder()`       | Assert that a collection contains all the given values, in _any_ order.                                                                          |
+| `collection.shouldContainNoNulls()`             | Asserts that the collection contains no null elements, or is empty.                                                                                               |
+| `collection.shouldContainNull()`                | Asserts that the collection contains at least one null element.                                                                                                   |
+| `collection.shouldContainOnlyNulls()`           | Asserts that the collection contains only null elements, or is empty.                                                                                             |
+| `collection.shouldContainAllIgnoringFields()`   | Asserts that the collection contains all the elements listed ignoring one or more fields.                                                                         |
+| `collection.shouldHaveSingleElement(element)`   | Asserts that the collection only contains a single element and that that element is the given one.                                                                |
+| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection contains a single element by a given predicate.                                                                                       |
+| `collection.shouldHaveSize(length)`             | Asserts that the collection is exactly the given length.                                                                                                          |
+| `collection.shouldBeSingleton()`                | Asserts that the collection contains only one element.                                                                                                            |
+| `collection.shouldBeSingleton { block }`        | Asserts that the collection only one element, and then, runs the block with this element.                                                                         |
+| `collection.shouldHaveLowerBound(element)`      | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable.                         |
+| `collection.shouldHaveUpperBound(element)`      | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable.                          |
+| `collection.shouldBeSmallerThan(col)`           | Asserts that the collection is smaller than the other collection.                                                                                                 |
+| `collection.shouldBeLargerThan(col)`            | Asserts that the collection is larger than the other collection.                                                                                                  |
+| `collection.shouldBeSameSizeAs(col)`            | Asserts that the collection has the same size as the other collection.                                                                                            |
+| `collection.shouldHaveAtLeastSize(n)`           | Asserts that the collection has at least size n.                                                                                                                  |
+| `collection.shouldHaveAtMostSize(n)`            | Asserts that the collection has at most size n.                                                                                                                   |
+| `list.shouldBeSorted()`                         | Asserts that the list is sorted.                                                                                                                                  |
+| `list.shouldBeSortedBy { transform }`           | Asserts that the list is sorted by the value after applying the transform.                                                                                        |
+| `list.shouldContainInOrder(other)`              | Asserts that this list contains the given list in order. Other elements may appear either side of the given list.                                                 |
+| `list.shouldExistInOrder({ element }, ...)`     | Asserts that this list contains elements matching the predicates in order. Other elements may appear around or between the elements matching the predicates.      |
+| `list.shouldHaveElementAt(index, element)`      | Asserts that this list contains the given element at the given position.                                                                                          |
+| `list.shouldStartWith(lst)`                     | Asserts that this list starts with the elements of the given list, in order.                                                                                      |
+| `list.shouldEndWith(lst)`                       | Asserts that this list ends with the elements of the given list, in order.                                                                                        |
+| `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch. |
+| `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                  |
+| `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                    |
+| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection.                                                                                                    |
+| `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                      |
+| `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                        |
+
 
 | Iterator                    ||
 |-----------------------------| ---- |
@@ -58,6 +104,9 @@ Matchers provided by the `kotest-assertions-core` module.
 | `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
 | `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
 
+| Sets ||
+|------|----|
+| shouldIntersect | Asserts that the set has at least one element in common with the other set. |
 
 | Strings                                     ||
 |---------------------------------------------| ---- |
@@ -123,20 +172,22 @@ Matchers provided by the `kotest-assertions-core` module.
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  ||
-|---------------------------------------------| ---- |
-| `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n |
-| `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n |
-| `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive |
-| `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative |
-| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive |
-| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative |
-| `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero |
-| `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n |
-| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equ|
-| `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n |
+| BigDecimal                                  |                                                                            |
+|---------------------------------------------|----------------------------------------------------------------------------|
+| `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n     |
+| `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n         |
+| `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive                                    |
+| `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative                                    |
+| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive                                |
+| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative                                |
+| `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero                                        |
+| `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n                 |
+| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equal to n                     |
+| `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n              |
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
-| `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range |
+| `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range                          |
+| `bigDecimal.shouldBeEqualIgnoringScale(r)`  | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
+| `bigDecimal.shouldBe(value plusOrMinus(tolerance))` | Asserts that the bigDecimal is equal to the given value within a tolerance range. |
 
 | Channels                                          ||
 |---------------------------------------------------| ---- |

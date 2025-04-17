@@ -1,5 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest.property
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -7,6 +11,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.arbitrary.string
 import io.kotest.property.forAll
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ClassifyTest : StringSpec() {
    init {
       "classify should log passing predicates" {

@@ -2,7 +2,7 @@ package io.kotest.engine.test.names
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
-import io.kotest.core.names.UniqueNames
+import io.kotest.engine.names.UniqueNames
 
 /**
  * Tracks test names for a context, and based on the given [DuplicateTestNameMode] either fails
@@ -19,14 +19,14 @@ internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode)
     * Returns a unique name or null if the name is already unique.
     */
    fun handle(name: TestName): String? {
-      val isUnique = names.add(name.testName)
+      val isUnique = names.add(name.name)
       if (isUnique) return null
       return when (mode) {
-         DuplicateTestNameMode.Error -> throw DuplicateTestNameException(message(name.testName))
-         DuplicateTestNameMode.Silent -> makeUniqueName(name.testName)
+         DuplicateTestNameMode.Error -> throw DuplicateTestNameException(message(name.name))
+         DuplicateTestNameMode.Silent -> makeUniqueName(name.name)
          DuplicateTestNameMode.Warn -> {
-            println("WARN: " + message(name.testName))
-            makeUniqueName(name.testName)
+            println("WARN: " + message(name.name))
+            makeUniqueName(name.name)
          }
       }
    }

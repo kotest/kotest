@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.shrinking
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
@@ -20,6 +22,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
 import io.kotest.property.rtree
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ListShrinkerTest : FunSpec() {
    init {
 

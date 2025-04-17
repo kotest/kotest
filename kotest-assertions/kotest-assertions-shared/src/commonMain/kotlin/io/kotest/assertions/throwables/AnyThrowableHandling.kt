@@ -1,6 +1,8 @@
 package io.kotest.assertions.throwables
 
 import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
@@ -35,7 +37,25 @@ inline fun shouldThrowAnyUnit(block: () -> Unit) = shouldThrowAny(block)
  * @see [shouldNotThrowUnit]
  *
  */
-inline fun shouldNotThrowAnyUnit(block: () -> Unit) = shouldNotThrowAny(block)
+inline fun shouldNotThrowAnyUnit(block: () -> Unit) {
+   assertionCounter.inc()
+
+   val thrownException = try {
+      block()
+      null
+   } catch (e: Throwable) {
+      e
+   }
+
+   thrownException?.let {
+      errorCollector.collectOrThrow(
+         failure(
+            "No exception expected, but a ${thrownException::class.simpleName} was thrown with message: \"${thrownException.message}\".",
+            thrownException
+         )
+      )
+   }
+}
 
 /**
  * Verifies that a block of code throws any [Throwable]
@@ -102,7 +122,7 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
    }
 
    throw failure(
-      "No exception expected, but a ${thrownException::class.simpleName} was thrown.",
+      "No exception expected, but a ${thrownException::class.simpleName} was thrown with message: \"${thrownException.message}\".",
       thrownException
    )
 }

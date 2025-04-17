@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAll
@@ -35,6 +37,7 @@ import io.kotest.property.arbitrary.zip
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class BindTest : StringSpec({
 
    data class User(val email: String, val id: Int)
@@ -669,6 +672,20 @@ class BindTest : StringSpec({
          bind(Int::class to Arb.constant(3))
       }) {
          it.id shouldBe 7
+      }
+   }
+
+   "When binding nullable properties to an arb that does not generate nulls, then no nulls should be implicitly added" {
+      data class Bar(val baz: String)
+      data class Foo(val bar: Bar?)
+
+      val arbBarNotNull = Arb.bind<Bar>()
+      val arbFooWithBar: Arb<Foo> = Arb.bind<Foo> {
+         bind(Foo::bar to arbBarNotNull) // field should never be null since its Arb does not generate nulls
+      }
+
+      checkAll(arbFooWithBar) { foo ->
+         foo.bar != null
       }
    }
 

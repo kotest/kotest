@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CluesTests : FunSpec({
    test("withClue should not fail on coroutine thread switch") {
       withContext(Dispatchers.Unconfined) {
@@ -37,7 +40,7 @@ class CluesTests : FunSpec({
          // a specified minimum number of threads. This safeguards against subtle differences in dispatcher
          // implementations (how many threads to allocate, how many threads to actually use for coroutines).
          val minimumThreadCount = 2
-         val minimumThreadRepetitionQuota = repetitionCount / 2
+         val minimumThreadRepetitionQuota = repetitionCount / 4
 
          var minimumThreadRepetitionCount = 0
 

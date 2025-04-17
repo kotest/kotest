@@ -1,26 +1,169 @@
 package com.sksamuel.kotest.parallelism
 
+import com.sksamuel.kotest.parallelism.ProjectConfig.beforeProject
+import com.sksamuel.kotest.parallelism.ProjectConfig.startOfTest
+import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
+import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
+import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
+import io.kotest.assertions.withClue
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.log
+import io.kotest.core.test.TestScope
+import io.kotest.engine.concurrency.SpecExecutionMode
+import io.kotest.inspectors.shouldForAll
+import io.kotest.inspectors.shouldForNone
+import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
+
+private val linux = System.getProperty("os.name").lowercase().contains("linux")
 
 object ProjectConfig : AbstractProjectConfig() {
 
-   private var start = 0L
+   override val specExecutionMode = SpecExecutionMode.Concurrent
+
+   /** The expected number of test cases. All should be launched simultaneously. */
+   private const val EXPECTED_TEST_COUNT = 8
+
+   /**
+    * Listen for test [TestStatus]s in an independent [CoroutineScope].
+    */
+   private val TestStatusCollectorScope: CoroutineScope =
+      CoroutineScope(Dispatchers.IO) + CoroutineName("TestStatusCollector")
+
+   /** Mark the start of the entire test case. */
+   internal val startOfTest: TimeMark = TimeSource.Monotonic.markNow()
+
+   /** Marks when [beforeProject] is called, which should only be once, and before any tests are launched. */
+   private val beforeProjectCalled = MutableStateFlow(listOf<Duration>())
+
+   init {
+      // Start listening for launched tests in an independent CoroutineScope.
+      if (linux)
+         testStatuses
+            .onEach { msg -> log { "$msg" } }
+            .filter { msg -> msg.status == Started }
+            // Count the number of started tests by name
+            .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
+            .map { testNames -> testNames.size }
+            // Once all tests are launched, unlock testCompletionLock
+            .onEach { startedTestCount ->
+               log { "startedTestCount: $startedTestCount" }
+               if (startedTestCount == EXPECTED_TEST_COUNT) {
+                  log {
+                     "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
+                        "Unlocking testCompletionLock and allowing the tests to complete."
+                  }
+                  testCompletionLock.unlock()
+               }
+            }
+            .launchIn(TestStatusCollectorScope)
+   }
 
    override suspend fun beforeProject() {
-      start = System.currentTimeMillis()
+      beforeProjectCalled.update { it + startOfTest.elapsedNow() }
    }
-
-   // set the number of threads so that each test runs in its own thread
-   override val parallelism = 10
-
-   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
 
    override suspend fun afterProject() {
-      val duration = System.currentTimeMillis() - start
-      // there are 8 specs, and each one has a delay
-      // if parallel is working they should all block at the same time
-      if (duration > 700)
-         error("Parallel execution failure: Execution time was $duration")
+      val statuses = testStatuses.replayCache
+
+      if (linux)
+         withClue("testStateMessages:\n" + statuses.joinToString("\n") { " - $it" }) {
+
+            withClue("Expect no tests timed out") {
+               statuses.shouldForNone { it.status shouldBe TimedOut }
+            }
+
+            val beforeProjectCalled = withClue("beforeProjectCalled should only have one value") {
+               beforeProjectCalled.value.shouldBeSingleton().first()
+            }
+            withClue("Expect all tests started after `beforeProject()`") {
+               statuses.shouldForAll { it.elapsed shouldBeGreaterThan beforeProjectCalled }
+            }
+
+            listOf(Started, Finished).forEach { status ->
+               val actualTestNames = statuses.filter { it.status == status }.map { it.testName }
+
+               withClue("Expect exactly $EXPECTED_TEST_COUNT tests have status:$status") {
+                  actualTestNames.shouldContainExactlyInAnyOrder(
+                     "test 1",
+                     "test 2",
+                     "test 3",
+                     "test 4",
+                     "test 5",
+                     "test 6",
+                     "test 7",
+                     "test 8",
+                  )
+               }
+            }
+
+            withClue("Expect that no test finished before all tests had started") {
+               val lastStartedTest = statuses.filter { it.status == Started }.maxOf { it.elapsed }
+               val firstFinishedTest = statuses.filter { it.status == Finished }.minOf { it.elapsed }
+
+               lastStartedTest shouldBeLessThan firstFinishedTest
+            }
+         }
    }
+}
+
+/**
+ * Register the start of a test, and suspend until [testCompletionLock] is unlocked.
+ *
+ * Only when all tests have been launched simultaneously will [testCompletionLock] be unlocked,
+ * and the test is permitted to finish.
+ */
+internal suspend fun TestScope.startAndLockTest() {
+   testStatuses.emit(TestStatus(testCase.name.name, Started))
+   try {
+      withTimeout(10.seconds) {
+         testCompletionLock.withLock {
+            testStatuses.emit(TestStatus(testCase.name.name, Finished))
+         }
+      }
+   } catch (ex: TimeoutCancellationException) {
+      testStatuses.emit(TestStatus(testCase.name.name, TimedOut))
+   }
+}
+
+/**
+ * Once a test has launched, stop it from completing by using this [Mutex].
+ * We want to stop tests from completing to ensure that all tests are launched simultaneously.
+ */
+private val testCompletionLock = Mutex(locked = true)
+
+private val testStatuses = MutableSharedFlow<TestStatus>(replay = 100)
+
+/**
+ * Information about the execution status of a test.
+ */
+private data class TestStatus(
+   val testName: String,
+   val status: Status,
+   val elapsed: Duration = startOfTest.elapsedNow(),
+) {
+   enum class Status { Started, Finished, TimedOut }
 }

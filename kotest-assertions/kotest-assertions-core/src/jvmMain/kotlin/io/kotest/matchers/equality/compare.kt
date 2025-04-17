@@ -1,10 +1,12 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmName
 
@@ -30,12 +32,11 @@ private fun compareFields(actual: Any?, expected: Any?, field: String?, config: 
       throw failure("Comparing type ${actual!!::class.jvmName} to ${expected!!::class.jvmName} with mismatched properties")
 
    return props1.fold(CompareResult(emptyList(), emptyMap())) { acc, prop ->
-      println("Prop: " + prop.returnType.toString().replace("?", ""))
       val actualValue = prop.getter.call(actual)
       val expectedValue = prop.getter.call(expected)
       val name = if (field == null) prop.name else field + "." + prop.name
       val returnType = prop.returnType.classifier as KClass<*>
-      acc.reduce(compareValue(actualValue, expectedValue, returnType, name, config))
+      acc.reduce(compareValue(actualValue, expectedValue, returnType, name, config, prop))
    }
 }
 
@@ -44,21 +45,30 @@ private fun compareValue(
    expected: Any?,
    type: KClass<*>,
    field: String,
-   config: FieldEqualityConfig
+   config: FieldEqualityConfig,
+   prop: KProperty<*>
 ): CompareResult {
-   println("Compare value $type from $actual $expected")
+
+   when (val overrideMatcherResult: CustomComparisonResult =
+         config.overrideMatchers[prop]?.assert(expected, actual) ?:
+         CustomComparisonResult.NotComparable
+   ) {
+      is CustomComparisonResult.Equal -> return CompareResult.match(field)
+      is CustomComparisonResult.Different -> return CompareResult.single(field, overrideMatcherResult.assertionError)
+      else -> {}
+   }
 
    return when {
       type.isSubclassOf(Collection::class) -> {
          val actualCollection = actual as Collection<*>
          val expectedCollection = expected as Collection<*>
-         compareCollections(actualCollection, expectedCollection, field, config)
+         compareCollections(actualCollection, expectedCollection, field, config, prop)
       }
 
       type.isSubclassOf(Map::class) -> {
          val actualMap = actual as Map<*, *>
          val expectedMap = expected as Map<*, *>
-         compareMaps(actualMap, expectedMap, field, config)
+         compareMaps(actualMap, expectedMap, field, config, prop)
       }
 
       useEq(
@@ -79,7 +89,8 @@ private fun compareCollections(
    actual: Collection<*>,
    expected: Collection<*>,
    field: String,
-   config: FieldEqualityConfig
+   config: FieldEqualityConfig,
+   prop: KProperty<*>
 ): CompareResult {
 
    return if (actual.size != expected.size)
@@ -102,7 +113,7 @@ private fun compareCollections(
                failure("Expected null but actual was ${value.first.print().value}")
             )
 
-            else -> compareValue(value.first, value.second, value.first!!::class, elementName, config)
+            else -> compareValue(value.first, value.second, value.first!!::class, elementName, config, prop)
          }
       }.reduce { a, op -> a.reduce(op) }
    }
@@ -112,7 +123,8 @@ private fun compareMaps(
    actual: Map<*, *>,
    expected: Map<*, *>,
    field: String,
-   config: FieldEqualityConfig
+   config: FieldEqualityConfig,
+   prop: KProperty<*>
 ): CompareResult {
 
    return if (actual.size != expected.size)
@@ -123,7 +135,7 @@ private fun compareMaps(
       actual.keys.map { key ->
          val a = actual[key]
          val b = expected[key]
-         compareValue(a, b, a!!::class, "$field[$key]", config)
+         compareValue(a, b, a!!::class, "$field[$key]", config, prop)
       }.reduce { a, op -> a.reduce(op) }
    }
 }

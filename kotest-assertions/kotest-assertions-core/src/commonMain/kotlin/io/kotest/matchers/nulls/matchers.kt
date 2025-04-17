@@ -80,9 +80,10 @@ fun <T> T?.shouldNotBeNull(): T {
  *     length should beEven()
  * }
  */
-infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit) {
+infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit): T {
    this.shouldNotBeNull()
    block()
+   return this
 }
 
 /**

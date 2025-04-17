@@ -1,13 +1,9 @@
-plugins {
-   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
-}
+import utils.configureGradleDaemonJvm
 
-repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
-   google()
-   gradlePluginPortal() // tvOS builds need to be able to fetch a kotlin gradle plugin
+plugins {
+   id("kotest-base")
+   java
+   alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
 
 apiValidation {
@@ -18,4 +14,15 @@ apiValidation {
          "io.kotest.framework.multiplatform.native"
       )
    )
+   nonPublicMarkers.addAll(
+      listOf(
+         "io.kotest.common.KotestInternal",
+      )
+   )
 }
+
+configureGradleDaemonJvm(
+   project = project,
+   updateDaemonJvm = tasks.updateDaemonJvm,
+   gradleDaemonJvmVersion = libs.versions.gradleDaemonJvm,
+)

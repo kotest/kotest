@@ -15,7 +15,7 @@ class AfterSpecTest : FunSpec() {
       }
    }
 
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
 
    companion object {
       private val counter = AtomicInteger(0)
@@ -23,10 +23,10 @@ class AfterSpecTest : FunSpec() {
 
    init {
 
-      register(listener)
+      extension(listener)
 
       afterProject {
-         counter.get() shouldBe 5
+         counter.get() shouldBe 4
       }
 
       test("ignored test").config(enabled = false) {}

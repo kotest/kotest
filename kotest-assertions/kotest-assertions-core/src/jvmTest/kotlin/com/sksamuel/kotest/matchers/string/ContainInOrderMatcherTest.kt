@@ -1,11 +1,14 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.containInOrder
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContainInOrder
 
@@ -49,5 +52,28 @@ class ContainInOrderMatcherTest : FreeSpec() {
                null.shouldContainInOrder("")
             }.message shouldBe "Expecting actual not to be null"
          }
-      }   }
+
+         "should output first mismatch" {
+            shouldThrowAny {
+               "The quick brown fox jumps over the lazy dog".shouldContainInOrder(
+                  "The", "quick", "red", "fox", "jumps", "over", "the", "lazy", "dog"
+               )
+            }.message.shouldContain("""Did not match substring[2]: <"red">""")
+         }
+
+         "should find first mismatch before its expected place" {
+            val message = shouldThrowAny {
+               "The quick brown fox jumps over the lazy dog".shouldContainInOrder(
+                  "The", "brown", "fox", "jumps", "over", "the", "quick brown", "lazy", "dog"
+               )
+            }.message
+            assertSoftly {
+               message.shouldContain("""Did not match substring[6]: <"quick brown">""")
+               message.shouldContain("Match[0]: whole slice matched actual[4..14]")
+               message.shouldContain("""Line[0] ="The quick brown fox jumps over the lazy dog"""")
+               message.shouldContain(  "Match[0]= ----+++++++++++----------------------------")
+            }
+         }
+      }
+   }
 }

@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.coroutines
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -10,17 +12,19 @@ import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineDebugTest : FunSpec() {
    init {
       test("coroutine debug should dump coroutine stacks on error") {
 
-         val c = ProjectConfiguration()
-         c.coroutineDebugProbes = true
+         val p = object : AbstractProjectConfig() {
+            override val coroutineDebugProbes = true
+         }
 
          val output = captureStandardOut {
             TestEngineLauncher(NoopTestEngineListener)
                .withClasses(Wibble::class)
-               .withConfiguration(c)
+               .withProjectConfig(p)
                .launch()
                .errors.shouldBeEmpty()
          }

@@ -1,10 +1,10 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.mpp.annotation
 import kotlin.random.Random
 
@@ -14,7 +14,7 @@ import kotlin.random.Random
  */
 internal class DefaultSpecExecutionOrderExtension(
    private val order: SpecExecutionOrder,
-   private val configuration: ProjectConfiguration,
+   private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecExecutionOrderExtension {
 
    override fun sort(specs: List<SpecRef>): List<SpecRef> {
@@ -29,7 +29,7 @@ internal class DefaultSpecExecutionOrderExtension(
          SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(specs)
          SpecExecutionOrder.FailureFirst -> FailureFirstSorter.sort(specs)
          SpecExecutionOrder.Random -> {
-            val random = when (val seed = configuration.randomOrderSeed) {
+            val random = when (val seed = projectConfigResolver.randomOrderSeed()) {
                null -> Random.Default
                else -> Random(seed)
             }

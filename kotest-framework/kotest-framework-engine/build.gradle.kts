@@ -13,32 +13,31 @@ kotlin {
             implementation(kotlin("reflect"))
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
-            // this is API because we want people to be able to use the functionality in their tests
-            // without needing to declare this dependency as well
-            api(projects.kotestFramework.kotestFrameworkApi)
+            api(libs.kotlinx.coroutines.core)
 
-            // used to install the debug probes for coroutines
-            implementation(libs.kotlinx.coroutines.debug)
-            implementation(libs.kotlinx.coroutines.core)
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
          }
       }
 
+      jsMain {
+         // used to write to the console with fancy colours!
+         dependencies {
+            implementation(libs.mordant)
+         }
+      }
+
       val jvmMain by getting {
          dependencies {
-            implementation(libs.kotlinx.coroutines.test)
-
-            api(libs.classgraph)
-
-            // needed to scan for spec classes
-            api(projects.kotestFramework.kotestFrameworkDiscovery)
 
             // we use AssertionFailedError from opentest4j
-            implementation(libs.opentest4j)
+            api(libs.opentest4j)
 
             // used to write to the console with fancy colours!
             api(libs.mordant)
+
+            // used to install the debug probes for coroutines
+            api(libs.kotlinx.coroutines.debug)
          }
       }
 
@@ -46,15 +45,31 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(projects.kotestFramework.kotestFrameworkDatatest)
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
+            implementation(libs.junit.platform.engine)
+            implementation(libs.junit.platform.api)
+            implementation(libs.junit.platform.launcher)
+            implementation(libs.junit.jupiter.api)
+            // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
+            implementation(libs.junit.jupiter.engine)
          }
       }
    }
 }
 
 tasks.withType<Test>().configureEach {
-   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+   jvmArgumentProviders.add(CommandLineArgumentProvider {
+      val javaLauncher = javaLauncher.orNull
+      buildList {
+         if (javaLauncher != null && javaLauncher.metadata.languageVersion >= JavaLanguageVersion.of(9)) {
+            // --add-opens is only available in Java 9+
+            add("--add-opens=java.base/java.util=ALL-UNNAMED")
+            add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+         }
+      }
+   })
+
+   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

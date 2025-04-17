@@ -1,10 +1,13 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 // see Ever so slightly verbose output when comparing two arrays #1236 https://github.com/kotest/kotest/issues/1236
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class LargeArrayShouldBeTest : FunSpec({
    test("comparing large arrays") {
       val a = listOf(

@@ -20,7 +20,7 @@ For example, you could use the assertions library with JUnit, or you could use t
 This page gives setup instructions for various combinations of projects and targets.
 
 :::note
-Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html).
 If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
 :::
 
@@ -70,7 +70,7 @@ testImplementation 'io.kotest:kotest-runner-junit5:$version'
    <TabItem value="JS">
 
 :::tip
-A working multi-platform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
+A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
 https://github.com/kotest/kotest-examples-multiplatform
 :::
 
@@ -132,7 +132,7 @@ Only execution via gradle is supported.
    <TabItem value="Native">
 
 :::tip
-A working multi-platform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
+A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
       https://github.com/kotest/kotest-examples-multiplatform
 :::
 
@@ -401,5 +401,5 @@ Snapshot are automatically published on each commit to master.
 If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
 
 ```
-https://oss.sonatype.org/content/repositories/snapshots
+https://s01.oss.sonatype.org/content/repositories/snapshots
 ```

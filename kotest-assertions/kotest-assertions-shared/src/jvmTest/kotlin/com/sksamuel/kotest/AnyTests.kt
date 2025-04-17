@@ -1,14 +1,14 @@
 package com.sksamuel.kotest
 
-import io.kotest.assertions.*
-import io.kotest.common.ExperimentalKotest
+import io.kotest.assertions.any
+import io.kotest.assertions.shouldFail
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 
-@OptIn(ExperimentalKotest::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AnyTests : FunSpec({
    test("any succeeds as long as a single assertion succeeds") {
       any {

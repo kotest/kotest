@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
@@ -7,6 +9,7 @@ import io.kotest.engine.interceptors.TestEngineInitializedInterceptor
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class TestEngineInitializeInterceptorTest : FunSpec({
 
    test("should invoke initialize") {

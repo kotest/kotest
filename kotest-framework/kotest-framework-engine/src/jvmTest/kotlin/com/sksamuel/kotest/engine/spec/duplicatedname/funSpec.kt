@@ -9,21 +9,20 @@ abstract class FunSpecDuplicateNameTest(iso: IsolationMode) : FunSpec() {
       isolationMode = iso
       context("wobble") {
          test("wibble") { }
-         test("wibble") { this.testCase.name.testName shouldBe "(1) wibble" }
-         test("wibble") { this.testCase.name.testName shouldBe "(2) wibble" }
+         test("wibble") { this.testCase.name.name shouldBe "(1) wibble" }
+         test("wibble") { this.testCase.name.name shouldBe "(2) wibble" }
       }
       context("wobble") {
-         this.testCase.name.testName shouldBe "(1) wobble"
+         this.testCase.name.name shouldBe "(1) wobble"
          test("a") { }
       }
       context("wobble") {
-         this.testCase.name.testName shouldBe "(2) wobble"
+         this.testCase.name.name shouldBe "(2) wobble"
          test("a") { }
       }
    }
 }
 
 class FunSpecSingleInstanceDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class FunSpecInstancePerLeafDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class FunSpecInstancePerTestDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class FunSpecInstancePerRootDuplicateNameTest : FunSpecDuplicateNameTest(IsolationMode.InstancePerRoot)
 

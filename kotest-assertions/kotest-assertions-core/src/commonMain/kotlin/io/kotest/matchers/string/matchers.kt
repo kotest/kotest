@@ -2,9 +2,13 @@ package io.kotest.matchers.string
 
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
-import io.kotest.matchers.*
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
+import io.kotest.submatching.describePartialMatchesInStringForSlice
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -19,9 +23,10 @@ fun String?.shouldNotContainOnlyDigits(): String? {
 }
 
 fun containOnlyDigits() = neverNullMatcher<String> { value ->
+   val firstNonDigit = value.toCharArray().withIndex().firstOrNull { it.value !in '0'..'9'}
    MatcherResult(
-      value.toCharArray().all { it in '0'..'9' },
-      { "${value.print().value} should contain only digits" },
+      firstNonDigit == null,
+      { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.let { it.value.print().value }} at index ${firstNonDigit?.index}" },
       { "${value.print().value} should not contain only digits" })
 }
 
@@ -36,10 +41,14 @@ fun String?.shouldNotContainADigit(): String? {
 }
 
 fun containADigit() = neverNullMatcher<String> { value ->
+   val indexOfFirstDigit = value.asSequence().indexOfFirst { it in '0'..'9' }
+   val possibleFirstDigitMessage = if(indexOfFirstDigit > -1)
+      ", but contained ${value.getOrNull(indexOfFirstDigit).print().value} at index $indexOfFirstDigit"
+   else ""
    MatcherResult(
-      value.toCharArray().any { it in '0'..'9' },
+      indexOfFirstDigit > -1,
       { "${value.print().value} should contain at least one digit" },
-      { "${value.print().value} should not contain any digits" })
+      { "${value.print().value} should not contain any digits$possibleFirstDigitMessage" })
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
@@ -53,9 +62,17 @@ infix fun String?.shouldNotContainOnlyOnce(substr: String): String? {
 }
 
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
+   val firstIndexOf = value.indexOf(substring)
+   val lastIndexOf = value.lastIndexOf(substring)
+   val passed = firstIndexOf >= 0 && firstIndexOf == lastIndexOf
+   val failureDescription = when {
+      passed -> ""
+      firstIndexOf == -1 -> ", but did not contain it"
+      else -> ", but contained it at least at indexes $firstIndexOf and $lastIndexOf"
+   }
    MatcherResult(
-      value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
-      { "${value.print().value} should contain the substring ${substring.print().value} exactly once" },
+      passed,
+      { "${value.print().value} should contain the substring ${substring.print().value} exactly once$failureDescription" },
       { "${value.print().value} should not contain the substring ${substring.print().value} exactly once" })
 }
 
@@ -106,10 +123,11 @@ infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
 }
 
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
+   val indexOf = value.lowercase().indexOf(substr.lowercase())
    MatcherResult(
-      value.lowercase().indexOf(substr.lowercase()) >= 0,
+      indexOf >= 0,
       { "${value.print().value} should contain the substring ${substr.print().value} (case insensitive)" },
-      { "${value.print().value} should not contain the substring ${substr.print().value} (case insensitive)" }
+      { "${value.print().value} should not contain the substring ${substr.print().value} (case insensitive), but contained it at index $indexOf" }
    )
 }
 
@@ -141,13 +159,54 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
 }
 
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-   fun recTest(str: String, subs: List<String>): Boolean =
-      subs.isEmpty() || str.indexOf(subs.first()).let { it > -1 && recTest(str.substring(it + 1), subs.drop(1)) }
+   val matchOutcome = matchSubstrings(value, substrings.toList())
+
+   val substringFoundEarlier = if(matchOutcome is ContainInOrderOutcome.Mismatch) {
+      describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
+   } else ""
+
+   val completeMismatchDescription = joinNonEmpty(
+      "\n",
+      matchOutcome.mistmatchDescription,
+      substringFoundEarlier
+   )
 
    MatcherResult(
-      recTest(value, substrings.filter { it.isNotEmpty() }),
-      { "${value.print().value} should include substrings ${substrings.print().value} in order" },
+      matchOutcome.match,
+      { "${value.print().value} should include substrings ${substrings.print().value} in order${prefixIfNotEmpty(completeMismatchDescription, "\n")}" },
       { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
+}
+
+internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty()) "" else "$prefix$value"
+
+internal fun joinNonEmpty(separator: String, vararg values: String) = values.filter { it.isNotEmpty() }.joinToString(separator)
+
+internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
+   substrings.isEmpty() -> ContainInOrderOutcome.Match
+   else -> {
+      val currentSubstring = substrings[0]
+      val matchAtIndex = value.indexOf(currentSubstring)
+      when {
+         matchAtIndex == -1 -> ContainInOrderOutcome.Mismatch(currentSubstring, depth)
+         currentSubstring == "" -> matchSubstrings(value, substrings.drop(1), depth + 1)
+         else -> matchSubstrings(value.substring(matchAtIndex + 1), substrings.drop(1), depth + 1)
+      }
+   }
+}
+
+internal sealed interface ContainInOrderOutcome {
+   val match: Boolean
+   val mistmatchDescription: String
+
+   data object Match : ContainInOrderOutcome {
+      override val match: Boolean = true
+      override val mistmatchDescription: String = ""
+   }
+
+   data class Mismatch(val substring: String, val index: Int) : ContainInOrderOutcome {
+      override val match: Boolean = false
+      override val mistmatchDescription: String = """Did not match substring[$index]: <"$substring">"""
+   }
 }
 
 infix fun String?.shouldContain(substr: String): String? {
@@ -173,9 +232,16 @@ infix fun String?.shouldNotInclude(substr: String): String? {
 }
 
 fun include(substr: String) = neverNullMatcher<String> { value ->
+   val passed = value.contains(substr)
+   val differencesDescription = listOf(
+      "${value.print().value} should include substring ${substr.print().value}",
+      describePartialMatchesInStringForSlice(substr, value).toString(),
+   )
    MatcherResult(
-      value.contains(substr),
-      { "${value.print().value} should include substring ${substr.print().value}" },
+      passed,
+      {
+         differencesDescription.filter { it.isNotEmpty() }.joinToString("\n")
+      },
       { "${value.print().value} should not include substring ${substr.print().value}" })
 }
 
@@ -272,7 +338,7 @@ enum class UUIDVersion(
  *
  * ```
  *
- * @see RFC4122 https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
 fun String.shouldBeUUID(
    version: UUIDVersion = ANY,
@@ -298,7 +364,7 @@ fun String.shouldBeUUID(
  *
  * ```
  *
- * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
 fun String.shouldNotBeUUID(
    version: UUIDVersion = ANY,
@@ -307,7 +373,6 @@ fun String.shouldNotBeUUID(
    this shouldNot beUUID(version, considerNilValid)
    return this
 }
-
 
 /**
  * Matcher that verifies if a String is an UUID
@@ -318,7 +383,8 @@ fun String.shouldNotBeUUID(
  * which is considered a valid UUID. By default it's matched as valid.
  *
  *
- * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * See [RFC4122](https://tools.ietf.org/html/rfc4122)
+ *
  * @see shouldBeUUID
  * @see shouldNotBeUUID
  */

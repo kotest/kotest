@@ -6,6 +6,4 @@ object MapPrint : Print<Map<*, *>> {
       return Printed(a.map { (k, v) -> recursiveRepr(a, k, level).value to recursiveRepr(a, v, level).value }
          .toString())
    }
-
-   override fun print(a: Map<*, *>): Printed = print(a, 0)
 }

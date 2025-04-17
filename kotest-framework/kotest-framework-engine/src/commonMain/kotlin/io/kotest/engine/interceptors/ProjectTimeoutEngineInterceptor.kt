@@ -9,15 +9,15 @@ internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
-      return when (val timeout = context.configuration.projectTimeout) {
+      return when (val timeout = context.projectConfigResolver.projectTimeout()) {
          null -> execute(context)
          else -> try {
             withTimeout(timeout) {
                execute(context)
             }
-         } catch (e: TimeoutCancellationException) {
+         } catch (_: TimeoutCancellationException) {
             val ee = ProjectTimeoutException(timeout)
             EngineResult(listOf(ee))
          }

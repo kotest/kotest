@@ -1,22 +1,27 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
-
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.spec.TestCaseExtensionFn
+import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
-class TimeoutTest : FunSpec() {
+@EnabledIf(LinuxOnlyGithubCondition::class)
+class CoroutinesTimeoutTest : FunSpec() {
 
    init {
 
-      extension(expectFailureExtension)
+      extension(ExpectFailureExtension)
 
       test("a testcase timeout should interrupt a blocked thread").config(
          timeout = 10.milliseconds,
@@ -86,7 +91,7 @@ class TimeoutTest : FunSpec() {
    }
 }
 
-suspend fun someCoroutine() {
+private suspend fun someCoroutine() {
    coroutineScope {
       launch {
          delay(10000000)
@@ -95,11 +100,21 @@ suspend fun someCoroutine() {
 }
 
 /**
+ * Applies a delay that will always be real time, even if the test is running in a virtual time environment.
+ */
+suspend fun realTimeDelay(duration: Duration) {
+   // Default dispatcher knows nothing about virtual time
+   withContext(Dispatchers.Default) { delay(duration) }
+}
+
+/**
  * A Test Case extension that expects each test to fail, and will invert the test result.
  */
-val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
-   when (execute(testCase)) {
-      is TestResult.Failure, is TestResult.Error -> TestResult.Success(0.milliseconds)
-      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
+object ExpectFailureExtension : TestCaseExtension {
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when (val result = execute(testCase)) {
+         is TestResult.Failure, is TestResult.Error -> TestResult.Success(result.duration)
+         else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(result.duration)
+      }
    }
 }

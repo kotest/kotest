@@ -1,33 +1,24 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.detectAbstractProjectConfigsJVM
-import io.kotest.engine.config.loadProjectConfigFromClassnameJVM
+import io.kotest.engine.config.ProjectConfigLoader
+import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.framework.discovery.Discovery
-import io.kotest.framework.discovery.DiscoveryRequest
-import io.kotest.mpp.Logger
+import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
-import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
-import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import java.util.Optional
-import kotlin.reflect.KClass
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -37,12 +28,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
    private val logger = Logger(KotestJunitPlatformTestEngine::class)
 
    companion object {
-      internal const val EngineId = "kotest"
+      const val ENGINE_ID = "kotest"
+      const val ENGINE_NAME = "Kotest"
+      const val GROUP_ID = "io.kotest"
    }
 
-   override fun getId(): String = EngineId
-
-   override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
+   override fun getId(): String = ENGINE_ID
+   override fun getGroupId(): Optional<String> = Optional.of(GROUP_ID)
 
    override fun execute(request: ExecutionRequest) {
       logger.log {
@@ -50,36 +42,31 @@ class KotestJunitPlatformTestEngine : TestEngine {
       }
       logger.log { "Root request children ${request.rootTestDescriptor.children.joinToString(" ,") { it.uniqueId.toString() }}" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
-      when (root.error) {
-         null -> execute(request, root)
-         else -> abortExecution(request, root.error)
-      }
-   }
-
-   private fun abortExecution(request: ExecutionRequest, e: Throwable) {
-      request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
-      request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.failed(e))
+      execute(request, root)
    }
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
 
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
+      // we need to load this here as well so we can configure the formatter
+      // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
+      val config = ProjectConfigLoader.load()
+
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
             JUnitTestEngineListener(
-               SynchronizedEngineExecutionListener(
+               listener = SynchronizedEngineExecutionListener(
                   request.engineExecutionListener
                ),
-               root,
-               root.formatter
+               root = root,
+               formatter = FallbackDisplayNameFormatter.default(config)
             )
          )
       )
 
       TestEngineLauncher(listener)
-         .withInitializedConfiguration(root.configuration)
-         .withExtensions(root.testFilters)
+         .addExtensions(root.extensions)
          .withClasses(root.classes)
          .launch()
    }
@@ -98,98 +85,65 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
    ): KotestEngineDescriptor {
+
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
       logger.log { request.string() }
 
-      val configuration = ConfigManager.initialize(ProjectConfiguration()) {
-         detectAbstractProjectConfigsJVM() +
-            listOfNotNull(loadProjectConfigFromClassnameJVM())
-      }
+      if (!isEngineIncluded(request) || !shouldRunTests(request))
+         return createEmptyEngineDescriptor(uniqueId)
 
-      // if we are excluded from the engines then we say goodnight according to junit rules
-      val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
-      if (!isKotest)
-         return KotestEngineDescriptor(uniqueId, configuration, emptyList(), emptyList(), emptyList(), null)
+      val result = Discovery.discover(uniqueId, request)
 
-      val discoveryRequest = request.toKotestDiscoveryRequest(uniqueId)
-
-      val descriptor = if (shouldRunTests(discoveryRequest, request)) {
-         val discovery = Discovery(emptyList(), configuration)
-         val result = discovery.discover(discoveryRequest)
-
-         if (result.specs.isNotEmpty()) {
-            request.configurationParameters.get("kotest.extensions").orElseGet { "" }
-               .split(',')
-               .map { it.trim() }
-               .filter { it.isNotBlank() }
-               .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
-               .forEach { configuration.registry.add(it) }
-         }
-
-         val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
-         val gradleClassMethodTestFilter = GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
-
-         KotestEngineDescriptor(
-            uniqueId,
-            configuration,
-            result.specs,
-            result.scripts,
-            listOf(gradleClassMethodTestFilter),
-            result.error
-         )
-      } else {
-         KotestEngineDescriptor(uniqueId, configuration, emptyList(), emptyList(), emptyList(), null)
-      }
+      val descriptor = createEngineDescriptor(
+         uniqueId,
+         result.specs,
+         configurationParameterExtensions(request) + listOfNotNull(gradleTestFilterExtension(request)),
+      )
 
       logger.log { "JUnit discovery completed [descriptor=$descriptor]" }
       logger.log { "Final specs [${descriptor.classes.joinToString(", ")}]" }
       return descriptor
    }
 
-   // a method selector is passed by intellij to run just a single method inside a test file
-   // this happens for example, when trying to run a junit test alongside kotest tests,
-   // and kotest will then run all other tests.
-   // therefore, no detected selectors and the presence of a MethodSelector or UniqueIdSelector means we must run no tests in KT.
-   private fun shouldRunTests(discoveryRequest: DiscoveryRequest, request: EngineDiscoveryRequest): Boolean {
+   /**
+    * Creates [Extension]s from configuration parameters
+    */
+   private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
+      return request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+         .split(',')
+         .map { it.trim() }
+         .filter { it.isNotBlank() }
+         .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
+   }
 
-      if (discoveryRequest.selectors.isNotEmpty()) {
-         logger.log { "DiscoverySelectors are non-empty" }
-         return true
-      }
+   /**
+    * Returns a [DescriptorFilter] created from the --tests parameter in gradle, which it exposes
+    * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
+    */
+   private fun gradleTestFilterExtension(request: EngineDiscoveryRequest): DescriptorFilter {
+      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
+      return GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
+   }
 
-      if (request.getSelectorsByType(MethodSelector::class.java).isEmpty() &&
-         request.getSelectorsByType(UniqueIdSelector::class.java).isEmpty()
-      ) {
-         logger.log { "No MethodSelector or UniqueIdSelector specified" }
-         return true
-      }
+   /**
+    * Returns true if there are selectors compatible with Kotest.
+    * Kotest supports [ClassSelector]s and [UniqueIdSelector]s.
+    *
+    * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
+    * Kotest will never use method selectors, so if we have one, then we know it is something
+    * other than kotest that is trying to run the tests, and we should skip running the engine.
+    */
+   private fun shouldRunTests(request: EngineDiscoveryRequest): Boolean {
+      if (request.getSelectorsByType(MethodSelector::class.java).isNotEmpty()) return false
+      return request.getSelectorsByType(ClassSelector::class.java).isNotEmpty() ||
+         request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty()
+   }
 
-      return false
+   /**
+    * If we are excluded from the engines then we do not run discovery
+    */
+   private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
+      return request.engineFilters().all { it.toPredicate().test(this) }
    }
 }
 
-class KotestEngineDescriptor(
-   id: UniqueId,
-   internal val configuration: ProjectConfiguration,
-   val classes: List<KClass<out Spec>>,
-   val scripts: List<KClass<*>>,
-   val testFilters: List<TestFilter>,
-   val error: Throwable?, // an error during discovery
-) : EngineDescriptor(id, "Kotest") {
-
-   private val logger = Logger(KotestEngineDescriptor::class)
-
-   internal val formatter: FallbackDisplayNameFormatter by lazy {
-      getFallbackDisplayNameFormatter(configuration.registry, configuration)
-   }
-
-   init {
-      logger.log { "Adding ${classes.size} children to the root descriptor ${KotestEngineDescriptor::class}@${this.hashCode()}" }
-      classes.forEach {
-         addChild(getSpecDescriptor(this, it.toDescriptor(), formatter.format(it)))
-      }
-   }
-
-   // Only reports dynamic children (see ExtensionExceptionExtractor) if there are any test classes to run
-   override fun mayRegisterTests(): Boolean = classes.isNotEmpty()
-}

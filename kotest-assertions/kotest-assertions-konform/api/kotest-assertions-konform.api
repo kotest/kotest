@@ -1,0 +1,10 @@
+public final class io/kotest/assertions/konform/MatchersKt {
+	public static final fun beInvalid (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun beValid (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeInvalid (Lio/konform/validation/Validation;Ljava/lang/Object;)V
+	public static final fun shouldBeInvalid (Lio/konform/validation/Validation;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldBeValid (Lio/konform/validation/Validation;Ljava/lang/Object;)V
+	public static final fun shouldContainError (Lio/konform/validation/Invalid;Ljava/lang/Object;Ljava/lang/String;)V
+	public static final fun shouldContainError (Lio/konform/validation/Invalid;Ljava/util/Collection;Ljava/lang/String;)V
+}
+

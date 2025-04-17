@@ -10,12 +10,12 @@ class WordSpecCallbackOrderTest : WordSpec({
    var count = 0
 
    beforeTest {
-      before += it.name.testName
+      before += it.name.name
    }
 
    afterTest { (test, _) ->
       count shouldBe 3
-      after += test.name.testName
+      after += test.name.name
    }
 
    afterSpec {

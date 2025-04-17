@@ -1,7 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.concurrency
 
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.Parallel
 import io.kotest.mpp.IncludingAnnotations
 import io.kotest.mpp.IncludingSuperclasses
 import io.kotest.mpp.hasAnnotation
@@ -17,3 +20,8 @@ internal fun KClass<*>.isIsolate(): Boolean =
    hasAnnotation<DoNotParallelize>(IncludingAnnotations, IncludingSuperclasses)
       || hasAnnotation<Isolate>(IncludingAnnotations, IncludingSuperclasses)
 
+/**
+ * Returns true if this class is annotated with the annotation used to indicate
+ * this spec should always run concurrently regardless of config.
+ */
+internal fun KClass<*>.isParallel() = hasAnnotation<Parallel>(IncludingAnnotations, IncludingSuperclasses)

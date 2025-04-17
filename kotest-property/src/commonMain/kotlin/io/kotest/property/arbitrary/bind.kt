@@ -6,6 +6,7 @@ import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import io.kotest.property.asSample
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -455,23 +456,23 @@ internal fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
    return object : Arb<T>() {
 
-      override fun edgecase(rs: RandomSource): T? {
+      override fun edgecase(rs: RandomSource): Sample<T>? {
          return bindFn(
-            arbA.edgecase(rs) ?: arbA.next(rs),
-            arbB.edgecase(rs) ?: arbB.next(rs),
-            arbC.edgecase(rs) ?: arbC.next(rs),
-            arbD.edgecase(rs) ?: arbD.next(rs),
-            arbE.edgecase(rs) ?: arbE.next(rs),
-            arbF.edgecase(rs) ?: arbF.next(rs),
-            arbG.edgecase(rs) ?: arbG.next(rs),
-            arbH.edgecase(rs) ?: arbH.next(rs),
-            arbI.edgecase(rs) ?: arbI.next(rs),
-            arbJ.edgecase(rs) ?: arbJ.next(rs),
-            arbK.edgecase(rs) ?: arbK.next(rs),
-            arbL.edgecase(rs) ?: arbL.next(rs),
-            arbM.edgecase(rs) ?: arbM.next(rs),
-            arbN.edgecase(rs) ?: arbN.next(rs),
-         )
+            arbA.edgecase(rs)?.value ?: arbA.next(rs),
+            arbB.edgecase(rs)?.value ?: arbB.next(rs),
+            arbC.edgecase(rs)?.value ?: arbC.next(rs),
+            arbD.edgecase(rs)?.value ?: arbD.next(rs),
+            arbE.edgecase(rs)?.value ?: arbE.next(rs),
+            arbF.edgecase(rs)?.value ?: arbF.next(rs),
+            arbG.edgecase(rs)?.value ?: arbG.next(rs),
+            arbH.edgecase(rs)?.value ?: arbH.next(rs),
+            arbI.edgecase(rs)?.value ?: arbI.next(rs),
+            arbJ.edgecase(rs)?.value ?: arbJ.next(rs),
+            arbK.edgecase(rs)?.value ?: arbK.next(rs),
+            arbL.edgecase(rs)?.value ?: arbL.next(rs),
+            arbM.edgecase(rs)?.value ?: arbM.next(rs),
+            arbN.edgecase(rs)?.value ?: arbN.next(rs),
+         ).asSample()
       }
 
       override fun sample(rs: RandomSource): Sample<T> {

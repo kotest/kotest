@@ -1,18 +1,21 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
    id("org.jetbrains.kotlin.multiplatform")
    id("io.kotest.multiplatform")
 }
 
+val kotestVersion: String by project
+val devMavenRepoPath: String by project
+
 repositories {
+   maven(file(devMavenRepoPath)) {
+      name = "DevMavenRepo"
+      mavenContent { includeGroupAndSubgroups("io.kotest") }
+   }
    mavenCentral()
 }
-
-val kotestVersion: String by project
-val useNewNativeMemoryModel: String by project
 
 kotlin {
 
@@ -23,6 +26,7 @@ kotlin {
       nodejs()
    }
 
+   @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
    wasmJs {
       browser()
       nodejs()
@@ -43,7 +47,6 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation("io.kotest:kotest-assertions-core:$kotestVersion")
-            implementation("io.kotest:kotest-framework-api:$kotestVersion")
             implementation("io.kotest:kotest-framework-engine:$kotestVersion")
          }
       }
@@ -56,11 +59,9 @@ kotlin {
    }
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
    useJUnitPlatform()
-}
 
-tasks.withType<AbstractTestTask>().configureEach {
    testLogging {
       showExceptions = true
       showStandardStreams = true
@@ -69,25 +70,9 @@ tasks.withType<AbstractTestTask>().configureEach {
    }
 }
 
-if (useNewNativeMemoryModel.toBoolean()) {
-   kotlin.targets.withType(KotlinNativeTarget::class.java) {
-      binaries.all {
-         binaryOptions["memoryModel"] = "experimental"
-      }
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>().configureEach {
+   // yarn.lock will change when running tests with multiple Kotlin versions
+   extensions.configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
+      yarnLockMismatchReport = org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
    }
-}
-
-// FIXME: WORKAROUND https://youtrack.jetbrains.com/issue/KT-65864
-//     Use a Node.js version current enough to support Kotlin/Wasm
-
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-   rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-      nodeVersion = "22.0.0-nightly2024010568c8472ed9"
-      println("Using Node.js $nodeVersion to support Kotlin/Wasm")
-      nodeDownloadBaseUrl = "https://nodejs.org/download/nightly"
-   }
-}
-
-rootProject.tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-   args.add("--ignore-engines") // Prevent Yarn from complaining about newer Node.js versions.
 }

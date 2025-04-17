@@ -1,8 +1,11 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -12,17 +15,19 @@ import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration.Companion.milliseconds
 
 // tests kotest's interaction with coroutines
+@OptIn(DelicateCoroutinesApi::class)
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class CoroutineTest : FunSpec() {
    init {
 
       aroundTest { (testCase, execute) ->
          val result = execute(testCase)
          when {
-            testCase.name.testName == "exceptions inside launched coroutine should be propagated" &&
+            testCase.name.name == "exceptions inside launched coroutine should be propagated" &&
                result.isError -> TestResult.Success(0.milliseconds)
-            testCase.name.testName == "exception in launched coroutine should cancel siblings" &&
+            testCase.name.name == "exception in launched coroutine should cancel siblings" &&
                result.isError -> TestResult.Success(0.milliseconds)
-            testCase.name.testName == "exception in test coroutine should cancel launched coroutines" &&
+            testCase.name.name == "exception in test coroutine should cancel launched coroutines" &&
                result.isError -> TestResult.Success(0.milliseconds)
             else -> result
          }

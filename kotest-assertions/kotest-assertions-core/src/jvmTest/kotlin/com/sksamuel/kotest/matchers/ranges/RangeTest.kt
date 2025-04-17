@@ -11,6 +11,12 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.ranges.Range
 import io.kotest.matchers.ranges.RangeEdge
 import io.kotest.matchers.ranges.RangeEdgeType
+import io.kotest.matchers.ranges.closedClosed
+import io.kotest.matchers.ranges.closedOpen
+import io.kotest.matchers.ranges.ofClosedRange
+import io.kotest.matchers.ranges.ofOpenEndRange
+import io.kotest.matchers.ranges.openClosed
+import io.kotest.matchers.ranges.openOpen
 import io.kotest.matchers.ranges.toClosedClosedRange
 import io.kotest.matchers.ranges.toClosedOpenRange
 import io.kotest.matchers.shouldBe
@@ -18,8 +24,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.forAll
 
-@OptIn(ExperimentalStdlibApi::class)
-class RangeTest: WordSpec() {
+class RangeTest : WordSpec() {
    private val openOpenRange = Range.openOpen(1, 2)
    private val openClosedRange = Range.openClosed(2, 3)
    private val closedOpenRange = Range.closedOpen(3, 4)

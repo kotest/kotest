@@ -1,0 +1,20 @@
+public final class io/kotest/koin/KoinExtension : io/kotest/core/extensions/TestCaseExtension {
+	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lio/kotest/koin/KoinLifecycleMode;)V
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lio/kotest/koin/KoinLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;Lio/kotest/koin/KoinLifecycleMode;)V
+	public synthetic fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;Lio/kotest/koin/KoinLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/koin/KoinLifecycleMode : java/lang/Enum {
+	public static final field Root Lio/kotest/koin/KoinLifecycleMode;
+	public static final field Test Lio/kotest/koin/KoinLifecycleMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/koin/KoinLifecycleMode;
+	public static fun values ()[Lio/kotest/koin/KoinLifecycleMode;
+}
+

@@ -1,15 +1,18 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.project.ProjectContext
-import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ProjectExtensionEngineResultTest : FunSpec({
 
    val events = mutableListOf<String>()
@@ -38,13 +41,13 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(ext1)
-      c.registry.add(ext2)
+      val c = object : AbstractProjectConfig() {
+         override val extensions = listOf(ext1, ext2)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(PassingProjectTest::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")

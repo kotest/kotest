@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.test
 
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.spec.style.DescribeSpec
@@ -11,6 +13,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class IgnoredTestReasonTest : FunSpec() {
    init {
 
@@ -26,11 +29,13 @@ class IgnoredTestReasonTest : FunSpec() {
          val ext = object : EnabledExtension {
             override suspend fun isEnabled(descriptor: Descriptor): Enabled = Enabled.disabled("wibble")
          }
-         val c = ProjectConfiguration().apply { registry.add(ext) }
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(ext)
+         }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyFunSpec::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "wibble"
       }

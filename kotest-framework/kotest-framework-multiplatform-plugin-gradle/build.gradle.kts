@@ -1,22 +1,14 @@
+import org.gradle.api.tasks.PathSensitivity.RELATIVE
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 
 plugins {
-   kotlin("jvm")
-   `maven-publish`
-   `java-gradle-plugin`
    `kotlin-dsl`
+   id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
-}
-
-group = "io.kotest"
-version = Ci.gradleVersion
-
-repositories {
-   mavenCentral()
-   mavenLocal()
 }
 
 dependencies {
@@ -24,63 +16,61 @@ dependencies {
 
    testImplementation(libs.kotlin.gradle.plugin)
    testImplementation(projects.kotestAssertions.kotestAssertionsCore)
-   testImplementation(projects.kotestFramework.kotestFrameworkApi)
    testImplementation(projects.kotestFramework.kotestFrameworkEngine)
    testImplementation(projects.kotestRunner.kotestRunnerJunit5)
 
    testImplementation(libs.mockk)
+
+   devPublication(projects.kotestAssertions.kotestAssertionsCore)
+   devPublication(projects.kotestAssertions.kotestAssertionsShared)
+   devPublication(projects.kotestExtensions)
+   devPublication(projects.kotestCommon)
+   devPublication(projects.kotestFramework.kotestFrameworkEngine)
+   devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler)
+   devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative)
+   devPublication(projects.kotestRunner.kotestRunnerJunit5)
 }
 
 tasks.withType<Test>().configureEach {
    enabled = !project.hasProperty(Ci.JVM_ONLY)
 
-   if (!project.hasProperty(Ci.JVM_ONLY)) {
-      // Build these libraries ahead of time so that the test project doesn't try to build them itself (if it tries to build them while we are as well, this can lead to conflicts)
-      setOf(
-         projects.kotestAssertions.kotestAssertionsCore,
-         projects.kotestFramework.kotestFrameworkApi,
-         projects.kotestFramework.kotestFrameworkEngine,
-      ).map { project ->
-         project.dependencyProject.path
-      }.forEach { projectPath ->
-         setOf(
-            "jvmJar",
-            "compileKotlinLinuxX64",
-            "compileKotlinMacosX64",
-            "compileKotlinMacosArm64",
-            "compileKotlinMingwX64",
-         ).forEach { task ->
-            dependsOn("$projectPath:$task")
-         }
-      }
+   //region Configure devMavenRepo
+   dependsOn(tasks.updateDevRepo)
 
-      setOf(
-         projects.kotestRunner.kotestRunnerJunit5,
-         projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler,
-         projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative,
-      ).map { project ->
-         project.dependencyProject.path
-      }.forEach { project ->
-         dependsOn("$project:jvmJar")
-      }
+   inputs.dir(devPublish.devMavenRepo)
+      .withPropertyName("devPublish.devMavenRepo")
+      .withPathSensitivity(RELATIVE)
 
-      dependsOn("jar")
-      dependsOn(":kotlinNpmInstall")
-   }
+   jvmArgumentProviders.add(
+      SystemPropertiesArgumentProvider(
+         devPublish.devMavenRepo.map { "devMavenRepoPath" to it.asFile.invariantSeparatorsPath }
+      )
+   )
+   //endregion
 
    useJUnitPlatform()
 
    systemProperty("kotestVersion", Ci.publishVersion)
 
+   //region pass test-project directory as system property
+   val testProjectDir = layout.projectDirectory.dir("test-project")
+   inputs.dir(testProjectDir)
+      .withPropertyName("testProjectDir")
+      .withPathSensitivity(RELATIVE)
+   systemProperty("testProjectDir", testProjectDir.asFile.invariantSeparatorsPath)
+   //endregion
+
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
+      events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
 }
 
+@Suppress("UnstableApiUsage")
 gradlePlugin {
+   isAutomatedPublishing = true
    website.set("https://kotest.io")
    vcsUrl.set("https://github.com/kotest")
    plugins {
@@ -88,59 +78,57 @@ gradlePlugin {
          id = "io.kotest.multiplatform"
          implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
          displayName = "Kotest Multiplatform Compiler Plugin"
-         description = "Adds support for Javascript and Native tests in Kotest"
-         tags.set(listOf("kotest", "kotlin", "testing", "integrationtesting", "javascript"))
+         description = "Adds support for JavaScript and Native tests in Kotest"
+         tags.addAll("kotest", "kotlin", "testing", "integration testing", "javascript", "native")
       }
    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-   kotlinOptions {
-      compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+   kotlin {
+      compilerOptions {
+         jvmTarget.set(JvmTarget.JVM_11)
+      }
    }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-   options.release.set(8)
+   options.release.set(11)
 }
 
-val updateKotestPluginConstants by tasks.registering(Sync::class) {
+val updateKotestPluginConstants by tasks.registering {
+   val kotestPluginConstants = """
+      |// Generated file, do not edit manually
+      |@file:org.gradle.api.Generated
+      |
+      |package io.kotest.framework.multiplatform.gradle
+      |
+      |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.publishVersion}"
+      |
+   """.trimMargin()
 
-   val kotestPluginConstantsFileContents: TextResource = resources.text.fromString(
-      """
-         |// Generated file, do not edit manually
-         |@file:org.gradle.api.Generated
-         |
-         |package io.kotest.framework.multiplatform.gradle
-         |
-         |const val KOTEST_COMPILER_PLUGIN_VERSION: String = "${Ci.gradleVersion}"
-         |
-      """.trimMargin()
-   )
+   inputs.property("kotestPluginConstants", kotestPluginConstants)
 
-   from(kotestPluginConstantsFileContents) {
-      rename { "kotestPluginConstants.kt" }
-      into("io/kotest/framework/multiplatform/gradle/")
-   }
-   into(layout.buildDirectory.dir("generated/src/main/kotlin/"))
+   val outputDir = layout.buildDirectory.dir("generated/src/main/kotlin/")
+   outputs.dir(outputDir).withPropertyName("outputDir")
 
-   doFirst {
-      logger.debug(
-         """
-            Updating Kotest Gradle plugin constants
-            ${kotestPluginConstantsFileContents.asString().prependIndent("  > ")}
-         """.trimIndent()
-      )
+   doLast {
+      val kotestPluginConstantsFile = outputDir.get().asFile
+         .resolve("io/kotest/framework/multiplatform/gradle/kotestPluginConstants.kt")
+
+      kotestPluginConstantsFile.apply {
+         parentFile.deleteRecursively()
+         parentFile.mkdirs()
+         writeText(kotestPluginConstants)
+      }
    }
 }
 
-
-sourceSets.main {
-   java.srcDir(updateKotestPluginConstants.map { it.destinationDir })
+kotlin.sourceSets.main {
+   kotlin.srcDir(updateKotestPluginConstants)
 }
 
-
-tasks.clean {
-   delete("$projectDir/test-project/build/")
-   delete("$projectDir/test-project/.gradle/")
+tasks.clean.configure {
+   delete("${project.layout.projectDirectory}/test-project/build/")
+   delete("${project.layout.projectDirectory}/test-project/.gradle/")
 }

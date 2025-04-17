@@ -1,9 +1,9 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.log
+import io.kotest.core.log
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.mpp.sysprop
 
 /**
@@ -15,7 +15,7 @@ internal object BangTestEnabledExtension : TestEnabledExtension {
 
       // this sys property disables the use of !
       // when it is true, we don't check for !
-      if (sysprop(KotestEngineProperties.disableBangPrefix) == "true") {
+      if (sysprop(KotestEngineProperties.DISABLE_BANG_PREFIX) == "true") {
          return Enabled.enabled
       }
 

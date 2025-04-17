@@ -27,6 +27,10 @@ class BehaviorSpecExample : BehaviorSpec() {
         and("another given scope") {
            Then("to keep context happy") {}
         }
+        xand("uncapitalized disabled and") {
+           Then("to keep context happy") {}
+           fail("Boom")
+        }
         xAnd("capitalized disabled and") {
            Then("to keep context happy") {}
            fail("Boom")
@@ -49,6 +53,18 @@ class BehaviorSpecExample : BehaviorSpec() {
            }
            Then("a captial Then with config").config(enabled = false) {
               // test here
+           }
+           xThen("a captialized disabled Then") {
+              error("boom")
+           }
+           xthen("an uncaptialized disabled Then") {
+              error("boom")
+           }
+           xThen("a captialized disabled Then with config").config(invocations = 3) {
+              error("boom")
+           }
+           xthen("an uncaptialized disabled Then with config").config(invocations = 3) {
+              error("boom")
            }
         }
         xwhen("an xdisabled when") {

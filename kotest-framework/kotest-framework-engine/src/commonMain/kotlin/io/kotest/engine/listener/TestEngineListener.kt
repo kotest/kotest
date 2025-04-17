@@ -45,8 +45,7 @@ interface TestEngineListener {
    suspend fun specStarted(kclass: KClass<*>)
 
    /**
-    * Invoked when a spec is ignored. If the results map is empty, then this means
-    * the spec did not define any tests, or the spec was not instantiated.
+    * Invoked when a spec is ignored. An optional [reason] for being ignored can be provided.
     */
    suspend fun specIgnored(kclass: KClass<*>, reason: String?)
 
@@ -73,6 +72,11 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult)
 }
 
+/**
+ * Implementation of [TestEngineListener] that provides no-op implementations for each method.
+ * This is useful for testing when you only want to override a single method.
+ */
+@KotestInternal
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
    override suspend fun engineFinished(t: List<Throwable>) {}
@@ -85,4 +89,5 @@ abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun testStarted(testCase: TestCase) {}
 }
 
+@KotestInternal
 val NoopTestEngineListener = object : AbstractTestEngineListener() {}

@@ -3,30 +3,28 @@ package io.kotest.engine.test.interceptors
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.collectiveError
 import io.kotest.assertions.errorCollector
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.TestType
-import io.kotest.mpp.Logger
+import io.kotest.engine.config.TestConfigResolver
 
 /**
- * Executes the test with assertSoftly if [assertSoftly] is enabled for this test
- * and if the [TestCase] is a [TestType.Test].
+ * Executes the test with assertSoftly if [assertSoftly] is enabled for this test or container.
  */
-internal class SoftAssertInterceptor() : TestExecutionInterceptor {
+internal class SoftAssertInterceptor(private val testConfigResolver: TestConfigResolver) : TestExecutionInterceptor {
 
    private val logger = Logger(SoftAssertInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
+      test: NextTestExecutionInterceptor
    ): TestResult {
 
-      if (testCase.type != TestType.Test) return test(testCase, scope)
-      if (!testCase.config.assertSoftly) return test(testCase, scope)
+      if (!testConfigResolver.assertSoftly(testCase)) return test(testCase, scope)
 
-      logger.log { Pair(testCase.name.testName, "Invoking test with soft assert") }
+      logger.log { Pair(testCase.name.name, "Invoking test with soft assert") }
       return assertSoftly {
          val result = test(testCase, scope)
          // assertSoftly throws the collected error in finally block,

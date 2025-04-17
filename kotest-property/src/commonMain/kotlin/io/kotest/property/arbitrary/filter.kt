@@ -14,11 +14,11 @@ import io.kotest.property.filter
  */
 fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = trampoline { sampleA ->
    object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? =
-         sequenceOf(sampleA.value)
+      override fun edgecase(rs: RandomSource): Sample<A>? =
+         sequenceOf(sampleA)
             .plus(generateSequence { this@filter.edgecase(rs) })
             .take(PropertyTesting.maxFilterAttempts)
-            .filter(predicate)
+            .filter { predicate(it.value) }
             .firstOrNull()
 
       override fun sample(rs: RandomSource): Sample<A> {

@@ -1,17 +1,16 @@
 package io.kotest.engine
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.common.Platform
-import io.kotest.common.platform
-import io.kotest.core.TagExpression
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.Logger
+import io.kotest.core.Platform
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
+import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.tags.runtimeTagExpression
-import io.kotest.mpp.Logger
+import io.kotest.engine.tags.TagExpression
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -28,9 +27,10 @@ data class EngineResult(val errors: List<Throwable>) {
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
-   val configuration: ProjectConfiguration,
+   val projectConfig: AbstractProjectConfig?,
    val explicitTags: TagExpression?,
    val platform: Platform,
+   val registry: ExtensionRegistry,
 )
 
 /**
@@ -43,38 +43,32 @@ class TestEngine(private val config: TestEngineConfig) {
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
-    *
-    * It is recommended that this method is not invoked, but instead the engine
-    * is launched via the [TestEngineLauncher].
     */
-   @OptIn(KotestInternal::class, ExperimentalKotest::class)
    internal suspend fun execute(suite: TestSuite): EngineResult {
-      logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
-
-      val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
-         val scheduler = when (platform) {
-            Platform.JVM -> ConcurrentTestSuiteScheduler(
-               config.configuration.concurrentSpecs ?: config.configuration.parallelism,
-               context,
-            )
-
-            Platform.JS,
-            Platform.Native,
-            Platform.WasmJs -> SequentialTestSuiteScheduler(context)
-         }
-         scheduler.schedule(context.suite)
-      }
-
+      logger.log { Pair(null, "Initiating test suite with ${suite.specs.size} specs") }
       logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
 
-      val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
-         { context -> extension.intercept(context, next) }
+      val innerExecute = NextEngineInterceptor { context ->
+         TestSuiteScheduler(context).schedule(context.suite)
       }
 
-      val tags = config.configuration.runtimeTagExpression()
+      val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
+         NextEngineInterceptor { context -> extension.intercept(context, next) }
+      }
+
+      val tags = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
       logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      return execute(EngineContext(suite, config.listener, tags, config.configuration, config.platform, mutableMapOf()))
+      return execute(
+         EngineContext(
+            suite = suite,
+            listener = config.listener,
+            tags = tags,
+            projectConfig = config.projectConfig,
+            platform = config.platform,
+            registry = config.registry,
+         )
+      )
    }
 }
 

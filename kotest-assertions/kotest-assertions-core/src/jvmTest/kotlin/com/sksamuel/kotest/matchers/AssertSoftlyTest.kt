@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers
 
+import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
@@ -19,6 +20,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldContain
@@ -154,6 +156,19 @@ class AssertSoftlyTest : FreeSpec({
          }
       }
 
+
+      "Should not lose stacktrace with only one assertion" {
+         shouldThrow<AssertionError> {
+            assertSoftly {
+               "foo" shouldBe "bar"
+            }
+         }.run {
+            message.shouldContainInOrder(
+               "expected:<\"bar\"> but was:<\"foo\">",
+            )
+         }
+      }
+
       "Receiver version" - {
          "works on a receiver object" {
             shouldThrow<AssertionError> {
@@ -163,9 +178,13 @@ class AssertSoftlyTest : FreeSpec({
                   this shouldNotBe "foo"
                }
             }.run {
-               message should contain("The following 2 assertions for \"foo\" failed:")
-               message should contain("1) expected:<2> but was:<3>")
-               message should contain("2) \"foo\" should not equal \"foo\"")
+               message.shouldContainInOrder(
+                  "The following 2 assertions for \"foo\" failed:",
+                  "1) expected:<2> but was:<3>",
+                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
+                  "2) \"foo\" should not equal \"foo\"",
+                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
+               )
             }
          }
 
@@ -174,10 +193,12 @@ class AssertSoftlyTest : FreeSpec({
                assertSoftly("foo") {
                   length shouldBe 2
                }
-            }.message shouldBe """
-               The following assertion for "foo" failed:
-               expected:<2> but was:<3>
-            """.trimIndent()
+            }.run {
+               message shouldBe """
+                  The following assertion for "foo" failed:
+                  expected:<2> but was:<3>
+               """.trimIndent()
+            }
          }
 
          "Returns the receiver" {
@@ -252,6 +273,33 @@ class AssertSoftlyTest : FreeSpec({
                "└ enumValue: more complex with data class and enums\n" +
                "expected:<Second> but was:<First>"
             error.message shouldNotContain "3) "
+         }
+      }
+      "doesn't lose stack traces" - {
+         // Added as a verification of https://github.com/kotest/kotest/issues/1831
+         "single assertion failed with AssertionFailedError" {
+            var lineNumber = 0
+            shouldThrow<AssertionFailedError> {
+               assertSoftly {
+                  lineNumber = Thread.currentThread().stackTrace[1].lineNumber
+                  1 shouldBe 2
+               }
+            }.run {
+               stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
+               stackTrace.first().lineNumber shouldBe lineNumber + 1
+            }
+         }
+         "single assertion failed with AssertionError" {
+            var stackElement: StackTraceElement? = null
+            shouldThrow<AssertionError> {
+               assertSoftly {
+                  stackElement = Thread.currentThread().stackTrace[1]
+                  null should beEmpty()
+               }
+            }.run {
+               stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
+               stackElement.toString() shouldContain "com.sksamuel.kotest.matchers.AssertSoftlyTest$1$1$12$2.invokeSuspend"
+            }
          }
       }
    }

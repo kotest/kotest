@@ -1,56 +1,61 @@
 package io.kotest.engine.test.names
 
-import io.kotest.common.Platform
-import io.kotest.common.platform
-import io.kotest.core.annotation.displayname.wrapper
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.names.DisplayNameFormatter
+import io.kotest.core.Platform
+import io.kotest.core.annotation.DisplayName
 import io.kotest.core.names.TestNameCase
-import io.kotest.core.spec.DisplayName
+import io.kotest.core.platform
 import io.kotest.core.test.TestCase
+import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.names.DisplayNameFormatter
 import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
  * A default implementation of [DisplayNameFormatter].
+ *
  * Used when there are no registered [io.kotest.core.extensions.DisplayNameFormatterExtension]s.
+ *
+ * This formatter will use the [DisplayName] annotation if present, otherwise it will use the test name.
+ * It takes into account [TestNameCase] settings.
  */
 class DefaultDisplayNameFormatter(
-   private val configuration: ProjectConfiguration,
+   private val projectConfigResolver: ProjectConfigResolver,
+   private val testConfigResolver: TestConfigResolver,
 ) : DisplayNameFormatter {
 
-   constructor() : this(ProjectConfiguration())
+   constructor() : this(ProjectConfigResolver(), TestConfigResolver())
 
    override fun format(testCase: TestCase): String {
 
-      val prefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
+      val prefix = when (projectConfigResolver.includeTestScopeAffixes(testCase)) {
          true -> testCase.name.prefix ?: ""
          false -> ""
       }
 
-      val suffix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
+      val suffix = when (projectConfigResolver.includeTestScopeAffixes(testCase)) {
          true -> testCase.name.suffix ?: ""
          false -> ""
       }
 
       val displayName = if (prefix.isBlank()) {
-         when (configuration.testNameCase) {
-            TestNameCase.Sentence -> testCase.name.testName.capital() + suffix
-            TestNameCase.InitialLowercase -> testCase.name.testName.uncapitalize() + suffix
-            TestNameCase.Lowercase -> testCase.name.testName.lowercase() + suffix
-            else -> testCase.name.testName + suffix
+         when (projectConfigResolver.testNameCase()) {
+            TestNameCase.Sentence -> testCase.name.name.capital() + suffix
+            TestNameCase.InitialLowercase -> testCase.name.name.uncapitalize() + suffix
+            TestNameCase.Lowercase -> testCase.name.name.lowercase() + suffix
+            else -> testCase.name.name + suffix
          }
       } else {
-         when (configuration.testNameCase) {
-            TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.testName.uncapitalize()}$suffix"
-            TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.testName.uncapitalize()}$suffix"
-            TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.testName.lowercase()}$suffix"
-            else -> "$prefix${testCase.name.testName}$suffix"
+         when (projectConfigResolver.testNameCase()) {
+            TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.name.uncapitalize()}$suffix"
+            TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.name.uncapitalize()}$suffix"
+            TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.name.lowercase()}$suffix"
+            else -> "$prefix${testCase.name.name}$suffix"
          }
       }
 
-      val name = if (configuration.testNameAppendTags) {
+      val name = if (projectConfigResolver.testNameAppendTags()) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
@@ -58,7 +63,7 @@ class DefaultDisplayNameFormatter(
 
       return when (val parent = testCase.parent) {
          null -> name
-         else -> if (configuration.displayFullTestPath) format(parent) + " " + name else name
+         else -> if (projectConfigResolver.displayFullTestPath()) format(parent) + " " + name else name
       }
    }
 
@@ -74,22 +79,22 @@ class DefaultDisplayNameFormatter(
     */
    override fun format(kclass: KClass<*>): String {
       return when (platform) {
-         Platform.JVM -> kclass.annotation<DisplayName>()?.wrapper ?: kclass.bestName()
+         Platform.JVM -> kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
          else -> kclass.bestName()
       }
    }
-}
 
-fun appendTagsInDisplayName(testCase: TestCase, displayName: String): String {
-   val tagNames = testCase.config.tags.joinToString(", ")
-   return if (tagNames.isBlank()) {
-      displayName
-   } else {
-      "${displayName}[tags = $tagNames]"
+   private fun appendTagsInDisplayName(testCase: TestCase, displayName: String): String {
+      val tagNames = testConfigResolver.tags(testCase).joinToString(", ")
+      return if (tagNames.isBlank()) {
+         displayName
+      } else {
+         "${displayName}[tags = $tagNames]"
+      }
    }
+
+   private fun String.capital() = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+
+   private fun String.uncapitalize() =
+      this[0].lowercaseChar() + substring(1 until this.length)
 }
-
-private fun String.capital() = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-
-private fun String.uncapitalize() =
-   this[0].lowercaseChar() + substring(1 until this.length)

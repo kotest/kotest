@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.inspectors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
@@ -12,6 +14,7 @@ import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class SuspendableInspectorsTest : FunSpec() {
    init {
       test("all inspectors should support suspendable functions") {

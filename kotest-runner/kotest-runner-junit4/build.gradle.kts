@@ -8,10 +8,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             api(projects.kotestCommon)
-            api(projects.kotestFramework.kotestFrameworkApi)
             api(projects.kotestAssertions.kotestAssertionsShared)
             api(projects.kotestFramework.kotestFrameworkEngine)
-            api(projects.kotestFramework.kotestFrameworkDiscovery)
             api(libs.junit4)
             api(libs.kotlinx.coroutines.core)
          }

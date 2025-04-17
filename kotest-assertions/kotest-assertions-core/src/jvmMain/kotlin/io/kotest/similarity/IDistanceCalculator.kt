@@ -1,5 +1,6 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.AssertionsConfig
 import java.math.BigDecimal
 
 internal interface IDistanceCalculator {
@@ -14,9 +15,17 @@ internal data class Distance(
             "Distance must be between 0 and 1, was: $distance"
         }
     }
-    companion object {
+
+   fun aboveThresholdForDataClasses(): Boolean =
+      distance >= BigDecimal.valueOf(AssertionsConfig.similarityThresholdInPercent.value.toLong()) * PERCENT_TO_DISTANCE
+
+   fun aboveThresholdForStrings(): Boolean =
+      distance >= BigDecimal.valueOf(AssertionsConfig.similarityThresholdInPercentForStrings.value.toLong()) * PERCENT_TO_DISTANCE
+
+   companion object {
         val COMPLETE_MISMATCH_VALUE: BigDecimal = BigDecimal.ZERO
         val COMPLETE_MATCH_VALUE: BigDecimal = BigDecimal.ONE
+        val PERCENT_TO_DISTANCE: BigDecimal = BigDecimal("0.01")
 
         val CompleteMatch = Distance(COMPLETE_MATCH_VALUE)
         val CompleteMismatch = Distance(COMPLETE_MISMATCH_VALUE)

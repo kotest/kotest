@@ -5,11 +5,8 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.string.haveMaxLength
 import io.kotest.matchers.string.haveMinLength
-import io.kotest.matchers.string.shouldHaveMaxLength
 import io.kotest.matchers.string.shouldHaveMinLength
-import io.kotest.matchers.string.shouldNotHaveMaxLength
 import io.kotest.matchers.string.shouldNotHaveMinLength
 
 class MinLengthMatcherTest : FreeSpec() {

@@ -18,8 +18,8 @@ import io.kotest.matchers.file.shouldBeSymbolicLink
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.file.shouldHaveExtension
 import io.kotest.matchers.file.shouldHaveParent
-import io.kotest.matchers.file.shouldHaveSameStructureAs
 import io.kotest.matchers.file.shouldHaveSameStructureAndContentAs
+import io.kotest.matchers.file.shouldHaveSameStructureAs
 import io.kotest.matchers.file.shouldNotBeADirectory
 import io.kotest.matchers.file.shouldNotBeAFile
 import io.kotest.matchers.file.shouldNotBeEmptyDirectory
@@ -46,10 +46,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldMatch
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import kotlin.io.path.writeBytes
 
 @Suppress("BlockingMethodInNonBlockingContext")

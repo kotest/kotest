@@ -152,12 +152,12 @@ eventually(config) {
 
 As an alternative to passing in a set of exceptions, we can provide a function which is invoked, passing in the throw
 exception. This function should return true if the exception should be ignored, or false if the exception should bubble
-out.
+out. If `expectedExceptions` is specified and the set is not empty, this function will be ignored.
 
 ```kotlin
 val config = eventuallyConfig {
   duration = 5.seconds
-  expectedExceptions = { it is UserNotFoundException }
+  expectedExceptionsFn = { it is UserNotFoundException }
 }
 
 eventually(config) {

@@ -1,22 +1,26 @@
 package com.sksamuel.kotest.engine.spec.sorts
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
    describe("The DefaultSpecExecutionOrder extension should support") {
 
       it("SpecExecutionOrder.Undefined") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfiguration()).sort(
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfigResolver()).sort(
             listOf(
                SpecRef.Reference(ZSpec::class),
                SpecRef.Reference(SpecZ::class),
@@ -28,7 +32,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Annotated") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated, ProjectConfiguration()).sort(
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated, ProjectConfigResolver()).sort(
             listOf(
                SpecRef.Reference(ASpec::class),
                SpecRef.Reference(ZSpec::class),
@@ -44,7 +48,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Lexicographic") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic, ProjectConfiguration()).sort(
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic, ProjectConfigResolver()).sort(
             listOf(
                SpecRef.Reference(ASpec::class),
                SpecRef.Reference(ZSpec::class),
@@ -62,7 +66,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       it("SpecExecutionOrder.Random") {
          // should have all combinations since it's meant to be random
          List(10000) {
-            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, ProjectConfiguration()).sort(
+            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, ProjectConfigResolver()).sort(
                listOf(
                   SpecRef.Reference(ASpec::class),
                   SpecRef.Reference(ZSpec::class),
@@ -74,8 +78,10 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Random should use seed") {
-         val c = ProjectConfiguration()
-         c.randomOrderSeed = 123123123
+
+         val c = object : AbstractProjectConfig() {
+            override val randomOrderSeed = 123123123L
+         }
 
          val specs = listOf(
             SpecRef.Reference(ASpec::class),
@@ -84,7 +90,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             SpecRef.Reference(SpecZ::class),
          )
 
-         val ext = DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, c)
+         val ext = DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, ProjectConfigResolver(c))
          ext.sort(specs) shouldBe ext.sort(specs)
       }
 
@@ -94,7 +100,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             SpecRef.Reference(ZSpec::class),
          )
          shouldThrowAny {
-            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfiguration()).sort(specs)
+            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfigResolver()).sort(specs)
          }
       }
    }

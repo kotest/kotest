@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.spec.config
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.common.nonConstantFalse
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.shouldBe
@@ -11,29 +13,25 @@ import kotlin.time.Duration.Companion.seconds
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@ExperimentalKotest
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FreeSpecConfigSyntaxTest : FreeSpec() {
    init {
 
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 22
+         counter.get() shouldBe 19
       }
 
       "a test disabled by an enabled flag".config(enabled = false) {
          error("boom")
       }
 
-      "a test disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) {
+      "a test disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) {
          error("boom")
       }
 
       "a test with multiple invocations".config(invocations = 2) {
-         counter.incrementAndGet()
-      }
-
-      "a test with multiple threads".config(threads = 2, invocations = 3) {
          counter.incrementAndGet()
       }
 
@@ -85,7 +83,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          error("boom")
       }
 
-      "an outer context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+      "an outer context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
          error("boom")
       }
 
@@ -121,7 +119,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
             error("boom")
          }
 
-         "an inner context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
+         "an inner context disabled by an enabled function".config(enabledIf = { nonConstantFalse() }) - {
             error("boom")
          }
       }

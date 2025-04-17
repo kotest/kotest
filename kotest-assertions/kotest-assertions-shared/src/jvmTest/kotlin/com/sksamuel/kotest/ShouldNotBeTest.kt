@@ -1,11 +1,14 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.shouldFail
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.throwable.shouldHaveMessage
 import java.math.BigInteger
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ShouldNotBeTest : FunSpec() {
 
    data class Foo(val a: String, val b: Boolean, val c: Int)

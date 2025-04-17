@@ -3,6 +3,7 @@ package io.kotest.framework.multiplatform.embeddablecompiler
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.IrSingleStatementBuilder
 import org.jetbrains.kotlin.ir.builders.Scope
@@ -16,16 +17,24 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
-class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) : Transformer(messageCollector, pluginContext) {
+@OptIn(UnsafeDuringIrConstructionAPI::class)
+class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPluginContext) :
+   Transformer(messageCollector, pluginContext) {
 
-   override fun generateLauncher(specs: Iterable<IrClass>, configs: Iterable<IrClass>, declarationParent: IrDeclarationParent): IrDeclaration {
+   override fun generateLauncher(
+      specs: Iterable<IrClass>,
+      configs: Iterable<IrClass>,
+      declarationParent: IrDeclarationParent
+   ): IrDeclaration {
       val launcher = pluginContext.irFactory.buildProperty {
          name = Name.identifier(EntryPoint.LauncherValName)
+         visibility = DescriptorVisibilities.PRIVATE
       }.apply {
          parent = declarationParent
          annotations += IrSingleStatementBuilder(
@@ -74,8 +83,8 @@ class NativeTransformer(messageCollector: MessageCollector, pluginContext: IrPlu
    }
 
    private val withTeamCityListenerMethodNameFn: IrSimpleFunctionSymbol by lazy {
-      launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
-         ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
+      launcherClass.getSimpleFunction(EntryPoint.WITH_TEAM_CITY_LISTENER_METHOD_NAME)
+         ?: error("Cannot find function ${EntryPoint.WITH_TEAM_CITY_LISTENER_METHOD_NAME}")
    }
 
    private val eagerAnnotationConstructor by lazy {

@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -8,9 +10,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class WithTimeoutTest : FunSpec() {
    init {
       test("a users withTimeout should not be caught by InvocationTimeoutInterceptor") {
@@ -25,7 +26,6 @@ class WithTimeoutTest : FunSpec() {
    }
 }
 
-@ExperimentalTime
 private class WithTimeoutSpec : FunSpec() {
    init {
       test("a") {

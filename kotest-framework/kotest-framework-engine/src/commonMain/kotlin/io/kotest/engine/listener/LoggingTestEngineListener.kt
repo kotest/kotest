@@ -1,15 +1,16 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.listener
 
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.SpecExecutorDelegate
-import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 object LoggingTestEngineListener : AbstractTestEngineListener() {
 
-   private val logger = Logger(SpecExecutorDelegate::class)
+   private val logger = Logger(LoggingTestEngineListener::class)
 
    override suspend fun engineFinished(t: List<Throwable>) {
       logger.log { Pair(null, "Engine finished $t") }
@@ -24,10 +25,10 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "testStarted") }
+      logger.log { Pair(testCase.name.name, "testStarted") }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "testFinished") }
+      logger.log { Pair(testCase.name.name, "testFinished") }
    }
 }

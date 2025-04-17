@@ -23,8 +23,8 @@ class MultipleBeforeSpecListenerTest : FunSpec() {
 
    init {
 
-      register(a)
-      register(b)
+      extension(a)
+      extension(b)
 
       test("a + b should both run") {
          count.shouldBe(3)

@@ -15,7 +15,7 @@ class BeforeTestTest : FunSpec() {
       }
    }
 
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerRoot
 
    companion object {
       private val counter = AtomicInteger(0)
@@ -23,7 +23,7 @@ class BeforeTestTest : FunSpec() {
 
    init {
 
-      listener(listener)
+      extension(listener)
 
       afterProject {
          counter.get() shouldBe 4

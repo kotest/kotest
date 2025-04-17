@@ -10,7 +10,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             api(projects.kotestProperty)
-            api(projects.kotestFramework.kotestFrameworkApi)
+            api(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlinx.coroutines.core)
             implementation(projects.kotestCommon)
          }
@@ -18,7 +18,6 @@ kotlin {
 
       val commonTest by getting {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }

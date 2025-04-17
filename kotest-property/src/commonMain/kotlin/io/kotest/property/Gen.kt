@@ -44,7 +44,7 @@ sealed class Gen<out A> {
             generateSequence {
                val isEdgeCase = rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability
                if (isEdgeCase) {
-                  this.edgecase(rs)?.asSample() ?: samples.next()
+                  this.edgecase(rs) ?: samples.next()
                } else samples.next()
             }
          }
@@ -95,12 +95,12 @@ sealed class Gen<out A> {
 abstract class Arb<out A> : Gen<A>() {
 
    /**
-    * Returns a single edge case for this arbitrary. If this arb supports multiple edge cases,
+    * Returns a single edge case as [Sample] from this [Arb]. If this arb supports multiple edge cases,
     * then one should be chosen randomly each time this function is invoked.
     *
     * Can return null if this arb does not provide edge cases.
     */
-   abstract fun edgecase(rs: RandomSource): A?
+   abstract fun edgecase(rs: RandomSource): Sample<A>?
 
    /**
     * Returns a single random [Sample] from this [Arb] using the supplied random source.
@@ -143,15 +143,11 @@ abstract class Exhaustive<out A> : Gen<A>() {
 
    /**
     * Converts this into an [Arb] where the generated values of the returned arb
-    * are choosen randomly from the values provided by this exhausive.
+    * are chosen randomly from the values provided by this exhaustive.
     */
    fun toArb(): Arb<A> = Arb.of(values)
 
    companion object
-}
-
-fun interface Classifier<A> {
-   fun classify(value: A): String?
 }
 
 /**

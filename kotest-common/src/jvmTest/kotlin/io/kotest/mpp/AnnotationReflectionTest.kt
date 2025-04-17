@@ -32,12 +32,12 @@ class AnnotationReflectionTest : FunSpec() {
       }
 
       test("has annotation should work for parent class annotations if using with IncludingSuperclasses") {
-         Qux::class.annotations<Isolate>(IncludingSuperclasses).shouldNotBeNull()
+         Qux::class.annotation<Isolate>(IncludingSuperclasses).shouldNotBeNull()
          Qux::class.hasAnnotation<Isolate>(IncludingSuperclasses) shouldBe true
       }
 
       test("has annotation should work for implemented interface annotations if using with IncludingSuperclasses") {
-         Qux::class.annotations<Ignored>(IncludingSuperclasses).shouldNotBeNull()
+         Qux::class.annotation<Ignored>(IncludingSuperclasses).shouldNotBeNull()
          Qux::class.hasAnnotation<Ignored>(IncludingSuperclasses) shouldBe true
       }
    }

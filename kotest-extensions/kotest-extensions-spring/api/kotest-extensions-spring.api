@@ -1,0 +1,56 @@
+public final class io/kotest/extensions/spring/Properties {
+	public static final field INSTANCE Lio/kotest/extensions/spring/Properties;
+	public static final field springIgnoreWarning Ljava/lang/String;
+}
+
+public final class io/kotest/extensions/spring/SpringAutowireConstructorExtension : io/kotest/core/extensions/ConstructorExtension {
+	public static final field INSTANCE Lio/kotest/extensions/spring/SpringAutowireConstructorExtension;
+	public fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
+}
+
+public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/extensions/ConstructorExtension, io/kotest/core/extensions/SpecExtension, io/kotest/core/extensions/TestCaseExtension, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeTestListener {
+	public fun <init> ()V
+	public fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;)V
+	public synthetic fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getIgnoreSpringListenerOnFinalClassWarning ()Z
+	public fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
+	public fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setIgnoreSpringListenerOnFinalClassWarning (Z)V
+}
+
+public final class io/kotest/extensions/spring/SpringTestContextCoroutineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
+	public static final field Key Lio/kotest/extensions/spring/SpringTestContextCoroutineContextElement$Key;
+	public fun <init> (Lorg/springframework/test/context/TestContextManager;)V
+	public final fun getValue ()Lorg/springframework/test/context/TestContextManager;
+}
+
+public final class io/kotest/extensions/spring/SpringTestContextCoroutineContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
+public final class io/kotest/extensions/spring/SpringTestExtension : io/kotest/core/extensions/SpecExtension, io/kotest/core/extensions/TestCaseExtension {
+	public fun <init> ()V
+	public fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;)V
+	public synthetic fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getIgnoreSpringListenerOnFinalClassWarning ()Z
+	public fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setIgnoreSpringListenerOnFinalClassWarning (Z)V
+}
+
+public final class io/kotest/extensions/spring/SpringTestExtensionKt {
+	public static final fun testContextManager (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/spring/SpringTestLifecycleMode : java/lang/Enum {
+	public static final field Root Lio/kotest/extensions/spring/SpringTestLifecycleMode;
+	public static final field Test Lio/kotest/extensions/spring/SpringTestLifecycleMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/spring/SpringTestLifecycleMode;
+	public static fun values ()[Lio/kotest/extensions/spring/SpringTestLifecycleMode;
+}
+

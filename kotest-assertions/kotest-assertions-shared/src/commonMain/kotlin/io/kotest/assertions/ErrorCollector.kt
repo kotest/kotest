@@ -129,9 +129,10 @@ fun clueContextAsString() = errorCollector.clueContext().let {
  * throw immediately.
  */
 fun ErrorCollector.collectOrThrow(error: Throwable) {
+   val cleanedError = stacktraces.cleanStackTrace(error)
    when (getCollectionMode()) {
-      ErrorCollectionMode.Soft -> pushError(error)
-      ErrorCollectionMode.Hard -> throw error
+      ErrorCollectionMode.Soft -> pushError(cleanedError)
+      ErrorCollectionMode.Hard -> throw cleanedError
    }
 }
 
@@ -175,9 +176,9 @@ inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, blo
 internal fun List<Throwable>.toAssertionError(depth: Int, subject: Printed?): AssertionError? {
    return when {
       isEmpty() -> null
-      size == 1 && subject != null -> AssertionError("The following assertion for ${subject.value} failed:\n" + this[0].message)
+      size == 1 && subject != null -> AssertionError(createMessage(this, depth, subject))
       size == 1 && subject == null -> AssertionError(this[0].message)
-      else -> MultiAssertionError(this, depth, subject)
+      else -> MultiAssertionError(createMessage(this, depth, subject))
    }?.let {
       stacktraces.cleanStackTrace(it)
    }

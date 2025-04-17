@@ -6,10 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.endWith
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldNotEndWith
-import io.kotest.matchers.string.shouldStartWith
-import io.kotest.matchers.string.startWith
 
 @Suppress("RedundantNullableReturnType")
 class EndWithTest : FreeSpec() {
@@ -35,6 +34,16 @@ class EndWithTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "hello" should endWith("(el|lol)".toRegex())
             }
+         }
+         "find submatch in the middle of value" {
+            val message = shouldThrow<AssertionError> {
+               "The quick brown fox jumps over the lazy dog" should endWith("fox jumps over the lazy cat")
+            }.message
+            message.shouldContainInOrder(
+               "Match[0]: part of suffix with indexes [0..23] matched actual[16..39]",
+               """Line[0] ="The quick brown fox jumps over the lazy dog"""",
+               """Match[0]= ----------------++++++++++++++++++++++++---"""
+            )
          }
          "work with char seqs" {
             val cs: CharSequence = "hello"

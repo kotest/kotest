@@ -2,14 +2,16 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.NumberFormat
 import io.kotest.assertions.json.TypeCoercion
-import io.kotest.assertions.json.compareJsonOptions
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class JsonLiteralsTest : FunSpec(
    {
       test("Unsupported type") {
@@ -83,8 +85,10 @@ class JsonLiteralsTest : FunSpec(
       }
 
       context("CompareMode.Exact requires same format for numbers") {
-         infix fun String.shouldExactlyEqualJson(expected: String) =
-            this.shouldEqualJson(expected, compareJsonOptions { numberFormat = NumberFormat.Strict })
+         infix fun String.shouldExactlyEqualJson(expected: String) = shouldEqualJson {
+            numberFormat = NumberFormat.Strict
+            expected
+         }
 
          test("comparing float and exponent") {
             shouldFail {
@@ -134,8 +138,10 @@ class JsonLiteralsTest : FunSpec(
 
       context("Lenient type-conversions") {
 
-         infix fun String.lenientShouldEqualJson(expected: String) =
-            this.shouldEqualJson(expected, compareJsonOptions { typeCoercion = TypeCoercion.Enabled })
+         infix fun String.lenientShouldEqualJson(expected: String) = this shouldEqualJson {
+            typeCoercion = TypeCoercion.Enabled
+            expected
+         }
 
          test("comparing exponent-based float with regular float") {
             "1E3" lenientShouldEqualJson "\"1000.0\""

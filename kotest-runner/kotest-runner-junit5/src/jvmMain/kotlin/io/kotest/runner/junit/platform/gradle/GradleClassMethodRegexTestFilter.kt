@@ -1,21 +1,21 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.DescriptorPath
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.TestPath
-import io.kotest.core.filter.TestFilter
-import io.kotest.core.filter.TestFilterResult
-import io.kotest.mpp.Logger
+import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.core.Logger
 
-class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : TestFilter {
+internal class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : DescriptorFilter {
 
    private val logger = Logger(GradleClassMethodRegexTestFilter::class)
 
-   override fun filter(descriptor: Descriptor): TestFilterResult {
+   override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       logger.log { Pair(descriptor.toString(), "Testing against $patterns") }
       return when {
-         patterns.isEmpty() -> TestFilterResult.Include
-         patterns.any { match(it, descriptor) } -> TestFilterResult.Include
-         else -> TestFilterResult.Exclude(null)
+         patterns.isEmpty() -> DescriptorFilterResult.Include
+         patterns.any { match(it, descriptor) } -> DescriptorFilterResult.Include
+         else -> DescriptorFilterResult.Exclude(null)
       }
    }
 
@@ -57,7 +57,7 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
 
       val isSimpleClassMatch by lazy {
          // SomeTest or *Test
-         descriptor.spec().id.value.split(".").lastOrNull()?.matches(pattern.toRegex()) ?: false
+         descriptor.spec().id.value.split(".").lastOrNull()?.matches(pattern.toRegex()) == true
       }
       val isSpecMatched by lazy { descriptor.spec().id.value.matches(regexPattern) } // *.SomeTest
       val isFullPathMatched by lazy { path.matches(regexPattern) } // io.*.SomeTest
@@ -88,11 +88,11 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
     * The other problem is that also means we can't have "." in the test / context path because gradle doesn't
     * like it and will not even give us any candidate classes.
     */
-   private fun Descriptor.dotSeparatedFullPath(): TestPath = when (this) {
-      is Descriptor.SpecDescriptor -> TestPath(this.id.value)
+   private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
+      is Descriptor.SpecDescriptor -> DescriptorPath(this.id.value)
       is Descriptor.TestDescriptor -> when (this.parent) {
-         is Descriptor.SpecDescriptor -> TestPath("${this.parent.id.value}.${this.id.value}")
-         is Descriptor.TestDescriptor -> TestPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value}")
+         is Descriptor.SpecDescriptor -> DescriptorPath("${this.parent.id.value}.${this.id.value}")
+         is Descriptor.TestDescriptor -> DescriptorPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value}")
       }
    }
 }

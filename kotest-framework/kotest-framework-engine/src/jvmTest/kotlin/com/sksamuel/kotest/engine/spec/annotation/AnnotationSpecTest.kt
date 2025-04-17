@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -8,6 +10,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AnnotationSpecTest : DescribeSpec({
 
    describe("An AnnotationSpec") {
@@ -17,12 +20,6 @@ class AnnotationSpecTest : DescribeSpec({
          TestEngineLauncher(listener).withClasses(AnnotationSpecClass::class).launch()
          listener.tests.shouldHaveSize(2)
       }
-
-//      it("should detect nested classes") {
-//         val listener = CollectingTestEngineListener()
-//         TestEngineLauncher(listener).withClasses(AnnotationSpecWithNested::class).launch()
-//         listener.tests.shouldHaveSize(2)
-//      }
 
       it("should support throwing exceptions with @Test(expected=foo)") {
          val listener = CollectingTestEngineListener()
@@ -79,17 +76,3 @@ private class AnnotationSpecWithExceptions : AnnotationSpec() {
       // Throw nothing
    }
 }
-
-//class AnnotationSpecWithNested : AnnotationSpec() {
-//
-//   @Test
-//   fun foo() {
-//   }
-//
-//   @Nested
-//   class MyNested : AnnotationSpec() {
-//      @Test
-//      fun bar() {
-//      }
-//   }
-//}

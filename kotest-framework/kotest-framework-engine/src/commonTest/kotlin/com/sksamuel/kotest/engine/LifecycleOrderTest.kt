@@ -19,20 +19,20 @@ class LifecycleOrderTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(LifecycleTests::class)
-            .withExtensions(LifecycleExtension("project"))
+            .addExtensions(LifecycleExtension("engine"))
             .launch()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(
-            Triple("project", Lifecycle.PROJECT, Phase.ENTRY),
-            Triple("project", Lifecycle.SPEC, Phase.ENTRY),
-            Triple("project", Lifecycle.TEST_CASE, Phase.ENTRY),
-            Triple("project", Lifecycle.TEST_CASE, Phase.EXIT),
-            Triple("project", Lifecycle.TEST_CASE, Phase.ENTRY),
-            Triple("bar", Lifecycle.TEST_CASE, Phase.ENTRY),
-            Triple("bar", Lifecycle.TEST_CASE, Phase.EXIT),
-            Triple("project", Lifecycle.TEST_CASE, Phase.EXIT),
-            Triple("project", Lifecycle.SPEC, Phase.EXIT),
-            Triple("project", Lifecycle.PROJECT, Phase.EXIT),
+            Triple("engine", Type.PROJECT, Phase.ENTRY),
+            Triple("engine", Type.SPEC, Phase.ENTRY),
+            Triple("engine", Type.TEST_CASE, Phase.ENTRY), // this is foo
+            Triple("engine", Type.TEST_CASE, Phase.EXIT), // this is foo
+            Triple("engine", Type.TEST_CASE, Phase.ENTRY),  // this is bar
+            Triple("test-config", Type.TEST_CASE, Phase.ENTRY), // this is bar, extension from config
+            Triple("test-config", Type.TEST_CASE, Phase.EXIT), // this is bar, extension from config
+            Triple("engine", Type.TEST_CASE, Phase.EXIT), // this is bar
+            Triple("engine", Type.SPEC, Phase.EXIT),
+            Triple("engine", Type.PROJECT, Phase.EXIT),
          )
       }
    }
@@ -41,11 +41,11 @@ class LifecycleOrderTest : FunSpec() {
 private class LifecycleTests : FunSpec() {
    init {
       test("foo") {}
-      test("bar").config(extensions = listOf(LifecycleExtension("bar"))) {}
+      test("bar").config(extensions = listOf(LifecycleExtension("test-config"))) {}
    }
 }
 
-private enum class Lifecycle {
+private enum class Type {
    PROJECT,
    SPEC,
    TEST_CASE
@@ -59,25 +59,25 @@ private enum class Phase {
 private class LifecycleExtension(val name: String) : ProjectExtension, SpecExtension, TestCaseExtension {
 
    companion object {
-      val state = mutableListOf<Triple<String, Lifecycle, Phase>>()
+      val state = mutableListOf<Triple<String, Type, Phase>>()
    }
 
    override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
-      state.add(Triple(name, Lifecycle.PROJECT, Phase.ENTRY))
+      state.add(Triple(name, Type.PROJECT, Phase.ENTRY))
       callback(context)
-      state.add(Triple(name, Lifecycle.PROJECT, Phase.EXIT))
+      state.add(Triple(name, Type.PROJECT, Phase.EXIT))
    }
 
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
-      state.add(Triple(name, Lifecycle.SPEC, Phase.ENTRY))
+      state.add(Triple(name, Type.SPEC, Phase.ENTRY))
       execute(spec)
-      state.add(Triple(name, Lifecycle.SPEC, Phase.EXIT))
+      state.add(Triple(name, Type.SPEC, Phase.EXIT))
    }
 
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-      state.add(Triple(name, Lifecycle.TEST_CASE, Phase.ENTRY))
+      state.add(Triple(name, Type.TEST_CASE, Phase.ENTRY))
       val result = execute(testCase)
-      state.add(Triple(name, Lifecycle.TEST_CASE, Phase.EXIT))
+      state.add(Triple(name, Type.TEST_CASE, Phase.EXIT))
       return result
    }
 }

@@ -14,9 +14,9 @@ class WordSpecParenthesisTest : WordSpec() {
 
    init {
       "parenthesis (here) " should {
-         names.add(this.testCase.name.testName)
+         names.add(this.testCase.name.name)
          "and (here)" {
-            names.add(this.testCase.name.testName)
+            names.add(this.testCase.name.name)
          }
       }
    }

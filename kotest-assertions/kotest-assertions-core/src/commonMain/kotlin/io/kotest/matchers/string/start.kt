@@ -6,6 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.submatching.describePartialMatchesInStringForPrefix
 import kotlin.math.min
 
 infix fun <A : CharSequence?> A.shouldStartWith(prefix: CharSequence): A {
@@ -29,6 +30,10 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
             break
          }
       }
+      val partialMismatches = describePartialMatchesInStringForPrefix(prefix.toString(), value.toString()).toString()
+      if (partialMismatches.isNotEmpty()) {
+         msg = "$msg\n$partialMismatches"
+      }
    }
    MatcherResult(
       ok,
@@ -41,13 +46,11 @@ infix fun <A : CharSequence?> A.shouldStartWith(regex: Regex): A {
    return this
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 fun startWith(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
    val ok = regex.matchesAt(value, 0)
    MatcherResult(
       ok,
       { "${value.print().value} should start with regex ${regex.pattern}" },
-      {
-         "${value.print().value} should not start with regex ${regex.pattern}"
-      })
+      { "${value.print().value} should not start with regex ${regex.pattern}" }
+   )
 }

@@ -2,14 +2,24 @@ package com.sksamuel.kotest.matchers.future
 
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.future.*
+import io.kotest.matchers.future.shouldBeCancelled
+import io.kotest.matchers.future.shouldBeCompleted
+import io.kotest.matchers.future.shouldBeCompletedExceptionally
+import io.kotest.matchers.future.shouldCompleteExceptionallyWith
+import io.kotest.matchers.future.shouldNotBeCancelled
+import io.kotest.matchers.future.shouldNotBeCompleted
+import io.kotest.matchers.future.shouldNotBeCompletedExceptionally
+import io.kotest.matchers.future.shouldNotCompleteExceptionallyWith
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FutureMatcherTest : StringSpec({
+
    suspend fun runOnSeparateThread(block: () -> Unit) {
       @OptIn(DelicateCoroutinesApi::class)
       newSingleThreadContext("separate").use {
@@ -103,5 +113,14 @@ class FutureMatcherTest : StringSpec({
       completableFuture.complete(2)
 
       completableFuture shouldNotCompleteExceptionallyWith RuntimeException("Bang Bang")
+   }
+   "test error message for shouldNotBeCompletedExceptionally when completable future completes with exception" {
+      val completableFuture = CompletableFuture<Int>()
+      val exception = RuntimeException("Bruh", RuntimeException("Another bruh"))
+      completableFuture.completeExceptionally(exception)
+
+      shouldThrowMessage("Future should not be completed exceptionally, but it failed with $exception") {
+         completableFuture.shouldNotBeCompletedExceptionally()
+      }
    }
 })

@@ -4,7 +4,8 @@ import io.kotest.assertions.*
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.assertions.print.printWithType
-import io.kotest.common.isIntellij
+import io.kotest.mpp.sysprop
+import io.kotest.submatching.StringPartialMatch
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -21,6 +22,7 @@ import io.kotest.common.isIntellij
 object StringEq : Eq<String> {
 
    override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? {
+      val t = StringPartialMatch(expected, actual)
       return when {
          actual == expected -> null
          equalIgnoringWhitespace(actual, expected) -> {
@@ -30,8 +32,19 @@ object StringEq : Eq<String> {
                "(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n"
             )
          }
+
          useDiff(expected, actual) -> diff(expected, actual)
-         else -> failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
+
+         t.matched -> failure(
+            Expected(expected.print()),
+            Actual(actual.print()),
+            prependMessage = "Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n",
+            )
+
+         else -> failureWithTypeInformation(
+            ExpectedWithType(expected.printWithType()),
+            ActualWithType(actual.printWithType())
+         )
       }
    }
 
@@ -66,4 +79,15 @@ fun escapeLineBreaks(input: String): String {
       .replace("\r", "\\r")
 }
 
-
+/**
+ * Returns true if we are executing inside intellij.
+ *
+ * Note: This cannot be relied on for 100% accuracy.
+ */
+internal fun isIntellij(): Boolean {
+   return sysprop("idea.test.cyclic.buffer.size") != null
+      || (sysprop("jboss.modules.system.pkgs") ?: "").contains("com.intellij.rt")
+      || sysprop("intellij.debug.agent") != null
+      || (sysprop("java.class.path") ?: "").contains("idea_rt.jar")
+      || (sysprop("idea.active") != null)
+}

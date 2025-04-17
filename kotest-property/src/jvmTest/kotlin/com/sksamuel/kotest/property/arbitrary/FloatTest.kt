@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.sequences.shouldHaveAtLeastSize
@@ -11,6 +13,7 @@ import io.kotest.property.arbitrary.numericFloat
 import io.kotest.property.arbitrary.positiveFloat
 import io.kotest.property.arbitrary.take
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class FloatTest : FunSpec({
    test("Numeric Float should generate negative values by default") {
       Arb.numericFloat()

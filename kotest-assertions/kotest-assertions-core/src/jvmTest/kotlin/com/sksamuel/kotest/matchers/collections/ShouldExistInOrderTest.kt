@@ -3,7 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldExistInOrder
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContainInOrder
 
 class ShouldExistInOrderTest: WordSpec() {
    init {
@@ -20,7 +20,10 @@ class ShouldExistInOrderTest: WordSpec() {
                    { i: Int -> i < 2 },
                    { i: Int -> i < 2 }
                 )
-             }.message shouldBe "[1, 2] did not match the predicates [(kotlin.Int) -> kotlin.Boolean, (kotlin.Int) -> kotlin.Boolean] in order. Predicate at index 1 did not match."
+             }.message.shouldContainInOrder(
+                "[1, 2] did not match the predicates in order. Predicate at index 1 did not match.",
+                "but found element(s) matching the predicate out of order at index(es): [0]",
+             )
           }
        }
    }

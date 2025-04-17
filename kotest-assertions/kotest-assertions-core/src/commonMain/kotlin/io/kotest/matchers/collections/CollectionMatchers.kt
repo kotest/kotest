@@ -24,15 +24,26 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
       if (predicates[subsequenceIndex](actualIterator.next())) subsequenceIndex += 1
    }
 
+   val passed = subsequenceIndex == predicates.size
+
+   val predicateMatchedOutOfOrderDescription = {
+      val predicateMatchedOutOfOrderIndexes = if (passed) emptyList() else {
+         actual.mapIndexedNotNull { index, element ->
+            if (predicates[subsequenceIndex](element)) index else null
+         }
+      }
+      if (predicateMatchedOutOfOrderIndexes.isEmpty()) "" else
+         ",\nbut found element(s) matching the predicate out of order at index(es): ${predicateMatchedOutOfOrderIndexes.print().value}"
+   }
+
    MatcherResult(
-      subsequenceIndex == predicates.size,
-      { "${actual.print().value} did not match the predicates ${predicates.print().value} in order. Predicate at index $subsequenceIndex did not match." },
-      { "${actual.print().value} should not match the predicates ${predicates.print().value} in order" }
+      passed,
+      { "${actual.print().value} did not match the predicates in order. Predicate at index $subsequenceIndex did not match.${predicateMatchedOutOfOrderDescription()}" },
+      { "${actual.print().value} should not match the predicates in order" }
    )
 }
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
-
 
 
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
@@ -46,26 +57,6 @@ fun <T, E : Comparable<E>> sortedBy(transform: (T) -> E): Matcher<List<T>> = obj
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
-      }
-      return MatcherResult(
-         failure == null,
-         { "List ${value.print().value} should be sorted$elementMessage" },
-         { "List ${value.print().value} should not be sorted" }
-      )
-   }
-}
-
-fun <T : Comparable<T>> beSortedDescending(): Matcher<List<T>> = sortedDescending()
-fun <T : Comparable<T>> sortedDescending(): Matcher<List<T>> = sortedDescendingBy { it }
-
-fun <T, E : Comparable<E>> beSortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = sortedDescendingBy(transform)
-fun <T, E : Comparable<E>> sortedDescendingBy(transform: (T) -> E): Matcher<List<T>> = object : Matcher<List<T>> {
-   override fun test(value: List<T>): MatcherResult {
-      val failure =
-         value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && transform(it) < transform(value[i + 1]) }
-      val elementMessage = when (failure) {
-         null -> ""
-         else -> ". Element ${failure.value} at index ${failure.index} was less than element ${value[failure.index + 1]}"
       }
       return MatcherResult(
          failure == null,

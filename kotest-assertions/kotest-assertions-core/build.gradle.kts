@@ -14,8 +14,13 @@ kotlin {
 
             implementation(kotlin("reflect"))
             implementation(projects.kotestCommon)
-            implementation(projects.kotestAssertions.kotestAssertionsApi)
             implementation(libs.kotlinx.coroutines.core)
+         }
+      }
+
+      val commonTest by getting {
+         dependencies {
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 

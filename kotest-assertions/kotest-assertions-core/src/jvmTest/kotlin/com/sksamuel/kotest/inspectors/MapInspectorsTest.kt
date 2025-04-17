@@ -3,6 +3,8 @@ package com.sksamuel.kotest.inspectors
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAllKeys
@@ -34,6 +36,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 @Suppress("ConstantConditionIf")
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class MapInspectorsTest : WordSpec() {
    private val map = mapOf(1 to "1", 2 to "2", 3 to "3", 4 to "4", 5 to "5")
 
@@ -340,8 +343,8 @@ The following elements passed:
   [4] 5=5
 
 The following elements failed:
-  [0] 1=1 => Map should contain mapping 1=1 but was {3=3, 4=4, 5=5}
-  [1] 2=2 => Map should contain mapping 2=2 but was {3=3, 4=4, 5=5}
+  [0] 1=1 => Map should contain mapping 1=1 but key was not in the map
+  [1] 2=2 => Map should contain mapping 2=2 but key was not in the map
 """
          }
          "fail if no entries pass test"  {
@@ -581,9 +584,9 @@ The following elements passed:
   [4] 5=5
 
 The following elements failed:
-  [0] 1=1 => Map should contain mapping 1=1 but was {4=4, 5=5}
-  [1] 2=2 => Map should contain mapping 2=2 but was {4=4, 5=5}
-  [2] 3=3 => Map should contain mapping 3=3 but was {4=4, 5=5}
+  [0] 1=1 => Map should contain mapping 1=1 but key was not in the map
+  [1] 2=2 => Map should contain mapping 2=2 but key was not in the map
+  [2] 3=3 => Map should contain mapping 3=3 but key was not in the map
 """
          }
          "work inside assertSoftly block (for map)" {

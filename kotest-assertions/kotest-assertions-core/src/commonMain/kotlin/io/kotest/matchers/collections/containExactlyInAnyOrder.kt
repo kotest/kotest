@@ -1,7 +1,9 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.equals.CommutativeEquality
 import io.kotest.equals.Equality
+import io.kotest.equals.countByEquality
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -116,13 +118,8 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
 
-   val valueGroupedCounts: Map<T, Int> = actual.groupBy { it }.mapValues { it.value.size }
-   val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
-
-   val passed = expectedGroupedCounts.size == valueGroupedCounts.size
-      && expectedGroupedCounts.all { (k, v) ->
-      valueGroupedCounts.filterKeys { verifier?.verify(k, it)?.areEqual() ?: (k == it) }[k] == v
-   }
+   val valueGroupedCounts: Map<T, Int> = getGroupedCount(actual, verifier)
+   val expectedGroupedCounts: Map<T, Int> = getGroupedCount(expected, verifier)
 
    val missing = expected.filterNot { t ->
       actual.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
@@ -130,13 +127,15 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    val extra = actual.filterNot { t ->
       expected.any { verifier?.verify(it, t)?.areEqual() ?: (t == it) }
    }
-   val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts)
-   val possibleMatches = extra
-      .map { possibleMatchesDescription(expected.toSet(), it) }
-      .filter { it.isNotEmpty() }
-      .joinToString("\n")
+   val countMismatch = countMismatch(expectedGroupedCounts, valueGroupedCounts, verifier)
+   val passed = missing.isEmpty() && extra.isEmpty() && countMismatch.isEmpty()
 
    val failureMessage = {
+      val possibleMatches = missing
+         .map { possibleMatchesDescription(actual.toSet(), it) }
+         .filter { it.isNotEmpty() }
+         .joinToString("\n")
+
       buildString {
          append("Collection should contain ${expected.print().value} in any order, but was ${actual.print().value}")
          appendLine()
@@ -163,14 +162,40 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
    )
 }
 
-internal fun<T> countMismatch(expectedCounts: Map<T, Int>, actualCounts: Map<T, Int>) =
-   actualCounts.entries.mapNotNull { actualEntry ->
-      expectedCounts[actualEntry.key]?.let { expectedValue ->
-         if(actualEntry.value != expectedValue)
+private fun <C : Collection<T>, T> getGroupedCount(actual: C, verifier: Equality<T>?) =
+   if(verifier == null) {
+      actual.groupBy { it }.mapValues { it.value.size }
+   } else {
+      actual.countByEquality(verifier)
+   }
+
+internal fun<T> countMismatch(
+   expectedCounts: Map<T, Int>,
+   actualCounts: Map<T, Int>,
+   verifier: Equality<T>?
+): List<CountMismatch<T>> {
+   if(verifier == null) {
+      return actualCounts.entries.mapNotNull { actualEntry ->
+         expectedCounts[actualEntry.key]?.let { expectedValue ->
+            if (actualEntry.value != expectedValue)
+               CountMismatch(actualEntry.key, expectedValue, actualEntry.value)
+            else null
+         }
+      }
+   }
+   val commutativeVerifier = CommutativeEquality(verifier)
+   return actualCounts.entries.mapNotNull { actualEntry ->
+      val equalKeyInExpected =
+         expectedCounts.keys.firstOrNull { expectedKey ->
+            commutativeVerifier.verify(expectedKey, actualEntry.key).areEqual()
+         } ?: actualEntry.key
+      expectedCounts[equalKeyInExpected]?.let { expectedValue ->
+         if (actualEntry.value != expectedValue)
             CountMismatch(actualEntry.key, expectedValue, actualEntry.value)
          else null
       }
    }
+}
 
 internal data class CountMismatch<T>(val key: T, val expectedCount: Int, val actualCount: Int) {
    init {

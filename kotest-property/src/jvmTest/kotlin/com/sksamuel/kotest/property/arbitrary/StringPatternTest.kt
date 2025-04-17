@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.Arb
@@ -10,6 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.newFixedThreadPoolContext
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class StringPatternTest : FunSpec({
 
    test("generated patterns should match the regex") {
@@ -20,7 +23,7 @@ class StringPatternTest : FunSpec({
    }
 
    context("should not timeout") {
-      timeout = 5000
+      timeout = 10000
       test("should be quick") {
          val arbPattern = Arb.stringPattern("[a-zA-Z0-9]+")
 

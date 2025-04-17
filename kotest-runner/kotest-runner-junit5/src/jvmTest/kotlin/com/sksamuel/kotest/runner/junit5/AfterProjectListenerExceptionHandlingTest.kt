@@ -2,8 +2,11 @@
 
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -19,18 +22,19 @@ class WhackAfterProjectListener : AfterProjectListener {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("an AfterProjectListenerException should add marker test") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
          .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error",
@@ -41,13 +45,13 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             succeeded().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "After Project Error",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
                "foo",
@@ -58,7 +62,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("multiple AfterProjectListenerException's should add multiple markers tests") {
       EngineTestKit
-         .engine("kotest")
+         .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
          .configurationParameter(
@@ -68,7 +72,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
-               "Kotest",
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error",
@@ -80,14 +84,14 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             succeeded().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "After Project Error",
                "After Project Error_1",
-               "Kotest"
+               KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
                "foo",

@@ -1,55 +1,50 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.mpp.log
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
+import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import kotlin.jvm.optionals.getOrNull
 
 /**
- * Creates a [TestDescriptor] from the given class, and attaches it to the engine,
- * if one does not already exist.
- *
- * The created Test Descriptor will have segment type [Segment.Spec] and will use [displayName].
+ * Returns the [TestDescriptor] corresponding to the given spec.
+ * Specs are always registered when the test suite is created, so this is expected to never fail.
  */
-fun getSpecDescriptor(
-   engine: TestDescriptor,
-   descriptor: Descriptor.SpecDescriptor,
-   displayName: String,
-): TestDescriptor {
-   val id = engine.uniqueId.append(Segment.Spec.value, descriptor.id.value)
-   log { "Looking for $id in ${engine.children.map { it.uniqueId }.joinToString(", ")}" }
-   return engine.findByUniqueId(id).orElseGet { null }
-      ?: createAndRegisterSpecDescription(engine, descriptor, displayName)
+internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecDescriptor): TestDescriptor {
+   val id = deriveSpecUniqueId(descriptor.id)
+   return findByUniqueId(id).getOrNull() ?: error("Could not find spec TestDescriptor for ${descriptor.id}")
 }
 
-private fun createAndRegisterSpecDescription(
-   engine: TestDescriptor,
+/**
+ * Creates a [TestDescriptor] from the given spec.
+ * This descriptor needs to be added to the engine parent.
+ */
+internal fun createSpecTestDescriptor(
+   engine: EngineDescriptor,
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
 ): TestDescriptor {
-   val id = engine.uniqueId.append(Segment.Spec.value, descriptor.id.value)
-   val source = ClassSource.from(descriptor.kclass.java)
-   val testDescriptor: TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
+   val id = engine.deriveSpecUniqueId(descriptor.id)
+   val source = ClassSource.from(descriptor.id.value)
+   return object : AbstractTestDescriptor(id, displayName, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
       override fun mayRegisterTests(): Boolean = true
    }
-   log { "Registering spec level TestDescriptor for $id" }
-   engine.addChild(testDescriptor)
-   return testDescriptor
 }
 
 /**
- * Creates a [TestDescriptor] for the given [id] and [displayName].
+ * Creates a [TestDescriptor] for the [id], [displayName] and [source].
+ *
+ * Test case descriptors can be either TEST or CONTAINER depending on if they contain nested tests.
  */
-fun createTestDescriptor(
+internal fun createTestTestDescriptor(
    id: UniqueId,
    displayName: String,
    type: TestDescriptor.Type,
    source: TestSource?,
-   mayRegisterTests: Boolean,
 ): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
 
    // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
@@ -60,5 +55,5 @@ fun createTestDescriptor(
    // update for 5.0.0.M2 - will just dynamically add tests after they have completed, and we can see the full tree
    // update 5.0.0.M3 - if we add dynamically afterwards then the timings are all messed up, seems gradle keeps the time itself
    override fun getType(): TestDescriptor.Type = type
-   override fun mayRegisterTests(): Boolean = mayRegisterTests
+   override fun mayRegisterTests(): Boolean = type == TestDescriptor.Type.CONTAINER
 }

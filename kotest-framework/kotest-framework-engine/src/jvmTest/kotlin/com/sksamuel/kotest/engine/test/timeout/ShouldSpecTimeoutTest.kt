@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
@@ -9,13 +10,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-@ExperimentalKotest
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ShouldSpecTimeoutTest : ShouldSpec() {
    init {
 
       extension { (testCase, execute) ->
          val result = execute(testCase)
-         if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
+         if (testCase.name.name.contains("timeout:") && result.isSuccess) {
             AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(Duration.ZERO)
          } else {
             TestResult.Success(0.milliseconds)

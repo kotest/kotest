@@ -14,7 +14,6 @@ import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
-import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
@@ -30,13 +29,7 @@ import io.kotest.matchers.collections.shouldBeLargerThan
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
-import io.kotest.matchers.collections.shouldBeSorted
-import io.kotest.matchers.collections.shouldBeSortedBy
-import io.kotest.matchers.collections.shouldBeSortedDescending
-import io.kotest.matchers.collections.shouldBeSortedDescendingBy
-import io.kotest.matchers.collections.shouldBeSortedWith
 import io.kotest.matchers.collections.shouldContainAnyOf
-import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
@@ -50,11 +43,7 @@ import io.kotest.matchers.collections.shouldMatchInOrder
 import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeSingleton
-import io.kotest.matchers.collections.shouldNotBeSorted
-import io.kotest.matchers.collections.shouldNotBeSortedBy
-import io.kotest.matchers.collections.shouldNotBeSortedWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
-import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
@@ -64,8 +53,6 @@ import io.kotest.matchers.collections.shouldNotMatchEach
 import io.kotest.matchers.collections.shouldNotMatchInOrder
 import io.kotest.matchers.collections.shouldNotMatchInOrderSubset
 import io.kotest.matchers.collections.singleElement
-import io.kotest.matchers.collections.sorted
-import io.kotest.matchers.collections.sortedDescending
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.should
@@ -73,58 +60,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotHave
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class CollectionMatchersTest : WordSpec() {
 
-   private val countdown = (10 downTo 0).toList()
-   private val asc = { a: Int, b: Int -> a - b }
-   private val desc = { a: Int, b: Int -> b - a }
-
    init {
-
-      "a descending non-empty list" should {
-         "fail to ascend" {
-            shouldFail {
-               countdown.shouldBeSortedWith(asc)
-            }
-         }
-
-         "descend" {
-            countdown.shouldBeSortedWith(desc)
-         }
-
-         "not ascend" {
-            countdown.shouldNotBeSortedWith(asc)
-         }
-
-         "fail not to descend" {
-            shouldFail {
-               countdown.shouldNotBeSortedWith(desc)
-            }
-         }
-      }
-
-      "sortedWith" should {
-         val items = listOf(
-            1 to "I",
-            2 to "II",
-            4 to "IV",
-            5 to "V",
-            6 to "VI",
-            9 to "IX",
-            10 to "X"
-         )
-
-         "work on non-Comparable given a Comparator" {
-            items.shouldBeSortedWith(Comparator { a, b -> asc(a.first, b.first) })
-         }
-
-         "work on non-Comparable given a compare function" {
-            items.shouldBeSortedWith { a, b -> asc(a.first, b.first) }
-         }
-      }
-
       "haveElementAt" should {
          "test that a collection contains the specified element at the given index" {
             listOf("a", "b", "c") should haveElementAt(1, "b")
@@ -144,15 +85,39 @@ class CollectionMatchersTest : WordSpec() {
             tests should haveElementAt(0, TestSealed.Test1("test1"))
             tests.shouldHaveElementAt(1, TestSealed.Test2(2))
          }
-         "indicate that collection is too short" {
+         "print if list is too short" {
             shouldThrowAny {
-               listOf("a", "b", "c").shouldHaveElementAt(3, "b")
-            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 3, but collection was shorter"
+               listOf("a", "b", "c").shouldHaveElementAt(3, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 3
+            |But it is too short: only 3 elements
+            """.trimMargin()
          }
-         "indicate that elements differ" {
+         "print if element does not match" {
+            shouldThrowAny {
+               listOf("a", "b", "c").shouldHaveElementAt(2, "d")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "d" at index 2
+            |Expected: <"c">, but was <"d">
+            """.trimMargin()
+         }
+         "print if element found at another index" {
             shouldThrowAny {
                listOf("a", "b", "c").shouldHaveElementAt(2, "b")
-            }.message shouldBe "Collection [\"a\", \"b\", \"c\"] should contain \"b\" at index 2, but element was different. Expected: <\"b\">, but was <\"c\">"
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1]
+            """.trimMargin()
+         }
+         "print if element found at multiple other indexes" {
+            shouldThrowAny {
+               listOf("a", "b", "c", "b").shouldHaveElementAt(2, "b")
+            }.message shouldBe """
+            |Collection ["a", "b", "c", "b"] should contain "b" at index 2
+            |Expected: <"c">, but was <"b">
+            |Element was found at index(es): [1, 3]
+            """.trimMargin()
          }
       }
 
@@ -168,90 +133,8 @@ class CollectionMatchersTest : WordSpec() {
          }
       }
 
-      "sorted" should {
-         "test that a collection is sorted" {
-            emptyList<Int>() shouldBe sorted<Int>()
-            listOf(1) shouldBe sorted<Int>()
-            listOf(1, 2, 3, 4) shouldBe sorted<Int>()
-
-            shouldThrow<AssertionError> {
-               listOf(2, 1) shouldBe sorted<Int>()
-            }.shouldHaveMessage("List [2, 1] should be sorted. Element 2 at index 0 was greater than element 1")
-
-            listOf(1, 2, 6, 9).shouldBeSorted()
-
-            shouldThrow<AssertionError> {
-               listOf(2, 1).shouldBeSorted()
-            }.shouldHaveMessage("List [2, 1] should be sorted. Element 2 at index 0 was greater than element 1")
-
-            shouldThrow<AssertionError> {
-               listOf(1, 2, 3).shouldNotBeSorted()
-            }.shouldHaveMessage("List [1, 2, 3] should not be sorted")
-         }
-
-         "test that a collection is sorted descending" {
-            emptyList<Int>() shouldBe sortedDescending<Int>()
-            listOf(1) shouldBe sortedDescending<Int>()
-            listOf(4, 3, 2, 1) shouldBe sortedDescending<Int>()
-
-            shouldThrow<AssertionError> {
-               listOf(1, 2) shouldBe sortedDescending<Int>()
-            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
-
-            listOf(9, 6, 2, 1).shouldBeSortedDescending()
-
-            shouldThrow<AssertionError> {
-               listOf(1, 2).shouldBeSortedDescending()
-            }.shouldHaveMessage("List [1, 2] should be sorted. Element 1 at index 0 was less than element 2")
-         }
-
-         "restrict items at the error message" {
-            val longList = (1..1000).toList()
-
-            shouldThrow<AssertionError> {
-               longList.shouldNotBeSorted()
-            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 980 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] should not be sorted")
-         }
-      }
-
-      "sortedBy" should {
-         val items = listOf(
-            1 to "I",
-            2 to "II",
-            4 to "IV",
-            5 to "V",
-            6 to "VI",
-            9 to "IX",
-            10 to "X"
-         )
-
-         "compare by the tranformed value" {
-            items.shouldBeSortedBy { it.first }
-            items.shouldNotBeSortedBy { it.second }
-         }
-
-         "compare by the tranformed value in descending order" {
-            items.shouldBeSortedDescendingBy { it.first * -1 }
-         }
-      }
-
-      "haveDuplicates" should {
-         "test that a collection is unique" {
-            listOf(1, 2, 3, 3) should containDuplicates()
-            listOf(1, 2, 3, 4) shouldNot containDuplicates()
-            listOf(1, 2, 3, 3).shouldContainDuplicates()
-            listOf(1, 2, 3, 4).shouldNotContainDuplicates()
-         }
-
-         "print duplicates in message" {
-            shouldThrowAny {
-               listOf(1, 2, 3, 4, 2, 1) shouldNot containDuplicates()
-            }.shouldHaveMessage("Collection should not contain duplicates, but has some: [1, 2]")
-         }
-      }
-
       "singleElement" should {
-         "test that a collection contains a single given element"  {
+         "test that a collection contains a single given element" {
             listOf(1) shouldBe singleElement(1)
             listOf(1).shouldHaveSingleElement(1)
 
@@ -270,7 +153,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "singleElement with predicate" should {
-         "test that a collection contains a single element by given predicate"  {
+         "test that a collection contains a single element by given predicate" {
             listOf(1) shouldHave singleElement { e -> e == 1 }
             listOf(1).shouldHaveSingleElement { e -> e == 1 }
 
@@ -285,7 +168,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "should contain element" should {
-         "test that a collection contains an element"  {
+         "test that a collection contains an element" {
             val col = listOf(1, 2, 3)
 
             col should contain(2)
@@ -298,7 +181,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "should contain element based on a custom equality object" should {
-         "test that a collection contains an element"  {
+         "test that a collection contains an element" {
             val col = listOf(1, 2, 3.0)
 
 
@@ -315,7 +198,7 @@ class CollectionMatchersTest : WordSpec() {
 
 
       "shouldBeLargerThan" should {
-         "test that a collection is larger than another collection"  {
+         "test that a collection is larger than another collection" {
             val col1 = listOf(1, 2, 3)
             val col2 = setOf(1, 2, 3, 4)
 
@@ -330,7 +213,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "shouldBeSmallerThan" should {
-         "test that a collection is smaller than another collection"  {
+         "test that a collection is smaller than another collection" {
             val col1 = listOf(1, 2, 3)
             val col2 = setOf(1, 2, 3, 4)
 
@@ -345,12 +228,13 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "shouldBeSameSizeAs" should {
-         "test that a collection is the same size as another collection"  {
+         "test that a collection is the same size as another collection" {
             val col1 = listOf(1, 2, 3)
             val col2 = setOf(1, 2, 3)
             val col3 = listOf(1, 2, 3, 4)
 
-            col1.shouldBeSameSizeAs(col2)
+            val (_, _, third) = col1 shouldBeSameSizeAs col2
+            third.shouldBe(3)
             col1 should beSameSizeAs(col2)
             col1 shouldNot beSameSizeAs(col3)
 
@@ -358,13 +242,28 @@ class CollectionMatchersTest : WordSpec() {
                col1.shouldBeSameSizeAs(col3)
             }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
          }
+         "test that an iterable is the same size as another iterable" {
+            class Group(val name: String, memberIds: Iterable<Int>) : Iterable<Int> by memberIds
+
+            val group = Group("group 1", listOf(1, 2, 3))
+            val col2 = setOf(1, 2, 3)
+            val col3 = listOf(1, 2, 3, 4)
+            group.shouldBeSameSizeAs(col2).name shouldBe "group 1"
+
+            shouldThrow<AssertionError> {
+               group.shouldBeSameSizeAs(col3)
+            }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
+         }
+
       }
 
       "haveSize" should {
          "test that a collection has a certain size" {
             val col1 = listOf(1, 2, 3)
             col1 should haveSize(3)
-            col1.shouldHaveSize(3)
+            val (first, _, third) = col1.shouldHaveSize(3)
+            first shouldBe 1
+            third shouldBe 3
             shouldThrow<AssertionError> {
                col1 should haveSize(2)
             }
@@ -412,7 +311,7 @@ class CollectionMatchersTest : WordSpec() {
                .shouldHaveAtLeastSize(2)
                .shouldHaveAtMostSize(10)
                .shouldBeSameSizeAs(intArrayOf(4, 5, 6))
-            longArrayOf(1, 2, 3, 4 ,5)
+            longArrayOf(1, 2, 3, 4, 5)
                .shouldHaveSize(5)
                .shouldNotHaveSize(2)
                .shouldHaveAtLeastSize(4)
@@ -507,8 +406,8 @@ class CollectionMatchersTest : WordSpec() {
          }
          "give descriptive message when predicate should not match" {
             shouldThrowAny {
-               listOf(1, 2, 3, 2) shouldNot exist { it == 2}
-            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate (kotlin.Int) -> kotlin.Boolean, but elements with the following indexes matched: [1, 3]"
+               listOf(1, 2, 3, 2) shouldNot exist { it == 2 }
+            }.message shouldBe "Collection [1, 2, 3, 2] should not contain an element that matches the predicate, but elements with the following indexes matched: [1, 3]"
          }
       }
 
@@ -571,7 +470,7 @@ class CollectionMatchersTest : WordSpec() {
 
 
       "containNoNulls" should {
-         "test that a collection contains zero nulls"  {
+         "test that a collection contains zero nulls" {
             emptyList<String>() should containNoNulls()
             listOf(1, 2, 3) should containNoNulls()
             listOf(null, null, null) shouldNot containNoNulls()
@@ -601,7 +500,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "containOnlyNulls" should {
-         "test that a collection contains only nulls"  {
+         "test that a collection contains only nulls" {
             emptyList<String>() should containOnlyNulls()
             listOf(null, null, null) should containOnlyNulls()
             listOf(1, null, null) shouldNot containOnlyNulls()
@@ -788,7 +687,7 @@ class CollectionMatchersTest : WordSpec() {
          }
 
          "Negation should work" {
-            shouldFail{
+            shouldFail {
                listOf(1, 2).shouldNotMatchEach(
                   { it shouldBe 1 },
                   { it shouldBe 2 },
@@ -1025,25 +924,43 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when one element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               )
          }
 
          "Fail when one element is in the iterable" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).asIterable().shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+            )
          }
 
          "Fail when one element is in the array" {
             shouldThrow<AssertionError> {
                arrayOf(1, 2, 3).shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               )
          }
 
          "Fail when all elements are in the list" {
             shouldThrow<AssertionError> {
-               listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3)
-            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1, 2, 3]")
+               listOf(1, 2, 3).shouldNotContainAnyOf(3, 2, 1)
+            }.message.shouldContainInOrder(
+               "Collection [1, 2, 3] should not contain any of [3, 2, 1]",
+               "Forbidden elements found in collection:",
+               "[0] => 1",
+               "[1] => 2",
+               "[2] => 3",
+               )
          }
       }
 
@@ -1088,6 +1005,33 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                foo shouldBeIn list
             }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+         }
+
+         "fail and find similar items" {
+            shouldThrow<AssertionError> {
+               sweetGreenApple shouldBeIn listOf(
+                  sweetGreenPear, sweetRedApple
+               )
+            }.message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=apple, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=red, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"red">"""
+            )
+         }
+
+         "fail and find similar items for Strings" {
+            val message = shouldThrow<AssertionError> {
+               "sweet green fruit" shouldBeIn listOf(
+                  "sweet green pear", "sweet red apple"
+               )
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               """Line[0] ="sweet green pear"""",
+               """Match[0]= ++++++++++++----""",
+            )
          }
       }
 

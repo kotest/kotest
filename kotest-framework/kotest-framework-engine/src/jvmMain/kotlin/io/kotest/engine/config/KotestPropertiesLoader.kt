@@ -1,8 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
-import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.mpp.log
+import io.kotest.core.log
 import io.kotest.mpp.syspropOrEnv
 import java.util.Properties
 
@@ -16,14 +15,23 @@ import java.util.Properties
 @JVMOnly
 internal object KotestPropertiesLoader {
 
-   private const val DefaultKotestPropertiesFilename = "/kotest.properties"
+   private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
+
+   fun loadAndApplySystemPropsFile() {
+      val filename = systemPropsFilename()
+      log { "Loading kotest properties from $filename" }
+      loadSystemProps(filename).forEach { (key, value) ->
+         if (key != null && value != null)
+            System.setProperty(key.toString(), value.toString())
+      }
+   }
 
    /**
     * Returns the filename to use for kotest system properties. Allows the filename
     * to be overriden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
-      syspropOrEnv(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
+      syspropOrEnv(KotestEngineProperties.PROPERTIES_FILENAME) ?: DEFAULT_KOTEST_PROPERTIES_FILENAME
 
    /**
     * Loads system props from the given [filename].
@@ -39,12 +47,4 @@ internal object KotestPropertiesLoader {
       return props
    }
 
-   fun loadAndApplySystemPropsFile() {
-      val filename = systemPropsFilename()
-      log { "Loading kotest properties from $filename" }
-      loadSystemProps(filename).forEach { (key, value) ->
-         if (key != null && value != null)
-            System.setProperty(key.toString(), value.toString())
-      }
-   }
 }

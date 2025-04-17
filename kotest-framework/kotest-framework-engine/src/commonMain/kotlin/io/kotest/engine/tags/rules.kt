@@ -1,6 +1,6 @@
 package io.kotest.engine.tags
 
-fun Parser.primary(): Expression {
+internal fun Parser.primary(): Expression {
    return if (peek()?.type == TokenType.OpenParen) {
       skip()
       val expr = expression()
@@ -12,14 +12,14 @@ fun Parser.primary(): Expression {
    }
 }
 
-fun Parser.not(): Expression {
+internal fun Parser.not(): Expression {
    return if (skipIf(TokenType.ExclamationMark)) {
       val ident = primary()
       Expression.Not(ident)
    } else primary()
 }
 
-fun Parser.and(): Expression {
+internal fun Parser.and(): Expression {
    var left = not()
    while (skipIf(TokenType.Ampersand)) {
       val right = expression()
@@ -28,7 +28,7 @@ fun Parser.and(): Expression {
    return left
 }
 
-fun Parser.or(): Expression {
+internal fun Parser.or(): Expression {
    var left = and()
    while (skipIf(TokenType.Pipe)) {
       val right = expression()
@@ -37,7 +37,7 @@ fun Parser.or(): Expression {
    return left
 }
 
-fun Parser.expression(): Expression {
+internal fun Parser.expression(): Expression {
    return or()
 }
 

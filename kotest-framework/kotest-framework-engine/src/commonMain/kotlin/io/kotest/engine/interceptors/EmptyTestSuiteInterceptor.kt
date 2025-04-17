@@ -5,17 +5,17 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Wraps the [TestEngineListener] to listen for test events and returns an error
- * if there were no tests executed and [failOnEmptyTestSuite] is configured to be true.
+ * Wraps the [TestEngineListener] to listen for test events and returns an error if there were no
+ * tests executed and [io.kotest.core.config.AbstractProjectConfig.failOnEmptyTestSuite] is configured to be true.
  */
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
-      return when (context.configuration.failOnEmptyTestSuite) {
+      return when (context.projectConfigResolver.failOnEmptyTestSuite()) {
          true -> {
             val collector = CollectingTestEngineListener()
             val result = execute(context.mergeListener(collector))
@@ -24,6 +24,7 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
                else -> result
             }
          }
+
          false -> execute(context)
       }
    }

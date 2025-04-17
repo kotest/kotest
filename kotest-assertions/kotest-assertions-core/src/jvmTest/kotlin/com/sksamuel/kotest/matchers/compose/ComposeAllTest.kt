@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.compose
 
+import com.sksamuel.kotest.matchers.compose.ComposeAnyTest.Companion.testJavaLauncherVersion
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
@@ -102,11 +103,17 @@ class ComposeAllTest : StringSpec() {
       }
 
       "Person Matcher.all test, should fail on mismatching types" {
-         shouldFailWithMessage(
-            "Mismatching type of matcher for property name: " +
-               "class java.lang.String cannot be cast to class java.lang.Number " +
-               "(java.lang.String and java.lang.Number are in module java.base of loader 'bootstrap')"
-         ) {
+         val expectedErrorMessage =
+            if (testJavaLauncherVersion >= 9) {
+               "Mismatching type of matcher for property name: " +
+                  "class java.lang.String cannot be cast to class java.lang.Number " +
+                  "(java.lang.String and java.lang.Number are in module java.base of loader 'bootstrap')"
+            } else {
+               "Mismatching type of matcher for property name: " +
+                  "java.lang.String cannot be cast to java.lang.Number"
+            }
+
+         shouldFailWithMessage(expectedErrorMessage) {
             Matcher.all(
                havingProperty(ageMatcher to Person::name),
                havingProperty(ageMatcher to Person::age),
@@ -126,7 +133,7 @@ class ComposeAllTest : StringSpec() {
          matcherResult.passed() shouldBe true
          matcherResult.failureMessage() shouldBe ""
          matcherResult.negatedFailureMessage() shouldBe """
-            "StrongPassword123" should not contain any digits
+            "StrongPassword123" should not contain any digits, but contained '1' at index 14
             "StrongPassword123" should not contain regex [a-z]
             "StrongPassword123" should not contain regex [A-Z]
          """.trimIndent()

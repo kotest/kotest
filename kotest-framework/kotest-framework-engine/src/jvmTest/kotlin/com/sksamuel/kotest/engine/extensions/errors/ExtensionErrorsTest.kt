@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.errors
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -12,6 +14,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ExtensionErrorsTest : FunSpec() {
    init {
       test("beforeSpec function overrides should be wrapped") {

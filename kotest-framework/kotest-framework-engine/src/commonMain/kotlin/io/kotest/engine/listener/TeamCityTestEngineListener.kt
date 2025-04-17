@@ -1,21 +1,19 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -24,13 +22,13 @@ import kotlin.reflect.KClass
  */
 @KotestInternal
 class TeamCityTestEngineListener(
-   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
+   private val prefix: String = TeamCityMessageBuilder.TEAM_CITY_PREFIX,
    private val details: Boolean = true,
 ) : TestEngineListener {
 
    private val logger = Logger(TeamCityTestEngineListener::class)
 
-   private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default(ProjectConfiguration()))
+   private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default())
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -53,12 +51,14 @@ class TeamCityTestEngineListener(
       writer.outputTestFinished(name, parent.path().value)
    }
 
-   override suspend fun engineStarted() {}
+   override suspend fun engineStarted() {
+      writer.outputTestReporterAttached()
+   }
 
    override suspend fun engineInitialized(context: EngineContext) {
       writer = TeamCityWriter(
          prefix,
-         getFallbackDisplayNameFormatter(context.configuration.registry, context.configuration)
+         getFallbackDisplayNameFormatter(context.projectConfigResolver, context.testConfigResolver)
       )
    }
 
@@ -96,44 +96,17 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "testStarted $testCase") }
+      logger.log { Pair(testCase.name.name, "testStarted $testCase") }
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
          TestType.Container -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
             writer.outputTestSuiteStarted(testCase)
             started.add(testCase.descriptor)
          }
 
          TestType.Test -> {
-            val p = testCase.parent
-            // we might have a container inside a dynamic parent, in which case we need to start it
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
             writer.outputTestStarted(testCase)
             started.add(testCase.descriptor)
-         }
-
-         TestType.Dynamic -> {
-            val p = testCase.parent
-            // we might have a dynamic inside another dynamic parent, in which case we need to start the dynamic parent
-            if (p != null && p.type == TestType.Dynamic) {
-               if (!started.contains(p.descriptor)) {
-                  writer.outputTestSuiteStarted(p)
-                  started.add(p.descriptor)
-               }
-            }
          }
       }
    }
@@ -147,7 +120,7 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "testFinished $testCase") }
+      logger.log { Pair(testCase.name.name, "testFinished $testCase") }
       results[testCase.descriptor] = result
       when (testCase.type) {
          TestType.Container -> {
@@ -160,18 +133,6 @@ class TeamCityTestEngineListener(
             if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
             writer.outputTestFinished(testCase, result)
          }
-
-         TestType.Dynamic -> {
-            if (isParent(testCase)) {
-               if (!started.contains(testCase.descriptor)) writer.outputTestSuiteStarted(testCase)
-               failTestSuiteIfError(testCase, result)
-               writer.outputTestSuiteFinished(testCase, result)
-            } else {
-               if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
-               if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
-               writer.outputTestFinished(testCase, result)
-            }
-         }
       }
    }
 
@@ -183,9 +144,4 @@ class TeamCityTestEngineListener(
          else -> insertPlaceholder(t, testCase.descriptor)
       }
    }
-
-   // returns true if this test case contains child tests
-   private fun isParent(testCase: TestCase) = children.getOrElse(testCase.descriptor) { mutableListOf() }.isNotEmpty()
-
-
 }

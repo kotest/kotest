@@ -21,10 +21,6 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
-@Suppress("UNCHECKED_CAST")
-@Deprecated("This logic has moved to ArbResolver and this function will be removed in 5.6. Since 5.5")
-actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(type = typeOf<A>()) as Arb<A>?
-
 fun targetDefaultForType(
    providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(),
    arbsForProps: Map<KProperty1<*, *>, Arb<*>> = emptyMap(),
@@ -56,6 +52,7 @@ fun targetDefaultForType(
          val upperBound = type.arguments.first().type ?: error("No bound for Array")
          Arb.array(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>) {
             val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
+            @Suppress("UNCHECKED_CAST")
             val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
             for ((i, item) in this.withIndex()) {
                java.lang.reflect.Array.set(array, i, item)

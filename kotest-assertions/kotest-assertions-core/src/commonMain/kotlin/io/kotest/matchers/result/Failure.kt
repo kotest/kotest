@@ -92,12 +92,6 @@ class FailureMatcher<T : Throwable>(val expected: T) : Matcher<Result<*>> {
   }
 }
 
-@Deprecated("Use FailureMatcher directly", ReplaceWith("FailureMatcher"))
-typealias BeFailure = FailureMatcher<Throwable>
-
-@Deprecated("Use FailureMatcher directly", ReplaceWith("FailureMatcher"))
-fun beFailure() = FailureMatcher()
-
 class FailureTypeMatcher<T : Throwable>(val clazz: KClass<T>) : Matcher<Result<*>> {
   override fun test(value: Result<*>): MatcherResult {
     if (value.isSuccess) return MatcherResult(false, { "Expected a Failure, but got $value" }, { "" })
@@ -111,13 +105,3 @@ class FailureTypeMatcher<T : Throwable>(val clazz: KClass<T>) : Matcher<Result<*
     )
   }
 }
-
-@Deprecated("Use FailureTypeMatcher directly")
-typealias BeFailureOfType<T> = FailureTypeMatcher<T>
-
-@Deprecated("Use shouldBeFailure<T> directly", ReplaceWith("shouldBeFailure"))
-inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType(): A = shouldBeFailure<A>()
-
-@Deprecated("This method isn't easy to understand. Prefer writing a different assertion")
-inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot BeFailureOfType(A::class)
-

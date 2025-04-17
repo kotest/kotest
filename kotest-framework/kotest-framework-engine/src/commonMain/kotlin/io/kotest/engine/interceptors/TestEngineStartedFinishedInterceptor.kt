@@ -1,8 +1,8 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.KotestInternal
+import io.kotest.core.Logger
+import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
-import io.kotest.mpp.Logger
 
 /**
  * Notifies the test listener that the engine is ready to execute tests,
@@ -15,7 +15,7 @@ internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
       context.listener.engineStarted()

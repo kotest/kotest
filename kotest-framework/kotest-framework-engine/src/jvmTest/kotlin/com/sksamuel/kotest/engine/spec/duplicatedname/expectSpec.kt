@@ -9,20 +9,19 @@ abstract class ExpectSpecDuplicateTest(iso: IsolationMode) : ExpectSpec() {
       isolationMode = iso
       context("foo") {
          expect("woo") {}
-         expect("woo") { this.testCase.name.testName shouldBe "(1) woo" }
-         expect("woo") { this.testCase.name.testName shouldBe "(2) woo" }
+         expect("woo") { this.testCase.name.name shouldBe "(1) woo" }
+         expect("woo") { this.testCase.name.name shouldBe "(2) woo" }
       }
       context("foo") {
-         this.testCase.name.testName shouldBe "(1) foo"
+         this.testCase.name.name shouldBe "(1) foo"
          expect("woo") {}
       }
       context("foo") {
-         this.testCase.name.testName shouldBe "(2) foo"
+         this.testCase.name.name shouldBe "(2) foo"
          expect("woo") {}
       }
    }
 }
 
 class ExpectSpecSingleInstanceDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.SingleInstance)
-class ExpectSpecInstancePerLeafDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerLeaf)
-class ExpectSpecInstancePerTestDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerTest)
+class ExpectSpecInstancePerRootDuplicateNameTest : ExpectSpecDuplicateTest(IsolationMode.InstancePerRoot)

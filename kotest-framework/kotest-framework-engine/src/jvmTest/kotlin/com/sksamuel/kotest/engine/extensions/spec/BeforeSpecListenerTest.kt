@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
-import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.BeforeSpecListener
@@ -18,6 +20,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class BeforeSpecListenerTest : FunSpec() {
    init {
@@ -28,13 +31,14 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener registered in project config should be triggered for a spec with tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyBeforeSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyBeforeSpecListener)
+         }
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -45,12 +49,9 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener via method override should be triggered for a spec with tests") {
 
-         val c = ProjectConfiguration()
-
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecOverrideMethodTests::class)
-            .withConfiguration(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -61,12 +62,9 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener inline should be triggered for a spec with tests") {
 
-         val c = ProjectConfiguration()
-
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecInlineTest::class)
-            .withConfiguration(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -101,12 +99,9 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener registered by overriding extensions should be triggered for a spec with tests") {
 
-         val c = ProjectConfiguration()
-
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(BeforeSpecByReturningExtensionsTest::class)
-            .withConfiguration(c)
             .launch()
 
          listener.specs.size shouldBe 1
@@ -117,12 +112,13 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener should NOT be triggered for a spec without tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyBeforeSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyBeforeSpecListener)
+         }
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecNoTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -130,12 +126,13 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener should NOT be triggered for a spec without tests and handle errors in the listener") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyBeforeSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyBeforeSpecListener)
+         }
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecErrorNoTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -143,12 +140,13 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener should NOT be triggered for a spec with only ignored tests") {
 
-         val c = ProjectConfiguration()
-         c.registry.add(MyBeforeSpecListener)
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MyBeforeSpecListener)
+         }
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(BeforeSpecDisabledOnlyTests::class)
-            .withConfiguration(c)
+            .withProjectConfig(c)
             .launch()
 
          counter.get() shouldBe 0
@@ -242,9 +240,7 @@ private class BeforeSpecInlineOrderDescribeSpecTest : DescribeSpec() {
 
 private class BeforeSpecByReturningExtensionsTest : FunSpec() {
 
-   override fun extensions(): List<Extension> {
-      return listOf(MyBeforeSpecListener)
-   }
+   override val extensions: List<Extension> = listOf(MyBeforeSpecListener)
 
    init {
       test("foo1") {}

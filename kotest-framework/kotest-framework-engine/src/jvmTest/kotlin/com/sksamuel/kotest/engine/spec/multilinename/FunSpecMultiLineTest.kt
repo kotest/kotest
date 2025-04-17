@@ -14,7 +14,6 @@ class FunSpecMultiLineTest : FunSpec() {
          names shouldBe setOf("test case 1", "test case 2")
       }
 
-
       test(
          """
     test
@@ -22,7 +21,7 @@ class FunSpecMultiLineTest : FunSpec() {
     1
     """
       ) {
-         names.add(this.testCase.name.testName)
+         names.add(this.testCase.name.name)
       }
 
       context("context") {
@@ -33,7 +32,7 @@ class FunSpecMultiLineTest : FunSpec() {
     2
     """
          ) {
-            names.add(this.testCase.name.testName)
+            names.add(this.testCase.name.name)
 
          }
       }

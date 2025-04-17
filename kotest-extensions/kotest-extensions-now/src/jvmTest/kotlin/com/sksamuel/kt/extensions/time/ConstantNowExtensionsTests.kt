@@ -1,5 +1,7 @@
 package com.sksamuel.kt.extensions.time
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -21,6 +23,7 @@ import java.time.chrono.JapaneseDate
 import java.time.chrono.MinguoDate
 import java.time.chrono.ThaiBuddhistDate
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ConstantNowExtensionFunctionsTest : DescribeSpec() {
 
    private val zoneId = ZoneId.of("Europe/Paris")

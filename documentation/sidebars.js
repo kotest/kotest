@@ -1,7 +1,6 @@
 module.exports = {
   "docs": [
     "quickstart",
-    "changelog",
     "blogs"
   ],
   "proptest": [
@@ -51,6 +50,7 @@ module.exports = {
     "assertions/custom_matchers",
     "assertions/composed_matchers",
     "assertions/exceptions",
+    "assertions/similarity",
     "assertions/clues",
     "assertions/soft_assertions",
     {
@@ -72,7 +72,6 @@ module.exports = {
       "collapsed": false,
       "items": [
         "assertions/core",
-        "assertions/collections",
         {
           "type": "category",
           "label": "JSON",
@@ -94,7 +93,10 @@ module.exports = {
         "assertions/konform",
         "assertions/klock",
         "assertions/compiler",
-        "assertions/jsoup"
+        "assertions/field-matching",
+        "assertions/jsoup",
+        "assertions/ranges",
+        "assertions/yaml"
       ]
     }
   ],
@@ -198,6 +200,7 @@ module.exports = {
       ]
     },
     "framework/test_factories",
+    "framework/fake_functions",
     "framework/test_output",
     {
       "type": "category",

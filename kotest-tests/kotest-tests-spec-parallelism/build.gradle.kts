@@ -3,16 +3,17 @@ plugins {
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
+   jvm()
 
    sourceSets {
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
          }
       }
    }
+}
+
+tasks.withType<Test>().configureEach {
+   systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.parallelism.ProjectConfig")
 }

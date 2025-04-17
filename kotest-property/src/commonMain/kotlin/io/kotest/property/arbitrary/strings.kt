@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import io.kotest.property.arbitrary.strings.StringClassifier
+import io.kotest.property.asSample
 import io.kotest.property.exhaustive.upperLowerCases
 import kotlin.random.nextInt
 
@@ -27,11 +28,11 @@ fun Arb.Companion.string(
    }.withEdgecaseFn { rs ->
       if (minSize == maxSize) null else {
          val lowCodePoint = codepoints.edgecase(rs)
-         val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
-         val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
+         val min = lowCodePoint?.let { cp -> List(minSize) { cp.value.asString() }.joinToString("") }
+         val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.value.asString() }.joinToString("") }
          val edgeCases = listOfNotNull(min, minPlus1)
             .filter { it.length in minSize..maxSize }
-         if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
+         if (edgeCases.isEmpty()) null else edgeCases.random(rs.random).asSample()
       }
    }.withShrinker(StringShrinkerWithMin(minSize))
       .withClassifier(StringClassifier(minSize, maxSize))
@@ -49,6 +50,19 @@ fun Arb.Companion.string(
 fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
+
+/**
+ * Returns an [Arb] where each random value is a String which has a length in the given range.
+ * Each generated [String] contains only acceptable characters.
+ *
+ * The edge case values are a string of the first value in the range, using the first edge case
+ * codepoint provided by the codepoints arb.
+ */
+fun Arb.Companion.string(range: IntRange, acceptableChars: String) =
+   Arb.string(range, acceptableChars.toCodepoints())
+
+internal fun String.toCodepoints(): Arb<Codepoint> = Arb.of(this.map { Codepoint(it.code) })
+
 /**
  * Returns an [Arb] where each random value is a String of length [size].
  * By default the arb uses a [printableAscii] codepoint generator, but this can be substituted
@@ -58,34 +72,6 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint
  */
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.printableAscii()): Arb<String> =
    Arb.string(size, size, codepoints)
-
-@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5.")
-object StringShrinker : Shrinker<String> {
-
-   override fun shrink(value: String): List<String> {
-      return when {
-         value == "" -> emptyList()
-         value == "a" -> listOf("")
-         value.length == 1 -> listOf("", "a")
-         else -> {
-            val firstHalf = value.take(value.length / 2 + value.length % 2)
-            val secondHalf = value.takeLast(value.length / 2)
-            val secondHalfAs = firstHalf.padEnd(value.length, 'a')
-            val firstHalfAs = secondHalf.padStart(value.length, 'a')
-            val dropFirstChar = value.drop(1)
-            val dropLastChar = value.dropLast(1)
-            listOf(
-               firstHalf,
-               firstHalfAs,
-               secondHalf,
-               secondHalfAs,
-               dropFirstChar,
-               dropLastChar
-            )
-         }
-      }
-   }
-}
 
 /**
  * Shrinks a string. Shrunk variants will be shorter and simplified.
@@ -150,6 +136,6 @@ fun Arb.Companion.upperLowerCase(s: String): Arb<String> {
       val upperLower = s.upperLowerCases(rs).iterator()
       upperLower.next()
    }.withEdgecaseFn { rs ->
-      listOf(s.uppercase(), s.lowercase()).random(rs.random)
+      listOf(s.uppercase(), s.lowercase()).random(rs.random).asSample()
    }.build()
 }

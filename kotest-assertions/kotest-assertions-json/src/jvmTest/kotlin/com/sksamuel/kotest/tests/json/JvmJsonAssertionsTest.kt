@@ -1,41 +1,43 @@
 package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.asClue
-import io.kotest.assertions.json.shouldContainJsonKey
-import io.kotest.assertions.json.shouldContainJsonKeyValue
-import io.kotest.assertions.json.shouldMatchJsonResource
-import io.kotest.assertions.json.shouldNotContainJsonKey
-import io.kotest.assertions.json.shouldNotContainJsonKeyValue
-import io.kotest.assertions.json.shouldNotMatchJsonResource
+import io.kotest.assertions.json.*
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import org.intellij.lang.annotations.Language
 
-const val json = """{
-    "store": {
-        "book": [
-            {
-                "category": "reference",
-                "author": "Nigel Rees",
-                "title": "Sayings of the Century",
-                "price": 8.95
-            },
-            {
-                "category": "fiction",
-                "author": "Evelyn Waugh",
-                "title": "Sword of Honour",
-                "price": 12.99
-            }
-        ],
-        "bicycle": {
-            "color": "red",
-            "price": 19.95,
-            "code": 1
-        }
+@Language("JSON")
+private const val json = """
+{
+  "store": {
+    "book": [
+      {
+        "category": "reference",
+        "author": "Nigel Rees",
+        "title": "Sayings of the Century",
+        "price": 8.95
+      },
+      {
+        "category": "fiction",
+        "author": "Evelyn Waugh",
+        "title": "Sword of Honour",
+        "price": 12.99
+      }
+    ],
+    "bicycle": {
+      "color": "red",
+      "price": 19.95,
+      "code": 1
     }
-}"""
+  }
+}
+"""
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class JvmJsonAssertionsTest : StringSpec({
 
    "test json path" {
@@ -49,10 +51,8 @@ class JvmJsonAssertionsTest : StringSpec({
 
       shouldThrow<AssertionError> {
          json.shouldContainJsonKey("$.store.table")
-      }.message shouldBe """{
-    "store": {
-        "book": [
-            {... should contain the path ${'$'}.store.table"""
+      }.message shouldBe
+         """Expected given to contain json key <'${'$'}.store.table'> but key was not found. Found shorter valid subpath: <'${'$'}.store'>."""
 
       shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
 
@@ -85,7 +85,7 @@ class JvmJsonAssertionsTest : StringSpec({
       "contract should work".asClue {
          fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-         val nullableJson = testJson1
+         val nullableJson: String? = testJson1.takeIf { it.isNotEmpty() }
          nullableJson.shouldMatchJsonResource("/json1.json")
          use(nullableJson)
       }
@@ -114,7 +114,13 @@ class JvmJsonAssertionsTest : StringSpec({
       shouldFail { testJson1 shouldContainJsonKey "@@" }
          .message shouldBe "@@ is not a valid JSON path"
 
-      shouldFail { testJson1.shouldContainJsonKeyValue("@@", null as Any?) }
+      shouldFail {
+         testJson1.shouldContainJsonKeyValue(
+            /* language=text */
+            "@@",
+            null as Any?,
+         )
+      }
          .message shouldBe "@@ is not a valid JSON path"
    }
 

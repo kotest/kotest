@@ -5,10 +5,13 @@ import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ContainJsonKeyValueTest : StringSpec({
    @Language("JSON")
    val json = """
@@ -25,7 +28,8 @@ class ContainJsonKeyValueTest : StringSpec({
                     "category": "fiction",
                     "author": "Evelyn Waugh",
                     "title": "Sword of Honour",
-                    "price": 12.99
+                    "price": 12.99,
+                    "comments": []
                  }
               ],
               "bicycle": {
@@ -50,17 +54,33 @@ class ContainJsonKeyValueTest : StringSpec({
    "Failure message states if key is missing, when it's missing" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.bicycle.engine", "V2")
-      }.message shouldBe """
-         Expected given to contain json key <'$.bicycle.engine'> but key was not found.
-      """.trimIndent()
+      }.message shouldBe "Expected given to contain json key <'$.bicycle.engine'> but key was not found. "
    }
 
    "Failure message states if key is missing, shows valid subpath" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.bicycle.engine", "V2")
       }.message shouldBe """
-         Expected given to contain json key <'$.store.bicycle.engine'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>
+         Expected given to contain json key <'$.store.bicycle.engine'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>.
       """.trimIndent()
+   }
+
+   "Failure message states if key is missing, shows json array index out of bounds" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.book[2].category", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.book[2].category'> but key was not found. The array at path <'$.store.book'> has size 2, so index 2 is out of bounds."
+   }
+
+   "Failure message states if key is missing, shows element is not json array" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.bicycle[0].color", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store'>."
+   }
+
+   "Failure message states if key is missing, shows json array index out of bounds when array is empty" {
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store.book[1].comments[0]", "V2")
+      }.message shouldBe "Expected given to contain json key <'$.store.book[1].comments[0]'> but key was not found. The array at path <'$.store.book[1].comments'> has size 0, so index 0 is out of bounds."
    }
 
    "Failure message states states value mismatch if key is present with different value" {
@@ -95,5 +115,12 @@ class ContainJsonKeyValueTest : StringSpec({
          nullableJson.shouldContainJsonKeyValue("data", "value")
          use(nullableJson)
       }
+   }
+
+   "Should pass json key-value assertion for values with implicit type" {
+      """{ "value": 42 }""".shouldContainJsonKeyValue<Any>("$.value", 42L)
+      """{ "value": 0.46479126999899145 }""".shouldContainJsonKeyValue<Any>("$.value", 0.46479126999899145)
+      """{ "value": 3.14 }""".shouldContainJsonKeyValue<Any>("$.value", 3.14f)
+      """{ "value": null }""".shouldContainJsonKeyValue<Any?>("$.value", null)
    }
 })

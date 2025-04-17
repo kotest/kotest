@@ -1,20 +1,24 @@
 package com.sksamuel.kotest.assertions
 
+import io.kotest.assertions.ExceptionWithClue
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
-import java.util.*
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ClueTest : FreeSpec({
 
    "withClue()" - {
@@ -90,7 +94,6 @@ class ClueTest : FreeSpec({
 
       "should invoke { .. } clue if an assertion fails" {
          var counter = 1
-         @Suppress("DEPRECATION")
          withClue({
             counter -= 1
             if (counter == 0) {
@@ -134,6 +137,24 @@ class ClueTest : FreeSpec({
          }
          ex.message shouldBe "null\nexpected:<2> but was:<1>"
       }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            withClue("some clue") {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "some clue\n"
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
    }
    "asClue()" - {
       "should prepend clue to message with a newline" {
@@ -166,12 +187,13 @@ class ClueTest : FreeSpec({
          }
 
          data class HttpResponse(val status: Int, val body: String)
+
          val response = HttpResponse(404, "not found")
          response.asClue {
-            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
+            shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
             MyData(20, "nest it").asClue { inner ->
-               shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<200> but was:<404>"
-               shouldThrow<AssertionError> {inner.a shouldBe 10}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
+               shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<200> but was:<404>"
+               shouldThrow<AssertionError> { inner.a shouldBe 10 }.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
             }
             //after nesting, everything looks as before
             shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
@@ -206,6 +228,66 @@ class ClueTest : FreeSpec({
                null shouldBe "hello"
             }
          }.message shouldBe "A actual is null value\nExpected \"hello\" but actual was null"
+      }
+
+      "should add clue when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            "some clue".asClue {
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "some clue\n"
+               message.shouldContainInOrder(
+                  "some clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
+
+      "should not duplicate clue messages when Exception is thrown" {
+         shouldThrow<ExceptionWithClue> {
+            "outer clue".asClue {
+               "inner clue".asClue {
+                  val list = listOf("a", "b")
+                     .single { it.length == 2 }
+
+                  list.shouldContain("something")
+               }
+            }
+         }
+            .run {
+               clue shouldBe "outer clue\ninner clue\n"
+               message.shouldContainInOrder(
+                  "outer clue",
+                  "inner clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
+      }
+
+      "should not contain inner clue when Exception is thrown in outer scope" {
+         shouldThrow<ExceptionWithClue> {
+            "outer clue".asClue {
+               "inner clue".asClue {
+                  1 shouldBe 1
+               }
+               val list = listOf("a", "b")
+                  .single { it.length == 2 }
+
+               list.shouldContain("something")
+            }
+         }
+            .run {
+               clue shouldBe "outer clue\n"
+               message.shouldContainInOrder(
+                  "outer clue",
+                  "Collection contains no element matching the predicate.",
+               )
+            }
       }
    }
 

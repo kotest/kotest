@@ -1,26 +1,19 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.common.TimeMarkCompat
-import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.ProjectConfiguration
-
-/**
- * Returns a [TestExecutionInterceptor] for switching coroutine dispatchers.
- */
-@JVMOnly
-internal expect fun coroutineDispatcherFactoryInterceptor(
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
-): TestExecutionInterceptor
+import io.kotest.engine.config.TestConfigResolver
+import kotlin.time.TimeMark
 
 /**
  * Returns a [TestExecutionInterceptor] for switching execution to a dedicated thread
  * when blockingTest is true.
+ *
+ * This is a JVM only function because it relies on the JVM thread model.
  */
 @JVMOnly
 internal expect fun blockedThreadTimeoutInterceptor(
-   configuration: ProjectConfiguration,
-   start: TimeMarkCompat,
+   start: TimeMark,
+   testConfigResolver: TestConfigResolver,
 ): TestExecutionInterceptor
 
 /**

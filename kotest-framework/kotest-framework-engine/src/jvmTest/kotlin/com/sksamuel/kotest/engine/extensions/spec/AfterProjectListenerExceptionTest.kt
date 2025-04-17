@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
@@ -12,6 +14,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class AfterProjectListenerExceptionTest : FunSpec({
 
@@ -31,12 +34,13 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(projectListener)
+      val c = object : AbstractProjectConfig() {
+         override val extensions = listOf(projectListener)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       errors shouldHaveSize 1
@@ -66,13 +70,13 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
-      c.registry.add(projectListener1)
-      c.registry.add(projectListener2)
+      val c = object : AbstractProjectConfig() {
+         override val extensions = listOf(projectListener1, projectListener2)
+      }
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)
-         .withConfiguration(c)
+         .withProjectConfig(c)
          .launch()
 
       errors shouldHaveSize 2

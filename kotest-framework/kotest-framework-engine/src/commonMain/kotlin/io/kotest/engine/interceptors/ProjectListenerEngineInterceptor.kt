@@ -1,20 +1,19 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.engine.EngineResult
-import io.kotest.engine.project.ProjectExtensions
 
 /**
- * An [EngineInterceptor] that invokes any before and after project listeners.
+ * An [EngineInterceptor] that invokes any [io.kotest.core.listeners.BeforeProjectListener]
+ * and [io.kotest.core.listeners.AfterProjectListener] instances.
  */
 internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
-      execute: suspend (EngineContext) -> EngineResult
+      execute: NextEngineInterceptor
    ): EngineResult {
 
-      val extensions = ProjectExtensions(context.configuration.registry)
-      val beforeErrors = extensions.beforeProject()
+      val beforeErrors = context.projectExtensions().beforeProject()
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
@@ -22,7 +21,7 @@ internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
       val result = execute(context)
 
-      val afterErrors = extensions.afterProject()
+      val afterErrors = context.projectExtensions().afterProject()
       return result.copy(errors = result.errors + afterErrors)
    }
 }

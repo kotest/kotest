@@ -6,7 +6,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <T : Comparable<T>> Iterable<T>.shouldBeStrictlyIncreasing(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeStrictlyIncreasing(): I {
    toList().shouldBeStrictlyIncreasing()
    return this
 }
@@ -26,7 +26,7 @@ fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing(): List<T> {
    return this
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldNotBeStrictlyIncreasing(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeStrictlyIncreasing(): I {
    toList().shouldNotBeStrictlyIncreasing()
    return this
 }
@@ -46,7 +46,7 @@ fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyIncreasing(): List<T> {
    return this
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldBeMonotonicallyIncreasing(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeMonotonicallyIncreasing(): I {
    toList().shouldBeMonotonicallyIncreasing()
    return this
 }
@@ -66,7 +66,7 @@ fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyIncreasing(): List<T> {
    return this
 }
 
-fun <T : Comparable<T>> Iterable<T>.shouldNotBeMonotonicallyIncreasing(): Iterable<T> {
+fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeMonotonicallyIncreasing(): I {
    toList().shouldNotBeMonotonicallyIncreasing()
    return this
 }
@@ -96,7 +96,7 @@ infix fun <T> Sequence<T>.shouldBeMonotonicallyIncreasingWith(comparator: Compar
    return this
 }
 
-infix fun <T> Iterable<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
@@ -111,7 +111,7 @@ infix fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Compara
    return this
 }
 
-infix fun <T> Iterable<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
 }
@@ -131,7 +131,7 @@ infix fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T
    return this
 }
 
-infix fun <T> Iterable<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeStrictlyIncreasingWith(comparator)
    return this
 }
@@ -151,7 +151,7 @@ infix fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<i
    return this
 }
 
-infix fun <T> Iterable<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Iterable<T> {
+infix fun <T, I : Iterable<T>> I.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeStrictlyIncreasingWith(comparator)
    return this
 }
@@ -182,7 +182,11 @@ fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 
 private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
+   val failure = value
+      .asSequence()
+      .zipWithNext()
+      .withIndex()
+      .find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
    val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""
@@ -212,7 +216,11 @@ fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 
 private fun <T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
+   val failure = value
+      .asSequence()
+      .zipWithNext()
+      .withIndex()
+      .find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
    val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""

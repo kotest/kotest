@@ -9,13 +9,13 @@ import io.kotest.matchers.shouldNot
 import io.kotest.similarity.possibleMatchesDescription
 
 // Infix
-infix fun <T> Iterable<T>.shouldNotContain(t: T): Iterable<T> = shouldNotContain(t, Equality.default())
+infix fun <T, I : Iterable<T>> I.shouldNotContain(t: T): I = shouldNotContain(t, Equality.default())
 infix fun <T> Array<T>.shouldNotContain(t: T): Array<T> = shouldNotContain(t, Equality.default())
-infix fun <T> Iterable<T>.shouldContain(t: T): Iterable<T> = shouldContain(t, Equality.default())
+infix fun <T, I : Iterable<T>> I.shouldContain(t: T): I = shouldContain(t, Equality.default())
 infix fun <T> Array<T>.shouldContain(t: T): Array<T> = shouldContain(t, Equality.default())
 
 // Should not
-fun <T> Iterable<T>.shouldNotContain(t: T, comparator: Equality<T>): Iterable<T> = apply {
+fun <T, I : Iterable<T>> I.shouldNotContain(t: T, comparator: Equality<T>): I = apply {
    toList() shouldNot contain(t, comparator)
 }
 
@@ -24,7 +24,7 @@ fun <T> Array<T>.shouldNotContain(t: T, comparator: Equality<T>): Array<T> = app
 }
 
 // Should
-fun <T> Iterable<T>.shouldContain(t: T, comparator: Equality<T>): Iterable<T> = apply {
+fun <T, I : Iterable<T>> I.shouldContain(t: T, comparator: Equality<T>): I = apply {
    toList() should contain(t, comparator)
 }
 
@@ -35,18 +35,23 @@ fun <T> Array<T>.shouldContain(t: T, comparator: Equality<T>): Array<T> = apply 
 // Matcher
 fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.default()) = object : Matcher<C> {
    override fun test(value: C) : MatcherResult {
-      val passed = value.any { verifier.verify(it, t).areEqual() }
-      val possibleMatches = if(!passed && (verifier.name() == Equality.default<T>().name())) {
-         val candidates = possibleMatchesDescription(value.toSet(), t)
-         if(candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
-      } else ""
+      val passedAtIndexes = value.mapIndexedNotNull {
+         index, it -> if(verifier.verify(it, t).areEqual()) index else null
+      }
+      val passed = passedAtIndexes.isNotEmpty()
+      val possibleMatches = {
+         if (!passed && (verifier.name() == Equality.default<T>().name())) {
+            val candidates = possibleMatchesDescription(value.toSet(), t)
+            if (candidates.isEmpty()) "" else "\nPossibleMatches:$candidates"
+         } else ""
+      }
       return MatcherResult(
          passed,
          {
             "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
-               "but the collection is ${value.print().value}$possibleMatches"
+               "but the collection is ${value.print().value}${possibleMatches()}"
          },
-         { "Collection should not contain element ${t.print().value} based on ${verifier.name()}" }
+         { "Collection should not contain element ${t.print().value} based on ${verifier.name()}, but it did at index(es):${passedAtIndexes.print().value}" }
       )
    }
 }
