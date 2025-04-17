@@ -24,7 +24,7 @@ fun after(anotherInstant: Instant) = object : Matcher<Instant> {
       return MatcherResult(
          value.isAfter(anotherInstant),
          { "Expected $value to be after $anotherInstant, but it's not." },
-         { "$anotherInstant is not expected to be after $value." }
+         { "$value is not expected to be after $anotherInstant" }
       )
    }
 }
