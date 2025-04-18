@@ -872,7 +872,7 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when the list is empty" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldContainAnyOf(emptyList())
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of []")
          }
 
          "Pass when one element is in the list" {
@@ -911,10 +911,8 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "Contain any (negative)" should {
-         "Fail when the list is empty" {
-            shouldThrow<AssertionError> {
-               listOf(1, 2, 3).shouldNotContainAnyOf(emptyList())
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+         "Pass when the list is empty" {
+            listOf(1, 2, 3).shouldNotContainAnyOf(emptyList())
          }
 
          "Pass when no element is present in the list" {
@@ -1004,7 +1002,7 @@ class CollectionMatchersTest : WordSpec() {
             val list = emptyList<Foo>()
             shouldThrow<AssertionError> {
                foo shouldBeIn list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+            }.shouldHaveMessage("Collection should contain Foo(bar=Bar), but doesn't. Possible values: []")
          }
 
          "fail and find similar items" {
@@ -1069,9 +1067,9 @@ class CollectionMatchersTest : WordSpec() {
             val foo = Foo("Bar")
 
             val list = emptyList<Foo>()
-            shouldThrow<AssertionError> {
-               foo shouldNotBeIn list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+            shouldNotThrow<AssertionError> {
+               foo.shouldNotBeIn(list)
+            }
          }
       }
    }
