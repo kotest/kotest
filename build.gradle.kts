@@ -179,6 +179,7 @@ sourceSets {
 kotlin {
    compilerOptions {
       jvmToolchain(JavaLanguageVersion.of(jvmTargetVersion).asInt())
+      optIn.set(listOf("org.jetbrains.kotlin.analysis.api.permissions.KaAllowProhibitedAnalyzeFromWriteAction"))
    }
 }
 

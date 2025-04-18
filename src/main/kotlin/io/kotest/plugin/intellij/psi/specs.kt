@@ -2,7 +2,12 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import io.kotest.plugin.intellij.styles.SpecStyle
+import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisFromWriteAction
+import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisOnEdt
+import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisFromWriteAction
+import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisOnEdt
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.name.FqName
@@ -51,6 +56,23 @@ fun PsiElement.isSpec(): Boolean = when (this) {
 fun KtClassOrObject.specStyle(): SpecStyle? {
    val supers = getAllSuperClasses()
    return SpecStyle.styles.find { supers.contains(it.fqn()) }
+}
+
+/**
+ * Returns the spec style for this class if it is a subclass of a spec, or null otherwise.
+ */
+@OptIn(
+   KaAllowAnalysisOnEdt::class,
+   KaAllowAnalysisFromWriteAction::class,
+)
+@RequiresReadLock
+fun KtClassOrObject.specStyleOnEdt(): SpecStyle? {
+   allowAnalysisFromWriteAction {
+      allowAnalysisOnEdt {
+         val supers = getAllSuperClasses()
+         return SpecStyle.styles.find { supers.contains(it.fqn()) }
+      }
+   }
 }
 
 fun KtCallExpression.isDslInvocation(): Boolean {

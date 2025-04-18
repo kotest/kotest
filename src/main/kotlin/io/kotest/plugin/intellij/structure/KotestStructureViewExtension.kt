@@ -14,7 +14,7 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.intentions.testMode
-import io.kotest.plugin.intellij.psi.specStyle
+import io.kotest.plugin.intellij.psi.specStyleOnEdt
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -47,7 +47,7 @@ class KotestStructureViewExtension : StructureViewExtension {
       val virtualFile: VirtualFile = parent.containingFile.virtualFile ?: return emptyArray()
       if (!TestSourcesFilter.isTestSources(virtualFile, parent.project) && !testMode) return emptyArray()
 
-      val spec = parent.specStyle() ?: return emptyArray()
+      val spec = parent.specStyleOnEdt() ?: return emptyArray()
       val tests = spec.tests(parent, false)
       return tests.map { KotestTestStructureViewTreeElement(it) }.toTypedArray()
    }
