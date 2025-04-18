@@ -13,7 +13,7 @@ import io.kotest.matchers.shouldNot
  * Assertion to check that this instance is in [collection]. This assertion checks by reference, and not by value,
  * therefore the exact instance must be in [collection], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
@@ -29,7 +29,7 @@ infix fun <T> T.shouldBeOneOf(collection: Collection<T>): T {
  * Assertion to check that this instance is not in [collection]. This assertion checks by reference, and not by value,
  * therefore the exact instance must not be in [collection], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always pass.
  *
  * @see [shouldBeOneOf]
  * @see [beOneOf]
@@ -45,7 +45,7 @@ infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>): T {
  * Assertion to check that this instance is any of [any]. This assertion checks by reference, and not by value,
  * therefore the exact instance must be in [any], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
@@ -61,7 +61,7 @@ fun <T> T.shouldBeOneOf(vararg any: T): T {
  * Assertion to check that this instance is not any of [any]. This assertion checks by reference, and not by value,
  * therefore the exact instance must not be in [any], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always pass.
  *
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
@@ -77,14 +77,13 @@ fun <T> T.shouldNotBeOneOf(vararg any: T): T {
  * Assertion to check that this instance is in [collection]. This matcher checks by reference, and not by value,
  * therefore the exact instance must be in [collection], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldBeOneOf]
  * @see [shouldNotBeOneOf]
  */
 fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      if (collection.isEmpty()) throwEmptyCollectionError()
       val match = collection.any { it === value }
       val indexesOfEqualElementsDescription = {
          if (match) "" else {

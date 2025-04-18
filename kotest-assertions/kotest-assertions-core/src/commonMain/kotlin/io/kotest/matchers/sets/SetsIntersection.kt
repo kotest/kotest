@@ -3,10 +3,6 @@ package io.kotest.matchers.sets
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldBeOneOf
-import io.kotest.matchers.collections.shouldNotBeOneOf
-import io.kotest.matchers.collections.throwEmptyCollectionError
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
