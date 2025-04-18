@@ -132,7 +132,6 @@ infix fun <T> Collection<T>.shouldNotContainAnyOf(ts: Collection<T>) = this shou
 
 fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
-      if (ts.isEmpty()) throwEmptyCollectionError()
       val elementsInValue = value.mapIndexedNotNull { index, t -> if(ts.contains(t)) IndexedValue(index, t) else null }
       return MatcherResult(
          elementsInValue.isNotEmpty(),
@@ -146,8 +145,4 @@ internal fun<T> describeForbiddenElementsInCollection(indexedElements: List<Inde
    return "\nForbidden elements found in collection:\n${indexedElements.joinToString("\n") {
       indexedValue -> "[${indexedValue.index}] => ${indexedValue.value.print().value}"
    } }"
-}
-
-internal fun throwEmptyCollectionError(): Nothing {
-   throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
 }

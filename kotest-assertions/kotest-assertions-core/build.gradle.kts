@@ -34,6 +34,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
             implementation(libs.mockk)

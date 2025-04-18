@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeOneOf
@@ -46,7 +47,7 @@ class OneOfTest : DescribeSpec() {
             val list = emptyList<Fooz>()
             shouldThrow<AssertionError> {
                fooz shouldBeOneOf list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+            }.shouldHaveMessage("Collection should contain the instance Fooz(bar=Bar) with hashcode 12345.")
          }
       }
 
@@ -80,9 +81,9 @@ class OneOfTest : DescribeSpec() {
             val fooz = Fooz("Bar")
 
             val list = emptyList<Fooz>()
-            shouldThrow<AssertionError> {
-               fooz shouldNotBeOneOf list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+            shouldNotThrow<AssertionError> {
+               fooz.shouldNotBeOneOf(list)
+            }
          }
 
       }
