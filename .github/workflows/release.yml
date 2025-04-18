@@ -8,7 +8,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-241", "IC-242", "IC-243" ]
+            product: [ "IC-242", "IC-243", "IC-251" ]
          max-parallel: 1
 
       runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
 
          -  uses: actions/setup-java@v4
             with:
-               java-version: "17"
+               java-version: "21"
                distribution: "temurin"
 
          -  name: deploy to jetbrains

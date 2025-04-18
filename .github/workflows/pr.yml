@@ -12,7 +12,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-241", "IC-242", "IC-243" ]
+            product: [ "IC-242", "IC-243", "IC-251" ]
          max-parallel: 10
          fail-fast: false
 
@@ -23,7 +23,7 @@ jobs:
 
          -  uses: actions/setup-java@v4
             with:
-               java-version: "17"
+               java-version: "21"
                distribution: "temurin"
 
          -  name: Run tests

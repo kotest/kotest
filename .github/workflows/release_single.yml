@@ -5,7 +5,7 @@ on:
       inputs:
          sdk:
             type: string
-            description: "sdk folder eg IC-242"
+            description: "sdk folder eg IC-251"
             required: true
          java:
             type: string
@@ -27,7 +27,7 @@ jobs:
 
          -  uses: actions/setup-java@v4
             with:
-               java-version: "17"
+               java-version: "21"
                distribution: "temurin"
 
          -  name: deploy to jetbrains

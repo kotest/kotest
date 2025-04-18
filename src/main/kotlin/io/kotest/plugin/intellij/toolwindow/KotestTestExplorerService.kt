@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import io.kotest.plugin.intellij.findFiles
+import io.kotest.plugin.intellij.files.findFiles
 import io.kotest.plugin.intellij.psi.getAllSuperClasses
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specs

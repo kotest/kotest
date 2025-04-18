@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.files
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
