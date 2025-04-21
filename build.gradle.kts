@@ -145,6 +145,7 @@ dependencies {
          bundledPlugin("com.intellij.llmInstaller")
       }
 
+      testFramework(TestFrameworkType.Platform)
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
