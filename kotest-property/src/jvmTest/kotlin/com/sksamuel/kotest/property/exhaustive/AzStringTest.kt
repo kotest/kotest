@@ -9,10 +9,9 @@ import io.kotest.property.exhaustive.azstring
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class AzStringTest : ShouldSpec ({
-   val oneLetterPermutations = listOf(
-      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-      "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-   )
+
+   // Produces all letters a, b, c, ... , x, y, z
+   val oneLetterPermutations = ('a'..'z').map { it.toString() }
 
    // Produces all permutations aa, ab, ac, ... , zx, zy, zz
    val twoLetterPermutations = ('a'..'z').flatMap { first ->
