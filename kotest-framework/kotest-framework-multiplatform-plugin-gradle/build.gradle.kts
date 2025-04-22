@@ -26,8 +26,7 @@ dependencies {
    devPublication(projects.kotestExtensions)
    devPublication(projects.kotestCommon)
    devPublication(projects.kotestFramework.kotestFrameworkEngine)
-   devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginEmbeddableCompiler)
-   devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginLegacyNative)
+   devPublication(projects.kotestFramework.kotestFrameworkMultiplatformPluginCompiler)
    devPublication(projects.kotestRunner.kotestRunnerJunit5)
 }
 

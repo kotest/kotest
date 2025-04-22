@@ -1,5 +1,6 @@
 package io.kotest.framework.multiplatform.gradle
 
+import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
@@ -13,7 +14,6 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
-import javax.inject.Inject
 
 abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    private val providers: ProviderFactory,
@@ -25,8 +25,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       const val EXTENSION_NAME = "kotestMultiplatform"
       const val COMPILER_PLUGIN_ID = "io.kotest.multiplatform"
       const val KOTEST_GROUP_ID = "io.kotest"
-      const val KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-embeddable-compiler"
-      const val KOTEST_NATIVE_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-legacy-native"
+      const val KOTEST_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-embeddable-compiler"
    }
 
    /**
@@ -49,15 +48,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
    override fun getPluginArtifact(): SubpluginArtifact =
       SubpluginArtifact(
          KOTEST_GROUP_ID,
-         KOTEST_EMBEDDABLE_COMPILER_ARTIFACT_ID,
-         kotestExtension?.kotestCompilerPluginVersion?.orNull,
-      )
-
-   // This will soon be deprecated and removed, see https://youtrack.jetbrains.com/issue/KT-51301.
-   override fun getPluginArtifactForNative(): SubpluginArtifact =
-      SubpluginArtifact(
-         KOTEST_GROUP_ID,
-         KOTEST_NATIVE_ARTIFACT_ID,
+         KOTEST_COMPILER_ARTIFACT_ID,
          kotestExtension?.kotestCompilerPluginVersion?.orNull,
       )
 
