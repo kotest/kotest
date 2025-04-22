@@ -17,7 +17,6 @@ import io.kotest.engine.test.names.TestNameEscaper
 /**
  * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
  */
-@KotestInternal
 class Materializer(
    private val specConfigResolver: SpecConfigResolver,
 ) {
