@@ -29,7 +29,8 @@ infix fun <T> T.shouldBeOneOf(collection: Collection<T>): T {
  * Assertion to check that this instance is not in [collection]. This assertion checks by reference, and not by value,
  * therefore the exact instance must not be in [collection], or this will fail.
  *
- * An empty collection will always pass.
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldBeOneOf]
  * @see [beOneOf]
@@ -61,7 +62,8 @@ fun <T> T.shouldBeOneOf(vararg any: T): T {
  * Assertion to check that this instance is not any of [any]. This assertion checks by reference, and not by value,
  * therefore the exact instance must not be in [any], or this will fail.
  *
- * An empty collection will always pass.
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]

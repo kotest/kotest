@@ -31,7 +31,8 @@ infix fun <T> T.shouldBeIn(collection: Collection<T>): T {
  * Assertion to check that this element is not any of [collection]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [collection], or this will fail.
  *
- * An empty collection will always pass.
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -64,7 +65,8 @@ fun <T> T.shouldBeIn(vararg any: T): T {
  * Assertion to check that this element is not any of [any]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [any], or this will fail.
  *
- * An empty collection will always pass.
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -99,7 +101,8 @@ infix fun <T> T.shouldBeIn(array: Array<T>): T {
  * Assertion to check that this element is not any of [array]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [array], or this will fail.
  *
- * An empty array will always pass.
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
