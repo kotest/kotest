@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.tests
 
 import com.intellij.codeInsight.CodeInsightUtil
 import com.intellij.ide.fileTemplates.FileTemplate
@@ -11,14 +11,22 @@ import com.intellij.openapi.util.Computable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.refactoring.util.classMembers.MemberInfo
 import com.intellij.testIntegration.createTest.CreateTestDialog
 import com.intellij.testIntegration.createTest.JavaTestGenerator
+import com.intellij.util.concurrency.annotations.RequiresReadLock
+import io.kotest.plugin.intellij.Constants
+import io.kotest.plugin.intellij.KotestTestFramework
 import io.kotest.plugin.intellij.styles.FunSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
+import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisFromWriteAction
+import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisOnEdt
+import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisFromWriteAction
+import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisOnEdt
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.refactoring.memberInfo.toKotlinMemberInfo
 import org.jetbrains.kotlin.name.FqName
-import java.util.*
+import java.util.Properties
 
 /**
  * Used to create "Template" test class files.
@@ -47,7 +55,7 @@ class KotestTestGenerator : JavaTestGenerator() {
    }
 
    private fun styleForSuperClass(fqn: FqName): SpecStyle =
-      SpecStyle.styles.find { it.fqn() == fqn } ?: FunSpecStyle
+      SpecStyle.Companion.styles.find { it.fqn() == fqn } ?: FunSpecStyle
 
    private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 
@@ -55,7 +63,7 @@ class KotestTestGenerator : JavaTestGenerator() {
          is KotestTestFramework -> {
             IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
-            val fileTemplate = FileTemplateManager.getInstance(project).getCodeTemplate("Kotest Class")
+            val fileTemplate = FileTemplateManager.getInstance(project).getCodeTemplate("kotest_class.kt")
             val defaultProperties = FileTemplateManager.getInstance(project).defaultProperties
             val props = Properties(defaultProperties)
             props.setProperty(FileTemplate.ATTRIBUTE_NAME, d.className)
@@ -80,9 +88,7 @@ class KotestTestGenerator : JavaTestGenerator() {
 
             if (d.selectedMethods.isNotEmpty()) {
                val style = styleForSuperClass(FqName(superClass))
-               val tests = d.selectedMethods.mapNotNull {
-                  it.toKotlinMemberInfo()?.member?.name
-               }.map { methodName ->
+               val tests = testNames(d.selectedMethods).map { methodName ->
                   style.generateTest(targetClass.name ?: "SpecName", methodName)
                }
                val testBodies = tests.joinToString("\n\n")
@@ -96,6 +102,21 @@ class KotestTestGenerator : JavaTestGenerator() {
       return when (result) {
          is PsiFile -> result
          else -> null
+      }
+   }
+
+   @OptIn(
+      KaAllowAnalysisOnEdt::class,
+      KaAllowAnalysisFromWriteAction::class,
+   )
+   @RequiresReadLock
+   private fun testNames(selectedMethods: Collection<MemberInfo>): List<String> {
+      return allowAnalysisFromWriteAction {
+         allowAnalysisOnEdt {
+            selectedMethods.mapNotNull {
+               it.toKotlinMemberInfo()?.member?.name
+            }
+         }
       }
    }
 }

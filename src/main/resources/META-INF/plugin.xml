@@ -37,7 +37,7 @@
 
    <extensions defaultExtensionNs="com.intellij">
       <configurationType implementation="io.kotest.plugin.intellij.run.KotestConfigurationType"/>
-      <defaultLiveTemplates file="liveTemplates.xml" />
+      <defaultLiveTemplates file="liveTemplates.xml"/>
 
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
@@ -45,27 +45,35 @@
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.FocusInNestedTestAnnotator"/>
 
-<!--      <localInspection groupPath="Kotlin" language="JVM" shortName="ShouldBeInstanceOfInspection"-->
-<!--                       bundle="KotestGadgetsBundle"-->
-<!--                       key="kotest.should.be.instance.of"-->
-<!--                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"-->
-<!--                       enabledByDefault="true" level="WARNING"-->
-<!--                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>-->
+      <!--      <localInspection groupPath="Kotlin" language="JVM" shortName="ShouldBeInstanceOfInspection"-->
+      <!--                       bundle="KotestGadgetsBundle"-->
+      <!--                       key="kotest.should.be.instance.of"-->
+      <!--                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"-->
+      <!--                       enabledByDefault="true" level="WARNING"-->
+      <!--                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>-->
 
       <toolWindow id="Kotest" anchor="left" icon="/iconToolWindow.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
       <lang.structureViewExtension implementation="io.kotest.plugin.intellij.structure.KotestStructureViewExtension"/>
 
-      <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
-      <codeInsight.lineMarkerProvider language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
-      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin" implementationClass="io.kotest.plugin.intellij.linemarker.SpecRunLineMarkerContributor"/>
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.linemarker.SpecRunLineMarkerContributor"/>
 
-      <externalSystemExecutionConsoleManager implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
-                                             order="before gradle"/>
+      <externalSystemExecutionConsoleManager
+         implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
+         order="before gradle"/>
 
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleKotestTaskRunConfigurationProducer"/>
+      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
+
+      <runConfigurationProducer
+         implementation="io.kotest.plugin.intellij.run.GradleKotestTaskRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>
@@ -76,9 +84,12 @@
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.PackageConfigImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
 
-      <testFinder implementation="io.kotest.plugin.intellij.KotestTestFinder"/>
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
-      <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
+      <testFinder implementation="io.kotest.plugin.intellij.tests.KotestTestFinder"/>
+      <testGenerator implementationClass="io.kotest.plugin.intellij.tests.KotestTestGenerator" language="kotlin"/>
+
+      <!--    his was removed because it adds a new entry to the "go to tests" dialog with a custom "create new test" option, but the java one appears too so we use that  -->
+      <!--      <testCreator implementationClass="io.kotest.plugin.intellij.tests.KotestTestCreator" language="Kotlin" order="first"/>-->
 
       <codeInsight.externalLibraryResolver implementation="io.kotest.plugin.intellij.KotestExternalLibraryResolver"/>
       <stacktrace.fold substring="at io.kotest."/>
@@ -119,7 +130,7 @@
    </extensions>
 
    <extensions defaultExtensionNs="org.jetbrains.kotlin">
-      <supportsKotlinPluginMode supportsK2="true" />
+      <supportsKotlinPluginMode supportsK2="true"/>
    </extensions>
 
 </idea-plugin>

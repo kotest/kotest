@@ -37,22 +37,18 @@ class KotestTestFramework : TestFramework {
       return clazz is PsiClass && isUnderTestSources(clazz)
    }
 
-   // this always returns false, because we don't want intellij adding a run icon (we use our own).
-   // this does mean that the JavaTestFinder interface will not be able to find test subjects, so
-   // we need to implement that separately.
+   /**
+    * This always returns false, because we don't want intellij adding a run icon (we use our own).
+    * This does mean that the JavaTestFinder interface will not be able to find test subjects, so
+    * we need to implement that separately.
+    */
    override fun isTestClass(clazz: PsiElement): Boolean {
       return false
-//      return when (clazz) {
-//         is KtUltraLightClass -> clazz.kotlinOrigin.isSpec()
-//         is KtLightClass -> clazz.kotlinOrigin?.isSpec() ?: false
-//         is KtClass -> clazz.isSpec()
-//         else -> false
-//      }
    }
 
    override fun getName(): String = Constants.FRAMEWORK_NAME
    override fun getLanguage(): Language = KotlinLanguage.INSTANCE
-   override fun getIcon(): Icon = Icons().Kotest16
+   override fun getIcon(): Icon = Icons.KOTEST_16
 
    override fun getLibraryPath(): String? = null
 

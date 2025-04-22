@@ -1,15 +1,19 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.tests
 
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testIntegration.TestFinder
 import io.kotest.plugin.intellij.psi.enclosingSpec
-import io.kotest.plugin.intellij.psi.isContainedInSpec
+import io.kotest.plugin.intellij.psi.isContainedInSpecEdt
 
 /**
- * Triggered when the user uses the "Navigation / Test"  action (= jump to test shortcut).
+ * Triggered when the user uses the "Navigation / Test" or "Navigation / Test Subject" menu action (= jump to test shortcut).
  * Corresponding extension point qualified name is {@code com.intellij.testFinder}.
+ *
+ * When the user opens the navigate window, the [isTest] method is called to determine if this is a test, or a test subject.
+ * If it's a test, then [findClassesForTest] is called to find the test subject.
+ * If it's a test subject, then [findTestsForClass] is called to find the tests.
  */
 class KotestTestFinder : TestFinder {
 
@@ -21,14 +25,18 @@ class KotestTestFinder : TestFinder {
     */
    override fun findSourceElement(from: PsiElement): PsiElement? = from.enclosingSpec()
 
-   // handled by the JavaTestFinder impl
    /**
     * Finds tests for given class.
     *
-    * @param element may by of any language but not specific to a current test finder domain language
-    * @return found tests for class
+    * Since the logic for kotest is basically the same as for JUnit, we just let the
+    * JavaTestFinder implementation handle it.
+    *
+    * @param element may be any language but not specific to a current test finder domain language
+    * @return applicable tests for class
     */
-   override fun findTestsForClass(element: PsiElement): MutableCollection<PsiElement> = mutableListOf()
+   override fun findTestsForClass(element: PsiElement): MutableCollection<PsiElement> {
+      return mutableListOf()
+   }
 
    override fun findClassesForTest(element: PsiElement): MutableCollection<PsiElement> {
       val spec = element.enclosingSpec() ?: return mutableListOf()
@@ -42,5 +50,7 @@ class KotestTestFinder : TestFinder {
     * "navigate to test subjects". Depending on the response, [findClassesForTest] or
     * [findTestsForClass] will be called.
     */
-   override fun isTest(element: PsiElement): Boolean = element.isContainedInSpec()
+   override fun isTest(element: PsiElement): Boolean {
+      return element.isContainedInSpecEdt()
+   }
 }

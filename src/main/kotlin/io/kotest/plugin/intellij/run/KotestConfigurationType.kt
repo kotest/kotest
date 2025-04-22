@@ -11,7 +11,7 @@ class KotestConfigurationType : ConfigurationType {
 
    private val factory = KotestConfigurationFactory(this)
 
-   override fun getIcon(): Icon = Icons().Kotest16
+   override fun getIcon(): Icon = Icons.KOTEST_16
 
    override fun getConfigurationTypeDescription(): String = "Run tests with Kotest"
 

@@ -39,6 +39,18 @@ fun KtClassOrObject.isSpec(): Boolean {
 }
 
 /**
+ * Returns true if this [KtClassOrObject] is a subclass of a spec, including classes
+ * which are subclasses of intermediate classes.
+ */
+fun KtClassOrObject.isSpecEdt(): Boolean {
+   return when (this) {
+      is KtObjectDeclaration -> this.specStyleOnEdt() != null
+      is KtClass -> this.specStyleOnEdt() != null
+      else -> false
+   }
+}
+
+/**
  * Returns true if this element is a kotlin class, and it is a subclass of a spec.
  *
  * See [isSpec]
@@ -96,6 +108,14 @@ fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
 fun PsiElement.isContainedInSpec(): Boolean {
    val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
    return enclosingClass.isSpec()
+}
+
+/**
+ * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
+ */
+fun PsiElement.isContainedInSpecEdt(): Boolean {
+   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
+   return enclosingClass.isSpecEdt()
 }
 
 /**

@@ -64,7 +64,7 @@ class TestFileNodeDescriptor(
 
    init {
       templatePresentation.presentableText = file.name
-      templatePresentation.setIcon(Icons().Kotest16Grey)
+      templatePresentation.setIcon(Icons.KOTEST_16_GREY)
    }
 
    override fun update(presentation: PresentationData) {
