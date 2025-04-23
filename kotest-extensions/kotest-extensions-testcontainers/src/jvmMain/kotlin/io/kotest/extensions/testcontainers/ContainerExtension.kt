@@ -86,19 +86,19 @@ class ContainerExtension<T : GenericContainer<T>>(
    }
 
    override suspend fun beforeTest(testCase: TestCase) {
-      beforeTest(testCase)
+      beforeTest.invoke(testCase)
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afterTest(testCase)
+      afterTest.invoke(testCase)
    }
 
    override suspend fun beforeSpec(spec: Spec) {
-      beforeSpec(spec)
+      beforeSpec.invoke(spec)
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      afterSpec(spec)
+      afterSpec.invoke(spec)
       if (mode == ContainerLifecycleMode.Spec && container.isRunning) close()
    }
 
