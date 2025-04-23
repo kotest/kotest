@@ -10,7 +10,7 @@ import io.kotest.core.test.isRootTest
  *
  * This class is thread safe, so can be used from multiple test executors concurrently.
  */
-class TestResults {
+internal class TestResults {
 
    // the presence of a test case in this map indicates that the test has started
    // once the test completes, the result will no longer be null
