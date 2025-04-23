@@ -17,23 +17,25 @@ import java.util.TreeSet
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.Duration.Companion.seconds
 
-private class BareIterable(size: Int, offset: Int): Iterable<Int> {
-   val top = offset+size
+private class BareIterable(size: Int, offset: Int) : Iterable<Int> {
+   val top = offset + size
    private var count = offset
    override fun iterator() = object : Iterator<Int> {
       override fun hasNext(): Boolean = count < top
       override fun next(): Int = ++count
    }
+
    override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
-private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecursiveIterable> {
-   val top = offset+size
+private class BareRecursiveIterable(size: Int, offset: Int) : Iterable<BareRecursiveIterable> {
+   val top = offset + size
    private var count = offset
    override fun iterator() = object : Iterator<BareRecursiveIterable> {
       override fun hasNext(): Boolean = count < top
       override fun next(): BareRecursiveIterable = this@BareRecursiveIterable.apply { ++count }
    }
+
    override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
@@ -61,11 +63,11 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give null for two equal sets") {
-      IterableEq.equals(setOf(1, 2, 3), setOf(2, 3, 1)).shouldBeNull()
+      IterableEq.equals(setOf(1, 2, 3), setOf(2, 3, 1), false).shouldBeNull()
    }
 
    test("should give error for unequal sets") {
-      val error = IterableEq.equals(setOf(1, 2, 3), setOf(2, 3))
+      val error = IterableEq.equals(setOf(1, 2, 3), setOf(2, 3), false)
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -74,11 +76,11 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give null for two equal list") {
-      IterableEq.equals(listOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
+      IterableEq.equals(listOf(1, 2, 3), listOf(1, 2, 3), false).shouldBeNull()
    }
 
    test("should give error for two unequal list") {
-      val error = IterableEq.equals(listOf(3), listOf(1, 2, 3))
+      val error = IterableEq.equals(listOf(3), listOf(1, 2, 3), false)
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -89,13 +91,13 @@ class IterableEqTest : FunSpec({
    }
 
    test("should not give error for kotlin ordered set comparison with list") {
-      IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
+      IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3), false).shouldBeNull()
    }
 
    test("should give error for unordered set comparison with list") {
       val hs = HashSet<Int>(3)
       hs.addAll(setOf(1, 2, 3))
-      val error = IterableEq.equals(hs, listOf(1, 2, 3))
+      val error = IterableEq.equals(hs, listOf(1, 2, 3), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
@@ -105,11 +107,11 @@ class IterableEqTest : FunSpec({
 
    test("should give null for java-only TreeSet comparison with list") {
       val hs = TreeSet(setOf(1, 2, 3))
-      IterableEq.equals(hs, listOf(1, 2, 3)).shouldBeNull()
+      IterableEq.equals(hs, listOf(1, 2, 3), false).shouldBeNull()
    }
 
    test("should give error for unmatched collection") {
-      val error = IterableEq.equals(BareIterable(3,1), listOf(1,2,3))
+      val error = IterableEq.equals(BareIterable(3, 1), listOf(1, 2, 3), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed typed contract
@@ -119,12 +121,12 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give null for matched iterables") {
-      IterableEq.equals(Paths.get("foo"), Paths.get("foo")).shouldBeNull()
-      IterableEq.equals(BareIterable(3,2), BareIterable(3,2)).shouldBeNull()
+      IterableEq.equals(Paths.get("foo"), Paths.get("foo"), false).shouldBeNull()
+      IterableEq.equals(BareIterable(3, 2), BareIterable(3, 2), false).shouldBeNull()
    }
 
    test("should give error for matched but different iterables") {
-      val error = IterableEq.equals(BareIterable(2,2), BareIterable(3,2))
+      val error = IterableEq.equals(BareIterable(2, 2), BareIterable(3, 2), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Missing elements from index 2
@@ -133,7 +135,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for promiscuous iterables") {
-      val error = IterableEq.equals(Paths.get("foo"), BareIterable(1,0))
+      val error = IterableEq.equals(Paths.get("foo"), BareIterable(1, 0), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed promiscuous iterators
@@ -143,7 +145,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for promiscuous iterables when recursive") {
-      val error = IterableEq.equals(Paths.get("foo"), BareRecursiveIterable(1,0))
+      val error = IterableEq.equals(Paths.get("foo"), BareRecursiveIterable(1, 0), false)
       System.getProperty("os")
       assertSoftly {
          error.shouldNotBeNull()
@@ -154,7 +156,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give unsupported error for nested iterables") {
-      val error = IterableEq.equals(Paths.get("foo"), Paths.get("bar"))
+      val error = IterableEq.equals(Paths.get("foo"), Paths.get("bar"), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message?.startsWith("Disallowed nesting iterator") shouldBe true
@@ -163,7 +165,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give unsupported error for recursive iterables") {
-      val error = IterableEq.equals(BareRecursiveIterable(1,1), BareRecursiveIterable(1,1))
+      val error = IterableEq.equals(BareRecursiveIterable(1, 1), BareRecursiveIterable(1, 1), false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message?.startsWith("Disallowed nesting iterator") shouldBe true
@@ -174,13 +176,13 @@ class IterableEqTest : FunSpec({
    test("should give null for equal deeply nested arrays") {
       val array1 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
       val array2 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
-      IterableEq.equals(array1.toList(), array2.toList()).shouldBeNull()
+      IterableEq.equals(array1.toList(), array2.toList(), false).shouldBeNull()
    }
 
    test("should give error for equal iterables nested in ordered collection") {
-      val aut1 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val aut2 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val error = IterableEq.equals(aut1, aut2)
+      val aut1 = listOf(1, arrayOf(BareIterable(3, 3), BareIterable(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
+      val aut2 = listOf(1, arrayOf(BareIterable(3, 3), BareIterable(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Element differ at index: [1]
@@ -189,10 +191,10 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for unequal iterables nested in ordered collection") {
-      val aut1 = listOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = listOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut1 = listOf(1, listOf(BareIterable(3, 3), BareIterable(3, 4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = listOf(1, listOf(BareIterable(3, 3), BareIterable(4, 4)), mapOf("a" to listOf(1, 2, 3)))
 
-      val error = IterableEq.equals(aut1, aut2)
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Element differ at index: [1]
@@ -201,9 +203,9 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for equal iterables nested in Set") {
-      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, arrayOf(BareIterable(3,3), BareIterable(4,4)))
-      val error = IterableEq.equals(aut1, aut2)
+      val aut1 = setOf(1, listOf(BareIterable(3, 3), BareIterable(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
+      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, arrayOf(BareIterable(3, 3), BareIterable(4, 4)))
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """expected:<[[("a", [1, 2, 3])], 1, [[], []]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>"""
@@ -211,10 +213,10 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for unequal iterables nested in Set") {
-      val aut1 = setOf(listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)), 1)
-      val aut2 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut1 = setOf(listOf(BareIterable(3, 3), BareIterable(3, 4)), mapOf("a" to listOf(1, 2, 3)), 1)
+      val aut2 = setOf(1, listOf(BareIterable(3, 3), BareIterable(4, 4)), mapOf("a" to listOf(1, 2, 3)))
 
-      val error = IterableEq.equals(aut1, aut2)
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[[[], []], [("a", [1, 2, 3])], 1]>"""
@@ -225,7 +227,7 @@ class IterableEqTest : FunSpec({
       val array1 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
       val array2 = arrayOf(1, arrayOf(arrayOf("a", "e"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
 
-      val error = IterableEq.equals(array1.toList(), array2.toList())
+      val error = IterableEq.equals(array1.toList(), array2.toList(), false)
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -235,10 +237,10 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for recursive iterables nested in ordered collection") {
-      val aut1 = listOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = listOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut1 = listOf(1, listOf(BareRecursiveIterable(3, 3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = listOf(1, listOf(BareRecursiveIterable(3, 3)), mapOf("a" to listOf(1, 2, 3)))
 
-      val error = IterableEq.equals(aut1, aut2)
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Element differ at index: [1]
@@ -247,10 +249,10 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give error for recursive iterables nested in Set") {
-      val aut1 = setOf(1, arrayOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = setOf(1, mapOf("a" to listOf(1, 2, 3)), listOf(BareRecursiveIterable(3,3)))
+      val aut1 = setOf(1, arrayOf(BareRecursiveIterable(3, 3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = setOf(1, mapOf("a" to listOf(1, 2, 3)), listOf(BareRecursiveIterable(3, 3)))
 
-      val error = IterableEq.equals(aut1, aut2)
+      val error = IterableEq.equals(aut1, aut2, false)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """expected:<[1, [("a", [1, 2, 3])], [[]]]> but was:<[1, [[]], [("a", [1, 2, 3])]]>""".trimMargin()
@@ -265,7 +267,7 @@ class IterableEqTest : FunSpec({
       actual.count shouldBe 0
       expected.count shouldBe 0
 
-      IterableEq.equals(actual, expected).shouldBeNull()
+      IterableEq.equals(actual, expected, false).shouldBeNull()
 
       actual.count shouldBe 50  // one for each element in the Set
       expected.count shouldBe 0
@@ -284,28 +286,29 @@ class IterableEqTest : FunSpec({
    }
 
    test("should have linear performance for lists").config(timeout = 5.seconds) {
-       val a = List(10000000) { "foo" }
-       val b = List(10000000) { "foo" }
-       IterableEq.equals(a, b) shouldBe null
+      val a = List(10000000) { "foo" }
+      val b = List(10000000) { "foo" }
+      IterableEq.equals(a, b, false) shouldBe null
    }
 
    test("should have linear performance for primitive sets").config(timeout = 5.seconds) {
-       IterableEq.equals(List(1000) { it }.toSet(), List(1000) { it }.reversed().toSet()) shouldBe null
+      IterableEq.equals(List(1000) { it }.toSet(), List(1000) { it }.reversed().toSet(), false) shouldBe null
    }
 
    test("should have linear performance for string sets").config(timeout = 5.seconds) {
-       IterableEq.equals(
-           List(1000) { it.toString() }.toSet(),
-           List(1000) { it.toString() }.reversed().toSet()
-       ) shouldBe null
+      IterableEq.equals(
+         List(1000) { it.toString() }.toSet(),
+         List(1000) { it.toString() }.reversed().toSet(),
+         false,
+      ) shouldBe null
    }
 
    test("should work for empty lists") {
-      val errorMessage1 = IterableEq.equals(emptyList<Int>(), listOf(1))?.message
+      val errorMessage1 = IterableEq.equals(emptyList<Int>(), listOf(1), false)?.message
       errorMessage1 shouldBe """Missing elements from index 0
                                |expected:<[1]> but was:<[]>""".trimMargin()
 
-      val errorMessage2 = IterableEq.equals(listOf(1, 2), emptyList<Int>())?.message
+      val errorMessage2 = IterableEq.equals(listOf(1, 2), emptyList<Int>(), false)?.message
       errorMessage2 shouldBe """Unexpected elements from index 1
                                |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }

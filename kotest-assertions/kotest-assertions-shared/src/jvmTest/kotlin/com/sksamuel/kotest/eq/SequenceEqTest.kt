@@ -32,7 +32,7 @@ class SequenceEqTest : FunSpec({
    // therefore...
 
    test("Sequence type is not supported") {
-      val error = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3))
+      val error = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3), false)
 
       assertSoftly {
          error.shouldNotBeNull()

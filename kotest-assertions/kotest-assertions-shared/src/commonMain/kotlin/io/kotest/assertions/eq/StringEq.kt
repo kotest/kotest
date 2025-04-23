@@ -39,7 +39,7 @@ object StringEq : Eq<String> {
             Expected(expected.print()),
             Actual(actual.print()),
             prependMessage = "Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n",
-            )
+         )
 
          else -> failureWithTypeInformation(
             ExpectedWithType(expected.printWithType()),
@@ -73,7 +73,7 @@ object StringEq : Eq<String> {
 
 private val linebreaks = Regex("\r?\n|\r")
 
-fun escapeLineBreaks(input: String): String {
+internal fun escapeLineBreaks(input: String): String {
    return input
       .replace("\n", "\\n")
       .replace("\r", "\\r")

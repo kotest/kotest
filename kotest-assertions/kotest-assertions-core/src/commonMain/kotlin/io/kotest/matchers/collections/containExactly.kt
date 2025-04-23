@@ -1,8 +1,8 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.IterableEq
-import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.print
 import io.kotest.equals.Equality
 import io.kotest.matchers.ComparableMatcherResult
@@ -11,8 +11,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.jvm.JvmName
 import io.kotest.similarity.possibleMatchesDescription
+import kotlin.jvm.JvmName
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
@@ -72,7 +72,7 @@ fun <T, C : Collection<T>> containExactly(
       this?.message?.startsWith(IterableEq.TRIGGER) == true
 
    val failureReason = if(verifier == null) {
-      eq(actual, expected, strictNumberEq = true)
+      EqCompare.compare(actual, expected, true)
    } else {
       matchCollectionsWithVerifier(actual, expected, verifier)
    }

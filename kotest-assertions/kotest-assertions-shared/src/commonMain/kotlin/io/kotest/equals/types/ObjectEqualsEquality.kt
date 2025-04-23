@@ -1,8 +1,8 @@
 package io.kotest.equals.types
 
-import io.kotest.assertions.eq.eq
-import io.kotest.equals.EqualityResult
+import io.kotest.assertions.eq.EqCompare
 import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
 
 open class ObjectEqualsEquality<T>(
    private val strictNumberEquality: Boolean,
@@ -10,7 +10,7 @@ open class ObjectEqualsEquality<T>(
    override fun name(): String = "object equality"
 
    override fun verify(actual: T, expected: T): EqualityResult {
-      val throwable = eq(actual, expected, strictNumberEquality) ?: return EqualityResult.equal(actual, expected, this)
+      val throwable = EqCompare.compare(actual, expected, strictNumberEquality) ?: return EqualityResult.equal(actual, expected, this)
 
       return EqualityResult.notEqual(actual, expected, this).let { result ->
          throwable.message?.let { message ->

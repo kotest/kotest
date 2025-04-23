@@ -5,6 +5,9 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 
+/**
+ * An [Eq] for [Sequence] types which throws an error as sequences cannot be compared using shouldBe.
+ */
 object SequenceEq : Eq<Sequence<*>> {
 
    /**

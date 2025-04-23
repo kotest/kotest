@@ -5,6 +5,7 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 
+@Deprecated("To be replaced with collection specific matchers)")
 object IterableEq : Eq<Iterable<*>> {
 
    /**
@@ -97,10 +98,10 @@ object IterableEq : Eq<Iterable<*>> {
       var innerError: Throwable? = null
 
       fun equalWithDetection(elementInActualSet: Any?, it: Any?) =
-         eq(elementInActualSet, it, strictNumberEq)?.let {
+         EqCompare.compare(elementInActualSet, it, strictNumberEq)?.let {
             if (null == innerError && (it.message?.startsWith(TRIGGER) == true)) innerError = it
             false
-         } ?: true
+         } != false
 
       return Pair(actual.all { elementInActualSet ->
          // if we have a collection type we must use the eq typeclass
@@ -191,7 +192,7 @@ object IterableEq : Eq<Iterable<*>> {
                a?.equals(b) == true -> null
                nestedIterator(a, actual)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
-               else -> equalXorDisallowed(eq(a, b, strictNumberEq))
+               else -> equalXorDisallowed(EqCompare.compare(a, b, strictNumberEq))
             }
             if (!accrueDetails) break
             if (t != null) elementDifferAtIndex.add(index)
