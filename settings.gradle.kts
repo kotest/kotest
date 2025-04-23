@@ -61,8 +61,7 @@ include(
    ":kotest-framework:kotest-framework-plugin-gradle",
 
    // compiler plugins to integrate tests with the engine
-   ":kotest-framework:kotest-framework-multiplatform-plugin-embeddable-compiler",
-   ":kotest-framework:kotest-framework-multiplatform-plugin-legacy-native",
+   ":kotest-framework:kotest-framework-multiplatform-plugin-compiler",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",
 
    // contains basic assertion building block such as shouldBe which are used by both

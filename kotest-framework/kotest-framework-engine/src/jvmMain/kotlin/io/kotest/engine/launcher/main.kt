@@ -9,7 +9,7 @@ import io.kotest.engine.launcher.LauncherArgs.ARG_CANDIDATES
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
-import io.kotest.engine.launcher.LauncherArgs.SPEC
+import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -30,13 +30,13 @@ object LauncherArgs {
    // these are optional
 
    // used to specify if we want team city or console output
-   const val ARG_LISTENER = "--listener"
+   const val ARG_LISTENER = "listener"
 
    // used to filter to a single spec or test within a spec
    const val DESCRIPTOR = "descriptor"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
-   const val SPEC = "spec"
+   const val ARG_SPEC = "spec"
    const val TESTPATH = "testpath"
    const val REPORTER = "reporter"
    const val WRITER = "writer"
@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
    // we must support both for backwards compatibility
    // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
    val candidatesArg = launcherArgs[ARG_CANDIDATES]
-      ?: launcherArgs[SPEC]
+      ?: launcherArgs[ARG_SPEC]
       ?: error("The $ARG_CANDIDATES arg must be provided")
 
    @Suppress("UNCHECKED_CAST")
@@ -119,7 +119,7 @@ private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDe
 
 private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
    return launcherArgs[TESTPATH]?.let { test ->
-      launcherArgs[SPEC]?.let { spec ->
+      launcherArgs[ARG_SPEC]?.let { spec ->
          ProvidedDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
       }
    }

@@ -109,7 +109,7 @@ byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte
 allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "5.0.1" }
+hikari = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }

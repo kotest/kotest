@@ -3599,10 +3599,10 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_CANDIDATES Ljava/lang/String;
 	public static final field ARG_LISTENER Ljava/lang/String;
+	public static final field ARG_SPEC Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
-	public static final field SPEC Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
 	public static final field WRITER Ljava/lang/String;
 }
@@ -3743,6 +3743,13 @@ public abstract interface class io/kotest/engine/names/WithDataTestName {
 	public abstract fun dataTestName ()Ljava/lang/String;
 }
 
+public final class io/kotest/engine/spec/Materializer {
+	public fun <init> ()V
+	public fun <init> (Lio/kotest/engine/config/SpecConfigResolver;)V
+	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
+	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
+}
+
 public final class io/kotest/engine/spec/NoopSpecSorter : io/kotest/engine/spec/SpecSorter {
 	public static final field INSTANCE Lio/kotest/engine/spec/NoopSpecSorter;
 	public fun sort (Ljava/util/List;)Ljava/util/List;
@@ -3779,19 +3786,6 @@ public final class io/kotest/engine/spec/TempdirKt {
 public final class io/kotest/engine/spec/TempfileKt {
 	public static final fun tempfile (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;)Ljava/io/File;
 	public static synthetic fun tempfile$default (Lio/kotest/core/TestConfiguration;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/io/File;
-}
-
-public final class io/kotest/engine/spec/TestResults {
-	public fun <init> ()V
-	public final fun children (Lio/kotest/core/test/TestCase;)Ljava/util/Set;
-	public final fun completed (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;)V
-	public final fun hasErrorOrFailure ()Z
-	public final fun isStarted (Lio/kotest/core/test/TestCase;)Z
-	public final fun isSubtreeComplete (Lio/kotest/core/test/TestCase;)Z
-	public final fun roots ()Ljava/util/Map;
-	public final fun rootsCompleted ()Z
-	public final fun started (Lio/kotest/core/test/TestCase;)V
-	public final fun toMap ()Ljava/util/Map;
 }
 
 public final class io/kotest/engine/spec/interceptor/SpecContext {
