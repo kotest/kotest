@@ -64,7 +64,7 @@ internal object DataClassEq : Eq<Any> {
                Pair(prop, diff)
             }
          else {
-            eq(actualPropertyValue, expectedPropertyValue, strictNumberEq)
+            EqCompare.compare(actualPropertyValue, expectedPropertyValue, strictNumberEq)
                ?.let { Pair(prop, StandardDifference(it)) }
          }
       }

@@ -43,6 +43,5 @@ private fun TimeUnit.ChronoUnit(): ChronoUnit {
       TimeUnit.MINUTES -> ChronoUnit.MINUTES
       TimeUnit.HOURS -> ChronoUnit.HOURS
       TimeUnit.DAYS -> ChronoUnit.DAYS
-      else -> throw AssertionError()
    }
 }
