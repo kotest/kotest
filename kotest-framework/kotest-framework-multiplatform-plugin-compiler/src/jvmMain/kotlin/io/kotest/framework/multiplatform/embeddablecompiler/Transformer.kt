@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrParameterKind
 import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.declarations.path
 import org.jetbrains.kotlin.ir.expressions.IrCall
@@ -101,10 +102,6 @@ fun runKotest(type: String) {
 }
 """.trim()
       )
-//
-//      val file = specs.first().file
-//      val launcher = generateLauncher(specs, configs, file)
-//      file.addChild(launcher)
 
       return fragment
    }
@@ -123,21 +120,13 @@ fun runKotest(type: String) {
    ): IrCall {
       return irCall(launchFunction).also { promise: IrCall ->
          promise.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
-            withSpecs.putValueArgument(
-               0,
-               irVararg(
-                  pluginContext.irBuiltIns.stringType,
-                  specs.map { irCall(it.constructors.first()) }
-               )
-            )
+            withSpecs.arguments[0] =
+               irVararg(pluginContext.irBuiltIns.stringType, specs.map { irCall(it.constructors.first()) })
             withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
                val config = configs.firstOrNull()
                if (config != null) {
                   withPlatform.dispatchReceiver = irCall(withProjectConfigFn).also { withConfig ->
-                     withConfig.putValueArgument(
-                        0,
-                        irCall(config.constructors.first()),
-                     )
+                     withConfig.arguments[0] = irCall(config.constructors.first())
                      withConfig.dispatchReceiver = constructorGenerator()
                   }
                } else {
@@ -153,7 +142,13 @@ fun runKotest(type: String) {
          ?: error("Cannot find ${EntryPoint.TEST_ENGINE_CLASS_NAME} class reference")
    }
 
-   protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
+   protected val launcherConstructor by lazy {
+      launcherClass.constructors.first { symbol ->
+         val valueParameters =
+            symbol.owner.parameters.filter { it.kind == IrParameterKind.Regular || it.kind == IrParameterKind.Context }
+         valueParameters.isEmpty()
+      }
+   }
 
    protected abstract val withPlatformMethodName: String
 
