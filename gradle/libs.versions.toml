@@ -9,7 +9,7 @@ junit4 = "4.13.2"
 junit-platform = "1.8.2"
 junit-jupiter = "5.8.2"
 kaml = "0.66.0"
-kotlin = "2.1.20"
+kotlin = "2.2.0-Beta2"
 kotlinx-coroutines = "1.10.0"
 kotlinx-serialization = "1.6.3"
 ktor = "2.3.13"
@@ -94,7 +94,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.7.0" }
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.7.1" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
