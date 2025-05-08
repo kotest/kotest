@@ -81,9 +81,9 @@ abstract class Transformer(
       messageCollector.toLogger().warning("outputDir: $outputDir")
 
       //account for classes in root package. Those need to be imported too!
-      val imports= specs.filter { it.packageFqName==null }.map { "import ${it.kotlinFqName.asString()}"}.joinToString("\n")
+      val imports= specs.filter { it.packageFqName==null || !it.kotlinFqName.asString().contains(".") }.map { "import `${it.kotlinFqName.asString()}`"}.joinToString("\n")
 
-      val specs = specs.joinToString(",") { it.kotlinFqName.asString() + "()" }
+      val specs = specs.joinToString(",") { it.kotlinFqName.asString().split(".").map { "`$it`" }.joinToString(".") + "()" }
       val configs = if (configs.isEmpty()) "" else ".withProjectConfig(${configs.first().kotlinFqName.asString()}())"
 
       // todo move this to a generated file not a source written file
