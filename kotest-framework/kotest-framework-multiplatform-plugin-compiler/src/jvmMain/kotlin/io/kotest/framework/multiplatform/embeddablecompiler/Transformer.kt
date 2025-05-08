@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
+import org.jetbrains.kotlin.ir.util.packageFqName
 import org.jetbrains.kotlin.name.ClassId
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
@@ -79,6 +80,9 @@ abstract class Transformer(
       val outputDir = File(declaration.files.first().path.substringBefore("jsTest") + "jsTest/kotlin")
       messageCollector.toLogger().warning("outputDir: $outputDir")
 
+      //account for classes in root package. Those need to be imported too!
+      val imports= specs.filter { it.packageFqName==null }.map { "import ${it.kotlinFqName.asString()}"}.joinToString("\n")
+
       val specs = specs.joinToString(",") { it.kotlinFqName.asString() + "()" }
       val configs = if (configs.isEmpty()) "" else ".withProjectConfig(${configs.first().kotlinFqName.asString()}())"
 
@@ -93,6 +97,10 @@ abstract class Transformer(
 package io.kotest.runtime.js
 
 import io.kotest.engine.TestEngineLauncher
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
+$imports
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
