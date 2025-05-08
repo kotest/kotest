@@ -84,6 +84,9 @@ abstract class Transformer(
 
       // todo move this to a generated file not a source written file
       // requires an answer to this https://discuss.kotlinlang.org/t/create-new-file-using-compiler-plugin/30225
+      if(!outputDir.exists())
+      if(!outputDir.mkdirs()) throw RuntimeException("Cannot create output dir $outputDir")
+      if(!outputDir.isDirectory) throw RuntimeException("$outputDir is not a directory")
       val myFile = File(outputDir, "runKotest.kt")
       myFile.writeText(
          """
