@@ -25,7 +25,7 @@ abstract class KotestMultiplatformCompilerGradlePlugin @Inject constructor(
       const val EXTENSION_NAME = "kotestMultiplatform"
       const val COMPILER_PLUGIN_ID = "io.kotest.multiplatform"
       const val KOTEST_GROUP_ID = "io.kotest"
-      const val KOTEST_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-embeddable-compiler"
+      const val KOTEST_COMPILER_ARTIFACT_ID = "kotest-framework-multiplatform-plugin-compiler"
    }
 
    /**
