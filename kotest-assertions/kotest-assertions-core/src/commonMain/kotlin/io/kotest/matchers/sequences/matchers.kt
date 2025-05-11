@@ -2,18 +2,18 @@
 
 package io.kotest.matchers.sequences
 
-import io.kotest.assertions.eq.eq
+import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.collections.beEmpty as iterableBeEmpty
-import io.kotest.matchers.collections.beUniqueByEquals
 import io.kotest.matchers.collections.ContainDuplicatesMatcher
+import io.kotest.matchers.collections.beUniqueByEquals
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.collections.beEmpty as iterableBeEmpty
 
 /*
 How should infinite sequences be detected, and how should they be dealt with?
@@ -120,7 +120,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       consumedActualValues.add(actualElement)
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      if (eq(actualElement.value, expectedElement.value) != null) {
+      if (EqCompare.compare(actualElement.value, expectedElement.value, false) != null) {
          failDetails =
             "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
@@ -292,7 +292,7 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
       var actualElement: T?
       if (!iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but is empty."
-      } else if (eq(iterator.next().also { actualElement = it }, expectedElement) != null) {
+      } else if (EqCompare.compare(iterator.next().also { actualElement = it }, expectedElement, false) != null) {
          failureMessage =
             "Sequence should have a single element of $expectedElement but has $actualElement as first element."
       } else if (iterator.hasNext()) {

@@ -11,7 +11,7 @@ import org.opentest4j.AssertionFailedError
 
 class MapEqTest : FunSpec({
    test("should give null for simple equal maps") {
-      val equals = MapEq.equals(emptyMap<Any, Any>(), emptyMap<Any, Any>())
+      val equals = MapEq.equals(emptyMap<Any, Any>(), emptyMap<Any, Any>(), false)
 
       equals.shouldBeNull()
    }
@@ -20,7 +20,7 @@ class MapEqTest : FunSpec({
       val map1 = mapOf("a" to "actual")
       val map2 = mapOf("a" to "expected")
 
-      val throwable = MapEq.equals(map1, map2)
+      val throwable = MapEq.equals(map1, map2, false)
 
       assertSoftly {
          throwable.shouldBeInstanceOf<AssertionFailedError>()
@@ -39,7 +39,7 @@ class MapEqTest : FunSpec({
       val map1 = mapOf("a" to arrayOf(1,2))
       val map2 = mapOf("a" to arrayOf(1,2))
 
-      MapEq.equals(map1, map2).shouldBeNull()
+      MapEq.equals(map1, map2, false).shouldBeNull()
    }
 
    test("should give null for deeply nested equal maps") {
@@ -62,7 +62,7 @@ class MapEqTest : FunSpec({
          )
       )
 
-      MapEq.equals(actual, expected).shouldBeNull()
+      MapEq.equals(actual, expected, false).shouldBeNull()
    }
 
    test("should give error for deeply nested not equal maps") {
@@ -83,7 +83,7 @@ class MapEqTest : FunSpec({
          )
       )
 
-      val throwable = MapEq.equals(actual, expected)
+      val throwable = MapEq.equals(actual, expected, false)
       assertSoftly {
          throwable.shouldNotBeNull()
          throwable.message shouldBe """
@@ -109,7 +109,7 @@ class MapEqTest : FunSpec({
             "a" to arrayOf(1, 2, 3)
          )
       )
-      MapEq.equals(map1, map2).shouldBeNull()
+      MapEq.equals(map1, map2, false).shouldBeNull()
    }
 
    test("should give error for non equal maps having map as keys") {
@@ -124,7 +124,7 @@ class MapEqTest : FunSpec({
             "a" to arrayOf(1, 2, 3)
          )
       )
-      val throwable = MapEq.equals(map1, map2)
+      val throwable = MapEq.equals(map1, map2, false)
       assertSoftly {
          throwable.shouldNotBeNull()
          throwable.message shouldBe """

@@ -9,7 +9,7 @@ import io.kotest.matchers.string.shouldContainInOrder
 
 class StringEqTest : FunSpec({
    test("string eq should highlight line break diffs") {
-      StringEq.equals("foo\nbar\r", "\r\nfoo\nbar\r\n")?.message shouldBe """
+      StringEq.equals("foo\nbar\r", "\r\nfoo\nbar\r\n", false)?.message shouldBe """
          |(contents match, but line-breaks differ; output has been escaped to show line-breaks)
          |expected:<\r\nfoo\nbar\r\n> but was:<foo\nbar\r>
          """.trimMargin()
