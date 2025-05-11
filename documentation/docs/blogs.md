@@ -7,6 +7,7 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
+* [Kotest: The Kotlin Testing Framework You Will Love](https://softwaremill.com/kotest-the-kotlin-testing-framework-you-will-love/)
 * [Automated Screenshot Taking in Android using Kotest and Ktor (2025)](https://dev.to/leocolman/automated-screenshot-taking-in-android-using-kotest-and-ktor-o71)
 * [Matchers For Ranges](https://github.com/AlexCue987/talking-the-talk/blob/main/kotest/RANGES.md)
 * [Getting started with Kotest (2024)](https://www.waldo.com/blog/kotest-get-started)
