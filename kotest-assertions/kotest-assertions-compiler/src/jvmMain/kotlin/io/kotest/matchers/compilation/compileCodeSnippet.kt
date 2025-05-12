@@ -8,15 +8,16 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import org.intellij.lang.annotations.Language
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.ByteArrayOutputStream
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)
-private fun compileCodeSnippet(codeSnippet: String): JvmCompilationResult {
+private fun compileCodeSnippet(sourceFile: SourceFile): JvmCompilationResult {
    val kotlinCompilation = KotlinCompilation()
       .apply {
-         sources = listOf(SourceFile.kotlin("KClass.kt", codeSnippet))
+         sources = listOf(sourceFile)
          inheritClassPath = true
          verbose = false
          messageOutputStream = ByteArrayOutputStream()
@@ -29,9 +30,9 @@ private fun compileCodeSnippet(codeSnippet: String): JvmCompilationResult {
 }
 
 @OptIn(ExperimentalCompilerApi::class)
-private val compiles = object : Matcher<String> {
-   override fun test(value: String): MatcherResult {
-      val compilationResult = compileCodeSnippet(value)
+private val compiles = object : Matcher<SourceFile> {
+   override fun test(sourceFile: SourceFile): MatcherResult {
+      val compilationResult = compileCodeSnippet(sourceFile)
       return MatcherResult(
          compilationResult.exitCode == ExitCode.OK,
          { "Expected code to compile, but it failed to compile with error: \n${compilationResult.messages}" },
@@ -41,33 +42,56 @@ private val compiles = object : Matcher<String> {
 }
 
 /**
- * Assert that given codeSnippet[String] compiles successfully.
+ * Create a Kotlin code snippet with syntax highlighting
+ */
+fun codeSnippet(@Language("kotlin") sourceCode: String): SourceFile {
+   return SourceFile.kotlin("KClass.kt", sourceCode)
+}
+
+/**
+ * Assert that given codeSnippet [String] compiles successfully.
  * It includes the classpath of the calling process,
- * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * so that dependencies available for calling process will be available for code snippet as well.
  * @see [String.shouldNotCompile]
  * */
-fun String.shouldCompile() = this should compiles
+fun String.shouldCompile() = codeSnippet(this).shouldCompile()
 
 /**
- * Assert that given codeSnippet[String] does not compiles successfully.
+ * Assert that given codeSnippet [String] does not compiles successfully.
  * It includes the classpath of the calling process,
- * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * so that dependencies available for calling process will be available for code snippet as well.
  * @see [String.shouldCompile]
  * */
-fun String.shouldNotCompile() = this shouldNot compiles
+fun String.shouldNotCompile() = codeSnippet(this).shouldNotCompile()
 
 /**
- * Assert that given file[File] compiles successfully.
+ * Assert that given file [File] compiles successfully.
  * It includes the classpath of the calling process,
- * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * so that dependencies available for calling process will be available for code snippet as well.
  * @see [File.shouldNotCompile]
  * */
-fun File.shouldCompile() = readText() should compiles
+fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
 
 /**
- * Assert that given file[File] does not compiles successfully.
+ * Assert that given file [File] does not compiles successfully.
  * It includes the classpath of the calling process,
- * so that dependencies available for calling process will be available for code snippet snippet as well.
- * @see [File.shouldNotCompile]
+ * so that dependencies available for calling process will be available for code snippet as well.
+ * @see [File.shouldCompile]
  * */
-fun File.shouldNotCompile() = readText() shouldNot compiles
+fun File.shouldNotCompile() = codeSnippet(readText()).shouldNotCompile()
+
+/**
+ * Assert that given codeSnippet [SourceFile] compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet as well.
+ * @see [SourceFile.shouldNotCompile]
+ * */
+fun SourceFile.shouldCompile() = this should compiles
+
+/**
+ * Assert that given codeSnippet [SourceFile] does not compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet as well.
+ * @see [SourceFile.shouldCompile]
+ * */
+fun SourceFile.shouldNotCompile() = this shouldNot compiles
