@@ -13,26 +13,51 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.ByteArrayOutputStream
 import java.io.File
 
+/**
+ * Represents a configuration wrapper for Kotlin compilation used in testing,
+ * allowing to customize jvmTarget, classpath, compiler plugins, symbol processors or other compiler options.
+ *
+ * The configuration is used as a template and applied to each instance of [CodeSnippet].
+ *
+ * **Note:** You do **not** need to specify [KotlinCompilation.sources] inside the [configure] block.
+ * It will be overridden when compiling a [CodeSnippet], which provides its own source file.
+ */
 @OptIn(ExperimentalCompilerApi::class)
-private fun compileCodeSnippet(sourceFile: SourceFile): JvmCompilationResult {
-   val kotlinCompilation = KotlinCompilation()
-      .apply {
-         sources = listOf(sourceFile)
-         inheritClassPath = true
-         verbose = false
-         messageOutputStream = ByteArrayOutputStream()
-         jvmTarget = Runtime.version().feature().toString()
-      }
+class CompileConfig(private val configure: KotlinCompilation.() -> Unit) {
+   internal val compilationFactory: () -> KotlinCompilation = {
+      val kotlinCompilation = KotlinCompilation()
+         .apply {
+            inheritClassPath = true
+            verbose = false
+            messageOutputStream = ByteArrayOutputStream()
+            jvmTarget = Runtime.version().feature().toString()
+         }
+      kotlinCompilation.configure()
+      kotlinCompilation
+   }
+}
+
+/**
+ * Represents a Kotlin code snippet to be compiled in tests.
+ */
+class CodeSnippet internal constructor(
+   internal val sourceFile: SourceFile,
+   internal val compileConfig: CompileConfig
+)
+
+@OptIn(ExperimentalCompilerApi::class)
+private fun CodeSnippet.compile(): JvmCompilationResult {
+   val kotlinCompilation = compileConfig.compilationFactory()
+   kotlinCompilation.sources = listOf(sourceFile)
    val compilationResult = kotlinCompilation.compile()
    kotlinCompilation.workingDir.deleteRecursively()
-
    return compilationResult
 }
 
 @OptIn(ExperimentalCompilerApi::class)
-private val compileMatcher = object : Matcher<SourceFile> {
-   override fun test(sourceFile: SourceFile): MatcherResult {
-      val compilationResult = compileCodeSnippet(sourceFile)
+private val compileMatcher = object : Matcher<CodeSnippet> {
+   override fun test(value: CodeSnippet): MatcherResult {
+      val compilationResult = value.compile()
       return MatcherResult(
          compilationResult.exitCode == ExitCode.OK,
          { "Expected code to compile, but it failed to compile with error: \n${compilationResult.messages}" },
@@ -42,9 +67,9 @@ private val compileMatcher = object : Matcher<SourceFile> {
 }
 
 @OptIn(ExperimentalCompilerApi::class)
-private class DoesNotCompileMatcher(private val expectedMessage: String) : Matcher<SourceFile> {
-   override fun test(value: SourceFile): MatcherResult {
-      val compilationResult = compileCodeSnippet(value)
+private class DoesNotCompileMatcher(private val expectedMessage: String) : Matcher<CodeSnippet> {
+   override fun test(value: CodeSnippet): MatcherResult {
+      val compilationResult = value.compile()
       val messages = compilationResult.messages
       val exitCode = compilationResult.exitCode
 
@@ -73,11 +98,25 @@ private class DoesNotCompileMatcher(private val expectedMessage: String) : Match
    }
 }
 
+@OptIn(ExperimentalCompilerApi::class)
+private val defaultCompileConfig = CompileConfig {}
+
 /**
- * Create a Kotlin code snippet with syntax highlighting
+ * Creates a [CodeSnippet] from a raw Kotlin source string with syntax highlighting.
+ *
+ * The resulting snippet will be compiled using the current [CompileConfig], which allows
+ * customization of the compilation environment, such as enabling compiler plugins.
  */
-fun codeSnippet(@Language("kotlin") sourceCode: String): SourceFile {
-   return SourceFile.kotlin("KClass.kt", sourceCode)
+@OptIn(ExperimentalCompilerApi::class)
+fun CompileConfig.codeSnippet(@Language("kotlin") sourceCode: String): CodeSnippet {
+   return CodeSnippet(SourceFile.kotlin("KClass.kt", sourceCode), this)
+}
+
+/**
+ * Creates a [CodeSnippet] from a raw Kotlin source string with syntax highlighting.
+ */
+fun codeSnippet(@Language("kotlin") sourceCode: String): CodeSnippet {
+   return defaultCompileConfig.codeSnippet(sourceCode)
 }
 
 /**
@@ -102,7 +141,7 @@ fun String.shouldCompile() = codeSnippet(this).shouldCompile()
 fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
 
 /**
- * Assert that given file [File] compiles successfully.
+ * Assert that given [File] compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [File.shouldNotCompile]
@@ -110,7 +149,7 @@ fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this)
 fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
 
 /**
- * Assert that given file [File] does not compile successfully.
+ * Assert that given [File] does not compile successfully.
  *
  * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
  * with an error message containing the specified text. This helps ensure that the compilation
@@ -123,15 +162,15 @@ fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
 fun File.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readText()).shouldNotCompile(expectedMessage)
 
 /**
- * Assert that given codeSnippet [SourceFile] compiles successfully.
+ * Assert that given [CodeSnippet] compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available to the calling process are also available to the code snippet.
- * @see [SourceFile.shouldNotCompile]
+ * @see [CodeSnippet.shouldNotCompile]
  * */
-fun SourceFile.shouldCompile() = this should compileMatcher
+fun CodeSnippet.shouldCompile() = this should compileMatcher
 
 /**
- * Assert that given codeSnippet [SourceFile] does not compile successfully.
+ * Assert that given [CodeSnippet] does not compile successfully.
  *
  * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
  * with an error message containing the specified text. This helps ensure that the compilation
@@ -139,9 +178,9 @@ fun SourceFile.shouldCompile() = this should compileMatcher
  *
  * It includes the classpath of the calling process,
  * so that dependencies available to the calling process are also available to the code snippet.
- * @see [SourceFile.shouldCompile]
+ * @see [CodeSnippet.shouldCompile]
  * */
-fun SourceFile.shouldNotCompile(expectedMessage: String? = null) {
+fun CodeSnippet.shouldNotCompile(expectedMessage: String? = null) {
    if (expectedMessage == null) {
       this shouldNot compileMatcher
    } else {
