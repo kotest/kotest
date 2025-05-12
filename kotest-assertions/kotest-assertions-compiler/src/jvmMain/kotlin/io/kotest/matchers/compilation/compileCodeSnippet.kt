@@ -55,6 +55,25 @@ interface CodeSnippet {
    fun compile(): JvmCompilationResult
 }
 
+/**
+ * Compiles this [CodeSnippet] and applies the given [block] to the resulting [JvmCompilationResult].
+ *
+ * This is a convenient way to perform assertions or inspections on the compilation result
+ * without manually handling the result variable.
+ *
+ * Intended for use in advanced test scenarios where direct access to compilation diagnostics,
+ * generated files, or exit codes is needed.
+ *
+ * Prefer using [shouldCompile] and [shouldNotCompile] for common assertions.
+ *
+ * @param block A lambda that receives the [JvmCompilationResult] and returns a value.
+ * @return The result of applying [block] to the compilation result.
+ */
+@OptIn(ExperimentalCompilerApi::class)
+fun <T> CodeSnippet.compile(block: JvmCompilationResult.() -> T): T {
+   return compile().block()
+}
+
 private class CodeSnippetImpl(val sourceFile: SourceFile, val compileConfig: CompileConfig): CodeSnippet {
    @OptIn(ExperimentalCompilerApi::class)
    override fun compile(): JvmCompilationResult {
