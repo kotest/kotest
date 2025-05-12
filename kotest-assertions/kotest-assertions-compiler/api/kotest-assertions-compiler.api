@@ -1,7 +1,22 @@
+public abstract interface class io/kotest/matchers/compilation/CodeSnippet {
+	public abstract fun compile ()Lcom/tschuchort/compiletesting/JvmCompilationResult;
+}
+
 public final class io/kotest/matchers/compilation/CompileCodeSnippetKt {
+	public static final fun codeSnippet (Lio/kotest/matchers/compilation/CompileConfig;Ljava/lang/String;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun codeSnippet (Ljava/lang/String;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun shouldCompile (Lio/kotest/matchers/compilation/CodeSnippet;)V
 	public static final fun shouldCompile (Ljava/io/File;)V
 	public static final fun shouldCompile (Ljava/lang/String;)V
-	public static final fun shouldNotCompile (Ljava/io/File;)V
-	public static final fun shouldNotCompile (Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Lio/kotest/matchers/compilation/CodeSnippet;Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Ljava/io/File;Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Ljava/lang/String;Ljava/lang/String;)V
+	public static synthetic fun shouldNotCompile$default (Lio/kotest/matchers/compilation/CodeSnippet;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun shouldNotCompile$default (Ljava/io/File;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun shouldNotCompile$default (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
+}
+
+public final class io/kotest/matchers/compilation/CompileConfig {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 }
 
