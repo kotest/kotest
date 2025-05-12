@@ -20,6 +20,7 @@ private fun compileCodeSnippet(codeSnippet: String): JvmCompilationResult {
          inheritClassPath = true
          verbose = false
          messageOutputStream = ByteArrayOutputStream()
+         jvmTarget = Runtime.version().feature().toString()
       }
    val compilationResult = kotlinCompilation.compile()
    kotlinCompilation.workingDir.deleteRecursively()
