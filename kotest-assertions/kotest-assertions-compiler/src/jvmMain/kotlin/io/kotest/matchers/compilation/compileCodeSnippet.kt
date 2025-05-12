@@ -40,18 +40,30 @@ class CompileConfig(private val configure: KotlinCompilation.() -> Unit) {
 /**
  * Represents a Kotlin code snippet to be compiled in tests.
  */
-class CodeSnippet internal constructor(
-   internal val sourceFile: SourceFile,
-   internal val compileConfig: CompileConfig
-)
+interface CodeSnippet {
+   /**
+    * Compiles this code snippet.
+    *
+    * This method should generally **not** be used directly in test code. Prefer using higher-level
+    * assertion functions such as [CodeSnippet.shouldCompile] and [CodeSnippet.shouldNotCompile],
+    * which provides clear failure messages and better integration with Kotest.
+    *
+    * Use [compile] directly only if you need to define your own assertions using the detailed
+    * [JvmCompilationResult], such as checking specific diagnostic messages or generated files.
+    */
+   @OptIn(ExperimentalCompilerApi::class)
+   fun compile(): JvmCompilationResult
+}
 
-@OptIn(ExperimentalCompilerApi::class)
-private fun CodeSnippet.compile(): JvmCompilationResult {
-   val kotlinCompilation = compileConfig.compilationFactory()
-   kotlinCompilation.sources = listOf(sourceFile)
-   val compilationResult = kotlinCompilation.compile()
-   kotlinCompilation.workingDir.deleteRecursively()
-   return compilationResult
+private class CodeSnippetImpl(val sourceFile: SourceFile, val compileConfig: CompileConfig): CodeSnippet {
+   @OptIn(ExperimentalCompilerApi::class)
+   override fun compile(): JvmCompilationResult {
+      val kotlinCompilation = compileConfig.compilationFactory()
+      kotlinCompilation.sources = listOf(sourceFile)
+      val compilationResult = kotlinCompilation.compile()
+      kotlinCompilation.workingDir.deleteRecursively()
+      return compilationResult
+   }
 }
 
 @OptIn(ExperimentalCompilerApi::class)
@@ -109,7 +121,7 @@ private val defaultCompileConfig = CompileConfig {}
  */
 @OptIn(ExperimentalCompilerApi::class)
 fun CompileConfig.codeSnippet(@Language("kotlin") sourceCode: String): CodeSnippet {
-   return CodeSnippet(SourceFile.kotlin("KClass.kt", sourceCode), this)
+   return CodeSnippetImpl(SourceFile.kotlin("KClass.kt", sourceCode), this)
 }
 
 /**
