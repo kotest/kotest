@@ -37,14 +37,14 @@ class CompilationsMatcherTest : StringSpec() {
       "a code snippet of invalid variable assignment should not compile" {
          val rawStringCodeSnippet = """
              val aString: String = 123
-          """.trimIndent()
+          """
 
-         val syntaxHighlightedCodeSnipped = codeSnippet("""
+         val syntaxHighlightedCodeSnippet = codeSnippet("""
              val aString: String = 123
-         """.trimIndent())
+         """)
 
          rawStringCodeSnippet.shouldNotCompile()
-         syntaxHighlightedCodeSnipped.shouldNotCompile()
+         syntaxHighlightedCodeSnippet.shouldNotCompile()
          file.writeText(rawStringCodeSnippet)
          file.shouldNotCompile()
       }
@@ -52,15 +52,15 @@ class CompilationsMatcherTest : StringSpec() {
       "a code snippet should not compile and should produce the correct error message" {
          val rawStringCodeSnippet = """
              val aString: String = 123
-          """.trimIndent()
+          """
 
-         val syntaxHighlightedCodeSnipped = codeSnippet("""
+         val syntaxHighlightedCodeSnippet = codeSnippet("""
              val aString: String = 123
-         """.trimIndent())
+         """)
 
          val expectedErrorMsg = "Initializer type mismatch: expected 'String', actual 'Int'"
          rawStringCodeSnippet.shouldNotCompile(expectedErrorMsg)
-         syntaxHighlightedCodeSnipped.shouldNotCompile(expectedErrorMsg)
+         syntaxHighlightedCodeSnippet.shouldNotCompile(expectedErrorMsg)
          file.writeText(rawStringCodeSnippet)
          file.shouldNotCompile(expectedErrorMsg)
       }
@@ -68,7 +68,7 @@ class CompilationsMatcherTest : StringSpec() {
       "shouldNotCompile() should throw AssertionError if the expected message is incorrect" {
          val rawStringCodeSnippet = """
              val aString: String = 123
-          """.trimIndent()
+          """
 
          shouldThrowExactly<AssertionError> {
             rawStringCodeSnippet.shouldNotCompile("Initializer type mismatch: expected 'Int', actual 'String'")
@@ -87,7 +87,7 @@ class CompilationsMatcherTest : StringSpec() {
                val aLocalDate: LocalDate = LocalDate.now()
                println(aLocalDate)
             }
-          """.trimIndent()
+          """
 
          codeSnippet.shouldNotCompile()
          file.writeText(codeSnippet)
@@ -103,7 +103,7 @@ class CompilationsMatcherTest : StringSpec() {
                val aLocalDate: LocalDate = LocalDate.now()
                println(aLocalDate)
             }
-          """.trimIndent()
+          """
 
          codeSnippet.shouldCompile()
          file.writeText(codeSnippet)
@@ -119,7 +119,7 @@ class CompilationsMatcherTest : StringSpec() {
                val aLocalDate: LocalDate = LocalDate.now()
                println(aLocalDate)
             }
-          """.trimIndent()
+          """
 
          codeSnippet.shouldNotCompile()
          file.writeText(codeSnippet)
@@ -149,12 +149,16 @@ class CompilationsMatcherTest : StringSpec() {
 
       @OptIn(ExperimentalCompilerApi::class)
       "compilation output should contain a message from the dummy compiler plugin" {
-         CompileConfig {
+         val compileConfig = CompileConfig {
             compilerPluginRegistrars = listOf(DummyCompilerPluginRegistrar())
             verbose = true
-         }.codeSnippet("""
+         }
+
+         val codeSnippet = compileConfig.codeSnippet("""
             val a = 123
-         """).compile {
+         """)
+
+         codeSnippet.compile {
             exitCode shouldBe ExitCode.OK
             messages shouldContain "Hello from the dummy compiler plugin"
          }
