@@ -41,11 +41,11 @@ class CompilationTest : StringSpec({
 
     "shouldNotCompile test" {
         val rawStringCodeSnippet = """
-            val aInteger: Int = "A invalid assignment"
+            val anInteger: Int = "An invalid assignment"
         """
 
         val syntaxHighlightedSnippet = codeSnippet("""
-            val aInteger: Int = "A invalid assignment"
+            val anInteger: Int = "An invalid assignment"
         """)
 
         rawStringCodeSnippet.shouldNotCompile()
