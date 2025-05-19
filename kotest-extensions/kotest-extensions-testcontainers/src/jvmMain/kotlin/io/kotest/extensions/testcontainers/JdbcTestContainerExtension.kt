@@ -32,7 +32,7 @@ import javax.sql.DataSource
  * @since 1.1.0
  */
 class JdbcTestContainerExtension(
-   private val container: JdbcDatabaseContainer<Nothing>,
+   private val container: JdbcDatabaseContainer<*>,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
 ) : MountableExtension<TestContainerHikariConfig, DataSource>, AfterSpecListener, TestListener {
 
@@ -114,4 +114,3 @@ class JdbcTestContainerExtension(
       }
    }
 }
-

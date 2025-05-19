@@ -48,7 +48,7 @@ import java.io.File
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-class DockerComposeContainerExtension<T : DockerComposeContainer<out T>>(
+class DockerComposeContainerExtension<T : DockerComposeContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
    private val beforeStart: (T) -> Unit = {},
@@ -67,14 +67,14 @@ class DockerComposeContainerExtension<T : DockerComposeContainer<out T>>(
    AfterSpecListener {
 
    companion object {
-      operator fun invoke(composeFile: File): DockerComposeContainerExtension<DockerComposeContainer<Nothing>> =
-         DockerComposeContainerExtension(DockerComposeContainer<Nothing>(composeFile))
+      operator fun invoke(composeFile: File): DockerComposeContainerExtension<*> =
+         DockerComposeContainerExtension(DockerComposeContainer(composeFile))
 
       operator fun invoke(
          composeFile: File,
          mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
-      ): DockerComposeContainerExtension<DockerComposeContainer<Nothing>> =
-         DockerComposeContainerExtension(DockerComposeContainer<Nothing>(composeFile), mode)
+      ): DockerComposeContainerExtension<*> =
+         DockerComposeContainerExtension(DockerComposeContainer(composeFile), mode)
    }
 
    private var started: Boolean = false
