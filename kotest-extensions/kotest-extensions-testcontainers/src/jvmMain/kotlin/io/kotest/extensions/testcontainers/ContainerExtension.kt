@@ -53,7 +53,7 @@ import org.testcontainers.containers.GenericContainer
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-class ContainerExtension<T : GenericContainer<T>>(
+class ContainerExtension<T : GenericContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
    private val beforeStart: () -> Unit = {},
