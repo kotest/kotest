@@ -10,10 +10,10 @@ import io.kotest.assertions.print.printWithType
  * This [Eq] is used when there is no more specific eq available.
  *
  * This implementation will simply compare values using the kotlin == function,
- * and in the case of inequality, delegates to [failure].
+ * and in the case of inequality, delegates to [failure] to create an error message.
  */
-internal object DefaultEq : Eq<Any> {
-   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? {
+internal object DefaultEq : Eq<Any?> {
+   override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? {
       return if (test(actual, expected)) null else {
          failureWithTypeInformation(ExpectedWithType(expected.printWithType()), ActualWithType(actual.printWithType()))
       }

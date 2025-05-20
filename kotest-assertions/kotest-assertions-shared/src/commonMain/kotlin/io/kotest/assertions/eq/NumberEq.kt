@@ -5,6 +5,10 @@ import io.kotest.assertions.ExpectedWithType
 import io.kotest.assertions.failureWithTypeInformation
 import io.kotest.assertions.print.printWithType
 
+/**
+ * An [Eq] for [Number] types. If strictNumberEq is true, then the numbers are compared simply
+ * using equals, otherwise, the smaller type is converted to the larger type and compared.
+ */
 object NumberEq : Eq<Number> {
 
    override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? {
