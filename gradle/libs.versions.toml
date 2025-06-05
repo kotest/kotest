@@ -29,7 +29,7 @@ wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
-arrow = "2.1.1"
+arrow = "2.1.2"
 testcontainers = "1.20.6"
 asm = "9.7.1"
 
