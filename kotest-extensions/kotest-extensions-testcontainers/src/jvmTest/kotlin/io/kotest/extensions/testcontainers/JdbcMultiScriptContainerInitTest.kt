@@ -9,7 +9,7 @@ import org.testcontainers.containers.MySQLContainer
 @Ignored
 class JdbcMultiScriptContainerInitTest : FunSpec({
 
-   val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
+   val mysql = MySQLContainer("mysql:8.0.26").apply {
       startupAttempts = 1
       withUrlParam("connectionTimeZone", "Z")
       withUrlParam("zeroDateTimeBehavior", "convertToNull")

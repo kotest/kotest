@@ -15,17 +15,17 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.util.Optional
 
 @Deprecated("use ContainerExtension")
-class TestContainerExtension<T : GenericContainer<out T>>(
-   private val container: GenericContainer<out T>,
+class TestContainerExtension<T : GenericContainer<*>>(
+   private val container: T,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
 ) : MountableExtension<T, T>, TestListener, AfterSpecListener {
 
    companion object {
-      operator fun invoke(name: String): TestContainerExtension<GenericContainer<Nothing>> =
-         TestContainerExtension(GenericContainer<Nothing>(name))
+      operator fun invoke(name: String): TestContainerExtension<*> =
+         TestContainerExtension(GenericContainer(name))
 
-      operator fun invoke(name: String, lifecycleMode: LifecycleMode): TestContainerExtension<GenericContainer<Nothing>> =
-         TestContainerExtension(GenericContainer<Nothing>(name), lifecycleMode)
+      operator fun invoke(name: String, lifecycleMode: LifecycleMode): TestContainerExtension<*> =
+         TestContainerExtension(GenericContainer(name), lifecycleMode)
    }
 
    override fun mount(configure: T.() -> Unit): T {
