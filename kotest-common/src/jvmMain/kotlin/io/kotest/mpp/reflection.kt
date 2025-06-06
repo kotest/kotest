@@ -58,13 +58,13 @@ object JvmReflection : Reflection {
 
    private fun KClass<*>.annotationsSafe(): List<Annotation> = try {
       this.annotations
-   } catch (e: Exception) {
+   } catch (_: Exception) {
       emptyList()
    }
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
       kclass.isData
-   } catch (e: Throwable) {
+   } catch (_: Throwable) {
       false
    }
 
