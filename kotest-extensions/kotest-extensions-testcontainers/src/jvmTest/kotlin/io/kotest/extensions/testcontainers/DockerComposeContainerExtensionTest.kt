@@ -12,7 +12,7 @@ import java.io.File
 class DockerComposeContainerExtensionTest : StringSpec() {
    init {
 
-      val container: DockerComposeContainer<Nothing> =
+      val container =
          install(DockerComposeContainerExtension(File("src/test/resources/docker-compose/docker-compose.yml")))
 
       "should setup using docker-compose" {
