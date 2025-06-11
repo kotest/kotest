@@ -32,6 +32,7 @@ public final class io/kotest/assertions/ktor/ResponsesKt {
 
 public final class io/kotest/assertions/ktor/client/HeadersKt {
 	public static final fun haveContentType (Lio/ktor/http/ContentType;)Lio/kotest/matchers/Matcher;
+	public static final fun haveContentTypeMatching (Lio/ktor/http/ContentType;)Lio/kotest/matchers/Matcher;
 	public static final fun haveHeader (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveHeader (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveVersion (Lio/ktor/http/HttpProtocolVersion;)Lio/kotest/matchers/Matcher;
@@ -40,6 +41,7 @@ public final class io/kotest/assertions/ktor/client/HeadersKt {
 	public static final fun shouldHaveContentEncoding (Lio/ktor/client/statement/HttpResponse;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldHaveContentEncoding (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldHaveContentType (Lio/ktor/client/statement/HttpResponse;Lio/ktor/http/ContentType;)Lio/ktor/client/statement/HttpResponse;
+	public static final fun shouldHaveContentTypeMatching (Lio/ktor/client/statement/HttpResponse;Lio/ktor/http/ContentType;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldHaveETag (Lio/ktor/client/statement/HttpResponse;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldHaveETag (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldHaveHeader (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;
@@ -50,6 +52,7 @@ public final class io/kotest/assertions/ktor/client/HeadersKt {
 	public static final fun shouldNotHaveContentEncoding (Lio/ktor/client/statement/HttpResponse;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldNotHaveContentEncoding (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldNotHaveContentType (Lio/ktor/client/statement/HttpResponse;Lio/ktor/http/ContentType;)Lio/ktor/client/statement/HttpResponse;
+	public static final fun shouldNotHaveContentTypeMatching (Lio/ktor/client/statement/HttpResponse;Lio/ktor/http/ContentType;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldNotHaveETag (Lio/ktor/client/statement/HttpResponse;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldNotHaveETag (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;
 	public static final fun shouldNotHaveHeader (Lio/ktor/client/statement/HttpResponse;Ljava/lang/String;)Lio/ktor/client/statement/HttpResponse;

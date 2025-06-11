@@ -137,7 +137,7 @@ class ResponseKtTest : FreeSpec({
       }
    }
 
-   "ContentType assertions" {
+   "ContentType equals" {
       testApplication {
          routing { get("/") { call.respondText("ok") } }
          client.get("/").apply {
@@ -149,6 +149,40 @@ class ResponseKtTest : FreeSpec({
             shouldThrow<AssertionError> {
                shouldHaveContentType(ContentType.Application.GZip)
             }.message shouldBe "Response should have Content-Type application/gzip but was text/plain; charset=UTF-8."
+         }
+      }
+   }
+
+   "ContentType matches" {
+      testApplication {
+         routing { get("/") { call.respondText("ok") } }
+         client.get("/").apply {
+            shouldHaveContentTypeMatching(ContentType.Any)
+            shouldHaveContentTypeMatching(ContentType.Text.Any)
+            shouldHaveContentTypeMatching(ContentType.Text.Plain)
+            shouldHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "*"))
+            shouldHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "UTF-8"))
+
+            shouldNotHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "UTF-8").withParameter("missing", "*"))
+            shouldNotHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "UTF-8").withParameter("extra", "param"))
+            shouldNotHaveContentTypeMatching(ContentType.Application.GZip)
+
+            shouldThrow<AssertionError> {
+               shouldNotHaveContentTypeMatching(ContentType.Text.Any)
+            }.message shouldBe "Response should not match Content-Type text/*."
+            shouldThrow<AssertionError> {
+               shouldNotHaveContentTypeMatching(ContentType.Text.Plain)
+            }.message shouldBe "Response should not match Content-Type text/plain."
+            shouldThrow<AssertionError> {
+               shouldNotHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "UTF-8"))
+            }.message shouldBe "Response should not match Content-Type text/plain; charset=UTF-8."
+
+            shouldThrow<AssertionError> {
+               shouldHaveContentTypeMatching(ContentType.Application.GZip)
+            }.message shouldBe "Response should match Content-Type application/gzip but was text/plain; charset=UTF-8."
+            shouldThrow<AssertionError> {
+               shouldHaveContentTypeMatching(ContentType.Text.Plain.withParameter("charset", "UTF-8").withParameter("missing", "*"))
+            }.message shouldBe "Response should match Content-Type text/plain; charset=UTF-8; missing=* but was text/plain; charset=UTF-8."
          }
       }
    }
