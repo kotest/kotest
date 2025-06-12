@@ -26,7 +26,6 @@ import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
-import org.jetbrains.kotlin.ir.util.packageFqName
 import org.jetbrains.kotlin.name.ClassId
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
@@ -74,11 +73,17 @@ abstract class Transformer(
          return fragment
       }
 
+      //TODO all of the below needs to go into the gradle plugin, because here we know nothing about the project setup!
+
       // we want to write our launcher function to a well known package name, so the gradle plugin can execute it
       // so we can take any file, and strip out any package paths to get the base src path
       // we are making an assumption the build folder contains jsTest or wasmJsTest
-      val outputDir = File(declaration.files.first().path.substringBefore("jsTest") + "jsTest/kotlin")
-      messageCollector.toLogger().warning("outputDir: $outputDir")
+      val pathOfFirstSource = declaration.files.first().path
+      val beforeJsTest = pathOfFirstSource.substringBefore("jsTest")
+      if(pathOfFirstSource != beforeJsTest) { //no JS-specific tests present
+
+         val outputDir = File(beforeJsTest + "jsTest/kotlin")
+         messageCollector.toLogger().warning("outputDir: $outputDir")
 
       //account for classes in root package. Those need to be imported too!
       val imports= specs.filter { it.packageFqName==null || !it.kotlinFqName.asString().contains(".") }.map { "import `${it.kotlinFqName.asString()}`"}.joinToString("\n")
@@ -91,6 +96,8 @@ abstract class Transformer(
       if(!outputDir.exists())
       if(!outputDir.mkdirs()) throw RuntimeException("Cannot create output dir $outputDir")
       if(!outputDir.isDirectory) throw RuntimeException("$outputDir is not a directory")
+
+      //TODO This will never work for anything that propagates any opt ins!
       val myFile = File(outputDir, "runKotest.kt")
       myFile.writeText(
          """
@@ -112,8 +119,8 @@ fun runKotest(type: String) {
    if (type === "TeamCity") launcher.withTeamCityListener().promise() else launcher.promise()
 }
 """.trim()
-      )
-
+         )
+      }
       return fragment
    }
 
