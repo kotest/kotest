@@ -21,16 +21,10 @@ kotlin {
          }
       }
 
-      val jvmMain by getting {
-         dependencies {
-            implementation(libs.ktor.server.core)
-            implementation(libs.ktor.server.testHost)
-         }
-      }
-
       val jvmTest by getting {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
+            implementation(libs.ktor.server.testHost)
          }
       }
    }
