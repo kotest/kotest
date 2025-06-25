@@ -107,7 +107,7 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
 ): Arb<T> {
    val className = kclass.qualifiedName ?: kclass.simpleName
    val constructor = kclass.primaryConstructor
-      ?: (kclass.java.constructors.first().kotlinFunction as? KFunction<T>)
+      ?: (kclass.java.constructors.firstNotNullOfOrNull { it.kotlinFunction as? KFunction<T> })
       ?: error("Could not locate a primary constructor for $className")
 
    check(kclass.visibility != KVisibility.PRIVATE) { "The class $className must be public." }

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor
 import com.sksamuel.kotest.property.JavaFoo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
@@ -242,7 +243,14 @@ class ReflectiveBindTest : StringSpec(
          val javaFoo = Arb.bind<JavaFoo>()
          javaFoo.take(100).toList().forAll {
             it.bar.shouldNotBeNull()
+            it.baz.shouldBe("baz") // Default value set in JavaFoo public constructor
          }
+      }
+
+      "Arb.bind should fail with good message when java class has no relevant constructor" {
+         shouldThrow<IllegalStateException> {
+            Arb.bind<JavaClassWithoutNonPrivateConstructor>().next()
+         }.message shouldBe "Could not locate a primary constructor for com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor"
       }
    }
 ) {
