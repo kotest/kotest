@@ -16,7 +16,7 @@ A subset of [JSON Schemas](https://json-schema.org/) can be defined either by pa
 val parsedSchema = parseSchema(
   """
   {
-  "$id": "https://example.com/geographical-location.schema.json",  // will  be ignored
+  "$id": "https://example.com/geographical-location.schema.json",  // will be ignored
   "$schema": "https://json-schema.org/draft/2020-12/schema",       // will be ignored
   "title": "Longitude and Latitude Values",                        // will be ignored
   "description": "A geographical coordinate.",                     // will be ignored
