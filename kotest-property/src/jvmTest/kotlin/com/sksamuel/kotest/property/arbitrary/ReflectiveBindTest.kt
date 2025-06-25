@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import com.sksamuel.kotest.property.JavaFoo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -8,6 +9,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -234,6 +236,13 @@ class ReflectiveBindTest : StringSpec(
       "Arb.bind for set of sealed type should not fail target size requirement" {
          val arb = Arb.bind<Set<Shape3d>>()
          arb.take(100).toList()
+      }
+
+      "Arb.bind should reflectively bind java classes" {
+         val javaFoo = Arb.bind<JavaFoo>()
+         javaFoo.take(100).toList().forAll {
+            it.bar.shouldNotBeNull()
+         }
       }
    }
 ) {

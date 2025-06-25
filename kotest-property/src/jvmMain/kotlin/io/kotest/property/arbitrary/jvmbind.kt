@@ -5,12 +5,14 @@ import io.kotest.property.Arb
 import io.kotest.property.resolution.CommonTypeArbResolver
 import io.kotest.property.resolution.GlobalArbResolver
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.jvm.kotlinFunction
 import kotlin.reflect.typeOf
 
 /**
@@ -104,7 +106,10 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
    kclass: KClass<T>
 ): Arb<T> {
    val className = kclass.qualifiedName ?: kclass.simpleName
-   val constructor = kclass.primaryConstructor ?: error("Could not locate a primary constructor for $className")
+   val constructor = kclass.primaryConstructor
+      ?: (kclass.java.constructors.first().kotlinFunction as? KFunction<T>)
+      ?: error("Could not locate a primary constructor for $className")
+
    check(kclass.visibility != KVisibility.PRIVATE) { "The class $className must be public." }
    check(constructor.visibility != KVisibility.PRIVATE) { "The primary constructor of $className must be public." }
 
