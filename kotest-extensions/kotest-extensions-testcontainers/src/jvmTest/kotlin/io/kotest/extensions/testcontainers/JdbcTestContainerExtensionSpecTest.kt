@@ -10,7 +10,7 @@ import org.testcontainers.containers.MySQLContainer
 class JdbcTestContainerExtensionSpecTest : FunSpec() {
    init {
 
-      val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
+      val mysql = MySQLContainer("mysql:8.0.26").apply {
          withInitScript("init.sql")
          startupAttempts = 1
          withUrlParam("connectionTimeZone", "Z")
