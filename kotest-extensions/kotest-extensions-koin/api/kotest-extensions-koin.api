@@ -18,3 +18,12 @@ public final class io/kotest/koin/KoinLifecycleMode : java/lang/Enum {
 	public static fun values ()[Lio/kotest/koin/KoinLifecycleMode;
 }
 
+public final class io/kotest/koin/KoinPropTestListener : io/kotest/property/PropTestListener {
+	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
