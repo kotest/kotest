@@ -9,6 +9,8 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.coroutines.TestScopeElement
 import io.kotest.engine.test.scopes.withCoroutineContext
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -29,7 +31,7 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      var result: TestResult = TestResult.Ignored()
+      var result = CompletableDeferred<TestResult>()
       logger.log { Pair(testCase.name.name, "Switching context to coroutines runTest") }
 
       // Handle timeouts here to avoid the influence of the default timeout set inside runTest
@@ -42,9 +44,15 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
             additionalContext += NonDeterministicTestVirtualTimeEnabled
          }
          withContext(additionalContext) {
-            result = test(testCase, scope.withCoroutineContext(coroutineContext))
+            try {
+               result.complete(test(testCase, scope.withCoroutineContext(coroutineContext)))
+            } catch (e: CancellationException) {
+               result.cancel(e)
+            } catch (e: Throwable) {
+               result.completeExceptionally(e)
+            }
          }
       }
-      return result
+      return result.await()
    }
 }
