@@ -16,25 +16,25 @@ import java.util.Optional
 import org.testcontainers.containers.DockerComposeContainer
 
 @Deprecated("use DockerComposeContainerExtension")
-class DockerComposeContainersExtension<T : DockerComposeContainer<out T>>(
-   private val container: DockerComposeContainer<out T>,
+class DockerComposeContainersExtension<T : DockerComposeContainer<*>>(
+   private val container: T,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
 ) : MountableExtension<T, T>, TestListener, AfterSpecListener {
 
    companion object {
-      operator fun invoke(composeFile: File): DockerComposeContainersExtension<DockerComposeContainer<Nothing>> =
-         DockerComposeContainersExtension(DockerComposeContainer<Nothing>(composeFile))
+      operator fun invoke(composeFile: File): DockerComposeContainersExtension<*> =
+         DockerComposeContainersExtension(DockerComposeContainer(composeFile))
 
       operator fun invoke(
          composeFile: File,
          lifecycleMode: LifecycleMode
-      ): DockerComposeContainersExtension<DockerComposeContainer<Nothing>> =
-         DockerComposeContainersExtension(DockerComposeContainer<Nothing>(composeFile), lifecycleMode)
+      ): DockerComposeContainersExtension<*> =
+         DockerComposeContainersExtension(DockerComposeContainer(composeFile), lifecycleMode)
    }
 
    override fun mount(configure: T.() -> Unit): T {
       @Suppress("UNCHECKED_CAST")
-      (container as T).configure()
+      container.configure()
       if (lifecycleMode == LifecycleMode.Spec) {
          container.start()
       }
