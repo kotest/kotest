@@ -1,7 +1,7 @@
 package io.kotest.matchers.equality
 
 import io.kotest.assertions.eq.Eq
-import io.kotest.assertions.eq.eq
+import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 import io.kotest.mpp.bestName
@@ -77,7 +77,7 @@ private fun compareValue(
          type,
          config.useDefaultShouldBeForFields
       ) -> {
-         val throwable = eq(actual, expected)
+         val throwable = EqCompare.compare(actual, expected, false)
          if (throwable == null) CompareResult.match(field) else CompareResult.single(field, throwable)
       }
 

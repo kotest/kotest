@@ -1,7 +1,6 @@
 package io.kotest.matchers
 
 import io.kotest.assertions.eq.EqMatcher
-import io.kotest.assertions.eq.eq
 import io.kotest.assertions.withClue
 
 /**
@@ -12,7 +11,7 @@ import io.kotest.assertions.withClue
  * If the argument is a [Matcher] then the matcher is invoked using the left hand side as the input
  * as the matchers expected value.
  *
- * Otherwise, comparison is done using [eq] via an [EqMatcher] to compare actual and expected.
+ * Otherwise, comparison is done using [EqMatcher] via an [EqMatcher] to compare actual and expected.
  *
  * When the power-assert plugin is enabled, this invocation is replaced by shouldBe(expected, msg).
  *
@@ -42,7 +41,7 @@ infix fun <T, U : T> T.shouldBe(expected: U?): T {
  * @see [eq]
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, U : T> T.shouldBe(expected: T?, msg: String): T {
+fun <T> T.shouldBe(expected: T?, msg: String): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> withClue(msg) {
