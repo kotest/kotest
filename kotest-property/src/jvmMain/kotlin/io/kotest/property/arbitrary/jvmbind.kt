@@ -107,9 +107,10 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
    val className = kclass.qualifiedName ?: kclass.simpleName
    val constructor = kclass.primaryConstructor
       ?: determineFallbackConstructor(kclass)
-      ?: error("Could not locate a primary constructor for $className")
+      ?: error("Could not locate a suitable constructor for $className")
 
    check(kclass.visibility != KVisibility.PRIVATE) { "The class $className must be public." }
+   // Fallback constructors are never private, so this can only be relevant for the primary constructor.
    check(constructor.visibility != KVisibility.PRIVATE) { "The primary constructor of $className must be public." }
 
    if (constructor.parameters.isEmpty()) {

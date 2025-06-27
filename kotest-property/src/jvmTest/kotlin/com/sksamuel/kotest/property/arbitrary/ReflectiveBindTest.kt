@@ -252,7 +252,7 @@ class ReflectiveBindTest : StringSpec(
       "When binding Java classes - Arb.bind should fail with good message when there is no relevant constructor" {
          shouldThrow<IllegalStateException> {
             Arb.bind<JavaClassWithoutNonPrivateConstructor>().next()
-         }.message shouldBe "Could not locate a primary constructor for com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor"
+         }.message shouldBe "Could not locate a suitable constructor for com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor"
       }
 
       "When binding Java classes - Arb.bind should handle nested classes" {
