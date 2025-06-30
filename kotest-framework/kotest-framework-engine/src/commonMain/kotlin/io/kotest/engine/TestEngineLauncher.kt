@@ -76,24 +76,20 @@ class TestEngineLauncher(
       )
    }
 
-   fun withSpecs(vararg specs: Spec): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = specs.toList().map { SpecRef.Singleton(it) },
-         tagExpression = tagExpression,
-         registry = registry,
-      )
-   }
+   fun withSpecs(vararg specs: Spec): TestEngineLauncher = withSpecs(specs.toList())
+   fun withSpecs(specs: List<Spec>): TestEngineLauncher = withSpecRefs(specs.map { SpecRef.Singleton(it) })
 
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
-   fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher {
+   fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
+      withSpecRefs(specs.map { SpecRef.Reference(it) })
+
+   fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
+   fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {
       return TestEngineLauncher(
          platform = platform,
          listener = listener,
          config = config,
-         refs = specs.toList().map { SpecRef.Reference(it) },
+         refs = refs,
          tagExpression = tagExpression,
          registry = registry,
       )

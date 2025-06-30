@@ -97,6 +97,7 @@ abstract class KotestPlugin : Plugin<Project> {
                   when (platformType) {
 
                      KotlinPlatformType.js -> {
+                        println("NodeJsPlugin")
                         project.plugins.apply(NodeJsPlugin::class.java)
                         project.extensions.configure(NodeJsEnvSpec::class.java) {
                            project.tasks.register(JS_TASK_NAME, KotestJsTask::class) {

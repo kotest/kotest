@@ -14,12 +14,12 @@ abstract class KotestJsTask @Inject internal constructor(
    private val executors: ExecOperations,
 ) : DefaultTask() {
 
-   // this is the name of the generated function from the compiler plugin
-   // it should always match whatever the compiler plugin is using
+   // this is the name of the generated function from the KSP plugin
+   // it should always match whatever the plugin is generating
    private val runKotestFnName = "runKotest"
 
-   // this is the name of the package where the compiler plugin places the generated top level run function
-   // it should always match whatever the compiler plugin is using
+   // this is the name of the package where the KSP plugin places the generated top level run function
+   // it should always match whatever the plugin is generating
    private val runKotestPackageName = "io.kotest.runtime.js"
 
    @get:Input
@@ -28,13 +28,11 @@ abstract class KotestJsTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       executors.exec {
-         println("isIntellij=" + IntellijUtils.isIntellij())
          println("Node executable ${nodeExecutable.get()}")
 
          // the kotlin js compiler uses projectname-test as the module name, eg in build/js/packages
          val testModuleName = "${project.name}-test"
          println("JS Test Module $testModuleName")
-
 
          val buildDir = project.layout.buildDirectory.asFile.get().toPath()
 
