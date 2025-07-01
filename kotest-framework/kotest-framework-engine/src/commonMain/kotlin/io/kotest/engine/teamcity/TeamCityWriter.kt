@@ -144,7 +144,6 @@ internal class TeamCityWriter(
          .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
-      println(msg)
    }
 
    /**
