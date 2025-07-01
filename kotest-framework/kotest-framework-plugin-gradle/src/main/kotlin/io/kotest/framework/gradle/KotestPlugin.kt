@@ -70,10 +70,6 @@ abstract class KotestPlugin : Plugin<Project> {
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = DESCRIPTION
       }
-      project.tasks.withType<KotestJsTask>().configureEach {
-         group = JavaBasePlugin.VERIFICATION_GROUP
-         description = DESCRIPTION
-      }
    }
 
    private fun handleKotlinJvm(project: Project) {
@@ -132,11 +128,11 @@ abstract class KotestPlugin : Plugin<Project> {
             }
             // add one special task that runs all compilations
             // todo can we just make a task that runs the other tasks above?
-            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
-               group = JavaBasePlugin.VERIFICATION_GROUP
-               description = DESCRIPTION
-               dependsOn(":$JS_TASK_NAME")
-            }
+//            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
+//               group = JavaBasePlugin.VERIFICATION_GROUP
+//               description = DESCRIPTION
+//               dependsOn(":$JS_TASK_NAME")
+//            }
          }
       }
    }
@@ -157,8 +153,6 @@ abstract class KotestPlugin : Plugin<Project> {
                // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                // see https://docs.gradle.org/current/userguide/isolated_projects.html
                project.tasks.register("kotest$capitalTarget", KotestAndroidTask::class) {
-                  group = JavaBasePlugin.VERIFICATION_GROUP
-                  description = DESCRIPTION
                   compilationNames.set(listOf(compilation.name))
                   inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
                }

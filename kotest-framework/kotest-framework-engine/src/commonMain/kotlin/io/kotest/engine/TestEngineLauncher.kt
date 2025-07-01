@@ -76,9 +76,6 @@ class TestEngineLauncher(
       )
    }
 
-   fun withSpecs(vararg specs: Spec): TestEngineLauncher = withSpecs(specs.toList())
-   fun withSpecs(specs: List<Spec>): TestEngineLauncher = withSpecRefs(specs.map { SpecRef.Singleton(it) })
-
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
       withSpecRefs(specs.map { SpecRef.Reference(it) })

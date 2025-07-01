@@ -20,6 +20,8 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
                appendLine()
                appendLine("""import io.kotest.engine.TestEngineLauncher""")
                appendLine("""import io.kotest.core.spec.SpecRef""")
+               appendLine("""import io.kotest.engine.extensions.ProvidedDescriptorFilter""")
+               appendLine("""import io.kotest.core.descriptors.DescriptorPaths""")
 
                specs.forEach {
                   appendLine("""import ${it.qualifiedName?.asString()}""")
@@ -29,9 +31,14 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
                   """
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-fun runKotest(type: String) {
+fun runKotest(listenerType: String, descriptorArg: String?) {
+
+  val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
+  val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+
   val launcher = TestEngineLauncher()
     .withJs()
+    .addExtensions(listOfNotNull(filter))
     .withSpecRefs("""
                )
                specs.forEach {
@@ -39,7 +46,10 @@ fun runKotest(type: String) {
                }
                appendLine(
                   """    )
-  if (type === "TeamCity") launcher.withTeamCityListener().promise() else launcher.promise()
+  when (listenerType) {
+      "TeamCity" -> launcher.withTeamCityListener().promise()
+      else -> launcher.promise()
+   }
 }"""
                )
             }

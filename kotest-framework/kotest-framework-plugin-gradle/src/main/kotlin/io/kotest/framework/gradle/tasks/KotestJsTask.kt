@@ -27,7 +27,7 @@ abstract class KotestJsTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       executors.exec {
-         println("specs: ${specs.get()}")
+         println("specs: ${specs.getOrElse("")}")
          println("Node executable ${nodeExecutable.get()}")
 
          // the kotlin js compiler uses projectname-test as the module name, eg in build/js/packages
@@ -42,10 +42,12 @@ abstract class KotestJsTask @Inject internal constructor(
 
 //         val testFilter = if (tests.orNull == null) null else "'$tests'"
 
+         val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
+
          // this is the entry point passed to node which references the well defined runKotest function
          val nodeCommand = when {
-            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('TeamCity')"
-            else -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('Console')"
+            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('TeamCity', $descriptorArg)"
+            else -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('Console', $descriptorArg)"
          }
          println("Node command :$nodeCommand")
 

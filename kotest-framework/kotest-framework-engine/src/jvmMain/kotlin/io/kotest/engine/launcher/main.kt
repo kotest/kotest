@@ -5,11 +5,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
-import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
+import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
+import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
-import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -36,16 +36,16 @@ object LauncherArgs {
    const val DESCRIPTOR = "descriptor"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
-   @Deprecated("Not used by kotest 6")
+   @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
    const val ARG_SPEC = "spec"
 
-   @Deprecated("Not used by kotest 6")
+   @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
    const val TESTPATH = "testpath"
 
-   @Deprecated("Not used by kotest 6")
+   @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
    const val REPORTER = "reporter"
 
-   @Deprecated("Not used by kotest 6")
+   @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
    const val WRITER = "writer"
 }
 
@@ -59,6 +59,7 @@ object LauncherArgs {
  * This is used by the Gradle and Intellij plugins (and other third party clients).
  * Therefore, the package name and contract for this main method **MUST** remain backwards compatible.
  */
+@Suppress("DEPRECATION")
 fun main(args: Array<String>) {
 
    println("Starting Kotest launcher with args: ${args.joinToString(";")}")
@@ -66,11 +67,10 @@ fun main(args: Array<String>) {
    val launcherArgs = parseArgs(args.toList())
    println("Parsed args: $launcherArgs")
 
-   // The enigne *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
+   // The engine *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
    // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --specs
-   // we must support both for backwards compatibility
-   // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
+   // we need to support both so people can run kotest5 and kotest6 projects with the same plugin
    val specsArg = launcherArgs[ARG_SPECS]
       ?: launcherArgs[ARG_SPEC]
       ?: error("The $ARG_SPECS arg must be provided")
@@ -80,29 +80,29 @@ fun main(args: Array<String>) {
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
    val descriptorFilter = buildDescriptorFilter(launcherArgs)
+   println("descriptorFilter: $descriptorFilter")
 
-   // Kotest 5 supported --testpath and didn't support the a descriptor selector, only the test name
+   // Kotest 5 supported --testpath and didn't support the descriptor selector, only the test name
    // but we can combine that with the --spec arg which we know must be present in kotest 5 if testpath is
-   // this exists so people can upgrade to kotest 6 but keep the old plugin
-   // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
+   // we need to support both so people can run kotest5 and kotest6 projects with the same plugin
    val descriptorFilterKotest5 = buildKotest5DescriptorFilter(launcherArgs)
 
+   // this is the output listener that will write to the console or teamcity so we can see tests running
    val outputListener = buildOutputTestEngineListener(launcherArgs)
 
-   // we want to collect the results, so we can check if we need exit with an error
+   // this is used so we can see if any test failed and so exit with a non-zero code
    val collector = CollectingTestEngineListener()
 
-   val launcher = TestEngineLauncher(
-      CompositeTestEngineListener(
-         collector,
-         LoggingTestEngineListener,// we use this to write to the kotest log file
-         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(outputListener))
-      )
-   ).withClasses(classes)
-      .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
-
    runBlocking {
-      launcher.async()
+      TestEngineLauncher(
+         CompositeTestEngineListener(
+            collector,
+            LoggingTestEngineListener, // we use this to write to the kotest log file if enabled
+            ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(outputListener))
+         )
+      ).withClasses(classes)
+         .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
+         .async()
    }
 
    // there could be threads in the background that will stop the launcher shutting down
@@ -111,6 +111,7 @@ fun main(args: Array<String>) {
    if (collector.errors) exitProcess(-1) else exitProcess(0)
 }
 
+@Suppress("DEPRECATION")
 private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener {
    return TestEngineListenerBuilder.builder()
       .withType(launcherArgs[ARG_LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER])
@@ -124,6 +125,8 @@ private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDe
    }
 }
 
+@Suppress("DEPRECATION")
+@Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
 private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
    return launcherArgs[TESTPATH]?.let { test ->
       launcherArgs[ARG_SPEC]?.let { spec ->
