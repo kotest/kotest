@@ -16,7 +16,7 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
       outputStream.bufferedWriter().use { writer ->
          writer.write(
             buildString {
-               appendLine("""package io.kotest.runtime.native""")
+               appendLine("""package io.kotest.framework.runtime.native""")
                appendLine()
                appendLine("""import io.kotest.engine.TestEngineLauncher""")
                appendLine("""import io.kotest.core.spec.SpecRef""")
