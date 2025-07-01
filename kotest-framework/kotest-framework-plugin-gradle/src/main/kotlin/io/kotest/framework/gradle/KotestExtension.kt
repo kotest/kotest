@@ -11,9 +11,9 @@ abstract class KotestExtension internal constructor() {
    abstract val tagExpression: Property<String>
 
    /**
-    * If true, then the build will fail if no spec classes are by the plugin.
+    * If true, then the build will fail if no tests are found by the plugin.
     */
-   abstract val failOnEmptySpecs: Property<Boolean>
+   abstract val failOnNoTests: Property<Boolean>
 
    /**
     * The location of the compiled kotlin classes for Android builds.

@@ -56,6 +56,14 @@ kotlin {
             implementation(libs.junit.jupiter.engine)
          }
       }
+
+      nativeMain {
+         dependencies {
+            // we need these so we can generate the runKotest test stub
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+         }
+      }
    }
 }
 

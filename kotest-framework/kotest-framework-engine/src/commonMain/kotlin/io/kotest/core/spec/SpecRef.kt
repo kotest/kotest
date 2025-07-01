@@ -18,20 +18,18 @@ sealed interface SpecRef {
    val kclass: KClass<out Spec>
 
    /**
-    * A [SpecRef] that contains only a [kclass] reference and instances
-    * must be created using reflection.
+    * A [SpecRef] that contains only a [kclass] reference and instances are created using reflection.
+    * This allows the engine to instantiate specs with non-empty constructors, eg for dependency injection.
     */
    data class Reference(override val kclass: KClass<out Spec>) : SpecRef
 
    /**
-    * A [SpecRef] that contains a singleton spec [instance].
-    */
-   data class Singleton(val instance: Spec) : SpecRef {
-      override val kclass: KClass<out Spec> = instance::class
-   }
-
-   /**
     * A [SpecRef] that contains a function that can be invoked to construct a spec.
+    * This is required for platforms that do not support reflection, such as Kotlin/JS or Kotlin/Native.
+    * A function ref only supports specs that have no constructor parameters.
     */
-   data class Function(val f: () -> Spec, override val kclass: KClass<out Spec>) : SpecRef
+   data class Function(
+      val f: () -> Spec,
+      override val kclass: KClass<out Spec>,
+   ) : SpecRef
 }

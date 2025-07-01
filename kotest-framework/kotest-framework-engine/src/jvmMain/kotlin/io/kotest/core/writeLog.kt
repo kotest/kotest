@@ -30,18 +30,6 @@ actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
    file.flush()
 }
 
-actual fun print(str: String) {
-   kotlin.io.print(str)
-}
-
-actual fun println(str: String) {
-   kotlin.io.println(str)
-}
-
-actual fun println() {
-   kotlin.io.println()
-}
-
 private fun getPid(): Long {
    return if (currentMajorJavaVersion >= 9) {
       getPidFromProcessHandle()

@@ -784,9 +784,6 @@ public final class io/kotest/core/TupleKt {
 }
 
 public final class io/kotest/core/WriteLogKt {
-	public static final fun print (Ljava/lang/String;)V
-	public static final fun println ()V
-	public static final fun println (Ljava/lang/String;)V
 	public static final fun writeLog (Lkotlin/time/TimeMark;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 
@@ -1019,45 +1016,40 @@ public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public abstract fun append (Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public abstract fun depth ()I
 	public abstract fun getId ()Lio/kotest/core/descriptors/DescriptorId;
-	public abstract fun getTreePrefix ()Ljava/util/List;
 	public abstract fun hasSharedPath (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun ids ()Ljava/util/List;
 	public abstract fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public abstract fun isEqualType (Lio/kotest/core/descriptors/Descriptor;)Z
-	public abstract fun isOnPath (Lio/kotest/core/descriptors/Descriptor;)Z
+	public abstract fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public abstract fun isRootTest ()Z
 	public abstract fun isSpec ()Z
 	public abstract fun isTestCase ()Z
 	public abstract fun parents ()Ljava/util/List;
+	public abstract fun parts ()Ljava/util/List;
 	public abstract fun path ()Lio/kotest/common/DescriptorPath;
-	public abstract fun path (Z)Lio/kotest/common/DescriptorPath;
 	public abstract fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
 public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
 	public static fun append (Lio/kotest/core/descriptors/Descriptor;Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public static fun depth (Lio/kotest/core/descriptors/Descriptor;)I
-	public static fun getTreePrefix (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun hasSharedPath (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun ids (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isChildOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
-	public static fun isEqualType (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
-	public static fun isOnPath (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
+	public static fun isEqual (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isParentOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isRootTest (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isSpec (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isTestCase (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun parents (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
+	public static fun parts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun path (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/common/DescriptorPath;
-	public static fun path (Lio/kotest/core/descriptors/Descriptor;Z)Lio/kotest/common/DescriptorPath;
-	public static synthetic fun path$default (Lio/kotest/core/descriptors/Descriptor;ZILjava/lang/Object;)Lio/kotest/common/DescriptorPath;
 	public static fun spec (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
@@ -1070,23 +1062,21 @@ public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kot
 	public fun depth ()I
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()Lio/kotest/core/descriptors/DescriptorId;
-	public fun getTreePrefix ()Ljava/util/List;
 	public fun hasSharedPath (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun hashCode ()I
 	public fun ids ()Ljava/util/List;
 	public fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isEqualType (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isOnPath (Lio/kotest/core/descriptors/Descriptor;)Z
+	public fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isRootTest ()Z
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
+	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/common/DescriptorPath;
-	public fun path (Z)Lio/kotest/common/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1102,23 +1092,21 @@ public final class io/kotest/core/descriptors/Descriptor$TestDescriptor : io/kot
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()Lio/kotest/core/descriptors/DescriptorId;
 	public final fun getParent ()Lio/kotest/core/descriptors/Descriptor;
-	public fun getTreePrefix ()Ljava/util/List;
 	public fun hasSharedPath (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun hashCode ()I
 	public fun ids ()Ljava/util/List;
 	public fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isEqualType (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isOnPath (Lio/kotest/core/descriptors/Descriptor;)Z
+	public fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isRootTest ()Z
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
+	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/common/DescriptorPath;
-	public fun path (Z)Lio/kotest/common/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1767,18 +1755,6 @@ public final class io/kotest/core/spec/SpecRef$Reference : io/kotest/core/spec/S
 	public final fun copy (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/SpecRef$Reference;
 	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Reference;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getKclass ()Lkotlin/reflect/KClass;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/core/spec/SpecRef$Singleton : io/kotest/core/spec/SpecRef {
-	public fun <init> (Lio/kotest/core/spec/Spec;)V
-	public final fun component1 ()Lio/kotest/core/spec/Spec;
-	public final fun copy (Lio/kotest/core/spec/Spec;)Lio/kotest/core/spec/SpecRef$Singleton;
-	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Singleton;Lio/kotest/core/spec/Spec;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Singleton;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getInstance ()Lio/kotest/core/spec/Spec;
 	public fun getKclass ()Lkotlin/reflect/KClass;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -3114,7 +3090,8 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withPlatform (Lio/kotest/core/Platform;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withProjectConfig (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withSpecs ([Lio/kotest/core/spec/Spec;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withSpecRefs (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withSpecRefs ([Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
@@ -3597,9 +3574,9 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 }
 
 public final class io/kotest/engine/launcher/LauncherArgs {
-	public static final field ARG_CANDIDATES Ljava/lang/String;
 	public static final field ARG_LISTENER Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
+	public static final field ARG_SPECS Ljava/lang/String;
 	public static final field DESCRIPTOR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;

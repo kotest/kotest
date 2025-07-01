@@ -1,9 +1,10 @@
 package io.kotest.framework.gradle
 
-import io.kotest.framework.gradle.tasks.AbstractKotestJvmTask
+import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
 import io.kotest.framework.gradle.tasks.KotestJsTask
 import io.kotest.framework.gradle.tasks.KotestJvmTask
+import io.kotest.framework.gradle.tasks.KotestNativeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -13,6 +14,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -20,6 +22,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -29,9 +32,10 @@ abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
       const val DESCRIPTION = "Runs tests using Kotest"
-      const val EXTENSION_NAME = "runKotest"
+      const val EXTENSION_NAME = "kotest"
 
       const val JVM_ONLY_TASK_NAME = "kotest"
+
       const val JS_TASK_NAME = "jsKotest"
       const val WASM_JS_TASK_NAME = "wasmJsKotest"
 
@@ -76,11 +80,7 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun configureTaskConventions(project: Project) {
-      project.tasks.withType<AbstractKotestJvmTask>().configureEach {
-         group = JavaBasePlugin.VERIFICATION_GROUP
-         description = DESCRIPTION
-      }
-      project.tasks.withType<KotestJsTask>().configureEach {
+      project.tasks.withType<AbstractKotestTask>().configureEach {
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = DESCRIPTION
       }
@@ -98,12 +98,17 @@ abstract class KotestPlugin : Plugin<Project> {
 
    @Suppress("LABEL_NAME_CLASH")
    private fun handleKotlinMultiplatform(project: Project) {
-      project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN) {
-         project.extensions.configure<KotlinMultiplatformExtension> {
-            this.testableTargets.configureEach {
-               println("testable target name ${this.name}")
-               println("testable target targetName ${this.targetName}")
+      project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN) { // this is the multiplatform plugin, not the kotlin plugin
+         project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
+            val tasks = mutableSetOf<String>()
+            this.testableTargets.configureEach { // are the targets that can run tests
+
+               val testableTarget: KotlinTargetWithTests<*, *> = this
+
+               println("testable name ${this.name}")
+               println("testable targetName ${this.targetName}")
                println("testable disambiguationClassifier ${this.disambiguationClassifier}")
+
                if (name !in unsupportedTargets) {
                   when (platformType) {
 
@@ -116,13 +121,27 @@ abstract class KotestPlugin : Plugin<Project> {
                               nodeExecutable.set(this@configure.executable)
                               inputs.files(project.tasks.named(TASK_COMPILE_TEST_DEV_JS).map { it.outputs.files })
                            }
+                           tasks.add(JS_TASK_NAME)
                         }
                      }
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
                      KotlinPlatformType.jvm   -> println("Todo jvm")
                      KotlinPlatformType.androidJvm -> println("Todo androidJvm")
-                     KotlinPlatformType.native -> println("Todo native")
+
+                     // testable name linuxX64
+                     // testable targetName linuxX64
+                     // testable disambiguationClassifier linuxX64
+                     KotlinPlatformType.native -> {
+                        // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+                        // see https://docs.gradle.org/current/userguide/isolated_projects.html
+                        val kotestTaskName = testableTarget.name + "Kotest"
+                        val linkDebugTestTaskName =  "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
+                        project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+                           target.set(testableTarget)
+                           inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
+                        }
+                     }
                   }
 //                  when (targetName) {
 //                     else -> {
@@ -136,6 +155,13 @@ abstract class KotestPlugin : Plugin<Project> {
 //                  }
                }
             }
+            // add one special task that runs all compilations
+            // todo can we just make a task that runs the other tasks above?
+//            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
+//               group = JavaBasePlugin.VERIFICATION_GROUP
+//               description = DESCRIPTION
+//               dependsOn(":$JS_TASK_NAME")
+//            }
          }
       }
    }
@@ -204,11 +230,11 @@ abstract class KotestPlugin : Plugin<Project> {
             }
 
             // add one special task that runs all compilations
-            // todo can we just make a task that runs the other tasks above
-            project.tasks.register("kotest", KotestAndroidTask::class) {
-               compilationNames.set(testCompilations.map { it.name })
-               inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-            }
+            // todo can we just make a task that runs the other tasks above?
+//            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
+//               group = JavaBasePlugin.VERIFICATION_GROUP
+//               description = DESCRIPTION
+//            }
          }
       }
    }
