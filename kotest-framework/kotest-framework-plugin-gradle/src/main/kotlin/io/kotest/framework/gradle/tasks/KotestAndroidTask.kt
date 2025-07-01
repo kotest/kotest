@@ -1,7 +1,8 @@
 package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.KotestExtension
-import io.kotest.framework.gradle.TestLauncherExecBuilder
+import io.kotest.framework.gradle.SpecsResolver
+import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
 import org.gradle.api.GradleException
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -19,7 +20,7 @@ import javax.inject.Inject
 abstract class KotestAndroidTask @Inject internal constructor(
    private val executors: ExecOperations,
    private val objects: ObjectFactory,
-) : AbstractKotestJvmTask() {
+) : AbstractKotestTask() {
 
    @get:Input
    abstract val compilationNames: ListProperty<String>
@@ -56,16 +57,15 @@ abstract class KotestAndroidTask @Inject internal constructor(
          .from(classesPath)
          .from(testClassesPath)
 
-      val candidates = candidates(classpathWithTests)
-
-      val exec = TestLauncherExecBuilder()
-         .withClasspath(classpathWithTests)
-         .withCandidates(candidates)
-         .withDescriptor(descriptor.orNull)
-         .withCommandLineTags(tags.orNull)
+      val specs = SpecsResolver.specs(specs, packages, classpathWithTests)
 
       val result = executors.javaexec {
-         exec.configure(this)
+         TestLauncherJavaExecConfiguration()
+            .withClasspath(classpathWithTests)
+            .withSpecs(specs)
+            .withDescriptor(descriptor.orNull)
+            .withCommandLineTags(tags.orNull)
+            .configure(this)
       }
 
       if (result.exitValue != 0) {

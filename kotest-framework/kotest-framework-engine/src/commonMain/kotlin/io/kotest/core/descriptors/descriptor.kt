@@ -1,19 +1,18 @@
 package io.kotest.core.descriptors
 
 import io.kotest.common.DescriptorPath
-import io.kotest.common.KotestInternal
 
 /**
  * A stable, consistent identifier for a test element.
  *
- * A [Descriptor] does not depend on runtime configuration and does not change between test runs
- * (unless the test or a parent test is renamed by the user).
+ * A [Descriptor] does not depend on runtime configuration and does not change between test runs, unless
+ * that test, a parent test, or the containing spec is renamed by the user.
  *
  * Descriptors are a chain of instances, with each instance containing a link to its parent, except
  * for [SpecDescriptor] which is the root of a chain.
  *
- * A descriptor for a test case always consists of a chain of at leaest one [TestDescriptor] instances,
- * with the top most parent being a [SpecDescriptor].
+ * A descriptor for a specific test case always consists of a chain of at least one [TestDescriptor] instance,
+ * and the top most parent being a [SpecDescriptor].
  *
  */
 sealed interface Descriptor {
@@ -46,22 +45,45 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns a parseable path to the test.
-    *
-    * @param includeSpec if true then the spec name is included in the path.
+    * On KMP the KClass reference does not include the fully qualified name, so if the spec descriptor
+    * is just the simple class name, then we will have to compare using that only.
     */
-   @Deprecated(
-      "Use path() without the argument. Deprecated since 6.0",
-      ReplaceWith("path()")
-   )
-   fun path(includeSpec: Boolean = true): DescriptorPath {
-      require(includeSpec) { "Paths must always include the spec descriptor since 6.0" }
-      return path()
+   fun isEqual(other: Descriptor): Boolean {
+      return when (other) {
+         is SpecDescriptor if this is SpecDescriptor -> {
+            // if both descriptors have the fully qualified name, then we can compare string equals
+            if (this.id.value.contains('.') && other.id.value.contains('.')) {
+               this.id == other.id
+            } else {
+               // if the id is not FQN, then we can only compare the simple class name
+               this.id.value.substringAfterLast('.') == other.id.value.substringAfterLast('.')
+            }
+         }
+
+         is TestDescriptor if this is TestDescriptor -> {
+            this.parent.isEqual(other.parent) && this.id == other.id
+         }
+
+         else -> false
+      }
    }
+
+//   /**
+//    * Returns a parseable path to the test.
+//    *
+//    * @param includeSpec if true then the spec name is included in the path.
+//    */
+//   @Deprecated(
+//      "Use path() without the argument. Deprecated since 6.0",
+//      ReplaceWith("path()")
+//   )
+//   fun path(includeSpec: Boolean = true): DescriptorPath {
+//      require(includeSpec) { "Paths must always include the spec descriptor since 6.0" }
+//      return path()
+//   }
 
    fun path(): DescriptorPath = DescriptorPaths.render(this)
 
-   @KotestInternal
    fun parts(): List<String> = when (this) {
       is SpecDescriptor -> emptyList()
       is TestDescriptor -> parent.parts() + listOf(this.id.value)
@@ -83,17 +105,6 @@ sealed interface Descriptor {
    fun isRootTest() = this is TestDescriptor && this.parent.isSpec()
 
    /**
-    * Returns `true` if this type equals that type. For example
-    * if this is a spec and the rhs is also spec
-    */
-   fun isEqualType(that: Descriptor): Boolean {
-      return when (this) {
-         is SpecDescriptor -> that.isSpec()
-         is TestDescriptor -> that.isTestCase()
-      }
-   }
-
-   /**
     * Returns the depth of this node, where a [SpecDescriptor] has depth of 0,
     * a root test has depth 1 and so on.
     */
@@ -113,11 +124,12 @@ sealed interface Descriptor {
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be the parent of a spec
-      is TestDescriptor -> this == descriptor.parent
+      is TestDescriptor -> this.isEqual(descriptor.parent)
    }
 
    /**
     * Returns `true` if this [descriptor] is ancestor (1..nth-parent) of the given [descriptor].
+    * Returns false if the descriptors are equal.
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be an ancestor of a spec
@@ -131,51 +143,39 @@ sealed interface Descriptor {
 
    /**
     * Returns `true` if this [descriptor] is a child, grandchild, etc of the given [descriptor].
+    * Returns false if the descriptors are equal.
     */
    fun isDescendentOf(descriptor: Descriptor): Boolean = descriptor.isAncestorOf(this)
 
-   /**
-    * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
-    */
-   @Deprecated(
-      "Confusing nomenclature. Use isPrefixOf instead. Deprecated since 6.0.",
-      ReplaceWith("isPrefixOf(descriptor)")
-   )
-   fun isOnPath(descriptor: Descriptor): Boolean = isPrefixOf(descriptor)
+//   /**
+//    * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
+//    */
+//   @Deprecated(
+//      "Confusing nomenclature. Use isPrefixOf instead. Deprecated since 6.0.",
+//      ReplaceWith("isPrefixOf(descriptor)")
+//   )
+//   fun isOnPath(descriptor: Descriptor): Boolean = isPrefixOf(descriptor)
 
    /**
     * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
     */
    fun isPrefixOf(descriptor: Descriptor): Boolean =
-      this == descriptor || this.isAncestorOf(descriptor)
+      this.isEqual(descriptor) || this.isAncestorOf(descriptor)
 
    /**
-    * Returns true if this [descriptor] shares a common path with the given [descriptor]. Specifically,
-    * this [descriptor] could be a parent or child of the given [descriptor].
+    * Returns true if this [descriptor] could be a parent or a child of the given [descriptor].
+    *
+    * For example, if this descriptor was MySpec/some context, then the following would be true:
+    * - MySpec/some context hasSharedPath MySpec
+    * - MySpec/some context hasSharedPath MySpec/some context
+    * - MySpec/some context hasSharedPath MySpec/some context -- child test
+    *
+    * These would be false:
+    * - MySpec/some context hasSharedPath MySpec/another context
+    *
     */
    fun hasSharedPath(descriptor: Descriptor): Boolean {
-      return this == descriptor || this.isAncestorOf(descriptor) || this.isDescendentOf(descriptor)
-   }
-
-   /**
-    * Returns the prefix of the descriptor starting with the root (spec)
-    */
-   fun getTreePrefix(): List<Descriptor> {
-      val ret = mutableListOf<Descriptor>()
-      var x = this
-      loop@ while (true) {
-         ret.add(0, x)
-         when (x) {
-            is SpecDescriptor -> {
-               break@loop
-            }
-
-            is TestDescriptor -> {
-               x = x.parent
-            }
-         }
-      }
-      return ret
+      return this.isEqual(descriptor) || this.isAncestorOf(descriptor) || this.isDescendentOf(descriptor)
    }
 
    /**

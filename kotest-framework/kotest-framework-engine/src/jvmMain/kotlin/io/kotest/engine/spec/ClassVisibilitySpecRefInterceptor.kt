@@ -23,9 +23,9 @@ internal class ClassVisibilitySpecRefInterceptor(
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
       return when {
-         ref.kclass.visibility == KVisibility.PRIVATE &&
+         ref is SpecRef.Reference &&
+            ref.kclass.visibility == KVisibility.PRIVATE &&
             projectConfigResolver.ignorePrivateClasses() -> Result.success(emptyMap())
-
          else -> next.invoke(ref)
       }
    }
