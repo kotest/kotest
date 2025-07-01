@@ -1,6 +1,5 @@
 package io.kotest.framework.gradle.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
@@ -12,7 +11,7 @@ import javax.inject.Inject
 @CacheableTask // this allows gradle to cache our inputs
 abstract class KotestJsTask @Inject internal constructor(
    private val executors: ExecOperations,
-) : DefaultTask() {
+) : AbstractKotestJvmTask() {
 
    // this is the name of the generated function from the KSP plugin
    // it should always match whatever the plugin is generating
@@ -20,7 +19,7 @@ abstract class KotestJsTask @Inject internal constructor(
 
    // this is the name of the package where the KSP plugin places the generated top level run function
    // it should always match whatever the plugin is generating
-   private val runKotestPackageName = "io.kotest.runtime.js"
+   private val runKotestPackageName = "io.kotest.framework.runtime.js"
 
    @get:Input
    abstract val nodeExecutable: Property<String>
@@ -28,6 +27,7 @@ abstract class KotestJsTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       executors.exec {
+         println("specs: ${specs.get()}")
          println("Node executable ${nodeExecutable.get()}")
 
          // the kotlin js compiler uses projectname-test as the module name, eg in build/js/packages

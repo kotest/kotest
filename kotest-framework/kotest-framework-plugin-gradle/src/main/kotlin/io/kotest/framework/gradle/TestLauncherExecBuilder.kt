@@ -12,18 +12,18 @@ internal data class TestLauncherExecBuilder(
    private val classpath: FileCollection? = null,
    private val tags: String? = null,
    private val descriptor: String? = null,
-   private val candidates: List<String> = emptyList(),
+   private val specs: List<String> = emptyList(),
 ) {
 
    companion object {
 
-      // used to specify if we want team city or console output
+      // used to specify if we want team city service messages or console output
       private const val ARG_LISTENER = "--listener"
 
       private const val ARG_TAGS = "--tags"
 
-      // required to pass the candidates to the engine
-      private const val ARG_CANDIDATES = "--candidates"
+      // required to pass the non-filtered list of specs to the engine
+      private const val ARG_SPECS = "--specs"
 
       // used to filter to a single spec or test within a spec
       private const val ARG_DESCRIPTOR = "--descriptor"
@@ -48,8 +48,8 @@ internal data class TestLauncherExecBuilder(
       return copy(classpath = classpath)
    }
 
-   fun withCandidates(candidates: List<String>): TestLauncherExecBuilder {
-      return copy(candidates = candidates)
+   fun withSpecs(specs: List<String>): TestLauncherExecBuilder {
+      return copy(specs = specs)
    }
 
    fun withDescriptor(descriptor: String?): TestLauncherExecBuilder {
@@ -69,7 +69,7 @@ internal data class TestLauncherExecBuilder(
    /**
     * Returns the args to send to the launcher
     */
-   private fun args() = listenerArgs() + tagsArg() + candidatesArg() + descriptorArg()
+   private fun args() = listenerArgs() + tagsArg() + specsArg() + descriptorArg()
 
    /**
     * If we are running inside intellij, we assume the user has the intellij Kotest plugin installed,
@@ -110,14 +110,14 @@ internal data class TestLauncherExecBuilder(
    }
 
    /**
-    * Returns an arg to specify the candidate classes.
+    * Returns an arg to specify the spec classes.
     * This is a semi-colon separated list of fully qualified class names.
     *
-    * If the --candidates arg was passed as a command line arg, then we use that as is, otherwise
+    * If the --spec arg was passed as a command line arg, then we use that as is, otherwise
     * the gradle plugin will have scanned the runtime classpath and found all the spec classes.
     */
-   private fun candidatesArg(): List<String> {
-      return if (candidates.isEmpty()) emptyList() else listOf(ARG_CANDIDATES, candidates.joinToString(";"))
+   private fun specsArg(): List<String> {
+      return if (specs.isEmpty()) emptyList() else listOf(ARG_SPECS, specs.joinToString(";"))
    }
 
    /**

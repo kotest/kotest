@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
-import io.kotest.engine.launcher.LauncherArgs.ARG_CANDIDATES
+import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
 import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
@@ -24,8 +24,8 @@ import kotlin.system.exitProcess
 
 object LauncherArgs {
 
-   // required to pass the candidates to the engine
-   const val ARG_CANDIDATES = "candidates"
+   // required to pass the specs to the engine
+   const val ARG_SPECS = "specs"
 
    // these are optional
 
@@ -36,9 +36,16 @@ object LauncherArgs {
    const val DESCRIPTOR = "descriptor"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
+   @Deprecated("Not used by kotest 6")
    const val ARG_SPEC = "spec"
+
+   @Deprecated("Not used by kotest 6")
    const val TESTPATH = "testpath"
+
+   @Deprecated("Not used by kotest 6")
    const val REPORTER = "reporter"
+
+   @Deprecated("Not used by kotest 6")
    const val WRITER = "writer"
 }
 
@@ -61,15 +68,15 @@ fun main(args: Array<String>) {
 
    // The enigne *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
-   // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --candidates
+   // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --specs
    // we must support both for backwards compatibility
    // todo do we need to do this? if people are upgrading to kotest 6 they can update the plugin too?
-   val candidatesArg = launcherArgs[ARG_CANDIDATES]
+   val specsArg = launcherArgs[ARG_SPECS]
       ?: launcherArgs[ARG_SPEC]
-      ?: error("The $ARG_CANDIDATES arg must be provided")
+      ?: error("The $ARG_SPECS arg must be provided")
 
    @Suppress("UNCHECKED_CAST")
-   val classes = candidatesArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
+   val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
    val descriptorFilter = buildDescriptorFilter(launcherArgs)

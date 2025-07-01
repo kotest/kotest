@@ -9,14 +9,14 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
    fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>) {
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
-         packageName = "io.kotest.runtime.js",
+         packageName = "io.kotest.framework.runtime.js",
          fileName = "kotest",
          extensionName = "kt"
       )
       outputStream.bufferedWriter().use { writer ->
          writer.write(
             buildString {
-               appendLine("""package io.kotest.runtime.js""")
+               appendLine("""package io.kotest.framework.runtime.js""")
                appendLine()
                appendLine("""import io.kotest.engine.TestEngineLauncher""")
                appendLine("""import io.kotest.core.spec.SpecRef""")

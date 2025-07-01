@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle.tasks
 
+import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.KotestExtension
 import io.kotest.framework.gradle.TestLauncherExecBuilder
 import org.gradle.api.GradleException
@@ -56,11 +57,11 @@ abstract class KotestAndroidTask @Inject internal constructor(
          .from(classesPath)
          .from(testClassesPath)
 
-      val candidates = candidates(classpathWithTests)
+      val specs = SpecsResolver.specs(specs, packages, classpathWithTests)
 
       val exec = TestLauncherExecBuilder()
          .withClasspath(classpathWithTests)
-         .withCandidates(candidates)
+         .withSpecs(specs)
          .withDescriptor(descriptor.orNull)
          .withCommandLineTags(tags.orNull)
 
