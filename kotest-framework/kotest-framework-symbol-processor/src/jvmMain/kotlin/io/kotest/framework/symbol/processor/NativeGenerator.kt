@@ -18,10 +18,15 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
             buildString {
                appendLine("""package io.kotest.framework.runtime.native""")
                appendLine()
+               appendLine("""import io.kotest.core.descriptors.DescriptorPaths""")
+               appendLine("""import io.kotest.engine.extensions.ProvidedDescriptorFilter""")
                appendLine("""import io.kotest.engine.TestEngineLauncher""")
                appendLine("""import io.kotest.core.spec.SpecRef""")
                appendLine("""import kotlin.test.Test""")
                appendLine("""import kotlin.test.AfterClass""")
+               appendLine("""import kotlinx.cinterop.ExperimentalForeignApi""")
+               appendLine("""import kotlinx.cinterop.toKString""")
+               appendLine("""import platform.posix.getenv""")
 
                specs.forEach {
                   appendLine("""import ${it.qualifiedName?.asString()}""")
@@ -35,11 +40,19 @@ fun configureKotest() {
 }
 
 // we run Kotest after all kotlin.test tests have been executed
+@OptIn(ExperimentalForeignApi::class)
 @AfterClass
 fun runKotest() {
-  TestEngineLauncher()
+
+  val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
+  val listener = getenv("kotest.framework.runtime.native.listener")?.toKString()
+
+  val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
+  val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+
+  val launcher = TestEngineLauncher()
    .withNative()
-   .withTeamCityListener()
+   .addExtensions(listOfNotNull(filter))
    .withSpecRefs("""
                )
 
@@ -49,7 +62,10 @@ fun runKotest() {
 
                appendLine(
                   """   )
-   .launch()
+   when (listener) {
+      "TeamCity" -> launcher.withTeamCityListener().launch()
+      else -> launcher.launch()
+   }
 }"""
                )
             }

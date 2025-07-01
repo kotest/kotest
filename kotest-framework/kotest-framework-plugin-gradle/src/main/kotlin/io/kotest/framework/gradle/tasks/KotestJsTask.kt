@@ -11,7 +11,7 @@ import javax.inject.Inject
 @CacheableTask // this allows gradle to cache our inputs
 abstract class KotestJsTask @Inject internal constructor(
    private val executors: ExecOperations,
-) : AbstractKotestJvmTask() {
+) : AbstractKotestTask() {
 
    // this is the name of the generated function from the KSP plugin
    // it should always match whatever the plugin is generating

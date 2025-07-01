@@ -5,10 +5,10 @@ import org.gradle.process.JavaExecSpec
 import org.gradle.process.internal.JavaExecAction
 
 /**
- * This [TestLauncherExecBuilder] is responsible for configuring a [JavaExecAction] that will run tests
- * through the kotest engine.
+ * This [TestLauncherJavaExecConfiguration] is responsible for configuring a [JavaExecAction] that will run tests
+ * through the kotest engine by executing the [io.kotest.engine.launcher.MainKt] main class.
  */
-internal data class TestLauncherExecBuilder(
+internal data class TestLauncherJavaExecConfiguration(
    private val classpath: FileCollection? = null,
    private val tags: String? = null,
    private val descriptor: String? = null,
@@ -40,30 +40,30 @@ internal data class TestLauncherExecBuilder(
       internal const val IDEA_PROP = "idea.active"
    }
 
-   fun withCommandLineTags(tags: String?): TestLauncherExecBuilder {
+   fun withCommandLineTags(tags: String?): TestLauncherJavaExecConfiguration {
       return copy(tags = tags)
    }
 
-   fun withClasspath(classpath: FileCollection): TestLauncherExecBuilder {
+   fun withClasspath(classpath: FileCollection): TestLauncherJavaExecConfiguration {
       return copy(classpath = classpath)
    }
 
-   fun withSpecs(specs: List<String>): TestLauncherExecBuilder {
+   fun withSpecs(specs: List<String>): TestLauncherJavaExecConfiguration {
       return copy(specs = specs)
    }
 
-   fun withDescriptor(descriptor: String?): TestLauncherExecBuilder {
+   fun withDescriptor(descriptor: String?): TestLauncherJavaExecConfiguration {
       return copy(descriptor = descriptor)
    }
 
-   fun configure(spec: JavaExecSpec) {
-      spec.mainClass.set(LAUNCHER_MAIN_CLASS)
-      spec.classpath(this@TestLauncherExecBuilder.classpath)
-      spec.args(this@TestLauncherExecBuilder.args())
+   fun configure(exec: JavaExecSpec) {
+      exec.mainClass.set(LAUNCHER_MAIN_CLASS)
+      exec.classpath(classpath)
+      exec.args(args())
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle
-      spec.isIgnoreExitValue = true
+      exec.isIgnoreExitValue = true
    }
 
    /**
