@@ -3,11 +3,7 @@ package io.kotest.engine.spec.execution
 import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
-import io.kotest.core.test.isRootTest
+import io.kotest.core.test.*
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -31,6 +27,7 @@ internal class InstancePerRootExecutor(
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
+   private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
 
    private val inflator = SpecRefInflator(
@@ -45,11 +42,11 @@ internal class InstancePerRootExecutor(
          val specContext = SpecContext.create()
 
          // for the seed spec that is passed in, we need to run the instance pipeline,
-         // then register all the root tests. These root tests will either execute in the
+         // then materialize the root tests. These root tests will either execute in the
          // seed instance (for the first test), or in a fresh instance (for the rest).
 
          pipeline.execute(seed, specContext) {
-            launchRootTests(seed, ref, specContext)
+            materializeAndInvokeRootTests(seed, ref, specContext)
             Result.success(results.toMap())
          }
 
@@ -57,9 +54,9 @@ internal class InstancePerRootExecutor(
       }
    }
 
-   private suspend fun launchRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
+   private suspend fun materializeAndInvokeRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
-      val rootTests = Materializer(context.specConfigResolver).materialize(seed)
+      val rootTests = materializer.materialize(seed)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
@@ -91,19 +88,23 @@ internal class InstancePerRootExecutor(
    }
 
    /**
-    * Executes the given [TestCase] that is a root test.
-    *
-    * It will create a new spec instance and run the pipeline on that, before
+    * Executes the given root [TestCase] in a new spec instance.
+    * It will create the instance and run the pipeline on that, before
     * using that spec for the test execution.
     */
    private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef) {
       require(testCase.isRootTest())
+
       val spec = inflator.inflate(ref).getOrThrow()
       val specContext = SpecContext.create()
+
+      // find the matching root test in the new spec instance
+      val root = materializer.materialize(spec).first { it.descriptor == testCase.descriptor }
+
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          pipeline.execute(spec, specContext) {
-            val result = executeTest(testCase.copy(spec = spec), specContext)
+            val result = executeTest(root, specContext)
             Result.success(mapOf(testCase to result))
          }
       }

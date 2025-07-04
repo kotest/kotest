@@ -16,7 +16,7 @@ internal class DuplicateTestNameHandler {
       "Duplicated test name ${name}. To disable this message, set DuplicateTestNameMode to Silent."
 
    /**
-    * Returns a unique name or null if the name is already unique.
+    * Returns a unique name or the input if the name is already unique.
     */
    fun handle(mode: DuplicateTestNameMode, name: TestName): String {
       val isUnique = names.add(name.name)
