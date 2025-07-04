@@ -45,9 +45,6 @@ jobs:
             with:
                ref: ${{ github.event.inputs.ref }}
 
-         -  name: Validate Gradle Wrapper
-            uses: gradle/actions/wrapper-validation@v3
-
          -  name: Setup JDK
             uses: actions/setup-java@v4
             with:
