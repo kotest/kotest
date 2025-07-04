@@ -16,7 +16,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.reflect.KClass
@@ -106,47 +106,47 @@ class InitializerExceptionTest : WordSpec({
 
    "an exception in the initializer" should {
       "fail the test for behavior spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(BehaviorSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for feature spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(FeatureSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for word spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(WordSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for should spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(ShouldSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for string spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(StringSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for describe spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(DescribeSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for free spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(FreeSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for fun spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(FunSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for expect spec" {
-         val executor = SpecExecutor(EngineContext(null, Platform.JVM).withListener(listener))
+         val executor = SpecRefExecutor(EngineContext(null, Platform.JVM).withListener(listener))
          executor.execute(ExpectSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }

@@ -14,7 +14,6 @@ internal class TestFinishedInterceptor(
 
    private val logger = Logger(TestFinishedInterceptor::class)
 
-
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,

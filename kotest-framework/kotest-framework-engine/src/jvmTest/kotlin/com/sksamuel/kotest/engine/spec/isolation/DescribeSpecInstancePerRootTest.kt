@@ -11,8 +11,8 @@ private val specs = mutableSetOf<Int>()
 class DescribeSpecInstancePerRootTest : DescribeSpec({
 
    afterProject {
-      tests.size shouldBe 12
-      specs.size shouldBe 2
+      tests.size shouldBe 13
+      specs.size shouldBe 3
    }
 
    afterSpec {
@@ -62,6 +62,9 @@ class DescribeSpecInstancePerRootTest : DescribeSpec({
             counter.incrementAndGet().shouldBe(4)
          }
       }
+   }
+   it("m") {
+      counter.incrementAndGet().shouldBe(1)
    }
 
 })

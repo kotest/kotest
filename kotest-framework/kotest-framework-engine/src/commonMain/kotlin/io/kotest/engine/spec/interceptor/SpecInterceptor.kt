@@ -5,6 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.atomic.AtomicBoolean
 import io.kotest.engine.atomic.createAtomicBoolean
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
  * Interceptors that are executed after a spec is instantiated.
@@ -23,12 +24,14 @@ internal interface SpecInterceptor {
  * A fresh context is created for each spec instance.
  * It contains mutable state that can be modified by the interceptors.
  */
-data class SpecContext(
+internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
    var beforeSpecError: Throwable? = null,
+   val handler: DuplicateTestNameHandler,
+   var testFailed: Boolean = false,
 ) {
    companion object {
-      fun create() = SpecContext(createAtomicBoolean(false), null)
+      fun create() = SpecContext(createAtomicBoolean(false), null, DuplicateTestNameHandler())
    }
 }
 
@@ -37,6 +40,6 @@ data class SpecContext(
  *
  * This is a functional interface to reduce the size of stack traces - type-erased lambda types add excess stack lines.
  */
-internal interface NextSpecInterceptor {
+internal fun interface NextSpecInterceptor {
    suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>>
 }

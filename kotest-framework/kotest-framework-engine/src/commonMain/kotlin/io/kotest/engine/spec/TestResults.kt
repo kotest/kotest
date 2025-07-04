@@ -14,8 +14,7 @@ internal class TestResults {
 
    // the presence of a test case in this map indicates that the test has started
    // once the test completes, the result will no longer be null
-   // todo change to be thread safe on jvm
-   private val results = mutableMapOf<TestCase, TestResult?>()
+   private val results = threadSafeMap<TestCase, TestResult?>()
 
    fun toMap(): Map<TestCase, TestResult> {
       @Suppress("UNCHECKED_CAST")
@@ -40,7 +39,7 @@ internal class TestResults {
     * Returns true if any test has failed.
     */
    fun hasErrorOrFailure(): Boolean {
-      return results.values.any { it?.isErrorOrFailure == true  }
+      return results.values.any { it?.isErrorOrFailure == true }
    }
 
    /**
@@ -69,3 +68,5 @@ internal class TestResults {
       return results.filter { it.key.descriptor.isChildOf(testCase.descriptor) }.keys
    }
 }
+
+expect fun <K, V> threadSafeMap(): MutableMap<K, V>

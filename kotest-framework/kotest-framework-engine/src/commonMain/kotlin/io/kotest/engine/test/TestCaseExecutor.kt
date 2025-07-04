@@ -7,12 +7,15 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
+import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
+import io.kotest.engine.test.interceptors.DuplicateTestNameInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
@@ -25,10 +28,10 @@ import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TestNameContextInterceptor
-import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.testInterceptorsForPlatform
 import kotlin.time.TimeSource
 
@@ -42,6 +45,15 @@ internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val context: EngineContext,
 ) {
+
+   /**
+    * Creates a [TestCaseExecutor] that delegates test events to the [TestEngineListener] provided
+    * by the [EngineContext].
+    */
+   constructor(context: EngineContext) : this(
+      TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
+      context
+   )
 
    private val logger = Logger(TestCaseExecutor::class)
 
@@ -60,15 +72,21 @@ internal class TestCaseExecutor(
       }
 
       val interceptors = listOfNotNull(
+         DuplicateTestNameInterceptor(context.specConfigResolver, specContext),
          DescriptorPathContextInterceptor,
          TestNameContextInterceptor,
+         FailFastInterceptor(context, specContext),
          TestFinishedInterceptor(listener, context.testExtensions()),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestEnabledCheckInterceptor(context.projectConfigResolver, context.specConfigResolver, context.testConfigResolver),
+         TestEnabledCheckInterceptor(
+            context.projectConfigResolver,
+            context.specConfigResolver,
+            context.testConfigResolver
+         ),
          BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),

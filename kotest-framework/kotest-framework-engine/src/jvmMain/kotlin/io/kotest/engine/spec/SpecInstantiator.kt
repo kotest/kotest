@@ -19,9 +19,9 @@ import kotlin.reflect.full.isSubclassOf
  * Creates an instance of a [Spec].
  *
  * Firstly, by delegating to any [ConstructorExtension]s then with
- * a fallback to a reflection based zero-args constructor.
+ * a fallback to reflection based zero-args constructor.
  *
- * If the reference represents an object, then the singleton object instance will be returned.
+ * If the reference is an object definition, then that singleton object instance will be returned.
  *
  * After instantiation any [PostInstantiationExtension]s will be invoked.
  */

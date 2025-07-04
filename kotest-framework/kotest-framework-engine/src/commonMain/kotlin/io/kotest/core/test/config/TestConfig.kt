@@ -90,9 +90,8 @@ data class TestConfig(
    }
 
    /**
-    * Returns a copy of this [io.kotest.core.test.config.TestConfig] with an enabledIf that
-    * returns disabled due to an xmethod override. Calling this method will override
-    * any other enabled flags.
+    * Returns a copy of this [TestConfig] with [enabledOrReasonIf] set to return [Enabled.disabledByXMethod].
+    * Calling this method will override any other enabled flags.
     */
    fun withXDisabled(): TestConfig {
       return copy(

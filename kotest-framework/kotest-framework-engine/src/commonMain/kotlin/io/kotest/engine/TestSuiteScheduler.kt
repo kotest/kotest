@@ -7,11 +7,12 @@ import io.kotest.core.annotation.Parallel
 import io.kotest.core.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.name
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.concurrency.isParallel
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
 /**
- * A [TestSuiteScheduler] schedules specs for execution using a [SpecExecutor].
+ * A [TestSuiteScheduler] schedules specs for execution using a [SpecRefExecutor].
  * The scheduler handles concurrency depending on the [io.kotest.engine.concurrency.SpecExecutionMode].
  *
  * Additionally, on JVM targets, it will recognize the [Isolate] and [Parallel]
@@ -72,10 +73,10 @@ internal class TestSuiteScheduler(
             logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
             launch {
                semaphore.withPermit {
-                  logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
+                  logger.log { Pair(ref.name(), "Acquired permit") }
                   executeIfNotFailedFast(mergedContext, ref, collector)
                }
-               logger.log { Pair(ref.kclass.bestName(), "Released permit") }
+               logger.log { Pair(ref.name(), "Released permit") }
             }
          }
       }
@@ -91,11 +92,11 @@ internal class TestSuiteScheduler(
          context.listener.specIgnored(ref.kclass, null)
       } else {
          try {
-            val executor = SpecExecutor(context)
-            logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
+            val executor = SpecRefExecutor(context)
+            logger.log { Pair(ref.name(), "Executing ref") }
             executor.execute(ref)
          } catch (t: Throwable) {
-            logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
+            logger.log { Pair(ref.name(), "Unhandled error during spec execution $t") }
             throw t
          }
       }

@@ -6,7 +6,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.spec.testSpecExecutor
+import io.kotest.engine.spec.execution.testSpecExecutor
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
