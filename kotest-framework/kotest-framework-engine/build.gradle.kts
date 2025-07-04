@@ -7,7 +7,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(kotlin("reflect"))
@@ -27,7 +27,7 @@ kotlin {
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
 
             // we use AssertionFailedError from opentest4j
@@ -41,7 +41,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(projects.kotestAssertions.kotestAssertionsCore)
@@ -58,7 +58,9 @@ kotlin {
       }
 
       nativeMain {
+         // used to write to the console with fancy colours!
          dependencies {
+            implementation(libs.mordant)
             // we need these so we can generate the runKotest test stub
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
