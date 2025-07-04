@@ -33,6 +33,7 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
                appendLine(
                   """
 // https://youtrack.jetbrains.com/issue/KT-63218/EagerInitialization-use-cases
+@Suppress("DEPRECATION", "unused")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 val invoker = runKotest()
