@@ -65,4 +65,4 @@ jobs:
          ref: ${{ inputs.ref }}
          # TODO remove `--continue` when Kotest Gradle Plugin publishing works
          #      https://github.com/kotest/kotest/issues/4012#issuecomment-2241294938
-         task: publishAllPublicationsToDeployRepository --continue
+         task: publishToAppropriateCentralRepository --continue
