@@ -13,4 +13,67 @@ enum class IsolationMode {
     * [io.kotest.core.test.TestCase] and each root is executed in its own associated instance.
     */
    InstancePerRoot,
+
+   /**
+    * A new instance of the [Spec] class is instantiated for every
+    * [io.kotest.core.test.TestCase] - both containers and leaf tests - and they are
+    * executed once the previous test has completed.
+    *
+    * For example, in the following test plan:
+    *
+    * ```
+    * "this test" {
+    *   println("a")
+    *   "nested test" {
+    *     println("b")
+    *   }
+    *   "nested test 2" {
+    *     println("c")
+    *   }
+    * }
+    * ```
+    *
+    * The output will be:
+    *
+    * ```text
+    * a
+    * a
+    * b
+    * a
+    * c
+    * ```
+    *
+    */
+   InstancePerTest,
+
+   /**
+    * A new instance of the [Spec] class is instantiated for every
+    * leaf [io.kotest.core.test.TestCase]. Container test cases are executed only as
+    * part of the path to a leaf test.
+    *
+    * For example, in the following test plan:
+    *
+    * ```
+    * "this test" {
+    *   println("a")
+    *   "nested test" {
+    *     println("b")
+    *   }
+    *   "nested test 2" {
+    *     println("c")
+    *   }
+    * }
+    * ```
+    *
+    * The output will be:
+    *
+    * ```text
+    * a
+    * b
+    * a
+    * c
+    * ```
+    */
+   @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests")
+   InstancePerLeaf
 }
