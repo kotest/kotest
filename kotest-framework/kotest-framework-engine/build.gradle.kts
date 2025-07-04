@@ -60,10 +60,16 @@ kotlin {
       nativeMain {
          // used to write to the console with fancy colours!
          dependencies {
-            implementation(libs.mordant)
             // we need these so we can generate the runKotest test stub
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
+         }
+      }
+
+      linuxX64Main {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
          }
       }
    }
