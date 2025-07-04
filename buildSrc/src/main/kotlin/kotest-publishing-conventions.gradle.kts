@@ -182,6 +182,30 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
    }
 }
 
+//region Letting Kotest settings control which publications are enabled
+val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+   // use vals - improves Gradle Config Cache compatibility
+   val publicationName = publication.name
+   val enabledPublicationNamePrefixes = kotestSettings.enabledPublicationNamePrefixes
+
+   val isPublicationEnabled = enabledPublicationNamePrefixes.map { prefixes ->
+      prefixes.any { prefix -> publicationName.startsWith(prefix, ignoreCase = true) }
+   }
+
+   // register an input so Gradle can do up-to-date checks
+   inputs.property("publicationEnabled", isPublicationEnabled)
+
+   onlyIf {
+      val enabled = isPublicationEnabled.get()
+      if (!enabled) {
+         logger.lifecycle("[task: $path] publishing for $publicationName is disabled")
+      }
+      enabled
+   }
+}
+//endregion
+
 //region Fix Gradle error Reason: Task <publish> uses this output of task <sign> without declaring an explicit or implicit dependency.
 // https://github.com/gradle/gradle/issues/26091
 tasks.withType<AbstractPublishToMaven>().configureEach {
