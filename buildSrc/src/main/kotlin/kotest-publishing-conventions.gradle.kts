@@ -186,7 +186,8 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
 val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 tasks.withType<AbstractPublishToMaven>().configureEach {
    // use vals - improves Gradle Config Cache compatibility
-   val publicationName = publication.name
+   // We might get null here if something uses the publication task before the actual publication is created
+   val publicationName = publication?.name ?: "MissingPublicationName"
    val enabledPublicationNamePrefixes = kotestSettings.enabledPublicationNamePrefixes
 
    val isPublicationEnabled = enabledPublicationNamePrefixes.map { prefixes ->
