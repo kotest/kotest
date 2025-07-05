@@ -59,7 +59,8 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       "Mirab, with tests unfurled",
       "Dolly works 9 to 5. I test 24/7",
       "A test suite's gotta do what a test suite's gotta do",
-      "I test code and chew bubblegum, and I'm all out of bubblegum"
+      "I test code and chew bubblegum, and I'm all out of bubblegum",
+      "ChatGPT ain't got nothing on me when it comes to testing",
    )
 
    override suspend fun engineInitialized(context: EngineContext) {

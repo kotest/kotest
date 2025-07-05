@@ -22,8 +22,6 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
                appendLine("""import io.kotest.engine.extensions.ProvidedDescriptorFilter""")
                appendLine("""import io.kotest.engine.TestEngineLauncher""")
                appendLine("""import io.kotest.core.spec.SpecRef""")
-               appendLine("""import kotlin.test.Test""")
-               appendLine("""import kotlin.test.AfterClass""")
                appendLine("""import kotlinx.cinterop.ExperimentalForeignApi""")
                appendLine("""import kotlinx.cinterop.toKString""")
                appendLine("""import platform.posix.getenv""")
@@ -34,14 +32,13 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
 
                appendLine(
                   """
-// we need at least one test otherwise the @AfterClass will not be called
-@Test
-fun configureKotest() {
-}
+// https://youtrack.jetbrains.com/issue/KT-63218/EagerInitialization-use-cases
+@Suppress("DEPRECATION", "unused")
+@OptIn(ExperimentalStdlibApi::class)
+@EagerInitialization
+val invoker = runKotest()
 
-// we run Kotest after all kotlin.test tests have been executed
-@OptIn(ExperimentalForeignApi::class)
-@AfterClass
+@OptIn(ExperimentalForeignApi::class) // needed for getenv
 fun runKotest() {
 
   val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
@@ -57,13 +54,13 @@ fun runKotest() {
                )
 
                specs.forEach {
-                  appendLine("""SpecRef.Function({ $it() }, $it::class),""")
+                  appendLine("""       SpecRef.Function({ $it() }, $it::class),""")
                }
 
                appendLine(
                   """   )
    when (listener) {
-      "TeamCity" -> launcher.withTeamCityListener().launch()
+      "teamcity" -> launcher.withTeamCityListener().launch()
       else -> launcher.launch()
    }
 }"""
