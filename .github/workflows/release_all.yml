@@ -53,5 +53,11 @@ jobs:
       secrets: inherit
       with:
          ref: ${{ inputs.ref }}
-         task: publishToAppropriateCentralRepository ${{ matrix.args }} --no-parallel --stacktrace --no-configuration-cache
+         task: >
+           publishToAppropriateCentralRepository ${{ matrix.args }}
+            -P"kotest_enableKotlinJs"=true
+            -P"kotest_enableKotlinNative"=true
+            --no-parallel
+            --stacktrace
+            --no-configuration-cache
          runs-on: ${{ matrix.os }}
