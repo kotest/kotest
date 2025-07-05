@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle.tasks
 
+import io.kotest.framework.gradle.IntellijUtils
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
@@ -20,6 +21,9 @@ abstract class KotestJsTask @Inject internal constructor(
    // this is the name of the package where the KSP plugin places the generated top level run function
    // it should always match whatever the plugin is generating
    private val runKotestPackageName = "io.kotest.framework.runtime.js"
+
+   // the value used to specify the team city format
+   private val LISTENER_TC = "teamcity"
 
    @get:Input
    abstract val nodeExecutable: Property<String>
@@ -46,8 +50,8 @@ abstract class KotestJsTask @Inject internal constructor(
 
          // this is the entry point passed to node which references the well defined runKotest function
          val nodeCommand = when {
-            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('TeamCity', $descriptorArg)"
-            else -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('Console', $descriptorArg)"
+            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('$LISTENER_TC', $descriptorArg)"
+            else -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('console', $descriptorArg)"
          }
          println("Node command :$nodeCommand")
 
@@ -56,9 +60,3 @@ abstract class KotestJsTask @Inject internal constructor(
    }
 }
 
-internal object IntellijUtils {
-   private const val IDEA_PROP = "idea.active"
-
-   // this system property is added by intellij itself when running tasks
-   fun isIntellij() = System.getProperty(IDEA_PROP) != null
-}
