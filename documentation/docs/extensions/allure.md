@@ -21,14 +21,16 @@ This module provides integration for using allure with kotest.
 To start, add the below dependency to your Gradle build file.
 
 ```groovy
-io.kotest.extensions:kotest-extensions-allure:${kotest.version}
+io.kotest:kotest-extensions-allure:${kotest.version}
 ```
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-allure)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-allure/)
 
-
-Note: The group id is different (io.kotest.extensions) from the main kotest dependencies (io.kotest).
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
 
 
 ### Collect Data

@@ -15,10 +15,14 @@ After [configuring](https://gradle-pitest-plugin.solidsoft.info/) Pitest,
 add the `io.kotest.extensions:kotest-extensions-pitest` module to your dependencies as well:
 
 ```kotlin
-    testImplementation("io.kotest.extensions:kotest-extensions-pitest:<version>")
+    testImplementation("io.kotest:kotest-extensions-pitest:<version>")
 ```
 
-Note: Since pitest is an extension, we use a different maven group name (io.kotest.extensions) from the core modules.
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
+
 
 After doing that, we need to inform Pitest that we're going to use `Kotest` as a `testPlugin`:
 
@@ -56,7 +60,7 @@ Then add the dependency on Pitest Kotest extension:
 <dependencies>
   ... the other Kotest dependencies like kotest-runner-junit5
   <dependency>
-    <groupId>io.kotest.extensions</groupId>
+    <groupId>io.kotest</groupId>
     <artifactId>kotest-extensions-pitest</artifactId>
     <version>${kotest-extensions-pitest.version}</version>
     <scope>test</scope>

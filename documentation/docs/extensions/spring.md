@@ -11,9 +11,13 @@ Kotest offers a Spring extension that allows you to test code that uses the Spri
 If you prefer to see an example rather than read docs, then there is a sample project using spring webflux [here](https://github.com/kotest/kotest-examples-spring-webflux)
 :::
 
-In order to use this extension, you need to add `io.kotest.extensions:kotest-extensions-spring` module to your test compile path. The latest version can always be found on maven central [here](https://search.maven.org/search?q=a:kotest-extensions-spring%20AND%20g:io.kotest.extensions).
+In order to use this extension, you need to add `io.kotest:kotest-extensions-spring` module to your test compile path. The latest version can always be found on maven central [here](https://search.maven.org/search?q=a:kotest-extensions-spring%20AND%20g:io.kotest.extensions).
 
-Note: The maven group id differs from the core test framework (io.kotest.extensions).
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
+
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-spring.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-spring)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-spring.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-spring/)

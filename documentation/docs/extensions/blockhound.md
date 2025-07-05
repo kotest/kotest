@@ -8,7 +8,7 @@ slug: blockhound.html
 The Kotest BlockHound extension activates [BlockHound](https://github.com/reactor/BlockHound) support for coroutines. It helps to detect blocking code on non-blocking coroutine threads, e.g. when accidentally calling a blocking I/O library function on a UI thread.
 
 :::note
-To use this extension add the `io.kotest.extensions:kotest-extensions-blockhound` module to your test compile path.
+To use this extension add the `io.kotest:kotest-extensions-blockhound` module to your test compile path.
 :::
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-blockhound.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-blockhound)
