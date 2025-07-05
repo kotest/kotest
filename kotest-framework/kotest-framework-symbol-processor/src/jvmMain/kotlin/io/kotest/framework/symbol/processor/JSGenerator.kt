@@ -47,7 +47,7 @@ fun runKotest(listenerType: String, descriptorArg: String?) {
                appendLine(
                   """    )
   when (listenerType) {
-      "TeamCity" -> launcher.withTeamCityListener().promise()
+      "teamcity" -> launcher.withTeamCityListener().promise()
       else -> launcher.promise()
    }
 }"""
