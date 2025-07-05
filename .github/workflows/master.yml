@@ -35,7 +35,7 @@ jobs:
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: check
+         task: check -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
 
    validate-secondary:
       name: Validate on secondary runners
@@ -52,7 +52,7 @@ jobs:
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: check
+         task: check -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
 
    publish-sonatype:
       name: Publish all artifacts to Sonatype (Maven Central)
@@ -65,4 +65,8 @@ jobs:
          ref: ${{ inputs.ref }}
          # TODO remove `--continue` when Kotest Gradle Plugin publishing works
          #      https://github.com/kotest/kotest/issues/4012#issuecomment-2241294938
-         task: publishToAppropriateCentralRepository --continue
+         task: >
+            publishToAppropriateCentralRepository
+            --continue
+            -P"kotest_enableKotlinJs"=true
+            -P"kotest_enableKotlinNative"=true
