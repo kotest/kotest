@@ -9,7 +9,12 @@ slug: mockserver.html
 Kotest provides an [extension](https://github.com/kotest/kotest-extensions-mockserver) for integration with the [MockServer](https://www.mock-server.com) library.
 
 :::note
-Requires the `io.kotest.extensions:kotest-extensions-mockserver` module to be added to your build.
+Requires the `io.kotest:kotest-extensions-mockserver` module to be added to your build.
+:::
+
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
 :::
 
 
