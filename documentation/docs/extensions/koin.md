@@ -14,25 +14,27 @@ To use the extension in your project, add the dependency to your project:
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-koin.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-koin)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-koin.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-koin/)
 
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
+
 ```kotlin
-io.kotest.extensions:kotest-extensions-koin:${version}
+io.kotest:kotest-extensions-koin:${kotestVersion}
 ```
 
 With the dependency added, we can easily use Koin in our tests!
 
 ```kotlin
-class KotestAndKoin : FunSpec(), KoinTest {
+class KotestAndKoin : KoinTest, FunSpec({
+    extension(KoinExtension(koinModule) { mockk<UserService>() })
 
-    override fun extensions() = listOf(KoinExtension(myKoinModule))
+    test("use userService") {
+        val userService by inject<UserService>()
 
-    val userService by inject<UserService>()
-
-    init {
-        test("use userService") {
-            userService.getUser().username shouldBe "LeoColman"
-        }
+        userService.getUser().username shouldBe "LeoColman"
     }
-}
+})
 ```
 
 By default, the extension will start/stop the Koin context between leaf tests.
@@ -41,21 +43,19 @@ to persist over all leafs of a root tests (for example to share mocked declarati
 you can specify the lifecycle mode as `KoinLifecycleMode.Root` in the KoinExtension constructor.
 
 ```kotlin
-class KotestAndKoin : DescribeSpec(), KoinTest {
+class KotestAndKoin : KoinTest, DescribeSpec({
+   extension(KoinExtension(module = myKoinModule, mode = KoinLifecycleMode.Root))
 
-    override fun extensions() = listOf(KoinExtension(module = myKoinModule, mode = KoinLifecycleMode.Root))
+   describe("use userService") {
+      val userService by inject<UserService>()
 
-    val userService by inject<UserService>()
+      it("inside a leaf test") {
+         userService.getUser().username shouldBe "LeoColman"
+      }
 
-    init {
-        describe("use userService") {
-            it("inside a leaf test") {
-                userService.getUser().username shouldBe "LeoColman"
-            }
-            it("this shares the same context") {
-                userService.getUser().username shouldBe "LeoColman"
-            }
-        }
-    }
-}
+      it("this shares the same context") {
+         userService.getUser().username shouldBe "LeoColman"
+      }
+   }
+})
 ```
