@@ -7,13 +7,12 @@ plugins {
    signing
    `maven-publish`
    id("dev.adamko.dev-publish")
+   id("com.gradleup.nmcp")
 }
 
 group = "io.kotest"
 version = Ci.publishVersion
 
-val ossrhUsername: String by project
-val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
@@ -48,16 +47,6 @@ gradle.taskGraph.whenReady {
 
 publishing {
    repositories {
-      maven {
-         val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-         val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-         name = mavenCentralRepoName
-         url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
-         credentials {
-            username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
-            password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
-         }
-      }
       maven(rootDir.resolve("build/maven-repo")) {
          // Publish to a project-local directory, for easier verification of published artifacts
          // Run ./gradlew publishAllPublicationsToRootBuildDirRepository, and check `$rootDir/build/maven-repo/`
