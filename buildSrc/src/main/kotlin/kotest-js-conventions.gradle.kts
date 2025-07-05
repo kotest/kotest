@@ -6,8 +6,10 @@ plugins {
    id("kotlin-conventions")
 }
 
+val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
+
 kotlin {
-   if (!project.hasProperty(Ci.JVM_ONLY)) {
+   if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinJs.get()) {
       js {
          browser()
          nodejs()
