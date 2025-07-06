@@ -25,19 +25,22 @@ databases and kafka and general containers support for any supported docker imag
 To begin, add the following dependency to your Gradle build file.
 
 ```groovy
-io.kotest.extensions:kotest-extensions-testcontainers:${kotest.version}
+io.kotest:kotest-extensions-testcontainers:${kotest.version}
 ```
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-testcontainers.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-testcontainers)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-testcontainers.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-testcontainers/)
 
-Note: The group id is different (`io.kotest.extensions`) from the main kotest dependencies (`io.kotest`).
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
 
 For Maven, you will need these dependencies:
 
 ```xml
 <dependency>
-    <groupId>io.kotest.extensions</groupId>
+    <groupId>io.kotest</groupId>
     <artifactId>kotest-extensions-testcontainers</artifactId>
     <version>${kotest.version}</version>
     <scope>test</scope>
