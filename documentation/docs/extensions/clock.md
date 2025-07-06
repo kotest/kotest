@@ -14,8 +14,14 @@ Then in tests we can provide a fixed or controllable clock which avoids issues w
 In your real code, you provide an instance of Clock.systemUTC() or whatever.
 
 :::note
-The following module is needed: `io.kotest.extensions:kotest-extensions-clock` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-clock).
+The following module is needed: `io.kotest:kotest-extensions-clock` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-clock).
 :::
+
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
+
 
 In order to use it, we create an instance of the `TestClock` passing in an instant and a zone offset.
 

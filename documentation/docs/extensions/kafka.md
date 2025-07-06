@@ -8,7 +8,12 @@ slug: embedded-kafka.html
 Kotest offers an extension that spins up an embedded Kafka instance. This can help in situations
 where using the kafka docker images are an issue.
 
-To use this extension add the `io.kotest.extensions:kotest-extensions-embedded-kafka` module to your test compile path.
+To use this extension add the `io.kotest:kotest-extensions-embedded-kafka` module to your test compile path.
+
+:::note
+Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+main Kotest releases.
+:::
 
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-embedded-kafka.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-embedded-kafka)
@@ -72,13 +77,13 @@ Alternatively, you can access the host/port the Kafka instance was deployed on a
 class EmbeddedKafkaListenerTest : FunSpec({
 
    listener(embeddedKafkaListener)
-   
+
    val props = Properties().apply {
       put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "${embeddedKafkaListener.host}:${embeddedKafkaListener.port}")
    }
-   
+
    val producer = KafkaProducer<String, String>(props)
-   
+
 }
 ```
 
