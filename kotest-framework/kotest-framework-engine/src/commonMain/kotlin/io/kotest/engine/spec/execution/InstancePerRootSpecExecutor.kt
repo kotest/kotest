@@ -21,7 +21,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 
-internal class InstancePerRootExecutor(
+internal class InstancePerRootSpecExecutor(
    private val context: EngineContext,
 ) : SpecExecutor() {
 
@@ -49,9 +49,7 @@ internal class InstancePerRootExecutor(
          pipeline.execute(seed, specContext) {
             materializeAndInvokeRootTests(seed, ref, specContext)
             Result.success(results.toMap())
-         }
-
-         Result.success(results.toMap())
+         }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
       }
    }
 

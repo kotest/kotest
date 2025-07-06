@@ -33,8 +33,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
          pipeline.execute(seed, specContext) { spec ->
             launchRootTests(spec, specContext)
             Result.success(results.toMap())
-         }
-         Result.success(results.toMap())
+         }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
       }
    }
 

@@ -4195,10 +4195,3 @@ public final class io/kotest/engine/test/scopes/RegistrationKt {
 	public static final fun getRegistration (Lkotlin/coroutines/CoroutineContext;)Lio/kotest/engine/test/scopes/Registration;
 }
 
-public final class io/kotest/engine/test/scopes/TerminalTestScope : io/kotest/core/test/TestScope {
-	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;)V
-	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getTestCase ()Lio/kotest/core/test/TestCase;
-	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-

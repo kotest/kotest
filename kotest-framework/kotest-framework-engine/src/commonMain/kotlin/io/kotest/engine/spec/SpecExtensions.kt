@@ -71,10 +71,13 @@ internal class SpecExtensions(
          }
       }
 
-      val errors = specConfigResolver.extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
-         runCatching { ext.afterSpec(spec) }
-            .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
-      }
+      val errors = specConfigResolver.extensions(spec)
+         .filterIsInstance<AfterSpecListener>()
+         .mapNotNull { listener ->
+            runCatching { listener.afterSpec(spec) }
+               .mapError { ExtensionException.AfterSpecException(it) }
+               .exceptionOrNull()
+         }
 
       return when {
          errors.isEmpty() -> Result.success(spec)

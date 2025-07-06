@@ -61,7 +61,7 @@ internal class SpecRefExecutor(
          try {
             when (context.specConfigResolver.isolationMode(spec)) {
                IsolationMode.SingleInstance -> SingleInstanceSpecExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerRoot -> InstancePerRootExecutor(context).execute(ref, spec)
+               IsolationMode.InstancePerRoot -> InstancePerRootSpecExecutor(context).execute(ref, spec)
                IsolationMode.InstancePerLeaf -> InstancePerLeafExecutor(context).execute(ref, spec)
                IsolationMode.InstancePerTest -> InstancePerTestExecutor(context).execute(ref, spec)
             }

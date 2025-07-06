@@ -7,8 +7,9 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * A [TestScope] that errors on registration attempts of nested tests.
+ * Used for tests.
  */
-class TerminalTestScope(
+internal class TerminalTestScope(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext
 ) : TestScope {
