@@ -22,11 +22,11 @@ import io.kotest.matchers.shouldNotBe
 class UnstableTestNameTest : FunSpec() {
    init {
 
-      val results = mutableListOf<String>()
+      val results = mutableListOf<Pair<String, String>>()
 
       val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            results.add(result.name)
+            results.add(Pair(testCase.name.name, result.name))
          }
       }
 
@@ -51,20 +51,20 @@ class UnstableTestNameTest : FunSpec() {
                .launch()
 
             results shouldBe listOf(
-               TestStatus.Success.name,
-               TestStatus.Failure.name,
-               TestStatus.Success.name,
-               TestStatus.Success.name,
-               TestStatus.Failure.name,
-               TestStatus.Success.name,
-               TestStatus.Success.name,
-               TestStatus.Failure.name,
-               TestStatus.Success.name,
-               TestStatus.Success.name, // this success is the foo context
-               TestStatus.Success.name,
-               TestStatus.Failure.name,
-               TestStatus.Success.name,
-               TestStatus.Success.name, // this success is the bar context
+               Pair("io kotest datatest NotADataClass", TestStatus.Success.name),
+               Pair("(1) io kotest datatest NotADataClass", TestStatus.Failure.name),
+               Pair("(2) io kotest datatest NotADataClass", TestStatus.Success.name),
+               Pair("io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("(1) io kotest datatest DataClassWithNonDataParameter", TestStatus.Failure.name),
+               Pair("(2) io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("io kotest datatest NotADataClass", TestStatus.Success.name),
+               Pair("(1) io kotest datatest NotADataClass", TestStatus.Failure.name),
+               Pair("(2) io kotest datatest NotADataClass", TestStatus.Success.name),
+               Pair("foo", TestStatus.Success.name), // this success is the foo context
+               Pair("io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("(1) io kotest datatest DataClassWithNonDataParameter", TestStatus.Failure.name),
+               Pair("(2) io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("bar", TestStatus.Success.name), // this success is the bar context
             )
          }
       }

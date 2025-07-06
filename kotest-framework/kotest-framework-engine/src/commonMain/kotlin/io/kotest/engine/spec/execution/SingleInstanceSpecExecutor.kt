@@ -11,6 +11,7 @@ import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -66,11 +67,17 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
     * @return the result of this single test.
     */
    private suspend fun executeTest(testCase: TestCase, specContext: SpecContext) {
+
+      val duplicateTestNameHandler = DuplicateTestNameHandler()
+      val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
       val testExecutor = TestCaseExecutor(context)
       val result = testExecutor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {
-            val nestedTestCase = materializer.materialize(it, testCase)
+            val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, it.name)
+            val uniqueName = it.name.copy(name = unique)
+            val nestedTestCase = materializer.materialize(it.copy(name = uniqueName), testCase)
             executeTest(nestedTestCase, specContext)
          },
          specContext = specContext

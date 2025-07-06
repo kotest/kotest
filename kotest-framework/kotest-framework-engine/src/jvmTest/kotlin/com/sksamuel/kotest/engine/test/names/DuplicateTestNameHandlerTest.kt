@@ -15,23 +15,23 @@ class DuplicateTestNameHandlerTest : FunSpec({
 
    test("in warn mode duplicate names should be renamed") {
       val handler = DuplicateTestNameHandler()
-      handler.handle(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "foo"
-      handler.handle(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "(1) foo"
-      handler.handle(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "(2) foo"
+      handler.unique(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "foo"
+      handler.unique(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "(1) foo"
+      handler.unique(DuplicateTestNameMode.Warn, TestNameBuilder.builder("foo").build()) shouldBe "(2) foo"
    }
 
    test("in silent mode duplicate names should be renamed") {
       val handler = DuplicateTestNameHandler()
-      handler.handle(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "foo"
-      handler.handle(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "(1) foo"
-      handler.handle(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "(2) foo"
+      handler.unique(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "foo"
+      handler.unique(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "(1) foo"
+      handler.unique(DuplicateTestNameMode.Silent, TestNameBuilder.builder("foo").build()) shouldBe "(2) foo"
    }
 
    test("in error mode duplicate names should throw DuplicateTestNameException") {
       val handler = DuplicateTestNameHandler()
-      handler.handle(DuplicateTestNameMode.Error, TestNameBuilder.builder("foo").build()) shouldBe "foo"
+      handler.unique(DuplicateTestNameMode.Error, TestNameBuilder.builder("foo").build()) shouldBe "foo"
       shouldThrow<DuplicateTestNameException> {
-         handler.handle(DuplicateTestNameMode.Error, TestNameBuilder.builder("foo").build())
+         handler.unique(DuplicateTestNameMode.Error, TestNameBuilder.builder("foo").build())
       }
    }
 })

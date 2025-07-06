@@ -10,6 +10,7 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TestNameEscaper
 
 /**
@@ -34,13 +35,18 @@ class Materializer(
     */
    fun materialize(spec: Spec): List<TestCase> {
 
+      val handler = DuplicateTestNameHandler()
+      val mode = specConfigResolver.duplicateTestNameMode(spec)
+
       val tests = spec.rootTests().map { rootTest ->
+
+         val unique = handler.unique(mode, rootTest.name)
 
          // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
          // then it will remove the common prefix from the child, to workaround this, we will add a dash at the
          // start of the nested test to make the child nest have a different prefix.
          // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
-         val resolvedName = resolvedName(rootTest.name, null)
+         val resolvedName = resolvedName(rootTest.name.copy(name = unique), null)
 
          val config = if (rootTest.disabled == true)
             (rootTest.config ?: TestConfig()).withXDisabled()

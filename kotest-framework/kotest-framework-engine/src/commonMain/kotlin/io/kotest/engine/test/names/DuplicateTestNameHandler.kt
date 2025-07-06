@@ -18,7 +18,7 @@ internal class DuplicateTestNameHandler {
    /**
     * Returns a unique name or the input if the name is already unique.
     */
-   fun handle(mode: DuplicateTestNameMode, name: TestName): String {
+   fun unique(mode: DuplicateTestNameMode, name: TestName): String {
       val isUnique = names.add(name.name)
       if (isUnique) return name.name
       return when (mode) {
