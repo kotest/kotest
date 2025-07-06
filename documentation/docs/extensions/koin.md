@@ -26,15 +26,17 @@ io.kotest:kotest-extensions-koin:${kotestVersion}
 With the dependency added, we can easily use Koin in our tests!
 
 ```kotlin
-class KotestAndKoin : KoinTest, FunSpec({
+class KotestAndKoin : KoinTest, FunSpec() {
+  init {
     extension(KoinExtension(koinModule) { mockk<UserService>() })
 
     test("use userService") {
-        val userService by inject<UserService>()
+      val userService by inject<UserService>()
 
-        userService.getUser().username shouldBe "LeoColman"
+      userService.getUser().username shouldBe "LeoColman"
     }
-})
+  }
+}
 ```
 
 By default, the extension will start/stop the Koin context between leaf tests.
@@ -43,19 +45,22 @@ to persist over all leafs of a root tests (for example to share mocked declarati
 you can specify the lifecycle mode as `KoinLifecycleMode.Root` in the KoinExtension constructor.
 
 ```kotlin
-class KotestAndKoin : KoinTest, DescribeSpec({
-   extension(KoinExtension(module = myKoinModule, mode = KoinLifecycleMode.Root))
+class KotestAndKoin : KoinTest, DescribeSpec() {
 
-   describe("use userService") {
+  init {
+    extension(KoinExtension(module = myKoinModule, mode = KoinLifecycleMode.Root))
+
+    describe("use userService") {
       val userService by inject<UserService>()
 
       it("inside a leaf test") {
-         userService.getUser().username shouldBe "LeoColman"
+        userService.getUser().username shouldBe "LeoColman"
       }
 
       it("this shares the same context") {
-         userService.getUser().username shouldBe "LeoColman"
+        userService.getUser().username shouldBe "LeoColman"
       }
-   }
-})
+    }
+  }
+}
 ```
