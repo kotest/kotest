@@ -13,6 +13,7 @@ dependencies {
    implementation(libs.testlogger.gradle.plugin)
    implementation(libs.kotlin.gradle.plugin)
    implementation(libs.devPublish.plugin)
+   implementation(libs.nmcp.plugin)
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {
