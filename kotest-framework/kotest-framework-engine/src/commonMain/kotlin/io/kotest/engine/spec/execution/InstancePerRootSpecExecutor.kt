@@ -2,9 +2,9 @@ package io.kotest.engine.spec.execution
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.isRootTest
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
@@ -118,8 +118,8 @@ internal class InstancePerRootSpecExecutor(
       val executor = TestCaseExecutor(context)
       val result = executor.execute(
          testCase = testCase,
-         testScope = TestScope.create(testCase) {
-            val nestedTestCase = Materializer(context.specConfigResolver).materialize(it, testCase)
+         testScope = DefaultTestScope(testCase) {
+            val nestedTestCase = materializer.materialize(it, testCase)
             executeTest(nestedTestCase, specContext)
          },
          specContext = specContext

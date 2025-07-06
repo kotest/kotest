@@ -15,7 +15,7 @@ import kotlin.coroutines.coroutineContext
  *
  * This context extends [CoroutineScope] giving the ability for any test to launch
  * coroutines directly, without requiring the user to supply a coroutine scope, and to retrieve
- * elements from the current [CoroutineContext] via [CoroutineContext.get]
+ * elements from the current [CoroutineContext] via [CoroutineContext.get].
  */
 @KotestTestScope
 interface TestScope : CoroutineScope {
@@ -32,18 +32,22 @@ interface TestScope : CoroutineScope {
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
+}
+
+class DefaultTestScope(
+   override val testCase: TestCase,
+   override val coroutineContext: CoroutineContext,
+   private val onRegister: suspend (NestedTest) -> Unit,
+) : TestScope {
+
+   override suspend fun registerTestCase(nested: NestedTest) {
+      onRegister(nested)
+   }
 
    companion object {
-      suspend fun create(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
+      suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
          val cc = coroutineContext
-         return object : TestScope, CoroutineScope {
-            override val testCase: TestCase = testCase
-            override val coroutineContext: CoroutineContext = cc
-
-            override suspend fun registerTestCase(nested: NestedTest) {
-               onRegister(nested)
-            }
-         }
+         return DefaultTestScope(testCase, cc, onRegister)
       }
    }
 }

@@ -5,7 +5,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.atomic.AtomicBoolean
 import io.kotest.engine.atomic.createAtomicBoolean
-import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
  * Interceptors that are executed after a spec is instantiated.
@@ -27,11 +26,10 @@ internal interface SpecInterceptor {
 internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
    var beforeSpecError: Throwable? = null,
-   val handler: DuplicateTestNameHandler,
    var testFailed: Boolean = false,
 ) {
    companion object {
-      fun create() = SpecContext(createAtomicBoolean(false), null, DuplicateTestNameHandler())
+      fun create() = SpecContext(createAtomicBoolean(false), null)
    }
 }
 

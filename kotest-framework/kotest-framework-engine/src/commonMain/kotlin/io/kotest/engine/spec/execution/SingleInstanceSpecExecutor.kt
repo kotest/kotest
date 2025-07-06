@@ -2,9 +2,9 @@ package io.kotest.engine.spec.execution
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
@@ -25,6 +25,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()
+   private val materializer = Materializer(context.specConfigResolver)
 
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
@@ -39,7 +40,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
 
    private suspend fun launchRootTests(spec: Spec, specContext: SpecContext) {
 
-      val rootTests = Materializer(context.specConfigResolver).materialize(spec)
+      val rootTests = materializer.materialize(spec)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
@@ -68,8 +69,8 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
       val testExecutor = TestCaseExecutor(context)
       val result = testExecutor.execute(
          testCase = testCase,
-         testScope = TestScope.create(testCase) {
-            val nestedTestCase = Materializer(context.specConfigResolver).materialize(it, testCase)
+         testScope = DefaultTestScope(testCase) {
+            val nestedTestCase = materializer.materialize(it, testCase)
             executeTest(nestedTestCase, specContext)
          },
          specContext = specContext

@@ -103,9 +103,7 @@ internal class InstancePerTestSpecExecutor(
          pipeline.execute(seed, specContext) {
             launchRootTests(seed, ref, specContext)
             Result.success(results.toMap())
-         }
-
-         Result.success(results.toMap())
+         }.map { results.toMap() }
       }
    }
 

@@ -15,7 +15,6 @@ import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
-import io.kotest.engine.test.interceptors.DuplicateTestNameInterceptor
 import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
@@ -72,7 +71,6 @@ internal class TestCaseExecutor(
       }
 
       val interceptors = listOfNotNull(
-         DuplicateTestNameInterceptor(context.specConfigResolver, specContext),
          DescriptorPathContextInterceptor,
          TestNameContextInterceptor,
          FailFastInterceptor(context, specContext),
