@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.extensions.spec
+package com.sksamuel.kotest.engine.extensions.spec.beforespec
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec

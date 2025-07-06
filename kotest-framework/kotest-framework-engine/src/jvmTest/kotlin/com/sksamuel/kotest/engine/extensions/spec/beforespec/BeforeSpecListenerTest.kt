@@ -1,21 +1,26 @@
-package com.sksamuel.kotest.engine.extensions.spec
+package com.sksamuel.kotest.engine.extensions.spec.beforespec
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.datatest.withData
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.ExtensionException
+import io.kotest.engine.extensions.ExtensionException.BeforeSpecException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
@@ -152,16 +157,25 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.get() shouldBe 0
       }
 
-      test("BeforeSpecListener exceptions should be propagated and further tests skipped") {
-         val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
-            .withClasses(BeforeSpecWithError::class)
-            .launch()
-         listener.specs.size shouldBe 1
-         listener.tests.size shouldBe 3
-         listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
-         listener.result("foo2")!!.isIgnored shouldBe true
-         listener.result("foo3")!!.isIgnored shouldBe true
+      context("BeforeSpecListener error should fail the spec; mark first test as error and the rest as ignored") {
+         withData(
+            IsolationMode.SingleInstance,
+            IsolationMode.InstancePerRoot,
+         ) { isolationMode ->
+            val listener = CollectingTestEngineListener()
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode = isolationMode
+            }
+            TestEngineLauncher(listener)
+               .withProjectConfig(config)
+               .withClasses(BeforeSpecFunctionOverrideWithError::class)
+               .launch()
+            listener.specs.size shouldBe 1
+            listener.tests.size shouldBe 3 // 3 ignored tests
+            listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
+            listener.result("foo2")!!.isIgnored shouldBe true
+            listener.result("foo3")!!.isIgnored shouldBe true
+         }
       }
    }
 }
@@ -263,8 +277,27 @@ private class BeforeSpecDisabledOnlyTests : FunSpec() {
    }
 }
 
+private object BrokenExtension : MountableExtension<Unit, Unit>, BeforeSpecListener {
+   const val DUMMY_ERROR_MESSAGE = "should fail!"
+   override fun mount(configure: Unit.() -> Unit) {}
 
-private class BeforeSpecWithError : FunSpec() {
+   override suspend fun beforeSpec(spec: Spec) {
+      error(DUMMY_ERROR_MESSAGE)
+   }
+}
+
+private class BeforeSpecErrorInstancePerRoot : DescribeSpec({
+   isolationMode = IsolationMode.InstancePerRoot
+
+   install(BrokenExtension)
+
+   it("it should fail") { // this test is not even run
+      true.shouldBeFalse()
+   }
+})
+
+private class BeforeSpecFunctionOverrideWithError : FunSpec() {
+
    override suspend fun beforeSpec(spec: Spec) {
       error("boom")
    }

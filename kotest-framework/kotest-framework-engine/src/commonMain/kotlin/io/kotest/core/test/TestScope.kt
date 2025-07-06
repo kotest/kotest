@@ -4,6 +4,7 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * A test in Kotest is simply a function `suspend TestScope.() -> Unit`
@@ -31,4 +32,18 @@ interface TestScope : CoroutineScope {
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
+
+   companion object {
+      suspend fun create(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
+         val cc = coroutineContext
+         return object : TestScope, CoroutineScope {
+            override val testCase: TestCase = testCase
+            override val coroutineContext: CoroutineContext = cc
+
+            override suspend fun registerTestCase(nested: NestedTest) {
+               onRegister(nested)
+            }
+         }
+      }
+   }
 }

@@ -1,9 +1,7 @@
 package io.kotest.engine.spec.execution
 
-import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -19,13 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * Executor for specs that uses the spec seed instance for all tests.
  */
-internal class SingleInstanceExecutor(private val context: EngineContext) : SpecExecutor() {
+internal class SingleInstanceSpecExecutor(private val context: EngineContext) : SpecExecutor() {
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()
@@ -73,29 +69,12 @@ internal class SingleInstanceExecutor(private val context: EngineContext) : Spec
       val testExecutor = TestCaseExecutor(context)
       val result = testExecutor.execute(
          testCase = testCase,
-         testScope = SameSpecTestScope(testCase, specContext, coroutineContext),
+         testScope = TestScope.create(testCase) {
+            val nestedTestCase = Materializer(context.specConfigResolver).materialize(it, testCase)
+            executeTest(nestedTestCase, specContext)
+         },
          specContext = specContext
       )
       results.completed(testCase, result)
-   }
-
-   /**
-    * A [TestScope] that runs discovered tests as soon as they are registered in the same spec instance.
-    *
-    * This implementation tracks fail fast if configured via spec config or globally.
-    */
-   inner class SameSpecTestScope(
-      override val testCase: TestCase,
-      private val specContext: SpecContext,
-      override val coroutineContext: CoroutineContext,
-   ) : TestScope {
-
-      private val logger = Logger(SameSpecTestScope::class)
-
-      override suspend fun registerTestCase(nested: NestedTest) {
-         logger.log { Pair(testCase.name.name, "Registering nested test '${nested}'") }
-         val nestedTestCase = Materializer(context.specConfigResolver).materialize(nested, testCase)
-         executeTest(nestedTestCase, specContext)
-      }
    }
 }

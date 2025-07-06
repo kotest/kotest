@@ -33,7 +33,7 @@ class UnstableTestNameWithIsolationTest : FunSpec() {
          results.clear()
       }
 
-      test("isolation mode leaf + regular classes should show all tests in data testing") {
+      test("isolation mode InstancePerRoot + regular classes should show all tests in data testing") {
 
          TestEngineLauncher()
             .withListener(listener)
@@ -51,7 +51,7 @@ class UnstableTestNameWithIsolationTest : FunSpec() {
          )
       }
 
-      test("isolation mode leaf + data classes with regular class param should show all tests in data testing") {
+      test("isolation mode InstancePerRoot + data classes with regular class param should show all tests in data testing") {
 
          TestEngineLauncher()
             .withListener(listener)
