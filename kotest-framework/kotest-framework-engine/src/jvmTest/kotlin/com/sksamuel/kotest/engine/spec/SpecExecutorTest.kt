@@ -25,7 +25,7 @@ import kotlinx.coroutines.delay
 
 class SpecExecutorTest : FunSpec() {
    init {
-      context("f:FunSpec") {
+      context("FunSpec") {
          withData(
             IsolationMode.SingleInstance,
             IsolationMode.InstancePerRoot,

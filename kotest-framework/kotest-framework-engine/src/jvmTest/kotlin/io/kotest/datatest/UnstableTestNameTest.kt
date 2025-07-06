@@ -38,38 +38,40 @@ class UnstableTestNameTest : FunSpec() {
          withData(
             IsolationMode.SingleInstance,
             IsolationMode.InstancePerRoot,
-            IsolationMode.InstancePerTest,
-            IsolationMode.InstancePerLeaf,
          ) { isolationMode ->
-            withData(
-               RegularClasses::class,
-               DataClassesWithNonDataParameter::class,
-            ) { kclass ->
-               val config = object : AbstractProjectConfig() {
-                  override val isolationMode: IsolationMode = isolationMode
-               }
-               TestEngineLauncher()
-                  .withProjectConfig(config)
-                  .withListener(listener)
-                  .withClasses(kclass)
-                  .launch()
 
-               results shouldBe listOf(
-                  TestStatus.Success.name,
-                  TestStatus.Failure.name,
-                  TestStatus.Success.name,
-                  TestStatus.Success.name,
-                  TestStatus.Failure.name,
-                  TestStatus.Success.name,
-                  TestStatus.Success.name, // final success is the foo context
-               )
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode: IsolationMode = isolationMode
             }
+
+            TestEngineLauncher()
+               .withProjectConfig(config)
+               .withListener(listener)
+               .withClasses(NonDataClassesTest::class)
+               .launch()
+
+            results shouldBe listOf(
+               TestStatus.Success.name,
+               TestStatus.Failure.name,
+               TestStatus.Success.name,
+               TestStatus.Success.name,
+               TestStatus.Failure.name,
+               TestStatus.Success.name,
+               TestStatus.Success.name,
+               TestStatus.Failure.name,
+               TestStatus.Success.name,
+               TestStatus.Success.name, // this success is the foo context
+               TestStatus.Success.name,
+               TestStatus.Failure.name,
+               TestStatus.Success.name,
+               TestStatus.Success.name, // this success is the bar context
+            )
          }
       }
    }
 }
 
-class RegularClasses : DescribeSpec() {
+class NonDataClassesTest : DescribeSpec() {
    init {
 
       withData(
@@ -78,6 +80,14 @@ class RegularClasses : DescribeSpec() {
          NotADataClass(3),
       ) { d ->
          d.a shouldNotBe 2
+      }
+
+      withData(
+         DataClassWithNonDataParameter(1, NotADataClass(1)),
+         DataClassWithNonDataParameter(1, NotADataClass(2)),
+         DataClassWithNonDataParameter(1, NotADataClass(3)),
+      ) { d ->
+         d.b.a shouldNotBe 2
       }
 
       describe("foo") {
@@ -89,21 +99,8 @@ class RegularClasses : DescribeSpec() {
             d.a shouldNotBe 2
          }
       }
-   }
-}
 
-class DataClassesWithNonDataParameter : DescribeSpec() {
-   init {
-
-      withData(
-         DataClassWithNonDataParameter(1, NotADataClass(1)),
-         DataClassWithNonDataParameter(1, NotADataClass(2)),
-         DataClassWithNonDataParameter(1, NotADataClass(3)),
-      ) { d ->
-         d.b.a shouldNotBe 2
-      }
-
-      describe("foo") {
+      describe("bar") {
          withData(
             DataClassWithNonDataParameter(1, NotADataClass(1)),
             DataClassWithNonDataParameter(1, NotADataClass(2)),

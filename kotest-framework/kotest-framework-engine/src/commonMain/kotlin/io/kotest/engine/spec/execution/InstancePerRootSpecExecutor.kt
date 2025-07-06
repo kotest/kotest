@@ -14,6 +14,7 @@ import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -56,6 +57,7 @@ internal class InstancePerRootSpecExecutor(
    private suspend fun materializeAndInvokeRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
       val rootTests = materializer.materialize(seed)
+      val duplicateTestNameHandler = DuplicateTestNameHandler()
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
@@ -66,6 +68,10 @@ internal class InstancePerRootSpecExecutor(
 
       coroutineScope { // will wait for all tests to complete
          rootTests.withIndex().toList().forEach { (index, root) ->
+
+            // check if any of the root tests have a duplicate name and rename if necessary
+            val uniqueRoot = makeUniqueRoot(root, duplicateTestNameHandler)
+
             launch {
                semaphore.withPermit {
                   if (index == 0) {
@@ -74,11 +80,15 @@ internal class InstancePerRootSpecExecutor(
                       * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
                       * Eg, see https://github.com/kotest/kotest/issues/3490
                       */
-                     executeTest(root, specContext)
+                     executeTest(testCase = uniqueRoot, specContext = specContext)
                   } else {
                      // for subsequent tests, we create a new instance of the spec
                      // and will re-run the pipelines etc
-                     executeInFreshSpec(root, ref, specContext)
+                     executeInFreshSpec(
+                        root = uniqueRoot,
+                        ref = ref,
+                        specContext = specContext,
+                     )
                   }
                }
             }
@@ -91,21 +101,36 @@ internal class InstancePerRootSpecExecutor(
     * It will create the instance and run the pipeline on that, before
     * using that spec for the test execution.
     */
-   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef, specContext: SpecContext) {
-      require(testCase.isRootTest())
+   private suspend fun executeInFreshSpec(
+      root: TestCase,
+      ref: SpecRef,
+      specContext: SpecContext
+   ) {
+      require(root.isRootTest())
 
       val spec = inflator.inflate(ref).getOrThrow()
+      val duplicateTestNameHandler = DuplicateTestNameHandler()
 
-      // find the matching root test in the new spec instance
-      val root = materializer.materialize(spec).first { it.descriptor == testCase.descriptor }
+      // map all the names again so they are unique, and then find the matching root test in the new spec instance
+      val freshRoot = materializer.materialize(spec)
+         .map { makeUniqueRoot(it, duplicateTestNameHandler) }
+         .first { it.descriptor == root.descriptor }
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          pipeline.execute(spec, specContext) {
-            val result = executeTest(root, specContext)
-            Result.success(mapOf(testCase to result))
+            val result = executeTest(freshRoot, specContext)
+            Result.success(mapOf(freshRoot to result))
          }
       }
+   }
+
+   private fun makeUniqueRoot(test: TestCase, duplicateTestNameHandler: DuplicateTestNameHandler): TestCase {
+      val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(test.spec)
+      val uniqueIdent = duplicateTestNameHandler.handle(duplicateTestNameMode, test.name)
+      val uniqueTestName = test.name.copy(name = uniqueIdent)
+      val uniqueDescriptor = test.descriptor.parent.append(uniqueIdent)
+      return test.copy(name = uniqueTestName, descriptor = uniqueDescriptor)
    }
 
    /**
@@ -119,7 +144,14 @@ internal class InstancePerRootSpecExecutor(
       val result = executor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {
-            val nestedTestCase = materializer.materialize(it, testCase)
+
+            val duplicateTestNameHandler = DuplicateTestNameHandler()
+            val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
+            val unique = duplicateTestNameHandler.handle(duplicateTestNameMode, it.name)
+            val uniqueName = it.name.copy(name = unique)
+
+            val nestedTestCase = materializer.materialize(it.copy(name = uniqueName), testCase)
             executeTest(nestedTestCase, specContext)
          },
          specContext = specContext

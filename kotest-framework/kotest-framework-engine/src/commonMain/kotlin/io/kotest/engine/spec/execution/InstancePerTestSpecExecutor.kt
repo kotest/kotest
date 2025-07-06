@@ -208,10 +208,14 @@ internal class InstancePerTestSpecExecutor(
       private val ref: SpecRef,
       override val coroutineContext: CoroutineContext,
    ) : TestScope {
+
       private val logger = Logger(LaunchingTestScope::class)
+
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested}'") }
+
          val nestedTestCase = materializer.materialize(nested, testCase)
+
          // we only care about nested tests in two scenarios:
          // - if the current test is the target, then any nested tests are new and should be executed
          // - if the discovered test is on the path to the target, or is the target, then we can continue executing in the same spec
