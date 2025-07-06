@@ -8,7 +8,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
@@ -28,15 +27,50 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
+/**
+ * Implementation of [SpecExecutor] that executes each [TestCase] in a fresh instance
+ * of the [Spec] class.
+ *
+ * This differs from the [InstancePerLeafSpecExecutor] in that
+ * every single test, whether of type [TestType.Test] or [TestType.Container], will be
+ * executed separately. Branch tests will ultimately be executed once as a standalone
+ * test, and also as part of the "path" to any nested tests.
+ *
+ * So, given the following structure:
+ *
+ * ```
+ * outerTest {
+ *   innerTestA {
+ *     // test
+ *   }
+ *   innerTestB {
+ *     // test
+ *   }
+ * }
+ * ```
+ *
+ * Three spec instances will be created. The execution process will be:
+ *
+ * ```
+ * spec1 = instantiate spec
+ * spec1.outerTest
+ * spec2 = instantiate spec
+ * spec2.outerTest
+ * spec2.innerTestA
+ * spec3 = instantiate spec
+ * spec3.outerTest
+ * spec3.innerTestB
+ * ```
+ */
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
-internal class InstancePerLeafExecutor(
+internal class InstancePerTestSpecExecutor(
    private val context: EngineContext,
 ) : SpecExecutor() {
 
-   private val logger = Logger(InstancePerLeafExecutor::class)
+   private val logger = Logger(InstancePerTestSpecExecutor::class)
+   private val materializer = Materializer(context.specConfigResolver)
    private val pipeline = SpecInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
-   private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
 
    private val inflator = SpecRefInflator(
@@ -46,18 +80,26 @@ internal class InstancePerLeafExecutor(
    )
 
    /**
-    * The intention of this runner is that each **leaf** [TestCase] executes in its own instance
-    * of the containing [Spec] class, but parent tests (containers) are executed in a single shared instance.
+    * The intention of this executor is that each [TestCase] executes in its own instance
+    * of the containing [Spec] class. Therefore, when we begin executing a test case,
+    * we must first instantiate a new spec, and begin execution on _that_ instance.
+    *
+    * As test lambdas are executed, nested test cases will be registered, these should be ignored
+    * if they are not an ancestor of the target. If they are then we can step into them, and
+    * continue recursively until we find the target.
+    *
+    * Once the target is found it can be executed as normal, and any test lambdas it contains
+    * can be launched for execution.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
-         val specContext = SpecContext.create()
 
          // for the seed spec that is passed in, we need to run the instance pipeline,
-         // then register all the root tests. Any root tests that are containers will execute in the seed instance,
-         // but any leaf tests will execute in a fresh instance of the spec.
+         // then register all the root tests. These root tests will either execute in the
+         // seed instance (for the first test), or in a fresh instance (for the rest).
 
+         val specContext = SpecContext.create()
          pipeline.execute(seed, specContext) {
             launchRootTests(seed, ref, specContext)
             Result.success(results.toMap())
@@ -69,7 +111,7 @@ internal class InstancePerLeafExecutor(
 
    private suspend fun launchRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
-      val roots = materializer.materialize(seed)
+      val rootTests = materializer.materialize(seed)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
@@ -79,10 +121,21 @@ internal class InstancePerLeafExecutor(
       // the semaphore will control how many can actually run concurrently
 
       coroutineScope { // will wait for all tests to complete
-         roots.forEach {
+         rootTests.withIndex().toList().forEach { (index, root) ->
             launch {
                semaphore.withPermit {
-                  executeTest(it, null, specContext, ref)
+                  if (index == 0) {
+                     /**
+                      * The first time we run a root test, we can use the already instantiated spec as the instance.
+                      * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
+                      * Eg, see https://github.com/kotest/kotest/issues/3490
+                      */
+                     executeTest(root, root.descriptor, specContext, ref)
+                  } else {
+                     // for subsequent tests, we create a new instance of the spec
+                     // and will re-run the pipelines etc
+                     executeInFreshSpec(root, ref, specContext)
+                  }
                }
             }
          }
@@ -97,12 +150,10 @@ internal class InstancePerLeafExecutor(
     *
     * It will locate the root that is the parent of the given [TestCase] and execute it in the new spec instance.
     */
-   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef) {
-      require(testCase.type == TestType.Test) { "Only leaf tests should be executed in a fresh spec" }
-      logger.log { "Enqueuing in a fresh spec ${testCase.descriptor}" }
+   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef, specContext: SpecContext) {
+      logger.log { "Starting test ${testCase.descriptor}" }
 
       val spec = inflator.inflate(ref).getOrThrow()
-      val specContext = SpecContext.create()
 
       // we need to find the same root test but in the newly created spec
       val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
@@ -125,9 +176,9 @@ internal class InstancePerLeafExecutor(
     */
    private suspend fun executeTest(
       testCase: TestCase,
-      target: Descriptor.TestDescriptor?,
+      target: Descriptor.TestDescriptor,
       specContext: SpecContext,
-      ref: SpecRef
+      ref: SpecRef,
    ): TestResult {
       val executor = TestCaseExecutor(
          // we need a special listener that only listens to the target test case events
@@ -136,12 +187,12 @@ internal class InstancePerLeafExecutor(
       )
       val result = executor.execute(
          testCase = testCase,
-         testScope = LeafLaunchingScope(
+         testScope = LaunchingTestScope(
             testCase = testCase,
             target = target,
             specContext = specContext,
+            ref = ref,
             coroutineContext = coroutineContext,
-            ref = ref
          ),
          specContext = specContext
       )
@@ -150,55 +201,48 @@ internal class InstancePerLeafExecutor(
    }
 
    /**
-    * A [TestScope] that runs leafs in fresh specs, otherwise continues in the same instance.
+    * A [TestScope] that launches nested tests for execution in their own spec instance.
     */
-   inner class LeafLaunchingScope(
+   inner class LaunchingTestScope(
       override val testCase: TestCase,
-      private val target: Descriptor.TestDescriptor?,
+      private val target: Descriptor.TestDescriptor,
       private val specContext: SpecContext,
-      override val coroutineContext: CoroutineContext,
       private val ref: SpecRef,
+      override val coroutineContext: CoroutineContext,
    ) : TestScope {
-
-      private val logger = Logger(LeafLaunchingScope::class)
-
+      private val logger = Logger(LaunchingTestScope::class)
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested}'") }
          val nestedTestCase = materializer.materialize(nested, testCase)
-
-         // we care about two scenarios:
-         // - if the target is null, we are in discovery mode and nested tests will be executed if a container, or queued up if a leaf
-         // - if the target is not null, we are trying to reach a specific test, and we will execute nested tests on the path to the target
-         if (target == null) {
-            logger.log { Pair(testCase.name.name, "Launching discovered test in discovery mode") }
-            when (nestedTestCase.type) {
-               TestType.Container -> executeTest(nestedTestCase, null, specContext, ref)
-               TestType.Test -> executeInFreshSpec(nestedTestCase, ref)
-            }
-            return
+         // we only care about nested tests in two scenarios:
+         // - if the current test is the target, then any nested tests are new and should be executed
+         // - if the discovered test is on the path to the target, or is the target, then we can continue executing in the same spec
+         // otherwise we ignore it
+         if (target == testCase.descriptor) {
+            logger.log { Pair(testCase.name.name, "Launching discovered test as first discovery") }
+            executeInFreshSpec(nestedTestCase, ref, specContext)
          } else if (nestedTestCase.descriptor.isPrefixOf(target)) {
+            logger.log { Pair(testCase.name.name, "Launching discovered test as parent of target $target") }
             executeTest(nestedTestCase, target, specContext, ref)
          }
       }
    }
 
    internal class TargetListeningListener(
-      private val target: Descriptor.TestDescriptor?,
+      private val target: Descriptor.TestDescriptor,
       private val delegate: TestEngineListener,
    ) : TestCaseExecutionListener {
 
       override suspend fun testStarted(testCase: TestCase) {
-         if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
+         if (target == testCase.descriptor) delegate.testStarted(testCase)
       }
 
       override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-         if (target == null || testCase.type == TestType.Test) delegate.testIgnored(testCase, reason)
+         if (target == testCase.descriptor) delegate.testIgnored(testCase, reason)
       }
 
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-         if (target == null || testCase.type == TestType.Test) delegate.testFinished(testCase, result)
+         if (target == testCase.descriptor) delegate.testFinished(testCase, result)
       }
    }
 }
-
-

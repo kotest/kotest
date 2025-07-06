@@ -23,8 +23,10 @@ internal class DuplicateTestNameInterceptor(
 
       val mode = config.duplicateTestNameMode(testCase.spec)
       val uniqueName = specContext.handler.handle(mode, testCase.name)
+      val uniqueTestName = testCase.name.copy(name = uniqueName)
+      val uniqueDescriptor = testCase.descriptor.parent.append(uniqueName)
 
       logger.log { Pair(testCase.name.name, "Name with duplicate handling: $uniqueName") }
-      return test.invoke(testCase.copy(name = testCase.name.copy(name = uniqueName)), scope)
+      return test.invoke(testCase.copy(name = uniqueTestName, descriptor = uniqueDescriptor), scope)
    }
 }

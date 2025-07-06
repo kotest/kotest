@@ -44,6 +44,7 @@ enum class IsolationMode {
     * ```
     *
     */
+   @Deprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
    InstancePerTest,
 
    /**
@@ -74,6 +75,6 @@ enum class IsolationMode {
     * c
     * ```
     */
-   @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests")
+   @Deprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
    InstancePerLeaf
 }

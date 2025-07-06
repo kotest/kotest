@@ -62,8 +62,8 @@ internal class SpecRefExecutor(
             when (context.specConfigResolver.isolationMode(spec)) {
                IsolationMode.SingleInstance -> SingleInstanceSpecExecutor(context).execute(ref, spec)
                IsolationMode.InstancePerRoot -> InstancePerRootSpecExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerLeaf -> InstancePerLeafExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerTest -> InstancePerTestExecutor(context).execute(ref, spec)
+               IsolationMode.InstancePerLeaf -> InstancePerLeafSpecExecutor(context).execute(ref, spec)
+               IsolationMode.InstancePerTest -> InstancePerTestSpecExecutor(context).execute(ref, spec)
             }
          } catch (t: Throwable) {
             logger.log { Pair(spec::class.bestName(), "Error executing SpecRef $t") }
