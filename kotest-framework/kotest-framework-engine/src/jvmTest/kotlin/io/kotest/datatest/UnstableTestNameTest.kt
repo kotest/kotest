@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -18,7 +19,7 @@ import io.kotest.matchers.shouldNotBe
 @ExperimentalKotest
 @Isolate // sets global values via configuration so must be isolated
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class UnstableTestNameWithIsolationTest : FunSpec() {
+class UnstableTestNameTest : FunSpec() {
    init {
 
       val results = mutableListOf<String>()
@@ -33,48 +34,43 @@ class UnstableTestNameWithIsolationTest : FunSpec() {
          results.clear()
       }
 
-      test("isolation mode InstancePerRoot + regular classes should show all tests in data testing") {
+      context("unstable classes should show all tests in data testing") {
+         withData(
+            IsolationMode.SingleInstance,
+            IsolationMode.InstancePerRoot,
+            IsolationMode.InstancePerTest,
+            IsolationMode.InstancePerLeaf,
+         ) { isolationMode ->
+            withData(
+               RegularClasses::class,
+               DataClassesWithNonDataParameter::class,
+            ) { kclass ->
+               val config = object : AbstractProjectConfig() {
+                  override val isolationMode: IsolationMode = isolationMode
+               }
+               TestEngineLauncher()
+                  .withProjectConfig(config)
+                  .withListener(listener)
+                  .withClasses(kclass)
+                  .launch()
 
-         TestEngineLauncher()
-            .withListener(listener)
-            .withClasses(RegularClassAndIsolation::class)
-            .launch()
-
-         results shouldBe listOf(
-            TestStatus.Success.name,
-            TestStatus.Failure.name,
-            TestStatus.Success.name,
-            TestStatus.Success.name,
-            TestStatus.Failure.name,
-            TestStatus.Success.name,
-            TestStatus.Success.name, // final success is the foo context
-         )
-      }
-
-      test("isolation mode InstancePerRoot + data classes with regular class param should show all tests in data testing") {
-
-         TestEngineLauncher()
-            .withListener(listener)
-            .withClasses(DataClassWithNonDataParameterAndIsolation::class)
-            .launch()
-
-         results shouldBe listOf(
-            TestStatus.Success.name,
-            TestStatus.Failure.name,
-            TestStatus.Success.name,
-            TestStatus.Success.name,
-            TestStatus.Failure.name,
-            TestStatus.Success.name,
-            TestStatus.Success.name,  // final success is the foo context
-         )
+               results shouldBe listOf(
+                  TestStatus.Success.name,
+                  TestStatus.Failure.name,
+                  TestStatus.Success.name,
+                  TestStatus.Success.name,
+                  TestStatus.Failure.name,
+                  TestStatus.Success.name,
+                  TestStatus.Success.name, // final success is the foo context
+               )
+            }
+         }
       }
    }
 }
 
-@ExperimentalKotest
-private class RegularClassAndIsolation : DescribeSpec() {
+class RegularClasses : DescribeSpec() {
    init {
-      isolationMode = IsolationMode.InstancePerRoot
 
       withData(
          NotADataClass(1),
@@ -96,10 +92,8 @@ private class RegularClassAndIsolation : DescribeSpec() {
    }
 }
 
-@ExperimentalKotest
-private class DataClassWithNonDataParameterAndIsolation : DescribeSpec() {
+class DataClassesWithNonDataParameter : DescribeSpec() {
    init {
-      isolationMode = IsolationMode.InstancePerRoot
 
       withData(
          DataClassWithNonDataParameter(1, NotADataClass(1)),
