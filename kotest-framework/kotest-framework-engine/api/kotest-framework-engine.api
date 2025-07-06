@@ -2745,7 +2745,12 @@ public final class io/kotest/core/test/TestResult$Success : io/kotest/core/test/
 }
 
 public abstract interface class io/kotest/core/test/TestScope : kotlinx/coroutines/CoroutineScope {
+	public static final field Companion Lio/kotest/core/test/TestScope$Companion;
 	public abstract fun getTestCase ()Lio/kotest/core/test/TestCase;
+}
+
+public final class io/kotest/core/test/TestScope$Companion {
+	public final fun create (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/test/TestStatus : java/lang/Enum {
