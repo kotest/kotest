@@ -92,7 +92,7 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      context("f:handle inline afterSpec exceptions") {
+      context("handle inline afterSpec exceptions") {
          withData(
             IsolationMode.SingleInstance,
             IsolationMode.InstancePerRoot,
