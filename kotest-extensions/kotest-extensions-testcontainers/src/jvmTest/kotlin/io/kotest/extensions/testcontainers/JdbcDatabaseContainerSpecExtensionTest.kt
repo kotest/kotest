@@ -52,6 +52,7 @@ class JdbcDatabaseContainerSpecExtensionTest1 : FunSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class JdbcDatabaseContainerSpecExtensionTest2 : FunSpec() {
    init {
 
