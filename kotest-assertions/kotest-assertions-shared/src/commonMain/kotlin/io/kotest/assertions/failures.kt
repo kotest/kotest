@@ -4,7 +4,6 @@ import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.PrintedWithType
 import io.kotest.assertions.print.printWithType
 import io.kotest.assertions.print.printed
-import io.kotest.mpp.stacktraces
 import io.kotest.common.KotestInternal
 
 data class Expected(val value: Printed)

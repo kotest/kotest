@@ -1,6 +1,6 @@
 package io.kotest.extensions.testcontainers
 
-@Deprecated("To be removed")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
 enum class LifecycleMode {
    Spec, EveryTest, Leaf, Root
 }

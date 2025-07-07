@@ -12,7 +12,7 @@ import io.kotest.matchers.MatcherResultWithError
 class EqMatcher<T>(private val expected: T) : Matcher<T> {
 
    override fun test(value: T): MatcherResult {
-      val error = eq(value, expected)
+      val error = EqCompare.compare(value, expected, false)
 
       return MatcherResultWithError(
          error = error,

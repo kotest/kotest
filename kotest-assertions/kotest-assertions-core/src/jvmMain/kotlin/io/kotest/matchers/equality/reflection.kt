@@ -1,6 +1,6 @@
 package io.kotest.matchers.equality
 
-import io.kotest.assertions.eq.eq
+import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -394,8 +394,7 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
 
-      val isEqual = eq(actual, expected) == null
-
+      val isEqual = EqCompare.compare(actual, expected, false) == null
       if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
    }
 }
@@ -424,7 +423,7 @@ internal fun <T> checkEqualityOfFieldsRecursively(
       val expected = it.getter.call(other)
       val heading = "${it.name}:"
 
-      when(comparisonToUse(actual, expected, config.useDefaultShouldBeForFields)) {
+      when (comparisonToUse(actual, expected, config.useDefaultShouldBeForFields)) {
          FieldComparison.RECURSIVE -> {
             val (errorMessage, _) = checkEqualityOfFieldsRecursively(
                actual,
@@ -439,8 +438,9 @@ internal fun <T> checkEqualityOfFieldsRecursively(
                "$heading${"\t".repeat(level)}\n$innerErrorMessage"
             }
          }
+
          else -> {
-            val throwable = eq(actual, expected)
+            val throwable = EqCompare.compare(actual, expected, false)
             if (throwable != null) {
                "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
             } else {
@@ -466,11 +466,12 @@ internal fun comparisonToUse(
    typeIsJavaOrKotlinBuiltIn(expected) || typeIsJavaOrKotlinBuiltIn(actual) -> FieldComparison.DEFAULT
    useDefaultEqualForFields.contains(expected::class.java.canonicalName) ||
       useDefaultEqualForFields.contains(actual::class.java.canonicalName) -> FieldComparison.DEFAULT
+
    actual::class != expected::class -> FieldComparison.DEFAULT
    else -> FieldComparison.RECURSIVE
 }
 
-internal fun isEnum(value: Any?) = when(value) {
+internal fun isEnum(value: Any?) = when (value) {
    null -> false
    is Enum<*> -> true
    value::class.java.isEnum -> true

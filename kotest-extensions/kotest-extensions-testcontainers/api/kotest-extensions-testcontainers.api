@@ -108,6 +108,34 @@ public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerExte
 	public static synthetic fun toDataSource$default (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zaxxer/hikari/HikariDataSource;
 }
 
+public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener, io/kotest/core/listeners/TestListener {
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun mount (Lkotlin/jvm/functions/Function1;)Ljavax/sql/DataSource;
+	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener {
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;)V
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun mount (Lkotlin/jvm/functions/Function1;)Ljavax/sql/DataSource;
+}
+
 public final class io/kotest/extensions/testcontainers/JdbcTestContainerExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
 	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/LifecycleMode;)V
 	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/LifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -137,6 +165,20 @@ public final class io/kotest/extensions/testcontainers/LifecycleMode : java/lang
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/testcontainers/LifecycleMode;
 	public static fun values ()[Lio/kotest/extensions/testcontainers/LifecycleMode;
+}
+
+public final class io/kotest/extensions/testcontainers/ProjectContainerExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener {
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/ContainerLifecycleMode;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/ContainerLifecycleMode;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 }
 
 public abstract interface class io/kotest/extensions/testcontainers/Resource {
@@ -322,6 +364,47 @@ public final class io/kotest/extensions/testcontainers/TestContainerHikariConfig
 	public fun <init> ()V
 	public final fun getDbInitScripts ()Ljava/util/List;
 	public final fun setDbInitScripts (Ljava/util/List;)V
+}
+
+public final class io/kotest/extensions/testcontainers/TestContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener, io/kotest/core/listeners/TestListener {
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun mount (Lkotlin/jvm/functions/Function1;)V
+	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/testcontainers/TestContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;)V
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun mount (Lkotlin/jvm/functions/Function1;)V
+	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/extensions/testcontainers/TestLifecycleAwareListener : io/kotest/core/listeners/TestListener {
