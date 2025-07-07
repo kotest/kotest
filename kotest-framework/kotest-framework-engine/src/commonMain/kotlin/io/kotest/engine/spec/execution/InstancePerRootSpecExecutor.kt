@@ -80,10 +80,9 @@ internal class InstancePerRootSpecExecutor(
                   } else {
                      // for subsequent tests, we create a new instance of the spec
                      // and will re-run the pipelines etc
-                     executeInFreshSpec(
+                     executeRootInFreshSpec(
                         root = root,
                         ref = ref,
-                        specContext = specContext,
                      )
                   }
                }
@@ -97,10 +96,9 @@ internal class InstancePerRootSpecExecutor(
     * It will create the instance and run the pipeline on that, before
     * using that spec for the test execution.
     */
-   private suspend fun executeInFreshSpec(
+   private suspend fun executeRootInFreshSpec(
       root: TestCase,
       ref: SpecRef,
-      specContext: SpecContext
    ) {
       require(root.isRootTest())
 
@@ -109,6 +107,8 @@ internal class InstancePerRootSpecExecutor(
       // map all the names again so they are unique, and then find the matching root test in the new spec instance
       val freshRoot = materializer.materialize(spec)
          .first { it.descriptor == root.descriptor }
+
+      val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {

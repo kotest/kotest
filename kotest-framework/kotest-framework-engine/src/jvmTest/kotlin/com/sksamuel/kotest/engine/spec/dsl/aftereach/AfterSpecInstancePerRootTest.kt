@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class AfterSpecTest : FunSpec() {
+class AfterSpecInstancePerRootTest : FunSpec() {
 
    val listener = object : TestListener {
       override suspend fun afterSpec(spec: Spec) {

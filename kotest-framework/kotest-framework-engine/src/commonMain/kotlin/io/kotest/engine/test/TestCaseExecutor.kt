@@ -85,6 +85,7 @@ internal class TestCaseExecutor(
             context.specConfigResolver,
             context.testConfigResolver
          ),
+         // should run after TestEnabledCheckInterceptor so that it is skipped if the test is disabled
          BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),
