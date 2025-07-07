@@ -22,6 +22,8 @@ signing {
    if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
+   } else {
+      logger.lifecycle("[kotest-publishing] No GPG signing key or password provided, skipping signing")
    }
    sign(publishing.publications)
    setRequired { Ci.isRelease } // only require signing when releasing
@@ -32,7 +34,13 @@ signing {
 gradle.taskGraph.whenReady {
    val isPublishingToMavenCentral = allTasks
       .filterIsInstance<PublishToMavenRepository>()
-      .any { it.repository?.name == mavenCentralRepoName }
+      .all { it.repository?.name?.contains("Snapshots") == false}
+
+   if (isPublishingToMavenCentral) {
+      logger.lifecycle("[kotest-publishing] Publishing to Maven Central, signing is required")
+   } else {
+      logger.lifecycle("[kotest-publishing] Not publishing to Maven Central, signing is not required")
+   }
 
    signing.setRequired({ isPublishingToMavenCentral })
 
