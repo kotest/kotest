@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.MySQLContainer
 
 @Ignored
-class JdbcTestContainerExtensionSpecTest : FunSpec() {
+class JdbcTestContainerExtensionTest : FunSpec() {
    init {
 
       val mysql = MySQLContainer("mysql:8.0.26").apply {
