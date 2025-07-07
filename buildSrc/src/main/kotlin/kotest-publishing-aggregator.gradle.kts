@@ -7,7 +7,7 @@ nmcpAggregation {
       // New secrets need to be generated at https://central.sonatype.com/account w/ Generate User Token
       username.set(System.getenv("NEW_MAVEN_CENTRAL_USERNAME"))
       password.set(System.getenv("NEW_MAVEN_CENTRAL_PASSWORD"))
-      publishingType = "AUTOMATIC"
+      publishingType = "USER_MANAGED"
    }
 }
 
