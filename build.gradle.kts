@@ -2,6 +2,7 @@ import utils.configureGradleDaemonJvm
 
 plugins {
    id("kotest-base")
+   id("kotest-publishing-aggregator")
    java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
@@ -19,6 +20,60 @@ apiValidation {
          "io.kotest.common.KotestInternal",
       )
    )
+}
+
+// List all projects which should be included in publishing
+dependencies {
+   // Assertions
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrow)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsJson)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsShared)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsYaml)
+
+   // bom
+   nmcpAggregation(projects.kotestBom)
+
+   nmcpAggregation(projects.kotestCommon)
+
+   // Extensions
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+
+   // Framework
+   nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
+   nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
+   // Add if these should be on Maven Central
+   //   nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
+   //   nmcpAggregation(projects.kotestFramework.kotestFrameworkMultiplatformPluginGradle)
+   //   nmcpAggregation(projects.kotestFramework.kotestFrameworkMultiplatformPluginCompiler)
+
+   // Property
+   nmcpAggregation(projects.kotestProperty.kotestPropertyArrow)
+   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
+   nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
+   nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
+   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
+
+   // Runner
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
 }
 
 configureGradleDaemonJvm(

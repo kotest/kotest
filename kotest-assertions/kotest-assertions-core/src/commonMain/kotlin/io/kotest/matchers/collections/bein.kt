@@ -15,7 +15,7 @@ import kotlin.jvm.JvmName
  * therefore even if the exact instance is not in [collection] but another instance with same value is present, the
  * test will pass.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -31,7 +31,8 @@ infix fun <T> T.shouldBeIn(collection: Collection<T>): T {
  * Assertion to check that this element is not any of [collection]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [collection], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -48,7 +49,7 @@ infix fun <T> T.shouldNotBeIn(collection: Collection<T>): T {
  * therefore even if the exact instance is not any of [any] but another instance with same value is present, the
  * test will pass.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -64,7 +65,8 @@ fun <T> T.shouldBeIn(vararg any: T): T {
  * Assertion to check that this element is not any of [any]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [any], or this will fail.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -82,7 +84,7 @@ fun <T> T.shouldNotBeIn(vararg any: T): T {
  * therefore even if the exact instance is not in [array] but another instance with same value is present, the
  * test will pass.
  *
- * An empty array will always fail. If you need to check for empty array, use [Array.shouldBeEmpty]
+ * An empty array will always fail.
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -99,7 +101,8 @@ infix fun <T> T.shouldBeIn(array: Array<T>): T {
  * Assertion to check that this element is not any of [array]. This assertion checks by value, and not by reference,
  * therefore any instance with same value must not be in [array], or this will fail.
  *
- * An empty array will always fail. If you need to check for empty array, use [Array.shouldBeEmpty]
+ * An empty array will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [shouldNotBeIn]
  * @see [beIn]
@@ -117,15 +120,13 @@ infix fun <T> T.shouldNotBeIn(array: Array<T>): T {
  * therefore even if the exact instance is not in [collection] but another instance with same value is present, the
  * test will pass.
  *
- * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ * An empty collection will always fail.
  *
  * @see [shouldBeOneOf]
  * @see [shouldNotBeOneOf]
  */
 fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      if (collection.isEmpty()) throwEmptyCollectionError()
-
       val match = value in collection
 
       val possibleMatchesDescription = prefixIfNotEmpty(

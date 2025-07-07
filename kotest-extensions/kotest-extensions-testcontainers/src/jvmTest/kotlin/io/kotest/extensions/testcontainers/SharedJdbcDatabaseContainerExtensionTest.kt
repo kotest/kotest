@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.MySQLContainer
 
-private val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
+private val mysql = MySQLContainer("mysql:8.0.26").apply {
    withInitScript("init.sql")
    startupAttempts = 1
    withUrlParam("connectionTimeZone", "Z")

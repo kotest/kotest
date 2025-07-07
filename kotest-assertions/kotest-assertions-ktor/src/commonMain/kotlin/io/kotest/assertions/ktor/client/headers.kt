@@ -130,6 +130,26 @@ fun haveContentType(contentType: ContentType) = object : Matcher<HttpResponse> {
    }
 }
 
+infix fun HttpResponse.shouldHaveContentTypeMatching(contentType: ContentType): HttpResponse {
+   this should haveContentTypeMatching(contentType)
+   return this
+}
+
+infix fun HttpResponse.shouldNotHaveContentTypeMatching(contentType: ContentType): HttpResponse {
+   this shouldNot haveContentTypeMatching(contentType)
+   return this
+}
+
+fun haveContentTypeMatching(contentType: ContentType) = object : Matcher<HttpResponse> {
+   override fun test(value: HttpResponse): MatcherResult {
+      return MatcherResult(
+         value.contentType()?.match(contentType) == true,
+         { "Response should match Content-Type $contentType but was ${value.contentType()}." },
+         { "Response should not match Content-Type $contentType." },
+      )
+   }
+}
+
 fun haveHeader(headerName: String) = object : Matcher<HttpResponse> {
    override fun test(value: HttpResponse): MatcherResult = MatcherResult(
       value.headers.contains(headerName),

@@ -49,6 +49,8 @@ class EqualToComparingFieldsTest : FunSpec() {
    class FooContainer(val list: List<Foo>)
    class ListContainer(val list: List<Box>)
    class MapContainer(val map: Map<String, Box>)
+   class NullableListContainer(val list: List<Box>?)
+   class NullableMapContainer(val map: Map<String, Box>?)
 
    data class CompletelyDifferent1(val field1: String, val field2: String)
    class CompletelyDifferent2(numberField: Int) {
@@ -392,6 +394,14 @@ Fields that differ:
          a shouldBeEqualUsingFields b
       }
 
+      test("should handle nullable lists") {
+         val a = NullableListContainer(null)
+         val b = NullableListContainer(listOf())
+         a shouldBeEqualUsingFields a
+         a shouldNotBeEqualUsingFields b
+         b shouldNotBeEqualUsingFields a
+      }
+
       test("should fail on different length lists") {
          val a = ListContainer(listOf(Box(0)))
          val b = ListContainer(listOf(Box(0), Box(0)))
@@ -434,6 +444,14 @@ Fields that differ:
          val a = MapContainer(emptyMap())
          val b = MapContainer(emptyMap())
          a shouldBeEqualUsingFields b
+      }
+
+      test("should handle nullable maps") {
+         val a = NullableMapContainer(null)
+         val b = NullableMapContainer(mapOf())
+         a shouldBeEqualUsingFields a
+         a shouldNotBeEqualUsingFields b
+         b shouldNotBeEqualUsingFields a
       }
 
       test("should fail on different map lengths") {

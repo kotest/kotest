@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrParameterKind
 import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.declarations.path
 import org.jetbrains.kotlin.ir.expressions.IrCall
@@ -25,6 +26,7 @@ import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
+import org.jetbrains.kotlin.ir.util.packageFqName
 import org.jetbrains.kotlin.name.ClassId
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
@@ -78,17 +80,27 @@ abstract class Transformer(
       val outputDir = File(declaration.files.first().path.substringBefore("jsTest") + "jsTest/kotlin")
       messageCollector.toLogger().warning("outputDir: $outputDir")
 
-      val specs = specs.joinToString(",") { it.kotlinFqName.asString() + "()" }
+      //account for classes in root package. Those need to be imported too!
+      val imports= specs.filter { it.packageFqName==null || !it.kotlinFqName.asString().contains(".") }.map { "import `${it.kotlinFqName.asString()}`"}.joinToString("\n")
+
+      val specs = specs.joinToString(",") { it.kotlinFqName.asString().split(".").map { "`$it`" }.joinToString(".") + "()" }
       val configs = if (configs.isEmpty()) "" else ".withProjectConfig(${configs.first().kotlinFqName.asString()}())"
 
       // todo move this to a generated file not a source written file
       // requires an answer to this https://discuss.kotlinlang.org/t/create-new-file-using-compiler-plugin/30225
+      if(!outputDir.exists())
+      if(!outputDir.mkdirs()) throw RuntimeException("Cannot create output dir $outputDir")
+      if(!outputDir.isDirectory) throw RuntimeException("$outputDir is not a directory")
       val myFile = File(outputDir, "runKotest.kt")
       myFile.writeText(
          """
 package io.kotest.runtime.js
 
 import io.kotest.engine.TestEngineLauncher
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
+$imports
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
@@ -101,10 +113,6 @@ fun runKotest(type: String) {
 }
 """.trim()
       )
-//
-//      val file = specs.first().file
-//      val launcher = generateLauncher(specs, configs, file)
-//      file.addChild(launcher)
 
       return fragment
    }
@@ -123,21 +131,13 @@ fun runKotest(type: String) {
    ): IrCall {
       return irCall(launchFunction).also { promise: IrCall ->
          promise.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
-            withSpecs.putValueArgument(
-               0,
-               irVararg(
-                  pluginContext.irBuiltIns.stringType,
-                  specs.map { irCall(it.constructors.first()) }
-               )
-            )
+            withSpecs.arguments[0] =
+               irVararg(pluginContext.irBuiltIns.stringType, specs.map { irCall(it.constructors.first()) })
             withSpecs.dispatchReceiver = irCall(withPlatformFn).also { withPlatform ->
                val config = configs.firstOrNull()
                if (config != null) {
                   withPlatform.dispatchReceiver = irCall(withProjectConfigFn).also { withConfig ->
-                     withConfig.putValueArgument(
-                        0,
-                        irCall(config.constructors.first()),
-                     )
+                     withConfig.arguments[0] = irCall(config.constructors.first())
                      withConfig.dispatchReceiver = constructorGenerator()
                   }
                } else {
@@ -153,7 +153,13 @@ fun runKotest(type: String) {
          ?: error("Cannot find ${EntryPoint.TEST_ENGINE_CLASS_NAME} class reference")
    }
 
-   protected val launcherConstructor by lazy { launcherClass.constructors.first { it.owner.valueParameters.isEmpty() } }
+   protected val launcherConstructor by lazy {
+      launcherClass.constructors.first { symbol ->
+         val valueParameters =
+            symbol.owner.parameters.filter { it.kind == IrParameterKind.Regular || it.kind == IrParameterKind.Context }
+         valueParameters.isEmpty()
+      }
+   }
 
    protected abstract val withPlatformMethodName: String
 

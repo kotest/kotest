@@ -5,6 +5,7 @@ import io.kotest.property.Arb
 import io.kotest.property.resolution.CommonTypeArbResolver
 import io.kotest.property.resolution.GlobalArbResolver
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
@@ -104,8 +105,12 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
    kclass: KClass<T>
 ): Arb<T> {
    val className = kclass.qualifiedName ?: kclass.simpleName
-   val constructor = kclass.primaryConstructor ?: error("Could not locate a primary constructor for $className")
+   val constructor = kclass.primaryConstructor
+      ?: determineFallbackConstructor(kclass)
+      ?: error("Could not locate a suitable constructor for $className")
+
    check(kclass.visibility != KVisibility.PRIVATE) { "The class $className must be public." }
+   // Fallback constructors are never private, so this can only be relevant for the primary constructor.
    check(constructor.visibility != KVisibility.PRIVATE) { "The primary constructor of $className must be public." }
 
    if (constructor.parameters.isEmpty()) {
@@ -129,6 +134,21 @@ internal fun <T : Any> Arb.Companion.forClassUsingConstructor(
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
 }
+
+/**
+ * Used when there is no primary constructor available for a class, for instance when we deal with Java classes.
+ *
+ * We try to find a non-private constructor with at least one parameter, and if that fails, we allow the
+ * zero-arg constructor to be used as a fallback.
+ */
+internal fun <T : Any> determineFallbackConstructor(kclass: KClass<T>): KFunction<T>? {
+   val nonPrivateConstructors = kclass.constructors.filter { it.visibility != KVisibility.PRIVATE }
+
+   return nonPrivateConstructors.firstOrNull {
+      it.parameters.count() > 0
+   } ?: nonPrivateConstructors.firstOrNull()
+}
+
 
 private fun arbForParameter(
    providedArbs: Map<KClass<*>, Arb<*>>,

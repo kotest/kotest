@@ -9,9 +9,9 @@ Whenever we want to match only some of the fields, excluding some other fields f
 ```kotlin
    val expected = Thing(name = "apple", createdAt = Instant.now())
    val actual = Thing(name = "apple", createdAt = Instant.now().plusMillis(42L))
-   expected shouldBeEqualUsingFields {
+   actual shouldBeEqualUsingFields {
       excludedProperties = setOf(Thing::createdAt)
-      actual
+      expected
    }
 ```
 
@@ -20,9 +20,9 @@ Likewise, we can explicitly say which fields to match on, and all other fields w
 ```kotlin
    val expected = Thing(name = "apple", createdAt = Instant.now())
    val actual = Thing(name = "apple", createdAt = Instant.now().plusMillis(42L))
-   expected shouldBeEqualUsingFields {
+   actual shouldBeEqualUsingFields {
       includedProperties = setOf(Thing::name)
-      actual
+      expected
    }
 ```
 

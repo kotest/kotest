@@ -1,6 +1,6 @@
 public abstract class io/kotest/framework/gradle/KotestExtension {
 	public final fun getAndroidTestSource ()Ljava/lang/String;
-	public abstract fun getFailOnEmptySpecs ()Lorg/gradle/api/provider/Property;
+	public abstract fun getFailOnNoTests ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTagExpression ()Lorg/gradle/api/provider/Property;
 }
 
@@ -35,30 +35,34 @@ public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinMultiplat
 	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
-public abstract class io/kotest/framework/gradle/tasks/AbstractKotestJvmTask : org/gradle/api/DefaultTask {
-	public static final field Companion Lio/kotest/framework/gradle/tasks/AbstractKotestJvmTask$Companion;
+public final class io/kotest/framework/gradle/SpecsResolver {
 	public static final field DELIMITER Ljava/lang/String;
-	public abstract fun getCandidates ()Lorg/gradle/api/provider/Property;
+	public static final field INSTANCE Lio/kotest/framework/gradle/SpecsResolver;
+}
+
+public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
 	public abstract fun getDescriptor ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTags ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTests ()Lorg/gradle/api/provider/Property;
 }
 
-public final class io/kotest/framework/gradle/tasks/AbstractKotestJvmTask$Companion {
-}
-
-public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/kotest/framework/gradle/tasks/AbstractKotestJvmTask {
+public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 	public abstract fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
 }
 
-public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : org/gradle/api/DefaultTask {
+public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
 }
 
-public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestJvmTask {
+public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
+}
+
+public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	protected final fun execute ()V
+	public abstract fun getTarget ()Lorg/gradle/api/provider/Property;
 }
 

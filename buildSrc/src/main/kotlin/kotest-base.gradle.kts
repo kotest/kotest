@@ -2,6 +2,8 @@ plugins {
    base
 }
 
+extensions.create(KotestBuildLogicSettings.EXTENSION_NAME, KotestBuildLogicSettings::class)
+
 tasks.withType<AbstractArchiveTask>().configureEach {
    // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
    isPreserveFileTimestamps = false

@@ -1,5 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor
+import com.sksamuel.kotest.property.JavaClassWithOnePublicConstructorWithAtLeastOneArg
+import com.sksamuel.kotest.property.NestedJavaClasses
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -8,6 +11,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -16,6 +20,7 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.bind
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
@@ -234,6 +239,33 @@ class ReflectiveBindTest : StringSpec(
       "Arb.bind for set of sealed type should not fail target size requirement" {
          val arb = Arb.bind<Set<Shape3d>>()
          arb.take(100).toList()
+      }
+
+      "When binding Java classes - Arb.bind should reflectively bind the public constructor" {
+         val foo = Arb.bind<JavaClassWithOnePublicConstructorWithAtLeastOneArg>()
+         foo.take(100).toList().forAll {
+            it.bar.shouldNotBeNull()
+            it.baz.shouldBe("baz") // Default value set by the public constructor. If another constructor is used, this will fail.
+         }
+      }
+
+      "When binding Java classes - Arb.bind should fail with good message when there is no relevant constructor" {
+         shouldThrow<IllegalStateException> {
+            Arb.bind<JavaClassWithoutNonPrivateConstructor>().next()
+         }.message shouldBe "Could not locate a suitable constructor for com.sksamuel.kotest.property.JavaClassWithoutNonPrivateConstructor"
+      }
+
+      "When binding Java classes - Arb.bind should handle nested classes" {
+         val item = Arb.bind<NestedJavaClasses> {
+            bind(Int::class to Arb.constant(37))
+         }.next()
+
+         item.oneArg.bar shouldBe 37
+         item.oneArg.baz shouldBe "baz"
+
+         // Since the zero-arg constructor is used, we will not inject any Arb value for this property
+         item.zeroArg.bar shouldBe 42
+         item.zeroArg.baz shouldBe "baz"
       }
    }
 ) {

@@ -7,7 +7,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(kotlin("reflect"))
@@ -27,7 +27,7 @@ kotlin {
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
 
             // we use AssertionFailedError from opentest4j
@@ -41,7 +41,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(projects.kotestAssertions.kotestAssertionsCore)
@@ -54,6 +54,22 @@ kotlin {
             implementation(libs.junit.jupiter.api)
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
             implementation(libs.junit.jupiter.engine)
+         }
+      }
+
+      nativeMain {
+         // used to write to the console with fancy colours!
+         dependencies {
+            // we need these so we can generate the runKotest test stub
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+         }
+      }
+
+      linuxX64Main {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
          }
       }
    }

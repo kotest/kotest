@@ -6,7 +6,9 @@ import io.kotest.core.extensions.Extension
 /**
  * A [DescriptorFilter] can be used to filter specs and tests before they are executed.
  *
- * A given [Descriptor] must be included by all filters for it to be considered enabled at runtime.
+ * A given [Descriptor] must be included by all filters for it to be considered enabled at runtime,
+ * or in other words, if any filter returns [DescriptorFilterResult.Exclude], then the spec or test
+ * will not be executed.
  *
  * If no filters are registered, then all specs and tests will be executed.
  */
@@ -32,14 +34,3 @@ sealed interface DescriptorFilterResult {
    data class Exclude(val reason: String?) : DescriptorFilterResult
 }
 
-/**
- * An implementation of [DescriptorFilter] that only includes descriptors that are
- * members, or descendents of, the given [accept] list.
- */
-class ProvidedDescriptorFilter(private vararg val accept: Descriptor) : DescriptorFilter {
-   override fun filter(descriptor: Descriptor): DescriptorFilterResult {
-      val include = accept.any { it.hasSharedPath(descriptor) }
-      println("ProvidedDescriptorFilter: $descriptor included = $include $accept = ${accept.toList()}")
-      return if (include) DescriptorFilterResult.Include else DescriptorFilterResult.Exclude(null)
-   }
-}

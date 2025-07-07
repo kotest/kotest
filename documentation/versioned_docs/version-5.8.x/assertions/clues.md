@@ -60,7 +60,7 @@ Name should be present
 The error message became much better, however, it is still not as good as it could be.
 For instance, it might be helpful to know the user's id to check the database.
 
-We can use `asClue` to add the user's id to the error message:
+We can use `withClue` to add the user's id to the error message:
 
 ```kotlin
 withClue({ "Name should be present (user_id=${user.id})" }) {

@@ -13,6 +13,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.koin.core)
+            implementation(projects.kotestProperty)
             implementation(libs.koin.test.get().let { "${it.module}:${it.versionConstraint.requiredVersion}" }) {
                exclude(group = "junit", module = "junit")
             }

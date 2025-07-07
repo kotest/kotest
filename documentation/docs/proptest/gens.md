@@ -72,8 +72,8 @@ enum class Season { Winter, Fall, Spring, Summer }
 
 forAll<Int, Season>(100) { a, season -> ... }
 ```
-
-Here we asked for 100 iterations, so each value of Season would be provided 25 times.
+ 
+Here we asked for 100 iterations, so each value of Season would be provided 25 times on average, but the exact counts will randomly change from run to run, and are very likely not to be exactly 25.
 
 
 
