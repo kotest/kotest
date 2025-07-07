@@ -7,23 +7,21 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
-internal object MapEq : Eq<Map<*, *>?> {
-   override fun equals(actual: Map<*, *>?, expected: Map<*, *>?, strictNumberEq: Boolean): Throwable? {
-      return when {
-         actual == null && expected == null -> null
-         actual != null && expected != null -> {
-            val haveUnequalKeys = eq(actual.keys, expected.keys, strictNumberEq)
-            if (haveUnequalKeys != null) generateError(actual, expected)
-            else {
-               val hasDifferentValue = actual.keys.any { key ->
-                  eq(actual[key], expected[key], strictNumberEq) != null
-               }
-               if (hasDifferentValue) generateError(actual, expected)
-               else null
-            }
-         }
+/**
+ * An [Eq] for [Map] types which compares the keys and values of the maps.
+ */
+internal object MapEq : Eq<Map<*, *>> {
 
-         else -> generateError(actual, expected)
+   override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean): Throwable? {
+      val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, strictNumberEq)
+
+      return if (haveUnequalKeys != null) generateError(actual, expected)
+      else {
+         val hasDifferentValue = actual.keys.any { key ->
+            EqCompare.compare(actual[key], expected[key], strictNumberEq) != null
+         }
+         if (hasDifferentValue) generateError(actual, expected)
+         else null
       }
    }
 }
@@ -56,12 +54,13 @@ private fun print(map: Map<*, *>?): Printed {
    if (map.isEmpty()) return Printed("{}")
    val indentation = "  "
    val newLine = "\n"
-   return Printed(map.toList()
-      .joinToString(
-         separator = ",$newLine",
-         prefix = "{$newLine",
-         postfix = "$newLine}",
-         limit = AssertionsConfig.mapDiffLimit,
-      ) { "$indentation${it.first.print().value} = ${it.second.print().value}" }
+   return Printed(
+      map.toList()
+         .joinToString(
+            separator = ",$newLine",
+            prefix = "{$newLine",
+            postfix = "$newLine}",
+            limit = AssertionsConfig.mapDiffLimit,
+         ) { "$indentation${it.first.print().value} = ${it.second.print().value}" }
    )
 }
