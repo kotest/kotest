@@ -19,6 +19,7 @@ kotlin {
       jvmTest {
          dependencies {
             implementation(libs.testcontainers.mysql)
+            implementation(libs.mysql.driver)
          }
       }
    }

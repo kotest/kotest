@@ -9,6 +9,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.net.URLEncoder
 import java.util.Optional
 
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
 class TestLifecycleAwareListener(startable: Startable) : TestListener {
    private val testLifecycleAware = startable as? TestLifecycleAware
 
@@ -21,6 +22,7 @@ class TestLifecycleAwareListener(startable: Startable) : TestListener {
    }
 }
 
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
 internal fun TestCase.toTestDescription() = object : TestDescription {
 
    override fun getFilesystemFriendlyName(): String {
