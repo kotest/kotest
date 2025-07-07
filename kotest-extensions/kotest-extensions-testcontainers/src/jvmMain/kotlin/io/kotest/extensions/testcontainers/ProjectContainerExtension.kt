@@ -11,9 +11,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.testcontainers.containers.DockerComposeContainer
 import org.testcontainers.containers.GenericContainer
-import java.io.File
 
 /**
  * A Kotest [MountableExtension] for [GenericContainer]s that are started the first time they are
@@ -29,11 +27,6 @@ import java.io.File
  * @param mode determines if the container is shutdown after the test suite (project) or after the installed spec
  *             The default is after the test suite.
  *
- * @param beforeSpec a beforeSpec callback
- * @param afterSpec an afterSpec callback
- * @param beforeTest a beforeTest callback
- * @param afterTest a afterTest callback
- *
  * @param beforeStart a callback that is invoked only once, just before the container is started.
  * If the container is never started, this callback will not be invoked.
  * This callback can be useful instead of the installation callback as it will only
@@ -42,24 +35,35 @@ import java.io.File
  * @param afterStart a callback that is invoked only once, just after the container is started.
  * If the container is never started, this callback will not be invoked.
  *
+ * @param beforeSpec a beforeSpec callback.
+ * If the container is never started, this callback will not be invoked.
+ *
+ * @param afterSpec an afterSpec callback
+ * If the container is never started, this callback will not be invoked.
+ *
+ * @param beforeTest a beforeTest callback
+ * If the container is never started, this callback will not be invoked.
+ *
+ * @param afterTest a afterTest callback
+ * If the container is never started, this callback will not be invoked.
+ *
  * @param beforeShutdown a callback that is invoked only once, just before the container is stopped.
  * If the container is never started, this callback will not be invoked.
  *
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
-class DockerComposeContainerExtension<T : DockerComposeContainer<*>>(
+class ProjectContainerExtension<T : GenericContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
-   private val beforeStart: (T) -> Unit = {},
-   private val afterStart: (T) -> Unit = {},
-   private val beforeTest: suspend (TestCase, T) -> Unit = { _, _ -> },
-   private val afterTest: suspend (TestCase, T) -> Unit = { _, _ -> },
-   private val beforeSpec: suspend (Spec, T) -> Unit = { _, _ -> },
-   private val afterSpec: suspend (Spec, T) -> Unit = { _, _ -> },
-   private val beforeShutdown: (T) -> Unit = {},
-   private val afterShutdown: (T) -> Unit = {},
+   private val beforeStart: () -> Unit = {},
+   private val afterStart: () -> Unit = {},
+   private val beforeTest: suspend (TestCase) -> Unit = { _ -> },
+   private val afterTest: suspend (TestCase) -> Unit = { _ -> },
+   private val beforeSpec: suspend (Spec) -> Unit = { _ -> },
+   private val afterSpec: suspend (Spec) -> Unit = { _ -> },
+   private val beforeShutdown: () -> Unit = {},
+   private val afterShutdown: () -> Unit = {},
 ) : MountableExtension<T, T>,
    AfterProjectListener,
    BeforeTestListener,
@@ -67,61 +71,46 @@ class DockerComposeContainerExtension<T : DockerComposeContainer<*>>(
    AfterTestListener,
    AfterSpecListener {
 
-   companion object {
-      operator fun invoke(composeFile: File): DockerComposeContainerExtension<*> =
-         DockerComposeContainerExtension(DockerComposeContainer(composeFile))
-
-      operator fun invoke(
-         composeFile: File,
-         mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
-      ): DockerComposeContainerExtension<*> =
-         DockerComposeContainerExtension(DockerComposeContainer(composeFile), mode)
-   }
-
-   private var started: Boolean = false
-
    /**
     * Mounts the container, starting it if necessary. The [configure] block will be invoked
     * every time the container is mounted, and after the container has started.
     */
    override fun mount(configure: T.() -> Unit): T {
-      if (!started) {
-         beforeStart(container)
+      if (!container.isRunning) {
+         beforeStart()
          container.start()
-         started = true
-         afterStart(container)
+         afterStart()
       }
       container.configure()
       return container
    }
 
    override suspend fun beforeTest(testCase: TestCase) {
-      beforeTest(testCase, container)
+      beforeTest.invoke(testCase)
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afterTest(testCase, container)
+      afterTest.invoke(testCase)
    }
 
    override suspend fun beforeSpec(spec: Spec) {
-      beforeSpec(spec, container)
+      beforeSpec.invoke(spec)
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      afterSpec(spec, container)
-      if (mode == ContainerLifecycleMode.Spec && started) close()
+      afterSpec.invoke(spec)
+      if (mode == ContainerLifecycleMode.Spec && container.isRunning) close()
    }
 
    override suspend fun afterProject() {
-      if (started) close()
+      if (container.isRunning) close()
    }
 
    private suspend fun close() {
       withContext(Dispatchers.IO) {
-         beforeShutdown(container)
+         beforeShutdown()
          container.stop()
-         started = false
-         afterShutdown(container)
+         afterShutdown()
       }
    }
 }

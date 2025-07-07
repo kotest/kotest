@@ -121,6 +121,8 @@ testcontainers-jdbc = { module = "org.testcontainers:jdbc", version.ref = "testc
 testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
 testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
 
+mysql-driver = { module = "mysql:mysql-connector-java", version = "8.0.33" }
+
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 # Gradle plugins
