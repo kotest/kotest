@@ -83,6 +83,7 @@ internal class InstancePerRootSpecExecutor(
                      executeRootInFreshSpec(
                         root = root,
                         ref = ref,
+                        specContext,
                      )
                   }
                }
@@ -99,6 +100,7 @@ internal class InstancePerRootSpecExecutor(
    private suspend fun executeRootInFreshSpec(
       root: TestCase,
       ref: SpecRef,
+      specContext: SpecContext,
    ) {
       require(root.isRootTest())
 
@@ -107,8 +109,6 @@ internal class InstancePerRootSpecExecutor(
       // map all the names again so they are unique, and then find the matching root test in the new spec instance
       val freshRoot = materializer.materialize(spec)
          .first { it.descriptor == root.descriptor }
-
-      val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
