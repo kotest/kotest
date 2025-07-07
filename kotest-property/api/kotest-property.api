@@ -1238,7 +1238,6 @@ public final class io/kotest/property/arbitrary/StringsjvmKt {
 
 public final class io/kotest/property/arbitrary/TargetDefaultForClassNameKt {
 	public static final fun targetDefaultForType (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
-	public static synthetic fun targetDefaultForType$default (Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KType;ILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/TimezoneKt {

@@ -1,6 +1,5 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
@@ -15,7 +14,7 @@ import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TestNameEscaper
 
 /**
- * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
+ * Materializes [TestCase]s at runtime from [RootTest] and [NestedTest] definitions.
  */
 class Materializer(
    private val specConfigResolver: SpecConfigResolver,
@@ -36,19 +35,18 @@ class Materializer(
     */
    fun materialize(spec: Spec): List<TestCase> {
 
-      val duplicateTestNameMode = specConfigResolver.duplicateTestNameMode(spec)
-      val handler = DuplicateTestNameHandler(duplicateTestNameMode)
+      val handler = DuplicateTestNameHandler()
+      val mode = specConfigResolver.duplicateTestNameMode(spec)
 
       val tests = spec.rootTests().map { rootTest ->
 
-         val uniqueName = handler.handle(rootTest.name)
-         val uniqueTestName = if (uniqueName == null) rootTest.name else rootTest.name.copy(name = uniqueName)
+         val unique = handler.unique(mode, rootTest.name)
 
          // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
          // then it will remove the common prefix from the child, to workaround this, we will add a dash at the
          // start of the nested test to make the child nest have a different prefix.
          // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
-         val resolvedName = resolvedName(uniqueTestName, null)
+         val resolvedName = resolvedName(rootTest.name.copy(name = unique), null)
 
          val config = if (rootTest.disabled == true)
             (rootTest.config ?: TestConfig()).withXDisabled()
@@ -84,7 +82,7 @@ class Materializer(
       // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
       val resolvedName = resolvedName(nested.name, parent.name)
 
-      val config = if (nested.disabled == true)
+      val config = if (nested.disabled)
          (nested.config ?: TestConfig()).withXDisabled()
       else nested.config
 

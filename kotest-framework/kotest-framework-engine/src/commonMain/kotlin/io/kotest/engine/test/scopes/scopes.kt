@@ -1,10 +1,6 @@
 package io.kotest.engine.test.scopes
 
-import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
-import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.spec.interceptor.SpecContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -22,26 +18,4 @@ private class TestScopeWithCoroutineContext(
    override val coroutineContext: CoroutineContext
 ) : TestScope by delegate {
    override fun toString(): String = "TestCaseContext [$coroutineContext]"
-}
-
-/**
- * Creates a [TestScope] suitable for use in a single instance runner.
- */
-fun createSingleInstanceTestScope(
-   testCase: TestCase,
-   specContext: SpecContext,
-   coroutineContext: CoroutineContext,
-   mode: DuplicateTestNameMode,
-   context: EngineContext,
-): TestScope {
-   return DuplicateNameHandlingTestScope(
-      context.specConfigResolver.duplicateTestNameMode(testCase.spec),
-      InOrderTestScope(
-         specContext,
-         testCase,
-         coroutineContext,
-         mode,
-         context,
-      )
-   )
 }

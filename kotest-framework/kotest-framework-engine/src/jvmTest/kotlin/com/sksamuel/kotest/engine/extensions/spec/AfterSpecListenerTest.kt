@@ -7,8 +7,10 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -90,14 +92,22 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      test("inline afterSpec function errors should be caught") {
-
-         val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
-            .withClasses(InlineAfterSpecError::class)
-            .launch()
-         collector.specs.size.shouldBe(1)
-         collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
+      context("handle inline afterSpec exceptions") {
+         withData(
+            IsolationMode.SingleInstance,
+            IsolationMode.InstancePerRoot,
+         ) { isolationMode ->
+            val collector = CollectingTestEngineListener()
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode = isolationMode
+            }
+            TestEngineLauncher(collector)
+               .withProjectConfig(config)
+               .withClasses(InlineAfterSpecError::class)
+               .launch()
+            collector.specs.size.shouldBe(1)
+            collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
+         }
       }
    }
 }
