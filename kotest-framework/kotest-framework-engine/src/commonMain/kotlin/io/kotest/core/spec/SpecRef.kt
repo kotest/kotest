@@ -33,3 +33,8 @@ sealed interface SpecRef {
       override val kclass: KClass<out Spec>,
    ) : SpecRef
 }
+
+fun SpecRef.name() = when (this) {
+   is SpecRef.Reference -> kclass.simpleName ?: "UnknownSpec"
+   is SpecRef.Function -> kclass.simpleName ?: "UnknownSpec"
+}

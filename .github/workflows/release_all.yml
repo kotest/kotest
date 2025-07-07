@@ -58,6 +58,5 @@ jobs:
             -P"kotest_enableKotlinJs"=true
             -P"kotest_enableKotlinNative"=true
             --no-parallel
-            --stacktrace
             --no-configuration-cache
          runs-on: ${{ matrix.os }}
