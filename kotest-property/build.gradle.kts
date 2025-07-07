@@ -10,7 +10,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect", "2.2.0"))
+            implementation(kotlin("reflect", libs.versions.kotlin.get()))
             api(projects.kotestCommon)
             api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlinx.coroutines.core)
@@ -21,14 +21,14 @@ kotlin {
          dependencies {
             implementation(libs.diffutils)
             api(libs.rgxgen)
-            implementation(kotlin("reflect", "2.2.0"))
+            implementation(kotlin("reflect", libs.versions.kotlin.get()))
          }
       }
 
       val commonTest by getting {
          dependencies {
-            implementation(kotlin("test-common", "2.2.0"))
-            implementation(kotlin("test-annotations-common", "2.2.0"))
+            implementation(kotlin("test-common", libs.versions.kotlin.get()))
+            implementation(kotlin("test-annotations-common", libs.versions.kotlin.get()))
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }

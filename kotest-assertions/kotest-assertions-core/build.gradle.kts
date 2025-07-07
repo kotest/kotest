@@ -12,7 +12,7 @@ kotlin {
             // this is api because we want to expose `shouldBe` etc
             api(projects.kotestAssertions.kotestAssertionsShared)
 
-            implementation(kotlin("reflect", "2.2.0"))
+            implementation(kotlin("reflect", libs.versions.kotlin.get()))
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.coroutines.core)
          }
