@@ -9,7 +9,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect", null))
+            implementation(kotlin("reflect", "2.2.0"))
          }
       }
 
