@@ -16,7 +16,7 @@ A subset of [JSON Schemas](https://json-schema.org/) can be defined either by pa
 val parsedSchema = parseSchema(
   """
   {
-  "$id": "https://example.com/geographical-location.schema.json",  // will  be ignored
+  "$id": "https://example.com/geographical-location.schema.json",  // will be ignored
   "$schema": "https://json-schema.org/draft/2020-12/schema",       // will be ignored
   "title": "Longitude and Latitude Values",                        // will be ignored
   "description": "A geographical coordinate.",                     // will be ignored
@@ -62,20 +62,6 @@ val personSchema = jsonSchema {
 }
 ```
 
-⚠️ Note that Kotest only supports a subset of JSON schema currently. Currently missing support for:
-
-* $defs and $refs
-* Recursive schemas
-* Parsing of schema composition
-* string.format
-* array.prefixItems,
-* array.contains,
-* array.items = false
-* array.maxContains
-* array.minContains
-* array.uniqueItems
-* enum
-
 ## Validating
 
 Once a schema has been defined, you can validate `String` and `kotlinx.serialization.JsonElement` against it:
@@ -90,3 +76,18 @@ Once a schema has been defined, you can validate `String` and `kotlinx.serializa
 // Passes, since address isn't required and `additionalProperties` are allowed
 ```
 
+## Limitations
+
+⚠️ Note that Kotest only supports a subset of JSON schema currently. Currently missing support for:
+
+* $defs and $refs
+* Recursive schemas
+* Parsing of schema composition
+* string.format
+* array.prefixItems,
+* array.contains,
+* array.items = false
+* array.maxContains
+* array.minContains
+* array.uniqueItems
+* enum

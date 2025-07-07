@@ -50,7 +50,3 @@ fun log(t: Throwable?, f: () -> String) {
 
 @KotestInternal
 expect fun writeLog(start: TimeMark, t: Throwable?, f: () -> String)
-
-expect fun print(str: String)
-expect fun println(str: String)
-expect fun println()

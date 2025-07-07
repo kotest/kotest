@@ -45,9 +45,6 @@ jobs:
             with:
                ref: ${{ github.event.inputs.ref }}
 
-         -  name: Validate Gradle Wrapper
-            uses: gradle/actions/wrapper-validation@v3
-
          -  name: Setup JDK
             uses: actions/setup-java@v4
             with:
@@ -101,3 +98,5 @@ env:
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
    ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_pass: ${{ secrets.GRADLE_BUILD_CACHE_PASS }}
+   NEW_MAVEN_CENTRAL_USERNAME: ${{ secrets.NEW_MAVEN_CENTRAL_USERNAME }}
+   NEW_MAVEN_CENTRAL_PASSWORD: ${{ secrets.NEW_MAVEN_CENTRAL_PASSWORD }}

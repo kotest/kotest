@@ -13,7 +13,7 @@ import org.objectweb.asm.Opcodes
 internal class TestClassDetector {
 
    private val parents = mutableMapOf<String, String>()
-   private val candidates = mutableSetOf<String>()
+   private val specs = mutableSetOf<String>()
 
    private val specClasses = listOf(
       "io/kotest/core/spec/style/AnnotationSpec",
@@ -31,7 +31,7 @@ internal class TestClassDetector {
    fun detect(inputs: FileTree): Set<TestClass> {
       parents.clear()
       inputs.filter { it.name.endsWith(".class") }.asFileTree.visit(visitor)
-      return candidates.filter { isSpecClass(it) }.map { toTestClass(it) }.toSet()
+      return specs.filter { isSpecClass(it) }.map { toTestClass(it) }.toSet()
    }
 
    private fun toTestClass(className: String): TestClass {
@@ -70,9 +70,9 @@ internal class TestClassDetector {
          // all classes are added to the parents map so we can traverse the hierarchy later to see if
          // a class extends another class that extends a spec and so on
          add(reader.className, reader.superName)
-         // only non abstract classes are added to the candidates set though
+         // only non abstract classes are added to the specs set though
          if (reader.access and Opcodes.ACC_ABSTRACT == 0)
-            candidates.add(reader.className)
+            specs.add(reader.className)
       }
    }
 }

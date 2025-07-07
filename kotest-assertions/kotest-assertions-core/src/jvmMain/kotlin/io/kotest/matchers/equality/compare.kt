@@ -59,13 +59,13 @@ private fun compareValue(
    }
 
    return when {
-      type.isSubclassOf(Collection::class) -> {
+      type.isSubclassOf(Collection::class) && actual != null && expected != null -> {
          val actualCollection = actual as Collection<*>
          val expectedCollection = expected as Collection<*>
          compareCollections(actualCollection, expectedCollection, field, config, prop)
       }
 
-      type.isSubclassOf(Map::class) -> {
+      type.isSubclassOf(Map::class) && actual != null && expected != null -> {
          val actualMap = actual as Map<*, *>
          val expectedMap = expected as Map<*, *>
          compareMaps(actualMap, expectedMap, field, config, prop)

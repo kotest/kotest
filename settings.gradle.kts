@@ -60,6 +60,8 @@ include(
    // gradle plugin to run tests outside of gradle's test task
    ":kotest-framework:kotest-framework-plugin-gradle",
 
+   ":kotest-framework:kotest-framework-symbol-processor",
+
    // compiler plugins to integrate tests with the engine
    ":kotest-framework:kotest-framework-multiplatform-plugin-compiler",
    ":kotest-framework:kotest-framework-multiplatform-plugin-gradle",

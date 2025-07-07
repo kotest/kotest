@@ -28,7 +28,7 @@ import kotlin.reflect.jvm.isAccessible
  * val firstFoo = Foo(1, "Bar!")
  * val secondFoo = Foo(2, "Bar!")
  *
- * firstFoo.shouldBeEqualUsingFields(secondFoo, Foo::description) // Assertion passes
+ * firstFoo.shouldBeEqualToUsingFields(secondFoo, Foo::description) // Assertion passes
  *
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```

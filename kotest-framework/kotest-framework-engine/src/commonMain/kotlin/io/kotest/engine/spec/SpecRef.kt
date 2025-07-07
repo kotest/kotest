@@ -14,7 +14,6 @@ internal suspend fun SpecRef.instance(
    projectConfigRegistry: ProjectConfigResolver
 ): Result<Spec> = when (this) {
    is SpecRef.Reference -> instantiate(this.kclass, registry, projectConfigRegistry)
-   is SpecRef.Singleton -> Result.success(this.instance)
    is SpecRef.Function -> Result.success(this.f())
 }
 
