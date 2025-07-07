@@ -22,8 +22,8 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
 fun targetDefaultForType(
-   providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(),
-   arbsForProps: Map<KProperty1<*, *>, Arb<*>> = emptyMap(),
+   providedArbs: Map<KClass<*>, Arb<*>>,
+   arbsForProps: Map<KProperty1<*, *>, Arb<*>>,
    type: KType
 ): Arb<*>? {
    when (type) {
