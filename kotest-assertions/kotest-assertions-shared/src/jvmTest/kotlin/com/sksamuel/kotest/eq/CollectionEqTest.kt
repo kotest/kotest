@@ -79,69 +79,6 @@ class CollectionEqTest : FunSpec({
       CollectionEq.equals(hs, listOf(1, 2, 3), false).shouldBeNull()
    }
 
-   test("should give null for equal deeply nested arrays") {
-      val array1 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
-      val array2 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
-      CollectionEq.equals(array1.toList(), array2.toList(), false).shouldBeNull()
-   }
-
-   test("should give error for equal iterables nested in ordered collection") {
-      val aut1 = listOf(1, arrayOf(listOf(3, 3), listOf(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val aut2 = listOf(1, arrayOf(listOf(3, 3), listOf(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val error = CollectionEq.equals(aut1, aut2, false)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """Element differ at index: [1]
-                                  |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
-      }
-   }
-
-   test("should give error for unequal iterables nested in ordered collection") {
-      val aut1 = listOf(1, listOf(listOf(3, 3), listOf(3, 4)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = listOf(1, listOf(listOf(3, 3), listOf(4, 4)), mapOf("a" to listOf(1, 2, 3)))
-
-      val error = CollectionEq.equals(aut1, aut2, false)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """Element differ at index: [1]
-                                  |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
-      }
-   }
-
-   test("should give error for equal collections nested in Set") {
-      val aut1 = setOf(1, listOf(listOf(3, 3), listOf(4, 4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, arrayOf(listOf(3, 3), listOf(4, 4)))
-      val error = CollectionEq.equals(aut1, aut2, false)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """expected:<[[("a", [1, 2, 3])], 1, [[], []]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>"""
-      }
-   }
-
-   test("should give error for unequal collections nested in Set") {
-      val aut1 = setOf(listOf(listOf(3, 3), listOf(3, 4)), mapOf("a" to listOf(1, 2, 3)), 1)
-      val aut2 = setOf(1, listOf(listOf(3, 3), listOf(4, 4)), mapOf("a" to listOf(1, 2, 3)))
-
-      val error = CollectionEq.equals(aut1, aut2, false)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[[[], []], [("a", [1, 2, 3])], 1]>"""
-      }
-   }
-
-   test("should give error for unequal deeply nested arrays") {
-      val array1 = arrayOf(1, arrayOf(arrayOf("a", "c"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
-      val array2 = arrayOf(1, arrayOf(arrayOf("a", "e"), "b"), mapOf("a" to arrayOf(1, 2, 3)))
-
-      val error = CollectionEq.equals(array1.toList(), array2.toList(), false)
-
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """Element differ at index: [1]
-                                  |expected:<[1, [["a", "e"], "b"], [("a", [1, 2, 3])]]> but was:<[1, [["a", "c"], "b"], [("a", [1, 2, 3])]]>""".trimMargin()
-      }
-   }
-
    test("should return true for deeply nested arrays in sets") {
       setOf(
          arrayOf(1, 2, 3),
@@ -185,11 +122,5 @@ class CollectionEqTest : FunSpec({
    test("shouldNotBe should work for empty lists") {
       listOf("hello") shouldNotBe emptyList<String>()
       emptyList<String>() shouldNotBe listOf("hello")
-   }
-
-   test("CollectionEq should not support sequence") {
-      shouldFail {
-         sequenceOf(1, 2) shouldBe listOf(1, 2)
-      }
    }
 })

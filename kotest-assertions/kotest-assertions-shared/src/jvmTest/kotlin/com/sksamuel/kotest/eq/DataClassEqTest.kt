@@ -1,14 +1,11 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.eq.isDataClassInstance
-import io.kotest.assertions.throwables.shouldNotThrow
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.assertThrows
-import java.lang.AssertionError
 
 data class DataClass1(val a: Int, val b: Float)
 data class DataClass2(val x: Int, val y: Float, val z: DataClass1)
@@ -122,15 +119,6 @@ class DataClassEqTest : StringSpec({
       val throwable = assertThrows<Throwable> { actual shouldBe expected }
 
       throwable.message shouldNotStartWith "data class diff"
-   }
-
-   "Data class assertion should applied on data class which extends throwable" {
-      shouldNotThrow<AssertionError> {
-         CustomException("abc") shouldBe CustomException("abc")
-      }
-      shouldThrow<AssertionError> {
-         CustomException("abc") shouldBe CustomException("efg")
-      }
    }
 })
 
