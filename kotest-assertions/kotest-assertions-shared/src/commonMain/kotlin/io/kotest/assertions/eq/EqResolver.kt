@@ -12,9 +12,8 @@ object EqResolver {
 
    /**
     * Returns the [Eq] to use for comparison for the given values.
-    * If the two values are nullable, then null will be returned.
+    * If both values are nullable, then [NullEq] will be returned.
     */
-   // todo iterables will be added in here
    fun resolve(actual: Any?, expected: Any?): Eq<out Any?> {
       // if we have null and non null, usually that's a failure, but people can override equals to allow it
       return when {
@@ -24,10 +23,11 @@ object EqResolver {
          actual is Regex && expected is Regex -> RegexEq
          actual is String && expected is String -> StringEq
          actual is Number && expected is Number -> NumberEq
+         actual is Collection<*> && expected is Collection<*> -> CollectionEq
+         actual is Array<*> && expected is Array<*> -> ArrayEq
          actual is Sequence<*> || expected is Sequence<*> -> SequenceEq
-         shouldShowDataClassDiff(actual, expected) -> DataClassEq
          actual is Throwable && expected is Throwable -> ThrowableEq
-         IterableEq.isValidIterable(actual) && IterableEq.isValidIterable(expected) -> IterableEq
+         shouldShowDataClassDiff(actual, expected) -> DataClassEq
          else -> DefaultEq
       }
    }

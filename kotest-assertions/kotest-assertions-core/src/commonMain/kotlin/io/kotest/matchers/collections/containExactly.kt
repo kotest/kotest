@@ -2,7 +2,7 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.EqCompare
-import io.kotest.assertions.eq.IterableEq
+import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.print.print
 import io.kotest.equals.Equality
 import io.kotest.matchers.ComparableMatcherResult
@@ -69,7 +69,7 @@ fun <T, C : Collection<T>> containExactly(
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
    fun Throwable?.isDisallowedIterableComparisonFailure() =
-      this?.message?.startsWith(IterableEq.TRIGGER) == true
+      this?.message?.startsWith(CollectionEq.TRIGGER) == true
 
    val failureReason = if(verifier == null) {
       EqCompare.compare(actual, expected, true)

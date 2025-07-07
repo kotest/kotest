@@ -5,63 +5,9 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 
-@Deprecated("To be replaced with collection specific matchers)")
-object IterableEq : Eq<Iterable<*>> {
+object CollectionEq : Eq<Collection<*>> {
 
-   /**
-    * Kotlin [Iterable] provides a traversal mechanism for structures with guaranteed unambiguous ordering (e.g. [List],
-    * [Array]) as well as for structures where ordering is absent or, if provided, is implementation dependent (e.g.
-    * [Set], [Map]).  In addition, all [Collection] implementations are [Iterable] by inheritance.  Equality between
-    * [Iterable] items is ambiguous on account of the uncertainty of the ordering contract on the ensuing traversal.
-    * It stands that [Iterable] equality between ordered and unordered structures, albeit allowed in Kotlin, is
-    * fragile and benefits from best-practice conventions.  For instance, in the case of [Set], optional ordering--if
-    * provided by the implementation--is semantically ambiguous, too.  Consider for instance [LinkedHashSet],
-    * the default implementation of [Set] in Kotlin, where ordering represents the arbitrary order of element
-    * insertion: at least the jvm environment provides an alternative for certain [Set] implementations where
-    * ordering is instead the collation order of the elements.  On account of fragility, and in the interest
-    * of deterministic test outcomes, Kotest allows equality testing between [Actual] and [Expected] [Iterable]s with
-    * guaranteed unambiguous ordering, between [Actual] and [Expected] [Iterable]s with no ordering guarantee (in which
-    * case, equality executes as an unordered containment test), and between ordered [Iterable]s and [LinkedHashSet]
-    * since the latter is ubiquitous and, by implementation, ordered by chronological insertion.
-    *  Even though it uses the term [Iterable] but it does not mean that it support equality check for [Iterable]s
-    * of any type. It only supports equality check for [Iterable]s of the following types:
-    * [List], [Set], [Collection]
-    * and additionally [Array]s of any type.
-    *
-    * An equality comparison executed between disallowed types will result in a best-effort error message with some
-    * detail on the reason why it is disallowed. However, if type information is lost, the failure diagnostic may
-    * unfortunately become confusing.  If so (e.g. the equality test fails, but the error message seems to contradict
-    * the failure), check your types: failure in that case may be from an attempt to compare types for which the test is
-    * fragile. Alternatively, instead of
-    * ```
-    * lhs shouldBe rhs
-    * ```
-    * use your own specialization of  `equals()` as in
-    * ```
-    * lhs.equals(rhs) shouldBe true
-    * ```
-    * if your equality test has ordering requirements that are unique or different from Kotest defaults.
-    * */
-   fun isValidIterable(it: Any): Boolean {
-      return when (it) {
-         is String -> false
-         is List<*>, is Set<*>, is Array<*>, is Collection<*> -> true
-         else -> false
-      }
-   }
-
-   fun asIterable(it: Any): Iterable<*> {
-      check(it !is String)
-      return when (it) {
-         is Array<*> -> it.asList()
-         is List<*> -> it
-         is Set<*> -> it
-         is Collection<*> -> it
-         else -> error("Cannot convert $it to Iterable<*>")
-      }
-   }
-
-   override fun equals(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
+   override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean): Throwable? {
       return when {
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
          isOrderedSet(actual) || isOrderedSet(expected) -> {
