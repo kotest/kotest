@@ -10,7 +10,7 @@ kotlin {
       commonMain {
          dependencies {
             api(projects.kotestAssertions.kotestAssertionsShared)
-            implementation(kotlin("reflect", "2.2.0"))
+            implementation(kotlin("reflect", libs.versions.kotlin.get()))
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             api(libs.kotlinx.coroutines.core)
@@ -61,8 +61,8 @@ kotlin {
          // used to write to the console with fancy colours!
          dependencies {
             // we need these so we can generate the runKotest test stub
-            implementation(kotlin("test-common"))
-            implementation(kotlin("test-annotations-common"))
+            implementation(kotlin("test-common", libs.versions.kotlin.get()))
+            implementation(kotlin("test-annotations-common", libs.versions.kotlin.get()))
          }
       }
 
