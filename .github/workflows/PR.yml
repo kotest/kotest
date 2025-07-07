@@ -75,8 +75,8 @@ jobs:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
          task: >
-           -P"kotest_enableKotlinJs"=true
-           -P"kotest_enableKotlinNative"=true
+           -P"kotest_enableKotlinJs=true"
+           -P"kotest_enableKotlinNative=true"
            --continue
            check
 

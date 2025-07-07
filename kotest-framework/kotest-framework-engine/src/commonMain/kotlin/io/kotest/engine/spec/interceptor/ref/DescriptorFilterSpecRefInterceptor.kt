@@ -2,6 +2,7 @@ package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.name
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
@@ -34,7 +35,7 @@ internal class DescriptorFilterSpecRefInterceptor(
          val result = it.filter(ref.kclass.toDescriptor())
          result as? DescriptorFilterResult.Exclude
       }
-      logger.log { Pair(ref.kclass.bestName(), "excludedByFilters == $excluded") }
+      logger.log { Pair(ref.name(), "excludedByFilters == $excluded") }
 
       return if (excluded == null) {
          next.invoke(ref)

@@ -16,12 +16,12 @@ import io.kotest.mpp.AtomicReference
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 
-public enum class LifecycleMode {
+enum class LifecycleMode {
    Spec, EveryTest, Leaf, Root
 }
 
 /** Turns a [Resource] into a [LazyMountableExtension] as a [ResourceExtension] */
-public fun <A> Resource<A>.extension(lifecycleMode: LifecycleMode = LifecycleMode.Spec): ResourceExtension<A> =
+fun <A> Resource<A>.extension(lifecycleMode: LifecycleMode = LifecycleMode.Spec): ResourceExtension<A> =
    ResourceExtension(this, lifecycleMode)
 
 /**
@@ -60,9 +60,9 @@ public fun <A> Resource<A>.extension(lifecycleMode: LifecycleMode = LifecycleMod
  *
  * @param lifecycleMode allows installing the [Resource] for other scopes besides the default [LifecycleMode.Spec].
  */
-public class ResourceExtension<A>(
-   public val resource: Resource<A>,
-   public val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
+class ResourceExtension<A>(
+   val resource: Resource<A>,
+   val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
 ) : LazyMountableExtension<A, A>, TestListener, AfterSpecListener {
 
    private var underlying: ResourceLazyMaterialized<A>? = null

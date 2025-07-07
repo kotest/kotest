@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor.ref.enabled
 import io.kotest.core.Logger
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.name
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.flatMap
@@ -11,7 +12,6 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
 import io.kotest.mpp.hasAnnotation
 
 /**
@@ -30,7 +30,7 @@ internal class IgnoredSpecInterceptor(
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
 
       val isIgnored = ref.kclass.hasAnnotation<Ignored>()
-      logger.log { Pair(ref.kclass.bestName(), "@Ignored == $isIgnored") }
+      logger.log { Pair(ref.name(), "@Ignored == $isIgnored") }
 
       return if (isIgnored) {
          val reason = ref.kclass.annotation<Ignored>()?.reason.let {
