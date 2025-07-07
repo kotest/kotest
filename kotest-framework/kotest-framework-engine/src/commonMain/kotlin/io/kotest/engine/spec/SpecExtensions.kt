@@ -34,7 +34,7 @@ internal class SpecExtensions(
    private val logger = Logger(SpecExtensions::class)
 
    /**
-    * Runs all the [BeforeSpecListener] for this [Spec]. All errors are caught and wrapped
+    * Runs all the [BeforeSpecListener]s for this [Spec]. All errors are caught and wrapped
     * in [ExtensionException.BeforeSpecException] and if more than one error,
     * all will be wrapped in a [MultipleExceptions].
     */
@@ -43,8 +43,8 @@ internal class SpecExtensions(
 
       val errors = specConfigResolver.extensions(spec)
          .filterIsInstance<BeforeSpecListener>()
-         .mapNotNull { ext ->
-            runCatching { ext.beforeSpec(spec) }
+         .mapNotNull { listener ->
+            runCatching { listener.beforeSpec(spec) }
                .mapError { ExtensionException.BeforeSpecException(it) }
                .exceptionOrNull()
          }
@@ -57,7 +57,7 @@ internal class SpecExtensions(
    }
 
    /**
-    * Runs all the [AfterSpecListener] for this [Spec]. All errors are caught and wrapped
+    * Runs all the [AfterSpecListener]s for this [Spec]. All errors are caught and wrapped
     * in [ExtensionException.AfterSpecException] and if more than one error,
     * all will be wrapped in a [MultipleExceptions].
     */
@@ -71,10 +71,13 @@ internal class SpecExtensions(
          }
       }
 
-      val errors = specConfigResolver.extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
-         runCatching { ext.afterSpec(spec) }
-            .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
-      }
+      val errors = specConfigResolver.extensions(spec)
+         .filterIsInstance<AfterSpecListener>()
+         .mapNotNull { listener ->
+            runCatching { listener.afterSpec(spec) }
+               .mapError { ExtensionException.AfterSpecException(it) }
+               .exceptionOrNull()
+         }
 
       return when {
          errors.isEmpty() -> Result.success(spec)
@@ -97,6 +100,11 @@ internal class SpecExtensions(
          .forEach { it.instantiationError(kclass, t) }
    }
 
+   /**
+    * Runs all the [PrepareSpecListener]s for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.PrepareSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
+    */
    suspend fun prepareSpec(kclass: KClass<out Spec>): Result<KClass<*>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<PrepareSpecListener>()
@@ -114,6 +122,11 @@ internal class SpecExtensions(
       }
    }
 
+   /**
+    * Runs all the [FinalizeSpecListener]s for this [Spec]. All errors are caught and wrapped
+    * in [ExtensionException.FinalizeSpecException] and if more than one error,
+    * all will be wrapped in a [MultipleExceptions].
+    */
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,

@@ -23,9 +23,10 @@ internal interface SpecInterceptor {
  * A fresh context is created for each spec instance.
  * It contains mutable state that can be modified by the interceptors.
  */
-data class SpecContext(
+internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
    var beforeSpecError: Throwable? = null,
+   var testFailed: Boolean = false,
 ) {
    companion object {
       fun create() = SpecContext(createAtomicBoolean(false), null)
@@ -37,6 +38,6 @@ data class SpecContext(
  *
  * This is a functional interface to reduce the size of stack traces - type-erased lambda types add excess stack lines.
  */
-internal interface NextSpecInterceptor {
+internal fun interface NextSpecInterceptor {
    suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>>
 }
