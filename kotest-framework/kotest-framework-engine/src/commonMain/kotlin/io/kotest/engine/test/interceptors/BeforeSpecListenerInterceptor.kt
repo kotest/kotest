@@ -30,7 +30,7 @@ internal class BeforeSpecListenerInterceptor(
 
       val shouldRun = specContext.beforeSpecInvoked.compareAndSet(
          expect = false,
-         update = true
+         set = true,
       )
 
       return if (shouldRun) {

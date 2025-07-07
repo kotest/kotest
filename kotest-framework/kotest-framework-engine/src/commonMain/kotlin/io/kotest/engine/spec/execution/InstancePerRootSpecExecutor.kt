@@ -57,7 +57,6 @@ internal class InstancePerRootSpecExecutor(
    private suspend fun materializeAndInvokeRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
       val rootTests = materializer.materialize(seed)
-      val duplicateTestNameHandler = DuplicateTestNameHandler()
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
@@ -80,11 +79,7 @@ internal class InstancePerRootSpecExecutor(
                   } else {
                      // for subsequent tests, we create a new instance of the spec
                      // and will re-run the pipelines etc
-                     executeRootInFreshSpec(
-                        root = root,
-                        ref = ref,
-                        specContext,
-                     )
+                     executeRootInFreshSpec(root = root, ref = ref)
                   }
                }
             }
@@ -100,7 +95,6 @@ internal class InstancePerRootSpecExecutor(
    private suspend fun executeRootInFreshSpec(
       root: TestCase,
       ref: SpecRef,
-      specContext: SpecContext,
    ) {
       require(root.isRootTest())
 
@@ -109,6 +103,8 @@ internal class InstancePerRootSpecExecutor(
       // map all the names again so they are unique, and then find the matching root test in the new spec instance
       val freshRoot = materializer.materialize(spec)
          .first { it.descriptor == root.descriptor }
+
+      val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
