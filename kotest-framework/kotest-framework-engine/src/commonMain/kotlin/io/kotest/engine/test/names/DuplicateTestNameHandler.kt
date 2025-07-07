@@ -8,7 +8,7 @@ import io.kotest.engine.names.UniqueNames
  * Tracks test names for a context, and based on the given [DuplicateTestNameMode] either fails
  * on duplicates, warns on duplicates, or modifies names to be unique.
  */
-internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
+internal class DuplicateTestNameHandler {
 
    private val names = mutableSetOf<String>()
 
@@ -16,11 +16,11 @@ internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode)
       "Duplicated test name ${name}. To disable this message, set DuplicateTestNameMode to Silent."
 
    /**
-    * Returns a unique name or null if the name is already unique.
+    * Returns a unique name or the input if the name is already unique.
     */
-   fun handle(name: TestName): String? {
+   fun unique(mode: DuplicateTestNameMode, name: TestName): String {
       val isUnique = names.add(name.name)
-      if (isUnique) return null
+      if (isUnique) return name.name
       return when (mode) {
          DuplicateTestNameMode.Error -> throw DuplicateTestNameException(message(name.name))
          DuplicateTestNameMode.Silent -> makeUniqueName(name.name)

@@ -18,7 +18,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -115,7 +115,7 @@ class AfterAnyExceptionTest : WordSpec({
 
    "an exception in before test" should {
       "fail the test for behavior spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(BehaviorSpecWithAfterTestError::class)
@@ -123,7 +123,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for feature spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(FeatureSpecWithAfterTestError::class)
@@ -131,7 +131,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for word spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(WordSpecWithAfterTestError::class)
@@ -139,7 +139,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for should spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(ShouldSpecWithAfterTestError::class)
@@ -147,7 +147,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for string spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(StringSpecWithAfterTestError::class)
@@ -155,7 +155,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for describe spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(DescribeSpecWithAfterTestError::class)
@@ -163,7 +163,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for free spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(FreeSpecWithAfterTestError::class)
@@ -171,7 +171,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for fun spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(FunSpecWithAfterTestError::class)
@@ -179,7 +179,7 @@ class AfterAnyExceptionTest : WordSpec({
          error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for expect spec" {
-         val executor = SpecExecutor(
+         val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(ExpectSpecWithAfterTestError::class)

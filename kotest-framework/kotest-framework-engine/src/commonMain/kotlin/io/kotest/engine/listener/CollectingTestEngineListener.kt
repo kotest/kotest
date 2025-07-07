@@ -1,5 +1,6 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
@@ -12,7 +13,10 @@ import kotlin.reflect.KClass
 /**
  * A [TestEngineListener] that collects test results and errors into maps so they can be
  * programmatically queried after the test run.
+ *
+ * This listener is useful for testing purposes, allowing you to assert the results of tests.
  */
+@KotestInternal
 class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mutex() {
 
    val specs = mutableMapOf<KClass<*>, TestResult>()
@@ -59,5 +63,48 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
 
    fun TestCase.toKey(): TestCaseKey {
       return TestCaseKey(this.descriptor, this.name, this.spec::class)
+   }
+}
+
+/**
+ * A [TestEngineListener] that collects test events into a single list in order of occurrence.
+ * This listener is useful for testing purposes, allowing you to assert the order and content of test events.
+ */
+@KotestInternal
+class TestEventsTestEngineListener : AbstractTestEngineListener(), Mutex by Mutex() {
+
+   sealed interface TestEvent {
+      data class TestStarted(val name: String) : TestEvent
+      data class TestFinished(val name: String, val error: Throwable?) : TestEvent
+      data class SpecStarted(val kclass: KClass<*>) : TestEvent
+      data class SpecFinished(val kclass: KClass<*>, val error: Throwable?) : TestEvent
+      data class SpecIgnored(val kclass: KClass<*>) : TestEvent
+      data class TestIgnored(val name: String) : TestEvent
+   }
+
+   val events = mutableListOf<TestEvent>()
+
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult): Unit = withLock {
+      events.add(TestEvent.SpecFinished(kclass, result.errorOrNull))
+   }
+
+   override suspend fun specStarted(kclass: KClass<*>): Unit = withLock {
+      events.add(TestEvent.SpecStarted(kclass))
+   }
+
+   override suspend fun testStarted(testCase: TestCase): Unit = withLock {
+      events.add(TestEvent.TestStarted(testCase.name.name))
+   }
+
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?): Unit = withLock {
+      events.add(TestEvent.SpecIgnored(kclass))
+   }
+
+   override suspend fun testIgnored(testCase: TestCase, reason: String?): Unit = withLock {
+      events.add(TestEvent.TestIgnored(testCase.name.name))
+   }
+
+   override suspend fun testFinished(testCase: TestCase, result: TestResult): Unit = withLock {
+      events.add(TestEvent.TestFinished(testCase.name.name, result.errorOrNull))
    }
 }

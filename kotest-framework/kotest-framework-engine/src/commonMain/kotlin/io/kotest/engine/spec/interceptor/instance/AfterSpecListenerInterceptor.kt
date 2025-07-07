@@ -13,9 +13,8 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
 /**
  * Invokes any [AfterSpecListener] callbacks for the given spec.
  *
- * These listeners are only invoked if the spec has at least one defined test AND all defined tests are not ignored,
- * which is to say that the same logic as before spec is used. And no after spec listeners are invoked if there
- * are before spec listeners that have not been invoked.
+ * These listeners are not invoked if no tests were executed for the spec (ie, all tests were ignored, or the
+ * spec has no tests defined), or if any [io.kotest.core.listeners.BeforeSpecListener]s failed.
  */
 internal class AfterSpecListenerInterceptor(
    private val specContext: SpecContext,
