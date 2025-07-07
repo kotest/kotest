@@ -21,6 +21,7 @@ private val myModule = module {
    factory { (a: Boolean) -> MyService(a) }
 }
 
+// TODO: This test should be moved to commonTest once we have solved using our Gradle plugin within the obuild
 class KoinListenerTest : FunSpec(), KoinTest {
 
    private val genericService by inject<GenericService>()
