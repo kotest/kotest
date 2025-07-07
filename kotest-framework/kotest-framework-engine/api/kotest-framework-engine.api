@@ -2527,6 +2527,18 @@ public final class io/kotest/core/test/AssertionMode : java/lang/Enum {
 	public static fun values ()[Lio/kotest/core/test/AssertionMode;
 }
 
+public final class io/kotest/core/test/DefaultTestScope : io/kotest/core/test/TestScope {
+	public static final field Companion Lio/kotest/core/test/DefaultTestScope$Companion;
+	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/test/DefaultTestScope$Companion {
+	public final fun invoke (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/core/test/DelayControllerKt {
 	public static final fun getTestCoroutineScheduler (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
 	public static final fun getTestCoroutineScheduler (Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
@@ -2745,12 +2757,7 @@ public final class io/kotest/core/test/TestResult$Success : io/kotest/core/test/
 }
 
 public abstract interface class io/kotest/core/test/TestScope : kotlinx/coroutines/CoroutineScope {
-	public static final field Companion Lio/kotest/core/test/TestScope$Companion;
 	public abstract fun getTestCase ()Lio/kotest/core/test/TestCase;
-}
-
-public final class io/kotest/core/test/TestScope$Companion {
-	public final fun create (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/test/TestStatus : java/lang/Enum {
