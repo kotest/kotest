@@ -71,7 +71,7 @@ class UnstableTestNameTest : FunSpec() {
    }
 }
 
-class NonDataClassesTest : DescribeSpec() {
+private class NonDataClassesTest : DescribeSpec() {
    init {
 
       withData(

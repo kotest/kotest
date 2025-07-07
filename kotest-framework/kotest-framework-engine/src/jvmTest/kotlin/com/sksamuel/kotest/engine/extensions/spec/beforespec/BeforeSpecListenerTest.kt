@@ -157,25 +157,36 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.get() shouldBe 0
       }
 
-      context("BeforeSpecListener error should fail the spec; mark first test as error and the rest as ignored") {
-         withData(
-            IsolationMode.SingleInstance,
-            IsolationMode.InstancePerRoot,
-         ) { isolationMode ->
-            val listener = CollectingTestEngineListener()
-            val config = object : AbstractProjectConfig() {
-               override val isolationMode = isolationMode
-            }
-            TestEngineLauncher(listener)
-               .withProjectConfig(config)
-               .withClasses(BeforeSpecFunctionOverrideWithError::class)
-               .launch()
-            listener.specs.size shouldBe 1
-            listener.tests.size shouldBe 3 // 3 ignored tests
-            listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
-            listener.result("foo2")!!.isIgnored shouldBe true
-            listener.result("foo3")!!.isIgnored shouldBe true
+      context("BeforeSpecListener error with SingleInstance should fail the spec; mark first test as error and the rest as ignored") {
+         val listener = CollectingTestEngineListener()
+         val config = object : AbstractProjectConfig() {
+            override val isolationMode = IsolationMode.SingleInstance
          }
+         TestEngineLauncher(listener)
+            .withProjectConfig(config)
+            .withClasses(BeforeSpecFunctionOverrideWithError::class)
+            .launch()
+         listener.specs.size shouldBe 1
+         listener.tests.size shouldBe 3
+         listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
+         listener.result("foo2")!!.isIgnored shouldBe true
+         listener.result("foo3")!!.isIgnored shouldBe true
+      }
+
+      context("BeforeSpecListener error with InstancePerRoot should fail the spec; mark all instances as failed") {
+         val listener = CollectingTestEngineListener()
+         val config = object : AbstractProjectConfig() {
+            override val isolationMode = IsolationMode.InstancePerRoot
+         }
+         TestEngineLauncher(listener)
+            .withProjectConfig(config)
+            .withClasses(BeforeSpecFunctionOverrideWithError::class)
+            .launch()
+         listener.specs.size shouldBe 1
+         listener.tests.size shouldBe 3
+         listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
+         listener.result("foo2")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
+         listener.result("foo3")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
       }
    }
 }
