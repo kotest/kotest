@@ -11,6 +11,7 @@ plugins {
 }
 
 kotlin {
+   coreLibrariesVersion = "2.2.0"
    jvm {
       withJava()
    }
