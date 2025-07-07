@@ -58,7 +58,7 @@ class ArbDefaultsTest : WordSpec({
 
 data class Foo(val s: String, val b: Boolean, val i: Int, val d: Double, val f: Float, val l: Long)
 
-data class Bar(val s: String, val t: Thread)
+data class Bar(val s: String, val t: Runnable)
 data class Car(val b: Bar)
 data class Dar(val c: Car)
 data class Ear(val d: Dar)
