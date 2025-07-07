@@ -11,6 +11,12 @@ on:
       branches:
          - master
 
+# This will prevent multiple parallel runs, and will a cancel queued runs except the latest one.
+concurrency:
+   group: 'master-ci'
+   # Allow any already started jobs to finish, so we don't leave snapshot builds in a broken state.
+   cancel-in-progress: false
+
 permissions:
    contents: read
 
