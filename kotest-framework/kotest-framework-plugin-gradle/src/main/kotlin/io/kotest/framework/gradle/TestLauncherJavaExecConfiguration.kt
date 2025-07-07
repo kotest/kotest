@@ -36,8 +36,6 @@ internal data class TestLauncherJavaExecConfiguration(
 
       // note: this package cannot change as it is part of the public api
       internal const val LAUNCHER_MAIN_CLASS = "io.kotest.engine.launcher.MainKt"
-
-      internal const val IDEA_PROP = "idea.active"
    }
 
    fun withCommandLineTags(tags: String?): TestLauncherJavaExecConfiguration {
@@ -81,7 +79,7 @@ internal data class TestLauncherJavaExecConfiguration(
     */
    private fun listenerArgs(): List<String> {
       return when {
-         isIntellij() -> listOf(ARG_LISTENER, LISTENER_TC)
+         IntellijUtils.isIntellij() -> listOf(ARG_LISTENER, LISTENER_TC)
          else -> listOf(ARG_LISTENER, LISTENER_CONSOLE)
       }
    }
@@ -119,9 +117,4 @@ internal data class TestLauncherJavaExecConfiguration(
    private fun specsArg(): List<String> {
       return if (specs.isEmpty()) emptyList() else listOf(ARG_SPECS, specs.joinToString(";"))
    }
-
-   /**
-    * We use the idea system property to determine if we are running inside intellij.
-    */
-   private fun isIntellij() = System.getProperty(IDEA_PROP) != null
 }

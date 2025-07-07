@@ -7,13 +7,12 @@ plugins {
    signing
    `maven-publish`
    id("dev.adamko.dev-publish")
+   id("com.gradleup.nmcp")
 }
 
 group = "io.kotest"
 version = Ci.publishVersion
 
-val ossrhUsername: String by project
-val ossrhPassword: String by project
 val signingKey: String? by project
 val signingPassword: String? by project
 
@@ -48,16 +47,6 @@ gradle.taskGraph.whenReady {
 
 publishing {
    repositories {
-      maven {
-         val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-         val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-         name = mavenCentralRepoName
-         url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
-         credentials {
-            username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
-            password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
-         }
-      }
       maven(rootDir.resolve("build/maven-repo")) {
          // Publish to a project-local directory, for easier verification of published artifacts
          // Run ./gradlew publishAllPublicationsToRootBuildDirRepository, and check `$rootDir/build/maven-repo/`
@@ -181,6 +170,31 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
          }
    }
 }
+
+//region Letting Kotest settings control which publications are enabled
+val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+   // use vals - improves Gradle Config Cache compatibility
+   // We might get null here if something uses the publication task before the actual publication is created
+   val publicationName = publication?.name ?: "MissingPublicationName"
+   val enabledPublicationNamePrefixes = kotestSettings.enabledPublicationNamePrefixes
+
+   val isPublicationEnabled = enabledPublicationNamePrefixes.map { prefixes ->
+      prefixes.any { prefix -> publicationName.startsWith(prefix, ignoreCase = true) }
+   }
+
+   // register an input so Gradle can do up-to-date checks
+   inputs.property("publicationEnabled", isPublicationEnabled)
+
+   onlyIf {
+      val enabled = isPublicationEnabled.get()
+      if (!enabled) {
+         logger.lifecycle("[task: $path] publishing for $publicationName is disabled")
+      }
+      enabled
+   }
+}
+//endregion
 
 //region Fix Gradle error Reason: Task <publish> uses this output of task <sign> without declaring an explicit or implicit dependency.
 // https://github.com/gradle/gradle/issues/26091

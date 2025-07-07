@@ -32,6 +32,7 @@ konform = "0.10.0"
 arrow = "2.1.2"
 testcontainers = "1.20.6"
 asm = "9.7.1"
+nmcp = "1.0.0-rc.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -126,6 +127,7 @@ wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremoc
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "devPublishPlugin" }
+nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
 
 [bundles]
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
@@ -136,3 +138,4 @@ shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.14.0" }
 allure = { id = "io.qameta.allure", version = "2.12.0" }
+nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }

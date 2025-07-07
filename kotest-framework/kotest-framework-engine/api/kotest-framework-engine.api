@@ -3350,20 +3350,6 @@ public abstract interface class io/kotest/engine/console/ConsoleRenderer {
 	public abstract fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class io/kotest/engine/console/ConsoleRenderer$DefaultImpls {
-	public static fun bold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun brightRed (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun brightRedBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun brightYellow (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun brightYellowBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun green (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun greenBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun red (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun redBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun yellow (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-	public static fun yellowBold (Lio/kotest/engine/console/ConsoleRenderer;Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class io/kotest/engine/console/ConsoleRenderer_jvmKt {
 	public static final fun getConsoleRenderer ()Lio/kotest/engine/console/ConsoleRenderer;
 }
@@ -3386,8 +3372,8 @@ public final class io/kotest/engine/console/MordantConsoleRenderer : io/kotest/e
 	public fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class io/kotest/engine/console/NoopConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
-	public static final field INSTANCE Lio/kotest/engine/console/NoopConsoleRenderer;
+public final class io/kotest/engine/console/PlainConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
+	public static final field INSTANCE Lio/kotest/engine/console/PlainConsoleRenderer;
 	public fun bold (Ljava/lang/String;)Ljava/lang/String;
 	public fun brightRed (Ljava/lang/String;)Ljava/lang/String;
 	public fun brightRedBold (Ljava/lang/String;)Ljava/lang/String;

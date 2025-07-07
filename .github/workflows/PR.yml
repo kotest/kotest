@@ -74,7 +74,11 @@ jobs:
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: check --continue
+         task: >
+           -P"kotest_enableKotlinJs"=true
+           -P"kotest_enableKotlinNative"=true
+           --continue
+           check
 
    validate-docs:
       needs: [ determine-workflows-to-run ]
