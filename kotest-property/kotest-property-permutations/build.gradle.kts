@@ -11,7 +11,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
+            implementation(kotlin("reflect", null))
             api(projects.kotestCommon)
             api(projects.kotestAssertions.kotestAssertionsShared)
             api(projects.kotestProperty)

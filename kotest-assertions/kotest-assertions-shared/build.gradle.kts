@@ -10,7 +10,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
+            implementation(kotlin("reflect", null))
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.coroutines.core)
          }

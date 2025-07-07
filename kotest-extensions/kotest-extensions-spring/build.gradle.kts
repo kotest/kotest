@@ -8,7 +8,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(kotlin("reflect"))
+            implementation(kotlin("reflect", null))
             implementation(libs.spring.context)
             implementation(libs.spring.test)
             implementation(libs.byte.buddy)

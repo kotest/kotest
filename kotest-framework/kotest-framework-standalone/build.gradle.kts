@@ -37,6 +37,6 @@ tasks {
 }
 
 dependencies {
-   implementation(kotlin("reflect"))
+   implementation(kotlin("reflect", null))
    implementation(projects.kotestFramework.kotestFrameworkEngine)
 }

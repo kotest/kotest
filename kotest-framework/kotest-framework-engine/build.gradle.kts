@@ -10,7 +10,7 @@ kotlin {
       commonMain {
          dependencies {
             api(projects.kotestAssertions.kotestAssertionsShared)
-            implementation(kotlin("reflect"))
+            implementation(kotlin("reflect", null))
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             api(libs.kotlinx.coroutines.core)
