@@ -46,7 +46,7 @@ internal class BeforeSpecListenerInterceptor(
                }
             )
       } else {
-         if (!specContext.beforeSpecInvoked.get() && specContext.beforeSpecError == null)
+         if (specContext.beforeSpecError == null)
             test(testCase, scope)
          else
             TestResult.Ignored("Skipped due to beforeSpec failure")
