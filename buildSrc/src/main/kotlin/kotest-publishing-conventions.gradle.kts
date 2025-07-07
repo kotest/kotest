@@ -32,9 +32,7 @@ signing {
 //region Only enabling signing when publishing to Maven Central.
 // (Otherwise signing is required for dev-publish, which prevents testing if the credentials aren't present.)
 gradle.taskGraph.whenReady {
-   val isPublishingToMavenCentral = allTasks
-      .filterIsInstance<PublishToMavenRepository>()
-      .all { it.repository?.name?.contains("Snapshots") == false}
+   val isPublishingToMavenCentral = Ci.isRelease
 
    if (isPublishingToMavenCentral) {
       logger.lifecycle("[kotest-publishing] Publishing to Maven Central, signing is required")

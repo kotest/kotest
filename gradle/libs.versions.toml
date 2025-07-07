@@ -87,8 +87,6 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-
 konform = { module = "io.konform:konform", version.ref = "konform" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
