@@ -1,4 +1,5 @@
-name: publish
+name: release-all
+run-name: Releasing Kotest ${{ inputs.version }} from ${{ inputs.branch }}
 
 on:
    workflow_dispatch:
@@ -13,8 +14,6 @@ on:
 
 env:
    RELEASE_VERSION: ${{ inputs.version }}
-   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    NEW_MAVEN_CENTRAL_USERNAME: ${{ secrets.NEW_MAVEN_CENTRAL_USERNAME }}
@@ -33,21 +32,42 @@ jobs:
    publish:
       strategy:
          # Not sure if this is still true on new maven central, perhaps parallel uploads are now supported?
-         max-parallel: 1 # Sonatype doesn't like parallel uploads, so disable it where possible
          fail-fast: false
          matrix:
             include:
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm,js,wasmJs,linux"
+                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform"
+               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=jvm"
+               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=js"
+               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=linux"
+               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
 
                # Windows: MinGW
                -  os: windows-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=mingw"
 
-               # Apple: macOS, iOS, tvOS, watchOS
+               # Apple: macOS
                -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=macOS,iOS,tvOS,watchOS"
+                  args: -P"kotest_enabledPublicationNamePrefixes=macOS"
+               # Apple: iOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=iOS"
+               # Apple: tvOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=tvOS"
+               # Apple: watchOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
+
 
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
@@ -57,7 +77,6 @@ jobs:
             -P"kotest_enableKotlinJs=true"
             -P"kotest_enableKotlinNative=true"
             ${{ matrix.args }}
-            --no-parallel
             --no-configuration-cache
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
