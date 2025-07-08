@@ -39,15 +39,15 @@ jobs:
             include:
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm,js,linux"
-
-               # Windows: MinGW
-               -  os: windows-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
-
-               # Apple: macOS, iOS, tvOS, watchOS
-               -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=macOS,iOS,tvOS,watchOS"
+                  args: -P"kotest_enabledPublicationNamePrefixes=js"
+#
+#               # Windows: MinGW
+#               -  os: windows-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
+#
+#               # Apple: macOS, iOS, tvOS, watchOS
+#               -  os: macos-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=macOS,iOS,tvOS,watchOS"
 
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
