@@ -33,4 +33,4 @@ jobs:
          -  uses: gradle/actions/setup-gradle@v4
 
          -  name: deploy to gradle
-            run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins
+            run: ./gradlew :kotest-framework:kotest-framework-plugin-gradle:publishPlugins
