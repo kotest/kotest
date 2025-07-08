@@ -8,7 +8,7 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
+            implementation(kotlin("reflect", libs.versions.kotlin.get()))
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.allure.commons)
          }

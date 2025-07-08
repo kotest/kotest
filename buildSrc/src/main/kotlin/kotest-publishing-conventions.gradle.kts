@@ -22,6 +22,8 @@ signing {
    if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
+   } else {
+      logger.lifecycle("[kotest-publishing] No GPG signing key or password provided, skipping signing")
    }
    sign(publishing.publications)
    setRequired { Ci.isRelease } // only require signing when releasing
@@ -30,9 +32,13 @@ signing {
 //region Only enabling signing when publishing to Maven Central.
 // (Otherwise signing is required for dev-publish, which prevents testing if the credentials aren't present.)
 gradle.taskGraph.whenReady {
-   val isPublishingToMavenCentral = allTasks
-      .filterIsInstance<PublishToMavenRepository>()
-      .any { it.repository?.name == mavenCentralRepoName }
+   val isPublishingToMavenCentral = Ci.isRelease
+
+   if (isPublishingToMavenCentral) {
+      logger.lifecycle("[kotest-publishing] Publishing to Maven Central, signing is required")
+   } else {
+      logger.lifecycle("[kotest-publishing] Not publishing to Maven Central, signing is not required")
+   }
 
    signing.setRequired({ isPublishingToMavenCentral })
 

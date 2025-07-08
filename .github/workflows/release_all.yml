@@ -54,9 +54,10 @@ jobs:
       with:
          ref: ${{ inputs.ref }}
          task: >
-           publishToAppropriateCentralRepository ${{ matrix.args }}
-            -P"kotest_enableKotlinJs"=true
-            -P"kotest_enableKotlinNative"=true
+           publishToAppropriateCentralRepository
+            -P"kotest_enableKotlinJs=true"
+            -P"kotest_enableKotlinNative=true"
             --no-parallel
             --no-configuration-cache
+            ${{ matrix.args }}
          runs-on: ${{ matrix.os }}
