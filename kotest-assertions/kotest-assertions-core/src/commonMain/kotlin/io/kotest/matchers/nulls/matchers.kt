@@ -80,7 +80,11 @@ fun <T> T?.shouldNotBeNull(): T {
  *     length should beEven()
  * }
  */
-infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit): T {
+inline infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit): T {
+   contract {
+      returns() implies (this@shouldNotBeNull != null)
+   }
+
    this.shouldNotBeNull()
    block()
    return this
