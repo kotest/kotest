@@ -47,6 +47,9 @@ jobs:
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=linux"
+               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
 
                # Windows: MinGW
                -  os: windows-latest
