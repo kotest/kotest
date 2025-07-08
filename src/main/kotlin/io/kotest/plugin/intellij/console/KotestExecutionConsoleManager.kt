@@ -18,20 +18,9 @@ import io.kotest.plugin.intellij.Constants
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
-//object KotestConsoleFilterProvider: ConsoleFilterProvider {
-//   override fun getDefaultFilters(p0: Project): Array<out Filter?> {
-//      return arrayOf(object : Filter {
-//         override fun applyFilter(p0: String, p1: Int): Filter.Result? {
-//            println("applyFilter: $p0 $p1")
-//            return Filter.Result
-//         }
-//      })
-//   }
-//}
-
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
-   // needs to be defined here so we don't created a new one in the onObject method every time
+   // needs to be defined here so we don't created a new one in the onOutput method every time
    private var callback: KotestServiceMessageCallback? = null
 
    private val parser = ServiceMessagesParser()
@@ -100,19 +89,18 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
    }
 
    /**
-    * Returns true if this [KotestExecutionConsoleManager] should be used to handle the output
-    * of the given [ExternalSystemTask]. We determine true if the task is a gradle task
-    * that contains the kotest task name.
+    * Returns true if this implementation of [ExternalSystemExecutionConsoleManager] should be used to
+    * handle the output of the given [task]. We determine true if the task is a Gradle task
+    * that contains a Kotest task name.
     *
-    * This method is invoked for each task that is executed by the external system.
-    * It is up to the extension to determine if it is applicable for the given task.
+    * This method is invoked for all extensions for each task that is executed by an external system.
+    * It is up to this extension to determine if it is applicable for the given task.
     */
    override fun isApplicableFor(task: ExternalSystemTask): Boolean {
       if (task is ExternalSystemExecuteTaskTask) {
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
-            // todo this should be updated to handle any command line as long as it contains kotest
             return task.tasksToExecute.any {
-               it.contains(Constants.KOTEST_GRADLE_TASK_PREFIX)
+               it.lowercase().endsWith("kotest")
             }
          }
       }

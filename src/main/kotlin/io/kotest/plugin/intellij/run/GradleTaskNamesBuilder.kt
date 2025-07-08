@@ -1,32 +1,31 @@
 package io.kotest.plugin.intellij.run
 
-import io.kotest.plugin.intellij.Constants
+import com.intellij.openapi.module.Module
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.gradle.GradleUtils
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.plugins.gradle.util.GradleModuleData
 
 /**
- * Builds the gradle command line to execute kotest.
+ * Builds the gradle command line to execute a kotest task.
  */
-@Suppress("UnstableApiUsage")
 data class GradleTaskNamesBuilder(
-   private val gradleModuleData: GradleModuleData,
-   private val candidates: List<KtClassOrObject>,
+   private val module: Module,
+   private val specs: List<KtClassOrObject>,
    private val test: Test?,
 ) {
 
    companion object {
 
-      const val CANDIDATE_DELIMITER = ";"
-      const val CANDIDATES_ARG = "--candidates"
+      const val SPEC_DELIMITER = ";"
+      const val SPECS_ARG = "--specs"
       const val DESCRIPTOR_ARG = "--descriptor"
 
-      fun builder(gradleModuleData: GradleModuleData): GradleTaskNamesBuilder =
-         GradleTaskNamesBuilder(gradleModuleData, emptyList(), null)
+      fun builder(module: Module): GradleTaskNamesBuilder =
+         GradleTaskNamesBuilder(module, emptyList(), null)
    }
 
-   fun withCandidate(candidate: KtClassOrObject): GradleTaskNamesBuilder {
-      return copy(candidates = candidates + candidate)
+   fun withSpec(spec: KtClassOrObject): GradleTaskNamesBuilder {
+      return copy(specs = specs + spec)
    }
 
    fun withTest(test: Test?): GradleTaskNamesBuilder {
@@ -34,14 +33,23 @@ data class GradleTaskNamesBuilder(
    }
 
    fun build(): List<String> {
-      return listOfNotNull(taskArg(), candidatesArg(), descriptorArg())
+      return taskArgs().flatMap { listOfNotNull(it, specsArg(), descriptorArg()) }
    }
 
-   private fun taskArg() = gradleModuleData.getTaskPath(Constants.KOTEST_GRADLE_TASK_PREFIX)
+   @Suppress("UnstableApiUsage")
+   private fun taskArgs(): List<String> {
+      // if we have a multiplatform project, we might have jsKotest, jvmKotest, or nativeKotest tasks all registered
+      // we'll invoke them all for now, but we should be better about picking one based on the source set?
+      // todo use sourceset or some other way of narrowing down the appropriate task
+      val tasks = GradleUtils.listTasks(module).filter { it.name.lowercase().endsWith("kotest") }
+      if (tasks.isEmpty())
+         error("Could not find a kotest task in module ${module.name}. Please ensure the Kotest Gradle plugin is applied.")
+      else return tasks.map { it.getFqnTaskName() }
+   }
 
-   private fun candidatesArg(): String {
-      val fqns = candidates.mapNotNull { it.fqName }.joinToString(CANDIDATE_DELIMITER) { it.asString() }
-      return "$CANDIDATES_ARG '$fqns'"
+   private fun specsArg(): String {
+      val fqns = specs.mapNotNull { it.fqName }.joinToString(SPEC_DELIMITER) { it.asString() }
+      return "$SPECS_ARG '$fqns'"
    }
 
    private fun descriptorArg(): String? {

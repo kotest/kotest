@@ -5,7 +5,7 @@ import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 plugins {
    id("java")
    alias(libs.plugins.kotlin.jvm)
-   id("org.jetbrains.intellij.platform") version "2.5.0"
+   id("org.jetbrains.intellij.platform") version "2.6.0"
 }
 
 repositories {
