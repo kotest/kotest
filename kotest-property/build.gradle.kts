@@ -3,6 +3,8 @@ plugins {
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-native-conventions")
+   id("kotest-publishing-conventions")
+   id("kotest-publishing-aggregator")
 }
 
 kotlin {
