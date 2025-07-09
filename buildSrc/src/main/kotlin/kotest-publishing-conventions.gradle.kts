@@ -184,9 +184,6 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
    tasks.named { it.contains("generatePom") }.forEach {
       println("[task: ${outerPath}] Found generatePom task ${it.path}")
    }
-   // register an input so Gradle can do up-to-date checks
-   // Might be null if the publication has not resolved its name yet. Seems to happen for kotest-bom and androidNative
-   inputs.property("publicationEnabled", isPublicationEnabled(publication?.name))
 
    onlyIf {
       val enabled = isPublicationEnabled(publication.name).get()
