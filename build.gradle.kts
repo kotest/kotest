@@ -27,7 +27,7 @@ nmcpAggregation {
       username.set(System.getenv("NEW_MAVEN_CENTRAL_USERNAME"))
       password.set(System.getenv("NEW_MAVEN_CENTRAL_PASSWORD"))
       publishingType = "USER_MANAGED"
-      publicationName = "Kotest - targets ${kotestSettings.enabledPublicationNamePrefixes.get()}"
+      publicationName = "Kotest ${Ci.publishVersion} ${kotestSettings.enabledPublicationNamePrefixes.get()}"
    }
 }
 
