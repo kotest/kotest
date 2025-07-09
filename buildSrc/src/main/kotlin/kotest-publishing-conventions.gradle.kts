@@ -178,27 +178,32 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
 }
 
 //region Letting Kotest settings control which publications are enabled
-val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 tasks.withType<AbstractPublishToMaven>().configureEach {
-   // use vals - improves Gradle Config Cache compatibility
-   // We might get null here if something uses the publication task before the actual publication is created
-   val publicationName = publication?.name ?: "MissingPublicationName"
-   val enabledPublicationNamePrefixes = kotestSettings.enabledPublicationNamePrefixes
-
-   val isPublicationEnabled = enabledPublicationNamePrefixes.map { prefixes ->
-      prefixes.any { prefix -> publicationName.startsWith(prefix, ignoreCase = true) }
+   mustRunAfter(tasks.withType<GenerateMavenPom>())
+   val outerPath = this.path
+   tasks.named { it.contains("generatePom") }.forEach {
+      println("[task: ${outerPath}] Found generatePom task ${it.path}")
    }
-
    // register an input so Gradle can do up-to-date checks
-   inputs.property("publicationEnabled", isPublicationEnabled)
+   // Might be null if the publication has not resolved its name yet. Seems to happen for kotest-bom and androidNative
+   inputs.property("publicationEnabled", isPublicationEnabled(publication?.name))
 
    onlyIf {
-      val enabled = isPublicationEnabled.get()
+      val enabled = isPublicationEnabled(publication.name).get()
       if (!enabled) {
-         logger.lifecycle("[task: $path] publishing for $publicationName is disabled")
+         logger.lifecycle("[task: $path] publishing for ${publication.name} is disabled")
       }
       enabled
    }
+}
+
+private val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
+private fun isPublicationEnabled(publicationName: String?): Provider<Boolean?> {
+   return publicationName?.let { name ->
+      kotestSettings.enabledPublicationNamePrefixes.map { prefixes ->
+         prefixes.any { prefix -> name.startsWith(prefix, ignoreCase = true) }
+      }
+   } ?: providers.provider { null }
 }
 //endregion
 
