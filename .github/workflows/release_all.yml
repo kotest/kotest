@@ -36,37 +36,37 @@ jobs:
          matrix:
             include:
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
-               -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform"
+#               -  os: ubuntu-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform"
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=jvm"
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
-               -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=js"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
-               -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=linux"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
-               -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
-
-               # Windows: MinGW
-               -  os: windows-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
-
-               # Apple: macOS
-               -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=macOS"
-               # Apple: iOS
-               -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=iOS"
-               # Apple: tvOS
-               -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=tvOS"
-               # Apple: watchOS
-               -  os: macos-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
+#               -  os: ubuntu-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=js"
+#               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+#               -  os: ubuntu-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=linux"
+#               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+#               -  os: ubuntu-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
+#
+#               # Windows: MinGW
+#               -  os: windows-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
+#
+#               # Apple: macOS
+#               -  os: macos-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=macOS"
+#               # Apple: iOS
+#               -  os: macos-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=iOS"
+#               # Apple: tvOS
+#               -  os: macos-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=tvOS"
+#               # Apple: watchOS
+#               -  os: macos-latest
+#                  args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
 
 
       uses: ./.github/workflows/run-gradle.yml
