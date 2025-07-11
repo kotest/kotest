@@ -12,6 +12,8 @@ plugins {
    id("com.github.node-gradle.node") version "7.1.0"
 }
 
+System.setProperty("kotestVersion", Ci.publishVersion)
+
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
    implementation(libs.asm) // used to poke into classes to see if they are specs when running JVM tests
