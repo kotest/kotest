@@ -2,7 +2,7 @@ import utils.configureGradleDaemonJvm
 
 plugins {
    id("kotest-base")
-   id("kotest-publishing-aggregator")
+   id("com.gradleup.nmcp.aggregation")
    java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
 }
@@ -20,6 +20,24 @@ apiValidation {
          "io.kotest.common.KotestInternal",
       )
    )
+}
+
+nmcpAggregation {
+   centralPortal {
+      username.set(System.getenv("NEW_MAVEN_CENTRAL_USERNAME"))
+      password.set(System.getenv("NEW_MAVEN_CENTRAL_PASSWORD"))
+      publishingType = "USER_MANAGED"
+      publicationName = "Kotest ${Ci.publishVersion} ${kotestSettings.enabledPublicationNamePrefixes.get()}"
+   }
+}
+
+val publishToAppropriateCentralRepository by tasks.registering {
+   group = "publishing"
+   if (Ci.isRelease) {
+      dependsOn(tasks.named("publishAggregationToCentralPortal"))
+   } else {
+      dependsOn(tasks.named("publishAggregationToCentralPortalSnapshots"))
+   }
 }
 
 // List all projects which should be included in publishing
