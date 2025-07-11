@@ -8,14 +8,19 @@ import io.kotest.framework.gradle.tasks.KotestNativeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.tasks.StopExecutionException
+import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
@@ -55,6 +60,12 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // allows users to configure the test engine
       val kotestExtension = project.extensions.create<KotestExtension>(EXTENSION_NAME)
+
+      project.plugins.withType<KotlinMultiplatformPluginWrapper> {
+         project.extensions.configure<KotlinMultiplatformExtension>{
+            wireKotestKsp()
+         }
+      }
 
       configureTaskConventions(project)
 
@@ -115,7 +126,7 @@ abstract class KotestPlugin : Plugin<Project> {
                      }
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
-                     KotlinPlatformType.jvm -> println("Todo jvm")
+                     KotlinPlatformType.jvm   -> println("Todo jvm")
                      KotlinPlatformType.androidJvm -> println("Todo androidJvm")
 
                      // testable name linuxX64
@@ -154,6 +165,48 @@ abstract class KotestPlugin : Plugin<Project> {
          }
       }
    }
+
+   //TODO wire this to JVM test Sources automatically
+   private fun KotlinDependencyHandler.addKotestJvmRunner() {
+      project.logger.info("  Adding Kotest JUnit runner")
+      implementation("io.kotest:kotest-runner-junit5-jvm")
+   }
+
+   /**
+    * 1. Checks for the presence of KSP and stops execution if missing
+    * 2. Automagically adds KSP to subprojects if it is only present in the root project
+    * 3. Wires the Kotest symbol procesor for every configured KMP target
+    */
+   internal fun KotlinMultiplatformExtension.wireKotestKsp() {
+
+      if (!project.rootProject.pluginManager.hasPlugin("com.google.devtools.ksp") && !project.pluginManager.hasPlugin("com.google.devtools.ksp")) throw StopExecutionException("KSP neither found in root project nor ${project.name}, please add 'com.google.devtools.ksp' to the either project's plugins")
+      //will be a noop if present, but required if KSP is only present in the root project
+      project.pluginManager.apply("com.google.devtools.ksp")
+
+      var kspConfigsWithKotest = mutableSetOf<String>()
+      val version = System.getProperty("kotestVersion")
+      targets.whenObjectAdded {
+         project.dependencies {
+            project.tasks.withType<AbstractTestTask> {
+               runCatching {
+                  project.configurations.names.filter { it.startsWith("ksp") && it.endsWith("Test") }
+                     .forEach { configurationName ->
+                        if (!kspConfigsWithKotest.contains(configurationName)) {
+                           kspConfigsWithKotest.add(configurationName)
+                           logger.lifecycle("  ${this.name}::Adding Kotest $version to $configurationName")
+                           add(
+                              configurationName,
+                              "io.kotest:kotest-framework-symbol-processor-jvm:$version"
+                           )
+                        }
+                     }
+
+               }.getOrElse { logger.warn(it.message) }
+            }
+         }
+      }
+   }
+
 
    private fun handleKotlinAndroid(
       project: Project
