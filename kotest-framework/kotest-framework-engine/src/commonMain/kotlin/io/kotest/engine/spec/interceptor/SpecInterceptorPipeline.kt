@@ -1,8 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.Logger
-import io.kotest.core.Platform
-import io.kotest.core.platform
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -13,7 +11,6 @@ import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineScopeInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
-import io.kotest.engine.spec.interceptor.instance.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectConfigResolverSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
@@ -57,7 +54,6 @@ internal class SpecInterceptorPipeline(
    private fun createPipeline(specContext: SpecContext): List<SpecInterceptor> {
       return listOfNotNull(
          CoroutineScopeInterceptor,
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, context.specExtensions()) else null,
          EngineContextInterceptor(this.context),
          ProjectConfigResolverSpecInterceptor(context.projectConfigResolver),
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context

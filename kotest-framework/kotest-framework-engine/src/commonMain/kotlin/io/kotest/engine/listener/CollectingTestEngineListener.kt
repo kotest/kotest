@@ -4,6 +4,7 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlinx.coroutines.sync.Mutex
@@ -27,8 +28,8 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
    fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.name }[testname]
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) = withLock {
-      specs[kclass] = result
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) = withLock {
+      specs[ref.kclass] = result
       if (result.isErrorOrFailure) errors = true
    }
 
@@ -84,12 +85,12 @@ class TestEventsTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
 
    val events = mutableListOf<TestEvent>()
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult): Unit = withLock {
-      events.add(TestEvent.SpecFinished(kclass, result.errorOrNull))
+   override suspend fun specFinished(ref: SpecRef, result: TestResult): Unit = withLock {
+      events.add(TestEvent.SpecFinished(ref.kclass, result.errorOrNull))
    }
 
-   override suspend fun specStarted(kclass: KClass<*>): Unit = withLock {
-      events.add(TestEvent.SpecStarted(kclass))
+   override suspend fun specStarted(ref: SpecRef): Unit = withLock {
+      events.add(TestEvent.SpecStarted(ref.kclass))
    }
 
    override suspend fun testStarted(testCase: TestCase): Unit = withLock {

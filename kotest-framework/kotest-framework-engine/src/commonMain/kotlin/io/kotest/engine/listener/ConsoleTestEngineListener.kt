@@ -1,6 +1,7 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -10,7 +11,6 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
@@ -160,18 +160,18 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       consoleRenderer.println("${testsPassed + testsFailed.size + testsIgnored} total")
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      specsSeen = specsSeen + kclass.toDescriptor()
+   override suspend fun specStarted(ref: SpecRef) {
+      specsSeen = specsSeen + ref.kclass.toDescriptor()
       val specCount = specsSeen.size
       consoleRenderer.print(consoleRenderer.bold("$specCount. ".padEnd(4, ' ')))
-      consoleRenderer.bold(formatter.format(kclass))
+      consoleRenderer.bold(formatter.format(ref.kclass))
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
       if (result.isErrorOrFailure) {
-         consoleRenderer.println("$kclass $result")
+         consoleRenderer.println("${ref.kclass} $result")
          errors++
-         specsFailed = specsFailed + kclass.toDescriptor()
+         specsFailed = specsFailed + ref.kclass.toDescriptor()
          printThrowable(result.errorOrNull, 4)
       }
       consoleRenderer.println()

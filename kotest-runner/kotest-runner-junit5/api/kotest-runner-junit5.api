@@ -4,9 +4,9 @@ public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getRoot ()Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

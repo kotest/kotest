@@ -19,7 +19,7 @@ internal class SpecFinishedInterceptor(private val listener: TestEngineListener)
          next.invoke(ref)
       }
       return value
-         .onSuccess { listener.specFinished(ref.kclass, TestResult.Success(duration)) }
-         .onFailure { listener.specFinished(ref.kclass, TestResult.Error(duration, it)) }
+         .onSuccess { listener.specFinished(ref, TestResult.Success(duration)) }
+         .onFailure { listener.specFinished(ref, TestResult.Error(duration, it)) }
    }
 }

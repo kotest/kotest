@@ -14,7 +14,7 @@ import kotlin.js.ExperimentalJsExport
 
 class JSGenerator(private val environment: SymbolProcessorEnvironment) {
 
-   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>) {
+   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>) {
 
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
@@ -24,11 +24,11 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
       )
 
       outputStream.bufferedWriter().use { writer ->
-         writer.write(createFileSpec(specs).toString())
+         writer.write(createFileSpec(specs, configs).toString())
       }
    }
 
-   private fun createFileSpec(specs: List<KSClassDeclaration>): FileSpec {
+   private fun createFileSpec(specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>): FileSpec {
       val function = FunSpec.builder("runKotest")
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ExperimentalJsExport::class)
@@ -51,20 +51,25 @@ val launcher = TestEngineLauncher()
     """.trim()
          ).addCode("\n")
       specs.forEach {
-         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class), """)
+         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class, `$it`), """)
          function.addCode("\n")
       }
       function
          .addCode(""")""")
          .addCode("\n")
-         .addCode(
-            """
+      if (configs.isNotEmpty()) {
+         function
+            .addCode(""".withProjectConfig(${configs.first().qualifiedName?.asString()}())""")
+            .addCode("\n")
+      }
+      function.addCode(
+         """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().promise()
    else -> launcher.promise()
 }
 """.trim()
-         ).addCode("\n")
+      ).addCode("\n")
 
       val file = FileSpec.builder("io.kotest.framework.runtime.js", "kotest.kt")
          .addFunction(function.build())

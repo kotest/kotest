@@ -2,6 +2,7 @@ package io.kotest.engine.listener
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngine
@@ -42,7 +43,7 @@ interface TestEngineListener {
     * Invoked once per [Spec] to indicate that this spec will be instantiated
     * and any active tests invoked.
     */
-   suspend fun specStarted(kclass: KClass<*>)
+   suspend fun specStarted(ref: SpecRef)
 
    /**
     * Invoked when a spec is ignored. An optional [reason] for being ignored can be provided.
@@ -52,7 +53,7 @@ interface TestEngineListener {
    /**
     * Is invoked once per [Spec] class to indicate this spec has completed.
     */
-   suspend fun specFinished(kclass: KClass<*>, result: TestResult)
+   suspend fun specFinished(ref: SpecRef, result: TestResult)
 
    /**
     * Invoked if a [TestCase] is about to be executed.
@@ -81,8 +82,8 @@ abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
    override suspend fun engineFinished(t: List<Throwable>) {}
    override suspend fun engineInitialized(context: EngineContext) {}
-   override suspend fun specStarted(kclass: KClass<*>) {}
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {}
+   override suspend fun specStarted(ref: SpecRef) {}
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {}
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {}

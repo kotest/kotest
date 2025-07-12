@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -17,7 +18,7 @@ class CompositeTestEngineListenerTest : FunSpec({
       var fired1 = false
       var fired2 = false
       val l1 = object : AbstractTestEngineListener() {
-         override suspend fun specStarted(kclass: KClass<*>) {
+         override suspend fun specStarted(ref: SpecRef) {
             fired1 = true
          }
       }
@@ -26,7 +27,7 @@ class CompositeTestEngineListenerTest : FunSpec({
             fired2 = true
          }
       }
-      CompositeTestEngineListener(listOf(l1, l2)).specStarted(CompositeTestEngineListenerTest::class)
+      CompositeTestEngineListener(listOf(l1, l2)).specStarted(SpecRef.Reference(CompositeTestEngineListenerTest::class))
       fired1 shouldBe true
       fired2 shouldBe true
    }

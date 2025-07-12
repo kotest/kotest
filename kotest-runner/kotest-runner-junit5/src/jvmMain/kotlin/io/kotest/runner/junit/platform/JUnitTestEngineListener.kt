@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.descriptors.toDescriptor
@@ -115,24 +116,24 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      logger.log { "specStarted $kclass" }
+   override suspend fun specStarted(ref: SpecRef) {
+      logger.log { "specStarted ${ref.kclass}" }
       try {
 
-         val descriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
-         descriptors[kclass.toDescriptor()] = descriptor
+         val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+         descriptors[ref.kclass.toDescriptor()] = descriptor
 
-         logger.log { Pair(kclass.bestName(), "executionStarted $descriptor") }
+         logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
          listener.executionStarted(descriptor)
 
       } catch (t: Throwable) {
-         logger.log { Pair(kclass.bestName(), "Error marking spec as started $t") }
+         logger.log { Pair(ref.kclass.bestName(), "Error marking spec as started $t") }
          throw t
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
-      logger.log { "specFinished $kclass $result" }
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+      logger.log { "specFinished ${ref.kclass} $result" }
 
       val t = result.errorOrNull
       when {
@@ -140,15 +141,15 @@ class JUnitTestEngineListener(
          // if we had an error in the spec, we will attach a placeholder error-test to the spec
          // and mark that as failed
          t != null -> {
-            val descriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
-            addPlaceholderTest(descriptor, t, kclass)
-            logger.log { Pair(kclass.bestName(), "executionFinished: $descriptor $t") }
+            val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+            addPlaceholderTest(descriptor, t, ref.kclass)
+            logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
 
          else -> {
-            val descriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
-            logger.log { Pair(kclass.bestName(), "executionFinished: $descriptor") }
+            val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+            logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
          }
       }

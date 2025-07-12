@@ -9,9 +9,14 @@ sealed interface SourceRef {
    object None : SourceRef
 
    /**
-    * A [SourceRef] for a line number in a class.
+    * A [SourceRef] for a fully qualified class name.
     */
-   data class ClassSource(val fqn: String, val lineNumber: Int?) : SourceRef
+   data class ClassSource(val fqn: String) : SourceRef
+
+   /**
+    * A [SourceRef] for a line number in a fully qualified class name.
+    */
+   data class ClassLineSource(val fqn: String, val lineNumber: Int?) : SourceRef
 }
 
 /**

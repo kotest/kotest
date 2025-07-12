@@ -3,6 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -74,23 +75,23 @@ class TeamCityTestEngineListener(
       }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      writer.outputTestSuiteStarted(kclass)
+   override suspend fun specStarted(ref: SpecRef) {
+      writer.outputTestSuiteStarted(ref)
    }
 
    // ignored specs are completely hidden from output in team city
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
 
       // if the spec itself has an error, we must insert a placeholder test
       when (val t = result.errorOrNull) {
          null -> Unit
-         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, kclass.toDescriptor()) }
-         else -> insertPlaceholder(t, kclass.toDescriptor())
+         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, ref.kclass.toDescriptor()) }
+         else -> insertPlaceholder(t, ref.kclass.toDescriptor())
       }
 
-      writer.outputTestSuiteFinished(kclass)
+      writer.outputTestSuiteFinished(ref)
       results.clear()
       children.clear()
    }

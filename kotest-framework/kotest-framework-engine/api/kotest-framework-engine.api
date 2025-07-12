@@ -1567,15 +1567,26 @@ public final class io/kotest/core/project/TestSuite$Companion {
 public abstract interface class io/kotest/core/source/SourceRef {
 }
 
-public final class io/kotest/core/source/SourceRef$ClassSource : io/kotest/core/source/SourceRef {
+public final class io/kotest/core/source/SourceRef$ClassLineSource : io/kotest/core/source/SourceRef {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/Integer;
-	public final fun copy (Ljava/lang/String;Ljava/lang/Integer;)Lio/kotest/core/source/SourceRef$ClassSource;
-	public static synthetic fun copy$default (Lio/kotest/core/source/SourceRef$ClassSource;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Lio/kotest/core/source/SourceRef$ClassSource;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Integer;)Lio/kotest/core/source/SourceRef$ClassLineSource;
+	public static synthetic fun copy$default (Lio/kotest/core/source/SourceRef$ClassLineSource;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Lio/kotest/core/source/SourceRef$ClassLineSource;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFqn ()Ljava/lang/String;
 	public final fun getLineNumber ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/core/source/SourceRef$ClassSource : io/kotest/core/source/SourceRef {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/core/source/SourceRef$ClassSource;
+	public static synthetic fun copy$default (Lio/kotest/core/source/SourceRef$ClassSource;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/source/SourceRef$ClassSource;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFqn ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1739,13 +1750,15 @@ public abstract interface class io/kotest/core/spec/SpecRef {
 }
 
 public final class io/kotest/core/spec/SpecRef$Function : io/kotest/core/spec/SpecRef {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;)V
+	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;)V
 	public final fun component1 ()Lkotlin/jvm/functions/Function0;
 	public final fun component2 ()Lkotlin/reflect/KClass;
-	public final fun copy (Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;)Lio/kotest/core/spec/SpecRef$Function;
-	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Function;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Function;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;)Lio/kotest/core/spec/SpecRef$Function;
+	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Function;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Function;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getF ()Lkotlin/jvm/functions/Function0;
+	public final fun getFqn ()Ljava/lang/String;
 	public fun getKclass ()Lkotlin/reflect/KClass;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -3631,9 +3644,9 @@ public final class io/kotest/engine/listener/CompositeTestEngineListener : io/ko
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3644,8 +3657,8 @@ public class io/kotest/engine/listener/ConsoleTestEngineListener : io/kotest/eng
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun printlnStackTrace (Ljava/lang/Throwable;I)V
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3659,8 +3672,8 @@ public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener :
 public final class io/kotest/engine/listener/LoggingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public static final field INSTANCE Lio/kotest/engine/listener/LoggingTestEngineListener;
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -3671,9 +3684,9 @@ public final class io/kotest/engine/listener/PinnedSpecTestEngineListener : io/k
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getListener ()Lio/kotest/engine/listener/TestEngineListener;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3757,9 +3770,9 @@ public final class io/kotest/engine/listener/ThreadSafeTestEngineListener : io/k
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lkotlin/reflect/KClass;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3969,7 +3982,7 @@ public final class io/kotest/engine/teamcity/Escaper {
 public final class io/kotest/engine/teamcity/Locations {
 	public static final field INSTANCE Lio/kotest/engine/teamcity/Locations;
 	public final fun location (Lio/kotest/core/source/SourceRef;)Ljava/lang/String;
-	public final fun location (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public final fun location (Lio/kotest/core/spec/SpecRef;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {

@@ -1,5 +1,6 @@
 package io.kotest.engine.listener
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
@@ -41,12 +42,12 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.testIgnored(testCase, reason) }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      listeners.forEach { it.specStarted(kclass) }
+   override suspend fun specStarted(ref: SpecRef) {
+      listeners.forEach { it.specStarted(ref) }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
-      listeners.forEach { it.specFinished(kclass, result) }
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+      listeners.forEach { it.specFinished(ref, result) }
    }
 
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {

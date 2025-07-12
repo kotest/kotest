@@ -13,7 +13,7 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 
-class FindSpecsVisitor : KSVisitorVoid() {
+class KotestFileVisitor : KSVisitorVoid() {
 
    private val specTypes = setOf(
       "AnnotationSpec",
@@ -29,17 +29,7 @@ class FindSpecsVisitor : KSVisitorVoid() {
    )
 
    internal val specs = mutableListOf<KSClassDeclaration>()
-
-   private fun hasSpecSupertype(supertypes: Collection<KSType>): Boolean {
-      return supertypes.map { it.declaration }
-         .filterIsInstance<KSClassDeclaration>()
-         .any { specTypes.contains(it.simpleName.asString()) }
-   }
-
-   private fun isSpec(classDeclaration: KSClassDeclaration): Boolean {
-      val supers = classDeclaration.getAllSuperTypes().toList()
-      return hasSpecSupertype(supers)
-   }
+   internal val configs = mutableListOf<KSClassDeclaration>()
 
    override fun visitFile(file: KSFile, data: Unit) {
       file.declarations.forEach { it.accept(this, Unit) }
@@ -47,15 +37,30 @@ class FindSpecsVisitor : KSVisitorVoid() {
 
    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
       super.visitClassDeclaration(classDeclaration, data)
-      if (isSpec(classDeclaration)) {
+      val supers = classDeclaration.getAllSuperTypes().toList()
+      if (hasSpecSupertype(supers)) {
          specs.add(classDeclaration)
+      } else if (hasConfigSupertype(supers)) {
+         configs.add(classDeclaration)
       }
+   }
+
+   private fun hasSpecSupertype(supertypes: Collection<KSType>): Boolean {
+      return supertypes.map { it.declaration }
+         .filterIsInstance<KSClassDeclaration>()
+         .any { specTypes.contains(it.simpleName.asString()) }
+   }
+
+   private fun hasConfigSupertype(supertypes: Collection<KSType>): Boolean {
+      return supertypes.map { it.declaration }
+         .filterIsInstance<KSClassDeclaration>()
+         .any { it.qualifiedName?.asString() == "io.kotest.core.config.AbstractProjectConfig" }
    }
 }
 
 class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
-   val visitor = FindSpecsVisitor()
+   val visitor = KotestFileVisitor()
 
    override fun process(resolver: Resolver): List<KSAnnotated> {
       resolver.getAllFiles().forEach { it.accept(visitor, Unit) }
@@ -65,7 +70,7 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    override fun finish() {
       val files = visitor.specs.mapNotNull { it.containingFile }
       when (environment.platforms.first()) {
-         is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs)
+         is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs)
          else -> Unit
       }
