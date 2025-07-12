@@ -20,7 +20,7 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
       test("SpecStartedInterceptor should call specStarted before invoking spec") {
          var result = ""
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun specStarted(kclass: KClass<*>) {
+            override suspend fun specStarted(ref: SpecRef) {
                result += "a"
             }
          }
@@ -37,7 +37,7 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
       test("SpecFinishedInterceptor should call specFinished after invoking spec") {
          var r = ""
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+            override suspend fun specFinished(ref: SpecRef, result: TestResult) {
                r += "a"
             }
          }

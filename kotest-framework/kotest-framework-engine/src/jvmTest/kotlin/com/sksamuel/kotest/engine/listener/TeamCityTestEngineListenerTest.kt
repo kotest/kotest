@@ -8,6 +8,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -30,7 +31,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          TestNameBuilder.builder("a").build(),
          this@TeamCityTestEngineListenerTest,
          { },
-         SourceRef.ClassSource("foo.bar.Test", 12),
+         SourceRef.ClassLineSource("foo.bar.Test", 12),
          TestType.Container,
          null,
          null,
@@ -41,29 +42,32 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          parent = a,
          name = TestNameBuilder.builder("b").build(),
          descriptor = a.descriptor.append("b"),
-         source = SourceRef.ClassSource("foo.bar.Test", 17),
+         source = SourceRef.ClassLineSource("foo.bar.Test", 17),
       )
 
       val c = b.copy(
          parent = b,
-         name =  TestNameBuilder.builder("c").build(),
+         name = TestNameBuilder.builder("c").build(),
          descriptor = b.descriptor.append("c"),
          type = TestType.Test,
-         source = SourceRef.ClassSource("foo.bar.Test", 33),
+         source = SourceRef.ClassLineSource("foo.bar.Test", 33),
       )
 
       test("should support nested tests") {
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Success(324.milliseconds))
             listener.testFinished(a, TestResult.Success(653.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -82,14 +86,17 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Error(653.milliseconds, Exception("boom")))
             listener.testFinished(b, TestResult.Success(123.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -109,13 +116,16 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testIgnored(c, "don't like it")
             listener.testFinished(b, TestResult.Success(123.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -133,14 +143,17 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Error(653.milliseconds, Exception("boom")))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -162,7 +175,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
@@ -170,7 +183,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(
-               TeamCityTestEngineListenerTest::class,
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
                TestResult.Error(0.seconds, Exception("wobble"))
             )
             listener.engineFinished(emptyList())
@@ -194,7 +207,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
@@ -211,7 +224,10 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -231,14 +247,17 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Success(555.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(listOf(Exception("big whoop")))
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -260,14 +279,17 @@ a[testFinished name='Engine exception']
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Success(555.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -292,7 +314,7 @@ a[testFinished name='Engine exception 2']
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
@@ -305,7 +327,10 @@ a[testFinished name='Engine exception 2']
             )
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
@@ -325,14 +350,20 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testFinished(a, TestResult.Success(124.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
-            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
             listener.testFinished(a, TestResult.Success(523.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']

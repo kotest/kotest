@@ -23,7 +23,7 @@ class CompositeTestEngineListenerTest : FunSpec({
          }
       }
       val l2 = object : AbstractTestEngineListener() {
-         override suspend fun specStarted(kclass: KClass<*>) {
+         override suspend fun specStarted(ref: SpecRef) {
             fired2 = true
          }
       }

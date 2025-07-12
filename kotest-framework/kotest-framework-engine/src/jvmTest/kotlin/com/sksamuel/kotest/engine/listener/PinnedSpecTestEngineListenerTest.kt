@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -30,13 +31,13 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specStarted(spec1::class)
-         listener.specStarted(spec2::class)
-         listener.specStarted(spec3::class)
+         listener.specStarted(SpecRef.Reference(spec1::class))
+         listener.specStarted(SpecRef.Reference(spec2::class))
+         listener.specStarted(SpecRef.Reference(spec3::class))
 
-         verify { runBlocking { mock.specStarted(spec1::class) } }
-         verify(exactly = 0) { runBlocking { mock.specStarted(spec2::class) } }
-         verify(exactly = 0) { runBlocking { mock.specStarted(spec3::class) } }
+         verify { runBlocking { mock.specStarted(SpecRef.Reference(spec1::class)) } }
+         verify(exactly = 0) { runBlocking { mock.specStarted(SpecRef.Reference(spec2::class)) } }
+         verify(exactly = 0) { runBlocking { mock.specStarted(SpecRef.Reference(spec3::class)) } }
       }
 
       "run queued callbacks for a single next spec when current spec completes" {
@@ -48,36 +49,36 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specStarted(spec1::class)
-         listener.specStarted(spec2::class)
-         listener.specFinished(spec2::class, TestResult.Success(0.seconds))
-         listener.specFinished(spec3::class, TestResult.Success(0.seconds))
+         listener.specStarted(SpecRef.Reference(spec1::class))
+         listener.specStarted(SpecRef.Reference(spec2::class))
+         listener.specFinished(SpecRef.Reference(spec2::class), TestResult.Success(0.seconds))
+         listener.specFinished(SpecRef.Reference(spec3::class), TestResult.Success(0.seconds))
 
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec1::class)
+               mock.specStarted(SpecRef.Reference(spec1::class))
             }
          }
 
          verify(exactly = 0) {
             runBlocking {
-               mock.specStarted(spec2::class)
+               mock.specStarted(SpecRef.Reference(spec2::class))
             }
          }
 
-         listener.specFinished(spec1::class, TestResult.Success(0.seconds))
+         listener.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
 
          verifyOrder {
             runBlocking {
-               mock.specFinished(spec1::class, TestResult.Success(0.seconds))
-               mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, TestResult.Success(0.seconds))
+               mock.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec2::class))
+               mock.specFinished(SpecRef.Reference(spec2::class), TestResult.Success(0.seconds))
             }
          }
          verify(exactly = 0) {
             runBlocking {
-               mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec3::class))
+               mock.specFinished(SpecRef.Reference(spec3::class), TestResult.Success(0.seconds))
             }
          }
       }
@@ -97,31 +98,31 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          coroutineScope {
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec1::class)
-               listener.specFinished(spec1::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec1::class))
+               listener.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec2::class)
-               listener.specFinished(spec2::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec2::class))
+               listener.specFinished(SpecRef.Reference(spec2::class), TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec3::class)
-               listener.specFinished(spec3::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec3::class))
+               listener.specFinished(SpecRef.Reference(spec3::class), TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec4::class)
-               listener.specFinished(spec4::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec4::class))
+               listener.specFinished(SpecRef.Reference(spec4::class), TestResult.Success(0.seconds))
 
-               listener.specStarted(spec5::class)
-               listener.specFinished(spec5::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec5::class))
+               listener.specFinished(SpecRef.Reference(spec5::class), TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec6::class)
-               listener.specFinished(spec6::class, TestResult.Success(0.seconds))
+               listener.specStarted(SpecRef.Reference(spec6::class))
+               listener.specFinished(SpecRef.Reference(spec6::class), TestResult.Success(0.seconds))
             }
          }
 
@@ -130,35 +131,35 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
 
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec1::class)
-               mock.specFinished(spec1::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec1::class))
+               mock.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec2::class))
+               mock.specFinished(SpecRef.Reference(spec2::class), TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec3::class))
+               mock.specFinished(SpecRef.Reference(spec3::class), TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec4::class)
-               mock.specFinished(spec4::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec4::class))
+               mock.specFinished(SpecRef.Reference(spec4::class), TestResult.Success(0.seconds))
 
-               mock.specStarted(spec5::class)
-               mock.specFinished(spec5::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec5::class))
+               mock.specFinished(SpecRef.Reference(spec5::class), TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec6::class)
-               mock.specFinished(spec6::class, TestResult.Success(0.seconds))
+               mock.specStarted(SpecRef.Reference(spec6::class))
+               mock.specFinished(SpecRef.Reference(spec6::class), TestResult.Success(0.seconds))
             }
          }
       }
