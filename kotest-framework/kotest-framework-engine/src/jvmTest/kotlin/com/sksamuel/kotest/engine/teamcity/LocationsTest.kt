@@ -11,7 +11,10 @@ import io.kotest.matchers.shouldBe
 class LocationsTest : FunSpec({
 
    test("ClassSource hint") {
-      Locations.location(SourceRef.ClassSource("foo.bar", null)) shouldBe "kotest://foo.bar:1"
-      Locations.location(SourceRef.ClassSource("foo.bar", 34)) shouldBe "kotest://foo.bar:34"
+      Locations.location(SourceRef.ClassSource("foo.bar")) shouldBe "kotest://foo.bar:1"
+   }
+
+   test("ClassLineSource hint") {
+      Locations.location(SourceRef.ClassLineSource("foo.bar", 34)) shouldBe "kotest://foo.bar:34"
    }
 })

@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -70,13 +71,13 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
 
          val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
          listener.engineStarted()
-         listener.specStarted(JUnitTestRunnerListenerTest::class)
-         listener.specStarted(JUnitTestRunnerListenerTest::class)
+         listener.specStarted(SpecRef.Reference(JUnitTestRunnerListenerTest::class))
+         listener.specStarted(SpecRef.Reference(JUnitTestRunnerListenerTest::class))
          listener.testStarted(test1)
          listener.testStarted(test2)
          listener.testFinished(test2, createTestResult(0.milliseconds, AssertionError("boom")))
          listener.testFinished(test1, TestResult.Success(0.milliseconds))
-         listener.specFinished(JUnitTestRunnerListenerTest::class, TestResult.Success(0.seconds))
+         listener.specFinished(SpecRef.Reference(JUnitTestRunnerListenerTest::class), TestResult.Success(0.seconds))
          listener.engineFinished(emptyList())
 
          finished.toMap() shouldBe mapOf(

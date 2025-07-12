@@ -4,6 +4,7 @@ import io.kotest.core.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
@@ -16,10 +17,9 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.engine.spec.SpecInstantiationException
+import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.matchers.types.shouldBeInstanceOf
-import kotlin.reflect.KClass
 
 private class BehaviorSpecWithInitError : BehaviorSpec() {
    override fun isolationMode() = IsolationMode.InstancePerRoot
@@ -99,7 +99,7 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : AbstractTestEngineListener() {
-      override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+      override suspend fun specFinished(ref: SpecRef, result: TestResult) {
          result.errorOrNull?.let { error = it }
       }
    }

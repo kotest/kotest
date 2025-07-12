@@ -14,6 +14,7 @@ sealed interface SpecRef {
 
    /**
     * The KClass for the spec that this [SpecRef] references.
+    * On non-JVM the KClass has much less utility as reflection is not supported.
     */
    val kclass: KClass<out Spec>
 
@@ -31,6 +32,7 @@ sealed interface SpecRef {
    data class Function(
       val f: () -> Spec,
       override val kclass: KClass<out Spec>,
+      val fqn: String,
    ) : SpecRef
 }
 
