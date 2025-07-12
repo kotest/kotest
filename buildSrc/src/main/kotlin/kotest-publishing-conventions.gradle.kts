@@ -179,12 +179,6 @@ pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
 
 //region Letting Kotest settings control which publications are enabled
 tasks.withType<AbstractPublishToMaven>().configureEach {
-   mustRunAfter(tasks.withType<GenerateMavenPom>())
-   val outerPath = this.path
-   tasks.named { it.contains("generatePom") }.forEach {
-      println("[task: ${outerPath}] Found generatePom task ${it.path}")
-   }
-
    onlyIf {
       val enabled = isPublicationEnabled(publication.name).get()
       if (!enabled) {
@@ -195,12 +189,12 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
 }
 
 private val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
-private fun isPublicationEnabled(publicationName: String?): Provider<Boolean?> {
-   return publicationName?.let { name ->
+private fun isPublicationEnabled(publicationName: String): Provider<Boolean?> {
+   return publicationName.let { name ->
       kotestSettings.enabledPublicationNamePrefixes.map { prefixes ->
          prefixes.any { prefix -> name.startsWith(prefix, ignoreCase = true) }
       }
-   } ?: providers.provider { null }
+   }
 }
 //endregion
 
