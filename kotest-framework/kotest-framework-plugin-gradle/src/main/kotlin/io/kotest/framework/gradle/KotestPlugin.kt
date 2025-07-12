@@ -62,7 +62,7 @@ abstract class KotestPlugin : Plugin<Project> {
       val kotestExtension = project.extensions.create<KotestExtension>(EXTENSION_NAME)
 
       project.plugins.withType<KotlinMultiplatformPluginWrapper> {
-         project.extensions.configure<KotlinMultiplatformExtension>{
+         project.extensions.configure<KotlinMultiplatformExtension> {
             wireKotestKsp()
          }
       }
@@ -124,9 +124,10 @@ abstract class KotestPlugin : Plugin<Project> {
                            tasks.add(JS_TASK_NAME)
                         }
                      }
+
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
-                     KotlinPlatformType.jvm   -> println("Todo jvm")
+                     KotlinPlatformType.jvm -> println("Todo jvm")
                      KotlinPlatformType.androidJvm -> println("Todo androidJvm")
 
                      // testable name linuxX64
@@ -136,7 +137,7 @@ abstract class KotestPlugin : Plugin<Project> {
                         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                         // see https://docs.gradle.org/current/userguide/isolated_projects.html
                         val kotestTaskName = testableTarget.name + "Kotest"
-                        val linkDebugTestTaskName =  "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
+                        val linkDebugTestTaskName = "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
                         project.tasks.register(kotestTaskName, KotestNativeTask::class) {
                            target.set(testableTarget)
                            inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
@@ -174,14 +175,16 @@ abstract class KotestPlugin : Plugin<Project> {
 
    /**
     * 1. Checks for the presence of KSP and stops execution if missing
-    * 2. Automagically adds KSP to subprojects if it is only present in the root project
-    * 3. Wires the Kotest symbol procesor for every configured KMP target
+    * 2. Wires the Kotest symbol procesor for every configured KMP target
     */
    internal fun KotlinMultiplatformExtension.wireKotestKsp() {
 
-      if (!project.rootProject.pluginManager.hasPlugin("com.google.devtools.ksp") && !project.pluginManager.hasPlugin("com.google.devtools.ksp")) throw StopExecutionException("KSP neither found in root project nor ${project.name}, please add 'com.google.devtools.ksp' to the either project's plugins")
-      //will be a noop if present, but required if KSP is only present in the root project
-      project.pluginManager.apply("com.google.devtools.ksp")
+      if (!project.pluginManager.hasPlugin("com.google.devtools.ksp")) {
+         throw StopExecutionException(
+            "KSP neither found in root project nor ${project.name}, " +
+               "please add 'com.google.devtools.ksp' to the either project's plugins"
+         )
+      }
 
       var kspConfigsWithKotest = mutableSetOf<String>()
       val version = System.getProperty("kotestVersion")
