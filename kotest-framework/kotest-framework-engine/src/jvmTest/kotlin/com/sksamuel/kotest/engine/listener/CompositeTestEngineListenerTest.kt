@@ -45,7 +45,7 @@ class CompositeTestEngineListenerTest : FunSpec({
          }
       }
       CompositeTestEngineListener(listOf(l1, l2)).specFinished(
-         CompositeTestEngineListenerTest::class,
+         SpecRef.Reference(CompositeTestEngineListenerTest::class),
          TestResult.Success(0.seconds)
       )
       fired1 shouldBe true
