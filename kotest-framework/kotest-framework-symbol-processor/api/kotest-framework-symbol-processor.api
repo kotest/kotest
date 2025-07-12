@@ -1,4 +1,9 @@
-public final class io/kotest/framework/symbol/processor/FindSpecsVisitor : com/google/devtools/ksp/symbol/KSVisitorVoid {
+public final class io/kotest/framework/symbol/processor/JSGenerator {
+	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
+	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+}
+
+public final class io/kotest/framework/symbol/processor/KotestFileVisitor : com/google/devtools/ksp/symbol/KSVisitorVoid {
 	public fun <init> ()V
 	public synthetic fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Lkotlin/Unit;)V
@@ -6,15 +11,10 @@ public final class io/kotest/framework/symbol/processor/FindSpecsVisitor : com/g
 	public fun visitFile (Lcom/google/devtools/ksp/symbol/KSFile;Lkotlin/Unit;)V
 }
 
-public final class io/kotest/framework/symbol/processor/JSGenerator {
-	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
-	public final fun generate (Ljava/util/List;Ljava/util/List;)V
-}
-
 public final class io/kotest/framework/symbol/processor/KotestSymbolProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
 	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
 	public fun finish ()V
-	public final fun getVisitor ()Lio/kotest/framework/symbol/processor/FindSpecsVisitor;
+	public final fun getVisitor ()Lio/kotest/framework/symbol/processor/KotestFileVisitor;
 	public fun onError ()V
 	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
 }
