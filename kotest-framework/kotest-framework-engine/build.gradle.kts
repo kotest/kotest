@@ -10,7 +10,7 @@ kotlin {
       commonMain {
          dependencies {
             api(projects.kotestAssertions.kotestAssertionsShared)
-            implementation(kotlin("reflect", libs.versions.kotlin.get()))
+            implementation(libs.kotlin.reflect)
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             api(libs.kotlinx.coroutines.core)
@@ -54,15 +54,6 @@ kotlin {
             implementation(libs.junit.jupiter.api)
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
             implementation(libs.junit.jupiter.engine)
-         }
-      }
-
-      nativeMain {
-         // used to write to the console with fancy colours!
-         dependencies {
-            // we need these so we can generate the runKotest test stub
-            implementation(kotlin("test-common", libs.versions.kotlin.get()))
-            implementation(kotlin("test-annotations-common", libs.versions.kotlin.get()))
          }
       }
 

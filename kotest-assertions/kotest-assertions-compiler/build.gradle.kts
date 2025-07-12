@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
    sourceSets {
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlin.compiler.embeddable)

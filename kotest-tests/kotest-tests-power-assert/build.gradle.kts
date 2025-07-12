@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
    id("kotlin-conventions")
    id("kotest-jvm-conventions")
-   kotlin("plugin.power-assert") version libs.versions.kotlin
+   alias(libs.plugins.power.assert)
 }
 
 kotlin {
    sourceSets {
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(projects.kotestFramework.kotestFrameworkEngine)

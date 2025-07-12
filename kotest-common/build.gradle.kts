@@ -12,7 +12,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect", libs.versions.kotlin.get()))
+            implementation(libs.kotlin.reflect)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.test)
          }

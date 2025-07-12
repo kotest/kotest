@@ -9,7 +9,7 @@ kotlin {
 
       jvmMain {
          dependencies {
-            implementation(kotlin("reflect", libs.versions.kotlin.get()))
+            implementation(libs.kotlin.reflect)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestCommon)
          }

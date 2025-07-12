@@ -33,6 +33,7 @@ arrow = "2.1.2"
 testcontainers = "1.20.6"
 asm = "9.7.1"
 nmcp = "1.0.0-rc.1"
+kotlin-poet = "2.2.0"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -97,7 +98,7 @@ kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.7
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
-kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
@@ -106,6 +107,8 @@ spring-context = { group = "org.springframework", name = "spring-context", versi
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "spring" }
 spring-boot-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
 byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
+
+kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlin-poet" }
 
 allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
@@ -139,3 +142,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.14.0" }
 allure = { id = "io.qameta.allure", version = "2.12.0" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
+power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
