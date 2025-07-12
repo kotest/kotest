@@ -13,8 +13,8 @@ on:
 
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
-   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   NEW_MAVEN_CENTRAL_USERNAME: ${{ secrets.NEW_MAVEN_CENTRAL_USERNAME }}
+   NEW_MAVEN_CENTRAL_PASSWORD: ${{ secrets.NEW_MAVEN_CENTRAL_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
@@ -23,29 +23,14 @@ permissions:
 
 jobs:
    publish_watchos:
-      runs-on: macos-latest
-      strategy:
-         max-parallel: 1
-         matrix:
-            target:
-               - "publishWatchosArm32PublicationToDeployRepository"
-               - "publishWatchosArm64PublicationToDeployRepository"
-               - "publishWatchosX64PublicationToDeployRepository"
-               - "publishWatchosSimulatorArm64PublicationToDeployRepository"
-               - "publishWatchosDeviceArm64PublicationToDeployRepository"
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v4
-            with:
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v4
-            with:
-               distribution: "temurin"
-               java-version-file: .github/.java-version
-
-         -  uses: gradle/actions/setup-gradle@v4
-
-         -  name: publish
-            run: ./gradlew ${{ matrix.target }}
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         ref: ${{ inputs.ref }}
+         task: >
+            -P"kotest_enableKotlinJs=true"
+            -P"kotest_enableKotlinNative=true"
+            -P"kotest_enabledPublicationNamePrefixes=watchOS"
+            --no-configuration-cache
+            publishToAppropriateCentralRepository
+         runs-on: macos-latest
