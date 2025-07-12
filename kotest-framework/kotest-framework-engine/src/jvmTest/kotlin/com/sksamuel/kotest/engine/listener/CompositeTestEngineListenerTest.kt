@@ -8,7 +8,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.matchers.shouldBe
-import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.seconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -36,12 +35,12 @@ class CompositeTestEngineListenerTest : FunSpec({
       var fired1 = false
       var fired2 = false
       val l1 = object : AbstractTestEngineListener() {
-         override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+         override suspend fun specFinished(ref: SpecRef, result: TestResult) {
             fired1 = true
          }
       }
       val l2 = object : AbstractTestEngineListener() {
-         override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+         override suspend fun specFinished(ref: SpecRef, result: TestResult) {
             fired2 = true
          }
       }
