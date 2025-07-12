@@ -78,6 +78,7 @@ dependencies {
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
+   nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
 
    // Property
    nmcpAggregation(projects.kotestProperty)
