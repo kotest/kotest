@@ -1,0 +1,6 @@
+public abstract interface class io/kotest/property/stateful/Action {
+	public abstract fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun postcondition (Ljava/lang/Object;)V
+	public abstract fun precondition (Ljava/lang/Object;)Z
+}
+

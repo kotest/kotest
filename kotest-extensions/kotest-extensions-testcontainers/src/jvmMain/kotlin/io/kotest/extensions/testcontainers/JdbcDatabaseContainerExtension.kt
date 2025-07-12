@@ -1,6 +1,5 @@
 package io.kotest.extensions.testcontainers
 
-import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
@@ -50,7 +49,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use JdbcDatabaseContainerSpecExtension or JdbcDatabaseContainerProjectExtension instead. Deprecated since Kotest 6.0")
 class JdbcDatabaseContainerExtension(
    private val container: JdbcDatabaseContainer<*>,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
@@ -125,17 +124,3 @@ class JdbcDatabaseContainerExtension(
    }
 }
 
-/**
- * Returns an initialized [HikariDataSource] connected to this [JdbcDatabaseContainer].
- *
- * @param configure a thunk to configure the [HikariConfig] used to create the datasource.
- */
-fun JdbcDatabaseContainer<*>.toDataSource(configure: HikariConfig.() -> Unit = {}): HikariDataSource {
-   val config = HikariConfig()
-   config.jdbcUrl = jdbcUrl
-   config.username = username
-   config.password = password
-   config.minimumIdle = 0
-   config.configure()
-   return HikariDataSource(config)
-}

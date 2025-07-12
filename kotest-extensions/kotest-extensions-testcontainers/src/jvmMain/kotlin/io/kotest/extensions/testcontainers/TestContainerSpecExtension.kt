@@ -18,11 +18,12 @@ import org.testcontainers.containers.GenericContainer
  */
 class TestContainerSpecExtension(
    private val container: GenericContainer<*>,
-) : MountableExtension<GenericContainer<*>, Unit>, AfterSpecListener, TestListener {
+) : MountableExtension<GenericContainer<*>, GenericContainer<*>>, AfterSpecListener, TestListener {
 
-   override fun mount(configure: GenericContainer<*>.() -> Unit): Unit {
+   override fun mount(configure: GenericContainer<*>.() -> Unit): GenericContainer<*> {
       configure(container)
       container.start()
+      return container
    }
 
    override suspend fun afterSpec(spec: Spec) {

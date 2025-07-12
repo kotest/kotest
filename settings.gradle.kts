@@ -101,6 +101,8 @@ include(
    ":kotest-property:kotest-property-arrow",
    ":kotest-property:kotest-property-arrow-optics",
 
+   ":kotest-property:kotest-property-stateful",
+
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin
    ":kotest-runner:kotest-runner-junit5",
