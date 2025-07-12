@@ -35,19 +35,19 @@ jobs:
          fail-fast: false
          matrix:
             include:
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # KMP
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # JVM
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=jvm"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # JS
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=js"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # Linux
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=linux"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # Wasm
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
