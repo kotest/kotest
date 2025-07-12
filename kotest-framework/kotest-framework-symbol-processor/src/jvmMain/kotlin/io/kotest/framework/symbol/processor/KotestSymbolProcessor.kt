@@ -71,7 +71,7 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
       val files = visitor.specs.mapNotNull { it.containingFile }
       when (environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs)
+         is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
          else -> Unit
       }
    }

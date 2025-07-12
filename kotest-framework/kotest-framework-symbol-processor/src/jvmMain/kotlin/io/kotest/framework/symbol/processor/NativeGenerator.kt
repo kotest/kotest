@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.UNIT
 
 class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
 
-   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>) {
+   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>, configs: MutableList<KSClassDeclaration>) {
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
          packageName = "io.kotest.framework.runtime.native",
@@ -56,6 +56,11 @@ val launcher = TestEngineLauncher()
       function
          .addCode(""")""")
          .addCode("\n")
+      if (configs.isNotEmpty()) {
+         function
+            .addCode(""".withProjectConfig(${configs.first().qualifiedName?.asString()}())""")
+            .addCode("\n")
+      }
          .addCode(
             """
 when (listenerType) {
