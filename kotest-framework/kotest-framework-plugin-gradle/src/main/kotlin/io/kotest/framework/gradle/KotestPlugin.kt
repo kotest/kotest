@@ -178,7 +178,6 @@ abstract class KotestPlugin : Plugin<Project> {
     * 2. Wires the Kotest symbol procesor for every configured KMP target
     */
    internal fun KotlinMultiplatformExtension.wireKotestKsp() {
-
       if (!project.pluginManager.hasPlugin("com.google.devtools.ksp")) {
          throw StopExecutionException(
             "KSP neither found in root project nor ${project.name}, " +
@@ -186,26 +185,10 @@ abstract class KotestPlugin : Plugin<Project> {
          )
       }
 
-      var kspConfigsWithKotest = mutableSetOf<String>()
       val version = System.getProperty("kotestVersion")
-      targets.whenObjectAdded {
-         project.dependencies {
-            project.tasks.withType<AbstractTestTask> {
-               runCatching {
-                  project.configurations.names.filter { it.startsWith("ksp") && it.endsWith("Test") }
-                     .forEach { configurationName ->
-                        if (!kspConfigsWithKotest.contains(configurationName)) {
-                           kspConfigsWithKotest.add(configurationName)
-                           logger.lifecycle("  ${this.name}::Adding Kotest $version to $configurationName")
-                           add(
-                              configurationName,
-                              "io.kotest:kotest-framework-symbol-processor-jvm:$version"
-                           )
-                        }
-                     }
-
-               }.getOrElse { logger.warn(it.message) }
-            }
+      project.configurations.whenObjectAdded {
+         if (name.startsWith("ksp") && name.endsWith("Test")) {
+            project.dependencies.add(name, "io.kotest:kotest-framework-symbol-processor-jvm:$version")
          }
       }
    }
