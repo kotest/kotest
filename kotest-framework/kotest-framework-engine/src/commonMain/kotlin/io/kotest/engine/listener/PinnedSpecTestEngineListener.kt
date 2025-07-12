@@ -2,6 +2,7 @@
 
 package io.kotest.engine.listener
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -44,25 +45,25 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       listener.engineFinished(t)
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
+   override suspend fun specStarted(ref: SpecRef) {
       if (runningSpec == null) {
-         runningSpec = kclass.toDescriptor().path().value
-         listener.specStarted(kclass)
+         runningSpec = ref.kclass.toDescriptor().path().value
+         listener.specStarted(ref)
       } else {
          queue {
-            specStarted(kclass)
+            specStarted(ref)
          }
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specFinished(kclass, result)
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+      if (runningSpec == ref.kclass.toDescriptor().path().value) {
+         listener.specFinished(ref, result)
          runningSpec = null
          replay()
       } else {
          queue {
-            specFinished(kclass, result)
+            specFinished(ref, result)
          }
       }
    }

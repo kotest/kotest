@@ -3,10 +3,10 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.Logger
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
-import kotlin.reflect.KClass
 
 object LoggingTestEngineListener : AbstractTestEngineListener() {
 
@@ -16,12 +16,12 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
       logger.log { Pair(null, "Engine finished $t") }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      logger.log { Pair(kclass.bestName(), "specStarted") }
+   override suspend fun specStarted(ref: SpecRef) {
+      logger.log { Pair(ref.kclass.bestName(), "specStarted") }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
-      logger.log { Pair(kclass.bestName(), "specFinished") }
+   override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+      logger.log { Pair(ref.kclass.bestName(), "specFinished") }
    }
 
    override suspend fun testStarted(testCase: TestCase) {

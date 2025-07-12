@@ -14,7 +14,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 internal class SpecStartedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(ref: SpecRef, next: NextSpecRefInterceptor): Result<Map<TestCase, TestResult>> {
-      return runCatching { listener.specStarted(ref.kclass) }
+      return runCatching { listener.specStarted(ref) }
          .onFailure { it.printStackTrace() }
          .flatMap { next.invoke(ref) }
    }

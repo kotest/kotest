@@ -7,6 +7,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -67,8 +68,8 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("an error before spec started should show spec with a dummy error test") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
-      listener.specFinished(MySpec::class, TestResult.Error(0.seconds, Exception("CRRAACK")))
+      listener.specStarted(SpecRef.Reference(MySpec::class))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Error(0.seconds, Exception("CRRAACK")))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
@@ -102,10 +103,10 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("a successful leaf root test should be marked as started and finished and type TEST") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(12.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
@@ -125,10 +126,10 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("a failed leaf root test should be marked as FAILED and type TEST") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Failure(5.milliseconds, AssertionError("whack!")))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
@@ -148,9 +149,9 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("an ignored root test should be marked as skipped") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testIgnored(tc1, "secret!")
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
@@ -169,12 +170,12 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("a successful nested test should be marked as SUCCESSFUL with type TEST") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testStarted(tc2)
       listener.testFinished(tc2, TestResult.Success(3.milliseconds))
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
@@ -197,12 +198,12 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("a failed nested test should be marked as FAILED with type TEST") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testStarted(tc2)
       listener.testFinished(tc2, TestResult.Failure(5.milliseconds, AssertionError("whack!")))
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
@@ -225,11 +226,11 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("an ignored nested test should be marked as skipped") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testIgnored(tc2, "secret!")
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
@@ -251,10 +252,10 @@ class JUnitTestEngineListenerTest : FunSpec({
    test("an error in the spec should add a placeholder test with the error along with completed tests") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Error(0.seconds, Exception("THWAPP!")))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Error(0.seconds, Exception("THWAPP!")))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
@@ -289,15 +290,15 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root2, FallbackDisplayNameFormatter.default())
 
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
 
-      listener.specStarted(MySpec2::class)
+      listener.specStarted(SpecRef.Reference(MySpec2::class))
       listener.testStarted(tc3)
       listener.testFinished(tc3, TestResult.Success(4.milliseconds))
-      listener.specFinished(MySpec2::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec2::class), TestResult.Success(0.seconds))
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
@@ -340,10 +341,10 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       listener.specIgnored(MySpec::class, null)
 
-      listener.specStarted(MySpec2::class)
+      listener.specStarted(SpecRef.Reference(MySpec2::class))
       listener.testStarted(tc3)
       listener.testFinished(tc3, TestResult.Success(4.milliseconds))
-      listener.specFinished(MySpec2::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec2::class), TestResult.Success(0.seconds))
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionSkipped("com.sksamuel.kotest.runner.junit5.MySpec", null),
@@ -370,12 +371,12 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default(c))
       listener.engineInitialized(EngineContext.invoke(null, Platform.JVM))
-      listener.specStarted(MySpec::class)
+      listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testStarted(tc2)
       listener.testFinished(tc2, TestResult.Success(3.milliseconds))
       listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(MySpec::class, TestResult.Success(0.seconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),

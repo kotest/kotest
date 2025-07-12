@@ -1,6 +1,7 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.core.Logger
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.descriptors.toDescriptor
@@ -165,20 +166,20 @@ internal class TeamCityWriter(
    /**
     * For a given [KClass] spec will output the "test suite finished" message.
     */
-   internal fun outputTestSuiteFinished(kclass: KClass<*>) {
+   internal fun outputTestSuiteFinished(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(kclass))
+         .testSuiteFinished(prefix, formatter.format(ref.kclass))
+         .id(ref.kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(ref))
          .build()
       println(msg)
    }
 
-   internal fun outputTestSuiteStarted(kclass: KClass<*>) {
+   internal fun outputTestSuiteStarted(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(kclass))
+         .testSuiteStarted(prefix, formatter.format(ref.kclass))
+         .id(ref.kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(ref))
          .build()
       println(msg)
    }

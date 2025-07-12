@@ -35,9 +35,11 @@ internal actual fun sourceRef(): SourceRef {
       }.getOrNull()
    }
 
+   val lineNumber = frame?.lineNumber?.takeIf { it > 0 }
+
    return when {
-      frame == null -> SourceRef.None
-      kclass != null -> SourceRef.ClassSource(kclass.java.name, frame.lineNumber.takeIf { it > 0 })
-      else -> SourceRef.None
+      kclass == null -> SourceRef.None
+      lineNumber == null -> SourceRef.ClassSource(kclass.java.name)
+      else -> SourceRef.ClassLineSource(kclass.java.name, lineNumber)
    }
 }
