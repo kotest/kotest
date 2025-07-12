@@ -13,10 +13,10 @@ on:
 
 env:
    RELEASE_VERSION: ${{ inputs.version }}
-   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+   NEW_MAVEN_CENTRAL_USERNAME: ${{ secrets.NEW_MAVEN_CENTRAL_USERNAME }}
+   NEW_MAVEN_CENTRAL_PASSWORD: ${{ secrets.NEW_MAVEN_CENTRAL_PASSWORD }}
 
 permissions:
    contents: read
