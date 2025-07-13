@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.UNIT
 
 class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
 
-   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>) {
+   fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>, configs: MutableList<KSClassDeclaration>) {
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
          packageName = "io.kotest.framework.runtime.native",
@@ -21,13 +21,13 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          extensionName = "kt"
       )
       outputStream.bufferedWriter().use { writer ->
-         writer.write(createFileSpec(specs).toString())
+         writer.write(createFileSpec(specs, configs).toString())
       }
    }
 
    // https://youtrack.jetbrains.com/issue/KT-63218/EagerInitialization-use-cases
 
-   private fun createFileSpec(specs: List<KSClassDeclaration>): FileSpec {
+   private fun createFileSpec(specs: List<KSClassDeclaration>, configs: MutableList<KSClassDeclaration>): FileSpec {
       val function = FunSpec.builder("runKotest")
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ClassName("kotlinx.cinterop", "ExperimentalForeignApi"))
@@ -56,14 +56,19 @@ val launcher = TestEngineLauncher()
       function
          .addCode(""")""")
          .addCode("\n")
-         .addCode(
-            """
+      if (configs.isNotEmpty()) {
+         function
+            .addCode(""".withProjectConfig(${configs.first().qualifiedName?.asString()}())""")
+            .addCode("\n")
+      }
+      function.addCode(
+         """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
    else -> launcher.launch()
 }
 """.trim()
-         ).addCode("\n")
+      ).addCode("\n")
 
       val invoker = PropertySpec.builder("invoker", UNIT)
          .addAnnotation(ClassName("kotlin.native", "EagerInitialization"))
@@ -81,7 +86,7 @@ when (listenerType) {
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
       specs.forEach {
-         file.addImport(it.qualifiedName!!.asString().substringBeforeLast("."), it. simpleName.asString())
+         file.addImport(it.qualifiedName!!.asString().substringBeforeLast("."), it.simpleName.asString())
       }
       return file.build()
    }
