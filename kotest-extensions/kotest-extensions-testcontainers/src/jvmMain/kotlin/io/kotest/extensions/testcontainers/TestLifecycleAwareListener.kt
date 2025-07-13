@@ -2,7 +2,7 @@ package io.kotest.extensions.testcontainers
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import org.testcontainers.lifecycle.Startable
 import org.testcontainers.lifecycle.TestDescription
 import org.testcontainers.lifecycle.TestLifecycleAware

@@ -3,7 +3,7 @@ package io.kotest.extensions.time
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic

@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import org.junit.platform.engine.TestExecutionResult
 
 /**

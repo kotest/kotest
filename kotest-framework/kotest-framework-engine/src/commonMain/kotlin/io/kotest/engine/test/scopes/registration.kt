@@ -1,7 +1,7 @@
 package io.kotest.engine.test.scopes
 
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 

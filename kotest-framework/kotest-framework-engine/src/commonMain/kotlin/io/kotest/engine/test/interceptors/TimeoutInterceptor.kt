@@ -2,9 +2,10 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +56,8 @@ internal class TimeoutInterceptor(
       } catch (t: CancellationException) {
          if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {
             logger.log { Pair(testCase.name.name, "Caught timeout $t") }
-            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.name, t))
+            val error = TestTimeoutException(timeout, testCase.name.name, t)
+            TestResultBuilder.builder().withDuration(mark.elapsedNow()).withError(error).build()
          } else {
             throw t
          }

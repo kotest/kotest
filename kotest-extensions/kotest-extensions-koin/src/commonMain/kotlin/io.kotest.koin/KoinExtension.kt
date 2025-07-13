@@ -2,7 +2,7 @@ package io.kotest.koin
 
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isRootTest
 import org.koin.core.context.startKoin

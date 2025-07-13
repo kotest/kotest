@@ -1,7 +1,7 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import kotlin.time.Duration
 
 /**

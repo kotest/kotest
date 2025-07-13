@@ -4,7 +4,7 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngine
 import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass

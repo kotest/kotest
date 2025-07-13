@@ -1,36 +1,26 @@
-package io.kotest.core.test
-
-import kotlin.time.Duration
+package io.kotest.engine.test
 
 sealed interface TestResult {
 
    /**
-    * Returns a [TestResult] with a status from the given [reason] string.
+    * Creates an ignored [TestResult] with a status from the given [reason] string.
     *
     * @param reason an optional string describing why the test was ignored.
     */
-   // the test was skipped completely
    data class Ignored(val reason: String?) : TestResult {
-
-      /**
-       * Returns a [TestResult.Ignored] with a reason string resolved from the given [Enabled].
-       */
-      constructor(enabled: Enabled) : this(enabled.reason)
-
       constructor() : this(null)
-
-      override val duration: Duration = Duration.ZERO
+      override val duration: kotlin.time.Duration = _root_ide_package_.kotlin.time.Duration.Companion.ZERO
    }
 
-   data class Success(override val duration: Duration) : TestResult
+   data class Success(override val duration: kotlin.time.Duration) : TestResult
 
    // the test failed because of some exception that was not an assertion error
-   data class Error(override val duration: Duration, val cause: Throwable) : TestResult
+   data class Error(override val duration: kotlin.time.Duration, val cause: Throwable) : TestResult
 
    // the test ran but an assertion failed
-   data class Failure(override val duration: Duration, val cause: AssertionError) : TestResult
+   data class Failure(override val duration: kotlin.time.Duration, val cause: AssertionError) : TestResult
 
-   val duration: Duration
+   val duration: kotlin.time.Duration
 
    val name: String
       get() = when (this) {

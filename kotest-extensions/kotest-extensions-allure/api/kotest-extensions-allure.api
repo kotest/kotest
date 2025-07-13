@@ -2,8 +2,8 @@ public final class io/kotest/extensions/allure/AllureTestReporter : io/kotest/co
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -15,7 +15,7 @@ public final class io/kotest/extensions/allure/AllureWriter {
 	public static final field LANGUAGE_LABEL Ljava/lang/String;
 	public fun <init> ()V
 	public final fun allureResultSpecInitFailure (Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
-	public final fun finishTestCase (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;)V
+	public final fun finishTestCase (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;)V
 	public final fun id (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
 	public final fun startTestCase (Lio/kotest/core/test/TestCase;)V
 }

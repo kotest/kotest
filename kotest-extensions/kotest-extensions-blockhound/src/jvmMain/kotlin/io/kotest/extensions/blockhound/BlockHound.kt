@@ -2,7 +2,7 @@ package io.kotest.extensions.blockhound
 
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.ThreadContextElement
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext

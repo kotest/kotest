@@ -3,7 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.console.consoleRenderer
 import io.kotest.engine.descriptors.toDescriptor

@@ -2,7 +2,7 @@ package io.kotest.engine.spec.interceptor.ref.enabled
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.flatMap
 import io.kotest.engine.listener.TestEngineListener

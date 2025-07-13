@@ -34,7 +34,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import kotlin.js.JsName
 

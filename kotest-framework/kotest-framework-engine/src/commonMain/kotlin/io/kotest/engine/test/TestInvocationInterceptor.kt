@@ -2,7 +2,7 @@ package io.kotest.engine.test
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
@@ -32,10 +32,10 @@ internal class TestInvocationInterceptor(
       return try {
          invokeWithRetry(testCase, scope, test, 0)
          logger.log { Pair(testCase.name.name, "Test returned without error") }
-         TestResult.Success(timeMark.elapsedNow())
+         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       } catch (t: Throwable) {
          logger.log { Pair(testCase.name.name, "Test threw error $t") }
-         createTestResult(timeMark.elapsedNow(), t)
+         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(t).build()
       }
    }
 

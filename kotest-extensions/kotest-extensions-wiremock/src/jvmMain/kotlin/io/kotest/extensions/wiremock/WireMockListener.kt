@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 /**
  * WiremockListener starts the given wiremock server before every spec/test and stop that

@@ -3,9 +3,10 @@ package io.kotest.engine.test.interceptors
 import io.kotest.common.JVMOnly
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -74,10 +75,8 @@ internal class BlockedThreadTimeoutInterceptor(
             }
          } catch (t: InterruptedException) {
             logger.log { Pair(testCase.name.name, "Caught InterruptedException ${t.message}") }
-            TestResult.Error(
-               start.elapsedNow(),
-               BlockedThreadTestTimeoutException(testConfigResolver.timeout(testCase), testCase.name.name, t)
-            )
+            val error = BlockedThreadTestTimeoutException(testConfigResolver.timeout(testCase), testCase.name.name, t)
+            TestResultBuilder.builder().withDuration(start.elapsedNow()).withError(error).build()
          }
       } else {
          test(testCase, scope)
