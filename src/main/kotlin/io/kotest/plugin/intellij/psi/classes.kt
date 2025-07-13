@@ -17,11 +17,6 @@ import org.jetbrains.kotlin.psi.psiUtil.isAbstract
 fun KtClassOrObject.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
 
 /**
- * If this is an instance of [KtClass] returns this, otherwise returns null.
- */
-fun KtClassOrObject.toKtClass(): KtClass? = this as? KtClass
-
-/**
  * Returns all [KtClass]s located in this [PsiFile]
  */
 fun PsiFile.classes(): List<KtClass> {

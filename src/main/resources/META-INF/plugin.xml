@@ -7,7 +7,7 @@
 
    <description><![CDATA[
       Official IntelliJ-based IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
-      This plugin requires the use of Kotest 4.2.0 or newer.
+      This plugin requires the use of Kotest 4.2.0 or later.
     ]]></description>
 
    <!-- correct values will be set by the build plugin -->
@@ -45,13 +45,6 @@
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.FocusInNestedTestAnnotator"/>
 
-      <!--      <localInspection groupPath="Kotlin" language="JVM" shortName="ShouldBeInstanceOfInspection"-->
-      <!--                       bundle="KotestGadgetsBundle"-->
-      <!--                       key="kotest.should.be.instance.of"-->
-      <!--                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"-->
-      <!--                       enabledByDefault="true" level="WARNING"-->
-      <!--                       implementationClass="io.kotest.plugin.intellij.inspections.ShouldBeInstanceOfInspection"/>-->
-
       <toolWindow id="Kotest" anchor="left" icon="/iconToolWindow.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
@@ -80,15 +73,14 @@
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleTestTaskRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
-      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>
-      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.PackageConfigImplicitUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
 
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
       <testFinder implementation="io.kotest.plugin.intellij.tests.KotestTestFinder"/>
       <testGenerator implementationClass="io.kotest.plugin.intellij.tests.KotestTestGenerator" language="kotlin"/>
 
-      <!--    his was removed because it adds a new entry to the "go to tests" dialog with a custom "create new test" option, but the java one appears too so we use that  -->
+      <!--    this was removed because it adds a new entry to the "go to tests" dialog with a custom "create new test" option, but the java one appears too so we use that  -->
       <!--      <testCreator implementationClass="io.kotest.plugin.intellij.tests.KotestTestCreator" language="Kotlin" order="first"/>-->
 
       <codeInsight.externalLibraryResolver implementation="io.kotest.plugin.intellij.KotestExternalLibraryResolver"/>

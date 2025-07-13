@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage", "OverrideOnly")
+
 package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
@@ -9,7 +11,7 @@ import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTypes
 import java.text.ParseException
 
 /**
- * An implementation of [ServiceMessageParserCallback] that updates the [console].
+ * An implementation of [ServiceMessageParserCallback] that updates the given [console].
  */
 class KotestServiceMessageCallback(
    private val console: SMTRunnerConsoleView,
@@ -77,9 +79,7 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onTestFailed(proxy)
             publisher.onTestFailed(proxy)
          }
-         else -> {
-            println("Unknown message type: ${msg.messageName}")
-         }
+         else -> Unit
       }
    }
 
@@ -88,7 +88,7 @@ class KotestServiceMessageCallback(
     */
    fun addNoTestsPlaceholder() {
       if (tests() == 0) {
-         val proxy = TestProxyBuilder.builder("No tests were found", false, null, root).build()
+         val proxy = TestProxyBuilder.builder("No tests were found", false, root).build()
          proxy.setStarted()
 
          console.resultsViewer.onTestStarted(proxy)
@@ -108,7 +108,9 @@ class KotestServiceMessageCallback(
       val attrs = MessageAttributeParser.parse(msg)
       val parent = if (attrs.parentId == null) root else proxies[attrs.parentId]
          ?: error("Parent proxy ${attrs.parentId} not found for ${attrs.id} in ${proxies.keys}")
-      val proxy = TestProxyBuilder.builder(attrs.name, suite, attrs.location, parent).build()
+      val proxy = TestProxyBuilder.builder(attrs.name, suite, parent)
+         .withLocation(attrs.location)
+         .build()
       proxies[attrs.id] = proxy
       return proxy
    }

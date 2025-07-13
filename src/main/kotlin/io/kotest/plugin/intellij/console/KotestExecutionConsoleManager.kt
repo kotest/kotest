@@ -18,6 +18,10 @@ import io.kotest.plugin.intellij.Constants
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
+/**
+ * An implementation of [ExternalSystemExecutionConsoleManager] that provides a custom [SMTRunnerConsoleView]
+ * for displaying Kotest test results when executing Gradle tasks that run Kotest tests.
+ */
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
    // needs to be defined here so we don't created a new one in the onOutput method every time

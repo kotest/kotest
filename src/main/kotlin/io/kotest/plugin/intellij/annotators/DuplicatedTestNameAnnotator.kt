@@ -8,6 +8,9 @@ import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 
+/**
+ * Marks as a warning annotation any duplicated test names in a test file.
+ */
 class DuplicatedTestNameAnnotator : Annotator {
 
    override fun annotate(element: PsiElement, holder: AnnotationHolder) {

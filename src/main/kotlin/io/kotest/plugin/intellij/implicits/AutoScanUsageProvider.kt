@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  *
  * This [ImplicitUsageProvider] will mark classes that are annotated with @AutoScan as implicitly used.
  */
+@Deprecated("AutoScan has been removed from Kotest since 6.0")
 class AutoScanUsageProvider : ImplicitUsageProvider {
 
    override fun isImplicitWrite(element: PsiElement): Boolean = false

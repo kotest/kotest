@@ -22,3 +22,17 @@ fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
          }
       }
 }
+
+/**
+ * Returns the direct list of classes and interfaces extended or implemented by the class.
+ */
+fun KtClassOrObject.immediateSuperClasses(): List<FqName> {
+   return superTypeListEntries.mapNotNull { it.typeReference }
+      .mapNotNull { ref ->
+         analyze(this) {
+            val kaType = ref.type
+            val classId = kaType.symbol?.classId
+            classId?.asSingleFqName()
+         }
+      }
+}

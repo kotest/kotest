@@ -6,9 +6,13 @@ import io.kotest.plugin.intellij.locations.KotestTestLocator
 data class TestProxyBuilder(val name: String, val suite: Boolean, val location: String?, val parent: SMTestProxy) {
 
    companion object {
-      fun builder(name: String, suite: Boolean, location: String?, parent: SMTestProxy): TestProxyBuilder {
-         return TestProxyBuilder(name, suite, location, parent)
+      fun builder(name: String, suite: Boolean, parent: SMTestProxy): TestProxyBuilder {
+         return TestProxyBuilder(name, suite, null, parent)
       }
+   }
+
+   fun withLocation(location: String?): TestProxyBuilder {
+      return this.copy(location = location)
    }
 
    fun build(): SMTestProxy {
